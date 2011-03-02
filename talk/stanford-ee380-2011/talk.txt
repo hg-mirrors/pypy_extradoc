@@ -762,3 +762,6 @@ Conclusion
 * http://speed.pypy.org/
 
 * irc: ``#pypy at freenode.net``
+
+* noisebridge sprint this weekend (from 10am):
+  https://www.noisebridge.net/wiki/Getting_Here
