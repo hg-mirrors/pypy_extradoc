@@ -91,7 +91,7 @@ How ``a + b`` works (simplified!):
 Python is a mess
 ----------------
 
-How ``a.attr`` or ``a.method()`` works:
+How ``obj.attr`` or ``obj.method()`` works:
 
 * ...
 
@@ -176,12 +176,10 @@ Speed
 * ...or at least, it is "often" the case
 
 
-Speed
------
+http://speed.pypy.org/
+----------------------
 
 .. image:: speed.png
-
-http://speed.pypy.org/
 
 
 And (optionally) extra features
@@ -189,7 +187,7 @@ And (optionally) extra features
 
 * "Stackless"
 
-* Non-Python
+* Non-Python interpreters
 
 * and many smaller experiments
 
@@ -496,7 +494,7 @@ The execution model
 
 
 
-Architecture: Garbage collection
+Garbage collection
 ---------------------------------------------------------------------
 
 
@@ -509,14 +507,17 @@ Purpose
 
 * We can use the Boehm GC, but it is far too slow
 
-* Instead, we wrote our own GCs, and alloc operations are replaced
-  by calls to the GC
-
-* Handles finding and freeing unused memory
+* Remember that our GC needs to support both allocating Python-visible
+  objects and internal objects of the interpreter (lists, instances...)
 
 
 Overview
 --------
+
+* We wrote our own GCs, and each alloc operation in the CFGs is replaced
+  with a call to the GC
+
+* Handles finding and freeing unused memory
 
 * The GC is written in RPython, too
 
@@ -581,3 +582,183 @@ Finding the stack roots
 * ANSI C solution: all pointers are copied to and fro some custom stack
 
 * Not-ANSI-C-at-all: parse the assembler produced by GCC to build tables
+
+
+
+
+Just-in-Time Compiler
+---------------------------------------------------------------------
+
+
+Goal
+----
+
+* Speed up the interpreter written in RPython
+
+* Independent of the language that is being interpreted
+
+* Let us call it the P-interpreter (P = Python or other)
+
+
+What is a JIT
+-------------
+
+* A JIT selects pieces of the user program (say Java) that would benefit
+  from compilation instead of interpretation
+
+* A "method JIT" selects individual Java functions and compiles them,
+  possibly doing some inlining to improve performance (HotSpot, Psyco)
+
+* A "tracing JIT" selects individual code paths from loops and compiles
+  them, inlining aggressively (TraceMonkey, PyPy)
+
+
+Tracing
+-------
+
+* Run the user program, and do some lightweight profiling of loops
+
+* When a loop is run often enough, enter "Tracing Mode"
+
+* Run one more iteration of the loop in this mode
+
+* In addition to actually running the next iteration, it records a "trace"
+
+
+Tracing (2)
+-----------
+
+* The trace is then turned into a machine code loop, and directly executed
+
+* Runs all the further iterations of the loop
+
+
+Tracing (3)
+-----------
+
+* The machine code contains "guards" checking that all conditions met
+  during tracing are still valid
+
+* When a guard fails (latest: at the end of the loop), we fall back to
+  the regular P-interpreter
+
+
+Meta-Tracing in PyPy
+--------------------
+
+* The explanation above assumes a tracing JIT for the full Python
+  language
+
+* Would need to be maintained whenever we change the Python version we
+  support
+
+* Instead, we have a "meta-tracing JIT"
+
+* We trace the P-interpreter's main loop (running N times) interpreting
+  a P loop (running once)
+
+
+Demo
+----
+
+
+Architecture of the PyPy JIT
+----------------------------
+
+* In advance, turn the CFGs of the P-interpreter into some bytecode
+  representation called "jitcode"
+
+* Uses some hints provided by the P-interpreter author (but not many)
+
+* "Links" into the P-interpreter's bytecode dispatch loop
+
+* In this way we add lightweight profiling code
+
+
+Meta-Tracing
+------------
+
+* When thresholds are reached, we start tracing
+
+* Tracing is done by running the "jitcodes" in a custom interpreter,
+  and recording a trace of all operations performed
+
+* Tracing is slow (double interpretation) but only runs for one iteration
+  of the loop
+
+
+Optimization
+------------
+
+* Advanced optimizations of the trace: escaping analysis, integer bounds,
+  store sinking, string handling, FFI calls, unrolling, virtualrefs...
+
+
+Machine Code Backend
+--------------------
+
+* Turns a trace into machine code
+
+* Simple register allocation (linear code)
+
+* x86, x86-64, (ARM)
+
+* Guards compiled as conditional jumps to code that restore the full state
+
+
+Blackhole interpreter
+---------------------
+
+* When a guard fails, we need to go back to the regular P-interpreter
+
+* Cannot easily re-enter the P-interpreter from anywhere, because it
+  is just C code
+
+* Instead we use one more interpreter, the "blackhole interpreter".
+
+
+Bridges
+-------
+
+* When a guard fails often enough, run again the JIT from there
+
+* Meta-trace, optimize, generate machine code, run it
+
+* Such extra traces are called "bridges" instead of "loops"
+
+* In practice, most loops end up needing some number of bridges
+
+* We get "trees" of machine code
+
+
+More topics
+-----------
+
+* Loops, bridges and "preamble loops"
+
+* Virtualizables
+
+* GC integration
+
+* Memory management of machine code
+
+* ...
+
+
+
+
+Conclusion
+---------------------------------------------------------------------
+
+
+Conclusion
+----------
+
+* PyPy is a platform for writing efficient interpreters for
+  dynamic languages
+
+* http://pypy.org/
+
+* http://speed.pypy.org/
+
+* irc: ``#pypy at freenode.net``
