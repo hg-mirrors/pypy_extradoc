@@ -36,8 +36,8 @@ What is Python
   print Foo("hello").double().value
 
 
-In two words
-------------
+In two points
+-------------
 
 * Strongly, trivially, dynamically typed language
 
@@ -157,6 +157,19 @@ What is PyPy
 * Now contains about 200 KLoC, and 150 KLoc of tests
 
 
+A bit of history
+----------------
+
+* Squeak and Scheme48 are also interpreters written in themselves
+
+* Or more precisely, like PyPy, a subset of themselves
+
+* But in PyPy, the subset is at a higher level
+
+* General rule: *every aspect that is independent from the high-level
+  description of the interpreter is left out of it*
+
+
 What is the point of PyPy?
 --------------------------
 
@@ -235,19 +248,6 @@ The translation toolchain
 * Outputs the "same" program written in C
 
 * See demo
-
-
-A bit of history
-----------------
-
-* Squeak and Scheme48 are also interpreters written in themselves
-
-* Or more precisely, like PyPy, a subset of themselves
-
-* But in PyPy, the RPython subset is at a higher level
-
-* General rule: *every aspect that is independent from the high-level
-  description of the interpreter is left out of RPython*
 
 
 RPython is still mostly Python
@@ -579,7 +579,7 @@ Finding the stack roots
 * The hard part: finding all pointers to GC objects from local variables
   in the C stack
 
-* ANSI C solution: all pointers are copied to and fro some custom stack
+* ANSI C solution: all pointers are copied to and from some custom stack
 
 * Not-ANSI-C-at-all: parse the assembler produced by GCC to build tables
 
@@ -603,10 +603,10 @@ Goal
 What is a JIT
 -------------
 
-* A JIT selects pieces of the user program (say Java) that would benefit
+* A JIT selects pieces of the user program (in language P) that would benefit
   from compilation instead of interpretation
 
-* A "method JIT" selects individual Java functions and compiles them,
+* A "method JIT" selects individual P functions and compiles them,
   possibly doing some inlining to improve performance (HotSpot, Psyco)
 
 * A "tracing JIT" selects individual code paths from loops and compiles
@@ -703,7 +703,7 @@ Machine Code Backend
 
 * x86, x86-64, (ARM)
 
-* Guards compiled as conditional jumps to code that restore the full state
+* Guards compiled as conditional jumps to code that restores the full state
 
 
 Blackhole interpreter
