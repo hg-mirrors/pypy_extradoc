@@ -221,6 +221,14 @@ PyPy has two parts:
   RPython code into C code (mainly)
 
 
+PyPy's Python interpreter
+-------------------------
+
+* A priori similar to CPython, but written in RPython.
+
+* See demo (py.py)
+
+
 The translation toolchain
 -------------------------
 
@@ -231,12 +239,17 @@ The translation toolchain
 * See demo
 
 
-PyPy's Python interpreter
--------------------------
+A bit of history
+----------------
 
-* A priori similar to CPython, but written in RPython.
+* Squeak and Scheme48 are also interpreters written in themselves
 
-* See demo (py.py)
+* Or more precisely, like PyPy, a subset of themselves
+
+* But in PyPy, the RPython subset is at a higher level
+
+* General rule: *every aspect that is independent from the high-level
+  description of the interpreter is left out of RPython*
 
 
 RPython is still mostly Python
@@ -266,19 +279,6 @@ RPython meta-programming
         globals()[name] = f
 
 * here, the code in ``f()`` is RPython, but the loop around it is not.
-
-
-A bit of history
-----------------
-
-* Squeak and Scheme48 are also interpreters written in themselves
-
-* Or more precisely, like PyPy, a subset of themselves
-
-* In PyPy, the RPython subset is at a higher level
-
-* General rule: *every aspect that is independent from the high-level
-  description of the interpreter is left out of RPython*
 
 
 
@@ -418,4 +418,53 @@ Maps
 Architecture: the translation toolchain
 ---------------------------------------------------------------------
 
-xxx
+
+Overview
+--------
+
+* "Translation toolchain": statically compiles RPython code
+
+* Produces C code (or JVM or .NET code, experimentally)
+
+* Every aspect that is independent from the high-level
+  description of the interpreter is left out of RPython
+
+* Instead, they are added during translation
+
+
+Various aspects
+---------------
+
+* The object model, e.g. how to turn RPython classes and instances
+  to C structs
+
+* Garbage collection
+
+* Execution model: regular or stackless
+
+* Just-in-Time compiler
+
+
+Translation overview (1)
+------------------------
+
+* Start with the live RPython program
+
+* Build the Control Flow Graphs (CFGs) of the functions
+
+* Perform global type inference
+
+* We get a type-annotated version of the CFGs
+
+
+Translation overview (2)
+------------------------
+
+* "Lower" the level of the CFGs: transform their Python-like operations
+  into C-like operations
+
+* Do a number of additional transformations to insert the selected "aspects"
+
+* Generate C code from the low-level CFGs
+
+
