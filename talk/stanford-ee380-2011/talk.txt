@@ -237,6 +237,9 @@ PyPy's Python interpreter
 
 * A priori similar to CPython, but written in RPython.
 
+* RPython is also valid Python: we test extensively by running
+  it on top of CPython
+
 * See demo (py.py)
 
 
@@ -255,7 +258,8 @@ RPython is still mostly Python
 
 * Completely valid Python (can be tested directly)
 
-* Can use lists, dicts, tuples, classes and instances, and so on
+* Can use lists, dicts, tuples, classes and instances, and so on,
+  but it must be type-safe
 
 * Contains no garbage collection detail (Py_INCREF/Py_DECREF in CPython)
 
