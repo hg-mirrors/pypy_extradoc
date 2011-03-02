@@ -523,6 +523,8 @@ RPython code into C code (mainly)</li>
 <h1>PyPy's Python interpreter</h1>
 <ul class="simple">
 <li>A priori similar to CPython, but written in RPython.</li>
+<li>RPython is also valid Python: we test extensively by running
+it on top of CPython</li>
 <li>See demo (py.py)</li>
 </ul>
 </div>
@@ -538,7 +540,8 @@ RPython code into C code (mainly)</li>
 <h1>RPython is still mostly Python</h1>
 <ul class="simple">
 <li>Completely valid Python (can be tested directly)</li>
-<li>Can use lists, dicts, tuples, classes and instances, and so on</li>
+<li>Can use lists, dicts, tuples, classes and instances, and so on,
+but it must be type-safe</li>
 <li>Contains no garbage collection detail (Py_INCREF/Py_DECREF in CPython)</li>
 <li>Really a subset of Python: roughly &quot;how a Java programmer writes his
 first Python program&quot;</li>
@@ -940,6 +943,8 @@ dynamic languages</li>
 <li><a class="reference" href="http://pypy.org/">http://pypy.org/</a></li>
 <li><a class="reference" href="http://speed.pypy.org/">http://speed.pypy.org/</a></li>
 <li>irc: <tt class="docutils literal"><span class="pre">#pypy</span> <span class="pre">at</span> <span class="pre">freenode.net</span></tt></li>
+<li>noisebridge sprint this weekend (from 10am):
+<a class="reference" href="https://www.noisebridge.net/wiki/Getting_Here">https://www.noisebridge.net/wiki/Getting_Here</a></li>
 </ul>
 </div>
 </div>
