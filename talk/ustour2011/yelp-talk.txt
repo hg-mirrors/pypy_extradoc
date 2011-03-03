@@ -144,7 +144,7 @@ Memory usage
 * On running PyPy's translation toolchain on 32-bits: 1.7GB with PyPy
   (including the JIT machine code), versus 1.2GB with CPython
 
-* Experimental support for 32-bit "pointers" on 64-bit platforms
+* Experimental support for 32-bit "compact pointers" on 64-bit platforms
 
 
 Just-in-Time Compilation
@@ -167,6 +167,8 @@ Compatibility
 * Main difference: Garbage Collection is not refcounting (because we
   could get much better GCs) --- so __del__ methods are not called
   immediately and predictively
+
+* Apart from that, it is really 99.99% compatible
 
 
 Stackless Python
@@ -218,20 +220,20 @@ Using CPyExt
 Other ways to use C libraries
 -----------------------------
 
-* Use ctypes
-
-* (It is soon going to be fast on top of PyPy, too)
-
-* Example: pyexpat, sqlite3
+* Use ctypes (it is soon going to be fast on top of PyPy).
+  Example: pyexpat, sqlite3
 
 * Or write it as an RPython module built into PyPy,
   but that's more involved
 
+* More ways could be possible, given work (SWIG backend,
+  Cython backend, C++ Reflex, etc...)
 
 
 
 
-
+Architecture
+----------------------------------------------------------------------
 
 
 Architecture
@@ -253,8 +255,6 @@ PyPy's Python interpreter
 * RPython is also valid Python: we test extensively by running
   it on top of CPython
 
-* See demo (py.py)
-
 
 The translation toolchain
 -------------------------
@@ -262,8 +262,6 @@ The translation toolchain
 * Takes a program written in RPython, a custom subset of Python
 
 * Outputs the "same" program written in C
-
-* See demo
 
 
 RPython is still mostly Python
@@ -296,146 +294,8 @@ RPython meta-programming
 * here, the code in ``f()`` is RPython, but the loop around it is not.
 
 
-
-
-Architecture: the interpreter
---------------------------------------------------------------------------
-
-
-Overview of the interpreter
----------------------------
-
-* A compiler that produces a custom bytecode format
-
-* An interpreter for this bytecode
-
-* A large library of object types (the "object space")
-
-* A collection of extension modules
-
-
-The bytecode interpreter
-------------------------
-
-* A straightforward, recursive interpreter
-
-* Stack-based
-
-* Every call to a Python function makes a frame object
-
-* Then the interpreter is written as methods on this frame object
-
-
-The object space
-----------------
-
-* Implements all the built-in types
-
-* Structure more flexible than CPython's family of C functions
-
-* Very open to experimentation
-
-
-Separation of levels
---------------------
-
-* Important: *all* objects that appear in the interpreted program are,
-  in the interpreter, instances of W_XxxObject.
-
-* Again, similar to CPython: an object in Python is implemented,
-  in the interpreter, as a C structure PyXxxObject.
-
-
-Example: smalllong
-------------------
-
-* Standard Python types: int (32/64-bit) and long
-  (integer of unlimited size)
-
-* In CPython, the type is directly linked to its (single) implementation in C.
-  In PyPy, it is not.
-
-* So we could easily add an implementation W_SmallLongObject for
-  integers that happen to fit in 64 bits
-
-* And there is also W_LongObject for the general case
-
-
-Example: smallint
------------------
-
-* *Tagged integers,* common in interpreters (but not in CPython)
-
-* Idea, in C terms: take the integer objects whose value fits in 31/63
-  bits, and encode them as odd-valued pseudo-pointers, instead of
-  pointers to separately-allocated integer objects
-
-* We did it in PyPy, but it's disabled now because it does not give
-  the expected performance gain
-
-
-Example: multidict
-------------------
-
-* Similarly, we have several implementations of dict
-
-* For the different typical usage patterns of dicts in Python
-
-* E.g. module dicts (containing all global names of a module),
-  class dicts, instance dicts, user dicts (typically containing
-  non-string keys)
-
-
-Example: mapdict
-----------------
-
-* An instance in Python uses a dictionary to store attributes::
-
-     >>> x = MyClass()
-     >>> x.a = 5
-     >>> x.__dict__
-     {'a': 5}
-     >>> x.__dict__ = {'b': 6}
-     >>> x.b
-     6
-
-
-Example: mapdict
-----------------
-
-* An instance is thus two objects: a dict and a wrapper around it
-
-* Requires a lot of memory
-
-* This is different than Java, Smalltalk or C++, where the class
-  enforces the exact set of attributes of its instances
-
-* But it is like Self and JavaScript
-
-
-Maps
-----------------
-
-* We can reuse the technique introduced in Self: "maps"
-
-* The JavaScript engine V8 also uses them, calling them "hidden classes"
-
-* Idea: it is likely that a lot of instances of a given class will
-  have the same set of attributes
-
-* So we split the attributes into a per-instance part (just an array of
-  field values) and a shared part (giving the attribute names, and their
-  indices in the arrays of the individual instances).
-
-
-
-
-Architecture: the translation toolchain
----------------------------------------------------------------------
-
-
-Overview
---------
+Translation toolchain
+---------------------
 
 * "Translation toolchain": statically compiles RPython code
 
@@ -445,8 +305,6 @@ Overview
   description of the interpreter is left out of RPython
 
 * Instead, they are added during translation
-
-* PyPy = hybrid "research base" + "production-ready"
 
 
 Translation overview (1)
@@ -482,123 +340,9 @@ Various aspects
 
 * Garbage collection
 
-* Execution model: regular or stackless
+* Execution model: regular (recursive) or stackless
 
 * Just-in-Time compiler
-
-
-The object model
-----------------
-
-* Called "RTyping" internally
-
-* Can target "lltype" or "ootype"
-
-* "lltype" = low-level types = C-like structs and arrays
-
-* "ootype" = object-oriented types, for JVM or .NET
-
-
-The execution model
--------------------
-
-* Optionally do a "stackless transformation"
-
-* We get microthread capabilities (soft threads)
-
-* Even if the source code of the interpreter is just recursive
-
-
-
-
-Garbage collection
----------------------------------------------------------------------
-
-
-Purpose
--------
-
-* RPython assumes automatic memory management, like Python
-
-* But of course C code does not
-
-* We can use the Boehm GC, but it is far too slow
-
-* Remember that our GC needs to support both allocating Python-visible
-  objects and internal objects of the interpreter (lists, instances...)
-
-
-Overview
---------
-
-* We wrote our own GCs, and each alloc operation in the CFGs is replaced
-  with a call to the GC
-
-* Handles finding and freeing unused memory
-
-* The GC is written in RPython, too
-
-* Analyzed like the rest of the program during translation
-
-* This approach allows testing at all levels
-
-
-The GCs we have written
------------------------
-
-* Currently used: "minimark", a generational GC with one young generation
-  and using mark-and-sweep for the old generation
-
-* Previously: a hybrid collector using generational semi-space collection
-  and mark-and-sweep for the oldest generation (too complicated)
-
-* Pretty standard, non-concurrent, non-thread-safe collectors
-
-
-Old experiments
----------------
-
-* Reference counting (like CPython)... Does not work well.
-
-* Mark-and-sweep, a fully non-moving collector
-
-* Mark-and-compact, a fully compacting, generationless collector,
-  similar to Squeak.
-
-* Lesson learned: using a generational collector is essential for
-  dynamic languages like Python
-
-
-GC transformer
---------------
-
-* Inserting a GC in a program being translated is handled by the "GC
-  transformer"
-
-* Easy to customize, no fixed API
-
-
-API example (minimark GC)
--------------------------
-
-* The GC provides functions like "malloc"
-
-* Plus a number of others: hash, identity_hash, weakref support,
-  finalizer support
-
-* The GC transformer inserts tables describing the structure of
-  RPython objects: sizes, location of further references, etc.
-
-
-Finding the stack roots
------------------------
-
-* The hard part: finding all pointers to GC objects from local variables
-  in the C stack
-
-* ANSI C solution: all pointers are copied to and from some custom stack
-
-* Not-ANSI-C-at-all: parse the assembler produced by GCC to build tables
 
 
 
