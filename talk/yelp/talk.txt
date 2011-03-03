@@ -243,16 +243,6 @@ PyPy's Python interpreter
 * See demo (py.py)
 
 
-The translation toolchain
--------------------------
-
-* Takes a program written in RPython, a custom subset of Python
-
-* Outputs the "same" program written in C
-
-* See demo
-
-
 RPython is still mostly Python
 ------------------------------
 
@@ -271,6 +261,8 @@ RPython is still mostly Python
 
 RPython meta-programming
 ------------------------
+
+* Python is a meta-programming language for RPython
 
 * RPython is actually only a restriction on the code after being imported,
   so we can build up everything in (normal) full Python::
@@ -311,16 +303,6 @@ The bytecode interpreter
 * Every call to a Python function makes a frame object
 
 * Then the interpreter is written as methods on this frame object
-
-
-The object space
-----------------
-
-* Implements all the built-in types
-
-* Structure more flexible than CPython's family of C functions
-
-* Very open to experimentation
 
 
 Separation of levels
@@ -413,180 +395,6 @@ Maps
 * So we split the attributes into a per-instance part (just an array of
   field values) and a shared part (giving the attribute names, and their
   indices in the arrays of the individual instances).
-
-
-
-
-Architecture: the translation toolchain
----------------------------------------------------------------------
-
-
-Overview
---------
-
-* "Translation toolchain": statically compiles RPython code
-
-* Produces C code (or JVM or .NET code, experimentally)
-
-* Every aspect that is independent from the high-level
-  description of the interpreter is left out of RPython
-
-* Instead, they are added during translation
-
-* PyPy = hybrid "research base" + "production-ready"
-
-
-Translation overview (1)
-------------------------
-
-* Start with the live RPython program
-
-* Build the Control Flow Graphs (CFGs) of the functions
-
-* Perform global type inference
-
-* We get a type-annotated version of the CFGs
-
-* Demo
-
-
-Translation overview (2)
-------------------------
-
-* "Lower" the level of the CFGs: transform their Python-like operations
-  into C-like operations
-
-* Do a number of additional transformations to insert the selected "aspects"
-
-* Generate C code from the low-level CFGs
-
-
-Various aspects
----------------
-
-* The object model, e.g. how to turn RPython classes and instances
-  to C structs
-
-* Garbage collection
-
-* Execution model: regular or stackless
-
-* Just-in-Time compiler
-
-
-The object model
-----------------
-
-* Called "RTyping" internally
-
-* Can target "lltype" or "ootype"
-
-* "lltype" = low-level types = C-like structs and arrays
-
-* "ootype" = object-oriented types, for JVM or .NET
-
-
-The execution model
--------------------
-
-* Optionally do a "stackless transformation"
-
-* We get microthread capabilities (soft threads)
-
-* Even if the source code of the interpreter is just recursive
-
-
-
-
-Garbage collection
----------------------------------------------------------------------
-
-
-Purpose
--------
-
-* RPython assumes automatic memory management, like Python
-
-* But of course C code does not
-
-* We can use the Boehm GC, but it is far too slow
-
-* Remember that our GC needs to support both allocating Python-visible
-  objects and internal objects of the interpreter (lists, instances...)
-
-
-Overview
---------
-
-* We wrote our own GCs, and each alloc operation in the CFGs is replaced
-  with a call to the GC
-
-* Handles finding and freeing unused memory
-
-* The GC is written in RPython, too
-
-* Analyzed like the rest of the program during translation
-
-* This approach allows testing at all levels
-
-
-The GCs we have written
------------------------
-
-* Currently used: "minimark", a generational GC with one young generation
-  and using mark-and-sweep for the old generation
-
-* Previously: a hybrid collector using generational semi-space collection
-  and mark-and-sweep for the oldest generation (too complicated)
-
-* Pretty standard, non-concurrent, non-thread-safe collectors
-
-
-Old experiments
----------------
-
-* Reference counting (like CPython)... Does not work well.
-
-* Mark-and-sweep, a fully non-moving collector
-
-* Mark-and-compact, a fully compacting, generationless collector,
-  similar to Squeak.
-
-* Lesson learned: using a generational collector is essential for
-  dynamic languages like Python
-
-
-GC transformer
---------------
-
-* Inserting a GC in a program being translated is handled by the "GC
-  transformer"
-
-* Easy to customize, no fixed API
-
-
-API example (minimark GC)
--------------------------
-
-* The GC provides functions like "malloc"
-
-* Plus a number of others: hash, identity_hash, weakref support,
-  finalizer support
-
-* The GC transformer inserts tables describing the structure of
-  RPython objects: sizes, location of further references, etc.
-
-
-Finding the stack roots
------------------------
-
-* The hard part: finding all pointers to GC objects from local variables
-  in the C stack
-
-* ANSI C solution: all pointers are copied to and from some custom stack
-
-* Not-ANSI-C-at-all: parse the assembler produced by GCC to build tables
-
 
 
 
