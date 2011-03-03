@@ -1,0 +1,88 @@
+The building is wonderfully located with views of the Bay.  The cafeteria
+was most pleasant, and the food was good.  Google has 4 floors.  2 of them
+are full of engineers - app engine is here among others.  One of them is
+full of Google staff that aren't engineers.  I don't know what they do.
+The other floor is full of startups, which have some sort of special
+relationship with Google.  I never found out how that works, either.
+
+Several engineers told me that they were really pleased that we chose
+to talk to them in SF as well as at the Googleplex.  It seems that
+most people do not do this, which means they either have to take a
+very long train ride to Mt. View to hear neat stuff, or do without.
+Just by coming to the SF site made us a lot of fans, it seems.
+
+Between 25 and 30 engineers showed up.  Several (many?) of them were
+unknown to either Guido or Wesley Chun, and had to introduce themselves.
+Several of them were primarily C++ users.  They want seamless integration
+with C++ 'natch.  'A way to just import c++ .h files into python' was
+mentioned.  Some of the people there work primarily on the search engine.
+They like prototyping new ideas (in python, I would guess).  They spoke of
+other people who were not there -- who may or may not work at Google --
+who are designing new experimental languages.  Up until this talk they
+did not know that PyPy would be good for implementing them.
+
+Some engineers expressed a desire to come to noisebridge for the sprint.
+The mood was entirely upbeat.  There were no questions of the 'desiged
+to make you look like an idiot, designed to show how much I dislike you,
+your code, your approach sort'.  It sounded like some people were here out
+of sheer intellectual curiosity, but some had real life problems they were 
+interested in using pypy for.
+
+They seemed completely unaware that PyPy was not just python in python and
+could be used to implement any dynamic language.  They think this is bad
+marketing on our part and that we should call the toolchain something else
+and showcase it separately.  
+
+They have lots and lots of SWIG wrapped things at Google.
+
+Questions indicated that most people had at least some idea as to what
+was going on.
+
+"are they all boxed?"
+"how much memory"
+"the gc -- you cannot count on dels happening instantaneously, same as
+Jython, IronPython" -- does this apply to weakrefs also?
+why didn't you use the ref counting gc
+why is ref counting slow?
+people wanted more indepth on the jit how it works
+why are all the blue lines the same size in speed.pypy.org
+what is the difference between us and spidermonkey?
+do you dispatch? pass information between trqces? are they parameterised by 
+the incoming trace information as it comes in?
+is there still hotspot analysis to determine what to jit?
+memory bloat like psyco?
+what is the potential for multithreading?
+stackless
+tail recursion
+release infrastructure so people who want to do language experimentation
+can do it on top of pypy.  you can already? why didn't we know that?
+gameboy got a big laugh
+how can you tell if your cextension will run on pypy?  If you should rewrite
+it in RPython for performance?  Why are some c extensions faster than others
+when linked to pypy?
+SWIG.  can we support SWIG to ctypes?  How hard would it be?
+reflex(?) for importing c++
+include c++ header file
+cern sprint.
+
+So the last impression I got before we went to lunch is that there was one guy
+in particular, John Plevyak, login jplev who works in search engines and
+writes c++ who is really interested.  Guido and Wesley did not know him,
+and several others who attended.  "People who write C++ all the time in
+Google" may be a new target group for us for funding.  They seem to have
+concrete problems they want to fix.
+
+at lunch we discussed
+sandboxing
+google has some thing for sandboxing c. or 2 things.  open source.
+'nacl' discussing of why pypy was not a good fit there.
+
+funding
+google app engineers can get money out to a santa barbara group that has
+an open source app engine clone 'because they have the .edu' -- somebody
+else who has a different one and is just another OS developer doesn't
+get money.  G + W will think about whether HHU could get money from Google.
+Google apparantly loves to send money to postdocs, but is that only to
+US ones?  G + W will also work on a doc about what we could do to approach 
+other google managers for money.  We will meet in atlanta at pycon and
+discuss.
