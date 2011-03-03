@@ -364,8 +364,8 @@ print Foo(42).double().value
 print Foo(&quot;hello&quot;).double().value
 </pre>
 </div>
-<div class="slide" id="in-two-words">
-<h1>In two words</h1>
+<div class="slide" id="in-two-points">
+<h1>In two points</h1>
 <ul class="simple">
 <li>Strongly, trivially, dynamically typed language</li>
 <li>Ints, floats, longs, string, unicode,
@@ -461,6 +461,16 @@ and now from Germany and Sweden (2010-2011).</li>
 <li>Now contains about 200 KLoC, and 150 KLoc of tests</li>
 </ul>
 </div>
+<div class="slide" id="a-bit-of-history">
+<h1>A bit of history</h1>
+<ul class="simple">
+<li>Squeak and Scheme48 are also interpreters written in themselves</li>
+<li>Or more precisely, like PyPy, a subset of themselves</li>
+<li>But in PyPy, the subset is at a higher level</li>
+<li>General rule: <em>every aspect that is independent from the high-level
+description of the interpreter is left out of it</em></li>
+</ul>
+</div>
 <div class="slide" id="what-is-the-point-of-pypy">
 <h1>What is the point of PyPy?</h1>
 <ul class="simple">
@@ -522,16 +532,6 @@ RPython code into C code (mainly)</li>
 <li>Takes a program written in RPython, a custom subset of Python</li>
 <li>Outputs the &quot;same&quot; program written in C</li>
 <li>See demo</li>
-</ul>
-</div>
-<div class="slide" id="a-bit-of-history">
-<h1>A bit of history</h1>
-<ul class="simple">
-<li>Squeak and Scheme48 are also interpreters written in themselves</li>
-<li>Or more precisely, like PyPy, a subset of themselves</li>
-<li>But in PyPy, the RPython subset is at a higher level</li>
-<li>General rule: <em>every aspect that is independent from the high-level
-description of the interpreter is left out of RPython</em></li>
 </ul>
 </div>
 <div class="slide" id="rpython-is-still-mostly-python">
@@ -798,7 +798,7 @@ RPython objects: sizes, location of further references, etc.</li>
 <ul class="simple">
 <li>The hard part: finding all pointers to GC objects from local variables
 in the C stack</li>
-<li>ANSI C solution: all pointers are copied to and fro some custom stack</li>
+<li>ANSI C solution: all pointers are copied to and from some custom stack</li>
 <li>Not-ANSI-C-at-all: parse the assembler produced by GCC to build tables</li>
 </ul>
 </div>
@@ -816,9 +816,9 @@ in the C stack</li>
 <div class="slide" id="what-is-a-jit">
 <h1>What is a JIT</h1>
 <ul class="simple">
-<li>A JIT selects pieces of the user program (say Java) that would benefit
+<li>A JIT selects pieces of the user program (in language P) that would benefit
 from compilation instead of interpretation</li>
-<li>A &quot;method JIT&quot; selects individual Java functions and compiles them,
+<li>A &quot;method JIT&quot; selects individual P functions and compiles them,
 possibly doing some inlining to improve performance (HotSpot, Psyco)</li>
 <li>A &quot;tracing JIT&quot; selects individual code paths from loops and compiles
 them, inlining aggressively (TraceMonkey, PyPy)</li>
@@ -897,7 +897,7 @@ store sinking, string handling, FFI calls, unrolling, virtualrefs...</li>
 <li>Turns a trace into machine code</li>
 <li>Simple register allocation (linear code)</li>
 <li>x86, x86-64, (ARM)</li>
-<li>Guards compiled as conditional jumps to code that restore the full state</li>
+<li>Guards compiled as conditional jumps to code that restores the full state</li>
 </ul>
 </div>
 <div class="slide" id="blackhole-interpreter">
