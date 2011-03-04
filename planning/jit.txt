@@ -76,6 +76,11 @@ Things we can do mostly by editing optimizeopt.py:
   maybe we should move promote even higher, before the first use and we
   could possibly remove more stuff?
 
+- f31 = f17 * f16
+  f32 = f16 * f17
+
+  Should be just a matter of synthesizing reverse operations in rewrite.py
+
 
 PYTHON EXAMPLES
 ---------------
