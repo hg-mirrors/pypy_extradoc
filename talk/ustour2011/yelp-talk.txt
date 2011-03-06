@@ -188,7 +188,7 @@ CPyExt
 
 * For some extension modules, we can have a performance issue
 
-* Work-in-progress
+* Work in progress
 
 
 CPyExt works "often"
