@@ -48,9 +48,6 @@ NEW TASKS
 - local imports should be jitted more efficiently, right now they produce a
   long trace and they are rather common (e.g. in translate.py)
 
-- don't use XCHG in the x86 backend, as that implies some sort of locking, that
-  we don't need and might be expensive.
-
 - the integer range analysis cannot deal with int_between, because it is
   lowered to uint arithmetic too early
 
