@@ -59,4 +59,3 @@ cover this in our presentation.
 
 The PyPy project has a blog which may be of interest.  You can read
 it at http://morepypy.blogspot.com/ .
-
