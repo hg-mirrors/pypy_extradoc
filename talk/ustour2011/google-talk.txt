@@ -143,7 +143,7 @@ Memory usage
 
 * Depends on the use case
 
-* Much better than CPython for instances of classes with no __slots__
+* Much better than CPython for instances of classes with no ``__slots__``
 
 * On running PyPy's translation toolchain on 32-bits: 1.7GB with PyPy
   (including the JIT machine code), versus 1.2GB with CPython
@@ -169,7 +169,7 @@ Compatibility
 * More so than, say, Jython or IronPython
 
 * Main difference: Garbage Collection is not refcounting (because we
-  could get much better GCs) --- so __del__ methods are not called
+  could get much better GCs) — so ``__del__`` methods are not called
   immediately and predictively
 
 * Apart from that, it is really 99.99% compatible
@@ -250,17 +250,17 @@ Python is complicated
 
 How ``a + b`` works (simplified!):
 
-* look up the method __add__ on the type of a
+* look up the method ``__add__`` on the type of a
 
 * if there is one, call it
 
 * if it returns NotImplemented, or if there is none,
-  look up the method __radd__ on the type of b
+  look up the method ``__radd__`` on the type of b
 
 * if there is one, call it
 
-* if there is none, or we get NotImplemented again,
-  raise an exception TypeError
+* if there is none, or we get ``NotImplemented`` again,
+  raise an exception ``TypeError``
 
 
 Python is a mess
