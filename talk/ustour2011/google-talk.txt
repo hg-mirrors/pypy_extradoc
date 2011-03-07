@@ -172,6 +172,8 @@ Compatibility
   could get much better GCs) — so ``__del__`` methods are not called
   immediately and predictively
 
+* 2.5 compatibility release, 2.7 on trunk
+
 * Apart from that, it is really 99.99% compatible
 
 
