@@ -30,6 +30,13 @@ Well tested
 
 .. image:: carl_tests.jpg
 
+Fast
+----
+
+* http://speed.pypy.org
+
+* How do we do it?
+
 
 Short introduction to JITting
 -----------------------------
