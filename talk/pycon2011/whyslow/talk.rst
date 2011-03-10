@@ -135,6 +135,8 @@ Attribute access
 
 * 3 dict lookups
 
+* Super simplified, full version doesn't fit on this slide.
+
 Map dicts
 -------------
 
@@ -156,7 +158,15 @@ Map dicts - how it works
 * those dictionary lookups are constant-folded away at the
   time of JIT compilation
 
-XXX cool pics
+CPython ``__dict__``
+--------------------
+
+.. image:: cpython-instance.png
+
+Map dicts (2)
+-------------
+
+.. image:: dictinstancemap.png
 
 Dynamic method lookup
 ---------------------
