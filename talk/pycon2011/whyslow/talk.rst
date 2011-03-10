@@ -12,7 +12,6 @@ What's this talk about?
 * how does a tracing JIT work
 
 * semantics that make Python slow/hard to optimize
-XXX cross slow
 
 What is PyPy
 ------------
