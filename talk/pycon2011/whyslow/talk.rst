@@ -193,15 +193,30 @@ Dynamic method lookup
 
 * call the bound method
 
+Version tags and inlining
+-------------------------
+
+* For every type give it a version, any time it changes, increment the version (e.g. modifying MRO or assigning attribute)
+
+* CPython does the trick too
+
+* But it's more powerful with a JIT
+
+* When looking up a method, check the version tag and create a guard
+
+* Then inline the method and eliminate frame
+
 Linking it all together
 -----------------------
 
-* array example
+* ``translate.py``: a large Python application (200 KLOC)
+
+* 1 hour on CPython, 25 minutes on PyPy
 
 Things we did not talk about
 ----------------------------
 
-* regular expressions
+* regular expressions (JIT'd)
 
 * generators
 
@@ -216,9 +231,15 @@ Future directions
 
 * numpy
 
+* Python 3
+
 Thank you
 -----------
 
 * http://pypy.org
 
 * http://morepypy.blogspot.com/
+
+* http://speed.pypy.org/
+
+* Questions?
