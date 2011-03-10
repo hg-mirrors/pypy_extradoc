@@ -28,6 +28,8 @@ Well tested
 * 150 KLOC of tests
 
 .. image:: carl_tests.jpg
+   :scale: 12%
+   :align: center
 
 Fast
 ----
@@ -168,11 +170,15 @@ CPython ``__dict__``
 --------------------
 
 .. image:: cpython-instance.png
+   :scale: 50%
+   :align: center
 
 Map dicts (2)
 -------------
 
 .. image:: dictinstancemap.png
+   :scale: 30%
+   :align: center
 
 Dynamic method lookup
 ---------------------
