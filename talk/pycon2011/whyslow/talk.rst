@@ -5,12 +5,31 @@ Why is Python slow and how PyPy can help?
 What's this talk about?
 -----------------------
 
+* very short intro to the PyPy project
+
 * short introduction to JITting
 
 * how does a tracing JIT work
 
 * semantics that make Python slow/hard to optimize
 XXX cross slow
+
+What is PyPy
+------------
+
+* Open source (MIT license)
+
+* 8 years old
+
+* Stable Python interpreter with 99.99% compatibility
+
+Well tested
+-----------
+
+* 150 KLOC of tests
+
+.. image:: carl_tests.jpg
+
 
 Short introduction to JITting
 -----------------------------
@@ -39,8 +58,6 @@ Tracing example
 
 * we have cool tools!
 
-XXX pic
-
 Part 2 - python semantics
 --------------------------
 
@@ -64,12 +81,12 @@ Dynamic dispatch
 * ``a + b`` can call integer addition, string concatenation or custom
   ``__add__`` method
 
+* That's simplified, you also have ``__radd__``, and special cases for objects implemented in C, and for performance, and ...
+
 * not much to talk about, tracing JIT deals with this without
   extra effort
 
-* it can get fairly complex (XXX http://hg.python.org/cpython/file/6910af7df354/Objects/abstract.c#l761)
-
-* all of this logic is constant folded (XXX trace)
+* all of this logic is constant folded
 
 Boxing
 ------
@@ -83,8 +100,6 @@ Boxing
 * ideally we would not allocate them unless they escape
 
 * frames get in the way (they escape locals and valuestack)
-
-XXX more traces
 
 Frame introspection
 -------------------
