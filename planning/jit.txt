@@ -78,6 +78,9 @@ Things we can do mostly by editing optimizeopt.py:
 
   Should be just a matter of synthesizing reverse operations in rewrite.py
 
+- Call to ll_find right after allocating a ``newstr(1)`` should just change
+  the call to ll_find_char and remove the allocation if it can.
+
 
 PYTHON EXAMPLES
 ---------------
