@@ -3,7 +3,7 @@ def f():
     i = 0
     s = 0
     while i < 3000:
-        if i % 3 == 0:
+        if i & 4:
             s += 1
         else:
             s += 2

@@ -99,6 +99,8 @@ nice code at all so far:
 
 - xxx (find more examples :-)
 
+- strlen should return int >= 0
+
 BACKEND TASKS
 -------------
 
