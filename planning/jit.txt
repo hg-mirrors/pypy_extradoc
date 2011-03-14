@@ -17,10 +17,6 @@ NEW TASKS
   current exception from the struct in memory, followed by a regular
   GUARD_CLASS.  (Armin: Look like a simplification, but it's a bit messy too)
 
-- write a document that says what you cannot expect the jit to optimize.
-  E.g. http://paste.pocoo.org/show/181319/ with B being old-style and
-  C being new-style, or vice-versa.
-
 - maybe refactor a bit the x86 backend, particularly the register
   allocation
 
@@ -41,9 +37,6 @@ NEW TASKS
 - support raw mallocs
 
 - support casting from Signed to an opaque pointer
-
-- geninterp fun :-(  geninterp'ed functions are not JITted,
-  unlike plain app-level functions.  How about we just kill geninterp?
 
 - local imports should be jitted more efficiently, right now they produce a
   long trace and they are rather common (e.g. in translate.py)
@@ -77,9 +70,6 @@ Things we can do mostly by editing optimizeopt.py:
   f32 = f16 * f17
 
   Should be just a matter of synthesizing reverse operations in rewrite.py
-
-- Call to ll_find right after allocating a ``newstr(1)`` should just change
-  the call to ll_find_char and remove the allocation if it can.
 
 
 PYTHON EXAMPLES
