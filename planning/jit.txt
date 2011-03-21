@@ -44,6 +44,12 @@ NEW TASKS
 - the integer range analysis cannot deal with int_between, because it is
   lowered to uint arithmetic too early
 
+- regular expressions are still not very efficient in cases. For example:
+
+  re.search("b+", "a" * 1000 + "b") gets compiled to a resident call
+  re.search("(ab)+", "a" * 1000 + "b") almost doesn't get compiled and
+  gets very modest speedups with the JIT on (10-20%)
+
 OPTIMIZATIONS
 -------------
 
