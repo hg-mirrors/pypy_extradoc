@@ -13,8 +13,8 @@ compliant, production ready Python implementation, and to allow us to continue
 our work on making it faster and more up to date with upstream version changes.
 
 Beyond the large check, we're grateful for the endorsement this represents,
-both of our work on PyPy, as well as all alternative Python VMs.  The PSF is
-shifting its focus from representing just CPython to all of the Python
+both of our work on PyPy, as well as all alternative Python VMs.  The PSF has
+shifted its focus from representing just CPython to all of the Python
 implementation, which we are very appreciative of.
 
 .. image:: xxx.png
