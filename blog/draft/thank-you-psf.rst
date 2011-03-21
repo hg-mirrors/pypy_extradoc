@@ -3,8 +3,8 @@ A thank you to the PSF
 
 This year's PyCon was an incredible time, several members of the PyPy team were
 there, and we'll be blogging more about our experienced in the coming days,
-however for now we wanted to extend a thank to the Python Software Foundation
-(PSF).
+however for now we wanted to extend a thank you to the Python Software
+Foundation (PSF).
 
 As you may have heard, on Friday morning at PyCon Jesse Noller handed the PyPy
 team a check for $10,000, on behalf of the PSF.  This was in recognition of our
