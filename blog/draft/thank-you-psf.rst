@@ -12,4 +12,6 @@ success in the past few years bringing PyPy from a research project to a fast,
 compliant, production ready Python implementation, and to allow us to continue
 our work on making it faster and more up to date with upstream version changes.
 
+.. image:: xxx.png
+
 Thanks you, PSF.
