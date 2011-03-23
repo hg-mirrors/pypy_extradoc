@@ -50,10 +50,13 @@ NEW TASKS
   re.search("(ab)+", "a" * 1000 + "b") almost doesn't get compiled and
   gets very modest speedups with the JIT on (10-20%)
 
+- consider an automated way to take a function with a loop and generate a
+  JITable preamble and postamble with a call to the loop in the middle.
+
 OPTIMIZATIONS
 -------------
 
-Things we can do mostly by editing optimizeopt.py:
+Things we can do mostly by editing optimizeopt/:
 
 - getfields which result is never used never get removed (probable cause -
   they used to be as livevars in removed guards). also getfields which result
@@ -76,6 +79,8 @@ Things we can do mostly by editing optimizeopt.py:
   f32 = f16 * f17
 
   Should be just a matter of synthesizing reverse operations in rewrite.py
+
+- strlen result is not reused
 
 
 PYTHON EXAMPLES
