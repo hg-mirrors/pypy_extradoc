@@ -1,0 +1,1198 @@
+%\documentclass{acm_proc_article-sp}
+\documentclass{sig-alternate}
+
+\usepackage{ifthen}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{xspace}
+\usepackage[utf8]{inputenc}
+
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\def\PY@tok@gd{\def\PY@bc##1{\fcolorbox[rgb]{0.80,0.00,0.00}{1.00,0.80,0.80}{##1}}}
+\def\PY@tok@gu{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.00}{##1}}}
+\def\PY@tok@gt{\def\PY@tc##1{\textcolor[rgb]{0.60,0.80,0.40}{##1}}}
+\def\PY@tok@gs{\let\PY@bf=\textbf}
+\def\PY@tok@gr{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\def\PY@tok@cm{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@vg{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@m{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@mh{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@cs{\let\PY@bf=\textbf\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@ge{\let\PY@it=\textit}
+\def\PY@tok@vc{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@il{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@go{\def\PY@tc##1{\textcolor[rgb]{0.67,0.67,0.67}{##1}}}
+\def\PY@tok@cp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,0.60}{##1}}}
+\def\PY@tok@gi{\def\PY@bc##1{\fcolorbox[rgb]{0.00,0.80,0.00}{0.80,1.00,0.80}{##1}}}
+\def\PY@tok@gh{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.00}{##1}}}
+\def\PY@tok@ni{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\def\PY@tok@nl{\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,1.00}{##1}}}
+\def\PY@tok@nn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.80,1.00}{##1}}}
+\def\PY@tok@no{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.00}{##1}}}
+\def\PY@tok@na{\def\PY@tc##1{\textcolor[rgb]{0.20,0.00,0.60}{##1}}}
+\def\PY@tok@nb{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.40}{##1}}}
+\def\PY@tok@nc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.67,0.53}{##1}}}
+\def\PY@tok@nd{\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,1.00}{##1}}}
+\def\PY@tok@ne{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.00,0.00}{##1}}}
+\def\PY@tok@nf{\def\PY@tc##1{\textcolor[rgb]{0.80,0.00,1.00}{##1}}}
+\def\PY@tok@si{\def\PY@tc##1{\textcolor[rgb]{0.67,0.00,0.00}{##1}}}
+\def\PY@tok@s2{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@vi{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@nt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.20,0.00,0.60}{##1}}}
+\def\PY@tok@nv{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@s1{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@gp{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.60}{##1}}}
+\def\PY@tok@sh{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@ow{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.00}{##1}}}
+\def\PY@tok@sx{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@bp{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.40}{##1}}}
+\def\PY@tok@c1{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@kc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@c{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@mf{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@err{\def\PY@tc##1{\textcolor[rgb]{0.67,0.00,0.00}{##1}}\def\PY@bc##1{\colorbox[rgb]{1.00,0.67,0.67}{##1}}}
+\def\PY@tok@kd{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@ss{\def\PY@tc##1{\textcolor[rgb]{1.00,0.80,0.20}{##1}}}
+\def\PY@tok@sr{\def\PY@tc##1{\textcolor[rgb]{0.20,0.67,0.67}{##1}}}
+\def\PY@tok@mo{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@mi{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@kn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@o{\def\PY@tc##1{\textcolor[rgb]{0.33,0.33,0.33}{##1}}}
+\def\PY@tok@kr{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@s{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@kp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@w{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\def\PY@tok@kt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.47,0.53}{##1}}}
+\def\PY@tok@sc{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@sb{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@k{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@se{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@sd{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+\ifthenelse{\isundefined{\hypersetup}}{
+  \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+}{}
+\hypersetup{
+  pdftitle={Controlling the Tracing of an Interpreter With Hints, Part 1: Controlling the Extent of Tracing},
+}
+
+\newboolean{showcomments}
+\setboolean{showcomments}{false}
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$Id: main.tex 19055 2008-06-05 11:20:31Z cfbolz $-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\cfbolz[1]{\nb{CFB}{#1}}
+\newcommand\toon[1]{\nb{TOON}{#1}}
+\newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\arigo[1]{\nb{AR}{#1}}
+\newcommand\fijal[1]{\nb{FIJAL}{#1}}
+\newcommand{\commentout}[1]{}
+
+\newcommand\ie{i.e.,\xspace}
+\newcommand\eg{e.g.,\xspace}
+
+\normalem
+
+\let\oldcite=\cite
+
+\renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
+
+% compressing itemize env, in case we need it
+\newenvironment{zitemize}% zero - line spacing itemize environment
+   {\begin{list}{--}{
+   \setlength{\itemsep}{0 pt}
+   \setlength{\parsep}{0 pt}
+   \setlength{\topsep} {0 pt} }}% the end stuff
+   {\end{list}}
+
+
+\begin{document}
+
+\title{XXX in a Tracing JIT Compiler for Efficient Dynamic Languages}
+
+\numberofauthors{4}
+\author{
+\alignauthor Carl Friedrich Bolz\\
+       \affaddr{University of Düsseldorf}\\
+       \affaddr{STUPS Group}\\
+       \affaddr{Germany}\\
+       \email{cfbolz@gmx.de}
+\alignauthor XXX
+       \affaddr{XXX}\\
+       \email{XXX}
+}
+\conferenceinfo{ICOOOLPS}{'09 Genova, Italy}
+\CopyrightYear{2009}
+\crdata{978-1-60558-541-3/09/07}
+
+\maketitle
+
+\category{D.3.4}{Programming Languages}{Processors}[code generation,
+incremental compilers, interpreters, run-time environments]
+
+\begin{abstract}
+
+
+\end{abstract}
+
+
+\section{Introduction}
+
+
+\section{The PyPy Project}
+\label{sect:pypy}
+
+XXX
+
+
+\section{Tracing JIT Compilers}
+\label{sect:tracing}
+
+XXX
+
+\section{Controlling The Extent of Tracing}
+
+The question I was asked most often during my recent \href{http://morepypy.blogspot.com/2011/03/us-trip-report-popl-microsoft-ibm.html}{US trip} was how exactly
+the hints work that interpreter authors can use to improve the execution speed
+of the programs running on their interpreters. Since those hints are not really
+documented all that well, I decided to write blog posts about them. This is the
+first one.
+
+
+%___________________________________________________________________________
+
+\subsection{Background}
+
+First, let's recap some basics: PyPy's approach to implementing dynamic
+languages is to write an interpreter for
+the language in RPython. This interpreter can be translated to C and then
+further to machine code. The interpreter consists of code in the form of a
+large number of generated C functions and some data. Similarly, the user
+program consists of functions in the language the interpreter executes.
+
+As was explained in a \href{http://morepypy.blogspot.com/2009/03/applying-tracing-jit-to-interpreter.html}{blog post} and a \href{http://codespeak.net/svn/pypy/extradoc/talk/icooolps2009/bolz-tracing-jit.pdf}{paper} two years ago, PyPy's JIT is a
+meta-tracer. Since we want to re-use our tracer for a variety of languages, we
+don't trace the execution of the user program, but instead trace the execution
+of the \emph{interpreter} that is running the program. This means that the traces
+don't contain the bytecodes of the language in question, but RPython-level
+operations that the interpreter did to execute the program.
+
+On the other hand, the loops that are traced by the tracer are the loops in the
+user program. This means that the tracer stops tracing after one iteration of
+the loop in the user function that is being considered. At this point, it can
+have traced many iterations of the interpreter main loop.
+
+Here's a diagram of this process:
+
+\begin{figure*}
+\includegraphics[scale=0.5]{figures/trace-levels}
+\caption{The levels involved in tracing}
+\label{fig:trace-levels}
+\end{figure*}
+
+On the left you see the levels of execution. The CPU executes the binary of
+PyPy's Python interpreter, which consists of RPython functions that have been
+compiled first to C, then to machine code. Some of these functions contain
+loops, others don't. The interpreter runs a Python program written by a
+programmer (the user). If the tracer is used, it traces operations on the level
+of the interpreter. However, the extent of the trace is determined by the loops
+in the user program.
+
+
+%___________________________________________________________________________
+
+\subsection{How Far Should Tracing Go}
+
+When the tracer encounters a function call at the interpreter level, e.g. the
+interpreter main loop calling a helper function, it can do one of two things:
+
+\begin{enumerate}
+\item it can trace into the helper function, effectively inlining it into the trace.
+
+\item it can not trace into the function and instead record a call to that function
+as an operation in the trace. Such a call operation in the trace is sometimes
+called \emph{residual call}.
+\end{enumerate}
+
+As a default, the tracer will try to trace into the helper because that will
+give more information to the optimizer, allowing it to do a better job. This is
+particularly important for the allocation removal optimization, because if a
+freshly allocated object is passed as an argument to a residual call, its
+allocation cannot be optimized away.
+
+There is a problem however if the helper function itself contains a loop. The
+tracer records the linear sequence of operations that are being executed. Thus
+when it encounters a loop on the interpreter level it records all the
+operations of every iteration of the loop itself, with the net effect of
+unrolling it. The only places where the tracer stops and tries to close the
+trace is in the main loop of the interpreter. When the tracer encounters the
+main loop, it also checks whether the original user loop has been closed, and
+thus whether it can stop tracing.
+
+For most helper functions in the interpreter that contain loops, fully
+unrolling does not make sense. If a loop is unrolled, the trace is specific to
+the number of iteration that was seen during tracing. If the trace is later
+executed with a different number of iterations, the trace will be left via a
+guard failure, which is inefficient. Therefore the default behaviour of the
+tracer is to never trace into a function on the interpreter level that contains
+a loop, but to trace into all non-looping helper functions.
+
+This default behaviour is essentially a heuristic, but one that usually makes
+sense. We want to produce just enough traces to make the resulting code
+efficient, but not more. Therefore we trace as much as possible (everything by
+default) except the functions which loops where tracing would produce code that
+is less general than it could be.
+
+As an example for a helper with a loop, take string concatenation. It loops over
+the characters of both arguments and copies them over into the result string. It
+does not make sense to unroll the loops in this function. If we do that,
+the resulting trace can only be used for strings of the length that was seen
+during tracing. In practise, the string lengths are usually different each run,
+meaning that the trace with unrolling is not run to completion in most cases.
+
+
+%___________________________________________________________________________
+
+\subsection{Influencing the Default Behaviour}
+
+Sometimes the default behaviour is not actually what is wanted. This is
+something the interpreter author has to decide, usually by looking at the traces
+that are produced and deciding that they should be improved. There are two ways
+in which the default is wrong:
+%
+\begin{itemize}
+
+\item \textbf{false negatives:} if a helper function that \textbf{does} contain a loop should
+be traced into, unrolling the loop.
+
+\item \textbf{false positives:} if a helper function that \textbf{does not} contain a loop is
+inlined into the trace, but the interpreter author decides that this is not
+helpful.
+
+\end{itemize}
+
+If the interpreter author finds false negatives or false positives, she can fix
+that by applying a hint to the tracer. These hints take the form of function
+decorators (which both live in the \texttt{pypy.rlib.jit} module). In the next two
+subsections I will describe these two function decorators and their use.
+
+
+%___________________________________________________________________________
+
+\subsubsection{Unrolling Functions With Loops}
+
+The first decorator, used to fix false negatives, is the \texttt{unroll\_safe}
+decorator. It is used to tell the tracer to always trace into a function that
+has a loop, effectively unrolling the loop. This decorator should be used only
+if the loop in the helper function is expected to always run for the same number
+of iterations. This sounds like a strong restriction, in practise this is less
+severe: The number of iterations needs to only be the same \emph{in the context where
+the helper functions is traced from}.
+
+It is easiest to understand this condition via an example. Let's look at the
+\texttt{BUILD\_TUPLE} bytecode in Python. It takes one argument, the length \texttt{n} of
+the tuple being built. The bytecode pops \texttt{n} arguments from the stack, turns
+them into a tuple and pushes that tuple on the stack. Thus the function that
+implements \texttt{BUILD\_TUPLE} in PyPy's Python interpreter calls a helper
+\texttt{popvalues} which pops \texttt{n} values from the stack and returns them in a list.
+This helper is implemented with a loop and would thus not be traced into by
+default.  The loop in the helper can run for very different numbers of
+iterations, because it is used in a variety of places. However, for every
+concrete \texttt{BUILD\_TUPLE} bytecode, the argument will be constant. Therefore it
+is safe (and even necessary) to annotate \texttt{popvalues} with the \texttt{unroll\_safe}
+decorator.
+
+A different example is the implementation of the \texttt{isinstance} builtin. It is
+used to check whether an object \texttt{a} is an instance of a class \texttt{B} like
+this: \texttt{isinstance(a, B)}. The second argument of the function can also be a
+tuple of classes to check whether an object is an instance of one of a number of
+classes: \texttt{isinstance(a, (A, B, C, D))}. To implement this second case, the
+implementation of \texttt{isinstance} contains a loop iterating over the elements of
+the tuple. The number of loop iterations can vary, but is usually fixed for each
+individual call site which typically just lists a few classes in the source
+code. Therefore it is also safe to annotate the implementation of \texttt{isinstance}
+with the \texttt{unroll\_safe} decorator.
+
+
+%___________________________________________________________________________
+
+\subsubsection{Preventing the Tracing of Functions}
+
+The second decorator \texttt{dont\_look\_inside} is used to fix false positives. It
+tells the JIT to never trace into the decorated function and just always produce
+a residual call instead. This decorator is in many ways less important than the
+unrolling one (except for a special situation that I will describe in a
+follow-up post). It is used if tracing into a function is not expected to yield
+any speed benefits, because the optimizer will not be able to improve it much.
+This is often the case if the called helper function does not contain any
+``dynamic'' behaviour. In such a situation it is better to just leave the function
+call in the trace, because that produces less code.
+
+An example would be the import mechanism in Python. It's very unlikely that any
+performance improvement can be had by turning part of it into assembler.
+Therefore we hide it from the tracer by annotating them with
+\texttt{dont\_look\_inside}.
+
+
+%___________________________________________________________________________
+
+\subsection{Conclusion}
+
+In this post we discussed two hints that can be used to control precisely which
+parts of the interpreter should be meta-traced. If these hints are used
+carefully, this can go a long way to making the interpreter produce traces that
+contain exactly the interesting part of the execution, and will contain calls to
+the functions that can not be optimized by tracing techniques.
+
+In the next part of this series I will discuss a different set of hints that can
+be used to strongly optimize traces.
+
+
+% Document title
+\section{Controlling the Tracing of an Interpreter With Hints, Part 2: Controlling Optimization}
+
+This is part 2 of a series on how to speed up an interpreter written with PyPy
+by adding JIT hints to the interpreter. Part 1 described how to \href{http://morepypy.blogspot.com/2011/03/controlling-tracing-of-interpreter-with.html}{control the
+extent of tracing}. In this post I will describe how to add hints that
+influence the optimizer.  If applied correctly these techniques can give
+really big speedups by pre-computing parts of what happens at runtime. On the other
+hand, if applied incorrectly they might lead to code bloat, thus making the
+resulting program actually slower.
+
+
+%___________________________________________________________________________
+
+\subsection{Background}
+
+Before sending the trace to the backend to produce actual machine code, it is
+optimized.  The optimizer applies a number of techniques to remove or reduce
+the number of operations: most of these are well known \href{http://en.wikipedia.org/wiki/Compiler_optimization\#Optimization_techniques}{compiler optimization
+techniques}, with the difference that it is easier to apply them in a tracing
+JIT because it only has to deal with linear traces.  Among the techniques:
+%
+\begin{itemize}
+
+\item \href{http://en.wikipedia.org/wiki/Constant_folding}{constant folding}
+
+\item \href{http://en.wikipedia.org/wiki/Common_subexpression_elimination}{common subexpression elimination}
+
+\item allocation removal, as described in the paper that I recently \href{http://morepypy.blogspot.com/2011/03/us-trip-report-popl-microsoft-ibm.html}{presented at
+PEPM}
+
+\item store/load propagation
+
+\item \href{http://morepypy.blogspot.com/2011/01/loop-invariant-code-motion.html}{loop invariant code motion}
+
+\end{itemize}
+
+In some places it turns out that if the interpreter author rewrites some parts
+of the interpreter with these optimizations in mind the traces that are produced
+by the optimizer can be vastly improved.
+
+In this post I will describe two hints that allow the interpreter author to
+increase the optimization opportunities for constant folding. For constant
+folding to work, two conditions need
+to be met:
+%
+\begin{itemize}
+
+\item the arguments of an operation actually need to all be constant,
+i.e. statically known by the optimizer
+
+\item the operation needs to be \emph{pure}, i.e. always yield the same result given
+the same arguments.
+
+\end{itemize}
+
+The PyPy JIT generator automatically detects the majority of these conditions.
+However, for the cases in which the automatic detection does not work, the
+interpreter author can apply \textbf{hints} to improve the optimization
+opportunities. There is one kind of hint for both of the conditions above.
+
+\textbf{Note}: These hints are written by an interpreter developer and applied to the
+RPython source of the interpreter. Normal Python users will never see them.
+
+
+%___________________________________________________________________________
+
+\subsection{Where Do All the Constants Come From}
+
+It is worth clarifying what is a ``constant'' in this context.  A variable of
+the trace is said to be constant if its value is statically known by the
+optimizer.
+
+The simplest example of constants are literal values.  For example, if in the
+RPython source code we have a line like \texttt{y = x + 1}, the second operand will
+be a constant in the trace.
+
+However, the optimizer can statically know the value of a variable even if it
+is not a constant in the original source code. For example, consider the
+following fragment of RPython code:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{if} \PY{n}{x} \PY{o}{==} \PY{l+m+mi}{4}\PY{p}{:}
+    \PY{n}{y} \PY{o}{=} \PY{n}{y} \PY{o}{+} \PY{n}{x}
+\end{Verbatim}
+
+If the fragment is traced with \texttt{x} being \texttt{4}, the following trace is
+produced:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+guard(x~==~4)\\
+y~=~y~+~x
+}
+\end{quote}
+
+In the trace above, the value of \texttt{x} is statically known thanks to the
+guard. Remember that a guard is a runtime check. The above trace will run to
+completion when \texttt{x == 4}. If the check fails, execution of the trace is
+stopped and the interpreter continues to run.
+
+There are cases in which it is useful to turn an arbitrary variable
+into a constant value. This process is called \emph{promotion} and it is an old idea
+in partial evaluation (it's called ``the trick'' there). Promotion is also heavily
+used by \href{http://psyco.sourceforge.net/}{Psyco} and by all older versions of PyPy's JIT. Promotion is a technique
+that only works well in JIT compilers, in
+static compilers it is significantly less applicable.
+
+Promotion is essentially a tool for trace specialization. In some places in the
+interpreter it would be very useful if a variable were constant, even though it
+could have different values in practice. In such a place, promotion is used. The
+typical reason to do that is if there is
+a lot of computation depending on the value of that variable.
+
+Let's make this more concrete. If we trace a call to the following function:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{f1}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{z} \PY{o}{=} \PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
+    \PY{k}{return} \PY{n}{z} \PY{o}{+} \PY{n}{y}
+\end{Verbatim}
+
+We get a trace that looks like this:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+v1~=~x~*~2\\
+z~=~v1~+~1\\
+v2~=~z~+~y\\
+return(v2)
+}
+\end{quote}
+
+Observe how the first two operations could be constant-folded if the value of
+\texttt{x} were known. Let's assume that the value of \texttt{x} can vary, but does so
+rarely, i.e. only takes a few different values at runtime. If this is the
+case, we can add a hint to promote \texttt{x}, like this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{f2}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+    \PY{n}{z} \PY{o}{=} \PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
+    \PY{k}{return} \PY{n}{z} \PY{o}{+} \PY{n}{y}
+\end{Verbatim}
+
+The meaning of this hint is that the tracer should pretend that \texttt{x} is a
+constant
+in the code that follows. When just running the code, the function has no
+effect, as it simply returns its first argument. When tracing, some extra work
+is done. Let's assume that this changed function is traced with
+the arguments \texttt{4} and \texttt{8}. The trace will be the same, except for one
+operation at the beginning:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+guard(x~==~4)\\
+v1~=~x~*~2\\
+z~=~v1~+~1\\
+v2~=~z~+~y\\
+return(v2)
+}
+\end{quote}
+
+The promotion is turned into a \texttt{guard} operation in the trace. The guard
+captures the value of \texttt{x} as it was at runtime. From the point of view of the
+optimizer, this guard is not any different than the one produced by the \texttt{if}
+statement in the example above. After the guard, the rest of the trace can
+assume that \texttt{x} is equal to \texttt{4}, meaning that the optimizer will turn this
+trace into:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+guard(x~==~4)\\
+v2~=~9~+~y\\
+return(v2)
+}
+\end{quote}
+
+Notice how the first two arithmetic operations were constant folded. The hope is
+that the guard is executed quicker than the multiplication and the addition that
+was now optimized away.
+
+If this trace is executed with values of \texttt{x} other than \texttt{4}, the guard will
+fail, and execution will continue in the interpreter. If the guard fails often
+enough, a new trace will be started from the guard. This other trace will
+capture a different value of \texttt{x}. If it is e.g. \texttt{2}, then the optimized
+trace looks like this:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+guard(x~==~2)\\
+v2~=~5~+~y\\
+return(v2)
+}
+\end{quote}
+
+This new trace will be attached to the guard instruction of the first trace. If
+\texttt{x} takes on even more values, a new trace will eventually be made for all of them,
+linking them into a chain. This is clearly not desirable, so we should promote
+only variables that don't vary much. However, adding a promotion hint will never produce wrong
+results. It might just lead to too much assembler code.
+
+Promoting integers, as in the examples above, is not used that often.
+However, the internals of dynamic language interpreters often
+have values that are variable but vary little in the context of parts of a user
+program. An example would be the types of variables in a user function. Even
+though in principle the argument to a Python function could be any Python type,
+in practice the argument types tend to not vary often. Therefore it is possible to
+promote the types. In the next blog post I will give a complete example of how
+this works.
+
+
+%___________________________________________________________________________
+
+\subsection{Declaring New Pure Operations}
+
+In the last section we saw a way to turn arbitrary variables into constants. All
+pure operations on these constants can be constant-folded. This works great for
+constant folding of simple types, e.g. integers. Unfortunately, in the context of an
+interpreter for a dynamic
+language, most operations actually manipulate objects, not simple types. The
+operations on objects are often not pure and might even have side-effects. If
+one reads a field out of a constant reference to an object this cannot
+necessarily be folded away because the object can be mutated. Therefore, another
+hint is needed.
+
+As an example, take the following class:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{A}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{=} \PY{n}{x}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n}{y}
+
+    \PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{val}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{compute}\PY{p}{(}\PY{p}{)} \PY{o}{+} \PY{n}{val}
+
+    \PY{k}{def} \PY{n+nf}{compute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
+\end{Verbatim}
+
+Tracing the call \texttt{a.f(10)} of some instance of \texttt{A} yields the following
+trace (note how the call to \texttt{compute} is inlined):
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+x~=~a.x\\
+v1~=~x~*~2\\
+v2~=~v1~+~1\\
+v3~=~v2~+~val\\
+a.y~=~v3
+}
+\end{quote}
+
+In this case, adding a promote of \texttt{self} in the \texttt{f} method to get rid of the
+computation of the first few operations does not help. Even if \texttt{a} is a
+constant reference to an object, reading the \texttt{x} field does not necessarily
+always yield the same value. To solve this problem, there is another annotation,
+which lets the interpreter author communicate invariants to the optimizer. In
+this case, she could decide that the \texttt{x} field of instances of \texttt{A} is
+immutable, and therefore \texttt{compute}
+is a pure function. To communicate this, there is a \texttt{purefunction} decorator.
+If the code in \texttt{compute} should be constant-folded away, we would change the
+class as follows:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{A}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{=} \PY{n}{x}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n}{y}
+
+    \PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{val}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{compute}\PY{p}{(}\PY{p}{)} \PY{o}{+} \PY{n}{val}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{compute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
+\end{Verbatim}
+
+Now the trace will look like this:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+guard(a~==~0xb73984a8)\\
+v1~=~compute(a)\\
+v2~=~v1~+~val\\
+a.y~=~v2
+}
+\end{quote}
+
+Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
+during tracing. The call to \texttt{compute} is not inlined, so that the optimizer
+has a chance to see it. Since \texttt{compute} function is marked as pure, and its
+argument
+is a constant reference, the call will be removed by the optimizer. The final
+trace looks like this:
+%
+\begin{quote}{\ttfamily \raggedright \noindent
+guard(a~==~0xb73984a8)\\
+v2~=~9~+~val\\
+a.y~=~v2
+}
+\end{quote}
+
+(assuming that the \texttt{x} field's value is \texttt{4}).
+
+On the one hand, the \texttt{purefunction} annotation is very powerful. It can be
+used to constant-fold arbitrary parts of the computation in the interpreter.
+However, the annotation also gives you ample opportunity to mess things up. If a
+function is annotated to be pure, but is not really, the optimizer can produce
+subtly wrong code. Therefore, a lot of care has to be taken when using this
+annotation.
+
+
+%___________________________________________________________________________
+
+\subsubsection{Observably Pure Functions}
+
+Why can't we simply write an analysis to find out that the \texttt{x} fields of the
+\texttt{A} instances is immutable and deduce that \texttt{compute} is a pure function,
+since it only reads the \texttt{x} field and does not have side effects? This might
+be possible in this particular case, but in practice the functions that are
+annotated with the \texttt{purefunction} decorator are usually more complex.
+The easiest example for this is that of a function that uses memoization to
+cache its results. If you analyze this function, it looks like the function has
+side effects, because it changes the memoizing dictionary. However, because this side
+effect is not externally visible, the function from the outside is pure. This is
+a property that is not easily detectable by analysis. Therefore, the purity
+of this function needs to be annotated.
+
+
+%___________________________________________________________________________
+
+\subsubsection{Immutable Fields}
+
+One of the most common cases of pure functions is reading immutable
+values out of objects. Since this is so common, we have special syntactic sugar
+for it. A RPython class can have a class attribute \texttt{\_immutable\_fields\_} set to
+a list of strings, listing the fields that cannot be changed. This is equivalent
+to using getters and annotating them with \texttt{purefunction}.
+
+
+%___________________________________________________________________________
+
+\subsection{Conclusion}
+
+In this blog post I explained two more hints that can be used in the source code
+of the interpreter. They are used to influence what the optimizer does with the
+trace. I realize the examples given here are a bit too small, in the next
+installment I will give a worked-out example that puts all the pieces together.
+
+\section{Controlling the Tracing of an Interpreter With Hints, Part 3: Putting Things Together}
+
+This is part 3 of the series on how to speed up an interpreter written with
+PyPy by adding JIT hints to the interpreter. Part 1 described how to \href{http://morepypy.blogspot.com/2011/03/controlling-tracing-of-interpreter-with.html}{control
+the extent of tracing}. Part 2 described how to \href{http://morepypy.blogspot.com/2011/03/controlling-tracing-of-interpreter-with_15.html}{influence the optimizer with
+promotion and pure functions}. In this post I describe a worked-out example of
+a small object model for a dynamic language and how to make it efficient using
+the hints described in the previous posts.
+
+
+%___________________________________________________________________________
+
+\subsection{A Simple Object Model}
+
+To implement a dynamic language efficiently, the operations on its objects need
+to be fast. Most dynamic languages have object models that are made by using
+dictionaries everywhere. Let's look at an example of how the JIT can be made to
+optimize such operations.
+
+For the purpose of this blog post we will use a very simple and bare-bones
+object model that just supports very simple classes and instances, without any
+inheritance or any fancy features. The model has classes, which contain methods.
+Instances have a class. Instances have their own attributes. When looking up an
+attribute on an instance, the instances attributes are searched. If the
+attribute is not found there, the class' attributes are searched.
+
+To implement this object model, we could use the following RPython code as part
+of the interpreter source code:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{Class}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+
+    \PY{k}{def} \PY{n+nf}{instantiate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{Instance}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
+            \PY{k}{return} \PY{n}{result}
+        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{change\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+
+
+\PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{cls}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls} \PY{o}{=} \PY{n}{cls}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+
+    \PY{k}{def} \PY{n+nf}{getfield}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
+            \PY{k}{return} \PY{n}{result}
+        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{write\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+
+    \PY{k}{def} \PY{n+nf}{getattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{try}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{getfield}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{except} \PY{n+ne}{AttributeError}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls}\PY{o}{.}\PY{n}{find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+\end{Verbatim}
+
+In this straightforward implementation the methods and attributes are just
+stored in dictionaries on the classes/instances. While this object model is very
+simple it already contains all the hard parts of Python's object model. Both
+instances and classes can have arbitrary fields, and they are changeable at
+any time.  Moreover, instances can change their class after they have been
+created.
+
+When using this object model in
+an interpreter, a huge amount of time will be spent doing lookups in these
+dictionaries. To make the language efficient using a tracing JIT, we need to
+find a way to get rid of these dictionary lookups somehow.
+
+Let's assume we trace through code that sums three attributes, such as:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{inst}\PY{o}{.}\PY{n}{getattr}\PY{p}{(}\PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)} \PY{o}{+} \PY{n}{inst}\PY{o}{.}\PY{n}{getattr}\PY{p}{(}\PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)} \PY{o}{+} \PY{n}{inst}\PY{o}{.}\PY{n}{getattr}\PY{p}{(}\PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\end{Verbatim}
+
+The trace could look like this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{# inst.getattr("a")}
+\PY{n}{attributes1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{attributes}
+\PY{n}{result1} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{attributes1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result1} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+
+\PY{c}{# inst.getattr("b")}
+\PY{n}{attributes2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{attributes}
+\PY{n}{v1} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{attributes2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{v1} \PY{o+ow}{is} \PY{n+nb+bp}{None}\PY{p}{)}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{methods1} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
+\PY{n}{result2} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
+
+\PY{c}{# inst.getattr("c")}
+\PY{n}{attributes3} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{attributes}
+\PY{n}{v3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{attributes3}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{v3} \PY{o+ow}{is} \PY{n+nb+bp}{None}\PY{p}{)}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{methods2} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
+\PY{n}{result3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+
+\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
+\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
+\end{Verbatim}
+
+In this example, the attribute \texttt{a} is found on the instance, but the
+attributes \texttt{b} and \texttt{c} are found on the class. The trace indeed contains
+five calls to \texttt{dict.get}, which is slow.
+
+
+%___________________________________________________________________________
+
+\subsection{Making Instance Attributes Faster Using Maps}
+
+The first step in making \texttt{getattr} faster in our object model is to optimize
+away the dictionary lookups on the instances. The hints we have looked at in the
+two earlier blog posts don't seem to help with the current object model. There is
+no pure function to be seen, and the instance is not a candidate for promotion,
+because there tend to be many instances.
+
+This is a common problem when trying to apply hints. Often, the interpreter
+needs a small rewrite to expose the pure functions and nearly-constant objects
+that are implicitly there. In the case of instance fields this rewrite is not
+entirely obvious. The basic idea is as follows. In theory instances can have
+arbitrary fields. In practice however many instances share their layout (i.e.
+their set of keys) with many other instances.
+
+Therefore it makes sense to factor the layout information out of the instance
+implementation into a shared object. This shared layout object is called a
+\emph{map}. Maps are an old idea that comes originally from the SELF language. They are
+also used by many JavaScript implementations such as V8. I've \href{http://morepypy.blogspot.com/2010/11/efficiently-implementing-python-objects.html}{written about maps
+before}, so I won't explain them fully again.
+
+The rewritten \texttt{Instance} class using maps looks like this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{Map}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{getindex}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{new\PYZus{}map\PYZus{}with\PYZus{}additional\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{name} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{:}
+            \PY{n}{newmap} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
+            \PY{n}{newmap}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{p}{)}
+            \PY{n}{newmap}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{p}{)}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{newmap}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{[}\PY{n}{name}\PY{p}{]}
+
+
+\PY{n}{EMPTY\PYZus{}MAP} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{cls}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls} \PY{o}{=} \PY{n}{cls}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n}{EMPTY\PYZus{}MAP}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+    \PY{k}{def} \PY{n+nf}{getfield}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{map} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{index} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{if} \PY{n}{index} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{p}{[}\PY{n}{index}\PY{p}{]}
+        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{write\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{map} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{index} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{if} \PY{n}{index} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{:}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{p}{[}\PY{n}{index}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+            \PY{k}{return}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{new\PYZus{}map\PYZus{}with\PYZus{}additional\PYZus{}attribute}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{value}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{getattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{try}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{getfield}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{except} \PY{n+ne}{AttributeError}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls}\PY{o}{.}\PY{n}{find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+\end{Verbatim}
+
+Instances no longer use dictionaries to store their fields. Instead, they have a
+reference to a map, which maps field names to indexes into a storage list. The
+storage list contains the actual field values. The maps are shared between
+objects with the same layout. Therefore they have to be immutable, which means
+that their \texttt{getindex} method is a pure function. When a new attribute is added
+to an instance, a new map needs to be chosen, which is done with the
+\texttt{new\_map\_with\_additional\_attribute} method on the previous map. Now that we have
+introduced maps, it is safe to promote the map everywhere, because we assume
+that the number of different instance layouts is small.
+
+With this changed instance implementation, the trace we had above changes to the
+following, where \texttt{0xb74af4a8} is the memory address of the Map instance that
+has been promoted:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{# inst.getattr("a")}
+\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{index1} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{index1} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
+\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{n}{index1}\PY{p}{]}
+
+\PY{c}{# inst.getattr("b")}
+\PY{n}{map2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map2} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{index2} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{index2} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{methods1} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
+\PY{n}{result2} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
+
+\PY{c}{# inst.getattr("c")}
+\PY{n}{map3} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map3} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{index3} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map3}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{index3} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{methods2} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
+\PY{n}{result3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+
+\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
+\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
+\end{Verbatim}
+
+The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
+a pure function and they have constant arguments. That means that \texttt{index1/2/3}
+are constant and the guards on them can be removed. All but the first guard on
+the map will be optimized away too, because the map cannot have changed in
+between. The optimized trace looks like this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{# inst.getattr("a")}
+\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
+\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+
+\PY{c}{# inst.getattr("b")}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{methods1} \PY{o}{=} \PY{n}{cls1}\PY{o}{.}\PY{n}{methods}
+\PY{n}{result2} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
+
+\PY{c}{# inst.getattr("c")}
+\PY{n}{cls2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{methods2} \PY{o}{=} \PY{n}{cls2}\PY{o}{.}\PY{n}{methods}
+\PY{n}{result3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+
+\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
+\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
+\end{Verbatim}
+
+The index \texttt{0} that is used to read out of the \texttt{storage} array is the result
+of the constant-folded \texttt{getindex} call. This trace is already much better than
+the original one. Now we are down from five dictionary lookups to just two.
+
+
+%___________________________________________________________________________
+
+\subsection{Versioning of Classes}
+
+Instances were optimized making the assumption that the total number of
+Instance layouts is small compared to the number of instances. For classes we
+will make an even stronger assumption. We simply assume that it is rare for
+classes to change at all. This is not totally reasonable (sometimes classes contain
+counters or similar things) but for this simple example it is good enough.
+
+What we would really like is if the \texttt{Class.find\_method} method were pure.
+But it cannot be, because it is always possible to change the class itself.
+Every time the class changes, \texttt{find\_method} can potentially return a
+new value.
+
+Therefore, we give every class a version number, which is increased every time a
+class gets changed (i.e., the content of the \texttt{methods} dictionary changes).
+This means that the result of \texttt{methods.get()} for a given \texttt{(name,
+version)} pair will always be the same, i.e. it is a pure operation.  To help
+the JIT to detect this case, we factor it out in a helper method which is
+explicitly marked as \texttt{@purefunction}. The refactored \texttt{Class} looks like
+this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{VersionTag}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{pass}
+
+\PY{k}{class} \PY{n+nc}{Class}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version} \PY{o}{=} \PY{n}{VersionTag}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{version} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{n}{version}\PY{p}{)}
+        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
+            \PY{k}{return} \PY{n}{result}
+        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{version}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{change\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version} \PY{o}{=} \PY{n}{VersionTag}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+What is interesting here is that \texttt{\_find\_method} takes the \texttt{version}
+argument but it does not use it at all. Its only purpose is to make the call
+pure (because when the version number changes, the result of the call might be
+different than the previous one).
+
+The trace with this new class implementation looks like this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{# inst.getattr("a")}
+\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{index1} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{index1} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
+\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{n}{index1}\PY{p}{]}
+
+\PY{c}{# inst.getattr("b")}
+\PY{n}{map2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map2} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{index2} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{index2} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{guard}\PY{p}{(}\PY{n}{cls1} \PY{o}{==} \PY{l+m+mh}{0xb7aaaaf8}\PY{p}{)}
+\PY{n}{version1} \PY{o}{=} \PY{n}{cls1}\PY{o}{.}\PY{n}{version}
+\PY{n}{guard}\PY{p}{(}\PY{n}{version1} \PY{o}{==} \PY{l+m+mh}{0xb7bbbb18}\PY{p}{)}
+\PY{n}{result2} \PY{o}{=} \PY{n}{Class}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{cls}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{,} \PY{n}{version1}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
+
+\PY{c}{# inst.getattr("c")}
+\PY{n}{map3} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map3} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{index3} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map3}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{index3} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{cls2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{guard}\PY{p}{(}\PY{n}{cls2} \PY{o}{==} \PY{l+m+mh}{0xb7aaaaf8}\PY{p}{)}
+\PY{n}{version2} \PY{o}{=} \PY{n}{cls2}\PY{o}{.}\PY{n}{version}
+\PY{n}{guard}\PY{p}{(}\PY{n}{version2} \PY{o}{==} \PY{l+m+mh}{0xb7bbbb18}\PY{p}{)}
+\PY{n}{result3} \PY{o}{=} \PY{n}{Class}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{cls}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{,} \PY{n}{version2}\PY{p}{)}
+\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
+
+\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
+\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
+\end{Verbatim}
+
+The calls to \texttt{Class.\_find\_method} can now be optimized away, also the
+promotion of the class and the version, except for the first one. The final
+optimized trace looks like this:
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{# inst.getattr("a")}
+\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
+\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
+\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
+\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+
+\PY{c}{# inst.getattr("b")}
+\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
+\PY{n}{guard}\PY{p}{(}\PY{n}{cls1} \PY{o}{==} \PY{l+m+mh}{0xb7aaaaf8}\PY{p}{)}
+\PY{n}{version1} \PY{o}{=} \PY{n}{cls1}\PY{o}{.}\PY{n}{version}
+\PY{n}{guard}\PY{p}{(}\PY{n}{version1} \PY{o}{==} \PY{l+m+mh}{0xb7bbbb18}\PY{p}{)}
+\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{l+m+mi}{41}
+
+\PY{c}{# inst.getattr("c")}
+\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{l+m+mi}{17}
+\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
+\end{Verbatim}
+
+The constants \texttt{41} and \texttt{17} are the results of the folding of the
+\texttt{\_find\_method`} calls. This final trace is now very good. It no longer performs any
+dictionary lookups. Instead it contains several guards. The first guard
+checks that the map is still the same. This guard will fail if the same
+code is executed with an instance that has another layout. The second guard
+checks that the class of \texttt{inst} is still the same. It will fail if trace is
+executed with an instance of another class. The third guard checks that the
+class did not change since the trace was produced. It will fail if somebody
+calls the \texttt{change\_method} method on the class.
+
+
+%___________________________________________________________________________
+
+\subsection{Real-World Considerations}
+
+The techniques used above for the simple object model are used for the object
+model of PyPy's Python interpreter too. Since Python's object model is
+considerably more complex, some additional work needs to be done.
+
+The first problem that needs to be solved is that Python supports (multiple)
+inheritance. Therefore looking up a method in a class needs to consider the
+whole method resolution order. This makes the versioning of classes more
+complex. If a class is changed its version changes. At the same time, the
+versions of all the classes inheriting from it need to be changed as well,
+recursively. This makes class changes expensive, but they should be rare.  On the
+other hand, a method lookup in a complex class hierarchy is as optimized in the
+trace as in our object model here.
+
+A downside of the versioning of classes that we haven't yet fixed in PyPy, is
+that some classes \emph{do} change a lot. An example would be a class that keeps a
+counter of how many instances have been created so far. This is very slow right
+now, but we have ideas about how to fix it in the future.
+
+Another optimization is that in practice the shape of an instance is correlated
+with its class. In our code above, we allow both to vary independently.
+In PyPy's Python interpreter we act somewhat more cleverly. The class of
+an instance is not stored on the instance itself, but on the map. This means
+that we get one fewer promotion (and thus one fewer guard) in the trace, because the class doesn't need to
+be promoted after the map has been.
+
+
+%___________________________________________________________________________
+
+\subsection{More General Patterns}
+
+The techniques we used above to make instance and class lookups faster are
+applicable in more general cases than the one we developed them for. A more
+abstract view of maps is that of splitting a data-structure into a part that
+changes slowly, and a part that changes quickly. In the concrete example of maps
+we split the original dictionary into the map (the slow-changing part) and the
+storage array (the quick-changing part). All the computation on the
+slow-changing part can be constant-folded during tracing so that only the
+manipulation of the quick-changing part remains.
+
+Similarly, versions can be used to constant-fold arbitrary functions of large data
+structures. The version needs to be updated carefully every time the result of
+this function can change. Therefore this is useful only if the data structure is
+expected to change slowly.
+
+
+%___________________________________________________________________________
+
+\subsection{Conclusion}
+
+In this post I showed how to use \texttt{purefunction} and \texttt{promote} to make a
+small but still relevant dynamic object model no longer use any dictionary lookups
+after tracing. Instead a number of guards are inserted into the
+trace to check whether the assumptions about the objects are still true. This
+makes operations on objects seriously faster. I plan to write another small post
+that shows the speed benefits for PyPy's Python interpreter for exactly these
+operations.
+
+\section{Evaluation}
+\label{sect:evaluation}
+
+\section{Related Work}
+
+\section{Conclusion and Next Steps}
+
+\section*{Acknowledgements}
+
+\bibliographystyle{abbrv}
+\bibliography{paper}
+
+\end{document}
