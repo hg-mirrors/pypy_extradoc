@@ -90,17 +90,38 @@ semantics. For them, implementing just an interpreter is already an arduous
 task. Implementing them efficiently with a just-in-time compiler is
 nigh-impossible, because or their many corner-cases.
 
-long dream of PE to not have to implement a compiler
-new life by meta-tracers, spur, pypy, other things
-trace execution of object model and get semantics right, not have to compile
-object model
+It has long been an objective of the partial evaluation community to
+automatically produce compilers from interpreters. There has been a recent
+renaissance of this idea using the different technique of tracing just-in-time
+compilers. A number of projects have attempted this approach. SPUR \cite{XXX}
+is a tracing JIT for .NET together with a JavaScript implementation in C\#. XXX
 
-in spur and pypy, this can be improved by the interpreter author by adding
-hints, which influence tracer and optimizer
+All these projects have in common that they trace an implementation language
+which is then used to implement an object model of a dynamic language. The
+tracer then traces through this object model, which makes the object model
+transparent to the tracer and its optimizations. Therefore the semantics of the
+dynamic language does not have to be replicated in the JIT. We call this
+approach \emph{meta-tracing}. We will give an introduction to the PyPy project
+and to meta-tracing in Section~\ref{sec:Background}.
 
-pypy's hints go further than spurs, in this paper we present two very important
-ones and show how classical implementation techniques of dynlangs can be
-expressed by them
+Another commonality of all these approaches is that they require some
+annotations (or hints) in the dynamic language implementation to guide the
+meta-tracer. SPUR and PyPy both provide the interpreter author with more
+elaborate hints to influence the meta-tracer and its optimizer.
+
+PyPy's hints go even further than SPUR's in that they provide the interpreter
+author with a flexible toolset to make her implementation extremely efficient.
+In this paper we present the two most prominent ones and show how classical
+implementation techniques of dynamic languages can be expressed with them.
+
+The contributions of this paper are:
+\begin{itemize}
+ \item A hint to introduce arbitrary constants into the trace.
+ \item A way to define new pure operations which the optimizer then recognizes.
+ \item A worked-out example of a simple object model of a dynamic language and how it can be improved using these hints.
+\end{itemize}
+
+
 
 
 
@@ -136,26 +157,27 @@ We call the code that runs on top of an interpreter implemented with PyPy the
 
 XXX citations
 A recently popular approach to JIT compilers is that of tracing JITs. Tracing
-JITs record traces of concrete execution paths through the program. Those traces
-are therefore linear list of operations, which are optimized and then get turned
-into machine code. To be able to do this recording, VMs with a tracing JIT
-typically also contain an interpreter. After a user program is started the
-interpreter is used until the most important paths through the user program are
-turned into machine code.
+JITs record traces of concrete execution paths through the program. Those
+traces are therefore linear list of operations, which are optimized and then
+get turned into machine code. To be able to do this recording, VMs with a
+tracing JIT typically also contain an interpreter. After a user program is
+started the interpreter is used until the most important paths through the user
+program are turned into machine code.
 
-Because the traces always correspond to a concrete execution they cannot contain
-any control flow splits. Therefore they encode the control flow decisions needed
-to stay on the trace with the help of \emph{guards}. Those are operations that
-check that the assumptions are still true when the trace is later executed with different values.
+Because the traces always correspond to a concrete execution they cannot
+contain any control flow splits. Therefore they encode the control flow
+decisions needed to stay on the trace with the help of \emph{guards}. Those are
+operations that check that the assumptions are still true when the trace is
+later executed with different values.
 
-One disadvantage of tracing JITs which makes them not directly applicable to Pypy,
-
-PyPy's JIT is a meta-tracer \cite{bolz_tracing_2009}. Since we want to re-use
-our tracer for a variety of languages, we
-don't trace the execution of the user program, but instead trace the execution
-of the \emph{interpreter} that is running the program. This means that the traces
-don't contain the bytecodes of the language in question, but RPython-level
-operations that the interpreter did to execute the program.
+One disadvantage of tracing JITs which makes them not directly applicable to
+PyPy is that they encode the language semantics. Since PyPy wants to be a
+general framework, we want to reuse our tracer for different languages.
+Therefore PyPy's JIT is a meta-tracer \cite{bolz_tracing_2009}. It does not
+trace the execution of the user program, but instead traces the execution of
+the \emph{interpreter} that is running the program. This means that the traces
+it produces don't contain the bytecodes of the language in question, but
+RPython-level operations that the interpreter did to execute the program.
 
 On the other hand, the loops that are traced by the tracer are the loops in the
 user program. This means that the tracer stops tracing after one iteration of
