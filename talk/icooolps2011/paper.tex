@@ -223,11 +223,10 @@ following fragment of RPython code:
 If the fragment is traced with \texttt{x} being \texttt{4}, the following trace is
 produced:
 %
-\begin{quote}{\ttfamily \raggedright \noindent
-guard(x~==~4)\\
-y~=~y~+~x
-}
-\end{quote}
+\begin{Verbatim}
+guard(x == 4)
+y = y + x
+\end{Verbatim}
 
 In the trace above, the value of \texttt{x} is statically known thanks to the
 guard. Remember that a guard is a runtime check. The above trace will run to
@@ -255,14 +254,13 @@ Let's make this more concrete. If we trace a call to the following function:
 \end{Verbatim}
 
 We get a trace that looks like this:
-%
-\begin{quote}{\ttfamily \raggedright \noindent
-v1~=~x~*~2\\
-z~=~v1~+~1\\
-v2~=~z~+~y\\
+
+\begin{Verbatim}
+v1 = x * 2
+z = v1 + 1
+v2 = z + y
 return(v2)
-}
-\end{quote}
+\end{Verbatim}
 
 Observe how the first two operations could be constant-folded if the value of
 \texttt{x} were known. Let's assume that the value of \texttt{x} can vary, but does so
@@ -282,15 +280,14 @@ effect, as it simply returns its first argument. When tracing, some extra work
 is done. Let's assume that this changed function is traced with
 the arguments \texttt{4} and \texttt{8}. The trace will be the same, except for one
 operation at the beginning:
-%
-\begin{quote}{\ttfamily \raggedright \noindent
-guard(x~==~4)\\
-v1~=~x~*~2\\
-z~=~v1~+~1\\
-v2~=~z~+~y\\
+
+\begin{Verbatim}
+guard(x == 4)
+v1 = x * 2
+z = v1 + 1
+v2 = z + y
 return(v2)
-}
-\end{quote}
+\end{Verbatim}
 
 The promotion is turned into a \texttt{guard} operation in the trace. The guard
 captures the value of \texttt{x} as it was at runtime. From the point of view of the
@@ -298,13 +295,12 @@ optimizer, this guard is not any different than the one produced by the \texttt{
 statement in the example above. After the guard, the rest of the trace can
 assume that \texttt{x} is equal to \texttt{4}, meaning that the optimizer will turn this
 trace into:
-%
-\begin{quote}{\ttfamily \raggedright \noindent
-guard(x~==~4)\\
-v2~=~9~+~y\\
+
+\begin{Verbatim}
+guard(x == 4)
+v2 = 9 + y
 return(v2)
-}
-\end{quote}
+\end{Verbatim}
 
 Notice how the first two arithmetic operations were constant folded. The hope is
 that the guard is executed quicker than the multiplication and the addition that
@@ -315,13 +311,12 @@ fail, and execution will continue in the interpreter. If the guard fails often
 enough, a new trace will be started from the guard. This other trace will
 capture a different value of \texttt{x}. If it is e.g. \texttt{2}, then the optimized
 trace looks like this:
-%
-\begin{quote}{\ttfamily \raggedright \noindent
-guard(x~==~2)\\
-v2~=~5~+~y\\
+
+\begin{Verbatim}
+guard(x == 2)
+v2 = 5 + y
 return(v2)
-}
-\end{quote}
+\end{Verbatim}
 
 This new trace will be attached to the guard instruction of the first trace. If
 \texttt{x} takes on even more values, a new trace will eventually be made for all of them,
@@ -369,14 +364,13 @@ As an example, take the following class:
 Tracing the call \texttt{a.f(10)} of some instance of \texttt{A} yields the following
 trace (note how the call to \texttt{compute} is inlined):
 %
-\begin{quote}{\ttfamily \raggedright \noindent
-x~=~a.x\\
-v1~=~x~*~2\\
-v2~=~v1~+~1\\
-v3~=~v2~+~val\\
-a.y~=~v3
-}
-\end{quote}
+\begin{Verbatim}
+x = a.x
+v1 = x * 2
+v2 = v1 + 1
+v3 = v2 + val
+a.y = v3
+\end{Verbatim}
 
 In this case, adding a promote of \texttt{self} in the \texttt{f} method to get rid of the
 computation of the first few operations does not help. Even if \texttt{a} is a
@@ -405,13 +399,12 @@ class as follows:
 
 Now the trace will look like this:
 %
-\begin{quote}{\ttfamily \raggedright \noindent
-guard(a~==~0xb73984a8)\\
-v1~=~compute(a)\\
-v2~=~v1~+~val\\
-a.y~=~v2
-}
-\end{quote}
+\begin{Verbatim}
+guard(a == 0xb73984a8)
+v1 = compute(a)
+v2 = v1 + val
+a.y = v2
+\end{Verbatim}
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
 during tracing. The call to \texttt{compute} is not inlined, so that the optimizer
@@ -420,12 +413,11 @@ argument
 is a constant reference, the call will be removed by the optimizer. The final
 trace looks like this:
 %
-\begin{quote}{\ttfamily \raggedright \noindent
-guard(a~==~0xb73984a8)\\
-v2~=~9~+~val\\
-a.y~=~v2
-}
-\end{quote}
+\begin{Verbatim}
+guard(a == 0xb73984a8)
+v2 = 9 + val
+a.y = v2
+\end{Verbatim}
 
 (assuming that the \texttt{x} field's value is \texttt{4}).
 
