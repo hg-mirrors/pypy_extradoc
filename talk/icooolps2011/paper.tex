@@ -83,9 +83,25 @@ incremental compilers, interpreters, run-time environments]
 %___________________________________________________________________________
 \section{Introduction}
 
-XXX how exactly
-the hints work that interpreter authors can use to improve the execution speed
-of the programs running on their interpreters?
+One of the hardest parts of implementing a dynamic language efficiently is to
+optimize its object model. This is made harder by the fact that many recent
+languages such as Python, JavaScript or Ruby have rather complex core object
+semantics. For them, implementing just an interpreter is already an arduous
+task. Implementing them efficiently with a just-in-time compiler is
+nigh-impossible, because or their many corner-cases.
+
+long dream of PE to not have to implement a compiler
+new life by meta-tracers, spur, pypy, other things
+trace execution of object model and get semantics right, not have to compile
+object model
+
+in spur and pypy, this can be improved by the interpreter author by adding
+hints, which influence tracer and optimizer
+
+pypy's hints go further than spurs, in this paper we present two very important
+ones and show how classical implementation techniques of dynlangs can be
+expressed by them
+
 
 
 \section{Background}
@@ -94,20 +110,45 @@ of the programs running on their interpreters?
 \subsection{The PyPy Project}
 \label{sect:pypy}
 
-PyPy's approach to implementing dynamic
-languages is to write an interpreter for
-the language in RPython. This interpreter can be translated to C and then
-further to machine code. The interpreter consists of code in the form of a
-large number of generated C functions and some data. Similarly, the user
-program consists of functions in the language the interpreter executes.
+The PyPy project \cite{armin_rigo_pypys_2006} strives to be an environment where
+complex dynamic languages can be efficiently implemented. The approach taken
+when implement a language with PyPy is to write an interpreter for the language
+in \emph{RPython}. RPython is a restricted subset of Python chosen in such a way
+that it is possible to perform type inference on it. The interpreters in RPython
+can therefore be translated to efficient C code.
 
-XXX \cite{armin_rigo_pypys_2006}
+A number of languages have been implemented with PyPy, most importantly a full
+Python implementation, but also a Prolog interpreter \cite{XXX} and a Smalltalk
+VM \cite{XXX}.
 
+This translation to C code adds a number of implementation details into the
+final executable that are not present in the interpreter implementation, such as
+a garbage collector. The interpreter can therefore be kept free from low-level
+implementation details. Another aspect of the final VM that is added
+semi-automatically to the generated VM is a tracing JIT compiler.
+
+We call the code that runs on top of an interpreter implemented with PyPy the
+\emph{user code} or \emph{user program}.
 
 %___________________________________________________________________________
 \subsection{PyPy's Meta-Tracing JIT Compilers}
 \label{sect:tracing}
 
+XXX citations
+A recently popular approach to JIT compilers is that of tracing JITs. Tracing
+JITs record traces of concrete execution paths through the program. Those traces
+are therefore linear list of operations, which are optimized and then get turned
+into machine code. To be able to do this recording, VMs with a tracing JIT
+typically also contain an interpreter. After a user program is started the
+interpreter is used until the most important paths through the user program are
+turned into machine code.
+
+Because the traces always correspond to a concrete execution they cannot contain
+any control flow splits. Therefore they encode the control flow decisions needed
+to stay on the trace with the help of \emph{guards}. Those are operations that
+check that the assumptions are still true when the trace is later executed with different values.
+
+One disadvantage of tracing JITs which makes them not directly applicable to Pypy,
 
 PyPy's JIT is a meta-tracer \cite{bolz_tracing_2009}. Since we want to re-use
 our tracer for a variety of languages, we
@@ -134,6 +175,9 @@ compiled first to C, then to machine code. The interpreter runs a Python program
 programmer (the user). If the tracer is used, it traces operations on the level
 of the interpreter. However, the extent of the trace is determined by the loops
 in the user program.
+
+XXX trace makes the object model operations explicit and transparent to the
+optimizer
 
 \subsection{Optimizing Traces}
 \label{sub:optimizing}
