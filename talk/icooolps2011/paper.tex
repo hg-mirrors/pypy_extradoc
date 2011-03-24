@@ -11,13 +11,6 @@
 
 \input{code/style.tex}
 
-\ifthenelse{\isundefined{\hypersetup}}{
-  \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
-}{}
-\hypersetup{
-  pdftitle={Controlling the Tracing of an Interpreter With Hints, Part 1: Controlling the Extent of Tracing},
-}
-
 \newboolean{showcomments}
 \setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
@@ -137,8 +130,7 @@ have traced many iterations of the interpreter main loop.
 Figure~\ref{fig:trace-levels} shows a diagram of the process. On the left you
 see the levels of execution. The CPU executes the binary of
 PyPy's Python interpreter, which consists of RPython functions that have been
-compiled first to C, then to machine code. Some of these functions contain
-loops, others don't. The interpreter runs a Python program written by a
+compiled first to C, then to machine code. The interpreter runs a Python program written by a
 programmer (the user). If the tracer is used, it traces operations on the level
 of the interpreter. However, the extent of the trace is determined by the loops
 in the user program.
@@ -147,8 +139,8 @@ in the user program.
 \label{sub:optimizing}
 
 Before sending the trace to the backend to produce actual machine code, it is
-optimized.  The optimizer applies a number of techniques to remove or reduce
-the number of operations: most of these are well known compiler optimization
+optimized.  The optimizer applies a number of techniques to remove or simplify
+the operations in the trace. Most of these are well known compiler optimization
 techniques, with the difference that it is easier to apply them in a tracing
 JIT because it only has to deal with linear traces.  Among the techniques:
 %
@@ -164,6 +156,59 @@ In some places it turns out that if the interpreter author rewrites some parts
 of the interpreter with these optimizations in mind the traces that are produced
 by the optimizer can be vastly improved.
 
+\subsection{Running Example}
+\label{sub:running}
+
+As the running example of this paper we will use a very simple and bare-bones
+object model that just supports classes and instances, without any
+inheritance or other fancy features. The model has classes, which contain methods.
+Instances have a class. Instances have their own attributes (or fields). When looking up an
+attribute on an instance, the instances attributes are searched. If the
+attribute is not found there, the class' methods are searched.
+
+\begin{figure}
+\input{code/interpreter-slow.tex}
+\caption{Original Version of a Simple Object Model}
+\label{fig:interpreter-slow}
+\end{figure}
+
+
+To implement this object model, we could use the RPython code in
+Figure~\ref{fig:interpreter-slow} as part of the interpreter source code.
+In this straightforward implementation the methods and attributes are just
+stored in dictionaries (hash maps) on the classes and instances, respectively.
+While this object model is very
+simple it already contains all the hard parts of Python's object model. Both
+instances and classes can have arbitrary fields, and they are changeable at
+any time.  Moreover, instances can change their class after they have been
+created.
+
+When using this object model in
+an interpreter, a huge amount of time will be spent doing lookups in these
+dictionaries.
+Let's assume we trace through code that sums three attributes, such as:
+
+\begin{Verbatim}
+inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
+\end{Verbatim}
+
+\begin{figure}
+\input{code/trace1.tex}
+\caption{Trace Through the Object Model}
+\label{fig:trace1}
+\end{figure}
+
+The trace would look like in Figure~\ref{fig:trace1}. In this example, the
+attribute \texttt{a} is found on the instance, but the
+attributes \texttt{b} and \texttt{c} are found on the class. The trace indeed contains
+five calls to \texttt{dict.get}, which is slow. To make the language efficient
+using a tracing JIT, we need to find a way to get rid of these dictionary
+lookups somehow. How to achieve this will be topic of
+Section~\ref{sec:putting}.
+
+
+
+% subsection Running Example (end)
 
 % section Background (end)
 %___________________________________________________________________________
@@ -455,68 +500,13 @@ section gives a worked-out example that puts all the pieces together.
 
 %___________________________________________________________________________
 
-\section{Putting Things Together}
+\section{Putting It All Together}
 
-In this section we describe a worked-out example of
-a small object model for a dynamic language and how to make it efficient using
-the hints described in the previous sections.
-
-
-%___________________________________________________________________________
-
-\subsection{A Simple Object Model}
-
-To implement a dynamic language efficiently, the operations on its objects need
-to be fast. Most dynamic languages have object models that are made by using
-dictionaries everywhere. Let's look at an example of how the JIT can be made to
-optimize such operations.
-
-For the purpose of this section we will use a very simple and bare-bones
-object model that just supports very simple classes and instances, without any
-inheritance or any fancy features. The model has classes, which contain methods.
-Instances have a class. Instances have their own attributes. When looking up an
-attribute on an instance, the instances attributes are searched. If the
-attribute is not found there, the class' attributes are searched.
-
-To implement this object model, we could use the following RPython code as part
-of the interpreter source code:
-
-\begin{figure}
-\input{code/interpreter-slow.tex}
-\caption{Original Version of a Simple Object Model}
-\label{fig:interpreter-slow}
-\end{figure}
-
-
-In this straightforward implementation the methods and attributes are just
-stored in dictionaries on the classes/instances. While this object model is very
-simple it already contains all the hard parts of Python's object model. Both
-instances and classes can have arbitrary fields, and they are changeable at
-any time.  Moreover, instances can change their class after they have been
-created.
-
-When using this object model in
-an interpreter, a huge amount of time will be spent doing lookups in these
-dictionaries. To make the language efficient using a tracing JIT, we need to
-find a way to get rid of these dictionary lookups somehow.
-
-Let's assume we trace through code that sums three attributes, such as:
-
-\begin{Verbatim}
-inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
-\end{Verbatim}
-
-\begin{figure}
-\input{code/trace1.tex}
-\caption{Trace Through the Object Model}
-\label{fig:trace1}
-\end{figure}
-
-The trace would look like in Figure~\ref{fig:trace1}. In this example, the
-attribute \texttt{a} is found on the instance, but the
-attributes \texttt{b} and \texttt{c} are found on the class. The trace indeed contains
-five calls to \texttt{dict.get}, which is slow.
-
+In this section we describe how the simple object model from
+Section~\ref{sub:running} can be made efficient using the hints described in the
+previous the section. The object model there is typical for many current
+dynamic languages (such as Python, Ruby and JavaScript) as it relies heavily on
+hash-maps to implement its objects.
 
 %___________________________________________________________________________
 
@@ -536,11 +526,11 @@ arbitrary fields. In practice however many instances share their layout (i.e.
 their set of keys) with many other instances.
 
 Therefore it makes sense to factor the layout information out of the instance
-implementation into a shared object. This shared layout object is called a
-\emph{map}. Maps are an old idea that comes originally from the SELF language \cite{XXX}. They are
-also used by many JavaScript implementations such as V8.
-
-The rewritten \texttt{Instance} class using maps looks like this:
+implementation into a shared object, called the \emph{map}. Maps are a well-known
+technique to efficiently implement instances and come from the SELF project
+\cite{XXX}. They are also used by many JavaScript implementations such as V8.
+The rewritten \texttt{Instance} class using maps can be seen in
+Figure~\ref{fig:maps}.
 
 \begin{figure}
 \input{code/map.tex}
@@ -548,20 +538,20 @@ The rewritten \texttt{Instance} class using maps looks like this:
 \label{fig:maps}
 \end{figure}
 
-Instances no longer use dictionaries to store their fields. Instead, they have a
+In this implementation instances no longer use dictionaries to store their fields. Instead, they have a
 reference to a map, which maps field names to indexes into a storage list. The
 storage list contains the actual field values. The maps are shared between
 objects with the same layout. Therefore they have to be immutable, which means
 that their \texttt{getindex} method is a pure function. When a new attribute is added
 to an instance, a new map needs to be chosen, which is done with the
-\texttt{new\_map\_with\_additional\_attribute} method on the previous map. Now that we have
+\texttt{add\_attribute} method on the previous map (which is also pure). Now that we have
 introduced maps, it is safe to promote the map everywhere, because we assume
 that the number of different instance layouts is small.
 
 With this changed instance implementation, the trace we had above changes to the
-following, where \texttt{0xb74af4a8} is the memory address of the Map instance that
-has been promoted, see Figure~\ref{fig:trace2}. Operations that can be
-optimized away are grayed out.
+following that of see Figure~\ref{fig:trace2}. There \texttt{0xb74af4a8} is the
+memory address of the \texttt{Map} instance that has been promoted. Operations
+that can be optimized away are grayed out.
 
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
 a pure function and they have constant arguments. That means that \texttt{index1/2/3}
@@ -584,7 +574,7 @@ the original one. Now we are down from five dictionary lookups to just two.
 \subsection{Versioning of Classes}
 
 Instances were optimized making the assumption that the total number of
-Instance layouts is small compared to the number of instances. For classes we
+different instance layouts is small compared to the number of instances. For classes we
 will make an even stronger assumption. We simply assume that it is rare for
 classes to change at all. This is not totally reasonable (sometimes classes contain
 counters or similar things) but for this simple example it is good enough.
@@ -594,13 +584,13 @@ But it cannot be, because it is always possible to change the class itself.
 Every time the class changes, \texttt{find\_method} can potentially return a
 new value.
 
-Therefore, we give every class a version number, which is increased every time a
+Therefore, we give every class a version number, which is changed every time a
 class gets changed (i.e., the content of the \texttt{methods} dictionary changes).
 This means that the result of \texttt{methods.get()} for a given \texttt{(name,
 version)} pair will always be the same, i.e. it is a pure operation.  To help
 the JIT to detect this case, we factor it out in a helper method which is
-explicitly marked as \texttt{@purefunction}. The refactored \texttt{Class} looks like
-in Figure~\ref{fig:version}
+explicitly marked as \texttt{@purefunction}. The refactored \texttt{Class} can
+be seen in Figure~\ref{fig:version}
 
 \begin{figure}
 \input{code/version.tex}
@@ -610,8 +600,8 @@ in Figure~\ref{fig:version}
 
 What is interesting here is that \texttt{\_find\_method} takes the \texttt{version}
 argument but it does not use it at all. Its only purpose is to make the call
-pure (because when the version number changes, the result of the call might be
-different than the previous one).
+pure, because when the version number changes, the result of the call might be
+different than the previous one.
 
 \begin{figure}
 \input{code/trace4.tex}
@@ -638,7 +628,7 @@ The constants \texttt{41} and \texttt{17} are the results of the folding of the
 dictionary lookups. Instead it contains several guards. The first guard
 checks that the map is still the same. This guard will fail if the same
 code is executed with an instance that has another layout. The second guard
-checks that the class of \texttt{inst} is still the same. It will fail if trace is
+checks that the class of \texttt{inst} is still the same. It will fail if the trace is
 executed with an instance of another class. The third guard checks that the
 class did not change since the trace was produced. It will fail if somebody
 calls the \texttt{change\_method} method on the class.
@@ -653,7 +643,8 @@ model of PyPy's Python interpreter too. Since Python's object model is
 considerably more complex, some additional work needs to be done.
 
 The first problem that needs to be solved is that Python supports (multiple)
-inheritance. Therefore looking up a method in a class needs to consider the
+inheritance. Therefore looking up a method in a class needs to consider all the
+classes in the
 whole method resolution order. This makes the versioning of classes more
 complex. If a class is changed its version changes. At the same time, the
 versions of all the classes inheriting from it need to be changed as well,
@@ -670,7 +661,8 @@ Another optimization is that in practice the shape of an instance is correlated
 with its class. In our code above, we allow both to vary independently.
 In PyPy's Python interpreter we act somewhat more cleverly. The class of
 an instance is not stored on the instance itself, but on the map. This means
-that we get one fewer promotion (and thus one fewer guard) in the trace, because the class doesn't need to
+that we get one fewer promotion (and thus one fewer guard) in the trace,
+because the class doesn't need to
 be promoted after the map has been.
 
 
