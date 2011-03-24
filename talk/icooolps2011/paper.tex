@@ -89,6 +89,10 @@ incremental compilers, interpreters, run-time environments]
 %___________________________________________________________________________
 \section{Introduction}
 
+XXX how exactly
+the hints work that interpreter authors can use to improve the execution speed
+of the programs running on their interpreters?
+
 
 %___________________________________________________________________________
 \section{The PyPy Project}
@@ -106,10 +110,6 @@ XXX
 
 %___________________________________________________________________________
 \section{Controlling The Extent of Tracing}
-
-XXX how exactly
-the hints work that interpreter authors can use to improve the execution speed
-of the programs running on their interpreters?
 
 
 \subsection{Background}
@@ -133,15 +133,14 @@ user program. This means that the tracer stops tracing after one iteration of
 the loop in the user function that is being considered. At this point, it can
 have traced many iterations of the interpreter main loop.
 
-Here's a diagram of this process:
-
 \begin{figure*}
 \includegraphics[scale=0.5]{figures/trace-levels}
 \caption{The levels involved in tracing}
 \label{fig:trace-levels}
 \end{figure*}
 
-On the left you see the levels of execution. The CPU executes the binary of
+Figure~\ref{fig:trace-levels} shows a diagram of the process. On the left you
+see the levels of execution. The CPU executes the binary of
 PyPy's Python interpreter, which consists of RPython functions that have been
 compiled first to C, then to machine code. Some of these functions contain
 loops, others don't. The interpreter runs a Python program written by a
@@ -658,11 +657,10 @@ dictionaries. To make the language efficient using a tracing JIT, we need to
 find a way to get rid of these dictionary lookups somehow.
 
 Let's assume we trace through code that sums three attributes, such as:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{inst}\PY{o}{.}\PY{n}{getattr}\PY{p}{(}\PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)} \PY{o}{+} \PY{n}{inst}\PY{o}{.}\PY{n}{getattr}\PY{p}{(}\PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)} \PY{o}{+} \PY{n}{inst}\PY{o}{.}\PY{n}{getattr}\PY{p}{(}\PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\end{Verbatim}
 
-The trace could look like this:
+\begin{Verbatim}
+inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
+\end{Verbatim}
 
 \begin{figure}
 \input{code/trace1.tex}
@@ -670,7 +668,8 @@ The trace could look like this:
 \label{fig:trace1}
 \end{figure}
 
-In this example, the attribute \texttt{a} is found on the instance, but the
+The trace would look like in Figure~\ref{fig:trace1}. In this example, the
+attribute \texttt{a} is found on the instance, but the
 attributes \texttt{b} and \texttt{c} are found on the class. The trace indeed contains
 five calls to \texttt{dict.get}, which is slow.
 
@@ -717,69 +716,25 @@ that the number of different instance layouts is small.
 
 With this changed instance implementation, the trace we had above changes to the
 following, where \texttt{0xb74af4a8} is the memory address of the Map instance that
-has been promoted:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{c}{# inst.getattr("a")}
-\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{index1} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{index1} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
-\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{n}{index1}\PY{p}{]}
+has been promoted, see Figure~\ref{fig:trace2}.
 
-\PY{c}{# inst.getattr("b")}
-\PY{n}{map2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map2} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{index2} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{index2} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{methods1} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
-\PY{n}{result2} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
-
-\PY{c}{# inst.getattr("c")}
-\PY{n}{map3} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map3} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{index3} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map3}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{index3} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{methods2} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
-\PY{n}{result3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-
-\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
-\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
-\end{Verbatim}
+\begin{figure}
+\input{code/trace2.tex}
+\caption{Unoptimized Trace After the Introduction of Maps}
+\label{fig:trace2}
+\end{figure}
 
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
 a pure function and they have constant arguments. That means that \texttt{index1/2/3}
 are constant and the guards on them can be removed. All but the first guard on
 the map will be optimized away too, because the map cannot have changed in
-between. The optimized trace looks like this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{c}{# inst.getattr("a")}
-\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
-\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+between. The optimized trace looks can be seen in Figure~\ref{fig:trace3}
 
-\PY{c}{# inst.getattr("b")}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{methods1} \PY{o}{=} \PY{n}{cls1}\PY{o}{.}\PY{n}{methods}
-\PY{n}{result2} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
-
-\PY{c}{# inst.getattr("c")}
-\PY{n}{cls2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{methods2} \PY{o}{=} \PY{n}{cls2}\PY{o}{.}\PY{n}{methods}
-\PY{n}{result3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-
-\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
-\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
-\end{Verbatim}
+\begin{figure}
+\input{code/trace3.tex}
+\caption{Optimized Trace After the Introduction of Maps}
+\label{fig:trace3}
+\end{figure}
 
 The index \texttt{0} that is used to read out of the \texttt{storage} array is the result
 of the constant-folded \texttt{getindex} call. This trace is already much better than
@@ -807,99 +762,36 @@ This means that the result of \texttt{methods.get()} for a given \texttt{(name,
 version)} pair will always be the same, i.e. it is a pure operation.  To help
 the JIT to detect this case, we factor it out in a helper method which is
 explicitly marked as \texttt{@purefunction}. The refactored \texttt{Class} looks like
-this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{class} \PY{n+nc}{VersionTag}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{pass}
+in Figure~\ref{fig:version}
 
-\PY{k}{class} \PY{n+nc}{Class}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version} \PY{o}{=} \PY{n}{VersionTag}\PY{p}{(}\PY{p}{)}
-
-    \PY{k}{def} \PY{n+nf}{find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
-        \PY{n}{version} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
-        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{n}{version}\PY{p}{)}
-        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
-            \PY{k}{return} \PY{n}{result}
-        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-
-    \PY{n+nd}{@purefunction}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{version}\PY{p}{)}\PY{p}{:}
-        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-
-    \PY{k}{def} \PY{n+nf}{change\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version} \PY{o}{=} \PY{n}{VersionTag}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
+\begin{figure}
+\input{code/version.tex}
+\caption{Versioning of Classes}
+\label{fig:version}
+\end{figure}
 
 What is interesting here is that \texttt{\_find\_method} takes the \texttt{version}
 argument but it does not use it at all. Its only purpose is to make the call
 pure (because when the version number changes, the result of the call might be
 different than the previous one).
 
-The trace with this new class implementation looks like this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{c}{# inst.getattr("a")}
-\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{index1} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{index1} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
-\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{n}{index1}\PY{p}{]}
+\begin{figure}
+\input{code/trace4.tex}
+\caption{Unoptimized Trace After Introduction of Versioned Classes}
+\label{fig:trace4}
+\end{figure}
 
-\PY{c}{# inst.getattr("b")}
-\PY{n}{map2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map2} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{index2} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{index2} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{guard}\PY{p}{(}\PY{n}{cls1} \PY{o}{==} \PY{l+m+mh}{0xb7aaaaf8}\PY{p}{)}
-\PY{n}{version1} \PY{o}{=} \PY{n}{cls1}\PY{o}{.}\PY{n}{version}
-\PY{n}{guard}\PY{p}{(}\PY{n}{version1} \PY{o}{==} \PY{l+m+mh}{0xb7bbbb18}\PY{p}{)}
-\PY{n}{result2} \PY{o}{=} \PY{n}{Class}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{cls}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{,} \PY{n}{version1}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
-
-\PY{c}{# inst.getattr("c")}
-\PY{n}{map3} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map3} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{index3} \PY{o}{=} \PY{n}{Map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{map3}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{index3} \PY{o}{==} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-\PY{n}{cls2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{guard}\PY{p}{(}\PY{n}{cls2} \PY{o}{==} \PY{l+m+mh}{0xb7aaaaf8}\PY{p}{)}
-\PY{n}{version2} \PY{o}{=} \PY{n}{cls2}\PY{o}{.}\PY{n}{version}
-\PY{n}{guard}\PY{p}{(}\PY{n}{version2} \PY{o}{==} \PY{l+m+mh}{0xb7bbbb18}\PY{p}{)}
-\PY{n}{result3} \PY{o}{=} \PY{n}{Class}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{cls}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{,} \PY{n}{version2}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-
-\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
-\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
-\end{Verbatim}
-
+The trace with this new class implementation can be seen in
+Figure~\ref{fig:trace4}.
 The calls to \texttt{Class.\_find\_method} can now be optimized away, also the
 promotion of the class and the version, except for the first one. The final
-optimized trace looks like this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{c}{# inst.getattr("a")}
-\PY{n}{map1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{map}
-\PY{n}{guard}\PY{p}{(}\PY{n}{map1} \PY{o}{==} \PY{l+m+mh}{0xb74af4a8}\PY{p}{)}
-\PY{n}{storage1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{storage}
-\PY{n}{result1} \PY{o}{=} \PY{n}{storage1}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+optimized trace can be seen in Figure~\ref{fig:trace5}.
 
-\PY{c}{# inst.getattr("b")}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{guard}\PY{p}{(}\PY{n}{cls1} \PY{o}{==} \PY{l+m+mh}{0xb7aaaaf8}\PY{p}{)}
-\PY{n}{version1} \PY{o}{=} \PY{n}{cls1}\PY{o}{.}\PY{n}{version}
-\PY{n}{guard}\PY{p}{(}\PY{n}{version1} \PY{o}{==} \PY{l+m+mh}{0xb7bbbb18}\PY{p}{)}
-\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{l+m+mi}{41}
-
-\PY{c}{# inst.getattr("c")}
-\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{l+m+mi}{17}
-\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
-\end{Verbatim}
+\begin{figure}
+\input{code/trace5.tex}
+\caption{Optimized Trace After Introduction of Versioned Classes}
+\label{fig:trace5}
+\end{figure}
 
 The constants \texttt{41} and \texttt{17} are the results of the folding of the
 \texttt{\_find\_method`} calls. This final trace is now very good. It no longer performs any

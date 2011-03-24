@@ -1,0 +1,18 @@
+\begin{Verbatim}
+# inst.getattr("a")
+map1 = inst.map
+guard(map1 == 0xb74af4a8)
+storage1 = inst.storage
+result1 = storage1[0]
+
+# inst.getattr("b")
+cls1 = inst.cls
+guard(cls1 == 0xb7aaaaf8)
+version1 = cls1.version
+guard(version1 == 0xb7bbbb18)
+v2 = result1 + 41
+
+# inst.getattr("c")
+v4 = v2 + 17
+return(v4)
+\end{Verbatim}

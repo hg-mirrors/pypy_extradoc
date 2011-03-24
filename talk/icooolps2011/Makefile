@@ -1,5 +1,5 @@
 
-jit-hints.pdf: paper.tex paper.bib code/interpreter-slow.tex code/map.tex
+jit-hints.pdf: paper.tex paper.bib code/interpreter-slow.tex code/map.tex code/version.tex
 	pdflatex paper
 	bibtex paper
 	pdflatex paper

@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{VersionTag}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{pass}
+
+\PY{k}{class} \PY{n+nc}{Class}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version} \PY{o}{=} \PY{n}{VersionTag}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{version} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{n}{version}\PY{p}{)}
+        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
+            \PY{k}{return} \PY{n}{result}
+        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{version}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{change\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{version} \PY{o}{=} \PY{n}{VersionTag}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}

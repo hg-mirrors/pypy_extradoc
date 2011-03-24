@@ -1,0 +1,23 @@
+\begin{Verbatim}
+# inst.getattr("a")
+map1 = inst.map
+guard(map1 == 0xb74af4a8)
+storage1 = inst.storage
+result1 = storage1[0]
+
+# inst.getattr("b")
+cls1 = inst.cls
+methods1 = cls1.methods
+result2 = dict.get(methods1, "b")
+guard(result2 is not None)
+v2 = result1 + result2
+
+# inst.getattr("c")
+cls2 = inst.cls
+methods2 = cls2.methods
+result3 = dict.get(methods2, "c")
+guard(result3 is not None)
+
+v4 = v2 + result3
+return(v4)
+\end{Verbatim}
