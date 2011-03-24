@@ -1,17 +1,17 @@
-\begin{Verbatim}
+\begin{Verbatim}[commandchars=\\\{\}]
 # inst.getattr("a")
 map1 = inst.map
 guard(map1 == 0xb74af4a8)
-index1 = Map.getindex(map1, "a")
-guard(index1 != -1)
+{\color{gray}index1 = Map.getindex(map1, "a")}
+{\color{gray}guard(index1 != -1)}
 storage1 = inst.storage
 result1 = storage1[index1]
 
 # inst.getattr("b")
-map2 = inst.map
-guard(map2 == 0xb74af4a8)
-index2 = Map.getindex(map2, "b")
-guard(index2 == -1)
+{\color{gray}map2 = inst.map}
+{\color{gray}guard(map2 == 0xb74af4a8)}
+{\color{gray}index2 = Map.getindex(map2, "b")}
+{\color{gray}guard(index2 == -1)}
 cls1 = inst.cls
 methods1 = cls.methods
 result2 = dict.get(methods1, "b")
@@ -19,10 +19,10 @@ guard(result2 is not None)
 v2 = result1 + result2
 
 # inst.getattr("c")
-map3 = inst.map
-guard(map3 == 0xb74af4a8)
-index3 = Map.getindex(map3, "c")
-guard(index3 == -1)
+{\color{gray}map3 = inst.map}
+{\color{gray}guard(map3 == 0xb74af4a8)}
+{\color{gray}index3 = Map.getindex(map3, "c")}
+{\color{gray}guard(index3 == -1)}
 cls1 = inst.cls
 methods2 = cls.methods
 result3 = dict.get(methods2, "c")

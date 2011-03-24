@@ -55,6 +55,7 @@
    \setlength{\topsep} {0 pt} }}% the end stuff
    {\end{list}}
 
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
 
 \begin{document}
 
@@ -94,35 +95,29 @@ the hints work that interpreter authors can use to improve the execution speed
 of the programs running on their interpreters?
 
 
-%___________________________________________________________________________
-\section{The PyPy Project}
+\section{Background}
+\label{sec:Background}
+
+\subsection{The PyPy Project}
 \label{sect:pypy}
 
-XXX
-\cite{armin_rigo_pypys_2006}
-
-
-%___________________________________________________________________________
-\section{Tracing JIT Compilers}
-\label{sect:tracing}
-
-XXX
-
-%___________________________________________________________________________
-\section{Controlling The Extent of Tracing}
-
-
-\subsection{Background}
-
-First, let's recap some basics: PyPy's approach to implementing dynamic
+PyPy's approach to implementing dynamic
 languages is to write an interpreter for
 the language in RPython. This interpreter can be translated to C and then
 further to machine code. The interpreter consists of code in the form of a
 large number of generated C functions and some data. Similarly, the user
 program consists of functions in the language the interpreter executes.
 
-XXX As was explained in a \href{http://morepypy.blogspot.com/2009/03/applying-tracing-jit-to-interpreter.html}{blog post} and a \href{http://codespeak.net/svn/pypy/extradoc/talk/icooolps2009/bolz-tracing-jit.pdf}{paper} two years ago, PyPy's JIT is a
-meta-tracer. Since we want to re-use our tracer for a variety of languages, we
+XXX \cite{armin_rigo_pypys_2006}
+
+
+%___________________________________________________________________________
+\subsection{PyPy's Meta-Tracing JIT Compilers}
+\label{sect:tracing}
+
+
+PyPy's JIT is a meta-tracer \cite{bolz_tracing_2009}. Since we want to re-use
+our tracer for a variety of languages, we
 don't trace the execution of the user program, but instead trace the execution
 of the \emph{interpreter} that is running the program. This means that the traces
 don't contain the bytecodes of the language in question, but RPython-level
@@ -148,25 +143,13 @@ programmer (the user). If the tracer is used, it traces operations on the level
 of the interpreter. However, the extent of the trace is determined by the loops
 in the user program.
 
-
-
-\section{Controlling Optimization}
-
-The last section described how to control the
-extent of tracing. In this section we will describe how to add hints that
-influence the optimizer.  If applied correctly these techniques can give
-really big speedups by pre-computing parts of what happens at runtime. On the other
-hand, if applied incorrectly they might lead to code bloat, thus making the
-resulting program actually slower.
-
-
-
-\subsection{Background}
+\subsection{Optimizing Traces}
+\label{sub:optimizing}
 
 Before sending the trace to the backend to produce actual machine code, it is
 optimized.  The optimizer applies a number of techniques to remove or reduce
-the number of operations: most of these are well known \href{http://en.wikipedia.org/wiki/Compiler_optimization\#Optimization_techniques}{compiler optimization
-techniques}, with the difference that it is easier to apply them in a tracing
+the number of operations: most of these are well known compiler optimization
+techniques, with the difference that it is easier to apply them in a tracing
 JIT because it only has to deal with linear traces.  Among the techniques:
 %
 \begin{itemize}
@@ -181,11 +164,22 @@ In some places it turns out that if the interpreter author rewrites some parts
 of the interpreter with these optimizations in mind the traces that are produced
 by the optimizer can be vastly improved.
 
-In this section we describe two hints that allow the interpreter author to
-increase the optimization opportunities for constant folding. For constant
-folding to work, two conditions need
-to be met:
-%
+
+% section Background (end)
+%___________________________________________________________________________
+
+
+\section{Controlling Optimization}
+
+In this section we will describe how to add two hints that allow the
+interpreter author to increase the optimization opportunities for constant
+folding. If applied correctly these techniques can give really big speedups by
+pre-computing parts of what happens at runtime. On the other
+hand, if applied incorrectly they might lead to code bloat, thus making the
+resulting program actually slower.
+
+For constant folding to work, two conditions need to be met:
+
 \begin{itemize}
     \item the arguments of an operation actually need to all be constant,
     i.e. statically known by the optimizer
@@ -197,9 +191,6 @@ The PyPy JIT generator automatically detects the majority of these conditions.
 However, for the cases in which the automatic detection does not work, the
 interpreter author can apply \textbf{hints} to improve the optimization
 opportunities. There is one kind of hint for both of the conditions above.
-
-\textbf{Note}: These hints are written by an interpreter developer and applied to the
-RPython source of the interpreter. Normal Python users will never see them.
 
 
 \subsection{Where Do All the Constants Come From}
@@ -235,10 +226,10 @@ stopped and the interpreter continues to run.
 
 There are cases in which it is useful to turn an arbitrary variable
 into a constant value. This process is called \emph{promotion} and it is an old idea
-in partial evaluation (it's called ``the trick'' there). Promotion is also heavily
-used by \href{http://psyco.sourceforge.net/}{Psyco} and by all older versions of PyPy's JIT. Promotion is a technique
-that only works well in JIT compilers, in
-static compilers it is significantly less applicable.
+in partial evaluation (it's called ``the trick'' \cite{XXX} there). Promotion is also heavily
+used by Psyco \cite{rigo_representation-based_2004} and by all older versions
+of PyPy's JIT. Promotion is a technique that only works well in JIT compilers,
+in static compilers it is significantly less applicable.
 
 Promotion is essentially a tool for trace specialization. In some places in the
 interpreter it would be very useful if a variable were constant, even though it
@@ -569,7 +560,15 @@ that the number of different instance layouts is small.
 
 With this changed instance implementation, the trace we had above changes to the
 following, where \texttt{0xb74af4a8} is the memory address of the Map instance that
-has been promoted, see Figure~\ref{fig:trace2}.
+has been promoted, see Figure~\ref{fig:trace2}. Operations that can be
+optimized away are grayed out.
+
+The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
+a pure function and they have constant arguments. That means that \texttt{index1/2/3}
+are constant and the guards on them can be removed. All but the first guard on
+the map will be optimized away too, because the map cannot have changed in
+between. This trace is already much better than
+the original one. Now we are down from five dictionary lookups to just two.
 
 \begin{figure}
 \input{code/trace2.tex}
@@ -577,21 +576,7 @@ has been promoted, see Figure~\ref{fig:trace2}.
 \label{fig:trace2}
 \end{figure}
 
-The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
-a pure function and they have constant arguments. That means that \texttt{index1/2/3}
-are constant and the guards on them can be removed. All but the first guard on
-the map will be optimized away too, because the map cannot have changed in
-between. The optimized trace looks can be seen in Figure~\ref{fig:trace3}
 
-\begin{figure}
-\input{code/trace3.tex}
-\caption{Optimized Trace After the Introduction of Maps}
-\label{fig:trace3}
-\end{figure}
-
-The index \texttt{0} that is used to read out of the \texttt{storage} array is the result
-of the constant-folded \texttt{getindex} call. This trace is already much better than
-the original one. Now we are down from five dictionary lookups to just two.
 
 
 %___________________________________________________________________________
@@ -646,6 +631,8 @@ optimized trace can be seen in Figure~\ref{fig:trace5}.
 \label{fig:trace5}
 \end{figure}
 
+The index \texttt{0} that is used to read out of the \texttt{storage} array is the result
+of the constant-folded \texttt{getindex} call.
 The constants \texttt{41} and \texttt{17} are the results of the folding of the
 \texttt{\_find\_method`} calls. This final trace is now very good. It no longer performs any
 dictionary lookups. Instead it contains several guards. The first guard
