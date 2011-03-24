@@ -1,0 +1,28 @@
+\begin{Verbatim}
+# inst.getattr("a")
+attributes1 = inst.attributes
+result1 = dict.get(attributes1, "a")
+guard(result1 is not None)
+
+# inst.getattr("b")
+attributes2 = inst.attributes
+v1 = dict.get(attributes2, "b")
+guard(v1 is None)
+cls1 = inst.cls
+methods1 = cls.methods
+result2 = dict.get(methods1, "b")
+guard(result2 is not None)
+v2 = result1 + result2
+
+# inst.getattr("c")
+attributes3 = inst.attributes
+v3 = dict.get(attributes3, "c")
+guard(v3 is None)
+cls1 = inst.cls
+methods2 = cls.methods
+result3 = dict.get(methods2, "c")
+guard(result3 is not None)
+
+v4 = v2 + result3
+return(v4)
+\end{Verbatim}

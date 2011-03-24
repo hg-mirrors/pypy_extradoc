@@ -6,91 +6,10 @@
 \usepackage{color}
 \usepackage{ulem}
 \usepackage{xspace}
+\usepackage[scaled=0.8]{beramono}
 \usepackage[utf8]{inputenc}
 
-\makeatletter
-\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
-    \let\PY@ul=\relax \let\PY@tc=\relax%
-    \let\PY@bc=\relax \let\PY@ff=\relax}
-\def\PY@tok#1{\csname PY@tok@#1\endcsname}
-\def\PY@toks#1+{\ifx\relax#1\empty\else%
-    \PY@tok{#1}\expandafter\PY@toks\fi}
-\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
-    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
-\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
-
-\def\PY@tok@gd{\def\PY@bc##1{\fcolorbox[rgb]{0.80,0.00,0.00}{1.00,0.80,0.80}{##1}}}
-\def\PY@tok@gu{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.00}{##1}}}
-\def\PY@tok@gt{\def\PY@tc##1{\textcolor[rgb]{0.60,0.80,0.40}{##1}}}
-\def\PY@tok@gs{\let\PY@bf=\textbf}
-\def\PY@tok@gr{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
-\def\PY@tok@cm{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
-\def\PY@tok@vg{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
-\def\PY@tok@m{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
-\def\PY@tok@mh{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
-\def\PY@tok@cs{\let\PY@bf=\textbf\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
-\def\PY@tok@ge{\let\PY@it=\textit}
-\def\PY@tok@vc{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
-\def\PY@tok@il{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
-\def\PY@tok@go{\def\PY@tc##1{\textcolor[rgb]{0.67,0.67,0.67}{##1}}}
-\def\PY@tok@cp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,0.60}{##1}}}
-\def\PY@tok@gi{\def\PY@bc##1{\fcolorbox[rgb]{0.00,0.80,0.00}{0.80,1.00,0.80}{##1}}}
-\def\PY@tok@gh{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.00}{##1}}}
-\def\PY@tok@ni{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
-\def\PY@tok@nl{\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,1.00}{##1}}}
-\def\PY@tok@nn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.80,1.00}{##1}}}
-\def\PY@tok@no{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.00}{##1}}}
-\def\PY@tok@na{\def\PY@tc##1{\textcolor[rgb]{0.20,0.00,0.60}{##1}}}
-\def\PY@tok@nb{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.40}{##1}}}
-\def\PY@tok@nc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.67,0.53}{##1}}}
-\def\PY@tok@nd{\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,1.00}{##1}}}
-\def\PY@tok@ne{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.00,0.00}{##1}}}
-\def\PY@tok@nf{\def\PY@tc##1{\textcolor[rgb]{0.80,0.00,1.00}{##1}}}
-\def\PY@tok@si{\def\PY@tc##1{\textcolor[rgb]{0.67,0.00,0.00}{##1}}}
-\def\PY@tok@s2{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@vi{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
-\def\PY@tok@nt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.20,0.00,0.60}{##1}}}
-\def\PY@tok@nv{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
-\def\PY@tok@s1{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@gp{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.60}{##1}}}
-\def\PY@tok@sh{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@ow{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.00}{##1}}}
-\def\PY@tok@sx{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@bp{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.40}{##1}}}
-\def\PY@tok@c1{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
-\def\PY@tok@kc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
-\def\PY@tok@c{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
-\def\PY@tok@mf{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
-\def\PY@tok@err{\def\PY@tc##1{\textcolor[rgb]{0.67,0.00,0.00}{##1}}\def\PY@bc##1{\colorbox[rgb]{1.00,0.67,0.67}{##1}}}
-\def\PY@tok@kd{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
-\def\PY@tok@ss{\def\PY@tc##1{\textcolor[rgb]{1.00,0.80,0.20}{##1}}}
-\def\PY@tok@sr{\def\PY@tc##1{\textcolor[rgb]{0.20,0.67,0.67}{##1}}}
-\def\PY@tok@mo{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
-\def\PY@tok@mi{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
-\def\PY@tok@kn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
-\def\PY@tok@o{\def\PY@tc##1{\textcolor[rgb]{0.33,0.33,0.33}{##1}}}
-\def\PY@tok@kr{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
-\def\PY@tok@s{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@kp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
-\def\PY@tok@w{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
-\def\PY@tok@kt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.47,0.53}{##1}}}
-\def\PY@tok@sc{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@sb{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@k{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
-\def\PY@tok@se{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-\def\PY@tok@sd{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
-
-\def\PYZbs{\char`\\}
-\def\PYZus{\char`\_}
-\def\PYZob{\char`\{}
-\def\PYZcb{\char`\}}
-\def\PYZca{\char`\^}
-% for compatibility with earlier versions
-\def\PYZat{@}
-\def\PYZlb{[}
-\def\PYZrb{]}
-\makeatother
-
+\input{code/style.tex}
 
 \ifthenelse{\isundefined{\hypersetup}}{
   \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
@@ -100,7 +19,7 @@
 }
 
 \newboolean{showcomments}
-\setboolean{showcomments}{false}
+\setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
   {\newcommand{\nb}[2]{
     \fbox{\bfseries\sffamily\scriptsize#1}
@@ -167,30 +86,31 @@ incremental compilers, interpreters, run-time environments]
 \end{abstract}
 
 
+%___________________________________________________________________________
 \section{Introduction}
 
 
+%___________________________________________________________________________
 \section{The PyPy Project}
 \label{sect:pypy}
 
 XXX
+\cite{armin_rigo_pypys_2006}
 
 
+%___________________________________________________________________________
 \section{Tracing JIT Compilers}
 \label{sect:tracing}
 
 XXX
 
+%___________________________________________________________________________
 \section{Controlling The Extent of Tracing}
 
-The question I was asked most often during my recent \href{http://morepypy.blogspot.com/2011/03/us-trip-report-popl-microsoft-ibm.html}{US trip} was how exactly
+XXX how exactly
 the hints work that interpreter authors can use to improve the execution speed
-of the programs running on their interpreters. Since those hints are not really
-documented all that well, I decided to write blog posts about them. This is the
-first one.
+of the programs running on their interpreters?
 
-
-%___________________________________________________________________________
 
 \subsection{Background}
 
@@ -201,7 +121,7 @@ further to machine code. The interpreter consists of code in the form of a
 large number of generated C functions and some data. Similarly, the user
 program consists of functions in the language the interpreter executes.
 
-As was explained in a \href{http://morepypy.blogspot.com/2009/03/applying-tracing-jit-to-interpreter.html}{blog post} and a \href{http://codespeak.net/svn/pypy/extradoc/talk/icooolps2009/bolz-tracing-jit.pdf}{paper} two years ago, PyPy's JIT is a
+XXX As was explained in a \href{http://morepypy.blogspot.com/2009/03/applying-tracing-jit-to-interpreter.html}{blog post} and a \href{http://codespeak.net/svn/pypy/extradoc/talk/icooolps2009/bolz-tracing-jit.pdf}{paper} two years ago, PyPy's JIT is a
 meta-tracer. Since we want to re-use our tracer for a variety of languages, we
 don't trace the execution of the user program, but instead trace the execution
 of the \emph{interpreter} that is running the program. This means that the traces
@@ -229,8 +149,6 @@ programmer (the user). If the tracer is used, it traces operations on the level
 of the interpreter. However, the extent of the trace is determined by the loops
 in the user program.
 
-
-%___________________________________________________________________________
 
 \subsection{How Far Should Tracing Go}
 
@@ -282,8 +200,6 @@ during tracing. In practise, the string lengths are usually different each run,
 meaning that the trace with unrolling is not run to completion in most cases.
 
 
-%___________________________________________________________________________
-
 \subsection{Influencing the Default Behaviour}
 
 Sometimes the default behaviour is not actually what is wanted. This is
@@ -304,11 +220,9 @@ helpful.
 
 If the interpreter author finds false negatives or false positives, she can fix
 that by applying a hint to the tracer. These hints take the form of function
-decorators (which both live in the \texttt{pypy.rlib.jit} module). In the next two
-subsections I will describe these two function decorators and their use.
+decorators (which both live in the \Verb|pypy.rlib.jit| module). In the next two
+subsections we describe these two function decorators and their use.
 
-
-%___________________________________________________________________________
 
 \subsubsection{Unrolling Functions With Loops}
 
@@ -345,15 +259,13 @@ code. Therefore it is also safe to annotate the implementation of \texttt{isinst
 with the \texttt{unroll\_safe} decorator.
 
 
-%___________________________________________________________________________
-
 \subsubsection{Preventing the Tracing of Functions}
 
 The second decorator \texttt{dont\_look\_inside} is used to fix false positives. It
 tells the JIT to never trace into the decorated function and just always produce
 a residual call instead. This decorator is in many ways less important than the
-unrolling one (except for a special situation that I will describe in a
-follow-up post). It is used if tracing into a function is not expected to yield
+unrolling one (except for a special situation that is described in
+Section XXX). It is used if tracing into a function is not expected to yield
 any speed benefits, because the optimizer will not be able to improve it much.
 This is often the case if the called helper function does not contain any
 ``dynamic'' behaviour. In such a situation it is better to just leave the function
@@ -365,33 +277,29 @@ Therefore we hide it from the tracer by annotating them with
 \texttt{dont\_look\_inside}.
 
 
-%___________________________________________________________________________
-
 \subsection{Conclusion}
 
-In this post we discussed two hints that can be used to control precisely which
+In this section we discussed two hints that can be used to control precisely which
 parts of the interpreter should be meta-traced. If these hints are used
 carefully, this can go a long way to making the interpreter produce traces that
 contain exactly the interesting part of the execution, and will contain calls to
 the functions that can not be optimized by tracing techniques.
 
-In the next part of this series I will discuss a different set of hints that can
+In the next section we discuss a different set of hints that can
 be used to strongly optimize traces.
 
+%___________________________________________________________________________
 
-% Document title
-\section{Controlling the Tracing of an Interpreter With Hints, Part 2: Controlling Optimization}
+\section{Controlling Optimization}
 
-This is part 2 of a series on how to speed up an interpreter written with PyPy
-by adding JIT hints to the interpreter. Part 1 described how to \href{http://morepypy.blogspot.com/2011/03/controlling-tracing-of-interpreter-with.html}{control the
-extent of tracing}. In this post I will describe how to add hints that
+The last section described how to control the
+extent of tracing. In this section we will describe how to add hints that
 influence the optimizer.  If applied correctly these techniques can give
 really big speedups by pre-computing parts of what happens at runtime. On the other
 hand, if applied incorrectly they might lead to code bloat, thus making the
 resulting program actually slower.
 
 
-%___________________________________________________________________________
 
 \subsection{Background}
 
@@ -402,37 +310,27 @@ techniques}, with the difference that it is easier to apply them in a tracing
 JIT because it only has to deal with linear traces.  Among the techniques:
 %
 \begin{itemize}
-
-\item \href{http://en.wikipedia.org/wiki/Constant_folding}{constant folding}
-
-\item \href{http://en.wikipedia.org/wiki/Common_subexpression_elimination}{common subexpression elimination}
-
-\item allocation removal, as described in the paper that I recently \href{http://morepypy.blogspot.com/2011/03/us-trip-report-popl-microsoft-ibm.html}{presented at
-PEPM}
-
-\item store/load propagation
-
-\item \href{http://morepypy.blogspot.com/2011/01/loop-invariant-code-motion.html}{loop invariant code motion}
-
+    \item constant folding
+    \item common subexpression elimination
+    \item allocation removal \cite{bolz_allocation_2011}
+    \item store/load propagation
+    \item loop invariant code motion
 \end{itemize}
 
 In some places it turns out that if the interpreter author rewrites some parts
 of the interpreter with these optimizations in mind the traces that are produced
 by the optimizer can be vastly improved.
 
-In this post I will describe two hints that allow the interpreter author to
+In this section we describe two hints that allow the interpreter author to
 increase the optimization opportunities for constant folding. For constant
 folding to work, two conditions need
 to be met:
 %
 \begin{itemize}
-
-\item the arguments of an operation actually need to all be constant,
-i.e. statically known by the optimizer
-
-\item the operation needs to be \emph{pure}, i.e. always yield the same result given
-the same arguments.
-
+    \item the arguments of an operation actually need to all be constant,
+    i.e. statically known by the optimizer
+    \item the operation needs to be \emph{pure}, i.e. always yield the same result given
+    the same arguments.
 \end{itemize}
 
 The PyPy JIT generator automatically detects the majority of these conditions.
@@ -443,8 +341,6 @@ opportunities. There is one kind of hint for both of the conditions above.
 \textbf{Note}: These hints are written by an interpreter developer and applied to the
 RPython source of the interpreter. Normal Python users will never see them.
 
-
-%___________________________________________________________________________
 
 \subsection{Where Do All the Constants Come From}
 
@@ -579,11 +475,9 @@ have values that are variable but vary little in the context of parts of a user
 program. An example would be the types of variables in a user function. Even
 though in principle the argument to a Python function could be any Python type,
 in practice the argument types tend to not vary often. Therefore it is possible to
-promote the types. In the next blog post I will give a complete example of how
+promote the types. The next section will present a complete example of how
 this works.
 
-
-%___________________________________________________________________________
 
 \subsection{Declaring New Pure Operations}
 
@@ -683,8 +577,6 @@ subtly wrong code. Therefore, a lot of care has to be taken when using this
 annotation.
 
 
-%___________________________________________________________________________
-
 \subsubsection{Observably Pure Functions}
 
 Why can't we simply write an analysis to find out that the \texttt{x} fields of the
@@ -700,7 +592,6 @@ a property that is not easily detectable by analysis. Therefore, the purity
 of this function needs to be annotated.
 
 
-%___________________________________________________________________________
 
 \subsubsection{Immutable Fields}
 
@@ -711,23 +602,21 @@ a list of strings, listing the fields that cannot be changed. This is equivalent
 to using getters and annotating them with \texttt{purefunction}.
 
 
-%___________________________________________________________________________
 
 \subsection{Conclusion}
 
-In this blog post I explained two more hints that can be used in the source code
+In this section we presented two more hints that can be used in the source code
 of the interpreter. They are used to influence what the optimizer does with the
-trace. I realize the examples given here are a bit too small, in the next
-installment I will give a worked-out example that puts all the pieces together.
+trace. The examples given here are a bit too small, the next
+section gives a worked-out example that puts all the pieces together.
 
-\section{Controlling the Tracing of an Interpreter With Hints, Part 3: Putting Things Together}
+%___________________________________________________________________________
 
-This is part 3 of the series on how to speed up an interpreter written with
-PyPy by adding JIT hints to the interpreter. Part 1 described how to \href{http://morepypy.blogspot.com/2011/03/controlling-tracing-of-interpreter-with.html}{control
-the extent of tracing}. Part 2 described how to \href{http://morepypy.blogspot.com/2011/03/controlling-tracing-of-interpreter-with_15.html}{influence the optimizer with
-promotion and pure functions}. In this post I describe a worked-out example of
+\section{Putting Things Together}
+
+In this section we describe a worked-out example of
 a small object model for a dynamic language and how to make it efficient using
-the hints described in the previous posts.
+the hints described in the previous sections.
 
 
 %___________________________________________________________________________
@@ -739,7 +628,7 @@ to be fast. Most dynamic languages have object models that are made by using
 dictionaries everywhere. Let's look at an example of how the JIT can be made to
 optimize such operations.
 
-For the purpose of this blog post we will use a very simple and bare-bones
+For the purpose of this section we will use a very simple and bare-bones
 object model that just supports very simple classes and instances, without any
 inheritance or any fancy features. The model has classes, which contain methods.
 Instances have a class. Instances have their own attributes. When looking up an
@@ -748,45 +637,13 @@ attribute is not found there, the class' attributes are searched.
 
 To implement this object model, we could use the following RPython code as part
 of the interpreter source code:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{class} \PY{n+nc}{Class}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
 
-    \PY{k}{def} \PY{n+nf}{instantiate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
-        \PY{k}{return} \PY{n}{Instance}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}
+\begin{figure}
+\input{code/interpreter-slow.tex}
+\caption{Original Version of a Simple Object Model}
+\label{fig:interpreter-slow}
+\end{figure}
 
-    \PY{k}{def} \PY{n+nf}{find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
-            \PY{k}{return} \PY{n}{result}
-        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-
-    \PY{k}{def} \PY{n+nf}{change\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
-
-
-\PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{cls}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls} \PY{o}{=} \PY{n}{cls}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
-
-    \PY{k}{def} \PY{n+nf}{getfield}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
-            \PY{k}{return} \PY{n}{result}
-        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-
-    \PY{k}{def} \PY{n+nf}{write\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
-
-    \PY{k}{def} \PY{n+nf}{getattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{k}{try}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{getfield}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{except} \PY{n+ne}{AttributeError}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls}\PY{o}{.}\PY{n}{find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-\end{Verbatim}
 
 In this straightforward implementation the methods and attributes are just
 stored in dictionaries on the classes/instances. While this object model is very
@@ -806,34 +663,12 @@ Let's assume we trace through code that sums three attributes, such as:
 \end{Verbatim}
 
 The trace could look like this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{c}{# inst.getattr("a")}
-\PY{n}{attributes1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{attributes}
-\PY{n}{result1} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{attributes1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{a}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result1} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
 
-\PY{c}{# inst.getattr("b")}
-\PY{n}{attributes2} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{attributes}
-\PY{n}{v1} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{attributes2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{v1} \PY{o+ow}{is} \PY{n+nb+bp}{None}\PY{p}{)}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{methods1} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
-\PY{n}{result2} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods1}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{b}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result2} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-\PY{n}{v2} \PY{o}{=} \PY{n}{result1} \PY{o}{+} \PY{n}{result2}
-
-\PY{c}{# inst.getattr("c")}
-\PY{n}{attributes3} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{attributes}
-\PY{n}{v3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{attributes3}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{v3} \PY{o+ow}{is} \PY{n+nb+bp}{None}\PY{p}{)}
-\PY{n}{cls1} \PY{o}{=} \PY{n}{inst}\PY{o}{.}\PY{n}{cls}
-\PY{n}{methods2} \PY{o}{=} \PY{n}{cls}\PY{o}{.}\PY{n}{methods}
-\PY{n}{result3} \PY{o}{=} \PY{n+nb}{dict}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{methods2}\PY{p}{,} \PY{l+s}{"}\PY{l+s}{c}\PY{l+s}{"}\PY{p}{)}
-\PY{n}{guard}\PY{p}{(}\PY{n}{result3} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{)}
-
-\PY{n}{v4} \PY{o}{=} \PY{n}{v2} \PY{o}{+} \PY{n}{result3}
-\PY{k}{return}\PY{p}{(}\PY{n}{v4}\PY{p}{)}
-\end{Verbatim}
+\begin{figure}
+\input{code/trace1.tex}
+\caption{Trace Through the Object Model}
+\label{fig:trace1}
+\end{figure}
 
 In this example, the attribute \texttt{a} is found on the instance, but the
 attributes \texttt{b} and \texttt{c} are found on the class. The trace indeed contains
@@ -846,7 +681,7 @@ five calls to \texttt{dict.get}, which is slow.
 
 The first step in making \texttt{getattr} faster in our object model is to optimize
 away the dictionary lookups on the instances. The hints we have looked at in the
-two earlier blog posts don't seem to help with the current object model. There is
+two previous sections don't seem to help with the current object model. There is
 no pure function to be seen, and the instance is not a candidate for promotion,
 because there tend to be many instances.
 
@@ -859,61 +694,16 @@ their set of keys) with many other instances.
 
 Therefore it makes sense to factor the layout information out of the instance
 implementation into a shared object. This shared layout object is called a
-\emph{map}. Maps are an old idea that comes originally from the SELF language. They are
-also used by many JavaScript implementations such as V8. I've \href{http://morepypy.blogspot.com/2010/11/efficiently-implementing-python-objects.html}{written about maps
-before}, so I won't explain them fully again.
+\emph{map}. Maps are an old idea that comes originally from the SELF language \cite{XXX}. They are
+also used by many JavaScript implementations such as V8.
 
 The rewritten \texttt{Instance} class using maps looks like this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{class} \PY{n+nc}{Map}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
 
-    \PY{n+nd}{@purefunction}
-    \PY{k}{def} \PY{n+nf}{getindex}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
-
-    \PY{n+nd}{@purefunction}
-    \PY{k}{def} \PY{n+nf}{new\PYZus{}map\PYZus{}with\PYZus{}additional\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{k}{if} \PY{n}{name} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{:}
-            \PY{n}{newmap} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
-            \PY{n}{newmap}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{p}{)}
-            \PY{n}{newmap}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attribute\PYZus{}indexes}\PY{p}{)}
-            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{newmap}
-        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{[}\PY{n}{name}\PY{p}{]}
-
-
-\PY{n}{EMPTY\PYZus{}MAP} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
-
-\PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{cls}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls} \PY{o}{=} \PY{n}{cls}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n}{EMPTY\PYZus{}MAP}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage} \PY{o}{=} \PY{p}{[}\PY{p}{]}
-
-    \PY{k}{def} \PY{n+nf}{getfield}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb}{map} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
-        \PY{n}{index} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{if} \PY{n}{index} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{p}{[}\PY{n}{index}\PY{p}{]}
-        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-
-    \PY{k}{def} \PY{n+nf}{write\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb}{map} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
-        \PY{n}{index} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{if} \PY{n}{index} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{:}
-            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{p}{[}\PY{n}{index}\PY{p}{]} \PY{o}{=} \PY{n}{value}
-            \PY{k}{return}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{new\PYZus{}map\PYZus{}with\PYZus{}additional\PYZus{}attribute}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{value}\PY{p}{)}
-
-    \PY{k}{def} \PY{n+nf}{getattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{k}{try}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{getfield}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{except} \PY{n+ne}{AttributeError}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls}\PY{o}{.}\PY{n}{find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-\end{Verbatim}
+\begin{figure}
+\input{code/map.tex}
+\caption{Simple Object Model With Maps}
+\label{fig:maps}
+\end{figure}
 
 Instances no longer use dictionaries to store their fields. Instead, they have a
 reference to a map, which maps field names to indexes into a storage list. The
@@ -1175,13 +965,11 @@ expected to change slowly.
 
 \subsection{Conclusion}
 
-In this post I showed how to use \texttt{purefunction} and \texttt{promote} to make a
+In this section we saw how to use \texttt{purefunction} and \texttt{promote} to make a
 small but still relevant dynamic object model no longer use any dictionary lookups
 after tracing. Instead a number of guards are inserted into the
 trace to check whether the assumptions about the objects are still true. This
-makes operations on objects seriously faster. I plan to write another small post
-that shows the speed benefits for PyPy's Python interpreter for exactly these
-operations.
+makes operations on objects seriously faster.
 
 \section{Evaluation}
 \label{sect:evaluation}

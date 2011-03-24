@@ -1,0 +1,49 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{Map}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{getindex}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
+
+    \PY{n+nd}{@purefunction}
+    \PY{k}{def} \PY{n+nf}{add\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{name} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{:}
+            \PY{n}{newmap} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
+            \PY{n}{newmap}\PY{o}{.}\PY{n}{indexes}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes}\PY{p}{)}
+            \PY{n}{newmap}\PY{o}{.}\PY{n}{indexes}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes}\PY{p}{)}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{newmap}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps}\PY{p}{[}\PY{n}{name}\PY{p}{]}
+
+\PY{n}{EMPTY\PYZus{}MAP} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{cls}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls} \PY{o}{=} \PY{n}{cls}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n}{EMPTY\PYZus{}MAP}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+    \PY{k}{def} \PY{n+nf}{getfield}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{map} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{index} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{if} \PY{n}{index} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{p}{[}\PY{n}{index}\PY{p}{]}
+        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{write\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{map} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{index} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{getindex}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{if} \PY{n}{index} \PY{o}{!=} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{:}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{p}{[}\PY{n}{index}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+            \PY{k}{return}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n+nb}{map}\PY{o}{.}\PY{n}{add\PYZus{}attribute}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{storage}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{value}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{getattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
+        \PY{k}{try}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{getfield}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+        \PY{k}{except} \PY{n+ne}{AttributeError}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls}\PY{o}{.}\PY{n}{find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+\end{Verbatim}

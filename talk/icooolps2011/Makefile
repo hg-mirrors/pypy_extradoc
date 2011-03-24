@@ -1,5 +1,5 @@
 
-jit-hints.pdf: paper.tex paper.bib
+jit-hints.pdf: paper.tex paper.bib code/interpreter-slow.tex code/map.tex
 	pdflatex paper
 	bibtex paper
 	pdflatex paper
@@ -11,3 +11,6 @@ view: jit-hints.pdf
 
 xpdf: jit-hints.pdf
 	xpdf jit-hints.pdf &
+
+%.tex: %.py
+	pygmentize -l python -o $@ $<
