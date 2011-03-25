@@ -130,13 +130,7 @@ makes the process not completely automatic but can give good speedups over
 bare meta-tracing.
 
 In this paper we present two of these hints that are extensively used in the
-PyPy project to improve the performance of its Python interpreter.
- The 
-
-PyPy's hints go even further than SPUR's in that they provide the interpreter
-author with a flexible toolset to make her implementation extremely efficient.
-In this paper we present the two most prominent ones and show how classical
-implementation techniques of dynamic languages can be expressed with them. These
+PyPy project to improve the performance of its Python interpreter. These
 hints are used to control how the optimizer of the tracing JIT can improve the
 traces of the object model. More specifically, these hints influence the
 constant folding optimization. The first hint make it possible to turn arbitrary
