@@ -219,6 +219,21 @@ number of benchmarks.},
 	pages = {144--153}
 },
 
+@inproceedings{yermolovich_optimization_2009,
+	address = {Orlando, Florida, {USA}},
+	title = {Optimization of dynamic languages using hierarchical layering of virtual machines},
+	isbn = {978-1-60558-769-1},
+	url = {http://portal.acm.org/citation.cfm?id=1640134.1640147},
+	doi = {10.1145/1640134.1640147},
+	abstract = {Creating an interpreter is a simple and fast way to implement a dynamic programming language. With this ease also come major drawbacks. Interpreters are significantly slower than compiled machine code because they have a high dispatch overhead and cannot perform optimizations. To overcome these limitations, interpreters are commonly combined with just-in-time compilers to improve the overall performance. However, this means that a just-in-time compiler has to be implemented for each language.},
+	booktitle = {Proceedings of the 5th symposium on Dynamic languages},
+	publisher = {{ACM}},
+	author = {Alexander Yermolovich and Christian Wimmer and Michael Franz},
+	year = {2009},
+	keywords = {actionscript, dynamic languages, hierarchical virtual machines, trace compilation},
+	pages = {79--88}
+},
+
 @inproceedings{carl_friedrich_bolz_how_2007,
 	title = {How to not write a Virtual Machine},
 	abstract = {Typical modern dynamic languages have a growing number of implementations. We explore the reasons for this situation, and the limitations it imposes on open source or academic communities that lack the resources to fine-tune and maintain them all. It is sometimes proposed that implementing dynamic languages on top of a standardized general-purpose object-oriented virtual machine (like Java or {.NET)} would help reduce this burden. We propose a complementary alternative to writing custom virtual machine {(VMs)} by hand, validated by the {PyPy} project: flexibly generating {VMs} from a high-level "specification",

@@ -93,35 +93,59 @@ nigh-impossible, because or their many corner-cases.
 It has long been an objective of the partial evaluation community to
 automatically produce compilers from interpreters. There has been a recent
 renaissance of this idea using the different technique of tracing just-in-time
-compilers. A number of projects have attempted this approach. SPUR \cite{XXX}
-is a tracing JIT for .NET together with a JavaScript implementation in C\#. XXX
+compilers. A number of projects have attempted this approach. SPUR \cite{XXX} is
+a tracing JIT for .NET together with a JavaScript implementation in C\#. PyPy
+\cite{armin_rigo_pypys_2006} contains a tracing JIT for RPython (a restricted
+subset of Python). This JIT is then used to trace a number of languages
+implementations written in RPython. A number of other experiments in this
+directions were done, such as an interpreter for Lua in JavaScript, which is run
+on and optimized with a tracing JIT for JavaScript
+\cite{yermolovich_optimization_2009}.
 
-All these projects have in common that they trace an implementation language
-which is then used to implement an object model of a dynamic language. The
-tracer then traces through this object model, which makes the object model
-transparent to the tracer and its optimizations. Therefore the semantics of the
-dynamic language does not have to be replicated in the JIT. We call this
-approach \emph{meta-tracing}. We will give an introduction to the PyPy project
-and to meta-tracing in Section~\ref{sec:Background}.
+These projects have in common that they implement a dynamic language in some
+implementation language. In addition they build a tracing JIT for that implementation
+language. The tracing JIT then traces through the object model of the dynamic
+language implementation. This makes the object model transparent to the tracer
+and its optimizations. Therefore the semantics of the dynamic language does not
+have to be replicated in a JIT. We call this approach \emph{meta-tracing}.
+Another commonality of these approaches is that they allow some annotations (or
+hints) in the dynamic language implementation to guide the meta-tracer. This
+makes the process not completely automatic but can give good speedups over
+bare meta-tracing.
 
-Another commonality of all these approaches is that they require some
-annotations (or hints) in the dynamic language implementation to guide the
-meta-tracer. SPUR and PyPy both provide the interpreter author with more
-elaborate hints to influence the meta-tracer and its optimizer.
+In this paper we present two of these hints that are extensively used in the
+PyPy project to improve the performance of its Python interpreter.
+ The 
 
 PyPy's hints go even further than SPUR's in that they provide the interpreter
 author with a flexible toolset to make her implementation extremely efficient.
 In this paper we present the two most prominent ones and show how classical
-implementation techniques of dynamic languages can be expressed with them.
+implementation techniques of dynamic languages can be expressed with them. These
+hints are used to control how the optimizer of the tracing JIT can improve the
+traces of the object model. More specifically, these hints influence the
+constant folding optimization. The first hint make it possible to turn arbitrary
+variables in the trace into constants. The second hint allows the definition of
+additional foldable operations.
+
+Together these two hints can be used to express many classic implementation
+techniques used for object models of dynamic languages, such as maps and
+polymorphic inline caches.
 
 The contributions of this paper are:
 \begin{itemize}
- \item A hint to introduce arbitrary constants into the trace.
- \item A way to define new pure operations which the optimizer then recognizes.
- \item A worked-out example of a simple object model of a dynamic language and how it can be improved using these hints.
+ \item A hint to turn arbitrary variables into constants in the trace.
+ \item A way to define new pure operations which the constant folding
+ optimization then recognizes.
+ \item A worked-out example of a simple object model of a dynamic language and
+ how it can be improved using these hints.
 \end{itemize}
 
-
+The paper is structured as follows: Section~\ref{sec:background} gives an
+introduction to the PyPy project and meta-tracing and presents an example of a
+tiny dynamic language object model. Section~\ref{sec:hints} presents the hints,
+what they do and how they are applied. Section~\ref{sec:fastobjmodel} shows how
+the hints are applied to the tiny object model and Section~\ref{sec:evaluation}
+presents benchmarks.
 
 
 
@@ -280,7 +304,8 @@ Section~\ref{sec:putting}.
 %___________________________________________________________________________
 
 
-\section{Controlling Optimization}
+\section{Hints for Controlling Optimization}
+\label{sec:hints}
 
 In this section we will describe how to add two hints that allow the
 interpreter author to increase the optimization opportunities for constant
@@ -559,7 +584,7 @@ to using getters and annotating them with \texttt{purefunction}.
 
 \subsection{Conclusion}
 
-In this section we presented two more hints that can be used in the source code
+In this section we presented two hints that can be used in the source code
 of the interpreter. They are used to influence what the optimizer does with the
 trace. The examples given here are a bit too small, the next
 section gives a worked-out example that puts all the pieces together.
@@ -567,6 +592,7 @@ section gives a worked-out example that puts all the pieces together.
 %___________________________________________________________________________
 
 \section{Putting It All Together}
+\label{sec:fastobjmodel}
 
 In this section we describe how the simple object model from
 Section~\ref{sub:running} can be made efficient using the hints described in the
@@ -762,7 +788,7 @@ trace to check whether the assumptions about the objects are still true. This
 makes operations on objects seriously faster.
 
 \section{Evaluation}
-\label{sect:evaluation}
+\label{sec:evaluation}
 
 \section{Related Work}
 
