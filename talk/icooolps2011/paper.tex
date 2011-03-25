@@ -93,7 +93,7 @@ nigh-impossible, because or their many corner-cases.
 It has long been an objective of the partial evaluation community to
 automatically produce compilers from interpreters. There has been a recent
 renaissance of this idea using the different technique of tracing just-in-time
-compilers. A number of projects have attempted this approach. SPUR \cite{XXX} is
+compilers. A number of projects have attempted this approach. SPUR \cite{bebenita_spur:_2010} is
 a tracing JIT for .NET together with a JavaScript implementation in C\#. PyPy
 \cite{armin_rigo_pypys_2006} contains a tracing JIT for RPython (a restricted
 subset of Python). This JIT is then used to trace a number of languages
@@ -182,14 +182,18 @@ We call the code that runs on top of an interpreter implemented with PyPy the
 
 A recently popular approach to JIT compilers is that of tracing JITs. Tracing
 JITs have their origin in the Dynamo project which used the for dynamic
-assembler optimization \cite{XXX}. Later they were used for to implement
-a lightweight JIT for Java \cite{XXX} and for dynamic languages such as
-JavaScript \cite{XXX}.
+assembler optimization \cite{bala_dynamo:_2000}. Later they were used for to implement
+a lightweight JIT for Java \cite{gal_hotpathvm:_2006} and for dynamic languages such as
+JavaScript \cite{gal_trace-based_2009}.
 
 A tracing JIT works by recording traces of concrete execution paths through the
 program. Those
 traces are therefore linear list of operations, which are optimized and then
-get turned into machine code. To be able to do this recording, VMs with a
+get turned into machine code. This recording automatically inlines functions,
+when a function call is encountered the operations of the called functions are
+simply put into the trace too.
+
+To be able to do this recording, VMs with a
 tracing JIT typically contain an interpreter. After a user program is
 started the interpreter is used until the most important paths through the user
 program are turned into machine code. The tracing JIT tries to produce traces
