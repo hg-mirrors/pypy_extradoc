@@ -1,4 +1,4 @@
-\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily,numbers = right]
 class Class(object):
     def __init__(self, name):
         self.name = name
@@ -8,10 +8,7 @@ class Class(object):
         return Instance(self)
 
     def find_method(self, name):
-        result = self.methods.get(name)
-        if result is not None:
-            return result
-        raise AttributeError(name)
+        return self.methods.get(name, None)
 
     def change_method(self, name, value):
         self.methods[name] = value
@@ -23,17 +20,15 @@ class Instance(object):
         self.attributes = {}
 
     def getfield(self, name):
-        result = self.attributes.get(name)
-        if result is not None:
-            return result
-        raise AttributeError(name)
+        return self.attributes.get(name, None)
 
     def write_attribute(self, name, value):
         self.attributes[name] = value
 
     def getattr(self, name):
-        try:
-            return self.getfield(name)
-        except AttributeError:
-            return self.cls.find_method(name)
+	result = self.getfield(name)
+	if result is None:
+            result = self.cls.find_method(name)
+	    if result is None:
+		raise AttributeError
 \end{lstlisting}

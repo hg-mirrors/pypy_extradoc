@@ -30,7 +30,7 @@ class Instance(object):
         index = map.getindex(name)
         if index != -1:
             return self.storage[index]
-        raise AttributeError(name)
+        return None
 
     def write_attribute(self, name, value):
         map = hint(self.map, promote=True)
@@ -42,8 +42,5 @@ class Instance(object):
         self.storage.append(value)
 
     def getattr(self, name):
-        try:
-            return self.getfield(name)
-        except AttributeError:
-            return self.cls.find_method(name)
+	... # as before
 \end{lstlisting}

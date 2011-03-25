@@ -11,10 +11,7 @@ class Class(object):
     def find_method(self, name):
         self = hint(self, promote=True)
         version = hint(self.version, promote=True)
-        result = self._find_method(name, version)
-        if result is not None:
-            return result
-        raise AttributeError(name)
+        return self._find_method(name, version)
 
     @purefunction
     def _find_method(self, name, version):
