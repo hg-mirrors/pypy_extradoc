@@ -1,31 +1,37 @@
-%\documentclass{acm_proc_article-sp}
-\documentclass{sig-alternate}
+\documentclass{sigplanconf}
 
 \usepackage{ifthen}
 \usepackage{fancyvrb}
 \usepackage{color}
 \usepackage{ulem}
 \usepackage{xspace}
-\usepackage[scaled=0.8]{beramono}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage[utf8]{inputenc}
 \usepackage{setspace}
+
 \usepackage{listings}
 
-\input{code/style.tex}
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.8]{beramono}
+
+
+\definecolor{commentgray}{rgb}{0.3,0.3,0.3}
 
 \lstset{
   basicstyle=\ttfamily\footnotesize,
   language=Python,
   keywordstyle=\bfseries,
   stringstyle=\color{blue},
-  commentstyle=\color{gray}\textit,
+  commentstyle=\color{commentgray}\textit,
   fancyvrb=true,
   showstringspaces=false,
   %keywords={def,while,if,elif,return,class,get,set,new,guard_class}
   numberstyle = \tiny,
   numbersep = -20pt,
 }
-
 
 \newboolean{showcomments}
 \setboolean{showcomments}{true}
@@ -70,20 +76,14 @@
 
 \title{XXX in a Tracing JIT Compiler for Efficient Dynamic Languages}
 
-\numberofauthors{4}
-\author{
-\alignauthor Carl Friedrich Bolz\\
-       \affaddr{University of Düsseldorf}\\
-       \affaddr{STUPS Group}\\
-       \affaddr{Germany}\\
-       \email{cfbolz@gmx.de}
-\alignauthor XXX
-       \affaddr{XXX}\\
-       \email{XXX}
-}
-\conferenceinfo{ICOOOLPS}{'09 Genova, Italy}
-\CopyrightYear{2009}
-\crdata{978-1-60558-541-3/09/07}
+\authorinfo{Carl Friedrich Bolz \and XXX}
+           {Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
+           }
+           {cfbolz@gmx.de \and XXX}
+
+\conferenceinfo{ICOOOLPS}{'11 Lancaster, UK}
+\CopyrightYear{2011}
+\crdata{XXX}
 
 \maketitle
 
