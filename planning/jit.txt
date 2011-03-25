@@ -80,8 +80,6 @@ Things we can do mostly by editing optimizeopt/:
 
   Should be just a matter of synthesizing reverse operations in rewrite.py
 
-- strlen result is not reused
-
 
 PYTHON EXAMPLES
 ---------------
