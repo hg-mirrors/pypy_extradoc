@@ -8,8 +8,24 @@
 \usepackage{xspace}
 \usepackage[scaled=0.8]{beramono}
 \usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage{listings}
 
 \input{code/style.tex}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  language=Python,
+  keywordstyle=\bfseries,
+  stringstyle=\color{blue},
+  commentstyle=\color{gray}\textit,
+  fancyvrb=true,
+  showstringspaces=false,
+  %keywords={def,while,if,elif,return,class,get,set,new,guard_class}
+  numberstyle = \tiny,
+  numbersep = -20pt,
+}
+
 
 \newboolean{showcomments}
 \setboolean{showcomments}{true}
@@ -296,9 +312,9 @@ an interpreter, a huge amount of time will be spent doing lookups in these
 dictionaries.
 Let's assume we trace through code that sums three attributes, such as:
 
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
-\end{Verbatim}
+\end{lstlisting}
 
 \begin{figure}
 \input{code/trace1.tex}
@@ -360,18 +376,19 @@ be a constant in the trace.
 However, the optimizer can statically know the value of a variable even if it
 is not a constant in the original source code. For example, consider the
 following fragment of RPython code:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{if} \PY{n}{x} \PY{o}{==} \PY{l+m+mi}{4}\PY{p}{:}
-    \PY{n}{y} \PY{o}{=} \PY{n}{y} \PY{o}{+} \PY{n}{x}
-\end{Verbatim}
+
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+if x == 4:
+    y = y + x
+\end{lstlisting}
 
 If the fragment is traced with \texttt{x} being \texttt{4}, the following trace is
 produced:
 %
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard(x == 4)
 y = y + x
-\end{Verbatim}
+\end{lstlisting}
 
 In the trace above, the value of \texttt{x} is statically known thanks to the
 guard. Remember that a guard is a runtime check. The above trace will run to
@@ -392,31 +409,32 @@ typical reason to do that is if there is
 a lot of computation depending on the value of that variable.
 
 Let's make this more concrete. If we trace a call to the following function:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{def} \PY{n+nf}{f1}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
-    \PY{n}{z} \PY{o}{=} \PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
-    \PY{k}{return} \PY{n}{z} \PY{o}{+} \PY{n}{y}
-\end{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+def f2(x, y):
+    x = hint(x, promote=True)
+    z = x * 2 + 1
+    return z + y
+\end{lstlisting}
 
 We get a trace that looks like this:
 
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 v1 = x * 2
 z = v1 + 1
 v2 = z + y
 return(v2)
-\end{Verbatim}
+\end{lstlisting}
 
 Observe how the first two operations could be constant-folded if the value of
 \texttt{x} were known. Let's assume that the value of \texttt{x} can vary, but does so
 rarely, i.e. only takes a few different values at runtime. If this is the
 case, we can add a hint to promote \texttt{x}, like this:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{def} \PY{n+nf}{f2}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
-    \PY{n}{x} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
-    \PY{n}{z} \PY{o}{=} \PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
-    \PY{k}{return} \PY{n}{z} \PY{o}{+} \PY{n}{y}
-\end{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+def f2(x, y):
+    x = hint(x, promote=True)
+    z = x * 2 + 1
+    return z + y
+\end{lstlisting}
 
 The meaning of this hint is that the tracer should pretend that \texttt{x} is a
 constant
@@ -426,13 +444,13 @@ is done. Let's assume that this changed function is traced with
 the arguments \texttt{4} and \texttt{8}. The trace will be the same, except for one
 operation at the beginning:
 
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard(x == 4)
 v1 = x * 2
 z = v1 + 1
 v2 = z + y
 return(v2)
-\end{Verbatim}
+\end{lstlisting}
 
 The promotion is turned into a \texttt{guard} operation in the trace. The guard
 captures the value of \texttt{x} as it was at runtime. From the point of view of the
@@ -441,11 +459,11 @@ statement in the example above. After the guard, the rest of the trace can
 assume that \texttt{x} is equal to \texttt{4}, meaning that the optimizer will turn this
 trace into:
 
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard(x == 4)
 v2 = 9 + y
 return(v2)
-\end{Verbatim}
+\end{lstlisting}
 
 Notice how the first two arithmetic operations were constant folded. The hope is
 that the guard is executed quicker than the multiplication and the addition that
@@ -457,11 +475,11 @@ enough, a new trace will be started from the guard. This other trace will
 capture a different value of \texttt{x}. If it is e.g. \texttt{2}, then the optimized
 trace looks like this:
 
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard(x == 2)
 v2 = 5 + y
 return(v2)
-\end{Verbatim}
+\end{lstlisting}
 
 This new trace will be attached to the guard instruction of the first trace. If
 \texttt{x} takes on even more values, a new trace will eventually be made for all of them,
@@ -493,29 +511,29 @@ hint is needed.
 
 As an example, take the following class:
 
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{class} \PY{n+nc}{A}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{=} \PY{n}{x}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n}{y}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+class A(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-    \PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{val}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{compute}\PY{p}{(}\PY{p}{)} \PY{o}{+} \PY{n}{val}
+    def f(self, val):
+        self.y = self.compute() + val
 
-    \PY{k}{def} \PY{n+nf}{compute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
-        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
-\end{Verbatim}
+    def compute(self):
+        return self.x * 2 + 1
+\end{lstlisting}
 
 Tracing the call \texttt{a.f(10)} of some instance of \texttt{A} yields the following
 trace (note how the call to \texttt{compute} is inlined):
 %
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 x = a.x
 v1 = x * 2
 v2 = v1 + 1
 v3 = v2 + val
 a.y = v3
-\end{Verbatim}
+\end{lstlisting}
 
 In this case, adding a promote of \texttt{self} in the \texttt{f} method to get rid of the
 computation of the first few operations does not help. Even if \texttt{a} is a
@@ -527,29 +545,29 @@ immutable, and therefore \texttt{compute}
 is a pure function. To communicate this, there is a \texttt{purefunction} decorator.
 If the code in \texttt{compute} should be constant-folded away, we would change the
 class as follows:
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{class} \PY{n+nc}{A}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{=} \PY{n}{x}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n}{y}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+class A(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-    \PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{val}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self} \PY{o}{=} \PY{n}{hint}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{promote}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{compute}\PY{p}{(}\PY{p}{)} \PY{o}{+} \PY{n}{val}
+    def f(self, val):
+        self = hint(self, promote=True)
+        self.y = self.compute() + val
 
-    \PY{n+nd}{@purefunction}
-    \PY{k}{def} \PY{n+nf}{compute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
-        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{1}
-\end{Verbatim}
+    @purefunction
+    def compute(self):
+        return self.x * 2 + 1
+\end{lstlisting}
 
 Now the trace will look like this:
 %
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard(a == 0xb73984a8)
 v1 = compute(a)
 v2 = v1 + val
 a.y = v2
-\end{Verbatim}
+\end{lstlisting}
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
 during tracing. The call to \texttt{compute} is not inlined, so that the optimizer
@@ -558,11 +576,11 @@ argument
 is a constant reference, the call will be removed by the optimizer. The final
 trace looks like this:
 %
-\begin{Verbatim}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard(a == 0xb73984a8)
 v2 = 9 + val
 a.y = v2
-\end{Verbatim}
+\end{lstlisting}
 
 (assuming that the \texttt{x} field's value is \texttt{4}).
 

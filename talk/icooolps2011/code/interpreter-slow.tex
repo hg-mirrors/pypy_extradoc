@@ -1,39 +1,39 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{class} \PY{n+nc}{Class}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+class Class(object):
+    def __init__(self, name):
+        self.name = name
+        self.methods = {}
 
-    \PY{k}{def} \PY{n+nf}{instantiate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
-        \PY{k}{return} \PY{n}{Instance}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}
+    def instantiate(self):
+        return Instance(self)
 
-    \PY{k}{def} \PY{n+nf}{find\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
-            \PY{k}{return} \PY{n}{result}
-        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+    def find_method(self, name):
+        result = self.methods.get(name)
+        if result is not None:
+            return result
+        raise AttributeError(name)
 
-    \PY{k}{def} \PY{n+nf}{change\PYZus{}method}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{methods}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+    def change_method(self, name, value):
+        self.methods[name] = value
 
 
-\PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
-    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{cls}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls} \PY{o}{=} \PY{n}{cls}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+class Instance(object):
+    def __init__(self, cls):
+        self.cls = cls
+        self.attributes = {}
 
-    \PY{k}{def} \PY{n+nf}{getfield}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{n}{result} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{if} \PY{n}{result} \PY{o+ow}{is} \PY{o+ow}{not} \PY{n+nb+bp}{None}\PY{p}{:}
-            \PY{k}{return} \PY{n}{result}
-        \PY{k}{raise} \PY{n+ne}{AttributeError}\PY{p}{(}\PY{n}{name}\PY{p}{)}
+    def getfield(self, name):
+        result = self.attributes.get(name)
+        if result is not None:
+            return result
+        raise AttributeError(name)
 
-    \PY{k}{def} \PY{n+nf}{write\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{attributes}\PY{p}{[}\PY{n}{name}\PY{p}{]} \PY{o}{=} \PY{n}{value}
+    def write_attribute(self, name, value):
+        self.attributes[name] = value
 
-    \PY{k}{def} \PY{n+nf}{getattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
-        \PY{k}{try}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{getfield}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-        \PY{k}{except} \PY{n+ne}{AttributeError}\PY{p}{:}
-            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cls}\PY{o}{.}\PY{n}{find\PYZus{}method}\PY{p}{(}\PY{n}{name}\PY{p}{)}
-\end{Verbatim}
+    def getattr(self, name):
+        try:
+            return self.getfield(name)
+        except AttributeError:
+            return self.cls.find_method(name)
+\end{lstlisting}
