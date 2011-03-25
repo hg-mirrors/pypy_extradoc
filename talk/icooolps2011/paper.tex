@@ -156,17 +156,18 @@ presents benchmarks.
 \label{sect:pypy}
 
 The PyPy project \cite{armin_rigo_pypys_2006} strives to be an environment where
-complex dynamic languages can be efficiently implemented. The approach taken
-when implement a language with PyPy is to write an interpreter for the language
+complex dynamic languages can be implemented efficiently. The approach taken
+when implementing a language with PyPy is to write an interpreter for the language
 in \emph{RPython}. RPython is a restricted subset of Python chosen in such a way
 that it is possible to perform type inference on it. The interpreters in RPython
 can therefore be translated to efficient C code.
 
 A number of languages have been implemented with PyPy, most importantly a full
-Python implementation, but also a Prolog interpreter \cite{XXX} and a Smalltalk
-VM \cite{XXX}.
+Python implementation, but also a Prolog interpreter
+\cite{carl_friedrich_bolz_towards_2010} and a Smalltalk VM
+\cite{carl_friedrich_bolz_back_2008}.
 
-This translation to C code adds a number of implementation details into the
+The translation of the interpreter to C code adds a number of implementation details into the
 final executable that are not present in the interpreter implementation, such as
 a garbage collector. The interpreter can therefore be kept free from low-level
 implementation details. Another aspect of the final VM that is added
@@ -179,14 +180,21 @@ We call the code that runs on top of an interpreter implemented with PyPy the
 \subsection{PyPy's Meta-Tracing JIT Compilers}
 \label{sect:tracing}
 
-XXX citations
 A recently popular approach to JIT compilers is that of tracing JITs. Tracing
-JITs record traces of concrete execution paths through the program. Those
+JITs have their origin in the Dynamo project which used the for dynamic
+assembler optimization \cite{XXX}. Later they were used for to implement
+a lightweight JIT for Java \cite{XXX} and for dynamic languages such as
+JavaScript \cite{XXX}.
+
+A tracing JIT works by recording traces of concrete execution paths through the
+program. Those
 traces are therefore linear list of operations, which are optimized and then
 get turned into machine code. To be able to do this recording, VMs with a
-tracing JIT typically also contain an interpreter. After a user program is
+tracing JIT typically contain an interpreter. After a user program is
 started the interpreter is used until the most important paths through the user
-program are turned into machine code.
+program are turned into machine code. The tracing JIT tries to produce traces
+that correspond to loops in the traced program, but most tracing JITs now also
+have support for tracing non-loops \cite{XXX}.
 
 Because the traces always correspond to a concrete execution they cannot
 contain any control flow splits. Therefore they encode the control flow
@@ -195,7 +203,8 @@ operations that check that the assumptions are still true when the trace is
 later executed with different values.
 
 One disadvantage of tracing JITs which makes them not directly applicable to
-PyPy is that they encode the language semantics. Since PyPy wants to be a
+PyPy is that they need to encode the language semantics of the language they are
+tracing. Since PyPy wants to be a
 general framework, we want to reuse our tracer for different languages.
 Therefore PyPy's JIT is a meta-tracer \cite{bolz_tracing_2009}. It does not
 trace the execution of the user program, but instead traces the execution of
@@ -203,7 +212,14 @@ the \emph{interpreter} that is running the program. This means that the traces
 it produces don't contain the bytecodes of the language in question, but
 RPython-level operations that the interpreter did to execute the program.
 
-On the other hand, the loops that are traced by the tracer are the loops in the
+Tracing through the execution of an interpreter has many advantages. It makes
+the tracer, its optimizers and backends reusable for a variety of languages. The
+language semantics do not need to be encoded into the JIT. Instead the tracer
+just picks them up from the interpreter. XXX mention disadvantage of long
+traces?
+
+While the operations in a trace are those of the interpreter, the loops that are
+traced by the tracer are the loops in the
 user program. This means that the tracer stops tracing after one iteration of
 the loop in the user function that is being considered. At this point, it can
 have traced many iterations of the interpreter main loop.
@@ -222,8 +238,6 @@ programmer (the user). If the tracer is used, it traces operations on the level
 of the interpreter. However, the extent of the trace is determined by the loops
 in the user program.
 
-XXX trace makes the object model operations explicit and transparent to the
-optimizer
 
 \subsection{Optimizing Traces}
 \label{sub:optimizing}
