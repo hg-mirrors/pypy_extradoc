@@ -1,33 +1,28 @@
-\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-# inst.getattr("a")
-# inside Instance.getfield
-$attributes_1$ = inst.attributes
-$result_1$ = dict.get($attributes_1$, "a")
-guard($result_1$ is not None)
+\begin{lstlisting}[mathescape,xleftmargin=20pt,numberblanklines=false,numbers=right,escapechar=|, firstnumber=27,basicstyle=\ttfamily]
+# inst.getattr("a")                         |\setcounter{lstnumber}{21}|
+$attributes_1$ = inst.attributes            |\setcounter{lstnumber}{21}|
+$result_1$ = dict.get($attributes_1$, "a")  |\setcounter{lstnumber}{28}|
+guard($result_1$ is not None)               |\setcounter{lstnumber}{25}|
 
-# inst.getattr("b")
-# inside Instance.getfield
-$attributes_2$ = inst.attributes
-$v_1$ = dict.get($attributes_2$, "b")
-guard($v_1$ is None)
-# inside Class.find_method
-$cls_1$ = inst.cls
-$methods_1$ = cls.methods
-$result_2$ = dict.get($methods_1$, "b")
-guard($result_2$ is not None)
-$v_2$ = $result_1$ + $result_2$
+# inst.getattr("b")                         |\setcounter{lstnumber}{21}|
+$attributes_2$ = inst.attributes            |\setcounter{lstnumber}{21}|
+$v_1$ = dict.get($attributes_2$, "b")       |\setcounter{lstnumber}{28}|
+guard($v_1$ is None)                        |\setcounter{lstnumber}{29}|
+$cls_1$ = inst.cls                          |\setcounter{lstnumber}{9}|
+$methods_1$ = cls.methods                   |\setcounter{lstnumber}{9}|
+$result_2$ = dict.get($methods_1$, "b")     |\setcounter{lstnumber}{30}|
+guard($result_2$ is not None)               |\setcounter{lstnumber}{-2}|
+$v_2$ = $result_1$ + $result_2$             |\setcounter{lstnumber}{25}|
 
-# inst.getattr("c")
-# inside Instance.getfield
-$attributes_3$ = inst.attributes
-$v_3$ = dict.get($attributes_3$, "c")
-guard($v_3$ is None)
-# inside Class.find_method
-$cls_1$ = inst.cls
-$methods_2$ = cls.methods
-$result_3$ = dict.get($methods_2$, "c")
-guard($result_3$ is not None)
+# inst.getattr("c")                         |\setcounter{lstnumber}{21}|
+$attributes_3$ = inst.attributes            |\setcounter{lstnumber}{21}|
+$v_3$ = dict.get($attributes_3$, "c")       |\setcounter{lstnumber}{28}|
+guard($v_3$ is None)                        |\setcounter{lstnumber}{29}|
+$cls_1$ = inst.cls                          |\setcounter{lstnumber}{9}|
+$methods_2$ = cls.methods                   |\setcounter{lstnumber}{9}|
+$result_3$ = dict.get($methods_2$, "c")     |\setcounter{lstnumber}{30}|
+guard($result_3$ is not None)               |\setcounter{lstnumber}{-3}|
 
-$v_4$ = $v_2$ + $result_3$
+$v_4$ = $v_2$ + $result_3$                  |\setcounter{lstnumber}{-2}|
 return($v_4$)
-\end{lstlisting}
+\end{lstlisting} % XXX find out how to not number lines
