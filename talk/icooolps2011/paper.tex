@@ -156,7 +156,7 @@ The contributions of this paper are:
  how it can be improved using these hints.
 \end{itemize}
 
-The paper is structured as follows: Section~\ref{sec:background} gives an
+The paper is structured as follows: Section~\ref{sec:Background} gives an
 introduction to the PyPy project and meta-tracing and presents an example of a
 tiny dynamic language object model. Section~\ref{sec:hints} presents the hints,
 what they do and how they are applied. Section~\ref{sec:fastobjmodel} shows how
@@ -169,7 +169,7 @@ presents benchmarks.
 \label{sec:Background}
 
 \subsection{The PyPy Project}
-\label{sect:pypy}
+\label{sub:pypy}
 
 The PyPy project \cite{armin_rigo_pypys_2006} strives to be an environment where
 complex dynamic languages can be implemented efficiently. The approach taken
@@ -194,7 +194,7 @@ We call the code that runs on top of an interpreter implemented with PyPy the
 
 %___________________________________________________________________________
 \subsection{PyPy's Meta-Tracing JIT Compilers}
-\label{sect:tracing}
+\label{sub:tracing}
 
 A recently popular approach to JIT compilers is that of tracing JITs. Tracing
 JITs have their origin in the Dynamo project which used the for dynamic
@@ -331,7 +331,7 @@ trace indeed contains
 five calls to \texttt{dict.get}, which is slow. To make the language efficient
 using a tracing JIT, we need to find a way to get rid of these dictionary
 lookups somehow. How to achieve this will be topic of
-Section~\ref{sec:putting}.
+Section~\ref{sec:fastobjmodel}.
 
 
 
