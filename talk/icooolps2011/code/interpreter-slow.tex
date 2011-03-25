@@ -10,7 +10,7 @@ class Class(object):
     def find_method(self, name):
         return self.methods.get(name, None)
 
-    def change_method(self, name, value):
+    def write_method(self, name, value):
         self.methods[name] = value
 
 
@@ -31,4 +31,5 @@ class Instance(object):
             result = self.cls.find_method(name)
 	    if result is None:
 		raise AttributeError
+	return result
 \end{lstlisting}

@@ -17,7 +17,7 @@ class Class(object):
     def _find_method(self, name, version):
         return self.methods.get(name)
 
-    def change_method(self, name, value):
+    def write_method(self, name, value):
         self.methods[name] = value
         self.version = VersionTag()
 \end{lstlisting}
