@@ -206,6 +206,19 @@ number of benchmarks.},
 	pages = {53--64}
 },
 
+@article{futamura_partial_1999,
+	title = {Partial Evaluation of Computation Process - An Approach to a {Compiler-Compiler}},
+	volume = {12},
+	url = {http://citeseer.ist.psu.edu/futamura99partial.html},
+	number = {4},
+	journal = {{Higher-Order} and Symbolic Computation},
+	author = {Yoshihiko Futamura},
+	year = {1999},
+	keywords = {Futamura},
+	pages = {381--391},
+	annote = {{{\textless}p{\textgreater}Classical} futamura paper, defines partial evaluation as follow:{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}a function f(c, r) to some output. partial evaluation is a function a such that{\textless}/p{\textgreater}{\textless}p{\textgreater}f(c`, r`) = a(f, c`)(r`){\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}hints at futamura-projections. Describes a vague algorithm for actually doing partial evaluation. The algorithm contains some elements that are quite similar to merging.{\textless}/p{\textgreater}}
+},
+
 @book{jones_partial_1993,
 	title = {Partial evaluation and automatic program generation},
 	isbn = {0-13-020249-5},
@@ -398,6 +411,21 @@ oriented {VMs.} In this paper we compare these two approaches in detail.},
 	year = {2004},
 	keywords = {{JIT,} Python},
 	pages = {15--26}
+},
+
+@inproceedings{sullivan_dynamic_2003,
+	address = {San Diego, California},
+	title = {Dynamic native optimization of interpreters},
+	isbn = {1-58113-655-2},
+	url = {http://portal.acm.org/citation.cfm?id=858570.858576},
+	doi = {10.1145/858570.858576},
+	abstract = {For domain specific languages, "scripting languages", dynamic languages, and for virtual machine-based languages, the most straightforward implementation strategy is to write an interpreter. A simple interpreter consists of a loop that fetches the next bytecode, dispatches to the routine handling that bytecode, then loops. There are many ways to improve upon this simple mechanism, but as long as the execution of the program is driven by a representation of the program other than as a stream of native instructions, there will be some "interpretive {overhead".There} is a long history of approaches to removing interpretive overhead from programming language implementations. In practice, what often happens is that, once an interpreted language becomes popular, pressure builds to improve performance until eventually a project is undertaken to implement a native Just In Time {(JIT)} compiler for the language. Implementing a {JIT} is usually a large effort, affects a significant part of the existing language implementation, and adds a significant amount of code and complexity to the overall code {base.In} this paper, we present an innovative approach that dynamically removes much of the interpreted overhead from language implementations, with minimal instrumentation of the original interpreter. While it does not give the performance improvements of hand-crafted native compilers, our system provides an appealing point on the language implementation spectrum.},
+	booktitle = {Proceedings of the 2003 workshop on Interpreters, virtual machines and emulators},
+	publisher = {{ACM}},
+	author = {Gregory T. Sullivan and Derek L. Bruening and Iris Baron and Timothy Garnett and Saman Amarasinghe},
+	year = {2003},
+	pages = {50--57},
+	annote = {{{\textless}p{\textgreater}Describes} the application of Dynamo to interpreters. The unchanged dynamo does not fare too well on interpreters, since it traces one iteration of the bytecode loop, and the next iteration is likely to be very different. Matters are improved by adding hints to the interpreter that tell the tracer what the program counter of the interpreter is. Then the tracer only closes loops at the application {level.{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}Strong} restrictions due to the fact that things happen on the assembler level.{\textless}/p{\textgreater}}
 },
 
 @incollection{carl_friedrich_bolz_back_2008,

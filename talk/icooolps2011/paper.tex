@@ -814,7 +814,30 @@ expected to change slowly.
 
 \section{Related Work}
 
+partial evaluation \cite{futamura_partial_1999} \cite{jones_partial_1993}
+
+earlier examples of promotion \cite{carl_friedrich_bolz_towards_????}, \cite{armin_rigo_jit_2007}
+
+meta-tracers: SPUR \cite{bebenita_spur:_2010}
+tamarin/lua stuff \cite{yermolovich_optimization_2009}
+Dynamo \cite{sullivan_dynamic_2003}
+
+\cite{chambers_efficient_1989} maps
+\cite{hoelzle_optimizing_1994} Type feedback
+\cite{hoelzle_optimizing_1991} PICs
+find the web page of V8 about maps
+
+is there anything about versions? smalltalks tend to clear their method caches
+when new methods are added. self and java use dependency tracking and
+deoptimization. this is better what we have above, because we need runtime
+checks. mention out of line guard?
+
+jruby used versions at some point, jvm-l mailing list discusses them
+
 \cite{mario_wolczko_towards_1999}
+
+invokedynamic tries to give control to the language implementor about PICs and
+deoptimization
 
 \section{Conclusion and Next Steps}
 
