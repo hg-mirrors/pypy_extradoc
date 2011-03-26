@@ -382,17 +382,17 @@ if x == 4:
     y = y + x
 \end{lstlisting}
 
-If the fragment is traced with \texttt{x} being \texttt{4}, the following trace is
+If the fragment is traced with $x_1$ being \texttt{4}, the following trace is
 produced:
 %
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard(x == 4)
-y = y + x
+guard($x_1$ == 4)
+$y_2$ = $y_1$ + $x_1$
 \end{lstlisting}
 
-In the trace above, the value of \texttt{x} is statically known thanks to the
+In the trace above, the value of $x_1$ is statically known thanks to the
 guard. Remember that a guard is a runtime check. The above trace will run to
-completion when \texttt{x == 4}. If the check fails, execution of the trace is
+completion when $x_1$ \texttt{== 4}. If the check fails, execution of the trace is
 stopped and the interpreter continues to run.
 
 There are cases in which it is useful to turn an arbitrary variable
@@ -410,7 +410,7 @@ a lot of computation depending on the value of that variable.
 
 Let's make this more concrete. If we trace a call to the following function:
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-def f2(x, y):
+def f1(x, y):
     z = x * 2 + 1
     return z + y
 \end{lstlisting}
@@ -418,18 +418,18 @@ def f2(x, y):
 We get a trace that looks like this:
 
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-v1 = x * 2
-z = v1 + 1
-v2 = z + y
-return(v2)
+$v_1$ = $x_1$ * 2
+$z_1$ = $v_1$ + 1
+$v_2$ = $z_1$ + $y_1$
+return($v_2$)
 \end{lstlisting}
 
 Observe how the first two operations could be constant-folded if the value of
-\texttt{x} were known. Let's assume that the value of \texttt{x} can vary, but does so
+$x_1$ were known. Let's assume that the value of \texttt{x} in the Python code can vary, but does so
 rarely, i.e. only takes a few different values at runtime. If this is the
 case, we can add a hint to promote \texttt{x}, like this:
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-def f2(x, y):
+def f1(x, y):
     x = hint(x, promote=True)
     z = x * 2 + 1
     return z + y
@@ -444,44 +444,44 @@ the arguments \texttt{4} and \texttt{8}. The trace will be the same, except for 
 operation at the beginning:
 
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard(x == 4)
-v1 = x * 2
-z = v1 + 1
-v2 = z + y
+guard($x_1$ == 4)
+$v_1$ = $x_1$ * 2
+$z_1$ = $v_1$ + 1
+$v_2$ = $z_1$ + $y_1$
 return(v2)
 \end{lstlisting}
 
 The promotion is turned into a \texttt{guard} operation in the trace. The guard
-captures the value of \texttt{x} as it was at runtime. From the point of view of the
+captures the value of $x_1$ as it was at runtime. From the point of view of the
 optimizer, this guard is not any different than the one produced by the \texttt{if}
 statement in the example above. After the guard, the rest of the trace can
-assume that \texttt{x} is equal to \texttt{4}, meaning that the optimizer will turn this
+assume that $x_1$ is equal to \texttt{4}, meaning that the optimizer will turn this
 trace into:
 
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard(x == 4)
-v2 = 9 + y
-return(v2)
+guard($x_1$ == 4)
+$v_2$ = 9 + $y_1$
+return($v_2$)
 \end{lstlisting}
 
 Notice how the first two arithmetic operations were constant folded. The hope is
 that the guard is executed quicker than the multiplication and the addition that
 was now optimized away.
 
-If this trace is executed with values of \texttt{x} other than \texttt{4}, the guard will
+If this trace is executed with values of $x_1$ other than \texttt{4}, the guard will
 fail, and execution will continue in the interpreter. If the guard fails often
 enough, a new trace will be started from the guard. This other trace will
-capture a different value of \texttt{x}. If it is e.g. \texttt{2}, then the optimized
+capture a different value of $x_1$. If it is e.g. \texttt{2}, then the optimized
 trace looks like this:
 
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard(x == 2)
-v2 = 5 + y
-return(v2)
+guard($x_1$ == 2)
+$v_2$ = 5 + $y_1$
+return($v_2$)
 \end{lstlisting}
 
 This new trace will be attached to the guard instruction of the first trace. If
-\texttt{x} takes on even more values, a new trace will eventually be made for all of them,
+$x_1$ takes on even more values, a new trace will eventually be made for all of them,
 linking them into a chain. This is clearly not desirable, so we should promote
 only variables that don't vary much. However, adding a promotion hint will never produce wrong
 results. It might just lead to too much assembler code.
@@ -527,15 +527,15 @@ Tracing the call \texttt{a.f(10)} of some instance of \texttt{A} yields the foll
 trace (note how the call to \texttt{compute} is inlined):
 %
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-x = a.x
-v1 = x * 2
-v2 = v1 + 1
-v3 = v2 + val
-a.y = v3
+$x_1$ = $a_1$.x
+$v_1$ = $x_1$ * 2
+$v_2$ = $v_1$ + 1
+$v_3$ = $v_2$ + $val_1$
+$a_1$.y = $v_3$
 \end{lstlisting}
 
 In this case, adding a promote of \texttt{self} in the \texttt{f} method to get rid of the
-computation of the first few operations does not help. Even if \texttt{a} is a
+computation of the first few operations does not help. Even if $a_1$ is a
 constant reference to an object, reading the \texttt{x} field does not necessarily
 always yield the same value. To solve this problem, there is another annotation,
 which lets the interpreter author communicate invariants to the optimizer. In
@@ -562,10 +562,10 @@ class A(object):
 Now the trace will look like this:
 %
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard(a == 0xb73984a8)
-v1 = compute(a)
-v2 = v1 + val
-a.y = v2
+guard($a_1$ == 0xb73984a8)
+$v_1$ = compute($a_1$)
+$v_2$ = $v_1$ + $val_1$
+$a_1$.y = $v_2$
 \end{lstlisting}
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
@@ -576,9 +576,9 @@ is a constant reference, the call will be removed by the optimizer. The final
 trace looks like this:
 %
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard(a == 0xb73984a8)
-v2 = 9 + val
-a.y = v2
+guard($a_1$ == 0xb73984a8)
+$v_2$ = 9 + $val_1$
+$a_1$.y = $v_2$
 \end{lstlisting}
 
 (assuming that the \texttt{x} field's value is \texttt{4}).
