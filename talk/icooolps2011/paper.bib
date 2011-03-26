@@ -206,6 +206,16 @@ number of benchmarks.},
 	pages = {53--64}
 },
 
+@book{jones_partial_1993,
+	title = {Partial evaluation and automatic program generation},
+	isbn = {0-13-020249-5},
+	url = {http://portal.acm.org/citation.cfm?id=153676},
+	abstract = {This book is out of print. For copies, Please refer to the following online page},
+	publisher = {{Prentice-Hall,} Inc.},
+	author = {Neil D. Jones and Carsten K. Gomard and Peter Sestoft},
+	year = {1993}
+},
+
 @inproceedings{armin_rigo_pypys_2006,
 	address = {Portland, Oregon, {USA}},
 	title = {{PyPy's} approach to virtual machine construction},
@@ -291,6 +301,32 @@ number of benchmarks.},
 	pages = {144--153}
 },
 
+@inproceedings{mario_wolczko_towards_1999,
+	title = {Towards a Universal Implementation Substrate for {Object-Oriented} Languages},
+	abstract = {Self is a minimalist object-oriented language with a sophisticated implementation that utilizes adaptive optimization. We have built implementations of Smalltalk and Java by translation to Self. These implementations were much easier to construct in Self than by conventional means, and perform surprisingly well (competitively with conventional, commercial implementations). This leads us to believe that a Self-like system may form the basis of a universal substrate for implementation of object-oriented languages.},
+	booktitle = {{OOPSLA} workshop on Simplicity, Performance, and Portability in Virtual Machine Design},
+	author = {Mario Wolczko and Ole Agesen and David Ungar},
+	year = {1999},
+	keywords = {fixme},
+	annote = {{{\textless}p{\textgreater}Describes} implementations of Smalltalk and Java by translation to {SELF.} The performance of each is better than some \&quot;good\&quot; implementations of both at the time. They argue that {SELF} can be used to make good implementations of {OO} languages by translation easily (employs many {PyPy-like} arguments, that {VM} construction is hard, {etc.).{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}They} cut corners in some places (e.g. about floats in Java) and need to extend the handling of integers in the {SELF} {VM.} In addition, writing a translator to {SELF} {\textendash} while easier than writing a full {VM} in {C/C++} {\textendash} is still more work than actually writing a simple interpreter.{\textless}/p{\textgreater}}
+},
+
+@inproceedings{hoelzle_optimizing_1994,
+	address = {Orlando, Florida, United States},
+	title = {Optimizing dynamically-dispatched calls with run-time type feedback},
+	isbn = {{0-89791-662-X}},
+	url = {http://portal.acm.org/citation.cfm?id=178243.178478},
+	doi = {10.1145/178243.178478},
+	abstract = {Note: {OCR} errors may be found in this Reference List extracted from the full text article. {ACM} has opted to expose the complete List rather than only correct and linked references.},
+	booktitle = {Proceedings of the {ACM} {SIGPLAN} 1994 conference on Programming language design and implementation},
+	publisher = {{ACM}},
+	author = {Urs H\"{o}lzle and David Ungar},
+	year = {1994},
+	keywords = {{JIT,} polymorphic inline cache, self, type-feedback},
+	pages = {326--336},
+	annote = {{{\textless}p{\textgreater}Completely} straightforward paper about type-feedback: collect type statistics at runtime and use them later to make better code by special-casing the common cases.{\textless}/p{\textgreater}}
+},
+
 @inproceedings{yermolovich_optimization_2009,
 	address = {Orlando, Florida, {USA}},
 	title = {Optimization of dynamic languages using hierarchical layering of virtual machines},
@@ -315,6 +351,38 @@ oriented {VMs.} In this paper we compare these two approaches in detail.},
 	booktitle = {Proceedings of the 3rd Workshop on Dynamic Languages and Applications {(DYLA} 2007)},
 	author = {Carl Friedrich Bolz and Armin Rigo},
 	year = {2007}
+},
+
+@article{chambers_efficient_1989,
+	title = {An efficient implementation of {SELF} a dynamically-typed object-oriented language based on prototypes},
+	volume = {24},
+	url = {http://portal.acm.org/citation.cfm?id=74884},
+	doi = {10.1145/74878.74884},
+	abstract = {We have developed and implemented techniques that double the performance of dynamically-typed object-oriented languages. Our {SELF} implementation runs twice as fast as the fastest Smalltalk implementation, despite {SELF's} lack of classes and explicit variables. To compensate for the absence of classes, our system uses implementation-level maps to transparently group objects cloned from the same prototype, providing data type information and eliminating the apparent space overhead for prototype-based systems. To compensate for dynamic typing, user-defined control structures, and the lack of explicit variables, our system dynamically compiles multiple versions of a source method, each customized according to its receiver's map. Within each version the type of the receiver is fixed, and thus the compiler can statically bind and inline all messages sent to self. Message splitting and type prediction extract and preserve even more static type information, allowing the compiler to inline many other messages. Inlining dramatically improves performance and eliminates the need to hard-wire low-level methods such as +,==, and {ifTrue:.} Despite inlining and other optimizations, our system still supports interactive programming environments. The system traverses internal dependency lists to invalidate all compiled methods affected by a programming change. The debugger reconstructs inlined stack frames from compiler-generated debugging information, making inlining invisible to the {SELF} programmer.},
+	number = {10},
+	journal = {{SIGPLAN} Not.},
+	author = {C. Chambers and D. Ungar and E. Lee},
+	year = {1989},
+	keywords = {self, specialization},
+	pages = {49--70},
+	annote = {{\textless}p{\textgreater}describes the first implementation of {SELF.} Since {SELF} is highly dynamic, it is not easy to optimize it well.{\textless}/p{\textgreater}
+{\textless}p{\textgreater}~{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}The} first problem is one of space, the prototypical nature of self makes its objects much larger. This is solved by "maps", which are like sharing dicts in pypy: every object has an associated map (structure object) that describes how the layout of the object. In that respect a map is a bit like a class, but user-invisible.{\textless}/p{\textgreater}
+{\textless}p{\textgreater}~{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}The} compilation behavior of {SELF} is such that the every method is specialized for the map of the first argument. Then aggressive inlining is performed, which is particularly useful for self-sends (which are syntactically easy to write in {SELF),} since the lookup of those methods can be done at compile-time since the map is static due to specialization.{\textless}/p{\textgreater}
+{\textless}p{\textgreater}~{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}Further} optimizations are removal of unused closures and method splitting (which essentially prevents merging of paths in the flow graph to keep more information).{\textless}/p{\textgreater}}
+},
+
+@inproceedings{hoelzle_optimizing_1991,
+	title = {Optimizing {Dynamically-Typed} {Object-Oriented} Languages With Polymorphic Inline Caches},
+	isbn = {3-540-54262-0},
+	url = {http://portal.acm.org/citation.cfm?id=679193&dl=ACM&coll=portal},
+	booktitle = {Proceedings of the European Conference on {Object-Oriented} Programming},
+	publisher = {{Springer-Verlag}},
+	author = {Urs H\"{o}lzle and Craig Chambers and David Ungar},
+	year = {1991},
+	pages = {21--38}
 },
 
 @inproceedings{rigo_representation-based_2004,

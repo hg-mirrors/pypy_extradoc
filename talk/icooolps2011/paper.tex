@@ -141,6 +141,9 @@ Together these two hints can be used to express many classic implementation
 techniques used for object models of dynamic languages, such as maps and
 polymorphic inline caches.
 
+XXX replace "turn variable into constant" into "main tool to feedback language
+and semantics specific runtime information into the compilation"
+
 The contributions of this paper are:
 \begin{itemize}
  \item A hint to turn arbitrary variables into constants in the trace.
@@ -394,7 +397,7 @@ stopped and the interpreter continues to run.
 
 There are cases in which it is useful to turn an arbitrary variable
 into a constant value. This process is called \emph{promotion} and it is an old idea
-in partial evaluation (it's called ``the trick'' \cite{XXX} there). Promotion is also heavily
+in partial evaluation (it's called ``The Trick''  \cite{jones_partial_1993} there). Promotion is also heavily
 used by Psyco \cite{rigo_representation-based_2004} and by all older versions
 of PyPy's JIT. Promotion is a technique that only works well in JIT compilers,
 in static compilers it is significantly less applicable.
@@ -408,7 +411,6 @@ a lot of computation depending on the value of that variable.
 Let's make this more concrete. If we trace a call to the following function:
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 def f2(x, y):
-    x = hint(x, promote=True)
     z = x * 2 + 1
     return z + y
 \end{lstlisting}
@@ -647,7 +649,7 @@ their set of keys) with many other instances.
 Therefore it makes sense to factor the layout information out of the instance
 implementation into a shared object, called the \emph{map}. Maps are a well-known
 technique to efficiently implement instances and come from the SELF project
-\cite{XXX}. They are also used by many JavaScript implementations such as V8.
+\cite{chambers_efficient_1989}. They are also used by many JavaScript implementations such as V8.
 The rewritten \texttt{Instance} class using maps can be seen in
 Figure~\ref{fig:maps}.
 
@@ -811,6 +813,8 @@ expected to change slowly.
 \label{sec:evaluation}
 
 \section{Related Work}
+
+\cite{mario_wolczko_towards_1999}
 
 \section{Conclusion and Next Steps}
 
