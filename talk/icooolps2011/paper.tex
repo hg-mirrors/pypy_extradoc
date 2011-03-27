@@ -132,23 +132,28 @@ makes the process not completely automatic but can give good speedups over
 bare meta-tracing.
 
 In this paper we present two of these hints that are extensively used in the
-PyPy project to improve the performance of its Python interpreter. These
-hints are used to control how the optimizer of the tracing JIT can improve the
-traces of the object model. More specifically, these hints influence the
-constant folding optimization. The first hint make it possible to turn arbitrary
-variables in the trace into constants. The second hint allows the definition of
-additional foldable operations.
+PyPy project to improve the performance of its Python interpreter. 
+
+Conceptually the significant speed-ups that can be achieved with
+dynamic compilation depends on feeding into compilation and exploiting
+values observed at runtime that are in practice mostly constant (XXX or should we say slow varying), and
+in structuring implementation code and data structures such that more
+of such values are at hand. The hints that we present allow exactly to implement such feedback and exploitation in a meta-tracing context.
+
+Concretely these hints are used to control how the optimizer of the
+tracing JIT can improve the traces of the object model. More
+specifically, these hints influence the constant folding
+optimization. The first hint make it possible to turn arbitrary
+variables in the trace into constant. The
+second hint allows the definition of additional foldable operations.
 
 Together these two hints can be used to express many classic implementation
 techniques used for object models of dynamic languages, such as maps and
 polymorphic inline caches.
 
-XXX replace "turn variable into constant" into "main tool to feedback language
-and semantics specific runtime information into the compilation"
-
 The contributions of this paper are:
 \begin{itemize}
- \item A hint to turn arbitrary variables into constants in the trace.
+ \item A hint to turn arbitrary variables into constants in the trace, that means the feedback of runtime information into compilation.
  \item A way to define new pure operations which the constant folding
  optimization then recognizes.
  \item A worked-out example of a simple object model of a dynamic language and
