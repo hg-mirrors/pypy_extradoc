@@ -255,8 +255,8 @@ have traced many iterations of the interpreter main loop.
 \label{fig:trace-levels}
 \end{figure}
 
-Figure~\ref{fig:trace-levels} shows a diagram of the process. On the left you
-\pedronis{XXX style: do we want to use you, or we and one} see the levels of execution. The CPU executes the binary of
+Figure~\ref{fig:trace-levels} shows a diagram of the process. On the left are
+the levels of execution. The CPU executes the binary of
 PyPy's Python interpreter, which consists of RPython functions that have been
 compiled first to C, then to machine code. The interpreter runs a Python program written by a
 programmer (the user). If the tracer is used, it traces operations on the level
@@ -593,7 +593,7 @@ $a_1$.y = $v_2$
 
 On the one hand, the \texttt{purefunction} annotation is very powerful. It can be
 used to constant-fold arbitrary parts of the computation in the interpreter.
-However, the annotation also gives you ample opportunity to mess things up. If a
+However, the annotation also gives the interpreter author ample opportunity to mess things up. If a
 function is annotated to be pure, but is not really, the optimizer can produce
 subtly wrong code. Therefore, a lot of care has to be taken when using this
 annotation.
@@ -607,7 +607,7 @@ since it only reads the \texttt{x} field and does not have side effects? This mi
 be possible in this particular case, but in practice the functions that are
 annotated with the \texttt{purefunction} decorator are usually more complex.
 The easiest example for this is that of a function that uses memoization to
-cache its results. If you analyze this function, it looks like the function has
+cache its results. If this function is analyzed, it looks like the function has
 side effects, because it changes the memoizing dictionary. However, because this side
 effect is not externally visible, the function from the outside is pure. This is
 a property that is not easily detectable by analysis. Therefore, the purity
@@ -797,21 +797,21 @@ be promoted after the map has been.
 
 %___________________________________________________________________________
 
-\subsection{More General Patterns}
-
-The techniques we used above to make instance and class lookups faster are
-applicable in more general cases than the one we developed them for. A more
-abstract view of maps is that of splitting a data-structure into a part that
-changes slowly, and a part that changes quickly. In the concrete example of maps
-we split the original dictionary into the map (the slow-changing part) and the
-storage array (the quick-changing part). All the computation on the
-slow-changing part can be constant-folded during tracing so that only the
-manipulation of the quick-changing part remains.
-
-Similarly, versions can be used to constant-fold arbitrary functions of large data
-structures. The version needs to be updated carefully every time the result of
-this function can change. Therefore this is useful only if the data structure is
-expected to change slowly.
+%\subsection{More General Patterns}
+%
+%The techniques we used above to make instance and class lookups faster are
+%applicable in more general cases than the one we developed them for. A more
+%abstract view of maps is that of splitting a data-structure into a part that
+%changes slowly, and a part that changes quickly. In the concrete example of maps
+%we split the original dictionary into the map (the slow-changing part) and the
+%storage array (the quick-changing part). All the computation on the
+%slow-changing part can be constant-folded during tracing so that only the
+%manipulation of the quick-changing part remains.
+%
+%Similarly, versions can be used to constant-fold arbitrary functions of large data
+%structures. The version needs to be updated carefully every time the result of
+%this function can change. Therefore this is useful only if the data structure is
+%expected to change slowly.
 
 
 %___________________________________________________________________________
@@ -858,7 +858,8 @@ efficiently is described by Wolczko et. al. \cite{mario_wolczko_towards_1999}.
 They implement Java and Smalltalk on top of the SELF VM by compiling the
 languages to SELF. The SELF JIT is good enough to optimize the compiled code
 very well. We believe the approach to be restricted to languages that are
-similar enough to SELF. XXX
+similar enough to SELF as there were no mechanisms to control the underlying
+compiler.
 
 Somewhat relatedly, the proposed ``invokedynamic'' bytecode
 \cite{rose_bytecodes_2009} that will be added to the JVM is supposed to make the
@@ -874,10 +875,10 @@ features. XXX
 \cite{hoelzle_optimizing_1991} PICs
 find the web page of V8 about maps
 
-is there anything about versions? smalltalks tend to clear their method caches
-when new methods are added. self and java use dependency tracking and
-deoptimization. this is better what we have above, because we need runtime
-checks. mention out of line guard?
+%is there anything about versions? smalltalks tend to clear their method caches
+%when new methods are added. self and java use dependency tracking and
+%deoptimization. this is better what we have above, because we need runtime
+%checks. mention out of line guard?
 
 jruby used versions at some point, jvm-l mailing list discusses them
 
