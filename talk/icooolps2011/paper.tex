@@ -134,7 +134,7 @@ In this paper we present two of these hints that are extensively used in the
 PyPy project to improve the performance of its Python interpreter. These
 hints are used to control how the optimizer of the tracing JIT can improve the
 traces of the object model. More specifically, these hints influence the
-constant folding optimization. The first hint make it possible to turn arbitrary
+constant folding optimization. The first hint makes it possible to turn arbitrary
 variables in the trace into constants. The second hint allows the definition of
 additional foldable operations.
 
@@ -195,21 +195,21 @@ We call the code that runs on top of an interpreter implemented with PyPy the
 \label{sub:tracing}
 
 A recently popular approach to JIT compilers is that of tracing JITs. Tracing
-JITs have their origin in the Dynamo project which used the for dynamic
-assembler optimization \cite{bala_dynamo:_2000}. Later they were used for to implement
+JITs have their origin in the Dynamo project, which used one of them for dynamic
+assembler optimization \cite{bala_dynamo:_2000}. Later they were used to implement
 a lightweight JIT for Java \cite{gal_hotpathvm:_2006} and for dynamic languages such as
 JavaScript \cite{gal_trace-based_2009}.
 
 A tracing JIT works by recording traces of concrete execution paths through the
 program. Those
 traces are therefore linear list of operations, which are optimized and then
-get turned into machine code. This recording automatically inlines functions,
+get turned into machine code. This recording automatically inlines functions:
 when a function call is encountered the operations of the called functions are
 simply put into the trace too.
 
 To be able to do this recording, VMs with a
 tracing JIT typically contain an interpreter. After a user program is
-started the interpreter is used until the most important paths through the user
+started the interpreter is used; only the most frequently executed paths through the user
 program are turned into machine code. The tracing JIT tries to produce traces
 that correspond to loops in the traced program, but most tracing JITs now also
 have support for tracing non-loops \cite{XXX}.
@@ -220,7 +220,7 @@ decisions needed to stay on the trace with the help of \emph{guards}. Those are
 operations that check that the assumptions are still true when the trace is
 later executed with different values.
 
-One disadvantage of tracing JITs which makes them not directly applicable to
+One disadvantage of (tracing) JITs which makes them not directly applicable to
 PyPy is that they need to encode the language semantics of the language they are
 tracing. Since PyPy wants to be a
 general framework, we want to reuse our tracer for different languages.
@@ -322,7 +322,7 @@ inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
 
 The trace would look like in Figure~\ref{fig:trace1}. In this example, the
 attribute \texttt{a} is found on the instance, but the
-attributes \texttt{b} and \texttt{c} are found on the class. The numbers line
+attributes \texttt{b} and \texttt{c} are found on the class. The line
 numbers in the trace correspond to the line numbers in
 Figure~\ref{fig:interpreter-slow} where the traced operations come from. The
 trace indeed contains
@@ -400,7 +400,7 @@ There are cases in which it is useful to turn an arbitrary variable
 into a constant value. This process is called \emph{promotion} and it is an old idea
 in partial evaluation (it's called ``The Trick''  \cite{jones_partial_1993} there). Promotion is also heavily
 used by Psyco \cite{rigo_representation-based_2004} and by all older versions
-of PyPy's JIT. Promotion is a technique that only works well in JIT compilers,
+of PyPy's JIT. Promotion is a technique that only works well in JIT compilers;
 in static compilers it is significantly less applicable.
 
 Promotion is essentially a tool for trace specialization. In some places in the
@@ -492,14 +492,14 @@ However, the internals of dynamic language interpreters often
 have values that are variable but vary little in the context of parts of a user
 program. An example would be the types of variables in a user function. Even
 though in principle the argument to a Python function could be any Python type,
-in practice the argument types tend to not vary often. Therefore it is possible to
+in practice the argument types tend not to vary often. Therefore it is possible to
 promote the types. The next section will present a complete example of how
 this works.
 
 
 \subsection{Declaring New Pure Operations}
 
-In the last section we saw a way to turn arbitrary variables into constants. All
+In the previous section we saw a way to turn arbitrary variables into constants. All
 pure operations on these constants can be constant-folded. This works great for
 constant folding of simple types, e.g. integers. Unfortunately, in the context of an
 interpreter for a dynamic
@@ -571,7 +571,7 @@ $a_1$.y = $v_2$
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
 during tracing. The call to \texttt{compute} is not inlined, so that the optimizer
-has a chance to see it. Since \texttt{compute} function is marked as pure, and its
+has a chance to see it. Since the \texttt{compute} function is marked as pure, and its
 argument
 is a constant reference, the call will be removed by the optimizer. The final
 trace looks like this:
@@ -706,6 +706,8 @@ But it cannot be, because it is always possible to change the class itself.
 Every time the class changes, \texttt{find\_method} can potentially return a
 new value.
 
+XXX should we say ``version number'' all around when it is really an object?
+
 Therefore, we give every class a version number, which is changed every time a
 class gets changed (i.e., the content of the \texttt{methods} dictionary changes).
 This means that the result of \texttt{methods.get()} for a given \texttt{(name,
@@ -746,7 +748,7 @@ optimized trace can be seen in Figure~\ref{fig:trace5}.
 The index \texttt{0} that is used to read out of the \texttt{storage} array is the result
 of the constant-folded \texttt{getindex} call.
 The constants \texttt{41} and \texttt{17} are the results of the folding of the
-\texttt{\_find\_method`} calls. This final trace is now very good. It no longer performs any
+\texttt{\_find\_method} calls. This final trace is now very good. It no longer performs any
 dictionary lookups. Instead it contains several guards. The first guard
 checks that the map is still the same. This guard will fail if the same
 code is executed with an instance that has another layout. The second guard
@@ -835,9 +837,9 @@ SPUR \cite{bebenita_spur:_2010} is a tracing JIT for CIL bytecode, which is then
 used to trace through an JavaScript implementation written in C\#. The
 JavaScript implementation compiles JavaScript to CIL bytecode together with an
 implementation of the JavaScript object model. The object model uses maps
-and inline caches to speed up operations on objects. The tracer tracers through
+and inline caches to speed up operations on objects. The tracer traces through
 the compiled JavaScript functions and the object model. SPUR contains two hints
-that can be used to influence the tracer, one to prevent tracing of a C\#
+that can be used to influence the tracer: one to prevent tracing of a C\#
 function and one to force unrolling of a loop (PyPy has equivalent hints, but
 they were not described in this paper).
 
