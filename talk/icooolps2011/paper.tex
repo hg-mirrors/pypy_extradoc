@@ -76,7 +76,7 @@
 
 \begin{document}
 
-\title{XXX in a Tracing JIT Compiler for Efficient Dynamic Languages}
+\title{Runtime Feedback in a Meta-Tracing JIT for Efficient Dynamic Languages}
 
 \authorinfo{Carl Friedrich Bolz \and XXX}
            {Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
@@ -135,16 +135,17 @@ In this paper we present two of these hints that are extensively used in the
 PyPy project to improve the performance of its Python interpreter. 
 
 Conceptually the significant speed-ups that can be achieved with
-dynamic compilation depends on feeding into compilation and exploiting
-values observed at runtime that are in practice mostly constant (XXX or should we say slow varying), and
-in structuring implementation code and data structures such that more
-of such values are at hand. The hints that we present allow exactly to implement such feedback and exploitation in a meta-tracing context.
+dynamic compilation depend on feeding into compilation and exploiting
+values observed at runtime that are slow-varying in practice. To exploit the
+runtime feedback, the implementation code and data structures need to be
+structured so that many such values are at hand. The hints that we present allow
+exactly to implement such feedback and exploitation in a meta-tracing context.
 
 Concretely these hints are used to control how the optimizer of the
 tracing JIT can improve the traces of the object model. More
 specifically, these hints influence the constant folding
-optimization. The first hint make it possible to turn arbitrary
-variables in the trace into constant. The
+optimization. The first hint makes it possible to turn arbitrary
+variables in the trace into constant by feeding back runtime values. The
 second hint allows the definition of additional foldable operations.
 
 Together these two hints can be used to express many classic implementation
@@ -153,7 +154,8 @@ polymorphic inline caches.
 
 The contributions of this paper are:
 \begin{itemize}
- \item A hint to turn arbitrary variables into constants in the trace, that means the feedback of runtime information into compilation.
+ \item A hint to turn arbitrary variables into constants in the trace, that
+ means the feedback of runtime information into compilation.
  \item A way to define new pure operations which the constant folding
  optimization then recognizes.
  \item A worked-out example of a simple object model of a dynamic language and
