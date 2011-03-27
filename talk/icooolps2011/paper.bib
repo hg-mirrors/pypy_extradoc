@@ -152,6 +152,21 @@ number of benchmarks.},
 	pages = {465{\textendash}478}
 },
 
+@article{rose_bytecodes_2009,
+	series = {{VMIL} '09},
+	title = {Bytecodes meet combinators: invokedynamic on the {JVM}},
+	location = {Orlando, Florida},
+	shorttitle = {Bytecodes meet combinators},
+	doi = {10.1145/1711506.1711508},
+	abstract = {The Java Virtual Machine {(JVM)} has been widely adopted in part because of its classfile format, which is portable, compact, modular, verifiable, and reasonably easy to work with. However, it was designed for just one {language---Java---and} so when it is used to express programs in other source languages, there are often "pain points" which retard both development and execution. The most salient pain points show up at a familiar place, the method call site. To generalize method calls on the {JVM,} the {JSR} 292 Expert Group has designed a new invokedynamic instruction that provides user-defined call site semantics. In the chosen design, invokedynamic serves as a hinge-point between two coexisting kinds of intermediate language: bytecode containing dynamic call sites, and combinator graphs specifying call targets. A dynamic compiler can traverse both representations simultaneously, producing optimized machine code which is the seamless union of both kinds of input. As a final twist, the user-defined linkage of a call site may change, allowing the code to adapt as the application evolves over time. The result is a system balancing the conciseness of bytecode with the dynamic flexibility of function pointers.},
+	journal = {Proceedings of the Third Workshop on Virtual Machines and Intermediate Languages},
+	author = {John R Rose},
+	year = {2009},
+	note = {{ACM} {ID:} 1711508},
+	keywords = {bytecode, code generation, combinator},
+	pages = {2:1{\textendash}2:11}
+},
+
 @article{bolz_allocation_2011,
 	series = {{PEPM} '11},
 	title = {Allocation removal by partial evaluation in a tracing {JIT}},
@@ -298,6 +313,17 @@ number of benchmarks.},
 	pages = {1--12}
 },
 
+@techreport{andreas_gal_incremental_2006,
+	title = {Incremental Dynamic Code Generation with Trace Trees},
+	abstract = {The unit of compilation for traditional just-in-time compilers is the method. We have explored trace-based compilation, in which the unit of compilation is a loop, potentially spanning multiple methods and even library code. Using a new intermediate representation that is discovered and updated lazily on-demand while the program is being executed, our compiler generates code that is competitive with traditional dynamic compilers, but that uses only a fraction of the compile time and memory footprint.},
+	number = {{ICS-TR-06-16}},
+	institution = {Donald Bren School of Information and Computer Science, University of California, Irvine},
+	author = {Andreas Gal and Michael Franz},
+	month = nov,
+	year = {2006},
+	pages = {11}
+},
+
 @inproceedings{gal_hotpathvm:_2006,
 	address = {Ottawa, Ontario, Canada},
 	title = {{HotpathVM:} an effective {JIT} compiler for resource-constrained devices},
@@ -346,7 +372,13 @@ number of benchmarks.},
 	isbn = {978-1-60558-769-1},
 	url = {http://portal.acm.org/citation.cfm?id=1640134.1640147},
 	doi = {10.1145/1640134.1640147},
-	abstract = {Creating an interpreter is a simple and fast way to implement a dynamic programming language. With this ease also come major drawbacks. Interpreters are significantly slower than compiled machine code because they have a high dispatch overhead and cannot perform optimizations. To overcome these limitations, interpreters are commonly combined with just-in-time compilers to improve the overall performance. However, this means that a just-in-time compiler has to be implemented for each language.},
+	abstract = {Creating an interpreter is a simple and fast way to implement a dynamic programming language. With this ease also come major drawbacks. Interpreters are significantly slower than compiled machine code because they have a high dispatch overhead and cannot perform optimizations. To overcome these limitations, interpreters are commonly combined with just-in-time compilers to improve the overall performance. However, this means that a just-in-time compiler has to be implemented for each language.
+
+We explore the approach of taking an interpreter of a dynamic 
+language and running it on top of an optimizing trace-based virtual machine, i.e., we run a guest {VM} on top of a host {VM.} The host {VM} uses trace recording to observe the guest {VM} executing the application program. Each recorded trace represents a sequence
+of guest {VM} bytecodes corresponding to a given execution path
+through the application program. The host {VM} optimizes and compiles these traces to machine code, thus eliminating the need for a custom just-in-time compiler for the guest {VM.} The guest {VM} only needs to provide basic  information about its interpreter loop to the
+host {VM.}},
 	booktitle = {Proceedings of the 5th symposium on Dynamic languages},
 	publisher = {{ACM}},
 	author = {Alexander Yermolovich and Christian Wimmer and Michael Franz},

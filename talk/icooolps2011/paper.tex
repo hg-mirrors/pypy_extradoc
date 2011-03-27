@@ -5,6 +5,7 @@
 \usepackage{color}
 \usepackage{ulem}
 \usepackage{xspace}
+\usepackage{relsize}
 \usepackage{epsfig}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -814,13 +815,52 @@ expected to change slowly.
 
 \section{Related Work}
 
-partial evaluation \cite{futamura_partial_1999} \cite{jones_partial_1993}
+The very first meta-tracer is described by Sullivan et. al.
+\cite{sullivan_dynamic_2003}. They used Dynamo RIO, the successor of Dynamo
+\cite{XXX} to trace through a small synthetic interpreter. As in Dynamo, tracing
+happens on the machine code level. The tracer is instructed by some hints in the
+tiny interpreter where the main interpreter loop is and for how long to trace to
+match loops in the user-level functions. These hints are comparable to the one
+PyPy uses for the same reasons \cite{bolz_tracing_2009}. Their approach suffers
+mostly from the low abstraction level that machine code provides.
 
-earlier examples of promotion \cite{carl_friedrich_bolz_towards_????}, \cite{armin_rigo_jit_2007}
+Yermolovich et. al. describe the use of the Tamarin JavaScript tracing JIT as a
+meta-tracer for a Lua interpreter. They compile the normal Lua interpreter in C
+to ActionScript bytecode. Again, the interpreter is annotated with some hints
+that indicate the main interpreter loop to the tracer.  No further hints are
+described in the paper. There is no comparison of their system to the original
+Lua VM in C, which makes it hard to judge the effectiveness of the approach.
 
-meta-tracers: SPUR \cite{bebenita_spur:_2010}
-tamarin/lua stuff \cite{yermolovich_optimization_2009}
-Dynamo \cite{sullivan_dynamic_2003}
+SPUR \cite{bebenita_spur:_2010} is a tracing JIT for CIL bytecode, which is then
+used to trace through an JavaScript implementation written in C\#. The
+JavaScript implementation compiles JavaScript to CIL bytecode together with an
+implementation of the JavaScript object model. The object model uses maps
+and inline caches to speed up operations on objects. The tracer tracers through
+the compiled JavaScript functions and the object model. SPUR contains two hints
+that can be used to influence the tracer, one to prevent tracing of a C\#
+function and one to force unrolling of a loop (PyPy has equivalent hints, but
+they were not described in this paper).
+
+
+Partial evaluation \cite{jones_partial_1993} tries to automatically transform
+interpreters into compilers using the second futamura projection
+\cite{futamura_partial_1999}. XXX
+
+An early attempt at building a general environment for implementing languages
+efficiently is described by Wolczko et. al. \cite{mario_wolczko_towards_1999}.
+They implement Java and Smalltalk on top of the SELF VM by compiling the
+languages to SELF. The SELF JIT is good enough to optimize the compiled code
+very well. We believe the approach to be restricted to languages that are
+similar enough to SELF. XXX
+
+Somewhat relatedly, the proposed ``invokedynamic'' bytecode
+\cite{rose_bytecodes_2009} that will be added to the JVM is supposed to make the
+implementation of dynamic languages on top of JVMs easier. The bytecode gives
+the language implementor control over how the JIT optimizes the language's
+features. XXX
+
+%We already explored promotion in other context, such as earlier examples of
+%promotion \cite{carl_friedrich_bolz_towards_????}, \cite{armin_rigo_jit_2007}
 
 \cite{chambers_efficient_1989} maps
 \cite{hoelzle_optimizing_1994} Type feedback
@@ -834,10 +874,6 @@ checks. mention out of line guard?
 
 jruby used versions at some point, jvm-l mailing list discusses them
 
-\cite{mario_wolczko_towards_1999}
-
-invokedynamic tries to give control to the language implementor about PICs and
-deoptimization
 
 \section{Conclusion and Next Steps}
 
