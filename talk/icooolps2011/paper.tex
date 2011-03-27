@@ -52,6 +52,7 @@
 \newcommand\anto[1]{\nb{ANTO}{#1}}
 \newcommand\arigo[1]{\nb{AR}{#1}}
 \newcommand\fijal[1]{\nb{FIJAL}{#1}}
+\newcommand\pedronis[1]{\nb{PEDRONIS}{#1}}
 \newcommand{\commentout}[1]{}
 
 \newcommand\ie{i.e.,\xspace}
@@ -103,13 +104,13 @@ incremental compilers, interpreters, run-time environments]
 One of the hardest parts of implementing a dynamic language efficiently is to
 optimize its object model. This is made harder by the fact that many recent
 languages such as Python, JavaScript or Ruby have rather complex core object
-semantics. For them, implementing just an interpreter is already an arduous
-task. Implementing them efficiently with a just-in-time compiler is
-nigh-impossible, because or their many corner-cases.
+semantics. For them, implementing just an interpreter is already a complex
+task. Implementing them efficiently with a just-in-time compiler (JIT) is
+extremely challenging, because of their many corner-cases.
 
 It has long been an objective of the partial evaluation community to
 automatically produce compilers from interpreters. There has been a recent
-renaissance of this idea using the different technique of tracing just-in-time
+renaissance of this idea around the approach of tracing just-in-time
 compilers. A number of projects have attempted this approach. SPUR \cite{bebenita_spur:_2010} is
 a tracing JIT for .NET together with a JavaScript implementation in C\#. PyPy
 \cite{armin_rigo_pypys_2006} contains a tracing JIT for RPython (a restricted
@@ -119,9 +120,9 @@ directions were done, such as an interpreter for Lua in JavaScript, which is run
 on and optimized with a tracing JIT for JavaScript
 \cite{yermolovich_optimization_2009}.
 
-These projects have in common that they implement a dynamic language in some
-implementation language. In addition they build a tracing JIT for that implementation
-language. The tracing JIT then traces through the object model of the dynamic
+These projects have in common that they work one meta-level down, providing a tracing JIT for the implementation
+language used to implement the dynamic language, and not for the dynamic language itself.
+The tracing JIT then will trace through the object model of the dynamic
 language implementation. This makes the object model transparent to the tracer
 and its optimizations. Therefore the semantics of the dynamic language does not
 have to be replicated in a JIT. We call this approach \emph{meta-tracing}.
@@ -131,23 +132,28 @@ makes the process not completely automatic but can give good speedups over
 bare meta-tracing.
 
 In this paper we present two of these hints that are extensively used in the
-PyPy project to improve the performance of its Python interpreter. These
-hints are used to control how the optimizer of the tracing JIT can improve the
-traces of the object model. More specifically, these hints influence the
-constant folding optimization. The first hint makes it possible to turn arbitrary
-variables in the trace into constants. The second hint allows the definition of
-additional foldable operations.
+PyPy project to improve the performance of its Python interpreter. 
+
+Conceptually the significant speed-ups that can be achieved with
+dynamic compilation depends on feeding into compilation and exploiting
+values observed at runtime that are in practice mostly constant (XXX or should we say slow varying), and
+in structuring implementation code and data structures such that more
+of such values are at hand. The hints that we present allow exactly to implement such feedback and exploitation in a meta-tracing context.
+
+Concretely these hints are used to control how the optimizer of the
+tracing JIT can improve the traces of the object model. More
+specifically, these hints influence the constant folding
+optimization. The first hint make it possible to turn arbitrary
+variables in the trace into constant. The
+second hint allows the definition of additional foldable operations.
 
 Together these two hints can be used to express many classic implementation
 techniques used for object models of dynamic languages, such as maps and
 polymorphic inline caches.
 
-XXX replace "turn variable into constant" into "main tool to feedback language
-and semantics specific runtime information into the compilation"
-
 The contributions of this paper are:
 \begin{itemize}
- \item A hint to turn arbitrary variables into constants in the trace.
+ \item A hint to turn arbitrary variables into constants in the trace, that means the feedback of runtime information into compilation.
  \item A way to define new pure operations which the constant folding
  optimization then recognizes.
  \item A worked-out example of a simple object model of a dynamic language and
@@ -217,8 +223,7 @@ have support for tracing non-loops \cite{XXX}.
 Because the traces always correspond to a concrete execution they cannot
 contain any control flow splits. Therefore they encode the control flow
 decisions needed to stay on the trace with the help of \emph{guards}. Those are
-operations that check that the assumptions are still true when the trace is
-later executed with different values.
+operations that check that the assumptions are still true when the compiled trace is later executed with different values.
 
 One disadvantage of (tracing) JITs which makes them not directly applicable to
 PyPy is that they need to encode the language semantics of the language they are
@@ -249,7 +254,7 @@ have traced many iterations of the interpreter main loop.
 \end{figure}
 
 Figure~\ref{fig:trace-levels} shows a diagram of the process. On the left you
-see the levels of execution. The CPU executes the binary of
+\pedronis{XXX style: do we want to use you, or we and one} see the levels of execution. The CPU executes the binary of
 PyPy's Python interpreter, which consists of RPython functions that have been
 compiled first to C, then to machine code. The interpreter runs a Python program written by a
 programmer (the user). If the tracer is used, it traces operations on the level
@@ -708,7 +713,7 @@ new value.
 
 XXX should we say ``version number'' all around when it is really an object?
 
-Therefore, we give every class a version number, which is changed every time a
+Therefore, we give every class a version object, which is changed every time a
 class gets changed (i.e., the content of the \texttt{methods} dictionary changes).
 This means that the result of \texttt{methods.get()} for a given \texttt{(name,
 version)} pair will always be the same, i.e. it is a pure operation.  To help
