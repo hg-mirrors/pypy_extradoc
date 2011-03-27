@@ -711,8 +711,6 @@ But it cannot be, because it is always possible to change the class itself.
 Every time the class changes, \texttt{find\_method} can potentially return a
 new value.
 
-XXX should we say ``version number'' all around when it is really an object?
-
 Therefore, we give every class a version object, which is changed every time a
 class gets changed (i.e., the content of the \texttt{methods} dictionary changes).
 This means that the result of \texttt{methods.get()} for a given \texttt{(name,
@@ -729,7 +727,7 @@ be seen in Figure~\ref{fig:version}
 
 What is interesting here is that \texttt{\_find\_method} takes the \texttt{version}
 argument but it does not use it at all. Its only purpose is to make the call
-pure, because when the version number changes, the result of the call might be
+pure, because when the version object changes, the result of the call might be
 different than the previous one.
 
 \begin{figure}
