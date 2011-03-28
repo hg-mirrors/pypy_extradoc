@@ -226,7 +226,7 @@ tracing JIT typically contain an interpreter. After a user program is
 started the interpreter is used; only the most frequently executed paths through the user
 program are turned into machine code. The tracing JIT tries to produce traces
 that correspond to loops in the traced program, but most tracing JITs now also
-have support for tracing non-loops \cite{XXX}.
+have support for tracing non-loops \cite{andreas_gal_incremental_2006}.
 
 Because the traces always correspond to a concrete execution they cannot
 contain any control flow splits. Therefore they encode the control flow
@@ -246,8 +246,7 @@ RPython-level operations that the interpreter did to execute the program.
 Tracing through the execution of an interpreter has many advantages. It makes
 the tracer, its optimizers and backends reusable for a variety of languages. The
 language semantics do not need to be encoded into the JIT. Instead the tracer
-just picks them up from the interpreter. XXX mention disadvantage of long
-traces?
+just picks them up from the interpreter.
 
 While the operations in a trace are those of the interpreter, the loops that are
 traced by the tracer are the loops in the
@@ -857,7 +856,8 @@ they were not described in this paper).
 
 Partial evaluation \cite{jones_partial_1993} tries to automatically transform
 interpreters into compilers using the second futamura projection
-\cite{futamura_partial_1999}. XXX
+\cite{futamura_partial_1999}. Given that classical partial evaluation works
+strictly ahead of time, it inherently cannot support runtime feedback.
 
 An early attempt at building a general environment for implementing languages
 efficiently is described by Wolczko et. al. \cite{mario_wolczko_towards_1999}.
@@ -871,22 +871,23 @@ Somewhat relatedly, the proposed ``invokedynamic'' bytecode
 \cite{rose_bytecodes_2009} that will be added to the JVM is supposed to make the
 implementation of dynamic languages on top of JVMs easier. The bytecode gives
 the language implementor control over how the JIT optimizes the language's
-features. XXX
+features and when optimized code needs to be deoptimized. XXX
 
-%We already explored promotion in other context, such as earlier examples of
-%promotion \cite{carl_friedrich_bolz_towards_????}, \cite{armin_rigo_jit_2007}
-
-\cite{chambers_efficient_1989} maps
-\cite{hoelzle_optimizing_1994} Type feedback
-\cite{hoelzle_optimizing_1991} PICs
-find the web page of V8 about maps
+We already explored promotion in other context, such as earlier versions of
+PyPy's JIT \cite{armin_rigo_jit_2007} as well as a Prolog partial evaluator
+\cite{carl_friedrich_bolz_towards_????}. Promotion is quite similar to
+(polymorphic) inline caching and runtime type feedback techniques which were
+first used in Smalltalk \cite{deutsch_efficient_1984} and SELF
+\cite{hoelzle_optimizing_1991,hoelzle_optimizing_1994} implementations.
+Promotion is more general because any information can be cached in line, not
+just classes of method receivers.
 
 %is there anything about versions? smalltalks tend to clear their method caches
 %when new methods are added. self and java use dependency tracking and
 %deoptimization. this is better what we have above, because we need runtime
 %checks. mention out of line guard?
 
-jruby used versions at some point, jvm-l mailing list discusses them
+%jruby used versions at some point, jvm-l mailing list discusses them
 
 
 \section{Conclusion and Next Steps}
