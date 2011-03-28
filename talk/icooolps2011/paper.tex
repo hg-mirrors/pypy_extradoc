@@ -100,6 +100,7 @@ incremental compilers, interpreters, run-time environments]
 
 \begin{abstract}
 
+XXX
 
 \end{abstract}
 
@@ -890,17 +891,15 @@ just classes of method receivers.
 %jruby used versions at some point, jvm-l mailing list discusses them
 
 
-\section{Conclusion and Next Steps}
+\section{Conclusion}
 
 In this paper we presented two hints that can be used in the source code of an
-interpreter written with PyPy. They are used to influence what the optimizer
-does with the trace. We also showed how a small but still relevant dynamic
-object model can use these hints to no longer use any dictionary lookups after
-tracing. Instead a number of guards are inserted into the trace to check whether
-the assumptions about the objects are still true. This makes operations on
-objects seriously faster.
+interpreter written with PyPy. They give control over runtime feedback and
+optimization to the language implementor. They are expressive enough for
+building well-known virtual machine optimization techniques, such as maps and
+inline caches. We believe that they are flexible enough to express a wide
+variety of language semantics efficiently.
 
-XXX
 
 \section*{Acknowledgements}
 
