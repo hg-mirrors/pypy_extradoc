@@ -106,6 +106,9 @@ nice code at all so far:
 
 - let super() work with the method cache.
 
+- turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
+  floats.
+
 - xxx (find more examples :-)
 
 BACKEND TASKS
