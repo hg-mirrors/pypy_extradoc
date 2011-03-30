@@ -100,7 +100,14 @@ incremental compilers, interpreters, run-time environments]
 
 \begin{abstract}
 
-XXX
+A meta-tracing JIT is a JIT that is applicable to a variety of different
+languages without explicitly encoding language semantics into the compiler. So
+far, meta-tracing JITs lacked a way to feed back runtime information into the
+compiler, which restricted their performance. In this paper we describe the
+mechanisms in PyPy's meta-tracing JIT that can be used to control runtime
+feedback in flexible and language-specific ways. These mechanisms are flexible
+enough to implement classical VM techniques such as maps and polymorphic inline
+caches.
 
 \end{abstract}
 
