@@ -11,6 +11,9 @@ INVESTIGATIONS
 NEW TASKS
 ---------
 
+- think about whether W_TypeObject._pure_lookup_where_with_method_cache needs a
+  different decorator, because it cannot be moved around arbitrarily.
+
 - have benchmarks for jit compile time and jit memory usage
   
 - kill GUARD_(NO)_EXCEPTION; replace that by LAST_EXC_VALUE to load the
