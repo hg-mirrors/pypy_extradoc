@@ -100,12 +100,11 @@ incremental compilers, interpreters, run-time environments]
 
 \begin{abstract}
 
-A meta-tracing JIT is a JIT that is applicable to a variety of different
+Meta-tracing JITs can be applied to a variety of different
 languages without explicitly encoding language semantics into the compiler. So
-far, meta-tracing JITs lacked a way to feed back runtime information into the
+far, they lacked a way to feed back runtime information into the
 compiler, which restricted their performance. In this paper we describe the
-mechanisms in PyPy's meta-tracing JIT that can be used to control runtime
-feedback in flexible and language-specific ways. These mechanisms are flexible
+flexible mechanisms in PyPy's meta-tracing JIT that can be used to control runtime feedback in language-specific ways. These mechanisms are flexible
 enough to implement classical VM techniques such as maps and polymorphic inline
 caches.
 
@@ -866,6 +865,9 @@ maps and versioned types together yields a significant improvement over just
 versioned types for Richards. XXX good explanation. For Telco, enabling both
 has little effect over the gains for versioned types alone.
 
+\pedronis{XXX radical idea, given that there may be no space to discuss the subtle points and that this is really about showing that we can enable such mechanisms and there is already literature that shows that/how they work, to just consider the benchmarks with no maps and no versions and with both?}
+
+
 \begin{figure}
 {\footnotesize
 \begin{center}
@@ -939,9 +941,7 @@ compiler.
 
 Somewhat relatedly, the proposed ``invokedynamic'' bytecode
 \cite{rose_bytecodes_2009} that will be added to the JVM is supposed to make the
-implementation of dynamic languages on top of JVMs easier. The bytecode gives
-the language implementor control over how the JIT optimizes the language's
-features and when optimized code needs to be deoptimized. XXX
+implementation of dynamic languages on top of JVMs easier. The bytecode gives access to user accessible generalized inline cache. It requires of course compilation to JVM bytecode instead of simply writing an interpreter, predictability of performance across JVMs is also an open question.
 
 We already explored promotion in other context, such as earlier versions of
 PyPy's JIT \cite{armin_rigo_jit_2007} as well as a Prolog partial evaluator
