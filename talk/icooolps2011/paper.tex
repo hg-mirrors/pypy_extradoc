@@ -830,7 +830,10 @@ For space reasons we cannot perform a full evaluation here, but still want to
 present some benchmark numbers. We chose to present two benchmarks, a port of
 the classical Richards benchmark in Python and a Python version of the Telco
 decimal benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}},
-using a pure Python decimal floating point implementation.
+using a pure Python decimal floating point implementation. The results we see in
+these two benchmarks seem to repeat themselves in other benchmarks using
+object-oriented code, for purely numerical algorithms the speedups are a lot
+lower.
 
 The benchmarks were run on an otherwise idle Intel Core2 Duo P8400 processor
 with 2.26 GHz and 3072 KB of cache on a machine with 3GB RAM running Linux
@@ -848,7 +851,13 @@ used as the result. The errors were computed using a confidence interval with a
 95\% confidence level \cite{georges_statistically_2007}. The results are
 reported in Figure~\ref{fig:times}.
 
-XXX analysis
+Versioned types speed up both benchmarks by a significant factor of around 7.
+The speed advantage of maps alones is a lot less clear. Maps also have a memory
+advantage which we did not measure here. By themselves, maps improved the
+Richards benchmark slightly, but made the Telco benchmark slower. Enabling both
+maps and versioned types together yields a significant improvement over just
+versioned types for Richards. XXX good explanation. For Telco, enabling both
+does not change much.
 
 \begin{figure}
 {\footnotesize
