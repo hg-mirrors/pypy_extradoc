@@ -120,7 +120,7 @@ automatically produce compilers from interpreters. There has been a recent
 renaissance of this idea around the approach of tracing just-in-time
 compilers. A number of projects have attempted this approach. SPUR \cite{bebenita_spur:_2010} is
 a tracing JIT for .NET together with a JavaScript implementation in C\#. PyPy
-\cite{armin_rigo_pypys_2006} contains a tracing JIT for RPython (a restricted
+\cite{armin_rigo_pypys_2006} contains a tracing JIT for Python (a restricted
 subset of Python). This JIT is then used to trace a number of languages
 implementations written in RPython. A number of other experiments in this
 directions were done, such as an interpreter for Lua in JavaScript, which is run
@@ -825,6 +825,59 @@ be promoted after the map has been.
 
 \section{Evaluation}
 \label{sec:evaluation}
+
+For space reasons we cannot perform a full evaluation here, but still want to
+present some benchmark numbers. We chose to present two benchmarks, a port of
+the classical Richards benchmark in RPython and a Python version of the Telco
+decimal benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}},
+using a pure Python decimal floating point implementation.
+
+The benchmarks were run on an otherwise idle Intel Core2 Duo P8400 processor
+with 2.26 GHz and 3072 KB of cache on a machine with 3GB RAM running Linux
+2.6.35. We compared the performance of various Python implementations on the
+benchmarks. As a baseline, we used the standard Python implementation in C,
+CPython 2.6.6\footnote{\texttt{http://python.org}}, which uses a bytecode-based
+interpreter. We compare it against four versions of PyPy's Python interpreter,
+all of them with JIT enabled. The PyPy baseline does not enable maps or type
+versions. Then we have a version each where maps and versions are enabled alone
+and finally a version with both.
+
+All benchmarks were run 50 times in the same process, to give the JIT time to
+produce machine code. The arithmetic mean of the times of the last 30 runs were
+used as the result. The errors were computed using a confidence interval with a
+95\% confidence level \cite{georges_statistically_2007}. The results are
+reported in Figure~\ref{fig:times}.
+
+XXX analysis
+
+\begin{figure}
+{\footnotesize
+\begin{center}
+\begin{tabular}{|l|r|r|}
+\hline
+        &richards[ms]       &telco[ms] \\
+\hline
+CPython &357.79 $\pm$ 1.32     &1209.67 $\pm$ 2.20\\
+speedup &1.00 $\times$ &1.00 $\times$\\
+\hline
+JIT baseline    &421.87 $\pm$ 0.48     &738.18 $\pm$ 3.29\\
+speedup &0.85 $\times$ &1.64 $\times$\\
+\hline
+JIT map &382.88 $\pm$ 4.40     &834.19 $\pm$ 4.91\\
+speedup &0.93 $\times$ &1.45 $\times$\\
+\hline
+JIT version     &49.87 $\pm$ 0.29      &157.88 $\pm$ 1.79    \\
+speedup &7.17 $\times$ &7.66 $\times$\\
+\hline
+JIT full        &17.89 $\pm$ 1.15      &153.48 $\pm$ 1.86    \\
+speedup &20.00 $\times$        &7.88 $\times$\\
+\hline
+\end{tabular}
+\end{center}
+}
+\caption{Benchmark Results}
+\label{fig:times}
+\end{figure}
 
 \section{Related Work}
 
