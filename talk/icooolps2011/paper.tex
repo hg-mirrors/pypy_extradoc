@@ -243,17 +243,17 @@ get turned into machine code. This recording automatically inlines functions:
 when a function call is encountered the operations of the called functions are
 simply put into the trace too.
 
+Because the traces always correspond to a concrete execution they cannot
+contain any control flow splits. Therefore they encode the control flow
+decisions needed to stay on the trace with the help of \emph{guards}. Those are
+operations that check that the assumptions are still true when the compiled trace is later executed with different values.
+
 To be able to do this recording, VMs with a
 tracing JIT typically contain an interpreter. After a user program is
 started the interpreter is used; only the most frequently executed paths through the user
 program are turned into machine code. The tracing JIT tries to produce traces
 that correspond to loops in the traced program, but most tracing JITs now also
 have support for tracing non-loops \cite{andreas_gal_incremental_2006}.
-
-Because the traces always correspond to a concrete execution they cannot
-contain any control flow splits. Therefore they encode the control flow
-decisions needed to stay on the trace with the help of \emph{guards}. Those are
-operations that check that the assumptions are still true when the compiled trace is later executed with different values.
 
 One disadvantage of (tracing) JITs which makes them not directly applicable to
 PyPy is that they need to encode the language semantics of the language they are
