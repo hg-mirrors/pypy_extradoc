@@ -104,7 +104,7 @@ incremental compilers, interpreters, run-time environments]
 One of the hardest parts of implementing a dynamic language efficiently is to
 optimize its object model. This is made harder by the fact that many recent
 languages such as Python, JavaScript or Ruby have rather complex core object
-semantics. For them, implementing just an interpreter is already a complex
+semantics. For them, even implementing just an interpreter is already a complex
 task. Implementing them efficiently with a just-in-time compiler (JIT) is
 extremely challenging, because of their many corner-cases.
 
@@ -113,14 +113,14 @@ automatically produce compilers from interpreters. There has been a recent
 renaissance of this idea around the approach of tracing just-in-time
 compilers. A number of projects have attempted this approach. SPUR \cite{bebenita_spur:_2010} is
 a tracing JIT for .NET together with a JavaScript implementation in C\#. PyPy
-\cite{armin_rigo_pypys_2006} contains a tracing JIT for RPython (a restricted
+\cite{armin_rigo_pypys_2006} contains a tracing JIT for RPython \cite{davide_ancona_rpython:_2007} (a restricted
 subset of Python). This JIT is then used to trace a number of languages
 implementations written in RPython. A number of other experiments in this
 directions were done, such as an interpreter for Lua in JavaScript, which is run
 on and optimized with a tracing JIT for JavaScript
 \cite{yermolovich_optimization_2009}.
 
-These projects have in common that they work one meta-level down, providing a tracing JIT for the implementation
+These projects have in common that they work one meta-level down, providing a tracing JIT for the
 language used to implement the dynamic language, and not for the dynamic language itself.
 The tracing JIT then will trace through the object model of the dynamic
 language implementation. This makes the object model transparent to the tracer
@@ -134,12 +134,23 @@ bare meta-tracing.
 In this paper we present two of these hints that are extensively used in the
 PyPy project to improve the performance of its Python interpreter. 
 
-Conceptually the significant speed-ups that can be achieved with
-dynamic compilation depend on feeding into compilation and exploiting
-values observed at runtime that are slow-varying in practice. To exploit the
-runtime feedback, the implementation code and data structures need to be
-structured so that many such values are at hand. The hints that we present allow
-exactly to implement such feedback and exploitation in a meta-tracing context.
+% XXX: paragraph rephrased by anto; feel free to pick the one you like best
+
+Conceptually, it is possible to achieve significant speed-ups by feeding into
+the compiler some information that is observed at runtime: in particular, if
+there are values which vary very slowly, it is possible to compile multiple
+specialized versions of the same code, one for each actual value.  To exploit
+the runtime feedback, the implementation code and data structures need to be
+structured so that many such slow-varying values are at hand. The hints that
+we present allow exactly to implement such feedback and exploitation in a
+meta-tracing context.
+
+% Conceptually the significant speed-ups that can be achieved with
+% dynamic compilation depend on feeding into compilation and exploiting
+% values observed at runtime that are slow-varying in practice. To exploit the
+% runtime feedback, the implementation code and data structures need to be
+% structured so that many such values are at hand. The hints that we present allow
+% exactly to implement such feedback and exploitation in a meta-tracing context.
 
 Concretely these hints are used to control how the optimizer of the
 tracing JIT can improve the traces of the object model. More
@@ -194,6 +205,10 @@ final executable that are not present in the interpreter implementation, such as
 a garbage collector. The interpreter can therefore be kept free from low-level
 implementation details. Another aspect of the final VM that is added
 semi-automatically to the generated VM is a tracing JIT compiler.
+
+The advantage of this approach is that writing an interpreter is much easier
+and less error prone than manually writing a JIT compiler.  Similarly, writing
+in a high level language such as RPython is easier than writing in C.
 
 We call the code that runs on top of an interpreter implemented with PyPy the
 \emph{user code} or \emph{user program}.
