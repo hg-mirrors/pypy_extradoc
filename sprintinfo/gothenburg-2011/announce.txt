@@ -23,9 +23,8 @@ it hasn't already happened).  Other topics:
 
 - speed.pypy.org 
 
-- any other programming task is welcome too and depend on everybody's
-  interest; e.g. tweaking the Python or JavaScript interpreter, Stackless
-  support, and so on.
+- any other programming task is welcome too -- e.g. tweaking the
+  Python or JavaScript interpreter, Stackless support, and so on.
 
 Location
 --------
