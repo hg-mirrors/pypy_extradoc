@@ -1,0 +1,103 @@
+PyPy Göteborg Post-Easter Sprint April 25 - May 1 2011
+======================================================
+
+The next PyPy sprint will be in Gothenburg, Sweden. It will
+focus on <XXX do we have a clue?>.  It is a public sprint, suitable for
+newcomers.
+
+Topics and goals
+----------------
+
+Helping people get their code running with PyPy?
+
+Summer of Code stuff?
+
+1.5 release if it hasn't happened already?
+
+Location
+--------
+
+The sprint will be held in the apartment of Laura Creighton and Jacob Hallén
+which is at Götabergsgatan 22 in Gothenburg, Sweden.  Here is a map_.  This is
+in central Gothenburg.  It is between the tram_ stops of Vasaplatsen and 
+Valand, (a distance of 4 blocks) where many lines call -- the 2, 3, 4, 5,
+7, 10 and 13.
+
+.. _tram: http://www.vasttrafik.se/en/
+
+.. _map:  http://maps.google.se/maps?f=q&source=s_q&hl=sv&geocode=&q=G%C3%B6tabergsgatan+22,+G%C3%B6teborg&aq=&sll=57.698781,11.972952&sspn=0.009815,0.026565&ie=UTF8&hq=&hnear=G%C3%B6tabergsgatan+22,+411+34+G%C3%B6teborg,+V%C3%A4stra+G%C3%B6talands+L%C3%A4n&z=15
+
+Probably cheapest and not too far away is to book accomodation at `SGS
+Veckobostader`_. The  `Elite Park Avenyn Hotel`_ is a luxury hotel just a 
+few blocks away. There are scores of hotels a short walk away from the
+sprint location, suitable for every budget, desire for luxury, and desire
+for the unusual.  You could, for instance, stay on a `boat`_.  Options are
+too numerous to go into here. Just ask in the mailing list or on the blog.
+
+.. _`SGS Veckobostader`: http://www.sgsveckobostader.se/en
+.. _`Elite Park Avenyn Hotel`: http://www.elite.se/hotell/goteborg/park/
+.. _`boat`: http://www.liseberg.se/en/home/Accommodation/Hotel/Hotel-Barken-Viking/
+
+Hours will be
+from 10:00 until people have had enough.  It's a good idea to arrive a
+day before the sprint starts and leave a day later.  In the middle of
+the sprint there usually is a break day and it's usually ok to take
+half-days off if you feel like it.
+
+
+Good to Know
+------------
+
+Sweden is not part of the Euro zone. One SEK (krona in singular, kronor
+in plural) is roughly 1/10th of a Euro (9.36 SEK to 1 Euro).
+
+The venue is central in Gothenburg.  There is a large selection of
+places to get food nearby, from edible-and-cheap to outstanding.  We
+often cook meals together, so let us know if you have any food allergies,
+dislikes, or special requirements.
+
+Sweden uses the same kind of plugs as Germany. 230V AC.
+
+The Sprint will be held the week following Easter.  This means, as always,
+that Gothcon_ will be taking place the weekend before (Easter weekend).
+Gothcon, now in its 35 year, is the largest European game players conference.
+Some of you may be interested in arriving early for the board games.
+The conference site is only in Swedish, alas.  You don't need to register
+in advance unless you are planning to host a tournament, (and it's too
+late for that anyway).  
+
+.. _Gothcon: http://www.gothcon.se/
+
+
+Getting Here
+------------
+If are coming train, you will arrive at the `Central Station`_.  It is
+about 12 blocks to the site from there, or you can take a tram_. 
+
+There are two airports which are local to Göteborg, `Landvetter`_ (the main
+one) and `Gothenburg City Airport`_ (where some budget airlines fly).
+If you arrive at `Landvetter`_  the airport bus stops right downtown at
+`Elite Park Avenyn Hotel`_ which is the second stop, 4 blocks from the
+Sprint site, as well as the end of the line, which is the `Central Station`_.
+If you arrive at `Gothenburg City Airport`_ take the bus to the end of the
+line.  You will be at the  `Central Station`_.
+
+You can also arrive by ferry_, from either Kiel in Germany or Frederikshavn
+in Denmark.
+
+..`Central Station`_: http://maps.google.se/maps?f=q&source=s_q&hl=sv&geocode=&q=Centralstationen+G%C3%B6teborg&aq=&sll=57.698789,11.972946&sspn=0.009815,0.026565&g=G%C3%B6tabergsgatan+22,+G%C3%B6teborg&ie=UTF8&hq=Centralstationen&hnear=G%C3%B6teborg,+V%C3%A4stra+G%C3%B6talands+L%C3%A4n&ll=57.703551,11.979475&spn=0.018481,0.053129&z=14
+
+.. _`Landvetter`: http://swedavia.se/en/Goteborg/Traveller-information/Traffic-information/
+.. _`Gothenburg City Airport`: http://www.goteborgairport.se/eng.asp
+
+.. _ferry: http://www.stenaline.nl/en/ferry/
+
+Who's Coming?
+--------------
+
+If you'd like to come, please let us know when you will be arriving and 
+leaving, as well as letting us know your interests  We'll keep a list
+of `people`_ which we'll update (which you can do so yourself if you
+have bitbucket pypy commit rights).
+
+.. _`people`: https://bitbucket.org/pypy/extradoc/src/tip/sprintinfo/gothenburg-2011/people.txt
