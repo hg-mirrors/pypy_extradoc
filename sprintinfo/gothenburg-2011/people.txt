@@ -8,7 +8,7 @@ available yet from them.
 ==================== ============== ===================== ==================
     Name              Arrive/Depart     Accomodation       Food
 ==================== ============== ===================== ==================
-Jacob Hallen         lives there			  no peppers
+Jacob Hallén         lives there			  no peppers
 Laura Creighton      lives there			  
 Carl Friedrich Bolz  ?	   	     J+L's house	  Vegan
 ==================== ============== ===================== ==================

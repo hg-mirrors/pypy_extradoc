@@ -1,18 +1,26 @@
 PyPy Göteborg Post-Easter Sprint April 25 - May 1 2011
 ======================================================
 
-The next PyPy sprint will be in Gothenburg, Sweden. It will
-focus on <XXX do we have a clue?>.  It is a public sprint, suitable for
-newcomers.
+The next PyPy sprint will be in Gothenburg, Sweden. It is a public sprint, 
+very suitable for newcomers.  We'll focus on making the 1.5 release (if
+it hasn't already happened) and whatever interests the Sprint attendees.
 
 Topics and goals
 ----------------
 
-Helping people get their code running with PyPy?
+- 1.5 release if it hasn't already happened
 
-Summer of Code stuff?
+- Going over our documentation, and classifying our docs in terms of
+  mouldiness.  Deciding what needs writing, and maybe writing it.
 
-1.5 release if it hasn't happened already?
+- Helping people get their code running with PyPy
+
+- maybe work on EuroPython Training, and talks
+
+- Summer of Code preparation
+
+- speed.pypy.org 
+
 
 Location
 --------
