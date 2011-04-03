@@ -8,7 +8,9 @@ it hasn't already happened) and whatever interests the Sprint attendees.
 Topics and goals
 ----------------
 
-- 1.5 release if it hasn't already happened
+The main goal is to polish and release PyPy 1.5, supporting Python 2.7
+as well as the last few months' improvements in the JIT (provided that
+it hasn't already happened).  Other topics:
 
 - Going over our documentation, and classifying our docs in terms of
   mouldiness.  Deciding what needs writing, and maybe writing it.
@@ -21,6 +23,9 @@ Topics and goals
 
 - speed.pypy.org 
 
+- any other programming task is welcome too and depend on everybody's
+  interest; e.g. tweaking the Python or JavaScript interpreter, Stackless
+  support, and so on.
 
 Location
 --------
