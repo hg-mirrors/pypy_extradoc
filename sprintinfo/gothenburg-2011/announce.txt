@@ -37,7 +37,7 @@ Valand, (a distance of 4 blocks) where many lines call -- the 2, 3, 4, 5,
 
 .. _tram: http://www.vasttrafik.se/en/
 
-.. _map:  http://maps.google.se/maps?f=q&source=s_q&hl=sv&geocode=&q=G%C3%B6tabergsgatan+22,+G%C3%B6teborg&aq=&sll=57.698781,11.972952&sspn=0.009815,0.026565&ie=UTF8&hq=&hnear=G%C3%B6tabergsgatan+22,+411+34+G%C3%B6teborg,+V%C3%A4stra+G%C3%B6talands+L%C3%A4n&z=15
+.. _map: http://bit.ly/grRuQe
 
 Probably cheapest and not too far away is to book accomodation at `SGS
 Veckobostader`_. The  `Elite Park Avenyn Hotel`_ is a luxury hotel just a 
@@ -97,7 +97,7 @@ line.  You will be at the  `Central Station`_.
 You can also arrive by ferry_, from either Kiel in Germany or Frederikshavn
 in Denmark.
 
-..`Central Station`_: http://maps.google.se/maps?f=q&source=s_q&hl=sv&geocode=&q=Centralstationen+G%C3%B6teborg&aq=&sll=57.698789,11.972946&sspn=0.009815,0.026565&g=G%C3%B6tabergsgatan+22,+G%C3%B6teborg&ie=UTF8&hq=Centralstationen&hnear=G%C3%B6teborg,+V%C3%A4stra+G%C3%B6talands+L%C3%A4n&ll=57.703551,11.979475&spn=0.018481,0.053129&z=14
+.. _`Central Station`: http://bit.ly/fON43p
 
 .. _`Landvetter`: http://swedavia.se/en/Goteborg/Traveller-information/Traffic-information/
 .. _`Gothenburg City Airport`: http://www.goteborgairport.se/eng.asp
