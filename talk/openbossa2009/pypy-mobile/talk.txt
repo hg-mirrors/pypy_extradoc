@@ -1,0 +1,385 @@
+=====================================
+PyPy: status and mobile perspectives 
+=====================================
+
+Where i come from ...
+========================
+
+.. image:: little_red_riding_hood_by_marikaz.jpg
+   :scale: 100
+   :align: left
+ 
+http://marikaz.deviantart.com/ CC 3.0 AN-ND
+
+
+Some technical background
+============================
+
+- started with programming small devices in 1986 
+- Motorola assembler for game companies 
+- studied computer science in the nineties 
+- C++, C, Corba, Java, UML, consulting ... 
+- 2001: arrived at Python and FOSS
+- founded PyPy and py.test projects
+- founded merlinux, a developer company 
+
+What this talk is about
+=======================
+
+* Status of PyPy / 1.1 release 
+
+* resource usage, measurements on N810
+
+* ideas and next steps 
+
+PyPy? 
+========
+
+In this talk mostly: PyPy = PyPy Python Interpreter 
+
+.. image:: arch-pypy-basic.png
+   :scale: 50
+   :align: center
+
+
+PyPy - Motivation 
+=================================
+
+* **high level Python specification** (in RPyhton) 
+
+* layer GCs, JIT, Stackless atop the spec 
+
+* **generate** efficient interpreters for targets 
+
+
+.. image:: pypy-multitarget.png
+   :scale: 50
+   :align: center
+
+PyPy - user motivation
+=======================
+
+* use Python rather than C for performance 
+
+* have a more resource efficient interpreter 
+
+* support more programming paradigms 
+
+
+what else is PyPy? 
+=======================
+
+Virtual Machine translation framework!
+
+.. image:: mario.png
+   :scale: 100
+   :align: center
+
+Getting Production ready / PyPy 1.1
+=====================================
+
+.. image:: new_color_in_dark_old_city_by_marikaz.jpg
+   :scale: 100
+   :align: left
+
+http://marikaz.deviantart.com/  CC 3.0 AN-ND
+
+Sqlite
+======
+
+* part of cpython stdlib since 2.5
+
+* we use Gerhard Haering's CTypes version
+
+* works reasonably well after some fixes
+
+Django
+======
+
+* we run unmodified Django 1.0
+
+* only with sqlite DB backend for now
+
+http://www.djangoproject.com
+
+http://code.djangoproject.com/wiki/DjangoAndPyPy
+
+Pylons
+======
+
+* works out of the box  
+
+* no SQLAlchemy yet, obscure problems
+  ahead
+
+* unmodified passes all tests
+
+* http://pylonshq.com/
+
+Twisted & Nevow
+===============
+
+* twisted works (<30/4500 tests failing)
+
+* nevow works
+
+* http://twistedmatrix.com/
+
+
+Other software
+==============
+
+* pure python should just work 
+
+* setup.py / distutils works 
+
+* BitTorrent
+
+* PyPy translation toolchain, py lib 
+
+* sympy
+
+So why doesn't PyPy work for me? 
+====================================
+
+* PyPy not compatible to CPython extensions
+* we have many builtin modules
+* many 3rd party modules missing
+
+PyPy Answers for Extension modules 
+====================================
+
+- for using C-libs: CTypes 
+- for speed: JIT (or if one must, RPython)
+- for using C++ libs: Reflex?
+
+CTypes 
+====================
+
+* dynamically interact with C objects from Python
+* examples: pyslite, pyglet (opengl), many others 
+* only 32Bit and a bit slow 
+
+PyPy resource usage 
+==================================
+
+.. image:: end_of_a_age_by_marikaz.jpg
+   :scale: 100
+   :align: left
+
+http://marikaz.deviantart.com/  CC 3.0 AN-ND
+
+Speed of executing bytecode 
+===============================
+
+* somewhere between 0.8-4x times CPython speed 
+
+* our JIT is to be the huge leap beyond CPython 
+
+* we can also do more source optimizations
+
+A Memory benchmark
+===================================
+
+* gcbench performs at 0.8 the time of CPython
+
+* PyPy has pluggable Garbage Collection 
+
+* better handling of unusual patterns
+
+Threading / Stackless
+===================================
+
+* pypy-c has massive software threading 
+
+* OS-threads: currently using GIL
+
+* free threading? 
+
+* threading aspects: added during translation! 
+
+
+pypy-c measurements on Maemo 
+===============================
+
+- PyPy now cross-compiles via Scratchbox
+
+- we measured pypy-c on N810 device
+
+- tool see http://codespeak.net/svn/pypy/build/benchmem
+
+Python object sizes
+=======================
+
+- PyPy has smaller "per-object" RAM usage 
+
+- **instances usually at 50% of CPython size**
+
+- like CPython's __slots__ without the caveats
+
+- room for further optimizations 
+
+table at http://codespeak.net/~hpk/openbossa2009/table-objsize.html
+
+Maemo PyPy Interpreter startup time 
+=====================================
+
++--------------+--------+--------+---------------+
+|startup       |python  |Omem-opt|python-launcher|
++--------------+--------+--------+---------------+
+|site          |  0.24  |  0.16  |  0.11         |
++--------------+--------+--------+---------------+
+|nosite        |  0.21  |  0.04  |  0.11         |
++--------------+--------+--------+---------------+
+|importos      |  0.21  |  0.04  |  0.11         |
++--------------+--------+--------+---------------+
+|impdec        |  0.47  |  0.42  |  0.34         |
++--------------+--------+--------+---------------+
+|impopt        |  0.54  |  0.04  |  0.11         |
++--------------+--------+--------+---------------+
+
+PyPy has faster startup on "pre-imported" modules
+
+
+Python Application benchmarks
+==============================
+
+- pypy-c better on avg/maximum usage app-benchmarks
+- gcbench for some uninvestigated reason much worse 
+
+see http://codespeak.net/~hpk/openbossa2009/table-appprofiles.html
+
+
+where pypy is currently worse 
+===================================
+
+- larger (but shareable) base interpreter size 
+- gc collection pauses can be larger: needs tuning
+- bytecode execution speed: 1-4 times slower than CPython 
+
+(btw, our parser and compiler speed is particularly bad) 
+
+Summary measurements
+=============================
+
+* slower bytecode execution speed
+* larger (but shareable) base interpreter size 
+* smaller Python objects
+* better app allocation behaviour  
+* faster startup 
+
+
+Ideas and visions 
+=============================
+
+.. image:: flying_lady_by_marikaz.jpg
+   :scale: 100
+   :align: left
+
+http://marikaz.deviantart.com/  CC 3.0 AN-ND
+
+Idea for C++ Extension modules 
+================================
+
+- use CERN's Reflex tools/approach
+- tool compiles shared "introspect" library for each C++ lib
+- introspect-library handled by generic helper module 
+- probably a very good approach for PyPy 
+
+http://root.cern.ch/drupal/content/reflex
+
+perfect PYC files 
+============================
+
+- MMAP (newstyle) PYC file into into memory 
+- execute bytecode to construct module namespace 
+- but: directly work with PYC data, zero-copy 
+- don't touch mmaped pages unless needed 
+- **no allocs of redundant objects during import**
+- **interpreters share all code objects**
+
+JIT for overhead elimination
+====================================
+
+- JIT to speed up code up to 100 times 
+- parametrize JIT heuristics to care for very hot paths
+- keep a good memory/speed gain balance
+- JIT could maybe also remove overheads for calling into C++
+
+Next-generation Garbage Collection
+====================================
+
+- currently: naive Mark&Compact  (600 lines of code) 
+- port/implement newer techniques (e.g. deferred refcounting) 
+- even more compact GC headers 
+- malloc-directed inlining 
+- maximize shared interpreter state 
+- co-operate with kernel in swapping/collect situations
+
+a word about doing GCs
+===================================
+
+- program your GC in Python 
+- test your GC in Python 
+- get Python tracebacks instead of segfaults
+- once ready, translate with Python Interpreter 
+
+other optimizations 
+=====================
+
+- revisit/measure decisions in ARM context 
+- splitting static data into immutable/modifiable
+- group data to avoid fragmentation 
+- run multiple apps in one process, isolated and robust 
+
+One last bit
+=================
+
+.. image:: mystical_color_statue_by_marikaz.jpg 
+   :scale: 100
+   :align: left
+
+http://marikaz.deviantart.com/  CC 3.0 AN-ND
+
+Sandboxing / Virtualization 
+=================================
+
+* PyPy can generate a virtualized Python! 
+
+* IO and OS calls controled by separate process
+
+* RAM and CPU time control 
+
+
+.. image:: sandboxed.png
+   :scale: 30
+   :align: center
+
+Current priorities and interests 
+==================================
+
+- PyPy 1.1 release in around 2 months
+- afterwards: JIT to surpass CPython speed 
+- perfect/commoditize Python sandboxing 
+- help/do compatibility work, ext modules 
+
+Contact / Q&A 
+==========================
+
+holger krekel at http://merlinux.eu
+
+Blog: http://tetamap.wordpress.com
+
+PyPy: http://codespeak.net/pypy
+
+PyPy Blog: http://morepypy.blogspot.com
+
+Photos: http://marikaz.deviantart.com/gallery/
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=64px,height=64px]{merlinux-logo.jpg}
+    \qquad
+    \includegraphics[width=80px]{../../img/py-web.png}
+    \end{figure}

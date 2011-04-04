@@ -1,0 +1,23 @@
+PyPy Python Interpreter(s) Features 
+=====================================
+
+Speakers: Holger Krekel & Maciek Fijalkowski
+
+We quickly recap the basic architecture of PyPy Python interpreter(s)
+and then demo and discuss the following unique features: 
+
+* transparent proxy: a way to customize behaviour of builtin
+  objects, enabling new models of persistence and distribution 
+* distribution prototype: have objects from remote places
+  appear as local ones, including frames (PDB!), file objects etc.
+* object tainting: automatically track and control propagation of 
+  sensitive data through an application
+* lazy computations: defer computation until result is needed 
+* ... and more, as talk topics/features might appear just-in-time :) 
+
+All above features might be translated to any supported backend,
+which is by now C, LLVM and CLI, soon JVM.
+
+We'll also see to discuss future efforts and remaining obstacles 
+to reach wider adoption. 
+

@@ -1,0 +1,62 @@
+Port more modules to rffi style
+===============================
+
+status:
+
+todo:
+
+ - Some standard modules written in C have already been ported to the
+   rffi style, but more remain.
+
+ - XXX Flesh out with some more details. Examples for example.
+
+expected outcome:
+
+dependencies:
+
+Move modules from app to interpreter level
+==========================================
+
+status:
+
+todo:
+
+ - Some modules are implemented in Python at application level. For
+   preformance reasons, many of them should eventually be implemented
+   at interpreter level.
+
+ - These modules are: 
+
+   - array
+   - binascii
+   - cPickle
+   - cStringIO
+   - cmath
+   - collections
+   - datetime
+   - functional
+   - functools(incomplete)
+   - imp
+   - itertools
+   - _ctypes
+
+expected outcome:
+
+dependencies:
+
+ - None
+
+Write new modules
+=================
+
+status:
+
+todo:
+
+ - There are still some modules in the standard library that need writing
+   before PyPy is a reasonable replacement for CPython. Exactly which
+   ones needs some investigation.
+
+ - XXX Flesh out with some more details. Examples for example.
+
+XXX The three previous tasks should be merged, I think

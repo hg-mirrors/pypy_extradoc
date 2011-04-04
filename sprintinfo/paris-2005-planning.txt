@@ -1,0 +1,88 @@
+
+
+Paris sprint planning 
+-------------------------------------
+
+Times (proposal): 
+
+    10:00 - 20:00   core sprinting time 
+    10:30 planning session 
+    ca. 01:00 pm lunch time 
+
+thursday: breakday  (for some of us: eu-consortium meeting) 
+(during the breakday the big room will be needed for the meeting
+from 1pm, so if somebody wants to work in the afternoon, he has to
+go to one of the small rooms)
+
+pairing friday
+======================= 
+
+Compiler issues: adrien, arre
+
+ootypes: boris, michael, bert, (arre), (armin), (samuele)
+
+LLinterpreter requirements + plan: carl, holger, (armin), (samuele)
+
+compliancy testing on compiled PyPy, getting py.test to run on compiled PyPy:
+    anders, {christian}, [armin]
+
+- (improve refcounting)
+
+implementing the socket module: amaury, valentino
+
+working on an RPython Numeric module: ludovic, andrew
+
+experiment with callgraph analysis to reorder source code: Christian
+
+stackless/cps:   (same group continues, "re-"pairing inside)
+
+    christian, armin 
+    Valentino, Amaury 
+    Adrien, Anders 
+    
+(see stackless status text http://codespeak.net/pypy/extradoc/sprintinfo/paris/stackless-workplan.txt) 
+
+andrew/michael: powerpc-backend   (getting there, continues)
+
+bert, samuele, boris, arre, aurelien: different specialization to more HL-backends
+(defined the "ootypes" model, like the "lltypes" but more OO-ish; will start
+to work on the ootyper, as a branch of the rtyper for now; same group continues
+and has split in two subgroups soon -- annotator and ootyper.)
+
+llinterpreter:  Carl, (Armin later) 
+(starting on the data model of the ll flow graphs, continues)
+
+
+next status meeting: fri 10:30
+
+
+later wednesday: 
+discussing compiler & phase 2 work/tasks for the sprint WP09/WP10 
+
+on friday:
+
+   * short presentation from logilab/dfki about logic programming/AOP
+   * (maybe) presentation about GC work during Summer of Code
+
+people present 
+---------------------
+
+armin
+bert
+samuele
+anders 
+carl  
+boris
+amory 
+andrew thompson 
+adrien
+michael hudson
+arre
+aurelien 
+olivier 
+
+Bea
+Nicolas 
+jacob
+
+

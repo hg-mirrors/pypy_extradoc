@@ -1,0 +1,50 @@
+
+
+Berlin Sprint 
+=============
+
+People Present:
+
+ - Carl Friedrich
+ - Toon
+ - Armin
+ - Peter
+ - Karl
+ - Camillo
+ - Stephan
+ - Alexander
+ - Maciek
+ - Felix
+ - Samuele
+ - Adrian
+
+Tasks:
+
+ - gameboy emulator translation DONE
+ - adding sdl bindings to rpython (Camillo, Stephan) MORE PROGRESS: mouse movement works now too 
+ - django porting: using django with sqlite-ctypes works (Samuele, Maciek)
+                   90/200 tests failing
+                   more robustapply work: turned out to be an sqlite problem
+                   dictionary subclassing: found the problem, unclear how to fix
+ - making sqlite-ctypes work on PyPy DONE
+ - hybrid-io-improvements branch: discussions happened
+ - work on SPy, decide about the branch (Toon, Carl Friedrich) IN-PROGRESS
+   work on sanitizing the spy shadow branch
+ - complete Stackless interface
+   work on channel preferences DONE
+   some cleanup needed DONE
+ - discussion about composable coroutines DONE
+ - discussions/starting on separate compilation
+ - discuss our own GCs and threads
+ - discussion about the JIT
+ - trying to run Zope 3 a bit (Armin, Peter)
+
+
+  - work on PyPy's JIT generator: we are refactoring parts of the
+    compiling logic, in ways that may also allow generating better
+    machine code for loops (people or aliens with knowledge on
+    compilers and SSA, welcome)
+
+  - trying some large pure-Python applications or libraries on PyPy and
+    fixing the resulting bugs. Possibilities are Zope 3, Django and
+    others.

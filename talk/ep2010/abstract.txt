@@ -1,0 +1,94 @@
+We will give an update on the state of PyPy, the Python
+implementation in Python.  The planned talk would fit ~45
+minutes to 1 hour.
+
+
+Part 1 - introduction and status
+===============================================================
+
+PyPy is a slowly emerging Python implementation written in
+Python.  This part of the talk is going to give an introduction
+about the project and a description of its current status.  We
+will focus on what it gives to Python programmers:
+
+* what works on PyPy:
+
+  - mostly everything, as long as it works on Python 2.5
+  - (NEW) most existing extension modules (written in C) work too
+
+* the differences with the standard CPython:
+
+  - (NEW) the JIT is 100% complete and 99.9% ready to use;
+    we will see the kind of performance that can be expected
+  - as usual, we will warn against some "corner case" behavioral
+    differences in the language.
+
+* in summary, we will see why you should (or should not) consider
+  switching to PyPy, and for what kind of application.
+
+
+Part 2 - the Just-in-Time compiler generator
+===========================================================
+
+PyPy now comes with an integrated JIT compiler.  In this part of
+the talk we will see:
+
+* more in-depth, how fast can Python code be:
+
+  - with plots of various benchmarks
+  - in comparison to the speed of regular CPython,
+    CPython+Psyco, and of Unladen Swallow
+  - for various algorithmic or non-algorithmic kind
+    of code.
+
+* how it all works:
+
+  - a reminder about tracing JITs in general
+  - the tracing JIT included in PyPy
+  - the differences between a "classical" tracing
+    JIT (like TraceMonkey for JavaScript) and
+    PyPy (a general tracing JIT for any language).
+
+* future or in-progress tasks:
+
+  - the x86-64 backend (currently only x86-32 is supported)
+  - a quick tour of other missing improvements
+  - finally, how to use the JIT generator with your own
+    language's interpreter (we already have a JITing Prolog
+    interpreter :-)
+
+
+Part 3 - cpyext, or how C extension modules can work in PyPy
+=============================================================
+
+In this part, we will talk about the new cpyext module, that allow PyPy to use
+the extension modules of CPython written in C.  In particular:
+
+* How it works
+
+  - "normal" integration with distutils
+  - PyObjects are "shadows" of living interpreter objects
+    - reference counted
+  - Most of the API is written in RPython
+  - Some C functions are copied verbatim
+    - PyArg_ParseTuple, PyString_Format, the buffer object...
+  - Testable from interpreted PyPy
+
+* What are the drawbacks, and the current status
+
+  - built on top of another Python VM
+    - Concrete Layer built on top of the Abtract Layer
+      ex: PyDict_Size(x) calls len(x)
+    - Constant round-turns between PyObjects and the interpreter objects
+  - no threads yet
+  - extensions only, cannot embed PyPy yet
+  - PyPy still has a GIL...
+
+* What are the incompatibilities, and how to solve them
+
+  - No direct field access
+    - except for types
+  - Borrowed references are evil
+
+
+Authors: Antonio Cuni, Amaury Forgeot d'Arc, Armin Rigo

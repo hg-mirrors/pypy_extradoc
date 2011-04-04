@@ -1,0 +1,26 @@
+#! /usr/bin/env python
+
+import sys
+sys.path.insert(0, '/home/fijal/lang/python/pypy-rainbow')
+
+import rpn
+from pypy.conftest import option
+option.view = True
+from pypy.rpython.module.support import LLSupport
+from pypy.jit.rainbow.test.test_portal import P_OOPSPEC, TestPortal
+
+TestPortal.setup_class.im_func(TestPortal)
+self = TestPortal()
+
+def main(example, arg):
+    if example == 1:
+        code = "24++3+"
+    elif example == 2:
+        code = "1+2+3+4+5+"
+    else:
+        raise ValueError
+
+    return rpn.interpret(code, arg)
+
+self.timeshift_from_portal(main, rpn.interpret,
+                           [2, 100], policy=P_OOPSPEC)

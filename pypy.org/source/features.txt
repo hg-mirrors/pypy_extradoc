@@ -1,0 +1,109 @@
+---
+layout: page
+title: Features
+---
+
+PyPy features
+===========================================================
+
+**PyPy 1.4.1** implements **Python 2.5.** and runs on Intel
+`x86 (IA-32)`_ and `x86_64`_ platforms, with ARM being underway.
+It supports all of the core language, passing the Python test suite
+(with minor modifications that were already accepted in the main python
+in newer versions). It supports most of the commonly used Python
+standard library modules.  For known differences with CPython, see our
+`compatibility`_ page.
+
+If you are interested in helping to move forward, see our `howtohelp`_ page.
+
+.. _`compatibility`: compat.html
+.. _`x86 (IA-32)`: http://en.wikipedia.org/wiki/IA-32
+.. _`x86_64`: http://en.wikipedia.org/wiki/X86_64
+.. _`howtohelp`: howtohelp.html
+
+
+Speed
+-----
+
+Our `main executable`_ comes with a Just-in-Time compiler.  It is
+`really fast`_ in running most benchmarks.  `Try it out!`_
+
+.. _`main executable`: download.html#with-a-jit-compiler
+.. _`Try it out!`: download.html#with-a-jit-compiler
+.. _`really fast`: http://bit.ly/fhSlfk
+
+Sandboxing
+--------------------
+
+PyPy's *sandboxing* is a working prototype for the idea of running untrusted
+user programs. Unlike other sandboxing approaches for Python, PyPy's does not
+try to limit language features considered "unsafe". Instead we replace all
+calls to external libraries (C or platform) with a stub that communicates
+with an external process handling the policy.
+
+To run the sandboxed process, you need `pypy-sandbox`_.  You also need to
+get the `full sources`_ (step 1 only).  Run::
+
+   cd pypy-trunk/pypy/translator/sandbox
+   pypy_interact.py path/to/pypy-sandbox
+
+You get a fully sandboxed interpreter, in its own filesystem hierarchy
+(try ``os.listdir('/')``).  For example, you would run an untrusted
+script as follows::
+
+   mkdir virtualtmp
+   cp untrusted.py virtualtmp/
+   pypy_interact.py --tmp=virtualtmp pypy-sandbox /tmp/untrusted.py
+
+Note that the path ``/tmp/untrusted.py`` is a path inside the sandboxed
+filesystem.  You don't have to put ``untrusted.py`` in the real ``/tmp``
+directory at all.
+
+To read more about its features, try ``pypy_interact.py --help`` or go to
+`our dev site`_.
+
+.. _`pypy-sandbox`: download.html#sandboxed-version
+.. _`full sources`: download.html#translate
+.. _`our dev site`: http://codespeak.net/pypy/dist/pypy/doc/sandbox.html
+
+
+Stackless
+--------------------------
+
+PyPy is also available in a separate `Stackless version`_ that includes
+support for micro-threads for massive concurrency.  Read more about
+it at the Stackless_ main site (we provide the same interface as the
+standard Stackless Python), and at the greenlets_ page.
+
+.. _`Stackless version`: download.html#stackless-version
+.. _`stackless`: http://www.stackless.com/
+.. _`greenlets`: http://codespeak.net/svn/greenlet/trunk/doc/greenlet.txt
+
+
+Other features
+---------------------------------------
+
+PyPy has many secondary features and semi-independent
+projects.  We will mention here:
+
+* **the .NET backend:** you get a version of ``pypy-net`` that runs
+  natively in the .NET/CLI VM.  Of particular interest is `the cli-jit
+  branch`_, in which you can make a version of ``pypy-net`` which also
+  contains a high-level JIT compiler (it compiles your Python programs
+  Just in Time into CLR bytecodes, which are in turn compiled natively
+  by the VM).
+
+* **the Java backend:** PyPy can run on the Java VM, but more care is
+  needed to finish this project.  (Requires `the cli-jit branch`_ for
+  now.)  Writing a backend for our high-level JIT compiler would be
+  excellent.  `Contact us`_!
+
+* **Other languages:** available in a `separate part of the repository`_,
+  we implemented other languages too: Prolog_ (almost complete), as
+  well as Smalltalk, JavaScript, Io, Scheme and Gameboy.
+
+
+.. _`the cli-jit branch`: http://codespeak.net/svn/pypy/branch/cli-jit/
+.. _`contact us`: contact.html
+.. _`separate part of the repository`: http://codespeak.net/svn/pypy/lang/
+.. _Prolog: http://codespeak.net/svn/pypy/lang/prolog

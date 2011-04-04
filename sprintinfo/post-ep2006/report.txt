@@ -1,0 +1,119 @@
+======================================================================
+               PyPy Post-EuroPython 2006 Sprint Report
+======================================================================
+
+Greetings from an assortment of tired brains at CERN, home to a larger
+assortment of hopefully less tired physicist brains.  We are reaching
+the end of a succesful and well-attended (24 participants!) sprint.
+
+3.5 days times 24 people is a bit more than two man months of work --
+we are going to try to cover all we've achieved, but will undoubtedly
+forget some stuff!
+
+Summer of Code student Lawrence and his mentor Arre spent the majority
+of the time integrating Lawrence's SoC work -- ctypes implementations
+of various CPython extension modules -- into PyPy.  He has implemented
+the time, mmap and fcntl modules so far, and the work at this sprint
+concentrated on putting the time module into the form required for
+PyPy -- making it a mixed module, conforming to the restrictions of
+rctypes and fighting the extension compiler.
+
+Brian Sutherland and Sad Rejeb also joined in this play, attempting to
+convert some prewritten performance sensitive caching code used in
+Zope(!) somewhere to a mixed module suitable for feeding to the
+extension compiler.  Unfortunately the resulting code was no faster
+than the pure Python version... probably because of the ext-compiler
+using refcounting for GC.
+
+Antonio appeared to spend his entire time writing commit messages but
+somehow must have written some code in between (with the help of *his*
+SoC mentor, Armin) because now all of PyPy's Standard Interpreter can
+be rtyped with the ootypesystem.  "All" that remains are the dict
+implementation and external function support in the CLI backend before
+IronPython has a competitor in the shape of PyPy.Net :-)
+
+Guido (not *that* Guido) being the JavaScript deity he is wrote a JS
+tool to instrospect the DOM methods and produce useful information for
+Maciej's SoC (we only had three SoC students here...) project.
+Unfortunately browsers' JavaScript implementations are famously
+eccentric and running his tool popped up the Print dialog box twice
+and then crashed Epiphany.  It proved marginally less frustrating to
+write a scraper for Mozilla's documentation and fix the broken HTML
+he found there.
+
+Aurélien, Ludovic and part of Armin tried to figure out why the
+example of coroutine cloning written for the "What can PyPy do for
+you?" talk didn't work.  Assorted mind boggling bugs were found and
+fixed, with the aggravating result that it now works fine when run on
+the llinterpreter but crashes -- after a while -- when translated to
+C.  More wizardry will be required here...
+
+Just before the sprint Maciej attempted to improve the annotator's
+error messages and he and Samuele spent some time fixing this new code
+(it's very frustrating when your error printing routines crash on
+you...).
+
+A varying team of people including but not limited to Pieter, Carl
+Friedrich, Maciej and Alexander worked on alternative, hopefully
+faster implementations of Python data types, particularly strings and
+dictionaries.  We now have efficient representations of slices of
+strings and for the result of adding two strings, all completely
+transparent to application-level.  For a sufficiently cooked
+benchmark, we are now up to seven times faster than CPython (and use
+30 times less memory).  On the dictionary side, we stole an
+optimization for CPython: assume on creation that a dictionary will
+only contain strings keys and switch to an alternative implementation
+on the insertion of a non-string key.  This makes pystone and richards
+both around 20% faster, some benchmarks up to 40% faster (but also
+some a few percent slower).
+
+Alexandre and David started to think about configuration and option
+handling, but got distracted when they tried to run a translation on a
+64-bit machine (or more specifically, a machine with 64-bit userland),
+because it broke in obscure ways.  A few obscure fixes later and it
+worked again apart from stackless, and another few fixes fixed that
+too.
+
+Michael and Fabrizio worked on the stackless code, "un-inlining" some
+of the frame-state saving code with the goal of reducing the size of
+the generated code.  This involved taking Fabrizio on a whirlwind tour
+of one of the scarier areas of the PyPy codebase, but he survived and
+the feature was implemented, although the size reduction was not as
+great as had been hoped -- more investigation required (we also need
+to build a stacklessgc build to check that).
+
+Michael and Fabrizio then worked on AST- and bytecode-level
+optimizations, which mostly involved building an infrastructure to
+make modifications of the AST easier.  They implemented a simple
+constant folder at the AST level and at the bytecode level an
+optimization to remove the temporary tuple in code like "x,y=y,x".
+
+Simon and Eric resurrected and experimented more with LLVM's JIT
+interface.  Simon then worked with Ludovic and Arre on implementing
+RPython support for numarrays and Eric worked on making the output of
+genc compilable with C++.
+
+Guido and Holger implemented the beginning and perhaps the middle but
+probably not the end of doctest support in py.test.
+
+After some discussion with Alexandre, David and Holger, Guido and Carl
+Friedrich began to work on the rather ugly-looking task of taming
+pypy's growing menagerie of options.  They started to implement a
+general mechanism for defining a hierarchy of options, handling
+dependencies and conflicts among them.  From this you can generate
+optparse Options for command line interfaces and will one day be able
+to generate a web form to choose among the zoo of pypy's options.
+They used the config mechanisms to de-insane the selection of the
+various object space variants.  This, for example, makes automated
+testing of the above-mentioned variant string and dictionary
+implementations possible.
+
+Pieter worked on random modules^W^Wthe random module, porting it to
+RPython and implementing some missing functions.
+
+So, after a pre-sprint (for some of us), a conference and a
+post-sprint, we are well prepared for the usual post-sprint week long
+sleep.  Apart from Carl, he has an exam on Friday.  Oops!
+
+Met vriendelijke groeten,
+mwh&cfbolz

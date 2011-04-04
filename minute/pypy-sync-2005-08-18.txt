@@ -1,0 +1,201 @@
+=============================================
+pypy-sync developer meeting 18th August 2005
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync 
+
+Attendees::
+
+         Samuele Pedroni, 
+         Carl Friedrich Bolz, 
+         Armin Rigo
+         Anders Chrigstroem
+         Anders Lehmann
+         Michael Hudson (lurking) 
+         Holger Krekel (minutes/moderation)
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No conflicts were discovered.
+
+Topics of the week
+===================
+
+More detailed Heidelberg Sprint Planning 
+-------------------------------------------
+
+The `Heidelberg sprint announcement`_ already listed 
+some topics which we discussed in more detail. 
+Samuele then prepared a first `heidelberg-planning`_ 
+document that we are going to use monday morning. 
+
+.. _`Heidelberg sprint announcement`: http://codespeak.net/pypy/index.cgi?extradoc/sprintinfo/Heidelberg-sprint.html
+.. _`heidelberg-planning`: http://codespeak.net/pypy/index.cgi?extradoc/sprintinfo/heidelberg-planning.html 
+
+Closing 
+------------------
+
+Holger closes the meeting in time at 13:30pm. 
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+
+    **** BEGIN LOGGING AT Thu Aug 18 12:59:41 2005
+    Aug 18 12:59:41 -->	You are now talking on #pypy-sync
+    Aug 18 13:01:15 -->	arigo (n=chatzill@d213-103-136-75.cust.tele2.ch) has joined #pypy-sync
+    Aug 18 13:02:19 -->	mwh (n=user@82-33-185-193.cable.ubr01.azte.blueyonder.co.uk) has joined #pypy-sync
+    Aug 18 13:02:49 <mwh>	(lurking again today)
+    Aug 18 13:03:16 -->	aleale (n=andersle@clogs.dfki.uni-sb.de) has joined #pypy-sync
+    Aug 18 13:03:52 <hpk>	are we ready to start the meeting? 
+    Aug 18 13:04:12 <cfbolz>	I am
+    Aug 18 13:04:16 -->	arre (i=7355b7b7@1-1-5-33a.gfa.gbg.bostream.se) has joined #pypy-sync
+    Aug 18 13:04:25 <hpk>	hey arre
+    Aug 18 13:04:37 <arigo>	yes
+    Aug 18 13:04:53 <hpk>	pedronis: are you there as well? 
+    Aug 18 13:04:59 <aleale>	yes
+    Aug 18 13:05:04 <pedronis>	yes
+    Aug 18 13:05:11 <hpk>	great, then here is the agenda:
+    Aug 18 13:05:16 <arre>	I'm still on vacation, coincidentally i was near a computer when the meeting should start :)
+    Aug 18 13:05:16 <hpk>	- activity reports (3 prepared lines of info).
+    Aug 18 13:05:16 <hpk>	- resolve conflicts/blockers
+    Aug 18 13:05:16 <hpk>	*Topics of the week*
+    Aug 18 13:05:16 <hpk>	- Preplanning Heidelberg sprint
+    Aug 18 13:05:34 <hpk>	i suppose we start with cfbolz, aleale,arigo,hpk,pedronis on the activity reports
+    Aug 18 13:05:42 <aleale>	PREV: compliance test
+    Aug 18 13:05:42 <aleale>	Next: Sprint (more compliance tests)
+    Aug 18 13:05:42 <aleale>	blockers: -
+    Aug 18 13:05:55 <cfbolz>	LAST: plugged gc into the llinterp, preparation for an exam + exam
+    Aug 18 13:05:55 <cfbolz>	NEXT: working on gc, heidelberg
+    Aug 18 13:05:55 <cfbolz>	BLOCKERS: none
+    Aug 18 13:06:16 <hpk>	LAST: non-pypy work, codespeak.net migration/related infrastructure
+    Aug 18 13:06:16 <hpk>	NEXT: preparing and doing the heidelberg sprint
+    Aug 18 13:06:16 <hpk>	BLOCKERS: None
+    Aug 18 13:06:23 <arre>	Last week: Vacation.
+    Aug 18 13:06:23 <arre>	Next week: Catching up.
+    Aug 18 13:06:24 <arre>	Blockers: No known.
+    Aug 18 13:06:44 <arigo>	DONE: progress on threads with a GIL; translating it
+    Aug 18 13:06:52 <arigo>	NEXT: more work on the same (nasty rare bugs around)
+    Aug 18 13:06:53 <arigo>	BLOCKER: no network access from my laptop :-(
+    Aug 18 13:07:06 <pedronis>	Last: took some time off, worked a bit on translate_pypy.py itself, helped people
+    Aug 18 13:07:07 <pedronis>	witth annotation problems,  compiled Boehm for my machines
+    Aug 18 13:07:09 <pedronis>	Next: (rtyping addresses) sprint
+    Aug 18 13:07:11 <pedronis>	Issues: -
+    Aug 18 13:07:45 <hpk>	ok, i didn't get notice from logilab or christian 
+    Aug 18 13:08:06 <hpk>	then i suppose we go on with heidelberg sprint planning
+    Aug 18 13:08:22 <hpk>	just as a background i am listing the issues from the announcements
+    Aug 18 13:08:32 <hpk>	- translation efforts: it's not completely clear
+    Aug 18 13:08:32 <hpk>	  now what related task will be left at that time
+    Aug 18 13:08:32 <hpk>	- work on 2.4.1 compliancy: there are some failing compliancy
+    Aug 18 13:08:32 <hpk>	  tests on which we plan to work
+    Aug 18 13:08:32 <hpk>	- rewriting c-extension modules/integrating existing rewrites
+    Aug 18 13:08:32 <hpk>	- all kinds of small release issues
+    Aug 18 13:08:32 <hpk>	- possibly some more LLVM efforts
+    Aug 18 13:09:03 <hpk>	i suppose we should go through them and try to get a status and plans for the sprints
+    Aug 18 13:09:05 <hpk>	does that make sense? 
+    Aug 18 13:09:23 <aleale>	yes
+    Aug 18 13:09:34 <arre>	nod
+    Aug 18 13:10:06 <hpk>	arigo, pedronis, cfbolz: or do you want to do it differently? 
+    Aug 18 13:10:21 <cfbolz>	I am fine with that
+    Aug 18 13:10:28 <arigo>	me too
+    Aug 18 13:10:38 <pedronis>	me too
+    Aug 18 13:10:46 <hpk>	ok, so translation tasks: what is left? let's start with threading because that is probably the most open field
+    Aug 18 13:11:05 <hpk>	arigo: could you say a few words on that? 
+    Aug 18 13:11:15 <arigo>	it's kind of done
+    Aug 18 13:11:20 <cfbolz>	:-)
+    Aug 18 13:11:23 <hpk>	:-)
+    Aug 18 13:11:28 <cfbolz>	it's kind of impressive
+    Aug 18 13:11:43 <arigo>	but there are some bugs left somewhere (I get a test failure randomly from time to time)
+    Aug 18 13:11:55 <hpk>	and you used a GIL approach
+    Aug 18 13:12:04 <hpk>	in a modular way? 
+    Aug 18 13:12:08 <arigo>	yes
+    Aug 18 13:12:20 <arigo>	the GIL code is in a single submodule
+    Aug 18 13:12:55 <arigo>	well from there I'd just like to point to a few files
+    Aug 18 13:13:09 <hpk>	right. 
+    Aug 18 13:13:10 <hpk>	does it make sense to even try go for a different thread model during/until the sprint? 
+    Aug 18 13:13:43 <arigo>	I don't know, maybe during the sprint we can discuss another simple locking policy
+    Aug 18 13:14:28 <arigo>	I also extended the annotator/rtyper to have "external types" in addition to external functions
+    Aug 18 13:14:34 <arigo>	I needed it for lock objects
+    Aug 18 13:15:04 <hpk>	sounds good to me, everyone else ok with the basic "we see if we want a second approach"  or should we put more focus on getting more on threading? 
+    Aug 18 13:15:43 <cfbolz>	we could decide that based on whether someone is very interested working on this
+    Aug 18 13:15:43 <arre>	Sounds good to me.
+    Aug 18 13:15:45 <aleale>	I agree 
+    Aug 18 13:16:35 <hpk>	pedronis: you too if i may ask? 
+    Aug 18 13:16:55 <pedronis>	I think we discuss this at the sprint
+    Aug 18 13:17:15 <hpk>	ok, but then on the first day i guess and in relation to the other tasks
+    Aug 18 13:17:30 <hpk>	i believe we can easily agree that we need an ongoing track on fixing and discussing compliancy
+    Aug 18 13:17:43 <hpk>	(but feel free to object)
+    Aug 18 13:17:54 <hpk>	and then there is the topic of preparing the release
+    Aug 18 13:18:07 <hpk>	i'd like to work the "little" issues out early on during the sprint
+    Aug 18 13:18:15 <hpk>	to not get into too much of a rush in the end
+    Aug 18 13:18:17 <pedronis>	and isolating refcounting
+    Aug 18 13:18:25 <pedronis>	+ cfbolz GC work
+    Aug 18 13:18:40 <cfbolz>	although that is not really a release issue
+    Aug 18 13:18:52 <pedronis>	the isolating refcount is
+    Aug 18 13:19:07 <pedronis>	the fact that you still have GC work is related to the sprint, not the release
+    Aug 18 13:19:16 <cfbolz>	yes of course 
+    Aug 18 13:19:20 <hpk>	yes, i think it makes sense to start off with that as well
+    Aug 18 13:19:38 <arigo>	I agree
+    Aug 18 13:19:40 <hpk>	so we have a compliancy and a GC track and maybe two people thinking a bit about the release 
+    Aug 18 13:20:01 <hpk>	then what about llvm? 
+    Aug 18 13:20:21 <cfbolz>	the llvm people are not here :-(
+    Aug 18 13:20:26 <hpk>	we obviously don't have richard and eric here but they are going to be at the sprint
+    Aug 18 13:20:33 <hpk>	does someone know the status? 
+    Aug 18 13:20:41 <cfbolz>	they compiled PyPy yesterday
+    Aug 18 13:20:49 <cfbolz>	some external functions are still missing
+    Aug 18 13:21:04 <cfbolz>	I think Richard and Eric will want to work on it
+    Aug 18 13:21:07 <arigo>	yes, their pypy-dev mail hints that they'd like to continue to work on it
+    Aug 18 13:21:14 <hpk>	yes, makes sense i think
+    Aug 18 13:21:32 <cfbolz>	Richard said that he would like to think about consolidating the backends a bit
+    Aug 18 13:21:34 <hpk>	then we will probably also have parsing/compiling issues? 
+    Aug 18 13:21:40 <hpk>	(i am a bit out of loop, can anyone help?)
+    Aug 18 13:21:57 <pedronis>	yes, also a quite a bit of compliance failures are related to compile
+    Aug 18 13:22:29 <pedronis>	from different error messages, to __future__ not working and such subtle issues
+    Aug 18 13:22:29 <arigo>	hpk: I think that the ST->AST transformer is done and they are RPythonifying it
+    Aug 18 13:23:02 <hpk>	ok, that will be an ongoing topic as well then i guess
+    Aug 18 13:23:17 <arigo>	so there are two fronts here, fixing bugs and progressing on moving the compiler to interp-level
+    Aug 18 13:23:19 <hpk>	actually i'd like pedronis or arigo to prepare the "heidelberg-planning" document for monday morning a bit
+    Aug 18 13:23:31 <arigo>	we can suggest a focus on the 1st front for the next sprint
+    Aug 18 13:23:38 <aleale>	how about _weakref?
+    Aug 18 13:24:00 <cfbolz>	aleale: could be related to my GC stuff, but I think it is too advanced
+    Aug 18 13:24:47 <arigo>	do we agree to ignore weakrefs for now?
+    Aug 18 13:25:04 <aleale>	sure
+    Aug 18 13:25:13 <cfbolz>	very good
+    Aug 18 13:25:25 *	cfbolz notes that we have 5 min left
+    Aug 18 13:25:29 <hpk>	i think it's ok to ignore it
+    Aug 18 13:25:29 <arigo>	I mean with respect to what we promized to the EU
+    Aug 18 13:25:41 <arigo>	ok
+    Aug 18 13:25:57 <hpk>	yes, we should sit together monday evening or so and go through the eu deliverables again
+    Aug 18 13:26:03 <hpk>	in a physical sit-together
+    Aug 18 13:26:07 <pedronis>	I think apart errno we have most of the core builtin modules
+    Aug 18 13:26:21 <hpk>	and errno shoulnd't be too hard modulo platform problems
+    Aug 18 13:26:43 <hpk>	(and i still hold that working on all platforms is not a EU-related goal)
+    Aug 18 13:26:49 <arigo>	yes, for now we can hard-code the errno constants from the underlying CPython's constants
+    Aug 18 13:26:52 <pedronis>	we should think about documentation and documents also
+    Aug 18 13:27:09 <hpk>	right, that's the release focus for one, the eu-related docuemnts are still a different issue
+    Aug 18 13:27:13 *	hpk notes three minutes left
+    Aug 18 13:27:15 <arigo>	right
+    Aug 18 13:27:36 <hpk>	arigo, pedronis: may i repeat my question if one of you could make a list of basic issues and put them into heidelberg-planning.txt ? 
+    Aug 18 13:27:42 <hpk>	(using this session as an input) 
+    Aug 18 13:27:57 <hpk>	it's good to have a starting base and then go through it at the sprint
+    Aug 18 13:27:59 <arigo>	pedronis: can I pong this to you?
+    Aug 18 13:28:07 <arigo>	it's going to be a busy week-end for me
+    Aug 18 13:28:22 <pedronis>	hpk: bea sent a mail that the PO made some noises about "EU-packaged" deliverables
+    Aug 18 13:28:36 <pedronis>	hpk: I can write a basic list
+    Aug 18 13:28:36 <hpk>	can we discuss this off-this-channel? 
+    Aug 18 13:28:42 <pedronis>	hpk: yes
+    Aug 18 13:28:43 <hpk>	pedronis: great, i can helpw ith it
+    Aug 18 13:29:00 <hpk>	ok, then we have an idea (which will evolve during the sprint anyway)
+    Aug 18 13:29:13 <arigo>	thanks
+    Aug 18 13:29:18 <hpk>	so i guess we should close the meeting for now and look forward for meeting in three days and have a beer together!
+    Aug 18 13:29:24 <cfbolz>	:-)
+    Aug 18 13:29:34 <aleale>	see you
+    Aug 18 13:29:53 <hpk>	see you
+    Aug 18 13:29:55 <arigo>	see you
+    Aug 18 13:29:56 <cfbolz>	bye

@@ -1,0 +1,99 @@
+Gothenburg PyPy Sprint II: 7th - 11th December 2005 
+======================================================
+(NOTE: internal EU-only sprint starts on the 5th!)
+
+The next PyPy sprint is scheduled to be in December 2005 in Gothenburg,
+Sweden.  Its main focus is heading towards phase 2, which means JIT
+work, alternate threading models and logic programming (but there are
+also other possible topics).  We'll give newcomer-friendly
+introductions.  To learn more about the new PyPy Python-in-Python
+implementation look here: 
+
+    http://codespeak.net/pypy 
+
+Goals and topics of the sprint 
+------------------------------
+
+We have released pypy-0.8.0_, which is officially a "research base" for
+future work.  The goal of the Gothenburg sprint is to start exploring
+new directions and continue in the directions started at the Paris
+sprint.
+
+The currently scheduled main topics are:
+
+ - The L3 interpreter, a small fast interpreter for "assembler-level"
+   flow graphs.  This is heading towards JIT work.
+
+ - Stackless: write an app-level interface, which might be either
+   Tasklets, as in "Stackless CPython", or the more limited Greenlets.
+
+ - Porting C modules from CPython.  (_socket is not finished)
+
+ - Optimization/debugging work in general.  In particular our thread
+   support is far from stable at the moment and unaccountably slow.
+
+ - Experimentation: logic programming in Python.  A first step might be
+   to try to add logic variables to PyPy.
+
+
+.. _`pypy-0.8.0`: http://codespeak.net/pypy/dist/pypy/doc/release-0.8.0.html
+
+Location & Accomodation  
+------------------------ 
+
+The sprint will be held in the apartment of Laura Creighton and Jacob
+Hallén which is at Götabergsgatan 22.  Here is a map_.  This is in central
+Gothenburg.  It is between the tram_ stops of Vasaplatsen and Valand,
+where many lines call.
+
+.. _tram: http://www.vasttrafik.se
+
+.. _map: http://www.gulasidorna.se/query?stq=0&streetname=G%F6tabergsgatan+22%2C+G%F6teborg&what=map&asearch=1
+
+Probably cheapest and not too far away is to book accomodation at `SGS
+Veckobostader`_.  (You can have a 10% discount there; ask in the
+pypy-sprint mailing list for details.  We also have some possibilites of
+free accomodation.)  There are also hotels to suit every price range
+and desire for luxury.  Just ask in the mailing list.
+
+.. _`SGS Veckobostader`: http://www.sgsveckobostader.com
+
+Exact times 
+-----------
+
+The public PyPy sprint is held Wednesday 7th - Sunday 11th December
+2005.  There is a sprint for people involved with the EU part of the
+project on the two days before the "official" sprint.  Hours will be
+from 10:00 until people have had enough.  It's a good idea to arrive a
+day before the sprint starts and leave a day later.  In the middle of
+the sprint there usually is a break day and it's usually ok to take
+half-days off if you feel like it.
+
+
+Network, Food, currency 
+------------------------ 
+
+Sweden is not part of the Euro zone. One SEK (krona in singular, kronor
+in plural) is roughly 1/10th of a Euro (9.15 SEK to 1 Euro).
+
+The venue is central in Gothenburg.  There is a large selection of
+places to get food around, from edible-and-cheap to outstanding.
+
+You normally need a wireless network card to access the network, but we
+can provide a wireless/ethernet bridge.
+
+Sweden uses the same kind of plugs as Germany. 230V AC.
+
+Registration etc.pp. 
+-------------------- 
+
+Please subscribe to the `PyPy sprint mailing list`_, introduce yourself
+and post a note that you want to come.  Feel free to ask any questions
+there!  There also is a separate `Gothenburg people`_ page tracking who
+is already thought to come.  If you have commit rights on codespeak then
+you can modify yourself a checkout of
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/gothenburg-2005/people.txt
+
+.. _`PyPy sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`Gothenburg people`: http://codespeak.net/pypy/extradoc/sprintinfo/gothenburg-2005/people.html

@@ -1,0 +1,29 @@
+digraph itp_graph {
+    node [shape="octagon", color="black", fillcolor="white", style="filled"];
+    subgraph itp {
+        interpret_ [shape="box", label="def interpret(code, args):\l    while more bytecodes:\l        next_instr = ...\l        if next_instr == \"add\":\l            add(args)\l        elif next_instr == \"sub\":\l            sub(args)\l", fillcolor="green"];
+interpret_ -> interpret__1
+interpret__1 [shape="octagon", label="more bytecodes?", color="black", fillcolor="white", style="filled"];
+edge [label="No", color="black", dir="forward", weight="5"];
+interpret__1 -> interpret__2
+edge [label="Yes", color="black", dir="forward", weight="5"];
+interpret__1 -> interpret__3
+interpret__2 [shape="box", label="return", color="black", fillcolor="green", style="filled"];
+interpret__3 [shape="octagon", label="next_instr = ...\l\nnext_instr == 'add'?", color="black", fillcolor="white", style="filled"];
+edge [label="No", color="black", dir="forward", weight="5"];
+interpret__3 -> interpret__4
+edge [label="Yes", color="black", dir="forward", weight="5"];
+interpret__3 -> interpret__5
+interpret__4 [shape="octagon", label="next_instr == 'sub' ?", color="black", fillcolor="white", style="filled"];
+edge [label="No", color="black", dir="forward", weight="5"];
+interpret__4 -> interpret__1
+edge [label="Yes", color="black", dir="forward", weight="5"];
+interpret__4 -> interpret__6
+interpret__6 [shape="box", label="sub(args)", color="black", fillcolor="white", style="filled"];
+edge [label="", style="solid", color="black", dir="forward", weight="5"];
+interpret__6 -> interpret__1
+interpret__5 [shape="box", label="add(args)", color="black", fillcolor="white", style="filled"];
+edge [label="", style="solid", color="black", dir="forward", weight="5"];
+interpret__5 -> interpret__1
+    }
+}

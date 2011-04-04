@@ -1,0 +1,114 @@
+.. -*- mode: rst -*-
+
+Complete the migration of active branches
+==========================================
+
+Now that the SVN repo has been migrate to mercurial, there are two small steps
+that have to be done manually if you want to continue the devlopment of a
+branch:
+
+  1. import the svn externals
+
+  2. tell mercurial the last revision where you "merged from trunk", to avoid
+     false conflicts during the merge
+
+Import the svn externals
+-------------------------
+
+This is easy. There is already a changeset that contains all the needed
+externals (as subrepo), you just need to merge it into your branch::
+
+    $ hg up the-name-of-your-branch
+
+    $ hg merge -r bf2c629d0071
+
+    $ hg ci -m 'import svn externals into the branch'
+
+
+How to merge existing SVN branches in mercurial
+------------------------------------------------
+
+This document applies to branches that:
+
+  1. already existed in svn before the mercurial migration
+
+  2. contains one or more "merge from trunk" done in svn
+
+If the branch does not contain any "merge from trunk", the merging should be
+straightforward (i.e., you just get "real" conflicts).
+
+The problem with "merge from trunk" is that mercurial does not know that we
+have already applied a set of changes in our branch, so it tries to redo them
+(plus all the other changes that were done on trunk) and we get false
+conflicts.
+
+To solve, we need to explicitly tell mercurial that trunk has already been
+merged into our branch up to the right revision:
+
+  1. first of all, we need to find the SVN revision which contains the last
+     merge from trunk: when doing the actual merge, mercurial will apply only
+     the changes that happened on trunk from this point on. Let's call it
+     ``SR`` (Svn Revision).
+
+  2. we need to find the mercurial node that corresponds to ``SR``: see the
+     next section for how to do it. Let's call it ``HR`` (Hg Revision)
+
+  3. switch to the branch in mercurial::
+         $ hg up -r my-branch
+
+  4. perform a "dummy merge": this just tells mercurial that all the changes
+     up to revision ``HR`` has been already merged into the branch::
+         $ hg --config ui.merge=internal:local merge HR
+
+  5. update to ``default`` (i.e., the equivalent of svn trunk) and merge the branch::
+         $ hg up -r default
+         $ hg merge my-branch
+         $ hg ci -m 'merged my-branch'
+
+How to find the ``HR`` corresponding to ``SR``
+----------------------------------------------
+
+
+The hgsubversion_ extension provides a revset named `svnrev`.
+it provides a simple way to access svn revisions
+as well as some usefull template keywords::
+
+    $ hg log -r 'svnrev(79389)' --template '{svnrev} {rev}:{node} {desc|firstline}\n'
+    79389 38957:220cb307578d merge from trunk: svn merge svn+ssh://codespeak.net/svn/pypy/trunk -r78974:HEAD
+
+    $ hg log -r 'svnrev(79389)'
+    changeset:   38957:220cb307578d
+    branch:      jitypes2
+    user:        Antonio Cuni <anto.cuni@gmail.com>
+    date:        Tue Nov 23 12:26:19 2010 +0000
+    summary:     merge from trunk: svn merge svn+ssh://codespeak.net/svn/pypy/trunk -r78974:HEAD
+
+Revsets can be used as argument to merge as well.
+
+If we want to do it manually, we can use this command::
+
+    $ hg log --template '{node|short} {extras}\n' | less
+
+This will print a line for each changeset, showing the mercurial hash and a
+string which among other things contains the SVN revision. We want to pick the
+changeset with the highest svn revision number which is less than the target
+``SR``.
+
+
+Alternatively, we can use the svnup_ mercurial extension. We need to put these
+lines into ``~/.hgrc``::
+
+    [extensions]
+    svnup = /path/to/svnup.py
+
+Then, we can just use the ``svnfind`` command to find the changeset we are looking for::
+
+    $ hg svnfind -r 79389
+    changeset:   39199:f96e54f36e15
+    user:        Maciej Fijalkowski <fijall@gmail.com>
+    date:        Tue Nov 23 07:02:43 2010 +0000
+    summary:     Comment out non-jit builds to not overload the server
+
+.. _hgsubversion: http://bitbucket.org/durin42/hgsubversion
+
+.. http://codespeak.net/svn/user/antocuni/hg-conversion/svnup.py

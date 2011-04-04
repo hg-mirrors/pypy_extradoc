@@ -1,0 +1,191 @@
+.. include:: <s5defs.txt>
+
+=================================
+PyPy - Behind the Scenes
+=================================
+
+:event: EuroPython 2008, Vilnius
+:Authors: Holger Krekel & Bea During
+
+Who and how 
+---------------------
+- Holger Krekel: merlinux GmbH
+- Bea During: Open End AB/Change Maker
+
+We aim to highlight development culture, 
+backgrounds, roadmap and funding topics.  
+
+please interrupt and ask questions! 
+
+The When of PyPy
+---------------------
+- 2003: startup of PyPy OSS work on codespeak 
+  (Python written in Python / Minimal Python) 
+- 2004-2007: consolidation through EU-project
+  (get your own JIT for your favourite language for free)
+- 2008--> towards production ready through company funding 
+
+Development culture
+-----------------------
+- Mix of agile and OSS practices
+- Core practice is sprint-driven development 
+- We aim to have a low drop in level (sprints/IRC/mail)
+- Mixed interest of being research and real world 
+  usage driven
+
+It's all about scope
+------------------------
+
+Making things fit formula:
+
+Vision->Roadmap/scope->direction->results
+
+People->funding contribution and matching interests
+
+The Scope Game/EU-funding
+---------------------------
+
+Big design up front, Contractual framework organised via consortium
+
+plus: **Funding makes for more predictable results**
+
+minus: 
+
+- Guessing game too far into the future
+
+- Reacting/incorporating community contribution
+
+- Adjusting direction based on community needs 
+
+The Scope Game/Company funding (plus)
+-----------------------------------------
+Google - small increments of work (Ctypes, Django)
+Contractually organised through PyPy core companies 
+
+- Small increments->easier to incorporate community
+- Small increments->flexibility regarding direction
+- PyPy core companies set aside sprint funding
+- Companies are need driven
+ 
+The Scope Game/Company funding (minus)
+---------------------------------------
+- All work not suited for small increments
+- Company interests not matching contributors interests
+- Company interests not matching interests of wider community
+
+Examples: separate compilation, JIT work, 
+release work, refactoring etc
+
+The Scope Game/The right time is now
+-------------------------------------
+Find the overlap between:
+
+- community needs
+- vision and direction of PyPy
+- commercial needs
+
+Successful match of these means spot market, 
+longer collaborations means partnerships
+
+Technical status 
+-------------------------- 
+
+* Compatibility: very good and getting better 
+* Speed: without JIT getting closer to CPython
+* Features: threads and ctypes, more extmodules working 
+* PyPy well suited to target new platforms 
+* JIT: improving, but not ready 
+
+Road map items and goals (1)
+----------------------------------
+
+- **pypy-c as cpython replacement**
+- **robustness** 
+- **sandboxing**
+- **interactivity / startup time**
+- new build targets
+
+
+Road map items and goals (2)
+----------------------------
+
+- Optimize memory resources
+- free threading     
+- New OO backends / Tamarin  
+- **pypy.NET**
+- **pypy.JVM**
+
+Road map items and goals (3)
+----------------------------
+
+- **JIT Compiler Generator**
+- ECMA Javascript Interpreter 
+- **Pyrolog**: Prolog 
+- **SPY**: Smalltalk/squeak 
+- Gaming engines 
+
+Next steps 
+----------------------------
+* Basis: Many individual contributors 
+* incremental proposals -> pypy-c
+* longer term:
+      - PyJIT (Eurostars)
+      - "dynamic internet" (EU framework programme 7)
+
+Contribution and Funding 
+-----------------------------------------
+- Start using pypy-c 
+- Write code, docs, send patches
+- Organise or sponsor a sprint 
+- Goal oriented contracts 
+- write your PHD, thesis about PyPy 
+- educate using PyPy 
+
+
+Collaboration 
+-----------------
+* Python Implementations: CPython & Jython developers / Sun
+* Guido and Google open source proposals   
+* SPY (pypy sqeak/smalltalk): Bern University
+* LLVM Chris Lattner, Anton Korbeynikov
+
+PyPy contributors 
+---------------------
+
+Armin Rigo, Carl Friedrich Bolz,  Maciej Fijalkowski
+Antonio Cuni,  Samuele Pedroni,  Niko Matsakis, 
+Holger Krekel, Alexander Schremmer, Amaury Forgeot d Arc,
+Christian Tismer, Jacob Hallen, Laura Creighton, Beatrice During, 
+Leonardo Santagada, Stephan Diehl, Lene Wagner,
+Jean-Paul Calderone, Michael Schneider, Lene Wagner,  
+Michael Hudson, Richard Emslie, Eric van Riet Paap, 
+Aurelien Campeas, Nikolaus Haldimann, ...
+
+Involved Organisations 
+------------------------
+
+**merlinux**: Holger Krekel, Maciej Fijalkowski, Antonio Cuni, Carl Friedrich Bolz, Lene Wagner
+
+**Open End**: Samuele Pedroni, Bea During, Jacob Hallen, Laura Creighton
+
+**Heinrich Heine University**: Carl Friedrich Bolz, Michael Leuschel, (Armin Rigo) 
+
+**Tismerysoft**: Christian Tismer 
+
+**University of Genova**: Antonio Cuni
+
+Contact, questions, discussion 
+-------------------------------
+
+Holger Krekel <holger@merlinux.de>
+
+Beatrice During <bea@openend.se>
+
+pypy-dev@codespeak.net  
+#pypy on irc.freenode.org
+ 
+http://codespeak.net/pypy
+
+http://merlinux.eu
+
+http://openend.se

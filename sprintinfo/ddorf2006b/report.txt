@@ -1,0 +1,161 @@
+Hi all!
+
+it is with a familiar level of tiredness that we bring you these lines.
+We are again sitting in one of the rooms of the Institut für Informatik,
+after 6 days of sprinting. As usual, it has been a busy and productive
+(and sometimes strange) sprint.
+
+One of the new developments of the sprint was the work of Leonardo
+Santadaga, our "Summer" of PyPy student from Brazil. Leonardo proposed
+to write a JavaScript interpreter, had his proposal accepted and now
+gets his travel to sprints funded. This work has seen good progress
+every day, so that we now have an interpreter that handles simple
+snippet of JavaScript code. Leonardo had help from various other people
+changing over the course of the sprint such as Maciek, Guido (the
+reluctant Master of JavaScript) and Stephan. The parser is currently
+stolen from them Narcissus project, and the interpreter does not
+translate yet. For less than a weeks work though we think are doing
+pretty well (we are trying not to distract ourselves with crazy thoughts
+like translating a JS interpreter to JS or wondering how fast it would
+be after applying the magic JIT technology). Although Leonardo will be
+flying back to Brazil soon he will continue working on it (at least if
+he finds sufficient time between caring for his beloved new MacBook).
+
+The other PyPy sprint virgin was Niko Matsakis, a graduate student at
+ETH Zürich. To start with he worked with help of Antonio on the
+fledgling JVM backend. Antonio and Niko worked on moving code out of the
+CLI backend to be shared with other object-oriented backends. They got
+as far as supporting nearly everything except constants (which as usual
+turns out to be the hardest thing to support). The team was split up
+later in the week to work on Other Things. Niko only found out after he
+_left_ the sprint that Samuele is one of the authors of Jython, which he
+is interested in since some of his students are working on it.
+
+Another topic that received attention all week was the JIT (dramatic
+music). The architecture of the JIT has now crystallized enough to be
+able to split up the work into the (for mere mortals largely
+incomprehensible) "time shifting" front end and the (much more
+straightforward) code generating backends.
+
+Samuele and Arre started the week by adding some missing pieces for
+things called "portals" in the front end. A portal is the part of your
+code that marks the entry into JIT-land. For the PyPy interpreter it is
+expected to be the bytecode dispatcher (or in general the main loop of
+an interpreter). The JIT tests now take so long that they also had time
+to work on translating rsocket, which is an RPython-level socket
+library, and using it for implementing the socket module.
+
+For the first few days of the sprint Armin and Richard took a DFA engine
+(deterministic finite automaton) that Carl Friedrich wrote to lex Prolog
+code and adapted it to be jittable.  On Wednesday Armin tried cast some
+light on the dark internals of the JIT with a short talk about this
+example. The DFA engine is viewed as interpreting the specification of
+the automaton and then turned into a compiler by the timeshifter. This
+compiler does not work in advance.  Instead calls to the compiler are
+inserted into the transformed version of the DFA engine. If the DFA
+engine is used to match a string against the automaton, the compiler
+produces somewhat efficient machine code for doing that.
+
+Richard's work (with the help of Armin and Arre) for the rest of the
+sprint can be summarized as improving the timeshifter to be able to
+"un-adapt" this DFA engine until it at least resembled the original
+code. This involved adding a new piece of terminology to the
+ever-growing JIT jargon "deep-freezing" (something to do with structures
+that are so constant that even their contents are constant).
+
+Concurrently, and with its own set of problems, Michael worked on the
+JIT backend all week. He started together with Armin to document all the
+sometimes non-intuitively named methods of the backend API, which has
+only emerged in the last month or so. They renamed the most strange ones
+afterwards. After that Michael and Eric did a little polishing of the
+PowerPC backend and began to investigate writing an LLVM backend (C++ is
+hard). Eric had to leave mid-sprint so Michael continued with Niko
+(another Mac fanatic with insufficient funds to have a MacBook) to
+improve the PowerPC backend. This involved fights with the calling
+conventions, writing a greedy register allocator and lots of time
+waiting for tests (they didn't manage to find a nice side-project). At
+the end of the week the PPC backend can actually handle no more programs
+than it could at the beginning, but we are very much happier about its
+foundations.
+
+After the break-day Samuele and Maciek started working on the project
+that would occupy them for the rest of the sprint: adding "transparent
+proxy objects" to the PyPy interpreter. A transparent proxy is something
+that claims to be of a specific type (e.g. a list) but all operations
+are forwarded to a controller which can choose how to implement those in
+an arbitrary way, such as retrieving the values from a database, a
+remote host or similar. For most operations the multi-method based
+implementation of the standard object space made this relatively
+straightforward. For the black-sheep operations this was some more work
+but this is still something that, according to Samuele, "if you tried
+this with CPython it would take so long that you wouldn't want it
+anymore when you're finished". The motivation for writing these proxy
+thingies is to experiment with transparent remote objects, orthogonal
+persistence and security (there is also a plan to steal the pygame from
+CPython by using them).
+
+There was a little work on the side on the upcoming "apigen" tool, which
+is a new part of the py-lib. This is something Maciek, Guido and Brian
+Dorsey started before the sprint.  It runs all the tests of a package
+(currently only the py-lib) and observes the behaviour of the running
+code. From this it generates API documentation with additional
+information like what types the arguments of the functions had, which
+attributes of instances were changed...
+
+Carl Friedrich spent quite some time on the deeply brain-taxing task of
+populating the new rlib directory by moving various files there and
+fixing all the imports. The rlib directory is meant to contain a library
+useable from RPython programs, so the code in there is all RPython and
+is supposed to make up in some way for the lack of a standard library in
+RPython. Such modules have been accumulating in various places where
+they don't really belong.
+
+Samuele, Anto and Carl Friedrich had a planning meeting for the
+integration of the .NET framework with the Python interpreter that Anto
+plans to do. This means being able to call .NET functions and use .NET
+classes from pypy.net. Samuele presented the two major approaches: The
+simpler, but more annoying one is to write wrapper classes that have the
+actual .net object as an attribute. For this you need to do conversions
+at the language boundaries and thus suffer a performance penalty. The
+other approach is to identify some of the classes of the PyPy
+interpreter with .NET classes so that you can pass them around freely.
+
+Guido and Carl Friedrich worked a small bit on the build tool, which
+supposedly gives people a way to build PyPy on remote hosts. This is now
+somewhat working modulo lots of annoying real-life details
+(error-handling being one of them). Together with Samuele they had a
+discussion about what to do in this area in the future. Various
+realistic ideas (such as a web frontend) and unrealistic ideas (having a
+quake configuration tool where you can hunt down and kill configuration
+settings that you don't want) were discussed.
+
+A very positive aspect of the sprint is that Christian who has been ill
+for quite a while is back with us and now finding all the things we have
+broken on windows in the meantime.
+
+Carl Friedrich with the help of Anto and Guido spent a big chunk of time
+near the end of the sprint in refactoring PyPy's file implementation.
+The first step was converting the stream implementation which was living
+at app-level before to be RPython and thus useable by other RPython
+programs (such as Prolog interpreters, hint hint). Afterwards they
+converted the file implementation to use the new facilities, which
+involved the usual fighting with the annotator to make it work. This
+should also make it possible to remove some horrendous hacks from the
+.NET backend, as the new file implementation should make it easier to
+move away from using a POSIX-like model (actually the .NET backend
+contained a POSIX compatibility layer written by Anto just for this
+purpose).
+
+Since we cannot seem to come up with a witty closing remark, we just
+stop.
+
+Ade,
+
+Carl Friedrich & mwh
+
+--::
+
+  "... and the end result of all this is a dating site that matches
+  people according to the sort of PyPy they compile."
+                                                     -- Samuele Pedroni
+

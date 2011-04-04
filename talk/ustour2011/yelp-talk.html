@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="version" content="S5 1.1" />
+<title>PyPy</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:Date: $Date: 2005-12-18 01:56:14 +0100 (Sun, 18 Dec 2005) $
+:Revision: $Revision: 4224 $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;
+  background-color: #eeeeee }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+tt.docutils {
+  background-color: #eeeeee }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<script src="ui/default/slides.js" type="text/javascript"></script>
+<link rel="stylesheet" href="ui/default/slides.css"
+      type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="ui/default/outline.css"
+      type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="ui/default/print.css"
+      type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="ui/default/opera.css"
+      type="text/css" media="projection" id="operaFix" />
+
+<style type="text/css">
+#currentSlide {display: none;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header">
+
+</div>
+<div id="footer">
+<h1>PyPy</h1>
+
+</div>
+</div>
+<div class="presentation">
+<div class="slide" id="slide0">
+<h1 class="title">PyPy</h1>
+<!-- Definitions of interpreted text roles (classes) for S5/HTML data. -->
+<!-- This data file has been placed in the public domain. -->
+<!-- Colours
+======= -->
+<!-- Text Sizes
+========== -->
+<!-- Display in Slides (Presentation Mode) Only
+========================================== -->
+<!-- Display in Outline Mode Only
+============================ -->
+<!-- Display in Print Only
+===================== -->
+<!-- Incremental Display
+=================== -->
+<div class="admonition-armin-rigo admonition">
+<p class="first admonition-title">Armin Rigo</p>
+<ul class="simple">
+<li><em>Heinrich-Heine Universität, Germany</em></li>
+<li><em>Open End AB, Sweden</em></li>
+</ul>
+<p class="last">March 2011</p>
+</div>
+
+</div>
+<div class="slide" id="introduction">
+<h1>Introduction</h1>
+<ul class="simple">
+<li>The PyPy project (1): a framework in which to write interpreters for
+complicated dynamic languages</li>
+<li>The PyPy project (2): a Python interpreter, supporting the complete
+Python 2.7</li>
+</ul>
+</div>
+<div class="slide" id="cpython-and-pypy">
+<h1>CPython and PyPy</h1>
+</div>
+<div class="slide" id="id1">
+<h1>CPython and PyPy</h1>
+<ul class="simple">
+<li>Two implementations</li>
+<li>Two interpreters</li>
+<li>CPython is written in C, PyPy is written in Python</li>
+<li>PyPy tries to be equivalent to CPython</li>
+</ul>
+</div>
+<div class="slide" id="and-jython-and-ironpython">
+<h1>...and Jython and IronPython</h1>
+<ul class="simple">
+<li>Jython: Python for the Java VM</li>
+<li>IronPython: Python for .NET</li>
+<li>Both try to integrate well with their VM</li>
+</ul>
+</div>
+<div class="slide" id="what-is-pypy">
+<h1>What is PyPy</h1>
+<ul class="simple">
+<li>A project started in 2003</li>
+<li>An Open Source effort of volunteers</li>
+<li>With some funding support: 2 years from the European Union (2005-2007),
+and now from Germany and Sweden (2010-2011).</li>
+</ul>
+</div>
+<div class="slide" id="id2">
+<h1>What is PyPy</h1>
+<ul class="simple">
+<li>Test-driven development</li>
+<li>Now contains about 200 KLoC, and 150 KLoc of tests</li>
+</ul>
+</div>
+<div class="slide" id="what-is-the-point-of-pypy">
+<h1>What is the point of PyPy?</h1>
+<ul class="simple">
+<li>CPython is older, it's the &quot;official&quot; version</li>
+<li>PyPy is just a replacement, so why?</li>
+<li>Moreover PyPy is not quite complete (e.g. C extension
+modules are only partially supported)</li>
+</ul>
+</div>
+<div class="slide" id="speed">
+<h1>Speed</h1>
+<ul class="simple">
+<li>First answer: PyPy is faster, and may use less memory</li>
+<li>...or at least, it is &quot;often&quot; the case</li>
+</ul>
+</div>
+<div class="slide" id="http-speed-pypy-org">
+<h1><a class="reference" href="http://speed.pypy.org/">http://speed.pypy.org/</a></h1>
+<img alt="speed.png" src="speed.png" />
+</div>
+<div class="slide" id="and-optionally-extra-features">
+<h1>And (optionally) extra features</h1>
+<ul class="simple">
+<li>&quot;Stackless&quot;</li>
+<li>Non-Python interpreters</li>
+<li>and many smaller experiments</li>
+<li>it is a better experimentation platform than CPython</li>
+</ul>
+</div>
+<div class="slide" id="multi-threading">
+<h1>Multi-threading</h1>
+<ul class="simple">
+<li>Bad support on CPython (GIL)</li>
+<li>PyPy has no answer to this question (there is also a GIL)</li>
+</ul>
+</div>
+<div class="slide" id="pypy-for-the-user">
+<h1>PyPy for the user</h1>
+</div>
+<div class="slide" id="id3">
+<h1>Speed</h1>
+<img alt="speed.png" src="speed.png" />
+</div>
+<div class="slide" id="speed-2">
+<h1>Speed (2)</h1>
+<img alt="speed2.png" src="speed2.png" />
+</div>
+<div class="slide" id="memory-usage">
+<h1>Memory usage</h1>
+<ul class="simple">
+<li>Depends on the use case</li>
+<li>Much better than CPython for instances of classes with no __slots__</li>
+<li>On running PyPy's translation toolchain on 32-bits: 1.7GB with PyPy
+(including the JIT machine code), versus 1.2GB with CPython</li>
+<li>Experimental support for 32-bit &quot;compact pointers&quot; on 64-bit platforms</li>
+</ul>
+</div>
+<div class="slide" id="just-in-time-compilation">
+<h1>Just-in-Time Compilation</h1>
+<ul class="simple">
+<li>Tracing JIT, like TraceMonkey</li>
+<li>Complete by construction</li>
+<li>Supports Intel x86, amd64, and soon ARM</li>
+</ul>
+</div>
+<div class="slide" id="compatibility">
+<h1>Compatibility</h1>
+<ul class="simple">
+<li>&quot;Full&quot; compatibility with CPython</li>
+<li>More so than, say, Jython or IronPython</li>
+<li>Main difference: Garbage Collection is not refcounting (because we
+could get much better GCs) --- so __del__ methods are not called
+immediately and predictively</li>
+<li>Apart from that, it is really 99.99% compatible</li>
+</ul>
+</div>
+<div class="slide" id="stackless-python">
+<h1>Stackless Python</h1>
+<ul class="simple">
+<li>Supports Stackless Python (microthreads)</li>
+<li>In-progress: not integrated with the JIT so far</li>
+</ul>
+</div>
+<div class="slide" id="cpyext">
+<h1>CPyExt</h1>
+<ul class="simple">
+<li>A layer that integrates existing CPython C extension modules</li>
+<li>Does not support all the details of the CPython C API</li>
+<li>For some extension modules, we can have a performance issue</li>
+<li>Work in progress</li>
+</ul>
+</div>
+<div class="slide" id="cpyext-works-often">
+<h1>CPyExt works &quot;often&quot;</h1>
+<ul class="simple">
+<li>wxPython</li>
+<li>PIL</li>
+<li>Boost</li>
+<li>cx_Oracle</li>
+<li>mysqldb</li>
+<li>pycairo</li>
+</ul>
+</div>
+<div class="slide" id="using-cpyext">
+<h1>Using CPyExt</h1>
+<ul class="simple">
+<li>The C sources need recompiling</li>
+<li>Sadly, they often contain a few details to fix</li>
+<li>(typically, bad usage of reference counts)</li>
+</ul>
+</div>
+<div class="slide" id="other-ways-to-use-c-libraries">
+<h1>Other ways to use C libraries</h1>
+<ul class="simple">
+<li>Use ctypes (it is soon going to be fast on top of PyPy).
+Example: pyexpat, sqlite3</li>
+<li>Or write it as an RPython module built into PyPy,
+but that's more involved</li>
+<li>More ways could be possible, given work (SWIG backend,
+Cython backend, C++ Reflex, etc...)</li>
+</ul>
+</div>
+<div class="slide" id="architecture">
+<h1>Architecture</h1>
+</div>
+<div class="slide" id="id4">
+<h1>Architecture</h1>
+<p>PyPy has two parts:</p>
+<ul class="simple">
+<li>A Python interpreter, written in <em>RPython</em></li>
+<li>A compilation toolchain -- the &quot;translator&quot; -- that translates
+RPython code into C code (mainly)</li>
+</ul>
+</div>
+<div class="slide" id="pypy-s-python-interpreter">
+<h1>PyPy's Python interpreter</h1>
+<ul class="simple">
+<li>A priori similar to CPython, but written in RPython.</li>
+<li>RPython is also valid Python: we test extensively by running
+it on top of CPython</li>
+</ul>
+</div>
+<div class="slide" id="the-translation-toolchain">
+<h1>The translation toolchain</h1>
+<ul class="simple">
+<li>Takes a program written in RPython, a custom subset of Python</li>
+<li>Outputs the &quot;same&quot; program written in C</li>
+</ul>
+</div>
+<div class="slide" id="rpython-is-still-mostly-python">
+<h1>RPython is still mostly Python</h1>
+<ul class="simple">
+<li>Completely valid Python (can be tested directly)</li>
+<li>Can use lists, dicts, tuples, classes and instances, and so on,
+but it must be type-safe</li>
+<li>Contains no garbage collection detail (Py_INCREF/Py_DECREF in CPython)</li>
+<li>Really a subset of Python: roughly &quot;how a Java programmer writes his
+first Python program&quot;</li>
+<li>...well, plus tons of tricks <tt class="docutils literal"><span class="pre">:-)</span></tt></li>
+</ul>
+</div>
+<div class="slide" id="rpython-meta-programming">
+<h1>RPython meta-programming</h1>
+<ul>
+<li><p class="first">RPython is actually only a restriction on the code after being imported,
+so we can build up everything in (normal) full Python:</p>
+<pre class="literal-block">
+for name in [&quot;add&quot;, &quot;sub&quot;, &quot;mul&quot;]:
+    def f(x, y):
+        ...
+    globals()[name] = f
+</pre>
+</li>
+<li><p class="first">here, the code in <tt class="docutils literal"><span class="pre">f()</span></tt> is RPython, but the loop around it is not.</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="translation-toolchain">
+<h1>Translation toolchain</h1>
+<ul class="simple">
+<li>&quot;Translation toolchain&quot;: statically compiles RPython code</li>
+<li>Produces C code (or JVM or .NET code, experimentally)</li>
+<li>Every aspect that is independent from the high-level
+description of the interpreter is left out of RPython</li>
+<li>Instead, they are added during translation</li>
+</ul>
+</div>
+<div class="slide" id="translation-overview-1">
+<h1>Translation overview (1)</h1>
+<ul class="simple">
+<li>Start with the live RPython program</li>
+<li>Build the Control Flow Graphs (CFGs) of the functions</li>
+<li>Perform global type inference</li>
+<li>We get a type-annotated version of the CFGs</li>
+<li>Demo</li>
+</ul>
+</div>
+<div class="slide" id="translation-overview-2">
+<h1>Translation overview (2)</h1>
+<ul class="simple">
+<li>&quot;Lower&quot; the level of the CFGs: transform their Python-like operations
+into C-like operations</li>
+<li>Do a number of additional transformations to insert the selected &quot;aspects&quot;</li>
+<li>Generate C code from the low-level CFGs</li>
+</ul>
+</div>
+<div class="slide" id="various-aspects">
+<h1>Various aspects</h1>
+<ul class="simple">
+<li>The object model, e.g. how to turn RPython classes and instances
+to C structs</li>
+<li>Garbage collection</li>
+<li>Execution model: regular (recursive) or stackless</li>
+<li>Just-in-Time compiler</li>
+</ul>
+</div>
+<div class="slide" id="just-in-time-compiler">
+<h1>Just-in-Time Compiler</h1>
+</div>
+<div class="slide" id="goal">
+<h1>Goal</h1>
+<ul class="simple">
+<li>Speed up the interpreter written in RPython</li>
+<li>Independent of the language that is being interpreted</li>
+<li>Let us call it the P-interpreter (P = Python or other)</li>
+</ul>
+</div>
+<div class="slide" id="what-is-a-jit">
+<h1>What is a JIT</h1>
+<ul class="simple">
+<li>A JIT selects pieces of the user program (in language P) that would benefit
+from compilation instead of interpretation</li>
+<li>A &quot;method JIT&quot; selects individual P functions and compiles them,
+possibly doing some inlining to improve performance (HotSpot, Psyco)</li>
+<li>A &quot;tracing JIT&quot; selects individual code paths from loops and compiles
+them, inlining aggressively (TraceMonkey, PyPy)</li>
+</ul>
+</div>
+<div class="slide" id="tracing">
+<h1>Tracing</h1>
+<ul class="simple">
+<li>Run the user program, and do some lightweight profiling of loops</li>
+<li>When a loop is run often enough, enter &quot;Tracing Mode&quot;</li>
+<li>Run one more iteration of the loop in this mode</li>
+<li>In addition to actually running the next iteration, it records a &quot;trace&quot;</li>
+</ul>
+</div>
+<div class="slide" id="tracing-2">
+<h1>Tracing (2)</h1>
+<ul class="simple">
+<li>The trace is then turned into a machine code loop, and directly executed</li>
+<li>Runs all the further iterations of the loop</li>
+</ul>
+</div>
+<div class="slide" id="tracing-3">
+<h1>Tracing (3)</h1>
+<ul class="simple">
+<li>The machine code contains &quot;guards&quot; checking that all conditions met
+during tracing are still valid</li>
+<li>When a guard fails (latest: at the end of the loop), we fall back to
+the regular P-interpreter</li>
+</ul>
+</div>
+<div class="slide" id="meta-tracing-in-pypy">
+<h1>Meta-Tracing in PyPy</h1>
+<ul class="simple">
+<li>The explanation above assumes a tracing JIT for the full Python
+language</li>
+<li>Would need to be maintained whenever we change the Python version we
+support</li>
+<li>Instead, we have a &quot;meta-tracing JIT&quot;</li>
+<li>We trace the P-interpreter's main loop (running N times) interpreting
+a P loop (running once)</li>
+</ul>
+</div>
+<div class="slide" id="demo">
+<h1>Demo</h1>
+</div>
+<div class="slide" id="architecture-of-the-pypy-jit">
+<h1>Architecture of the PyPy JIT</h1>
+<ul class="simple">
+<li>In advance, turn the CFGs of the P-interpreter into some bytecode
+representation called &quot;jitcode&quot;</li>
+<li>Uses some hints provided by the P-interpreter author (but not many)</li>
+<li>&quot;Links&quot; into the P-interpreter's bytecode dispatch loop</li>
+<li>In this way we add lightweight profiling code</li>
+</ul>
+</div>
+<div class="slide" id="meta-tracing">
+<h1>Meta-Tracing</h1>
+<ul class="simple">
+<li>When thresholds are reached, we start tracing</li>
+<li>Tracing is done by running the &quot;jitcodes&quot; in a custom interpreter,
+and recording a trace of all operations performed</li>
+<li>Tracing is slow (double interpretation) but only runs for one iteration
+of the loop</li>
+</ul>
+</div>
+<div class="slide" id="optimization">
+<h1>Optimization</h1>
+<ul class="simple">
+<li>Advanced optimizations of the trace: escaping analysis, integer bounds,
+store sinking, string handling, FFI calls, unrolling, virtualrefs...</li>
+</ul>
+</div>
+<div class="slide" id="machine-code-backend">
+<h1>Machine Code Backend</h1>
+<ul class="simple">
+<li>Turns a trace into machine code</li>
+<li>Simple register allocation (linear code)</li>
+<li>x86, x86-64, (ARM)</li>
+<li>Guards compiled as conditional jumps to code that restores the full state</li>
+</ul>
+</div>
+<div class="slide" id="blackhole-interpreter">
+<h1>Blackhole interpreter</h1>
+<ul class="simple">
+<li>When a guard fails, we need to go back to the regular P-interpreter</li>
+<li>Cannot easily re-enter the P-interpreter from anywhere, because it
+is just C code</li>
+<li>Instead we use one more interpreter, the &quot;blackhole interpreter&quot;.</li>
+</ul>
+</div>
+<div class="slide" id="bridges">
+<h1>Bridges</h1>
+<ul class="simple">
+<li>When a guard fails often enough, run again the JIT from there</li>
+<li>Meta-trace, optimize, generate machine code, run it</li>
+<li>Such extra traces are called &quot;bridges&quot; instead of &quot;loops&quot;</li>
+<li>In practice, most loops end up needing some number of bridges</li>
+<li>We get &quot;trees&quot; of machine code</li>
+</ul>
+</div>
+<div class="slide" id="more-topics">
+<h1>More topics</h1>
+<ul class="simple">
+<li>Loops, bridges and &quot;preamble loops&quot;</li>
+<li>Virtualizables</li>
+<li>GC integration</li>
+<li>Memory management of machine code</li>
+<li>...</li>
+</ul>
+</div>
+<div class="slide" id="conclusion">
+<h1>Conclusion</h1>
+</div>
+<div class="slide" id="id5">
+<h1>Conclusion</h1>
+<ul class="simple">
+<li>PyPy is a platform for writing efficient interpreters for
+dynamic languages</li>
+<li><a class="reference" href="http://pypy.org/">http://pypy.org/</a></li>
+<li><a class="reference" href="http://speed.pypy.org/">http://speed.pypy.org/</a></li>
+<li>irc: <tt class="docutils literal"><span class="pre">#pypy</span> <span class="pre">at</span> <span class="pre">freenode.net</span></tt></li>
+<li>noisebridge sprint this weekend (from 10am):
+<a class="reference" href="https://www.noisebridge.net/wiki/Getting_Here">https://www.noisebridge.net/wiki/Getting_Here</a></li>
+</ul>
+</div>
+</div>
+</body>
+</html>

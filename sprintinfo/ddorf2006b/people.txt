@@ -1,0 +1,57 @@
+People coming to the Duesseldorf sprint October 2006
+====================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Carl Friedrich Bolz  always there   private
+Armin Rigo           28th / -       private
+Michael Hudson       29th / -       private
+Antonio Cuni            - /5th      private
+Samuele Pedroni      28th-6th       Hotel an der Uni
+Anders Chrigstroem   29th-6th       Hotel an der Uni
+Maciej Fijalkowski   29th-5/6th     ?Hotel an der Uni
+Stephan Diehl        29th-5th       private (?)
+Eric van Riet paap   30th-1st       Hotel Regina
+Niko Matsakis        30th-4th       Auszeit Hotel
+Leonardo Santagada   29th-7th?      ?
+Richard Emslie       29th-5th       Hotel an der Uni
+Christian Tismer     28th-6th       Hotel an der Uni
+Alexander Schremmer  1st            None
+==================== ============== =====================
+
+People in the following list have said at one point that they would come:
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Andrew Thompson      ?              ?
+==================== ============== =====================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Jacob Hallen         ?              ?
+Aurelien Campeas     ?              ?
+Alexandre Fayolle    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Bert Freudenberg     ?              ?
+Laura Creighton      ?              ?
+Beatrice Duering     ?              ?
+Johan Hahn           ?              ?
+Holger Krekel        ?              ?
+Anders Chrigstroem   ?              ?
+Samuele Pedroni      ?              ?
+Anders Lehmann       ?              ? 
+Niklaus Haldimann    ?              ?
+==================== ============== =====================

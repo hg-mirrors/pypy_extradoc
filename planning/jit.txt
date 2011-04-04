@@ -1,0 +1,208 @@
+BUGS
+----
+
+* a CALL that may release the GIL needs to have effectinfo=None,
+  because random other code can run at that point.
+
+INVESTIGATIONS
+--------------
+
+* 25% slowdown on pyflate fast (Jan 29)
+  - pyflate_fast uses python longs on 32bit
+  - some places don't create SmallLongs even when they should (like consts)
+  - we end up with comparison of Longs and SmallLongs
+
+* 10% slowdown on spitfire (Feb 01)
+
+NEW TASKS
+---------
+
+- think about whether W_TypeObject._pure_lookup_where_with_method_cache needs a
+  different decorator, because it cannot be moved around arbitrarily.
+
+- have benchmarks for jit compile time and jit memory usage
+  
+- kill GUARD_(NO)_EXCEPTION; replace that by LAST_EXC_VALUE to load the
+  current exception from the struct in memory, followed by a regular
+  GUARD_CLASS.  (Armin: Look like a simplification, but it's a bit messy too)
+
+- maybe refactor a bit the x86 backend, particularly the register
+  allocation
+
+- think about having different bytecode for "xyz %s" % stuff when left side
+  is a compile time constant (and call unrolled version of string formatting
+  loop in this case).
+
+- generators are still fairly inefficient. We get a lot of:
+  i = ptr_eq(frame, some_other_frame)
+  guard_value(i, 0)
+  every second instruction.
+
+  there is also manipulating of valuestackdepth and such.
+  XXX find precise python code
+
+- consider how much old style classes in stdlib hurt us.
+
+- support raw mallocs
+
+- support casting from Signed to an opaque pointer
+
+- local imports should be jitted more efficiently, right now they produce a
+  long trace and they are rather common (e.g. in translate.py)
+
+- the integer range analysis cannot deal with int_between, because it is
+  lowered to uint arithmetic too early
+
+- regular expressions are still not very efficient in cases. For example:
+
+  re.search("b+", "a" * 1000 + "b") gets compiled to a residual call
+  re.search("(ab)+", "a" * 1000 + "b") almost doesn't get compiled and
+  gets very modest speedups with the JIT on (10-20%)
+
+- consider an automated way to take a function with a loop and generate a
+  JITable preamble and postamble with a call to the loop in the middle.
+
+- implement small tuples, there are a lot of places where they are hashed and
+  compared
+
+OPTIMIZATIONS
+-------------
+
+Things we can do mostly by editing optimizeopt/:
+
+- getfields which result is never used never get removed (probable cause -
+  they used to be as livevars in removed guards). also getfields which result
+  is only used as a livevar in a guard should be removed and encoded in
+  the guard recovert code (only if we are sure that the stored field cannot
+  change)
+
+- if we move a promotion up the chain, some arguments don't get replaced
+  with constants (those between current and previous locations). So we get
+  like
+
+  guard_value(p3, ConstPtr(X))
+  getfield_gc(p3, descr)
+  getfield_gc(ConstPtr(X), descr)
+
+  maybe we should move promote even higher, before the first use and we
+  could possibly remove more stuff?
+
+- f31 = f17 * f16
+  f32 = f16 * f17
+
+  Should be just a matter of synthesizing reverse operations in rewrite.py
+
+- optimize arraycopy also in the cases where one of the arrays is a virtual and
+  short. This is seen a lot in translate.py
+
+
+PYTHON EXAMPLES
+---------------
+
+Extracted from some real-life Python programs, examples that don't give
+nice code at all so far:
+
+- string manipulation: s[n], s[-n], s[i:j], most operations on single
+  chars, building a big string with repeated "s += t", "a,b=s.split()",
+  etc.  PARTIALLY DONE with virtual strings
+
+- http://paste.pocoo.org/show/188520/
+  this will compile new assembler path for each new type, even though that's
+  overspecialization since in this particular case it's not relevant.
+  This is treated as a megamorphic call (promotion of w_self in typeobject.py)
+  while in fact it is not.
+
+- guard_true(frame.is_being_profiled) all over the place
+
+- cProfile should be supported (right now it prevents JITting completely):
+  the calls to get the time should be done with the single assembler
+  instruction "read high-perf time stamp".  The dict lookups done by
+  cProfile should be folded away. IN PROGRESS
+
+- let super() work with the method cache.
+
+- turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
+  floats.
+
+- xxx (find more examples :-)
+
+BACKEND TASKS
+-------------
+
+Look into avoiding double load of memory into register on 64bit.
+In case we want to first read a value, increment it and store (for example),
+we end up with double load of memory into register. Like:
+
+movabs 0xsomemem,r11
+mov    (r11), r10
+add    0x1, r10
+movabs 0xsomemem,r11
+mov    r10, (r11)
+
+(second movabs could have been avoided)
+
+LATER (maybe) TASKS
+-------------------
+
+- think out looking into functions or not, based on arguments,
+  for example contains__Tuple should be unrolled if tuple is of constant
+  length. HARD, blocked by the fact that we don't know constants soon enough
+  Also, an unrolled loop means several copies of the guards, which may
+  fail independently, leading to an exponential number of bridges
+
+- out-of-line guards (when an external change would invalidate existing
+  pieces of assembler)
+
+- merge tails of loops-and-bridges?
+
+UNROLLING
+---------
+ -  Replace full preamble with short preamble
+
+ -  Reenable string optimizations in the preamble. This could be done
+    currently, but would not make much sense as all string virtuals would
+    be forced at the end of the preamble. Only the virtuals that
+    contains new boxes inserted by the optimization that can possible be
+    reused in the loops needs to be forced.
+
+ -  Replace the list of short preambles with a tree, similar to the
+    tree formed by the full preamble and it's bridges. This should
+    enable specialisaton of loops in more complicated situations, e.g.
+    test_dont_trace_every_iteration in test_basic.py. Currently the
+    second case there become a badly optimized bridge from the
+    preamble to the preamble. This is solved differently with
+    jit-virtual_state, make sure the case mentioned is optimized.
+
+ -  To remove more of the short preamble a lot more of the optimizer
+    state would have to be saved and inherited by the bridges. However
+    it should be possible to recreate much of this state from the short
+    preamble. To do that, the bridge have to know which of it's input
+    boxes corresponds to which of the output boxes (arguments of the
+    last jump) of the short preamble. One idea of how to store this
+    information is to introduce some VFromStartValue virtuals that
+    would be some pseudo virtuals containing a single input argument
+    box and it's index.
+
+  - When retracing a loop, make the optimizer optimizing the retraced
+    loop inherit the state of the optimizer optimizing the bridge
+    causing the loop to be retraced.
+
+  - After the jit-virtual_state is merge it should be possible to
+    generate the short preamble from the internal state of the
+    optimizer. This should be a lot easier and cleaner than trying to
+    decide when it is safe to reorder operations.
+
+  - Could the retracing be generalized to the point where the current
+    result after unrolling could be achieved by retracing a second
+    iteration of the loop instead of inlining the same trace? That
+    would remove the restricting assumptions made in unroll.py and
+    e.g. allow virtual string's to be kept alive across boundaries. It
+    should also better handle loops that don't take the exact same
+    path through the loop twice in a row.
+
+  - After the jit-virtual_state is merged, the curent policy of always
+    retracing (or jumping to the preamble) instead of forcing virtuals
+    when jumping to a loop should render the force_all_lazy_setfields()
+    at the end of the preamble unnessesary. If that policy wont hold
+    in the long run it should be straight forward to augument the
+    VirtualState objects with information about storesinking.

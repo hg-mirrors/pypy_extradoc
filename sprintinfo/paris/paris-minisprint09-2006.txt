@@ -1,0 +1,31 @@
+Sprint report Paris mini sprint September 25th to 29th
+========================================================
+
+Participants: Aurélien Campéas and Anders Lehmann.
+
+The main goal of the sprint was to enable translation of the Logic
+objspace with constraint variables, constraint propagation and
+distribution, using clonable computationspaces the Oz style.
+
+After several attempts, in the well known style of translate, add
+"assert isinstance(...", translate again ...., we reached a point
+were we tripped a bug in the inlining code.
+
+After that bug was fixed we believe that the goal was reached and the
+Logic objectspace now translates!
+
+We were not able to actually test if it works though, during the
+sprint.
+
+As a job to do while we were waiting for the translation to fail, a
+small test object space were made to experiment with clonable
+application level threads. This is not committed as the Logic
+objecspace contains the functionality.
+
+We also took a stab at "recomputation" (an optimisation technique from
+Oz). Lastly, we did some changes to the constraint solver so that it
+can run in interpreted mode (this remains completely impossible with
+logic programs), i.e without the low-level coroutine cloning
+facility. The code was not quite finished at the end of the sprint and
+is still uncommitted.
+

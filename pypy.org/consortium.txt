@@ -1,0 +1,43 @@
+Consortium Partners
+------------------------------
+
+DFKI http://www.dfki.de
+	Stephan Busemann [stephan.busemann at dfki de]
+	(EU coordinator) 
+	Alastair Burt [alastair.burt at dfki de]
+	Anders Lehmann [anders.lehmann at dfki de]
+
+Open End AB (formerly AB Strakt) http://www.openend.se
+	Jacob Hallén [jacob at strakt com] (project manager)
+	Samuele Pedroni [pedronis at strakt com] (technical board)
+	Anders Chrigström [ac at strakt com]
+
+Change Maker http://www.changemaker.nu
+	Beatrice Düring [bea at changemaker nu] (assistant project manager, press contact)
+
+merlinux GmbH http://merlinux.de
+	Holger Krekel [krekel at merlinux de] (technical director/board)
+
+Heinrich Heine Universität Düsseldorf http://www.uni-duesseldorf.de/
+	Armin Rigo [arigo at tunes org] (technical board)
+        Michael Hudson [mwh at python net]
+
+Tismerysoft http://www.stackless.com
+	Christian Tismer [tismer at stackless com] (technical board)
+
+Logilab http://www.logilab.fr
+	Nicholas Chauvat [Nicolas.Chauvat at logilab fr] 
+	Ludovic Aubry [ludal at logilab fr]
+	Adrien DiMascio [adim at logilab fr]
+
+impara GmbH www.impara.de
+	Bert Freudenberg [bert at impara de]
+
+Individual Partners
+-------------------------
+
+Laura Creighton [lac at strakt com]
+Eric van Riet Paap [eric at vanrietpaap nl]
+Richard Emslie [rxe at ukshells co uk]
+Niklaus Haldimann  [nhaldimann at gmx ch]
+

@@ -1,0 +1,14 @@
+rest_sources = [
+    'hpk-tech.txt', 
+]
+
+rest_options = ['--use-latex-footnotes', '--use-latex-toc']
+toc_depth = 2
+
+logo = 'py-web.png'
+heading = 'PyPy - The New Python Implementation on the Block'
+# pagebreak = True
+# possible fonts:
+# times, helvetica, new century schoolbock, avant garde, palatino
+
+font = 'avant garde'

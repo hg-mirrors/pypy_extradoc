@@ -1,0 +1,89 @@
+SEMINAR
+Best Practice in the Use and Development of Free and Open Source Software
+3. Case study:
+
+Part 2/Holger:
+
+Slides:
+
+
+1. personal background 
+
+   - worked in gaming companies, banks and car companies for
+     several years
+   - studied computer science 
+   - left well paid job and went into open-source scenes (2001)
+   - various project involvements, started PyPy 2003 by
+     inviting people to the first "sprint"
+
+2. What makes Open Source communities like Python work: the people factor
+
+	- collaborative - driven by interest 
+	- communication - quite transparent to everyone involved 
+	- email / IRC / version-control 
+	- organization - rather informal 
+
+3. technical production factors 
+
+- automated test driven development
+- specific expertise/special interest 
+- version control (Subversion)
+- releases
+
+4. Typical aspects of the Python community?
+
+	- lively community
+	- lots of different python implementation projects
+	- good contactsbetween the projects
+	- maybe less fragmented than other OSS communities?
+
+5. PyPy: the vision
+
+- founders came from the Python community
+- "sprints" were the inital factor
+- what is PyPy/Python - one of the five most used programming
+  languages today 
+- grass root approach
+	
+
+6. OSS and EU funding: PyPy as a case study
+
+- driven by partially EU funded and non-EU funded parties 
+- focus on avoiding friction and turning PyPy into a long 
+  term project
+- IBM or Sun have done similarly challenging projects
+  in more time and with more funding 
+- yet not found completely satisfying "funding" 
+  interactions with communities. 
+
+7. PyPy technical status 
+
+- three public releases in 2005, well received by the
+  community 
+- core deliverables fullfilled
+- contributors add different directions 
+
+8. PyPy: It's all about communication ... 
+- pypy-sync meetings, 30 minutes IRC 
+- day-to-day IRC discussions
+- "this week in PyPy" 
+- mailing lists: pypy-svn/eu-tracking tracks code and document changes 
+- around 20000 visitors per month on website
+- lots of blogs and pypy-dev (developer/researcher list) 
+- 300-500 people across the world following the project 
+
+9. all good and well but the main thing are: sprints 
+- one-week intense work-meetings with one break day
+- EU and non-EU researchers/developers get together 
+- daily planning sessions 
+- pair programming 
+- evolving and adapting to more attendants 
+- organisational/management tasks happen also on sprints 
+
+10. next
+- tackling research and technical goals (challenging!) 
+- mid-term EU review planned for 20th january  
+- looking into adjusting some work planning 
+- increased dissemination, attending conferences (movie features?)
+- start talking to and interact with commercial stakeholders 
+

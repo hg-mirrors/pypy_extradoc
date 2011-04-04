@@ -1,0 +1,105 @@
+Topics and goals
+----------------
+
+Meta-Tasks
+++++++++++
+
+ - Tracker-gardening
+ - Review the cpython regression test suite (skips/failures)
+ - think about/remove orphaned parts
+
+
+Discussion topics (dynamically scheduled):
+ - discuss callback mechanism for rffi/lltype/ll2ctypes DONE, minutes missing
+   (maciek)
+ - discuss approaches for extension modules DONE
+   (probably Armin, Maciek, Alexander)
+
+ - discuss Q/A (Holger, Samuele, Carl Friedrich) DONE
+ - discuss how to deal with the windows situation
+
+ - write blog posts (carl friedrich; maciek, samuele to review)
+
+Translation toolchain
++++++++++++++++++++++
+
+ - refactor rffi header, sources, includes management MORE PROGRESS (maciek,
+   alexander, armin)
+
+ - py-lib 0.9.1 release?
+
+ - tried to translate PyPy with LLVM DONE
+
+ - some more work on cleaning up the startup process DONE
+
+ - fix windows compilation: rffi-platform checks have problem, which are being
+   approached now
+
+ - find out why our memcpy behaves so erratically
+   GCC behaves very erratically, so we won't work on this for now
+
+ - finish rctypes removal DONE
+
+ - raw_malloc should be split, rffi one should not use obmalloc (it's
+   not thread-safe)
+
+ - delegate finding type stuff like vtables etc to GC, cleaner interface
+   for rtti, simplify translator/c/gc.py (carl friedrich, samuele to discuss)
+     - kill opaque hacks in the C backend 
+
+ - cleanup pyobj.py and rclass stuff and remove the ability to make cpython
+   extensions, just dll DONE
+ - update gencapicall impl
+
+ - clean up the tangle of including headers in the C backend
+
+ - kill half concrete wrapper
+  
+ - review pdbplus, especially the graph commands, also in the light of
+   https://codespeak.net/issue/pypy-dev/issue303 and the fact that we
+   can have more than one translator/annotator around (with the
+   timeshifter)
+
+ - llvm profiling (richard)
+
+ - fix generational GC bug? (armin, maciek)
+
+ - general wizardry (samuele)
+
+Interpreter
++++++++++++
+
+ - there's a shadow tracking bug it seems
+
+ - fix the taint space
+
+ - fix the thunk space
+
+ - review the things implemented at applevel whether they are
+   performance-critical IN-PROGRESS: moved super, classmethod, statimethod to
+   interplevel, some dict methods, property
+   to be done:  exceptions?
+
+ - remove prebuilt costate vars  (christian, armin?) STARTED
+
+ - trying to port only the fixes of __future__ imports to dist (arre,
+   alexander)
+
+Modules
++++++++
+
+ - Take a look at module failures on Mac OS X (_socket)
+
+JIT
++++
+
+
+ - start writing real unit tests for the merging logic
+
+Discussion issues
++++++++++++++++++
+
+ - app-level ctypes
+ 
+ - separate compilation
+

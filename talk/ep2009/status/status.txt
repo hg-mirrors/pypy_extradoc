@@ -1,0 +1,356 @@
+.. include:: beamerdefs.txt
+
+================================
+PyPy's Python Interpreter status 
+================================
+
+Part 1
+======
+
+.. raw:: latex
+
+    \begin{center}
+    {\bf \Large Becoming complete}
+    \end{center}
+
+
+PyPy release 1.1
+===================================
+
+* PyPy released version 1.1 in April 2009
+
+
+What is PyPy
+===================================
+
+* An alternate Python virtual machine for C/Posix,
+  for .NET and for Java
+
+* More generally, a way to implement interpreters
+  for various languages
+
+
+PyPy - motivation
+=================================
+
+* CPython is nice, but not flexible enough
+
+* IronPython, Jython - bound to their specific VM
+
+* Psyco and Stackless Python are hard to maintain
+
+
+PyPy: generating a Python Interpreter
+=====================================
+
+* **high level Python specification!**
+
+* layer GCs, JIT, Stackless atop the spec 
+
+* **generate interpreters** for targets 
+
+.. image:: pypy-multitarget.png
+   :scale: 50
+   :align: center
+
+Brief history of PyPy
+==========================
+
+* First sprint in 2003, about 30 more by now
+
+* CPython/Psyco/Jython/Stackless developers participating
+
+* MIT License
+
+* EU Research project 2004-2007
+
+* 2007-now - open source project
+
+* Sponsoring from Google, Nokia
+
+* Soon: cofunding for JIT work
+
+
+PyPy 1.1
+===================================
+
+* Compatible with Python 2.5.2
+
+* Well tested on Windows and Linux 32-bit,
+  but should also work on Mac OS/X and Linux 64-bit
+
+* Runs major packages unmodified, out of the box
+
+* ``easy_install`` / ``distutils`` working
+
+
+PyPy 1.1 - more supported packages
+==================================
+
+* ``ctypes``
+
+PyPy 1.1 - more supported packages
+==================================
+
+* ``ctypes``
+
+* ``sqlite``
+
+PyPy 1.1 - more supported packages
+==================================
+
+* ``ctypes``
+
+* ``sqlite``
+
+* ``array``, ``cPickle``, ``cStringIO``, ``cmath``, ``dbm``,
+  ``datetime``, ``binascii``...
+
+PyPy 1.1 - more supported packages
+==================================
+
+* ``ctypes``
+
+* ``sqlite``
+
+* ``array``, ``cPickle``, ``cStringIO``, ``cmath``, ``dbm``,
+  ``datetime``, ``binascii``...
+
+* ``__builtin__``, ``__pypy__``, ``_codecs``, ``_lsprof``,
+  ``_minimal_curses``, ``_random``, ``_rawffi``, ``_socket``,
+  ``_sre``, ``_weakref``, ``bz2``, ``cStringIO``, ``crypt``,
+  ``dyngram``, ``errno``, ``exceptions``, ``fcntl``, ``gc``,
+  ``itertools``, ``marshal``, ``math``, ``md5``, ``mmap``,
+  ``operator``, ``posix``, ``pyexpat``, ``recparser``, ``select``,
+  ``sha``, ``signal``, ``struct``, ``symbol``, ``sys``, ``termios``,
+  ``thread``, ``time``, ``unicodedata``, ``zipimport``, ``zlib``
+
+
+PyPy 1.1 - speed
+================
+
+* Performance improved between 10% and 50% since PyPy 1.0
+
+* Python interpreter is now between 0.8 and 2x (and in
+  some corner case 3-4x) slower than CPython
+
+* It starts faster than CPython :-)
+
+* Better garbage collectors (generational and hybrid)
+
+* This is all ignoring the ongoing work on the JIT
+  (part 2 of the talk, not in the 1.1 release)
+
+
+PyPy 1.1 - sandboxing support
+=============================
+
+* Sandboxing: "virtualized" version of PyPy, safe to run any
+  untrusted program
+
+
+PyPy 1.1 - sandboxing support
+=============================
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=160px]{sandbox1.png}
+    \end{figure}
+
+
+PyPy 1.1 - sandboxing support
+=============================
+
+* It is a special version of PyPy
+  that does not do any I/O
+
+* Communicates purely on stdin/stdout
+
+* Run by an outer controlling process
+  (e.g. a CPython or a regular PyPy)
+
+* Really safe by construction!
+
+
+PyPy 1.1 - more news
+=====================
+
+* Stackless support complete (tasklet, frame pickling, greenlet)
+
+* Classic classes on by default
+
+* More memory-efficient (e.g. class instances are often only 50%
+  of the size of CPython)
+
+* ``_lsprof`` profiling
+
+
+PyPy 1.1 - on CLR/.NET
+======================
+
+* PyPy runs on the CLR and can now interface with
+  .NET libraries (more work needed, though)
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=150px]{winform.png}
+    \end{figure}
+
+* PyPy runs on JVM too, but no integration there
+
+* Contributors wanted!
+
+
+PyPy 1.1 - on Maemo
+=========================
+
+* Cross-compliation: N810 Internet Tablet by Nokia
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=160px]{800px-N810-open.jpg}
+    \end{figure}
+
+* Security, RAM usage, sharing interpreter state across processes...
+  PyPy's approach is good (not fully implemented yet)
+
+
+What we can run
+==========================
+
+* We worked a lot on running
+  existing applications on top of PyPy
+
+* Sometimes requiring to change applications slightly
+
+* Especially refcounting details tend to be a problem
+
+::
+
+  open('xxx', 'w').write('stuff')
+
+
+CTypes
+======
+
+* Part of CPython stdlib since 2.5
+
+* Official way to have bindings to 
+  external (C) libraries for PyPy
+
+* Can handle i.e. ``pysqlite-ctypes``, ``pyglet``, ``pymunk`` or
+  ``Sole Scion``, almost whatever...
+
+* Contribution to original ``ctypes``
+  (better errno handling, bugfixes, tests...)
+
+* Part of Google sponsoring
+
+* Note: a bit slow
+
+Sqlite
+======
+
+* Part of CPython stdlib since 2.5
+
+* We use Gerhard Haering's CTypes version
+
+* Works reasonably well after some fixes
+
+* Included in PyPy
+
+Django
+======
+
+* We run unmodified Django 1.0
+
+* Only sqlite DB backend for now
+
+http://www.djangoproject.com
+
+http://code.djangoproject.com/wiki/DjangoAndPyPy
+
+Pylons
+======
+
+* Worked almost out of the box once eggs
+  were working (1 day)
+
+* No SQLAlchemy yet, obscure problems
+  ahead
+
+* Unmodified, it passes all tests
+
+http://pylonshq.com/
+
+Twisted & Nevow
+===============
+
+* Twisted works (60/4500 tests failing)
+
+* Nevow works
+
+* We don't support PyCrypto nor PyOpenSSL and we
+  won't anytime soon (unless someone contributes a CTypes
+  or RPython version)
+
+http://twistedmatrix.com/
+
+Other software
+==============
+
+* Anything written in pure Python should just work :-)
+
+* BitTorrent
+
+* PyPy translation toolchain
+
+* py lib
+
+* SymPy
+
+* Pinax
+
+* Various smaller things, templating engines...
+
+Obscure details that people rely on
+=======================================
+
+* Non-string keys in __dict__ of types
+
+* Exact naming of a list comprehension variable
+
+* Relying on untested and undocumented private stuff
+
+* Exact message matching in exception catching
+  code
+
+* Refcounting details
+
+Lessons Learned
+============================
+
+* Lessons Learned: There is No Feature Obscure Enough for people
+  not to rely on
+
+* The ``pypy-c`` interpreter is probably far more compatible to
+  CPython 2.5 than Jython or IronPython
+
+* Main blocker for running apps is missing external modules
+
+
+Contact / Q&A 
+==========================
+
+PyPy: http://codespeak.net/pypy
+
+Blog: http://morepypy.blogspot.com
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=80px]{../../img/py-web.png}
+    \end{figure}

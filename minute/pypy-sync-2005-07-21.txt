@@ -1,0 +1,229 @@
+=============================================
+pypy-sync developer meeting 21st July 2005
+=============================================
+
+Attendees:  
+         Anders Chrigstroem, Samuele Pedroni, Adrien Di Mascio, 
+         Ludovic Aubry, Carl Friedrich Bolz, Holger Krekel (minutes), 
+         Richard Emslie (partly)
+
+with pre-sent info: Anders Lehmann
+missing/without info: Christian Tismer, Armin Rigo (still holiday?)
+
+Regular Topics 
+====================
+
+- roll call. holger opens the meeting. 
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No direct conflicts were discovered. Main "blocker" appears to
+  be vacations. 
+
+Topics of the week
+===================
+
+Heidelberg Sprint Planning Status 
+-------------------------------------
+
+Carl reports that the sprint room is fixed for the duration
+from 22nd to 29th of August at the university of Heidelberg. 
+He also started a `Heidelberg sprint announcement`_.  The 
+Hildesheim crew should finalize it next week and send it out. 
+There is a bit of a problem with network connectivity because
+the "Rechenzentrum" mandates VPN-clients.  Carl will check into
+that but would enjoy help! 
+
+Accomodation wise there is the possibility to rent a room
+from a flat in Heidelberg. That would cost around 300 Euros. 
+Richard is interested in that.  Others are thinking about it.
+Everbody interested should send Carl a mail, he might even
+be able to get two rooms like this. (Hotels are usually
+quite expensive in Heidelberg). 
+
+.. _`Heidelberg sprint announcement`: http://codespeak.net/pypy/index.cgi?extradoc/sprintinfo/Heidelberg-sprint.html
+
+compliance tests failures after 2.4.1 merge: how/when to tackle?
+----------------------------------------------------------------------
+
+Holger notices that after the 2.4.1 merge only roughly 50% of the 
+compliance `tests are passing`_.   Samuele thinks that fixing them 
+requires a lot of work, approximately one week.  The attendees 
+decide that the Hildesheim Sprint crew should decide about a 
+strategy of how to tackle this problem.  Mails will be sent
+to pypy-dev and pypy-funding (because it touches important 
+EU issues). 
+
+.. _`tests are passing`: http://codespeak.net/~hpk/pypy-testresult/
+
+0.6.2 release: status / when do we think to actually do it? Do we still?
+----------------------------------------------------------------------------
+
+We have interpreter documentation and the parser situation is improving
+(running the parser on top of 2.3 yet providing 2.4 semantics). 
+The main blocker for the release is the compliance test situation. 
+Therefore further discussion/decisions are postponed until we
+have a strategy regarding the compliance tests (see previous topic). 
+
+re-assigning tasks (related to NEXT activities)
+-----------------------------------------------------
+
+Holger notes that the hildesheim sprint crew might interfere 
+with the Parser (ludal) and os-level implementations (aleale). 
+The hildesheim sprint crew should be left free to work on 
+the issues as it sees fit.  For people outside the sprint
+it is recommended to work in short-commit cycles to avoid
+conflicts and to follow the commits from the sprint. 
+The sprint group will try to provide info on pypy-dev or
+on IRC. 
+
+Closing 
+------------------
+
+Holger closes the meeting in time at 13:30pm. 
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+
+ **** BEGIN LOGGING AT Thu Jul 21 12:19:28 2005
+ Jul 21 13:02:38 <hpk>	ok, we'll start anyway, although there appear some people to be missing
+ Jul 21 13:02:59 -->	arre (~ac@1-1-5-33a.gfa.gbg.bostream.se) has joined #pypy-sync
+ Jul 21 13:03:18 <cfbolz>	ok
+ Jul 21 13:03:35 <hpk>	everbody ready to start? 
+ Jul 21 13:03:43 <cfbolz>	yes
+ Jul 21 13:03:48 <arre>	I am.
+ Jul 21 13:03:59 <pedronis>	yes
+ Jul 21 13:04:06 <adim>	I am
+ Jul 21 13:04:16 <hpk>	here is the agenda (posted already yetserday to pypy-funding):
+ Jul 21 13:04:20 <hpk>	- roll call. holger opens the meeting.
+ Jul 21 13:04:20 <hpk>	- activity reports (3 prepared lines of info).
+ Jul 21 13:04:20 <hpk>	- resolve conflicts/blockers
+ Jul 21 13:04:20 <hpk>	- Heidelberg Sprint Planning Status
+ Jul 21 13:04:20 <hpk>	- compliance tests failures after 2.4.1 merge: how/when to tackle?
+ Jul 21 13:04:20 <hpk>	- 0.6.2 release: status / when do we think to actually do it? Do we still?
+ Jul 21 13:04:20 <hpk>	- re-assigning tasks (related to NEXT activities)
+ Jul 21 13:04:46 <hpk>	activity reports: i suggest the following order: hpk,aleale,ludal,adim,pedronis,arre,cfbolz,
+ Jul 21 13:05:05 <hpk>	LAST: interpreter documentation, organizing hildesheim sprint, codespeak migration planning, mentoring so
+ Jul 21 13:05:05 <hpk>	me os-level commits, fixing py test bugs
+ Jul 21 13:05:05 <hpk>	NEXT: Hildesheim-Sprint orga + hacking, EU issues
+ Jul 21 13:05:05 <hpk>	BLOCKERS: too many things going on
+ Jul 21 13:05:16 ---	You are now known as aleale
+ Jul 21 13:05:23 <aleale>	LAST: working on posix (for pypy), started on math
+ Jul 21 13:05:23 <aleale>	NEXT: finish posix, and math ? (will try the lib-python tests)
+ Jul 21 13:05:23 <aleale>	BLOCKERS: need to understand exceptions better (interpreter level, annotation of, etc), a wedding, an immanent move to Germany
+ Jul 21 13:05:28 ---	You are now known as hpk
+ Jul 21 13:05:31 <ludal>	last week : parser work, pysymbol and pytoken, switching to using integers for rule names instead of strings
+ Jul 21 13:05:31 <ludal>	next week : vacation + eventually resolving annotation problems + astbuilder to make annotation work further
+ Jul 21 13:05:31 <ludal>	blocker : vacation ;)
+ Jul 21 13:05:42 <adim>	LAST: parser's annotation / astbuilder
+ Jul 21 13:05:42 <adim>	NEXT: teach a course
+ Jul 21 13:05:42 <adim>	blockers: no real one
+ Jul 21 13:05:57 <pedronis>	Last: bug fixing in annotator and rtyper, progress rtyping PyPy adding rtyper features, implemented hook to control rtyping order, integrated suggestion to continue rtyping even after errors
+ Jul 21 13:05:59 <pedronis>	Next: sprint (we are down to 57 rtyping problems with the translation snapshot)
+ Jul 21 13:06:00 <pedronis>	Issues: tried to annotate the trunk, now annotation finishes but quite some involved SomeObject problems related to parser code
+ Jul 21 13:06:47 <hpk>	arre, cfbolz next
+ Jul 21 13:07:15 <arre>	Last week: annotation/rtyper work and learning more about their internals.
+ Jul 21 13:07:26 <arre>	Next week: Vacation until Heidelberg.
+ Jul 21 13:07:35 <arre>	Blockers: None at the moment.
+ Jul 21 13:07:39 <cfbolz>	LAST: finalized sprint room, trying to get cheap accomodation, looking for the cheapest publich transport tickets
+ Jul 21 13:07:39 <cfbolz>	NEXT: checking network connectivity in the sprint room, Hildesheim sprint
+ Jul 21 13:07:39 <cfbolz>	BLOCKERS: not much, still a bit own stuff to do
+ Jul 21 13:08:03 <hpk>	ok, there appear to be no conflicts
+ Jul 21 13:08:16 <hpk>	except that the hildesheim sprint could provide conflicts
+ Jul 21 13:08:24 <hpk>	(e.g. os-level functions or the parser situation) 
+ Jul 21 13:08:34 <hpk>	ludal: before you leave to holiday could you send a mail to pypy-dev about the status? 
+ Jul 21 13:08:43 <hpk>	(or post it to the issue) 
+ Jul 21 13:08:59 <hpk>	this way the hildesheim group knows where it could start to work if it wants to
+ Jul 21 13:09:23 <ludal>	sure, actually I'm not leaving paris so I'll be available online from time to time and hopefully following developpements of the sprint
+ Jul 21 13:09:36 <hpk>	ludal: great, ok
+ Jul 21 13:09:51 <hpk>	next topic: heidelberg status, carl? 
+ Jul 21 13:10:08 <cfbolz>	the room is secured from 22nd to 29th
+ Jul 21 13:10:10 <cfbolz>	!
+ Jul 21 13:10:22 <cfbolz>	have to check network connectivity: it is possible that we need some sort of VPN client to access the network
+ Jul 21 13:10:38 <cfbolz>	I'm trying to find student rooms
+ Jul 21 13:10:52 -->	rxe (~rxe@client-82-2-57-5.brnt.adsl.virgin.net) has joined #pypy-sync
+ Jul 21 13:10:54 <cfbolz>	if there is enough interest
+ Jul 21 13:11:08 <hpk>	network connectivity: we should have our own router/machine that makes the VPN transparent if possible
+ Jul 21 13:11:28 <cfbolz>	yes, if someone helps me with that
+ Jul 21 13:11:52 <cfbolz>	the problem is that the local admins from the rechenzentrum are kind of inflexible
+ Jul 21 13:12:11 <cfbolz>	so I would have to do it myself
+ Jul 21 13:12:22 <hpk>	cfbolz: i see, can you try to make your own laptop work? 
+ Jul 21 13:12:29 <cfbolz>	yes, of course
+ Jul 21 13:12:43 <hpk>	i saw you also checked in a sprint announcement
+ Jul 21 13:12:49 <hpk>	we should finalize this next week and send it out
+ Jul 21 13:12:54 <cfbolz>	indeed
+ Jul 21 13:13:14 <hpk>	cfbolz: is the 200-300 euro room still a concrete thing? 
+ Jul 21 13:13:17 <cfbolz>	yes
+ Jul 21 13:13:26 <hpk>	so let's try to decide here
+ Jul 21 13:13:47 <hpk>	cfbolz has a room in a living group (WG) that costs 200-300 euro and two people could sleep there for the sprint week
+ Jul 21 13:14:03 <cfbolz>	I could maybe even get two rooms
+ Jul 21 13:14:07 <cfbolz>	not sure yet
+ Jul 21 13:14:30 <hpk>	is anyone basically interested? (hotels are kind of expensive in heidelberg)
+ Jul 21 13:14:44 <rxe>	sounds good 
+ Jul 21 13:15:18 <cfbolz>	another question is how we pay for that
+ Jul 21 13:15:24 <rxe>	(that means i am interested)
+ Jul 21 13:15:37 <hpk>	(rxe: if you want to send your activity reports, just paste your three LAST/NEXT/BLOCKERS lines in)
+ Jul 21 13:15:51 <hpk>	arre, pedronis, ludal: anyone of you interested? 
+ Jul 21 13:16:28 <rxe>	LAST: dummy Opaque type in llvm2
+ Jul 21 13:16:28 <rxe>	NEXT: nothing planned
+ Jul 21 13:16:28 <rxe>	BLOCKERS: nothing planned
+ Jul 21 13:16:34 <hpk>	cfbolz: i think the people using the room should pay, maybe they can get a receipt? 
+ Jul 21 13:17:10 <cfbolz>	ok, I can check that
+ Jul 21 13:17:26 <rxe>	well 300 euros seems reasonable priced for one person
+ Jul 21 13:17:58 <hpk>	arre, pedronis, ludal: ok, this is lasting too long, write cfbolz a mail if you are interested
+ Jul 21 13:17:58 <cfbolz>	you could even stay there longer and visit heidelberg a bit :-)
+ Jul 21 13:18:31 <cfbolz>	I guess the hardest HD sprint issues are solved, now that we have the room?
+ Jul 21 13:18:39 <ludal>	hpk: sure, can't decide now
+ Jul 21 13:18:59 <hpk>	cfbolz: yes, the sprint is fixed 22nd-29th, announcement next week
+ Jul 21 13:19:23 <hpk>	next topic: compliance tests failures after 2.4.1 merge: how/when to tackle?
+ Jul 21 13:19:50 <hpk>	any opinions on this? (i guess you all noticed that we have only ~50% compliance tests passing)
+ Jul 21 13:20:17 <hpk>	http://codespeak.net/~hpk/pypy-testresult/ for reference
+ Jul 21 13:20:31 <rxe>	cfbolz: where is nearest airport (sorry - next topic)?
+ Jul 21 13:20:34 <--	ludal (~ludal@logilab.net2.nerim.net) has left #pypy-sync
+ Jul 21 13:21:00 <hpk>	rxe: let cfbolz add this info to the announcement
+ Jul 21 13:21:01 <cfbolz>	rxe: frankfurt I guess
+ Jul 21 13:21:01 -->	ludal (~ludal@logilab.net2.nerim.net) has joined #pypy-sync
+ Jul 21 13:21:15 <rxe>	ok - thanksx
+ Jul 21 13:21:23 *	hpk notices 9 minutes left
+ Jul 21 13:21:46 <pedronis>	hpk: fixing the tests is a lot of work
+ Jul 21 13:22:25 <pedronis>	something around a week
+ Jul 21 13:22:59 <hpk>	i suggest that we task the hildesheim sprint crew to discuss this and come up with a strategy when/how to tackle the problem
+ Jul 21 13:23:24 <pedronis>	yes, I don't think we can decide something now
+ Jul 21 13:23:28 <hpk>	everbody ok with this?
+ Jul 21 13:23:31 <cfbolz>	yep
+ Jul 21 13:23:34 <rxe>	yes
+ Jul 21 13:23:52 <adim>	ok with me
+ Jul 21 13:23:53 <arre>	yes
+ Jul 21 13:24:02 <ludal>	ok
+ Jul 21 13:24:32 <hpk>	ok, we will send according infos to pypy-dev and possibly pypy-funding (it's a critical EU issue in some ways)
+ Jul 21 13:24:47 <hpk>	next topic: 0.6.2 release: status / when do we think to actually do it? Do we still?
+ Jul 21 13:24:59 <hpk>	this is a follow up on the last week's topic
+ Jul 21 13:25:03 <hpk>	interpreter documentation is now mostly there
+ Jul 21 13:25:13 <hpk>	the parser is getting there
+ Jul 21 13:25:27 <hpk>	ludal: does the parser/compiler now run on top of Python 2.3 providing 2.4 semantics? 
+ Jul 21 13:25:48 <hpk>	(my limited manual tests seem to indicate that it does)
+ Jul 21 13:26:01 <ludal>	mostly, you'll have to point out if you see problems
+ Jul 21 13:26:30 <hpk>	ok, then the main blocker for a 0.6.2 release is the compliance/test situation
+ Jul 21 13:27:00 <hpk>	so we should re-discuss it next week (after the hildesheim crew dicussed it) if nobody objects
+ Jul 21 13:27:05 <pedronis>	yes
+ Jul 21 13:27:16 <adim>	ok
+ Jul 21 13:27:42 <cfbolz>	I don't
+ Jul 21 13:27:44 <hpk>	ok, then last (somewhat optional) topic: - re-assigning tasks (related to NEXT activities)
+ Jul 21 13:28:33 <hpk>	like mentioned earlier, i think that the hildesheim crew might interfer with the os-level calls (aleale) and parser (ludal) developments
+ Jul 21 13:29:15 <hpk>	i think that the hildesheim crew should be allowed to work on whatever it wants and try to signal via IRC or pypy-dev/commits
+ Jul 21 13:29:16 <ludal>	ok
+ Jul 21 13:29:44 <hpk>	so it's especially important to have short commit cycles to avoid conflicts
+ Jul 21 13:30:02 <hpk>	(i.e. don't work for three days before checking something in)
+ Jul 21 13:30:28 <hpk>	ok, it's 13:30 ... closing time for the meeting
+ Jul 21 13:30:34 <hpk>	thanks for coming!
+ Jul 21 13:31:09 <cfbolz>	see you!
+ Jul 21 13:31:21 <rxe>	bye
+ Jul 21 13:31:24 <hpk>	see you!
+ Jul 21 13:31:27 <adim>	Bye
+ Jul 21 13:32:28 <--	rxe (~rxe@client-82-2-57-5.brnt.adsl.virgin.net) has left #pypy-sync
+ **** ENDING LOGGING AT Thu Jul 21 13:32:33 2005
+

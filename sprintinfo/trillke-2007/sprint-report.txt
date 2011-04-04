@@ -1,0 +1,185 @@
+Hello pypy-dev!
+
+This is the report for the second, coding, half of PyPy's **25th**
+sprint, and the 18th and final sprint of the EU funded period.
+
+We are so completely tired that we don't have the energy to write a
+witty entry, so we'll skip that bit and start with describing the now
+usual tutorial for those participants who are less familiar with PyPy
+code base.  This time Carl Friedrich was talking to Georg Brandl, an
+interested CPython developer, and Anders (only the third Anders to be
+involved in the project!) Sigfridsson, a PhD student at the
+Interaction Design Centre at the University of Limerick.  Anders
+originally became involved in the project as an observer of the sprint
+process for his group's research when we sprinted at the University of
+Limerick, and that was partly why he was here this time, but it seems
+he found PyPy interesting enough to learn Python in the mean time and
+participate on the coding less at this sprint (or maybe he thought the
+view from the sprint trenches would be more revealing!).
+
+This sprint has seen many, many small tasks completed.  On the first
+morning, Holger and Armin improved the readline module to the point of
+being useful -- supporting line editing and history, but not
+completion -- and hooked it into the interpreter sufficiently that the
+interactive interpreter and pdb both use it when available.  At the
+same time Richard and Michael were hunting a bug Richard had
+discovered translating his own code, which was generally referred to
+as "the rdict bug" but turned out to be a bug in the garbage
+collector.
+
+Carl Friedrich and his band of helpers (mostly Anders, Georg,
+Alexander) worked on experimental reimplementations of Python lists,
+one using a theoretically optimal overallocation strategy and another
+using chunked storage to reduce the cost of list resizing.  Sadly both
+resulted in a measurable slow down.  This can be seen as yet more
+evidence that theory is different from practice...
+
+CF's other target for reimplementation at this sprint was strings.
+With help and moral support from Armin, he reimplemented strings
+according to the design from the "ropes paper" of Boehm, Atkinson &
+Plass:
+
+http://www.cs.ubc.ca/local/reading/proceedings/spe91-95/spe/vol25/issue12/spe986.pdf
+
+The predictable effect was that "typical Python code", written in the
+knowledge of how strings are implemented in Python today, takes a
+small (at most 10%) performance hit, but an arguably more natural and
+naive style of string handling becomes efficient.  And some completely
+crazy code (like hash('a'*sys.maxint)) becomes very fast too...
+
+Continuing the theme of making things slower by object
+reimplementation, Armin supplied an implementation of general
+dictionaries as a hash table whose collision resolution is via chained
+lists instead of open addressing.  Next!
+
+As opposed to the above, Armin and CF implemented caching of app-level
+character (i.e. strings of length 1) objects, which was a clear win,
+improving the pystone benchmark by around 10%.
+
+There have been many discussions recently about optimizing the lookup
+of global variables, and during one that took place here about various
+corner cases, Armin and Carl Friedrich and Samuele removed from PyPy
+some of the strange things CPython does to determine what the
+__builtins__ are for the execution of a given frame -- of course,
+depending on the value of PyPy's five millionth configuration option.
+
+Holger and Antonio came up with yet another optimization idea along
+these lines, which can be found in doc/discussion/chained_getattr.txt.
+
+Going back to the first day, Anto and Samuele worked on analyzing why
+pypy-cli was being reported as 50+ times slower than CPython on the
+benchmark page:
+
+    http://tuatara.cs.uni-duesseldorf.de/benchmark.html
+
+To do this they wrote some small benchmarks in RPython and stared at
+some code, but the main problem seems to be that Mono on PowerPC just
+isn't that good: running pypy-cli using Microsoft's runtime shows
+performance just 3-4 times slower than pypy-c.
+
+After this, they worked on streamlining PyPy's much complained about
+external function interface (and also broke translation a few times in
+the process).  The last sprint saw the introduction of a more general
+registry-based interface for external functions, and Samuele and Anto
+began by moving the math module over to using this interface.  This
+was harder than what had gone before because these functions depend on
+header files, so some modifications to the C and LLVM backends were
+necessary.
+
+On the last day, Anto made some small improvements to pypy-cli's
+performance and Samuele made the taint object space translatable.
+
+On the first day Georg and Alexander tried to see how fast a PyPy
+could get if there was no Global Interpreter Lock (GIL). By disabling
+the GIL and making the exception state thread-local on the genc-level,
+they could easily get a binary that at least didn't crash if multiple
+threads were not modifying internal stuff concurrently.  Running 4
+Pystone instances (from 4 different modules) on this pypy-c let the
+process use 381% of cpu time, but the resulting figures were
+disappointing: running the 4 Pystone instances in parallel was less
+than 25% faster than running them in series, as opposed to being 300%
+faster in the best case. Both concluded that the garbage collector
+used (Boehm) is not very well suited for the heavy-duty memory
+allocation pattern of PyPy in case of multiple threads.
+
+After this, they implemented some of Python 2.5's features in the
+interpreter, in particular support for __index__ and some extensions
+to string and dict methods.
+
+Anders and Anders worked very productively on fixing some of the bugs
+in PyPy's issue tracker, implementing the -m command line option in
+pypy-c, much improved handling of EINTR results from syscalls (which
+makes most difference when pressing ^C on the command line), allowing
+buffer objects to be passed to socket.send and preventing modifications
+to builtin types.
+
+Holger and Stephan worked in the direction of moving the currently
+app-level and extremely slow string interpolation code into RPython by
+separating out the code that analyzes the format string from the code
+that access the values to be interpolated.
+
+Maciej and Guido worked a little on the javascript backend, both
+generally tidying and improving compatibility with Internet Explorer.
+Guido should not be allowed to forget saying "I am happy to work with
+Internet Explorer" during one of the daily status meetings :-)
+
+Stephan and Arre worked on fixing the last remaining bugs in the
+rewrite of the application-level stackless code that Stephan had been
+working on for some time.
+
+Later Stephan joined Armin and Christian in a discussion about the
+best API to provide for the new "composable coroutine" concept.  They
+feel that the concept is powerful to encompass threads, greenlets,
+coroutines, threads, syslets and the best way to barbecue ribs.  You
+can read about the basic idea in the "Composability" section of PyPy's
+stackless documentation:
+
+    http://codespeak.net/pypy/dist/pypy/doc/stackless.html
+
+and further insight is unlikely to be provided by this diagram:
+
+    http://python.net/crew/mwh/stackless.jpg
+
+The basic conclusion was that this is a very nice and natural model
+for a lot of things, at least once you've whacked your head into the
+right shape.
+
+A task that occupied various people at various times of the sprint was
+that of benchmarking, the goal being to determine how much effect the
+object and other optimizations have.  Michael had over the previous
+month or so some written some scaffolding code to allow various
+benchmarks to be run and the results recorded.  At the sprint he added
+a benchmark using docutils to process 'translation.txt' from pypy's
+own documentation and Guido added another using his own 'templess'
+templating system.
+
+Holger worked on getting some code written for bzr that makes nice
+graphs out of benchmark to parse the benchmark data produced by PyPy's
+benchmark runs.
+
+Maciej worked on the lib/distributed code that demonstrates the PyPy's
+transparent proxies.  After a bit of effort, he was able to write a
+demo that implemented a remote version of pdb by simply creating a
+traceback object that proxied all operations to a remote process.
+
+Michael and Richard spent a day or so on the LLVM backend, which of
+late hasn't been so much "maintained" as "held together by
+increasingly large amounts of sticky tape".  After some refactoring of
+the way the backend handled options, they removed a layer of hacks
+around the issue of FixedSizedArrays and implemented them properly,
+and also added support for the direct_* pointer operations produced by
+rctypes.
+
+Michael spent some time using Shark, an OS X profiling application,
+and found some OS specific flags and tweaks that improved the
+performance of pypy-c on OS X/PPC by around 20%.
+
+As readers of pypy-dev will know by now, there were discussions about
+how PyPy is going to continue after the end of the EU funding period.
+However, we don't have to summarize them here because we can just link
+to Armin's mail:
+
+    http://codespeak.net/pipermail/pypy-dev/2007q1/003577.html
+
+Cordiali Saluti,
+mwh & Carl Friedrich

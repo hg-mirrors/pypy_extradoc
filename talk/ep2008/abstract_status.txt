@@ -1,0 +1,30 @@
+Title
+=====
+
+PyPy status talk.
+
+Summary
+=======
+
+Quick summary of cool features of pypy, where we are now and where we are going.
+
+Abstract
+========
+
+This talk will try to explain to broader public status of the PyPy project,
+where we are and where we are going. We're going to show some demos of
+cool features, but also we're going to run real applications on top of pypy
+to showcase how complaint our python interpreter is.
+
+This talk will not cover any internal details (or at least not that many :),
+which will be covered by different talk.
+
+Proposed Length of talk required
+================================
+
+45 minutes.
+
+Brief Biography
+===============
+
+Maciej Fijalkowski is a core pypy developer.

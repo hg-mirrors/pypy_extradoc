@@ -1,0 +1,20 @@
+\begin{abstract}
+Writing an optimizing static compiler for dynamic languages is not an
+easy task, since quite complex static analysis is required.
+On the other hand, recent developments show that JIT compilers 
+can exploit runtime type information to generate quite efficient code.
+Unfortunately, writing a JIT compiler is far from being simple.
+ 
+In this paper we report our positive experience with automatic generation
+of JIT compilers as supported by the PyPy infrastructure, by
+focusing  on JIT compilation for .NET.
+The paper presents two main and novel contributions: we show that
+partial evaluation can be used in practice for generating a JIT compiler,
+and we experiment with the potentiality offered by the ability to
+add a further level of JIT compilation on top of .NET.
+
+The practicality of the approach is demonstrated by showing some
+promising experiments done with benchmarks written in a simple dynamic language.
+\end{abstract}
+
+% LocalWords:  JIT PyPy

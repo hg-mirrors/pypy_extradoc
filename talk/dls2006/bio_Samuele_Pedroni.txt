@@ -1,0 +1,17 @@
+Samuele Pedroni is one of the main developers and designers of PyPy, a
+meta-circular implementation of Python trying to redefine the
+simplicity/flexibility/performace trade-offs in VM design.
+
+PyPy is both an open source and a funded project under the Framework
+Program 6 of the EU.
+
+Samuele Pedroni has a long-time interest in language design and
+implementation, data-flow and abstract interpretation based program
+analysis and manipulation and dynamic dispatching.
+
+He has been a long time maintainer of Jython (Python implementation
+for the JVM). He has also contributed to aspects of the current design
+of Python. He is a Python Software Foundation member.
+
+Samuele Pedroni received a Computer Science flavoured Mathematics Diploma
+from ETH Zurich.

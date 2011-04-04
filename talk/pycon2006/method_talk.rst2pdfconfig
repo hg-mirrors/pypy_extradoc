@@ -1,0 +1,14 @@
+rest_sources = [
+    'method_talk.txt', 
+]
+
+rest_options = ['--use-latex-footnotes', '--use-latex-toc']
+toc_depth = 2
+
+logo = '../img/py-web.png'
+heading = 'Agile Open-Source Methods, Businesses and EU-funding'
+# pagebreak = True
+# possible fonts:
+# times, helvetica, new century schoolbock, avant garde, palatino
+
+font = 'avant garde'

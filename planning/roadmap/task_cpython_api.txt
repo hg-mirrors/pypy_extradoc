@@ -1,0 +1,20 @@
+Providing the CPython C-API
+===========================
+
+status:
+
+ - Not started
+
+todo:
+
+ - Separate compilation would be interesting ground work for a try to
+   compile cpython modules with a pypy-supplied Python.h file and link
+   them to pypy. This would require writing a lot of new functions
+   (for the CPython API), though.  Also it is not clear how large the
+   expected speed impact would be (because of e.g. pinning).
+
+ - We need to think more about this before we can be more precise.
+
+expected outcome:
+
+dependencies:

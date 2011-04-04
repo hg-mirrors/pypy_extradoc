@@ -1,0 +1,53 @@
+This is a summary of the meeting held Fri 29 Aug 2008 about improving
+our testing infrastructure.
+
+People present (irc nicks):
+arigato, fijal, hpk, ondrej, sanxiyn, pedronis, mon-mon, getxsick, iko,
+bgola, exarkun, jacob22, antocuni
+
+We discussed the current available machines, the state of buildbot work and requirements for out testing infrastructure.
+
+We listed the following requirements:
+
+- running pypy own tests
+
+- running py.test -A tests with translated pypy-cs
+
+- running CPython test suite with translated pypy-cs
+
+- running tests on branches (possibly also from a tarball)
+
+- nightly runs with the possibility to trigger runs manually
+
+- covering Linux x86-32 and Windows 32 bits (given the current state
+  it seems we need two machines for each platform, ones for pypy own
+  tests and one for translating and running tests with translated
+  pypyc-s)
+
+After looking at the state of buildbot work we mainly decided to try
+to extend buildbot usage to cover all our nightly testing
+needs. exarkun and bigdog have already a buildbot based setup that can
+do nightly translations: http://codespeak.net/svn/pypy/build/bot/ .
+
+We then looked at machines availability/assignments at least for the
+development phase of switching over to buildbot.
+
+wyvern.cs.uni-duesseldorf.de: buildmaster at least for the
+experimenting phase, buildslave running pypy own tests (as it does
+now)
+
+cobra.cs.uni-duesseldorf.de: buildslave for translations and running
+tests with translated pypys
+
+snake.cs.uni-duesseldorf.de: seems to be an available Windows machine
+
+The first steps to proceed along this path would be to make pypy trunk
+and py.lib trunk work together (this needs probably to happen on a
+pypy branch at first), we also need to provide status presentations in
+buildbot to fit our needs, using the py.lib trunk py.test seems the
+right direction to be able to gather the necessary information.
+
+From a later separate discussion between pedronis and arigo: a
+reasonable status presentation we may want to implement first would be
+a generalization of the current output of pypy own tests nightly run.
+

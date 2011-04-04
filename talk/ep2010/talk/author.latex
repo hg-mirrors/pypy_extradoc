@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy 1.3]{PyPy \sout{1.2} 1.3: Status and News}
+\author[amaury, antocuni, arigato]
+{Amaury Forgeot d'Arc \\ Antonio Cuni \\ Armin Rigo}
+
+\institute{EuroPython 2010}
+\date{July 19 2010}

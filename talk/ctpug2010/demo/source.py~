@@ -1,0 +1,16 @@
+
+def g(i):
+    raise KeyError
+    return i + 1
+
+def f():
+    i = 0
+    while i < 10000:
+        try:
+            i = g(i) + 1
+        except:
+            ..
+    ...
+
+if __name__ == '__main__':
+    f()

@@ -1,0 +1,208 @@
+============================
+PyPy
+============================
+
+:Authors: Maciej Fijalkowski
+:Location: Adam Mickiewicz University
+:Date: 15.IV.2007
+
+Next 45 minutes
+=======================================
+
+* Quick intro and motivation, including
+  CPython problems
+
+* Introduction to features unique to PyPy,
+  including the JIT
+
+* A little talk about our plans
+
+What is PyPy?
+==============
+
+* PyPy is:
+* A Python interpreter
+* A very
+  flexible compiler framework (with some
+  features that are especially useful for
+  implementing interpreters)
+* An open source project (MIT license)
+* A STREP (''Specific Targeted REsearch
+  Project''), partially funded by the EU
+* A lot of fun!
+
+About the project
+====================
+
+* Distributed -- the 12 paid developers live in
+  6 countries, contributers from many more
+* Sprint driven development -- focussed week
+  long coding sessions, every ~6 weeks during
+  funding period
+* Extreme Programming practices: pair
+  programming, test-driven development
+
+Motivation
+===========
+
+* PyPy grew out of a desire to modify/extend
+  the implementation of Python, for example to:
+* increase performance (psyco-style JIT
+  compilation, better garbage collectors)
+* add expressiveness (stackless-style
+  coroutines, logic programming, distribution)
+* ease porting (to new platforms like the
+  JVM or CLI or to low memory situations)
+
+Lofty goals, but first...
+===========================
+* CPython is a fine implementation of Python
+  but:
+* it's written in C, which makes porting to,
+  for example, the CLI hard
+* while psyco and stackless exist, they are
+  very hard to maintain as Python evolves
+* some implementation decisions are very
+  hard to change (e.g. refcounting)
+
+Compiler toolchain
+===================
+
+* Translates so called RPython
+  (restricted Python) to lower level language
+* Targets C, LLVM, CLI, JVM, JavaScript...
+* Can translate any program, but
+  is aimed at implementing interpreters
+
+RPython
+=========
+
+* Starts from living python objects, so
+  all dynamic tricks are allowed for initialization
+* Full implicit type inference
+* Type system like Java's, but with function pointers
+  and more
+* 20-60x faster than CPython
+
+Things that make PyPy unique
+===============================
+
+* The Just-In-Time compiler (and the way it
+  has been made)
+* Transparent Proxies
+* Runtime modifiable Grammar
+* Thunk object space
+* Multiple backends
+* Logic programming
+* whatever you imagine ...
+
+Just-In-Time compiler generator
+=================================
+
+* generates just in time compiler given
+  the interpreter source + few hints
+* applicable to any possible interpreter
+  (written in RPython)
+
+Multiple object implementations
+================================
+
+* Every python-level object can have multiple
+  implementations
+* Examples are: String-key specialized dicts,
+  ropes, tree-based dicts
+
+Transparent proxies
+====================
+
+* Built on top of multiple object implementations
+
+* Provides new implementation for each object
+
+* can access everything in transparent manner,
+  including such things like interpreter frames
+
+Distribution
+================
+
+* Built on top of transparent proxies
+* Can hide network layer
+* Copies only small chunks of data,
+  avoiding too much traffic
+* Still very experimental!
+
+Thunk object space
+==================
+
+* Built as different object space
+  (object operation basis)
+
+* Can do lazy computation of objects
+
+Taint object space
+===================
+
+* Also built as different object space
+
+* Few lines hack
+
+* Can track values as taint, which cannot
+  cross I/O borders implicitely
+
+JavaScript backend
+===================
+
+* translates RPython to JavaScript
+
+* has built-in AJAX functionality,
+  which maps method calls to
+  JSON calls
+
+* can be tested on top of CPython
+  (common case in PyPy)
+
+Interpreter status
+==========================
+
+* We still use CPython :)
+
+* for some specific use cases,
+  we use PyPy when CPython is
+  incapable
+
+* It's a very friendly platform
+  for experiments
+
+* Threads and extension modules
+  are not working
+
+Interpreters in RPython
+=============================
+
+* Useful
+* There is a working python interpreter
+* prolog interpreter
+* JavaScript interpreter coming soon
+* Ruby? Perl?? (with JIT almost for free)
+
+Test tools
+===========
+
+* We use py.test, developed together with PyPy
+* distributed testing
+* easy to extend (testing docs, JavaScript snippets etc.)
+
+What future holds
+====================
+
+* More JIT! (faster than C)
+* Extension modules
+* Holiday! (funding period ended in March)
+
+Further points of interest
+==============================
+
+* http://codespeak.net/pypy
+* http://play1.codespeak.net/
+* #pypy on freenode
+* pypy-dev@codespeak.net

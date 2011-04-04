@@ -1,0 +1,484 @@
+-----------------------
+Python is faster than C
+-----------------------
+
+Sorting a list of 100000 integers in random order:
+
+* 0.75 seconds in Python 2.1
+* 0.51 seconds in Python 2.2
+* 0.46 seconds in Python 2.3  (thanks Tim)
+
+* 4.83 seconds with a simple quicksort in Python
+* 0.21 seconds for the same, with Psyco
+
+First step towards world domination :-)
+
+-----------
+Black magic
+-----------
+
+Psyco is a regular C extension module with a simple basic interface::
+
+   import psyco
+   psyco.bind(quicksort)   # ask to optimize the function quicksort
+   quicksort(mylist)
+
+Or simply::
+
+   import psyco
+   psyco.full()            # just optimize everything
+
+-------------------
+Standard invocation
+-------------------
+
+::
+
+   try:
+       import psyco
+       psyco.full()
+   except ImportError:
+       pass
+
+There is also::
+
+   psyco.profile()
+
+The user guide has much more, but ideally it should not.
+
+-----------------------
+Under the hood: example
+-----------------------
+
+:: 
+
+   def acceptable(i):
+       return i % 3 == 0
+
+   def sum(lst, initial=0):
+       total = initial
+       for i in range(len(lst)):
+           if acceptable(i):
+               total += lst[i]
+       return total
+
+   sum([6,3,8,1,5])   #  -> 7
+
+   sum(lines, initial='')
+
+   -----------------------
+
+   def sum(lst):
+       total = 0
+       for i in range(len(lst)):
+           total += lst[i]
+       return total
+
+        # total is 0, lst is an object
+        ! total is 0, lst is a list
+        # i is an integer, total is 0, lst is a list
+        # item=lst[i] is an object
+        ! item=lst[i] is an integer
+        # total = 0 + item = item, total is an integer
+        # i is an integer, total is an integer
+        # item=lst[i] is an object
+        ! item=lst[i] is an integer
+        # total = total + item, total is an integer
+        # i is an integer, total is an integer
+        > loop closed
+
+   -----------------------
+
+        # i is an integer, total is an integer
+        # item=lst[i] is an object
+        ! item=lst[i] is a float
+        # total = total + item, total is a float
+        # i is an integer, total is a float
+        # item=lst[i] is an object
+        ! item=lst[i] is an integer
+        # total = total + item, total is a float
+        # i is an integer, total is a float
+        > loop closed
+
+   -----------------------
+
+        # total = total + item
+        ! overflows!
+        # total = total + item, total is a long
+        # i is an integer, total is a long
+        # item=lst[i] is an object
+        ! item=lst[i] is an integer
+        # total = total + item, total is a long
+        # i is an integer, total is a long
+        > loop closed
+
+   -----------------------
+
+        # i is an integer, total is an integer
+        # item=lst[i] is an object
+        ! item=lst[i] is an integer object
+        # x = integer value stored in item
+        # total = total + x
+        # i is an integer, total is an integer
+        > loop closed
+
+        int total = 0;
+        int i = 0;
+     label1:
+        PyObject *item = PyList_GET_ITEM(lst, i);
+        check(item->ob_type == &PyInt_Type);
+        int x = PyInt_AS_LONG(item);
+        total = total + x;
+     loop back to label1;
+
+   -----------------------
+
+   def sum(lst):
+       total = 0
+       L     = len(lst)
+       Rng   = range(L)
+       Iter  = iter(Rng)
+       for i in Iter:
+           ...
+
+Reminder: the for loop reads the iterator by calling Iter.next()
+until it is exhausted.
+
+:: 
+
+        # lst is an object
+        ! lst is a list
+        # L = PyList_GET_SIZE(lst), L is an integer
+        # Rng is the range starting at 0 of length L
+        # Iter is an iterator over Rng
+        # i = Rng[Iter.position]
+        ! no IndexError, i = Rng.start + Iter.position
+        # increase Iter.position
+        # ...body of the loop...
+        # Iter is an iterator over Rng
+        > loop closed
+
+        int L = PyList_GET_SIZE(lst);
+        int Rng_start = 0;
+        int Rng_length = L - Rng_start;
+        int Iter_position = 0;
+     label1:
+        // we know that Iter_position >= 0
+        if (Iter_position >= Rng_length)
+           goto index_error;
+        int i = Rng_start + Iter_position;
+        Iter_position++;
+        ...body of the loop...
+     goto label1;
+
+   -----------------------
+
+   def sum(lst):
+       total = 0
+       for i in range(len(lst)):
+           total += lst[i]
+       return total
+
+        # total is an integer
+        # we need an object, so turn total into an integer object
+        # return total
+
+        PyObject *total_as_obj = PyInt_FromInt(total);
+        return total_as_obj;
+
+   -----------------------
+
+   def sum(lst):
+       total = 0
+       for i in range(len(lst)):
+           total += lst[i]
+       return total
+
+Summary:
+
+:: 
+
+        // we know that total=0, we don't need a variable for that
+        check(lst->ob_type == &PyList_Type);
+        int L = PyList_GET_SIZE(lst);
+        int Iter_position = 0;
+
+        if (Iter_position >= L)
+           goto label2;
+        int i = Iter_position++;
+        check(i < PyList_GET_SIZE(lst));
+        PyObject *item = PyList_GET_ITEM(lst, i);
+        check(item->ob_type == &PyInt_Type);
+        int total = 0 + PyInt_AS_LONG(item);    // total defined here
+
+     label1:
+        if (Iter_position >= L)
+           goto label2;
+        int i = Iter_position++;
+        check(i < PyList_GET_SIZE(lst));
+        PyObject *item = PyList_GET_ITEM(lst, i);
+        check(item->ob_type == &PyInt_Type);
+        total = total + PyInt_AS_LONG(item);
+     goto label1;
+
+     label2:
+        // capture and ignore the IndexError
+        return PyInt_FromLong(total);
+
+   -----------------------
+
+   def sum(lst):
+       total = ''
+       for i in range(len(lst)):
+           total = total + lst[i]
+       return total
+
+        # item = lst[i] is an object
+        ! item = lst[i] is a string
+        # x = total + item is a new growable string
+        # total = x is a growable string
+        ...
+        # x = total + item done by growing the buffer of total
+                   nb. here, x and total are two different strings
+                  with different length pointing to the same buffer
+        # total = x is a growable string
+        > loop closed
+
+   -----------------------
+
+   def addstuff(lst):
+       lst.append(5)
+
+   -----------------------
+
+   def addstuff(lst):
+       Meth = lst.append
+       Meth(5)
+
+        # lst is an object
+        ! lst is a list
+        # Meth is the method 'list_append' bound to lst
+
+        check(lst->ob_type = &PyList_Type);
+        PyObject *item = PyInt_FromLong(5);  // const 5 -> object
+        list_append(lst, item);
+
+Plus error checking and DECREF'ing.
+
+-----------------------
+
+:: 
+
+   def acceptable(i):
+       return i % 3 == 0
+
+   def sum(lst, initial=0):
+       total = initial
+       for i in range(len(lst)):
+           if acceptable(i):
+               total += lst[i]
+       return total
+
+We read acceptable from the globals, assuming it doesn't change often:
+
+        check(the internal table of my_globals hasn't shrunk);
+        check(it still has the same key/value at the same pos);
+
+-----------------------
+
+:: 
+
+   def acceptable(i):
+       return i % 3 == 0
+
+In our case we provide the argument i as an integer, not as an
+integer object::
+
+     PyObject *acceptable_with_int_arg(int i)
+     {
+        int cond = (i % 3) == 0;
+        // here cond is a boolean
+        PyObject *cond_as_obj = cond ? Py_True : Py_False;
+        // now cond is a boolean object, without a reference
+        Py_INCREF(cond_as_obj);
+        // now cond is a boolean object, with a reference
+        return cond_as_obj;
+     }
+
+Cannot return something else than a normal Python object with a
+reference.  We cannot return e.g. a boolean flag, because there
+might be other code paths inside of the same function that return
+something else :-(
+
+-----------------------
+
+:: 
+
+   def acceptable(i):
+       return i % 3 == 0
+
+   def sum(lst, initial=0):
+       ...
+           if acceptable(i):
+       ...
+
+        check(acceptable hasn't changed in the globals);
+        PyObject *result = acceptable_with_int_arg(i);
+        check(result->ob_type == &PyBool_Type);
+        int cond = (result == Py_True);
+        Py_DECREF(result);
+        if (cond) {
+            ...
+        }
+
+-----------------------
+
+Small functions can be inlined!
+
+:: 
+
+   def acceptable(i):
+       return i % 3 == 0
+
+   def sum(lst, initial=0):
+       ...
+       for i in Iter:
+           if acceptable(i):
+       ...
+
+        int i = Iter_position++;
+        // i and total are integers, lst is a list
+        check(acceptable hasn't changed in the globals);
+
+        // now we are inside acceptable()
+        // the argument i is an integer
+        int cond = (i % 3) == 0;
+        // the return value is cond, which is a boolean
+        int result = cond;
+
+        // now we are back into sum()
+        // i and total are integers, lst is a list, result is a boolean
+        if (result) {
+           ...
+        }
+
+------------
+Other topics
+------------
+
+Back-ends:
+* i386
+* ivm
+* PowerPC & others
+
+* Representations of objects in more details
+* Why continuations are both useful and quite impractical
+* The profiler
+* How to grab and compile a running function from the regular interpreter
+* What parts of Python are understood by Psyco
+* From PyPy to a better Psyco
+
+-------------------
+Back-ends: assembly
+-------------------
+
+Psyco doesn't actually write C code. (Perhaps it should.)
+It writes scary assembly code.
+
+-------------------
+
+A non-constant value can be stored:
+
+* on the stack
+* in a register
+* both in a register and on the stack
+* in the processor condition flags (boolean values only)
+
+Input arguments are passed on the stack.
+The return address is a normal argument.
+Other (computed) values start their life in a register.
+To make room for a value we spill the oldest register to the stack.
+The stack just grows.
+
+-------------------
+
+A check() is done with a conditional jump that goes back to Psyco
+when the check fails.  Psyco only ever compiles one branch of
+execution, and inserts checks:
+
+   if a > 0:
+       return a
+   else:
+       return -a
+
+        int cond = a > 0;
+        check(cond);
+        return PyInt_FromLong(a);
+
+If the check fails we compile the other branch:
+
+        return PyInt_FromLong(-a);
+
+And we patch the first check() in the assembly to directly
+jump to the second branch.
+
+-------------------
+
+        check(a->ob_type == &PyInt_Type);
+
+are actually implemented as an open switch on a->ob_type::
+
+        .---------------------.
+        |  ...                |      __.---------------------.
+        |  ...                |     /  | case &PyInt_Type:   |
+        |  ...                |    /   |    ...              |
+        |  switch(a->ob_type) ----<    `---------------------'
+        `---------------------'    \
+                                    \__.---------------------.
+                                       | case &PyFloat_Type: |
+                                       |    ...              |
+                                       `---------------------'
+
+where the default ("not found") is to compile the new case and
+add it to the switch.
+
+---------------------------------------------
+Back-ends: "ivm", a low-level virtual machine
+---------------------------------------------
+
+A virtual machine that is well suited to Psyco.
+
+Stack-based with an extra flag register, and low-level instructions
+(read/write from memory, add with or without carry, etc.)
+
+An efficient implementation automatically generated by Prolog code.
+
+------------------
+
+   insn( add,    [],  [out(0) = in(1) + in(0)], [stack(2->1)] ).
+   insn( sub,    [],  [out(0) = in(1) - in(0)], [stack(2->1)] ).
+   insn( immed,  [i], [out(0) = arg(0)],        [stack(0->1)] ).
+   insn( s_push, [s], [out(0) = arg(0)],        [stack(0->1)] ).
+   insn( s_pop,  [s], [arg(0) = in(0)],         [stack(1->0)] ).
+
+The implementation can cache the N top elements of the stack into
+local variables, useful on hardware with plenty of registers.
+
+------------------
+
+It can also combine several instructions into one::
+
+   mode_combine([s_push(1:255), add]).
+
+                          .--------.
+                          |    b   |
+    .-------.    push     |--------|    add     .-------.
+    |   a   |   ======>   |    a   |   =====>   |  a+b  |
+    |-------|             |--------|            |-------|
+
+
+------------------
+Back-ends: PowerPC
+------------------
+
+Your turn here!

@@ -1,0 +1,52 @@
+
+PyPy status talk
+================
+
+PyPy has come a long way.  It's gone from being purely a research project to
+providing a flexible and reasonably fast Python Interpreter, itself implemented 
+in Python.  Although PyPy is not yet a viable CPython replacement, PyPy is able 
+to run sophisticated python applications like Django and Twisted.  In this 
+talk, we'll focus on improvements that happened during the last year in PyPy.
+This talk will also explain the motivations driving current PyPy
+developement and its targets for the future.
+
+Detailed description
+====================
+
+In this talk we will concentrate on the rapid progress which
+the PyPy project has undertaken since Pycon US 2008.  This
+progress includes things like running large Python
+applications/frameworks on top of PyPy, an upcoming release
+(which hopefully will happen before PyCon) and support for
+various new platforms.  For example, PyPy now supports the
+Maemo platform for mobile devices.  Moreover, we will talk
+about our improved Garbage collectors and highlight
+current JIT status and plans. 
+
+We would also like to talk about PyPy's future, where we are going and how we
+would like to approach building a larger community and user-base.
+
+Note that this talk will focus on the PyPy Python interpreter
+and in particular its C backend version.  There are many more aspects 
+to the PyPy project but we don't intend to highlight them during 
+this talk.  This is part of an attempt to provide a clearer project 
+message and focus. 
+
+simple outline of slides:
+
+- Overview 
+- PyPy 1.1: getting production ready ...
+- CTypes
+- CTypes improvements
+- Sqlite, Django, Pylons, Twisted & Nevow
+- Other software
+- 2.5 compatibility 
+- threading 
+- speed - comparison with CPython
+- memory - comparison with CPython 
+- pypy-c on small devices
+- GC status and plans
+- JIT status and plans 
+- documentation status 
+- Q&A
+

@@ -1,0 +1,21 @@
+
+
+How to do an EU open source research project 
+==========================================================
+
+We'll look at how to do an EU research proposal, based on
+experiences obtained through the PyPy project.  We quickly
+walk through the basics of the initial proposal, negotiations, 
+the EU funding contract, cost/funding models and how we modified and
+amended the contract afterwards.  The PyPy project has been one
+of the first bigger open source research projects that
+received funding from the EU - a liaison of diverging
+cultures, as it turned out.  We had to learn how to manage
+this project: track/report results, budget, 'resources' to match 
+our contractual obligations, but also make the EU contract and
+circumstances fit our needs and actual project developments.  
+We'll highlight how the finalisation process with the EU 
+(still pending for 31st May and following) worked out, summarize 
+our findings and give some recommendations maybe helpful for 
+other projects and organisations applying for EU Research funding. 
+

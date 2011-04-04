@@ -1,0 +1,37 @@
+PyPy Documentation 
+==================
+
+status: 
+
+- large collection of online pypy/doc/* files, often out of date 
+- large collection of EU reports (often more accurate than online docs) 
+- index.txt, getting-started and play1 main entry points for pypy docs
+- very hard to maintain the current documentation
+
+todo: 
+
+- analyze and assess existing documentation
+- write 3-5 "books" (with multiple chapters), each by
+  drafting the outline of a book and discussing it
+  in the community
+- move over parts of the online docs and the EU documents into the
+  book(s)
+- improve support for referencing and inlining source code and (tested) examples
+
+expected outcome:
+
+- sorted and much improved user and developer documentation
+- easier to maintain the documentation
+- possibility to create nice PDFs
+
+
+
+
+notes:
+
+titles might be e.g.: 
+
+ - "Guide to the Python Standard Interpreter"
+ - "Building and Programming with RPython"
+ - "PyPy Architecture and Implementation"
+ - "Extending and Embedding PyPy's Python Interpreter"

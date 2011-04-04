@@ -1,0 +1,7 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy's JIT for scientific python computations]{PyPy's JIT for scientific python computations}
+\author[M Fijalkowski, D Jarecka]{Maciej Fijalkowski (merlinux GmbH) \and \\
+Dorota Jarecka (University of Warsaw)}
+\institute[EuroSciPy]{EuroSciPy 2009}
+\date{July 25, 2009}

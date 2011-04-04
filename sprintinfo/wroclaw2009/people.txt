@@ -1,0 +1,57 @@
+People coming to the PyPy sprint 7-14th of February, 2009
+=====================================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== ============================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== ============================
+Samuele Pedroni       6/15           Hotel Duet
+Bartosz Skowron       7/14           private
+Maciej Fijalkowski    5/15				   private
+Armin Rigo            5/13           ?
+
+==================== ============== ============================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Antonio Cuni         ?				?
+Holger Krekel		 ?				?
+Jakub Gustak		 ?				?
+Stephan Diehl		 ?				?
+Samuele Pedroni		 ?				?
+Carl Friedrich Bolz  ?              ?
+Alexander Schremmer  ?              ?
+Holger Krekel        ?              ?
+Toon Verwaest        ?              ?
+Camillo Bruni        ?              ?
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Niko Matsakis        ?              ?
+Anders Chrigstroem   ?              ?
+Eric van Riet Paap   ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Th�nault     ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+==================== ============== =====================

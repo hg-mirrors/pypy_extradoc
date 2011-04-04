@@ -1,0 +1,40 @@
+Outline:
+
+PyPy Overview:
+  - goals, ideas
+    - a toolkit for writing interpreters
+    - interpreters written in a high-level language
+    - abstracting away low-level aspects
+    - various target environments
+    - sort of model-driven approach
+  - translation aspects
+    - GC
+    - object model details (e.g. exact memory layout, tagged pointers)
+    - target environment
+
+Big ideas:
+  - abstract over low-level details
+  - compile-time meta-programming
+  - shadows
+
+SPy:
+  - Interpreter
+  - Object Model: typical squeak object model + specific classes (which will
+    be replaced by shadows) + no tagged pointers
+  - Shadows
+    - Caching of interpreter-internal information
+    - Abstraction (Perfect place to put smalltalk-class-specific methods)
+  - Primitives: explain expose_primitive
+  - Image Loading very quickly
+
+Sprint
+  - Squeak people don't know anything about Py(Py/thon)
+  - PyPy people don't know anything about Squeak
+  -> But it still works out
+
+Results:
+  - no gc, no jit etc. all is "for free"
+     - woven in by pypy
+  - small and understandable, clean implementation
+     - made smaller by compile-time metaprogramming
+  - quick performance (+ source size) discussion

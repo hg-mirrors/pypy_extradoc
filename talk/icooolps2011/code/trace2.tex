@@ -1,0 +1,33 @@
+\begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]]
+# $inst_1$.getattr("a")
+$map_1$ = $inst_1$.map
+guard($map_1$ == 0xb74af4a8)
+|{\color{gray}$index_1$ = Map.getindex($map_1$, "a")}|
+|{\color{gray}guard($index_1$ != -1)}|
+$storage_1$ = $inst_1$.storage
+$result_1$ = $storage_1$[$index_1$]
+
+# $inst_1$.getattr("b")
+|{\color{gray}$map_2$ = $inst_1$.map}|
+|{\color{gray}guard($map_2$ == 0xb74af4a8)}|
+|{\color{gray}$index_2$ = Map.getindex($map_2$, "b")}|
+|{\color{gray}guard($index_2$ == -1)}|
+$cls_1$ = $inst_1$.cls
+$methods_1$ = $cls_1$.methods
+$result_2$ = dict.get($methods_1$, "b")
+guard($result_2$ is not None)
+$v_2$ = $result_1$ + $result_2$
+
+# $inst_1$.getattr("c")
+|{\color{gray}$map_3$ = $inst_1$.map}|
+|{\color{gray}guard($map_3$ == 0xb74af4a8)}|
+|{\color{gray}$index_3$ = Map.getindex($map_3$, "c")}|
+|{\color{gray}guard($index_3$ == -1)}|
+|{\color{gray}$cls_2$ = $inst_1$.cls}|
+|{\color{gray}$methods_2$ = $cls_2$.methods}|
+$result_3$ = dict.get($methods_2$, "c")
+guard($result_3$ is not None)
+
+$v_4$ = $v_2$ + $result_3$
+return($v_4$)
+\end{lstlisting}

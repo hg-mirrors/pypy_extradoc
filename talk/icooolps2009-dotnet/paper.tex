@@ -1,0 +1,124 @@
+%\documentclass{acm_proc_article-sp}
+\documentclass{sig-alternate}
+
+
+\usepackage{ifthen}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{listings}
+
+\lstset{language=Python,
+        basicstyle=\scriptsize\ttfamily,
+        keywordstyle=\bf, %\color{blue}, % I couldn't find a way to make chars both bold and tt
+        frame=none,
+        stringstyle=\color{blue},
+        fancyvrb=true,
+        xleftmargin=10pt,xrightmargin=10pt,
+        showstringspaces=false}
+
+
+\newboolean{showcomments}
+\setboolean{showcomments}{false}
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$Id: main.tex 19055 2008-06-05 11:20:31Z cfbolz $-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\davide[1]{\nb{DAV}{#1}}
+\newcommand\cfbolz[1]{\nb{CFB}{#1}}
+\newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\arigo[1]{\nb{AR}{#1}}
+\newcommand{\commentout}[1]{}
+
+\normalem
+
+\let\oldcite=\cite
+
+\renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
+
+\begin{document}
+
+
+%% \title{Automatic generation of JIT compilers for dynamic languages in
+%%   .NET\thanks{This work has been partially supported by MIUR EOS DUE -
+%%     Extensible Object Systems for Dynamic and Unpredictable Environments and
+%%     by the EU-funded project: IST 004779 PyPy (PyPy: Implementing Python in
+%%     Python).}}
+
+\title{Faster than C\#: efficient implementation of dynamic languages on
+  .NET\thanks{This work has been partially supported by MIUR EOS DUE -
+    Extensible Object Systems for Dynamic and Unpredictable Environments and
+    by the EU-funded project: IST 004779 PyPy (PyPy: Implementing Python in
+    Python).}}
+
+%% Alternative title: Faster than C\#: the future of dynamic languages on .NET
+
+
+\numberofauthors{3}
+\author{
+\alignauthor Antonio Cuni\\
+       \affaddr{DISI, University of Genova}\\
+       \affaddr{Italy}\\
+       \email{cuni@disi.unige.it}
+\alignauthor Davide Ancona\\
+       \affaddr{DISI, University of Genova}\\
+       \affaddr{Italy}\\
+       \email{davide@disi.unige.it}
+\alignauthor Armin Rigo\\
+       \email{arigo@tunes.org}
+}
+\conferenceinfo{ICOOOLPS}{'09 Genova, Italy}
+\CopyrightYear{2009}
+\crdata{978-1-60558-541-3/09/07}
+
+\maketitle
+
+\category{D.3.4}{Programming Languages}{Processors}[code generation,
+incremental compilers, optimization, interpreters, run-time environments]
+
+\begin{abstract}
+The Common Language Infrastructure (CLI) is a virtual machine expressly
+designed for implementing statically typed languages such as C\#, therefore
+programs written in dynamically typed languages are typically much slower than C\# when executed on .NET.
+
+Recent developments show that \emph{Just In Time} (JIT) compilers can exploit runtime type
+information to generate quite efficient code.  Unfortunately, writing a JIT
+compiler is far from being simple.  
+
+In this paper we report our positive
+experience with automatic generation of JIT compilers as supported by the PyPy
+infrastructure, by focusing on JIT compilation for .NET.
+Following this approach, we have in fact added a second layer of JIT compilation, by allowing dynamic generation of more efficient .NET bytecode, which
+in turn can be compiled to machine code by the .NET JIT compiler.   
+
+The main and novel contribution of this paper is to show that this
+\emph{two-layers JIT} technique is effective, since programs written in dynamic languages 
+can run on .NET as fast as (and in some cases even faster than) the equivalent C\# programs.
+
+The practicality of the approach is demonstrated by showing some promising
+experiments done with benchmarks written in a simple dynamic language.
+\end{abstract}
+
+\input{intro}
+\input{clibackend}
+\input{benchmarks}
+\input{conclusion}
+
+
+
+
+\bigskip
+
+\bibliographystyle{abbrv}
+\bibliography{paper}
+
+\end{document}
+
+% LocalWords:  JIT PyPy

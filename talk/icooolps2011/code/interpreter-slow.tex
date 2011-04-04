@@ -1,0 +1,35 @@
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily,numbers = right]
+class Class(object):
+    def __init__(self, name):
+        self.name = name
+        self.methods = {}
+
+    def instantiate(self):
+        return Instance(self)
+
+    def find_method(self, name):
+        return self.methods.get(name, None)
+
+    def write_method(self, name, value):
+        self.methods[name] = value
+
+
+class Instance(object):
+    def __init__(self, cls):
+        self.cls = cls
+        self.attributes = {}
+
+    def getfield(self, name):
+        return self.attributes.get(name, None)
+
+    def write_attribute(self, name, value):
+        self.attributes[name] = value
+
+    def getattr(self, name):
+	result = self.getfield(name)
+	if result is None:
+            result = self.cls.find_method(name)
+	    if result is None:
+		raise AttributeError
+	return result
+\end{lstlisting}

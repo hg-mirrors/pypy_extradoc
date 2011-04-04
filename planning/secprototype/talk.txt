@@ -1,0 +1,284 @@
+.. include:: <s5defs.txt>
+
+=================================================
+PyPy - Implementing Python in Python
+=================================================
+
+Security Implementation Prospects
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Authors: Samuele Pedroni, Armin Rigo
+:Date: 5th January 2007
+:Location: IBM, Zürich
+
+Outline
+==============
+
+*Part 1*
+
+  PyPy introduction and architecture overview
+
+*Part 2*
+
+  Architecture flexibility and hooks relevant
+  to security
+
+
+Part 1 - Architecture overview
+================================
+
+What it PyPy?
+
+- A Python implementation
+- An Open source project (MIT license)
+- An EU co-funded research project (~2 years)
+- A compiler tool chain
+
+Python implementations 
+===========================
+
+- CPython: main Python version (BDFL'ed by Guido)
+- Jython: compiles to Java Bytecode
+- IronPython (MS): compiles to .NET's CLR 
+- PyPy: self-contained - self-translating - flexible
+
+Goals (i)
+======================
+
+An architecture for flexibility
+
+- some decisions are invasive
+  and fixed in CPython (e.g.
+  refcounting, the GIL)
+
+- some extensions are possible
+  but hard to maintain:
+
+  * stackless
+  * psyco
+
+Goals (ii)
+=======================
+
+An architecture for speed
+
+- generate a psyco-like JIT
+
+currently: without a JIT, 2.3x-6x slower than
+CPython (depends on features); room for improvement
+
+Goals (iii)
+=======================
+
+Multiple targets
+
+- POSIX/C (like CPython)
+- .NET (like IronPython)
+- JVM (like Jython)
+- ...
+
+How
+=====================
+
+We have:
+
+- a Python interpreter written
+  in Python, low-level details
+  left out (30000 LOC)
+- a language subset static enough
+  to allow analysis (RPython)
+- translated to low-level targets,
+  filling in the details (C, .NET,
+  ...)
+
+Status
+==========================
+
+- conformant interpreter
+  (95% of core tests)
+- translates to C, LLVM and .NET
+  (still working on .NET gluing)
+- working on the JIT compiler generator
+
+The Basic Architecture
+=======================
+
+.. image:: arch-pypy-basic.png
+   :align: center
+
+Parser and Compiler
+===================
+
+- parses python source code to AST 
+- compiles AST to code objects (bytecode) 
+- works from the CPython grammar definition 
+- can be modified/extended at runtime (almost) 
+
+Bytecode interpreter
+====================
+
+- interprets bytecode/code objects through Frame objects 
+- Frames tie to global and local variable scopes
+- implements control flow (loops, branches, exceptions, calls)
+- dispatches all operations on objects to an object implementation library
+  ("Object Space")
+
+Object Spaces
+=============
+
+- library of all python types and operations on them 
+- encapsulates all knowledge about app-level objects 
+- is not concerned with control flow or bytecode 
+- e.g. enough control to implement lazy evaluation (more later)
+
+Builtin and Fundamental Modules
+===============================
+
+- around 200 builtin functions and classes 
+- fundamental modules like 'sys' and 'os' implemented 
+- quite fully compliant to CPython's regression tests 
+- a number of modules missing or incomplete (socket ...)
+  
+
+PyPy/Translation overview
+=========================
+
+.. image:: arch-translation.png
+   :align: center
+
+Translation Aspects
+====================
+
+- implementation decisions (GC, threading, CC) at translation time 
+- most other language implementations do a "fixed" decision 
+- translation aspects are weaved into the produced code
+- independent from language semantics (python interpreter)
+
+
+Part 2
+===============
+
+.. empty, just to mark the transition
+
+Part 2
+===============
+
+Architecture flexibility and hooks relevant
+to security:
+
+- proxy spaces and operation control
+- new bytecodes
+
+Proxy Spaces
+=================
+
+- An object space implements all semantic operations
+  of the language
+
+- Interface: one method per operation, e.g. ``add(x, y)``
+
+- we can uniformly control all
+  operations by wrapping the "standard object
+  space" in a proxy space
+
+Thunk Space
+=================
+
+- Provides lazy evaluation:
+
+    +--------------------------------------------------+
+    |                                                  |
+    |    ``x = thunk(f, 42)``                          |
+    |                                                  |
+    |    ...                                           |
+    |                                                  |
+    |    ``print x + 1``  *# calls f(42)*              |
+    |                                                  |
+    +--------------------------------------------------+
+
+- The proxy **thunk space** generically implements the policy
+  of forcing lazy objects before they are operated on
+
+Thunk Space (2)
+=================
+
+- ``thunk(f, 42)`` returns an instance of the W_Thunk class
+
+- ``ThunkSpace.add(x, y)`` checks if x and/or y are instances
+  of W_Thunk, and if so, forces them and substitutes the
+  result in the sub-call to ``StdObjSpace.add(x, y)``
+
+- the same for all operations, generically
+
+- less than 150 lines of code in total
+
+Taint Space
+=================
+
+- Provides tainted objects:
+
+    +--------------------------------------------------+
+    |                                                  |
+    | ``y = taint(x)``                                 |
+    |                                                  |
+    | ...                                              |
+    |                                                  |
+    | ``z = y + 1``                                    |
+    |                                                  |
+    | ``print untaint(z, expected_type)``              |
+    |                                                  |
+    +--------------------------------------------------+
+
+- tainted objects: boxes around regular objects
+
+- operations propagate taintedness (``z`` above is tainted too)
+
+Taint Space (2)
+==================
+
+- tainted objects cannot escape the process (e.g. with print) or be used in
+  control flow decisions
+
+- ``untaint`` performs declassification
+
+- operations raising an exception return a "taint bomb" instead;
+  declassifying the bomb re-raises it
+
+- again less than 150 lines of code
+
+Bytecode extensions
+======================
+
+- we can implement a new opcode in the interpreter in a non-invasive way
+
+- must extend the bytecode compiler to produce it, of course
+
+
+JIT compiler generation
+==========================
+
+- JIT compiler generated from the interpreter and an object space
+
+- gives a JIT compiler that always works, even with new bytecodes
+  and proxy spaces
+
+- should be able to remove some of the overhead of the
+  dynamic security checks (by moving them from run-time to
+  JIT-compile-time, which requires little manual work)
+
+
+Summary
+=========================
+
+- potentially we should be able to implement a large range
+  of security polices, efficiently
+
+- runtime dynamic policies should be easy to implement
+
+- analysis-based policies harder (must extend the bytecode compiler,
+  for which we have no special framework support so far; also,
+  Python is not suited to compile more than one module at a time)
+
+
+.. |bullet| unicode:: U+02022
+.. footer:: Samuele Pedroni, Armin Rigo, PyPy Team |bullet| IBM Zürich |bullet| 5th January 2007 |bullet| ``http://codespeak.net/pypy``

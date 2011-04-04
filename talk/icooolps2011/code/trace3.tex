@@ -1,0 +1,23 @@
+\begin{Verbatim}
+# $inst_1$.getattr("a")
+$map_1$ = $inst_1$.map
+guard($map_1$ == 0xb74af4a8)
+$storage_1$ = $inst_1$.storage
+$result_1$ = $storage_1$[0]
+
+# $inst_1$.getattr("b")
+$cls_1$ = $inst_1$.cls
+$methods_1$ = $cls_1$.methods
+$result_2$ = dict.get($methods_1$, "b")
+guard($result_2$ is not None)
+$v_2$ = $result_1$ + $result_2$
+
+# $inst_1$.getattr("c")
+$cls_2$ = $inst_1$.cls
+$methods_2$ = $cls_2$.methods
+$result_3$ = dict.get($methods_2$, "c")
+guard($result_3$ is not None)
+
+$v_4$ = $v_2$ + $result_3$
+return($v_4$)
+\end{Verbatim}

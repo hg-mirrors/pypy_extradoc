@@ -1,0 +1,50 @@
+Sprint report Limerick sprint, Ireland 21-27th of August 2006
+=====================================================================
+
+Location: University of Limerick, Computer Science building, Limerick, Ireland
+Participants: Armin Rigo, Samuele Pedroni, Michael Hudson, Holger Krekel, Anders Chrigström, 
+Majiek Fijalkowski, Beatrice Düring
+
+The goals of the sprint was to focus on JIT compiler works, various optimization 
+works, porting extension modules, infrastructure works like a build tool for 
+PyPy, or extended (distributed) testing.
+
+What _really_ happened was:
+
+* core optimizations (mwh):
+
+  - (done) did a lot of profiling, main finding: GC 
+  - optimising GC: (done) by mostly just collecting less often :-/
+  - experiment with optimising builtin lookups 
+    e.g caching method lookups or callback-dict
+  - remove the zeroing assumption (more should be
+    done on this)
+
+* ext compiler - maybe a topic for the weekend 
+
+* JIT
+  - first machine code generation tests are passing 
+  - (samuele, arre) produce machine code in-memory from running the generated CFGs
+  - (michael, arigo) implement more of the interface to generate I386
+  machine code; maybe think about refining the interface (also
+  considering a PPC asm backend)
+  
+* distributed testing
+  (maciej, mick)
+  more or less done, but many things : 
+
+      - use "/usr/bin/rsync" to sync to remote 
+      - master does collection of items 
+      - "leaf" items are asynchronously send to "Executors" (running on nodes)
+      - super-simple reporting 
+
+  (next) boxing of processes to catch stdout, segfaults, etc.
+  (next) http server interface to running tests
+  (later) make more test options work, e.g. --pdb, --view...
+
+
+* (mick, maciej) writing more JS examples
+
+  
+  (arigo) wrote a generic interface that works via greenlets or threads interchangeable (svn/user/arigo/hack/pypeers/bluesock.py)
+

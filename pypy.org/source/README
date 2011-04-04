@@ -1,0 +1,18 @@
+You generate this website by using yatiblog from here:
+
+http://github.com/tav/ampify/blob/master/environ/yatiblog
+
+by running 
+
+..../ampify/environ/yatiblog -o ..
+
+you'll get html output in the parent directory.
+Then you can check it in, go to codespeak in /www/pypy.org/htdocs/
+and type "svn up".
+
+Other required dependencies:
+    * "docutils" from "easy_install docutils"
+    * "simplejson" from "easy_install simplejson"
+    * "genshi" from "easy_install genshi"
+    * "pygments" from "easy_install pygments"
+    * "yaml" from "apt-get install libyaml-dev", "easy_install pyyaml"

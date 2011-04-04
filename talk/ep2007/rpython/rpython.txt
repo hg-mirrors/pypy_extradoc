@@ -1,0 +1,199 @@
+
+=======================================================
+RPython: Need for speed
+=======================================================
+
+aka: C and C# considered harmful
+================================
+
+:Authors: Antonio Cuni (DISI - University of Genoa), Maciej Fijalkowski (merlinux GmbH)
+:Place: Europython 2007
+:Date: 10 July 2007
+
+What is RPython?
+----------------
+
+* RPython programs run unmodified on top of CPython
+
+* Restricted subset
+
+* Constructed from live objects - initialization
+  is done in Python
+
+* Python is the meta-programming language for RPython
+
+Why invent new language?
+------------------------
+
+* Grown as a side effect of the PyPy project
+
+* Python is too slow for some purposes
+
+* Pyrex/C are ugly
+
+* We want to play as it were Python as much as possible
+
+Restricted, what do you mean?
+-----------------------------
+
+* Static type system
+
+* Full type inference - you cannot mix incompatible types
+
+* Polymorphic collections (i.e. list of ints)
+
+* Java-like object model
+
+* No dynamic stuff: switch class, add/remove methods, etc.
+
+* No support for special methods (only __init__ and __del__ works)
+
+* No introspection
+
+Example of use case
+-------------------
+
+* Write code
+
+* Test/debug on top of CPython
+
+* Compile
+
+* Graph viewer
+
+Type inference
+--------------
+
+::
+
+    def foo():
+        return bar(1, 2) + bar(3, 4.5)
+
+    def bar(a, b):
+        return a+1
+
+* a: Signed U Siged --> Signed
+
+* b: Signed U Float --> Float
+
+* result of bar: Signed + 1 --> Signed
+
+
+Modules restrictions
+--------------------
+
+* Few modules work
+
+* They have different, more static API (ie open())
+
+* All modules might be used when initializing
+
+RPython - why you wouldn't like to use it
+-----------------------------------------
+
+* RPython is quite new
+
+* Wasn't meant to be a general purpose language from scratch
+
+* Type inference usually gives bogus erros
+
+* Compilation errors are far from perfect in general
+
+RPython - on the other hand...
+------------------------------
+
+* it's about 60x faster than CPython
+
+* no more pros...
+
+Writing standalone C/.NET/JVM programs
+--------------------------------------
+
+::
+
+    def target(*args):
+        return entry_point, None
+    
+    def entry_point(argv):
+        print 'Hello World!'
+        return 0
+
+* see also translator/goal/targetnopstandalone.py
+
+* ./translate.py [--backend={c|cli|jvm}] targetXXX.py
+
+Writing CPython extensions
+---------------------------
+
+* create a mixed module (there is _demo)
+
+* compile it as CPython extension
+
+* quite incomplete
+
+The CLI backend
+---------------
+
+* Produces assemblies for .NET (both Mono and CLR)
+
+* (Experimental) access to .NET libraries
+
+* As fast as C#
+
+* From 4 to 100 times faster than IronPython
+
+CarbonPython
+------------
+
+* **Highly** experimental
+
+* RPython --> .NET DLL
+
+* DLLs can be imported by C#, IronPython, ...
+
+* CarbonPython + IronPython = SteelPython :-)
+
+* Explicit definition of multiple entrypoints
+
+* Live demo
+
+* http://codespeak.net/pypy/dist/pypy/doc/carbonpython.html
+
+
+The JVM backend
+---------------
+
+* Produces classes for the JVM
+
+* Shares a lot of code with the CLI backend
+
+* Not as mature as gencli
+
+* Only executables at the moment
+
+
+The JS backend
+--------------
+
+* Can produce complex, standalone executables
+
+* AJAX by method calls
+
+* Can bind to ie. mochikit
+
+* Demos are online at http://play1.codespeak.net
+
+* Can be used with any possible web framework
+
+Conclusions
+-----------
+
+* RPython has lot of rough edges
+
+* ...but it might be useful in some contexts
+
+* More convenient than C/C++/C#/Java
+
+* Much faster than CPython/IronPython/Jython
+
+* Stay tuned

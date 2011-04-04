@@ -1,0 +1,145 @@
+@inproceedings{PyPyTracing,
+	address = {Genova, Italy},
+	title = {Tracing the meta-level: {PyPy's} tracing {JIT} compiler},
+	isbn = {978-1-60558-541-3},
+	shorttitle = {Tracing the meta-level},
+	url = {http://portal.acm.org/citation.cfm?id=1565827},
+	doi = {10.1145/1565824.1565827},
+	abstract = {We attempt to apply the technique of Tracing {JIT} Compilers in the context of the {PyPy} project, i.e., to programs that are interpreters for some dynamic languages, including Python. Tracing {JIT} compilers can greatly speed up programs that spend most of their time in loops in which they take similar code paths. However, applying an unmodified tracing {JIT} to a program that is itself a bytecode interpreter results in very limited or no speedup. In this paper we show how to guide tracing {JIT} compilers to greatly improve the speed of bytecode interpreters. One crucial point is to unroll the bytecode dispatch loop, based on two kinds of hints provided by the implementer of the bytecode interpreter. We evaluate our technique by applying it to two {PyPy} interpreters: one is a small example, and the other one is the full Python interpreter.},
+	booktitle = {Proceedings of the 4th workshop on the Implementation, Compilation, Optimization of {Object-Oriented} Languages and Programming Systems},
+	publisher = {{ACM}},
+	author = {Carl Friedrich Bolz and Antonio Cuni and Maciej Fija≈Çkowski and Armin Rigo},
+	year = {2009},
+	pages = {18--25}
+},
+
+@inproceedings{antocuni_2009
+ author = {Cuni, Antonio and Ancona, Davide and Rigo, Armin},
+ title = {Faster than C\#: efficient implementation of dynamic languages on .NET},
+ booktitle = {Proceedings of the 4th workshop on the Implementation, Compilation, Optimization of Object-Oriented Languages and Programming Systems},
+ series = {ICOOOLPS '09},
+ year = {2009},
+ isbn = {978-1-60558-541-3},
+ location = {Genova, Italy},
+ pages = {26--33},
+ numpages = {8},
+ url = {http://doi.acm.org/10.1145/1565824.1565828},
+ doi = {http://doi.acm.org/10.1145/1565824.1565828},
+ acmid = {1565828},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+
+@phdthesis{carl_friedrich_bolz_automatic_2008,
+    type = {Master Thesis},
+    title = {Automatic {JIT} Compiler Generation with Runtime Partial Evaluation
+},
+    school = {{Heinrich-Heine-Universit√§t} D√ºsseldorf},
+    author = {Carl Friedrich Bolz},
+    year = {2008}
+},
+
+@phdthesis{antocuni_phd_2010,
+    type = {Ph.D. Thesis},
+    title = {High performance implementation of Python for CLI/.NET with JIT compiler generation for dynamic languages},
+    school = {{DISI}, Universit\'a di Genova},
+    author = {Antonio Cuni},
+    year = {2010},
+    note = {Technical Report {DISI-TH-2010-05}}
+},
+
+@inproceedings{ancona_rpython:dls_2007,
+    address = {Montreal, Quebec, Canada},
+    title = {{RPython:} A Step towards Reconciling Dynamically and Statically Typed {OO} Languages},
+    isbn = {978-1-59593-868-8},
+    url = {http://portal.acm.org/citation.cfm?id=1297091},
+    doi = {10.1145/1297081.1297091},
+    abstract = {Although the C-based interpreter of Python is reasonably fast, implementations on the {CLI} or the {JVM} platforms offers some advantages in terms of robustness and interoperability. Unfortunately, because the {CLI} and {JVM} are primarily designed to execute statically typed, object-oriented languages, most dynamic language implementations cannot use the native bytecodes for common operations like method calls and exception handling; as a result, they are not able to take full advantage of the power offered by the {CLI} and {JVM.}},
+    booktitle = {Proceedings of the 2007 Symposium on Dynamic Languages},
+    publisher = {{ACM}},
+    author = {Davide Ancona and Massimo Ancona and Antonio Cuni and Nicholas D. Matsakis},
+    year = {2007},
+    pages = {53--64}
+},
+
+@techreport{armin_rigo_jit_2007,
+    title = {{JIT} Compiler Architecture},
+    url = {http://codespeak.net/pypy/dist/pypy/doc/index-report.html},              abstract = {{PyPy‚~@~Ys} translation tool-chain ‚~@~S from the interpreter written in {RPython} to generated {VMs} for low-level platforms ‚~@~S is now able to extend those {VMs} with an automatically generated dynamic compiler, derived from the interpreter. This is achieved by a pragmatic application of partial evaluation techniques guided by a few hints added to the source of the interpreter. Crucial for the effectiveness of dynamic compilation is the use of run-time information to improve compilation results: in our approach, a novel powerful primitive called ‚~@~\promotion‚~@~] that ‚~@~\promotes‚~@~] run-time values to compile-time is used to that effect. In this report, we describe it along with other novel techniques that allow the approach to scale to something as large as {PyPy‚~@~Ys} Python interpreter.},
+    number = {D08.2},
+    institution = {{PyPy}},
+    author = {Armin Rigo and Samuele Pedroni},
+    month = may,
+    year = {2007}
+},
+
+@inproceedings{camillo_bruni_pygirl:_2009,
+    title = {{PyGirl:} Generating {Whole-System} {VMs} from {High-Level} Prototypes using {PyPy}},
+    booktitle = {Tools, accepted for publication},
+    author = {Camillo Bruni and Toon Verwaest},
+    year = {2009},
+},
+
+@inproceedings{RiBo07_223,
+ author = {Armin Rigo and Carl Friedrich Bolz},
+ title = {{How to not write Virtual Machines for Dynamic Languages 
+}},
+ booktitle = {Proceeding of Dyla 2007},
+ abstract = {Typical modern dynamic languages have a growing number of
+                  implementations. We explore the reasons for this situation,
+                  and the limitations it imposes on open source or academic
+                  communities that lack the resources to fine-tune and
+                  maintain them all. It is sometimes proposed that
+                  implementing dynamic languages on top of a standardized
+                  general-purpose ob ject-oriented virtual machine (like Java
+                  or .NET) would help reduce this burden. We propose a
+                  complementary alternative to writing custom virtual machine
+                  (VMs) by hand, validated by the PyPy pro ject: flexibly
+                  generating VMs from a high-level specification, inserting
+                  features and low-level details automatically ‚Äì including
+                  good just-in-time compilers tuned to the dynamic language at
+                  hand.  We believe this to be ultimately a better investment
+                  of efforts than the development of more and more advanced
+                  general-purpose object oriented VMs. In this paper we
+                  compare these two approaches in detail.},
+pages = {--},
+ year = {2007},
+}
+
+@inproceedings{rigo_representation-based_2004,
+    address = {Verona, Italy},
+    title = {Representation-Based Just-in-Time Specialization and the Psyco Prototype for Python},
+    isbn = {1-58113-835-0},
+    url = {http://portal.acm.org/citation.cfm?id=1014010},
+    doi = {10.1145/1014007.1014010},
+    abstract = {A powerful application of specialization is to remove interpretative overhead: a language can be implemented with an interpreter, whose performance is then improved by specializing it for a given program source. This approach is only moderately successful with very high level languages, where the operation of each single step can be highly dependent on run-time data and context. In the present paper, the Psyco prototype for the Python language is presented. It introduces two novel techniques. The first is just-in-time specialization, or specialization by need, which introduces the "unlifting" ability for a value to be promoted from run-time to compile-time during specialization -- the inverse of the lift operator of partial evaluation. Its presence gives an unusual and powerful perspective on the specialization process. The second technique is representations, a theory of data-oriented specialization generalizing the traditional specialization domains (i.e. the compile-time/run-time dichotomy).},
+    booktitle = {Proceedings of the 2004 {ACM} {SIGPLAN} Symposium on Partial Evaluation and Semantics-Based Program Manipulation},
+    publisher = {{ACM}},
+    author = {Armin Rigo},
+    year = {2004},
+    pages = {15--26}
+},
+
+@inbook{bolz_back_2008,
+    title = {Back to the Future in One Week ‚~@~T Implementing a Smalltalk {VM} in {PyPy}},
+    url = {http://dx.doi.org/10.1007/978-3-540-89275-5_7},
+    abstract = {We report on our experiences with the Spy project, including implementation details and benchmark results. Spy is a re-implementation of the Squeak (i.e. Smalltalk-80) {VM} using the {PyPy} toolchain. The {PyPy} project allows code written in {RPython,} a subset of Python, to be translated
+to a multitude of different backends and architectures. During the translation, many aspects of the implementation can be
+independently tuned, such as the garbage collection algorithm or threading implementation. In this way, a whole host of interpreters
+can be derived from one abstract interpreter definition. Spy aims to bring these benefits to Squeak, allowing for greater portability and, eventually, improved performance. The current
+Spy codebase is able to run a small set of benchmarks that demonstrate performance superior to many similar Smalltalk {VMs,} but
+which still run slower than in Squeak itself. Spy was built from scratch over the course of a week during a joint {Squeak-PyPy} Sprint in Bern last autumn.
+},
+    booktitle = {{Self-Sustaining} Systems},
+    author = {Carl Friedrich Bolz and Adrian Kuhn and Adrian Lienhard and Nicholas Matsakis and Oscar Nierstrasz and Lukas Renggli and Armin Rigo and Toon Verwaest},
+    year = {2008},
+    pages = {123--139}
+},
+
+@techreport{PyPyJIT09,
+	title = {Automatic generation of {JIT} compilers for dynamic
+                   languages in .{NET}},
+	institution = {{DISI}, University of Genova and Institut f\"ur Informatik, {Heinrich-Heine-Universit\"at D\"usseldorf}},
+	author = {Davide Ancona and Carl Friedrich Bolz and Antonio Cuni and Armin Rigo},
+	year = {2008},
+},

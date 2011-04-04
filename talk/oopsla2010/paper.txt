@@ -1,0 +1,116 @@
+Abstract
+========
+
+XXX
+
+Introduction
+============
+
+Python language presents a serious challenge for optimizations. The main
+complexity comes from the dynamism of Python (where you can overload virtually
+any operation to have effects unknown until runtime) as well as frame
+introspection capabilities achievable from within the language. We implemented
+a flexible just in time compiler generation (XXX cite) as a first step
+to overcome performance problems presented by Python. In our approach,
+we automatically generate the just in time compiler from the interpreter
+specification written
+in a high level language. This language
+can also be directly run (it's a static subset of Python) or, by compilation
+to lower level language such as C,
+run efficiently.
+
+This paper treats about mitigating costs related to allocating and managing
+frames within the interpreter. Those frames are either necessary to preserve
+Python semantics (user program frame introspection) or need to be reconstructed
+on demand when asked. Our approach eliminates most of costs associated with
+frames and reconstructs them on demand, even though interpreter is written
+with frames in mind.
+
+Let's look at the example how frame introspection is used to improve language
+debugging capabilities. In the example below, py.test, a testing tool is using
+frame introspection for accessing and listing local variables which are
+on the stack when exception happened.
+
+=================================== FAILURES ===================================
+___________________________________ test_one ___________________________________
+
+    def test_one():
+>       f(0, 0)
+
+test_x.py:6: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+i = 0, j = 0
+
+    def f(i, j):
+>       return i / j
+E       ZeroDivisionError: integer division or modulo by zero
+
+After the exception was generated, the whole chain of frames was stored in
+a user accessible place, from which the testing tool read local variables.
+
+The performance evaluation of our approach is based on a fact that if
+programmer doesn't use frame introspection, he's not interested in paying
+extra penalty for it. The performance of the introspection capabilities
+doesn't matter in practice, since by far the most common use case is debugging.
+At least in case of python, there is a requirement however, that debugging
+information is present and retrievable at any point of execution - there
+can't be a runtime option known prior to running the program if debugging
+will be used or not.
+
+The idea of avoiding frame objects, while still being able to create them
+if need arises is nothing new. It was tackled by (XXX smalltalk) and
+(XXX hotspot) for years. The novelty of our approach is that we only need
+a few hints in our interpreter (a couple lines of code, about 10) to instruct
+jit generator to create frame synchronization code. This allows the same
+techniques to be applied to any interpreter specified in description
+language (RPython). Indeed, in order to present gains of our approach,
+we created a tiny language and wrote interpreter for it in RPython to showcase
+benefits of our that can also be applied on a large scale.
+
+As a result, we can remove the frame overhead costs almost completely
+from the running program. There are some corner-cases, require by python
+language specification, that make frame escape via traceback (if exception
+exits jitted part of the code). In that case we allocate the frame and
+put all elements there. However, this still avoids using frame for all
+operations, as the interpreter would do.
+
+Performance gains are significant (XXX actually measure how significant).
+XXX
+
+Related work
+============
+
+XXX
+
+Technical background
+====================
+
+To illustrate problem from the simplest possible perspective, we present a
+small bytecode-based language with frame introspection capabilities. The
+language itself is not of any use, but provides very similar problems
+to those encountered on a larger scale.
+
+Our small interpreter is a register based interpreter implementing nine
+bytecodes, most of them straightforward (XXX reference source).
+The important addition here is the INTROSPECT bytecode which takes
+a register as argument (holding integer) and will write a value of register
+named by a number in argument to the result register. So the code:
+
+LOAD 0 => r3
+LOAD 1 => r2
+LOAD 2 => r1
+INTROSPECT r0 => r4
+PRINT r4
+
+assuming r0 is the argument of function, it'll print a value 2 (from
+register r1) if argument value is 1 etc. When creating an interpreter,
+the most obvious implementation would be to have a frame object with
+registers in an array, and this is exactly what our simple interpreter does.
+
+The problem here lays in details. XXX
+
+XXX Tracing JIT intro, maybe, depends on audience
+
+Solution
+========

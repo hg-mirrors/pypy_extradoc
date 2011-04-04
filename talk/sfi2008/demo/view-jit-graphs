@@ -1,0 +1,16 @@
+#! /usr/bin/env python
+
+import rpn
+from pypy.conftest import option
+option.view = True
+from pypy.rpython.module.support import LLSupport
+from pypy.jit.timeshifter.test.test_vlist import P_OOPSPEC
+from pypy.jit.timeshifter.test.test_timeshift import TimeshiftingTests
+from pypy.jit.codegen.i386.test.test_genc_ts import I386TimeshiftingTestMixin
+class Test(I386TimeshiftingTestMixin, TimeshiftingTests):
+    pass
+Test.setup_class.im_func(Test)
+self = Test()
+
+rpn.interpret.convert_arguments = [LLSupport.to_rstr, int]
+self.timeshift(rpn.interpret, ["24++3+", 100], [0], policy=P_OOPSPEC)

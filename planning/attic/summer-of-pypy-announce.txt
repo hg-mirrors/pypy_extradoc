@@ -1,0 +1,38 @@
+Subject: Summer of PyPy: Call for proposals 
+
+Hi to all students! 
+
+Happily, we are able to offer students mentoring and full sprint
+participant's funding if we receive a proposal outlining an
+interesting project related to PyPy and its development tools.  This
+follows up on the "Summer of Code" campaign from Google but is
+completely independent from it and also works differently (i.e. there
+is no success bounty).
+
+See the full call for details: 
+
+    http://codespeak.net/pypy/dist/pypy/doc/summer-of-pypy.html
+
+and here is a list of concrete inspirations for possible work: 
+
+    http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html
+
+There are certainly many more possibilities now that PyPy starts to
+get faster, Stackless and custom GCs are integrated, PyPy.NET, Logic
+Variables, lazy evaluation and other new features are emerging.  Note
+though that PyPy still is pursuing challenging research goals so it
+will take some time before it becomes viable in production
+environments.
+
+Don't hesitate to drop by on #pypy on freenode or post questions/ideas
+to pypy-dev at codespeak net.
+
+A last note: you can propose something at any time, you don't need to
+wait for a specific deadline. In fact, our next sprint is nearing in
+Ireland, 21st-27th August and if you are quick you may already be
+there with us :)
+
+For the PyPy team, 
+
+    Armin Rigo, Holger Krekel, Michael Hudson, Carl Friedrich Bolz, ... 
+

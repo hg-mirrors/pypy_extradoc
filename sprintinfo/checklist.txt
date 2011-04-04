@@ -1,0 +1,72 @@
+PyPy Sprint Checklist
+=====================
+
+This is a hands-on checklist for organizing a PyPy sprint. 
+Usually there is a least one person driving the sprint from 
+the developer's side.  And one or more people preparing the
+event locally (organizing room + internet, providing some
+information about local oddities etc. :-)
+
+pre (usually done by a local organizer + a pypy-developer)
+----------------------------------------------------------
+
+- find someone who can organize locally a good place with (at least)
+  these characteristics:
+
+  - for at least 12 people
+
+  - with an permananent internet connection
+
+  - with enough chairs and tables
+
+  - with a nearby possibility to get food
+
+  - facilities to make coffee and tea
+
+  - a whiteboard or something to draw pictures on (in a shared session)
+
+  - a beamer, if possible (otherwise try to bring it externally)
+
+- discuss goals with developers and (pre-)announce sprint
+
+  - first clear the list of pypy-sprint subscribers
+
+  - pre-announce to pypy-dev telling shortly about the planned event,
+    goals in order to gather feedback if the planned event will get enough
+    "insiders" interested.
+
+  - one developer should (after appropriate discussion) make the announcement 
+    to c.l.py & python-dev plus any lists which might be interested for that 
+    specific event (like e.g. lispers :-). Don't forget to mention all 
+    the helpful local people who make this event happen!
+
+
+logistics (usually done by the local organizer)
+-----------------------------------------------
+
+- make sure there is a detailed description how to get to the sprint 
+  location by train, plane, car
+
+- try to help people to find accomodation (it's usually a lot easier for
+  a local to judge/recommend (or organize in the best case) accomodation 
+  than for all the people from abroad)
+
+- if neccessary recommend a week-ticket and some public transport plan
+  so that people know how to move in that city. 
+
+
+technical advice for sprinters
+------------------------------
+
+- subscribe to pypy-dev
+
+- everyone has to have an account on codespeak and should check *BEFORE* 
+  the sprint if everything works (including subversion-checkouts/checkins)
+
+- follow the discussion on pypy-sprint/pypy-dev at least the two weeks
+  before the sprint :-)
+
+at the sprint
+-------------
+
+- to be done :-)

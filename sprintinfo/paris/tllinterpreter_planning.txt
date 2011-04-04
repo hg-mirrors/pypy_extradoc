@@ -1,0 +1,67 @@
+========================================
+Translatable LLInterpreter Working Group
+========================================
+
+Samuele Pedroni, Anders Chrigstrom, Anders Lehmann,
+Carl Friedrich Bolz, Ludovic Aubry
+
+
+Relation to JIT work
+====================
+
+ * give hints about arguments that should be considered constant
+ * assembler hard to debug / not portable
+ * plan is to produce low level graphs
+ * (to make this faster later, we could later improve this by really producing
+   machine code)
+
+
+Other reasons for TLLI
+======================
+
+ * better debugging
+ * enable improving the GCs
+
+
+Requirements that follow from this
+===================================
+
+ * it should be translatable (evidently)
+ * need to call functions written in C/other backend
+ * there must be a manipulabable memory representation of the low level graphs
+ * a future goal would be to be able to use the LLInterp only for parts of the
+   codebase -- this relates to separation of compilation
+
+Questions
+=========
+
+ * what to do about types? the layout has to be compatible with what the C
+   compilers do
+   
+    - one possiblity would be to encode the types in the serialized graphs in
+      a platform dependent manner
+      
+ * how would external function calls work?
+ 
+    - you would probably have to have wrapper function for every signature that
+      occurs
+      
+ * it will probably be necessary to mix hl and ll. is that possible?
+
+Tasks
+=====
+
+ * support for addresses in the backends
+ * thinking about the memory representation of the ll graphs
+ * thinking about how to treat external functions
+ * writing the llinterp
+
+
+Advanced topics
+===============
+
+ * some parts of the information that the llinterpreter will need to interpret 
+   the graphs may be messy to pass to it. so an idea would be to generate parts
+   of the llinterpreter as part of the rtyping process: basically a special
+   function saying "I'd like an llinterpreter for this function"
+

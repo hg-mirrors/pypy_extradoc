@@ -1,0 +1,94 @@
+==================
+Mallorca planning
+==================
+
+
+People present
+=============================
+
+Armin Rigo 
+Michael Hudson
+Samuele Pedroni
+Eric van Riet Paap
+Carl Friedrich Bolz
+Anders Chrigstroem
+Christian Tismer
+Gerald Klix
+Stephan Diehl
+Richard Emslie
+Beatrice Duering 
+
+People supposedly present
+=========================
+
+Andrew Thompson
+Jacob Hallen
+
+
+Tasks
+======
+
+  - JIT: 
+    Graph generating ops
+    Designed interface (see draft-jit-ideas),
+    Refactored llabstractinterp to use the operations
+    Started trying to reuse the annotator framework
+    for off-line partial evaluation
+    Progress, now trying to annotate the toy language interp.
+    Arre,  Samuele, Armin on Virtual List
+ 
+  - integration of the garbage collection toolkit with the
+    DONE: offsetof, sizeof work done
+    Started: insert GC neeeded behaviour as graph transformations.
+    Writing a new function generator in genc for the transformed
+    graphs... Added cleanup attribute to operations. 
+    Branched, genc working again with refcounting. Next: finishing
+    plus Boehm policy and likely merging.
+    Michael (Samuele) 
+
+  - stackless application level interface: Christian, 
+    started from the demo coroutine impl, trying to expose
+    at application level, both greenlet and stackless-like interfaces.
+    DONE: Exposed coroutines at application-level, support for flags on
+    the coroutines to use for other concurrency primitives to
+    construct on top of them.
+    IN-PROGRESS: extending interface such that coroutines, tasklet,
+    greenlets can co-exist peacefully. Now implementing greenlets...
+
+  - improving the way we interface with external functions.
+    (also think about how exceptions fit in there):
+    add static ctypes functionality into RPython itself
+    DONE: glued atoi from ctypes (cheating a bit)
+    DONE: basic annotation for ctypes structures and basics types.
+    Working on annotating ctypes arrays
+    Annotating derefencing. Trying to track ownerships...
+    Next would be rtyping...
+    Gerald, Stephan
+
+  - express exception raising operations in the graphs as
+    calls to helpers (backends could use their special 
+    operations) SOME PROGRESS
+    Eric, Richard
+
+  ( - l3interp/offsetof/sizeof work:
+    Progress. Progress needs either hacks and assuming Boehm
+    or GC integration. Try to progress assuming Boehm )
+
+
+later:
+======
+
+  - our threading implementation is still incredibly
+    slow, we need to work on that.
+
+  - refactor argument handling and calls in the object space
+
+  - look into how the LLVM JIT works
+
+  - transformations to be more clever with checking for
+    exceptions
+
+  - socket module
+    already improved but still far from complete
+
+

@@ -1,0 +1,195 @@
+================================================
+PyPy - nowe podejscie do tworzenia interpreterow
+================================================
+
+O czym bede opowiadal
+=====================
+
+* Co to jest PyPy?
+
+* Dlaczego?
+
+* Co chcemy osiagnac?
+
+* Jak nam idzie?
+
+Kim jestem?
+===========
+
+* Maciej Fijalkowski
+
+* od okolo 2 lat zajmuje sie glownie PyPy
+
+* pracuje dla Merlinux GmbH
+
+* nie umiem ustawic polskich liter...
+
+Co to jest PyPy?
+================
+
+* interpreter pythona napisany w pythonie
+
+* framework do pisania interpreterow dynamicznych
+  jezykow
+
+* open source software
+
+* dzis bede mowil glownie o interpreterze
+
+Po co nam to?
+=============
+
+* CPython jest fajny, ale ciezko zmienic pewne decyzje
+  (np garbage collector)
+
+* Napisany w C
+
+* Srodowisko, ktore umie pythona, a do rozwijania jezyka
+  potrzebni sa ludzie biegli w C
+
+* Projekty takie jak Psyco czy stackless ciezko jest
+  utrzymac w zgodnosci z najnowszym Pythonem.
+
+* Problem z podzialem srodowiska (CPython, Jython, IronPython)
+
+Wiec co?
+========
+
+* Napisac interpreter pythona w pythonie!
+
+* Zdefiniowac podzbior pythona ktory sie nadaje
+  do statycznej kompilacji
+
+* Skompilowac go do C/LLVM/JVM/.NET
+
+* My uzywamy okrojonego pythona do pisania interpretera,
+  wiec ty juz nie musisz!
+
+Metodologia
+===========
+
+* Test Driven Developement
+
+* Organizujemy sprinty raz na 2/3 miesiace
+
+* Rozproszona grupa (glownie Europa)
+
+* Mnostwo testow, nocne testy (buildbot)
+
+Status na dzis
+==============================
+
+* 2.5
+
+* ctypes (np pysqlite-ctypes, pyglet, pymunk ...)
+
+* django
+
+* twisted/nevow
+
+* wiekszosc testow CPython'a
+
+* sympy
+
+* twoj program...
+
+Czego brak
+===========
+
+* czesci modulow (napisanych w C)
+
+* bibliotek ktore maja czesci w C (np PIL, pygame, numpy, ...)
+
+* wydajnosci
+
+Zabawy z odpalaniem programow
+=============================
+
+* przyklady
+
+Zabawy z odpalaniem programow
+=============================
+
+* lekcja: nie istnieje nic co jest zbyt obskurne zeby
+  ludzi na tym polegali
+
+Wydajnosc
+==========
+
+* PyPy jest od 20% szybszy do 4x wolniejszy, zalezy od aplikcaji
+
+* gcbench - szybszy (lepsze Garbage Collectory)
+
+* nadzieja w dynamicznej kompilacji
+
+Wydajnosc - GC
+==============
+
+* jeden z wiekszych sukcesow PyPy
+
+* w miare szybki GC (wolniejszy niz np JVM)
+
+* troche szybciej od CPython'a, mimo ze alokujemy
+  duzo wiecej.
+
+* mozliwosc zmiany, dla specjalnych zastosowan
+
+Wydajnosc - JIT
+===============
+
+* nie jest jeszcze gotowy
+
+.. image:: jit.jpg
+    :width: 300px
+
+Sandbox
+=======
+
+* pelen python
+
+* dowolna polityka bezpieczenstwa
+
+* mozliwosc limitowania CPU i pamieci
+
+* duzo trudniejszy do segfaultowania od
+  CPython'a
+
+* demo
+
+Sandbox - jak to dziala
+=======================
+
+.. image:: sandboxed.png
+   :scale: 35
+   :align: center
+
+Maemo
+=====
+
+* Mniejsze zuzycie pamieci per-objekt niz cpython
+
+* Mozliwosc wpiecia specjalnego Garbage Collectora
+
+* Szybszy czas startu interpretera
+
+* Ale np wiekszy rozmiar kodu, wolniejszy kompilator
+
+Przyszlosc
+==========
+
+* JIT!
+
+* Pelne wsparcie dla 2.5
+
+* Zorganizowanie wiekszej ilosci funduszy
+
+* Mozesz pomoc! (to nie jest takie trudne)
+
+Q&A
+===
+
+* http://codespeak.net/pypy
+
+* http://morepypy.blogspot.com
+
+* mozna sciagnac te slajdy z internetu

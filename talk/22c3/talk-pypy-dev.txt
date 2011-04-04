@@ -1,0 +1,79 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2005/cfp.html
+DEADLINE: 30th September 2005 (friday)
+
+Title: PyPy - the new Python implementation on the block 
+
+Subtitle: Language/VM R&D, whole program type inference, 
+          translation to low level backends, fun. 
+
+Section: Hacking 
+
+Talkers: Holger Krekel, Carl Friedrich Bolz, Armin Rigo
+
+Abstract (max 250 letters): 
+
+    We present our first self-contained Python virtual machine that uses
+    parts of itself to translate itself to low level languages ("the
+    Muenchhausen approach").  The PyPy approach could solve problems at
+    language/interpreter-level that formerly required complex
+    frameworkish solutions at user-level.
+
+Description (250-500 words): 
+
+    PyPy is a reimplementation of Python written in Python
+    itself, flexible and easy to experiment with. Our
+    long-term goals are to target a large variety of
+    platforms, small and large, by adapting the compiler
+    toolsuite we developed to produce custom Python versions.
+    Platform, Memory and Threading models will become 
+    aspects of the translation process - as opposed to
+    encoding low level details into a language implementation
+    itself. 
+
+    Basically, we think it's a good way to avoid writing
+    n x m x o interpreters for n dynamic languages and m
+    platforms with o crucial design decisions.  In PyPy
+    any one of these can be changed independently.
+
+    We are going to briefly describe the concepts of
+    object spaces, abstract interpretation and translation
+    aspects and how they led us to a first self-contained 
+    very compliant Python implementation in August 2005,
+    completely independent from the current mainstream 
+    CPython implementation.  We go through a translation
+    example of a Python program with control-flow-graphs 
+    and the according translated lowlevel C and 
+    LLVM (Low level Virtual Machine) code. 
+
+    We'll also try to relate PyPy's architectural concepts
+    (known roughly for 2-3 years now) to similar upcoming
+    concepts in e.g. pugs/Perl 6 development and we'll give an
+    outlook on our starting Just-In-Time Compiler efforts and
+    approaches. 
+
+    Lastly, we intend to discuss experimental new language/interpreter-level 
+    solutions to long-standing problems such as distributed computing, 
+    persistence and security/sandboxing. 
+
+    Development of PyPy is partly funded by the European Union 
+    during the 6th Research Framework programme. 
+
+Statement: We intend to submit a paper (PDF) for the 22C3 proceedings. 
+Statement: We intend to submit a slides PDF as well. 
+
+Duration of your talk: 45 minutes + questions 
+
+Language of your talk: english 
+
+Links to background information on the talk: http://codespeak.net/pypy 
+
+Target Group: Advanced Users, Pros 
+
+Resources you need for your talk: digital projector, internet 
+
+Related talks at 22C3 you know of: agile open-source methods <-> business/EU-funding 
+
+A lecture logo, square format, min. 128x128 pixels (optional): 
+    http://codespeak.net/pypy/img/py-web1.png 
+    (please scale it down a bit :-) 
+

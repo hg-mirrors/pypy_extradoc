@@ -1,0 +1,23 @@
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+class VersionTag(object):
+    pass
+
+class Class(object):
+    def __init__(self, name):
+        self.name = name
+        self.methods = {}
+        self.version = VersionTag()
+
+    def find_method(self, name):
+        self = hint(self, promote=True)
+        version = hint(self.version, promote=True)
+        return self._find_method(name, version)
+
+    @purefunction
+    def _find_method(self, name, version):
+        return self.methods.get(name)
+
+    def write_method(self, name, value):
+        self.methods[name] = value
+        self.version = VersionTag()
+\end{lstlisting}
