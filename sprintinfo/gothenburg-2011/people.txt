@@ -8,11 +8,11 @@ available yet from them.
 ==================== ============== ===================== ==================
     Name              Arrive/Depart     Accomodation       Food
 ==================== ============== ===================== ==================
-Jacob Hallén         lives there			  no peppers
+Jacob Hallen         lives there			  no peppers
 Laura Creighton      lives there			  
 Carl Friedrich Bolz  24-30   	     J+L's house	  Vegan
 Lukas Diekmann       24-30   	     J+L's house
-Stephen Simmons      28-1
+Stephen Simmons      28-1				  absolutely no nuts
 David Schneider      26-01            SGS Veckobostader
 ==================== ============== ===================== ==================
 
