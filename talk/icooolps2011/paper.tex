@@ -314,6 +314,8 @@ by the optimizer can be vastly improved.
 
 \subsection{Running Example}
 \label{sub:running}
+\anto{this example is not referenced until section \ref{sec:fastobjmodel}: I
+  would put it just before it}
 
 As the running example of this paper we will use a very simple and bare-bones
 object model that just supports classes and instances, without any
@@ -343,6 +345,8 @@ When using this object model in
 an interpreter, a huge amount of time will be spent doing lookups in these
 dictionaries.
 Let's assume we trace through code that sums three attributes, such as:
+\anto{I still think it's a bit weird to call them ``methods'' and then use
+  them as attributes in the example}
 
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
@@ -437,8 +441,9 @@ used by Psyco \cite{rigo_representation-based_2004} and by all older versions
 of PyPy's JIT. Promotion is a technique that only works well in JIT compilers;
 in static compilers it is significantly less applicable.
 
-Promotion is essentially a tool for trace specialization. In some places in the
-interpreter it would be very useful if a variable were constant, even though it
+Promotion is essentially a tool for trace specialization. There are places in
+the interpreter where knowing that a value if constant opens a lot of
+optimization opportunities, even though it
 could have different values in practice. In such a place, promotion is used. The
 typical reason to do that is if there is
 a lot of computation depending on the value of that variable.
@@ -638,7 +643,7 @@ cache its results. If this function is analyzed, it looks like the function has
 side effects, because it changes the memoizing dictionary. However, because this side
 effect is not externally visible, the function from the outside is pure. This is
 a property that is not easily detectable by analysis. Therefore, the purity
-of this function needs to be annotated.
+of this function needs to be manually annotated.
 
 
 
