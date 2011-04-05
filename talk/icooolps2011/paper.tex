@@ -355,7 +355,8 @@ attribute \texttt{a} is found on the instance, but the
 attributes \texttt{b} and \texttt{c} are found on the class. The line
 numbers in the trace correspond to the line numbers in
 Figure~\ref{fig:interpreter-slow} where the traced operations come from. The
-trace indeed contains
+trace is in SSA form. Note how all the guards in trace correspond to a
+condition in the original code. The trace contains
 five calls to \texttt{dict.get}, which is slow. To make the language efficient
 using a tracing JIT, we need to find a way to get rid of these dictionary
 lookups somehow. How to achieve this will be topic of
