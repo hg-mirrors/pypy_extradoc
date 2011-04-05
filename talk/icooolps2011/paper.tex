@@ -846,13 +846,16 @@ be promoted after the map has been.
 \label{sec:evaluation}
 
 For space reasons we cannot perform a full evaluation here, but still want to
-present some benchmark numbers. We chose to present two benchmarks, a port of
-the classical Richards benchmark in Python and a Python version of the Telco
-decimal benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}},
-using a pure Python decimal floating point implementation. The results we see in
-these two benchmarks seem to repeat themselves in other benchmarks using
-object-oriented code; for purely numerical algorithms the speedups are 
-significantly smaller.
+present some benchmark numbers. We chose to present just some benchmarks: The
+templating engine of the Django web
+framework\footnote{\texttt{http://www.djangoproject.com/}}; a Monte-Carlo Go
+AI\footnote{\texttt{http://shed-skin.blogspot.com/2009/07/
+disco-elegant-python-go-player.html}}; a BZ2 decoder; a port of the classical
+Richards benchmark in Python; a Python version of the Telco decimal
+benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}}, using a
+pure Python decimal floating point implementation. The results we see in these
+benchmarks seem to repeat themselves in other benchmarks using object-oriented
+code; for purely numerical algorithms the speedups are significantly smaller.
 
 The benchmarks were run on an otherwise idle Intel Core2 Duo P8400 processor
 with 2.26 GHz and 3072 KB of cache on a machine with 3GB RAM running Linux
@@ -868,44 +871,42 @@ All benchmarks were run 50 times in the same process, to give the JIT time to
 produce machine code. The arithmetic mean of the times of the last 30 runs were
 used as the result. The errors were computed using a confidence interval with a
 95\% confidence level \cite{georges_statistically_2007}. The results are
-reported in Figure~\ref{fig:times}.
+reported in Figure~\ref{fig:times}, together with the same numbers normed to
+those of the full JIT.
 
-Versioned types speed up both benchmarks by a significant factor of around 7.
-The speed advantage of maps alone is a lot less clear. Maps also have a memory
-advantage which we did not measure here. By themselves, maps improved the
-Richards benchmark slightly, but made the Telco benchmark slower. Enabling both
-maps and versioned types together yields a significant improvement over just
-versioned types for Richards. XXX good explanation. For Telco, enabling both
-has little effect over the gains for versioned types alone.
-
-\pedronis{XXX radical idea, given that there may be no space to discuss the subtle points and that this is really about showing that we can enable such mechanisms and there is already literature that shows that/how they work, to just consider the benchmarks with no maps and no versions and with both?}
+The optimizations give a speedup between 80\% and almost 20 times. The Richards
+is a particularly good case for the optimizations as it makes heavy uses of
+object-oriented features. Pyflate uses mostly imperative code, so does not
+benefit as much. Together with the optimization, PyPy outperforms CPython in
+all benchmarks, which is not surprising because CPython is a simple
+bytecode-based interpreter.
 
 
 \begin{figure}
-{\footnotesize
 \begin{center}
-\begin{tabular}{|l|r|r|}
+{\footnotesize
+\begin{tabular}{|l|r|r|r|}
 \hline
-        &richards[ms]       &telco[ms] \\
+	&CPython	&JIT baseline	&JIT full\\
 \hline
-CPython &357.79 $\pm$ 1.32     &1209.67 $\pm$ 2.20\\
-speedup &1.00 $\times$ &1.00 $\times$\\
+django[ms]	&988.67 $\pm$ 0.49	&405.62 $\pm$ 4.80	&149.31 $\pm$ 1.37\\
+	&6.62 $\times$	&2.72 $\times$	&1.00 $\times$\\
 \hline
-JIT baseline    &421.87 $\pm$ 0.48     &738.18 $\pm$ 3.29\\
-speedup &0.85 $\times$ &1.64 $\times$\\
+go[ms]	&947.43 $\pm$ 1.30	&525.53 $\pm$ 7.67	&174.32 $\pm$ 7.78\\
+	&5.44 $\times$	&3.01 $\times$	&1.00 $\times$\\
 \hline
-JIT map &382.88 $\pm$ 4.40     &834.19 $\pm$ 4.91\\
-speedup &0.93 $\times$ &1.45 $\times$\\
+pyflate[ms]	&3209.20 $\pm$ 3.65	&2884.26 $\pm$ 21.11	&1585.48 $\pm$ 5.22\\
+	&2.02 $\times$	&1.82 $\times$	&1.00 $\times$\\
 \hline
-JIT version     &49.87 $\pm$ 0.29      &157.88 $\pm$ 1.79    \\
-speedup &7.17 $\times$ &7.66 $\times$\\
+richards[ms]	&357.79 $\pm$ 1.32	&421.87 $\pm$ 0.48	&17.89 $\pm$ 1.15\\
+	&20.00 $\times$	&23.58 $\times$	&1.00 $\times$\\
 \hline
-JIT full        &17.89 $\pm$ 1.15      &153.48 $\pm$ 1.86    \\
-speedup &20.00 $\times$        &7.88 $\times$\\
+telco[ms]	&1209.67 $\pm$ 2.20	&738.18 $\pm$ 3.29	&153.48 $\pm$ 1.86\\
+	&7.88 $\times$	&4.81 $\times$	&1.00 $\times$\\
 \hline
 \end{tabular}
-\end{center}
 }
+\end{center}
 \caption{Benchmark Results}
 \label{fig:times}
 \end{figure}
