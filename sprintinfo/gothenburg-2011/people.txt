@@ -15,5 +15,6 @@ Lukas Diekmann       24-2   	     J+L's house
 Stephen Simmons      28-1				  absolutely no nuts
 David Schneider      26-01            SGS Veckobostader
 Antonio Cuni         26-30          Hotel Poseidon        his own diet :)
+Armin Rigo           23-02            SGS Veckobostader
 ==================== ============== ===================== ==================
 
