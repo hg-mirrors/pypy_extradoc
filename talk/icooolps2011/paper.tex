@@ -147,23 +147,15 @@ bare meta-tracing.
 In this paper we present two of these hints that are extensively used in the
 PyPy project to improve the performance of its Python interpreter. 
 
-% XXX: paragraph rephrased by anto; feel free to pick the one you like best
-
-Conceptually, it is possible to achieve significant speed-ups by feeding into
-the compiler some information that is observed at runtime: in particular, if
+Conceptually, the significant speed-ups that can be achieved with
+dynamic compilation depend on feeding into compilation and exploiting
+values observed at runtime. In particular, if
 there are values which vary very slowly, it is possible to compile multiple
 specialized versions of the same code, one for each actual value.  To exploit
 the runtime feedback, the implementation code and data structures need to be
 structured so that many such slow-varying values are at hand. The hints that
 we present allow exactly to implement such feedback and exploitation in a
 meta-tracing context.
-
-% Conceptually the significant speed-ups that can be achieved with
-% dynamic compilation depend on feeding into compilation and exploiting
-% values observed at runtime that are slow-varying in practice. To exploit the
-% runtime feedback, the implementation code and data structures need to be
-% structured so that many such values are at hand. The hints that we present allow
-% exactly to implement such feedback and exploitation in a meta-tracing context.
 
 Concretely these hints are used to control how the optimizer of the
 tracing JIT can improve the traces of the object model. More
@@ -363,7 +355,8 @@ attribute \texttt{a} is found on the instance, but the
 attributes \texttt{b} and \texttt{c} are found on the class. The line
 numbers in the trace correspond to the line numbers in
 Figure~\ref{fig:interpreter-slow} where the traced operations come from. The
-trace indeed contains
+trace is in SSA form. Note how all the guards in trace correspond to a
+condition in the original code. The trace contains
 five calls to \texttt{dict.get}, which is slow. To make the language efficient
 using a tracing JIT, we need to find a way to get rid of these dictionary
 lookups somehow. How to achieve this will be topic of
@@ -442,7 +435,7 @@ of PyPy's JIT. Promotion is a technique that only works well in JIT compilers;
 in static compilers it is significantly less applicable.
 
 Promotion is essentially a tool for trace specialization. There are places in
-the interpreter where knowing that a value if constant opens a lot of
+the interpreter where knowing that a value is constant opens a lot of
 optimization opportunities, even though it
 could have different values in practice. In such a place, promotion is used. The
 typical reason to do that is if there is
@@ -643,7 +636,7 @@ cache its results. If this function is analyzed, it looks like the function has
 side effects, because it changes the memoizing dictionary. However, because this side
 effect is not externally visible, the function from the outside is pure. This is
 a property that is not easily detectable by analysis. Therefore, the purity
-of this function needs to be manually annotated.
+of this function needs to be annotated manually.
 
 
 
@@ -853,13 +846,16 @@ be promoted after the map has been.
 \label{sec:evaluation}
 
 For space reasons we cannot perform a full evaluation here, but still want to
-present some benchmark numbers. We chose to present two benchmarks, a port of
-the classical Richards benchmark in Python and a Python version of the Telco
-decimal benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}},
-using a pure Python decimal floating point implementation. The results we see in
-these two benchmarks seem to repeat themselves in other benchmarks using
-object-oriented code; for purely numerical algorithms the speedups are 
-significantly smaller.
+present some benchmark numbers. We chose to present just some benchmarks: The
+templating engine of the Django web
+framework\footnote{\texttt{http://www.djangoproject.com/}}; a Monte-Carlo Go
+AI\footnote{\texttt{http://shed-skin.blogspot.com/2009/07/
+disco-elegant-python-go-player.html}}; a BZ2 decoder; a port of the classical
+Richards benchmark in Python; a Python version of the Telco decimal
+benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}}, using a
+pure Python decimal floating point implementation. The results we see in these
+benchmarks seem to repeat themselves in other benchmarks using object-oriented
+code; for purely numerical algorithms the speedups are significantly smaller.
 
 The benchmarks were run on an otherwise idle Intel Core2 Duo P8400 processor
 with 2.26 GHz and 3072 KB of cache on a machine with 3GB RAM running Linux
@@ -875,44 +871,42 @@ All benchmarks were run 50 times in the same process, to give the JIT time to
 produce machine code. The arithmetic mean of the times of the last 30 runs were
 used as the result. The errors were computed using a confidence interval with a
 95\% confidence level \cite{georges_statistically_2007}. The results are
-reported in Figure~\ref{fig:times}.
+reported in Figure~\ref{fig:times}, together with the same numbers normed to
+those of the full JIT.
 
-Versioned types speed up both benchmarks by a significant factor of around 7.
-The speed advantage of maps alone is a lot less clear. Maps also have a memory
-advantage which we did not measure here. By themselves, maps improved the
-Richards benchmark slightly, but made the Telco benchmark slower. Enabling both
-maps and versioned types together yields a significant improvement over just
-versioned types for Richards. XXX good explanation. For Telco, enabling both
-has little effect over the gains for versioned types alone.
-
-\pedronis{XXX radical idea, given that there may be no space to discuss the subtle points and that this is really about showing that we can enable such mechanisms and there is already literature that shows that/how they work, to just consider the benchmarks with no maps and no versions and with both?}
+The optimizations give a speedup between 80\% and almost 20 times. The Richards
+is a particularly good case for the optimizations as it makes heavy uses of
+object-oriented features. Pyflate uses mostly imperative code, so does not
+benefit as much. Together with the optimization, PyPy outperforms CPython in
+all benchmarks, which is not surprising because CPython is a simple
+bytecode-based interpreter.
 
 
 \begin{figure}
-{\footnotesize
 \begin{center}
-\begin{tabular}{|l|r|r|}
+{\footnotesize
+\begin{tabular}{|l|r|r|r|}
 \hline
-        &richards[ms]       &telco[ms] \\
+	&CPython	&JIT baseline	&JIT full\\
 \hline
-CPython &357.79 $\pm$ 1.32     &1209.67 $\pm$ 2.20\\
-speedup &1.00 $\times$ &1.00 $\times$\\
+django[ms]	&988.67 $\pm$ 0.49	&405.62 $\pm$ 4.80	&149.31 $\pm$ 1.37\\
+	&6.62 $\times$	&2.72 $\times$	&1.00 $\times$\\
 \hline
-JIT baseline    &421.87 $\pm$ 0.48     &738.18 $\pm$ 3.29\\
-speedup &0.85 $\times$ &1.64 $\times$\\
+go[ms]	&947.43 $\pm$ 1.30	&525.53 $\pm$ 7.67	&174.32 $\pm$ 7.78\\
+	&5.44 $\times$	&3.01 $\times$	&1.00 $\times$\\
 \hline
-JIT map &382.88 $\pm$ 4.40     &834.19 $\pm$ 4.91\\
-speedup &0.93 $\times$ &1.45 $\times$\\
+pyflate[ms]	&3209.20 $\pm$ 3.65	&2884.26 $\pm$ 21.11	&1585.48 $\pm$ 5.22\\
+	&2.02 $\times$	&1.82 $\times$	&1.00 $\times$\\
 \hline
-JIT version     &49.87 $\pm$ 0.29      &157.88 $\pm$ 1.79    \\
-speedup &7.17 $\times$ &7.66 $\times$\\
+richards[ms]	&357.79 $\pm$ 1.32	&421.87 $\pm$ 0.48	&17.89 $\pm$ 1.15\\
+	&20.00 $\times$	&23.58 $\times$	&1.00 $\times$\\
 \hline
-JIT full        &17.89 $\pm$ 1.15      &153.48 $\pm$ 1.86    \\
-speedup &20.00 $\times$        &7.88 $\times$\\
+telco[ms]	&1209.67 $\pm$ 2.20	&738.18 $\pm$ 3.29	&153.48 $\pm$ 1.86\\
+	&7.88 $\times$	&4.81 $\times$	&1.00 $\times$\\
 \hline
 \end{tabular}
-\end{center}
 }
+\end{center}
 \caption{Benchmark Results}
 \label{fig:times}
 \end{figure}
