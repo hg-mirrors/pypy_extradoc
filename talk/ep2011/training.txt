@@ -1,7 +1,12 @@
 PyPy training session
 =====================
 
-Part 1 (2 hours): Run your application under PyPy
+The session is divided into two parts, of roughly 2 hours each.  People who
+are interested only in the first part, can leave the session after it.
+However, the first part is a prerequisite for the second one, thus people are
+not advised to join in the middle of the session
+
+Part 1: Run your application under PyPy
 --------------------------------------------------
 
 - how to use pypy to run your app (easy: s/python/pypy :-))
@@ -19,7 +24,7 @@ Part 1 (2 hours): Run your application under PyPy
 - how to compile C extensions for pypy, and fix them if necessary
 
 
-Part 2 (2 hours): Write your own interpreter with PyPy
+Part 2: Write your own interpreter with PyPy
 -------------------------------------------------------
 
 - give the students the source code of a toy language interpreter of written
