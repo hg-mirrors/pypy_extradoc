@@ -4,8 +4,10 @@ PyPy -- EuroPython 2011
 The PyPy project has recently gathered a lot of attention for its
 progress in speeding up the Python language -- it is the fastest
 Python interpreter, and the most compatible and most stable
-'alternative´ one.  No longer merely a research curiosity, PyPy
-is now suitable for production use.
+'alternative´ one.  No longer merely a research project, PyPy
+is now suitable for production use.  We are working on improvements
+on calling into C libraries and generally integrating with
+the existing Python extensions ecosystem.
 
 We will give an overview on how the tracing Just-in-Time compiler
 works in PyPy.  From there, we will then focus on what the PyPy
