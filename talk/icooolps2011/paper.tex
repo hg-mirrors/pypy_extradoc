@@ -35,7 +35,7 @@
 }
 
 \newboolean{showcomments}
-\setboolean{showcomments}{true}
+\setboolean{showcomments}{false}
 \ifthenelse{\boolean{showcomments}}
   {\newcommand{\nb}[2]{
     \fbox{\bfseries\sffamily\scriptsize#1}
@@ -122,7 +122,7 @@ task. Implementing them efficiently with a just-in-time compiler (JIT) is
 extremely challenging, because of their many corner-cases.
 
 It has long been an objective of the partial evaluation community to
-automatically produce compilers from interpreters. There has been a recent
+automatically produce compilers from interpreters. There has been a
 renaissance of this idea around the approach of tracing just-in-time
 compilers. A number of projects have attempted this approach. SPUR \cite{bebenita_spur:_2010} is
 a tracing JIT for .NET together with a JavaScript implementation in C\#. PyPy
@@ -135,7 +135,7 @@ on and optimized with a tracing JIT for JavaScript
 
 These projects have in common that they work one meta-level down, providing a tracing JIT for the
 language used to implement the dynamic language, and not for the dynamic language itself.
-The tracing JIT then will trace through the object model of the dynamic
+The tracing JIT will then trace through the object model of the dynamic
 language implementation. This makes the object model transparent to the tracer
 and its optimizations. Therefore the semantics of the dynamic language does not
 have to be replicated in a JIT. We call this approach \emph{meta-tracing}.
@@ -158,8 +158,8 @@ we present allow exactly to implement such feedback and exploitation in a
 meta-tracing context.
 
 Concretely these hints are used to control how the optimizer of the
-tracing JIT can improve the traces of the object model. More
-specifically, these hints influence the constant folding
+tracing JIT can improve the traces of the object model. In particular the hints
+influence the constant folding
 optimization. The first hint makes it possible to turn arbitrary
 variables in the trace into constant by feeding back runtime values. The
 second hint allows the definition of additional foldable operations.
@@ -233,7 +233,9 @@ program. Those
 traces are therefore linear list of operations, which are optimized and then
 get turned into machine code. This recording automatically inlines functions:
 when a function call is encountered the operations of the called functions are
-simply put into the trace too.
+simply put into the trace of the caller too. The tracing JIT tries to produce traces
+that correspond to loops in the traced program, but most tracing JITs now also
+have support for tracing non-loops \cite{andreas_gal_incremental_2006}.
 
 Because the traces always correspond to a concrete execution they cannot
 contain any control flow splits. Therefore they encode the control flow
@@ -243,15 +245,14 @@ operations that check that the assumptions are still true when the compiled trac
 To be able to do this recording, VMs with a
 tracing JIT typically contain an interpreter. After a user program is
 started the interpreter is used; only the most frequently executed paths through the user
-program are turned into machine code. The tracing JIT tries to produce traces
-that correspond to loops in the traced program, but most tracing JITs now also
-have support for tracing non-loops \cite{andreas_gal_incremental_2006}.
+program are turned into machine code. The interpreter is also used when a guard
+fails to continue the execution from the failing guard.
 
 One disadvantage of (tracing) JITs which makes them not directly applicable to
 PyPy is that they need to encode the language semantics of the language they are
 tracing. Since PyPy wants to be a
 general framework, we want to reuse our tracer for different languages.
-Therefore PyPy's JIT is a meta-tracer \cite{bolz_tracing_2009}. It does not
+Therefore PyPy's JIT is a \emph{meta-tracer} \cite{bolz_tracing_2009}. It does not
 trace the execution of the user program, but instead traces the execution of
 the \emph{interpreter} that is running the program. This means that the traces
 it produces don't contain the bytecodes of the language in question, but
@@ -264,7 +265,7 @@ just picks them up from the interpreter.
 
 While the operations in a trace are those of the interpreter, the loops that are
 traced by the tracer are the loops in the
-user program. This means that the tracer stops tracing after one iteration of
+user program. To achieve this the tracer stops tracing after one iteration of
 the loop in the user function that is being considered. At this point, it probably
 traced many iterations of the interpreter main loop.
 
@@ -290,15 +291,10 @@ Before sending the trace to the backend to produce actual machine code, it is
 optimized.  The optimizer applies a number of techniques to remove or simplify
 the operations in the trace. Most of these are well known compiler optimization
 techniques, with the difference that it is easier to apply them in a tracing
-JIT because it only has to deal with linear traces.  Among the techniques:
-%
-\begin{itemize}
-    \item constant folding
-    \item common subexpression elimination
-    \item allocation removal \cite{bolz_allocation_2011}
-    \item store/load propagation
-    \item loop invariant code motion
-\end{itemize}
+JIT because it only has to deal with linear traces.  Among the techniques are
+constant folding, common subexpression elimination, allocation removal
+\cite{bolz_allocation_2011}, store/load propagation, loop invariant code
+motion.
 
 In some places it turns out that if the interpreter author rewrites some parts
 of the interpreter with these optimizations in mind the traces that are produced
@@ -349,6 +345,8 @@ inst.getattr("a") + inst.getattr("b") + inst.getattr("c")
 \caption{Trace Through the Object Model}
 \label{fig:trace1}
 \end{figure}
+
+\cfbolz{should we show the code that would create the inst use in tracing?}
 
 The trace would look like in Figure~\ref{fig:trace1}. In this example, the
 attribute \texttt{a} is found on the instance, but the
@@ -422,8 +420,8 @@ guard($x_1$ == 4)
 $y_2$ = $y_1$ + $x_1$
 \end{lstlisting}
 
-In the trace above, the value of $x_1$ is statically known thanks to the
-guard. Remember that a guard is a runtime check. The above trace will run to
+In the trace above, the value of $x_1$ is statically known after the guard.
+Remember that a guard is a runtime check. The above trace will run to
 completion when $x_1$ \texttt{== 4}. If the check fails, execution of the trace is
 stopped and the interpreter continues to run.
 
@@ -431,13 +429,13 @@ There are cases in which it is useful to turn an arbitrary variable
 into a constant value. This process is called \emph{promotion} and it is an old idea
 in partial evaluation (it's called ``The Trick''  \cite{jones_partial_1993} there). Promotion is also heavily
 used by Psyco \cite{rigo_representation-based_2004} and by all older versions
-of PyPy's JIT. Promotion is a technique that only works well in JIT compilers;
+of PyPy's JIT. It is a technique that only works well in JIT compilers;
 in static compilers it is significantly less applicable.
 
 Promotion is essentially a tool for trace specialization. There are places in
 the interpreter where knowing that a value is constant opens a lot of
 optimization opportunities, even though it
-could have different values in practice. In such a place, promotion is used. The
+could have different values in practice. In such a place, promotion can be used. The
 typical reason to do that is if there is
 a lot of computation depending on the value of that variable.
 
@@ -481,11 +479,12 @@ guard($x_1$ == 4)
 $v_1$ = $x_1$ * 2
 $z_1$ = $v_1$ + 1
 $v_2$ = $z_1$ + $y_1$
-return(v2)
+return($v_2$)
 \end{lstlisting}
 
 The promotion is turned into a \texttt{guard} operation in the trace. The guard
-captures the value of $x_1$ as it was at runtime. From the point of view of the
+captures the value of $x_1$ as it was during tracing. \cfbolz{drop the word runtime feedback here?}
+From the point of view of the
 optimizer, this guard is not any different than the one produced by the \texttt{if}
 statement in the example above. After the guard, the rest of the trace can
 assume that $x_1$ is equal to \texttt{4}, meaning that the optimizer will turn this
@@ -517,7 +516,7 @@ This new trace will be attached to the guard instruction of the first trace. If
 $x_1$ takes on even more values, a new trace will eventually be made for all of them,
 linking them into a chain. This is clearly not desirable, so we should promote
 only variables that don't vary much. However, adding a promotion hint will never produce wrong
-results. It might just lead to too much assembler code.
+results. It might just lead to too much assembler code being generated.
 
 Promoting integers, as in the examples above, is not used that often.
 However, the internals of dynamic language interpreters often
@@ -525,7 +524,7 @@ have values that are variable but vary little in the context of parts of a user
 program. An example would be the types of variables in a user function. Even
 though in principle the argument to a Python function could be any Python type,
 in practice the argument types tend not to vary often. Therefore it is possible to
-promote the types. The next section will present a complete example of how
+promote the types. Section~\ref{sec:} will present a complete example of how
 this works.
 
 
@@ -592,6 +591,8 @@ class A(object):
         return self.x * 2 + 1
 \end{lstlisting}
 
+\cfbolz{should we mention that pure functions are not actually called by the optimizer, but the values that are seen during tracing are used?}
+
 Now the trace will look like this:
 %
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
@@ -621,7 +622,9 @@ used to constant-fold arbitrary parts of the computation in the interpreter.
 However, the annotation also gives the interpreter author ample opportunity to mess things up. If a
 function is annotated to be pure, but is not really, the optimizer can produce
 subtly wrong code. Therefore, a lot of care has to be taken when using this
-annotation.
+annotation\footnote{The most common use case of the \texttt{purefunction}
+annotation is indeed to declare the immutability of fields. Because it is so
+common, we have special syntactic sugar for it.}.
 
 
 \subsubsection{Observably Pure Functions}
@@ -637,17 +640,6 @@ side effects, because it changes the memoizing dictionary. However, because this
 effect is not externally visible, the function from the outside is pure. This is
 a property that is not easily detectable by analysis. Therefore, the purity
 of this function needs to be annotated manually.
-
-
-
-\subsubsection{Immutable Fields}
-
-One of the most common cases of pure functions is reading immutable
-values out of objects. Since this is so common, we have special syntactic sugar
-for it. A RPython class can have a class attribute \texttt{\_immutable\_fields\_} set to
-a list of strings, listing the fields that cannot be changed. This is equivalent
-to using getters and annotating them with \texttt{purefunction}.
-
 
 
 
@@ -694,11 +686,12 @@ Figure~\ref{fig:maps}.
 
 In this implementation instances no longer use dictionaries to store their fields. Instead, they have a
 reference to a map, which maps field names to indexes into a storage list. The
-storage list contains the actual field values. The maps are shared between
-objects with the same layout. Therefore they have to be immutable, which means
+storage list contains the actual field values. Therefore they have to be immutable, which means
 that their \texttt{getindex} method is a pure function. When a new attribute is added
 to an instance, a new map needs to be chosen, which is done with the
-\texttt{add\_attribute} method on the previous map (which is also pure). Now that we have
+\texttt{add\_attribute} method on the previous map. This function is also pure,
+because it caches all new instances of \texttt{Map} that it creates, to make
+sure that objects with the same layout have the same map. Now that we have
 introduced maps, it is safe to promote the map everywhere, because we assume
 that the number of different instance layouts is small.
 
@@ -739,7 +732,7 @@ Every time the class changes, \texttt{find\_method} can potentially return a
 new value.
 
 Therefore, we give every class a version object, which is changed every time a
-class gets changed (i.e., the content of the \texttt{methods} dictionary changes).
+class gets changed (i.e., the \texttt{methods} dictionary changes).
 This means that the result of \texttt{methods.get()} for a given \texttt{(name,
 version)} pair will always be the same, i.e. it is a pure operation.  To help
 the JIT to detect this case, we factor it out in a helper method which is
@@ -855,23 +848,23 @@ Richards benchmark in Python; a Python version of the Telco decimal
 benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}}, using a
 pure Python decimal floating point implementation. The results we see in these
 benchmarks seem to repeat themselves in other benchmarks using object-oriented
-code; for purely numerical algorithms the speedups are significantly smaller.
+code; for purely numerical algorithms the speedups introduced by the techniques
+in this paper are much smaller because they are already fast.
 
 The benchmarks were run on an otherwise idle Intel Core2 Duo P8400 processor
 with 2.26 GHz and 3072 KB of cache on a machine with 3GB RAM running Linux
-2.6.35. We compared the performance of various Python implementations on the
+2.6.35. We compared the performance of two Python implementations on the
 benchmarks. As a baseline, we used the standard Python implementation in C,
 CPython 2.6.6\footnote{\texttt{http://python.org}}, which uses a bytecode-based
-interpreter. We compare it against four versions of PyPy's Python interpreter,
-all of them with JIT enabled. The PyPy baseline does not enable maps or type
-versions. We then benchmarked PyPy, first using each technique separately,
-and finally using both together.
+interpreter. We compare it against two versions of PyPy's Python interpreter,
+both of them with JIT enabled. The PyPy baseline does not enable maps or type
+version, the full JIT enables both.
 
 All benchmarks were run 50 times in the same process, to give the JIT time to
 produce machine code. The arithmetic mean of the times of the last 30 runs were
 used as the result. The errors were computed using a confidence interval with a
 95\% confidence level \cite{georges_statistically_2007}. The results are
-reported in Figure~\ref{fig:times}, together with the same numbers normed to
+reported in Figure~\ref{fig:times}, together with the same numbers normalized to
 those of the full JIT.
 
 The optimizations give a speedup between 80\% and almost 20 times. The Richards
