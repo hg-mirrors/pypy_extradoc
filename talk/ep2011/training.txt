@@ -6,35 +6,44 @@ are interested only in the first part, can leave the session after it.
 However, the first part is a prerequisite for the second one, thus people are
 not advised to join in the middle of the session
 
+The session is meant to be highly interactive. People are invited to bring
+their own laptop and try things by themselves.
+
+
 Part 1: Run your application under PyPy
 --------------------------------------------------
 
-- how to use pypy to run your app (easy: s/python/pypy :-))
+This tutorial is targeted to Python users who want to run their favorite
+Python application under PyPy, and exploit the most of it.  The following
+topics will be covered:
 
-- how to optimize it for the pypy jit:
+    - how to fix/avoid CPython implementation details (e.g., refcounting)
 
-      * general idea about how the jit works
+    - general overview of how the PyPy JIT works
 
-      * looking at the traces
+    - how to optimize your program for the PyPy JIT by looking at the produced
+      traces
 
-      * using the jitviewer
+    - how to tweak the parameters of the JIT and the GC
 
-      * tweaking jit and gc params
-
-- how to compile C extensions for pypy, and fix them if necessary
+    - how to use existing CPython C extensions on PyPy, and fix them if
+      necessary
 
 
 Part 2: Write your own interpreter with PyPy
 -------------------------------------------------------
 
-- give the students the source code of a toy language interpreter of written
-  in RPython
+PyPy is not only a Python interpreter, but also a toolchain to implement
+dynamic languages.  This tutorial is targeted to people who want to implement
+their own programming languages, or who simply want to know more about how the
+PyPy JIT works internally.
 
-- teach them how to translate it
+The students will be given the source code for a toy language implemented in
+RPython.  They will learn:
 
-- teach them about the JIT hints
+    - how to translate it to C using the PyPy translation toolchain
 
-- challenge: place hints (or maybe even refactor the interpreter) to get the
-  best results with the JIT
+    - what are the "hints" needed by the JIT generator, and how to place them
 
-- do we still have a PyPy T-shirt to give as a prize to the winner? :)
+Then, they will be challenged to add the proper hints to the toy interpreter,
+to get the best result with the JIT.
