@@ -13,7 +13,8 @@ project has achieved, particularly in the past two years:
 
 * most Python benchmarks run much faster than with CPython or Psyco
 * the real-world PyPy compiler toolchain itself (200 KLocs) runs twice as fast
-* already supports 64bit and is in the process of supporting ARM
+* already supports 32 and 64bit x86 atchitecture and is in the process
+  of supporting ARM
 * full compatibility with CPython (more than Jython/IronPython)
 * full (and JIT-ed) ctypes support to call C libraries from Python
 * supports Stackless Python (in-progress)
