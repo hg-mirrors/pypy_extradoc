@@ -21,8 +21,9 @@ topics will be covered:
 
     - general overview of how the PyPy JIT works
 
-    - how to optimize your program for the PyPy JIT by looking at the produced
-      traces
+    - how to optimize your program for the PyPy JIT
+
+    - how to view and interpret the traces produced by the JIT
 
     - how to tweak the parameters of the JIT and the GC
 
