@@ -783,6 +783,9 @@ executed with an instance of another class. The third guard checks that the
 class did not change since the trace was produced. It will fail if somebody
 calls the \texttt{write\_method} method on the class.
 
+XXX [fijal] maybe it's worth noting that those guards are removed out of
+    the loop by loop-invariant-code motion, unless our is so special
+    we want to write a special paper about it
 
 %___________________________________________________________________________
 
