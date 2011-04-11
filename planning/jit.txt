@@ -4,16 +4,6 @@ BUGS
 * a CALL that may release the GIL needs to have effectinfo=None,
   because random other code can run at that point.
 
-INVESTIGATIONS
---------------
-
-* 25% slowdown on pyflate fast (Jan 29)
-  - pyflate_fast uses python longs on 32bit
-  - some places don't create SmallLongs even when they should (like consts)
-  - we end up with comparison of Longs and SmallLongs
-
-* 10% slowdown on spitfire (Feb 01)
-
 NEW TASKS
 ---------
 
