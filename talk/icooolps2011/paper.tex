@@ -215,9 +215,6 @@ The advantage of this approach is that writing an interpreter is much easier
 and less error prone than manually writing a JIT compiler.  Similarly, writing
 in a high level language such as RPython is easier than writing in C.
 
-XXX [fijal] yet another advantage is that JIT is by design supporting the whole
-    language
-
 We call the code that runs on top of an interpreter implemented with PyPy the
 \emph{user code} or \emph{user program}.
 
@@ -264,7 +261,8 @@ RPython-level operations that the interpreter did to execute the program.
 Tracing through the execution of an interpreter has many advantages. It makes
 the tracer, its optimizers and backends reusable for a variety of languages. The
 language semantics do not need to be encoded into the JIT. Instead the tracer
-just picks them up from the interpreter.
+just picks them up from the interpreter. This also means that the JIT by
+construction supports the full language.
 
 While the operations in a trace are those of the interpreter, the loops that are
 traced by the tracer are the loops in the
@@ -783,10 +781,6 @@ executed with an instance of another class. The third guard checks that the
 class did not change since the trace was produced. It will fail if somebody
 calls the \texttt{write\_method} method on the class.
 
-XXX [fijal] maybe it's worth noting that those guards are removed out of
-    the loop by loop-invariant-code motion, unless our is so special
-    we want to write a special paper about it
-
 %___________________________________________________________________________
 
 \subsection{Real-World Considerations}
@@ -879,8 +873,6 @@ object-oriented features. Pyflate uses mostly imperative code, so does not
 benefit as much. Together with the optimization, PyPy outperforms CPython in
 all benchmarks, which is not surprising because CPython is a simple
 bytecode-based interpreter.
-
-XXX [fijal] wouldn't a graph be better?
 
 \begin{figure}
 \begin{center}
