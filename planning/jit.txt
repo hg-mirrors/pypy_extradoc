@@ -23,6 +23,8 @@ NEW TASKS
   is a compile time constant (and call unrolled version of string formatting
   loop in this case).
 
+- generators??
+
 - consider how much old style classes in stdlib hurt us.
 
 - support raw mallocs
