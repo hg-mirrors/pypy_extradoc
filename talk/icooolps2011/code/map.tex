@@ -26,14 +26,16 @@ class Instance(object):
         self.storage = []
 
     def getfield(self, name):
-        map = hint(self.map, promote=True)
+        map = self.map
+        promote(map)
         index = map.getindex(name)
         if index != -1:
             return self.storage[index]
         return None
 
     def write_attribute(self, name, value):
-        map = hint(self.map, promote=True)
+        map = self.map
+        promote(map)
         index = map.getindex(name)
         if index != -1:
             self.storage[index] = value

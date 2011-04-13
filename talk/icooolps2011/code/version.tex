@@ -9,8 +9,9 @@ class Class(object):
         self.version = VersionTag()
 
     def find_method(self, name):
-        self = hint(self, promote=True)
-        version = hint(self.version, promote=True)
+        promote(self)
+        version = self.version
+        promote(version)
         return self._find_method(name, version)
 
     @purefunction

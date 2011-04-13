@@ -376,7 +376,6 @@ Section~\ref{sec:fastobjmodel}.
 \label{sec:hints}
 
 \cfbolz{XXX more precise definition of what promote does}
-\cfbolz{change the hint(x, promote=True) syntax to something more readable}
 
 In this section we will describe how to add two hints that allow the
 interpreter author to increase the optimization opportunities for constant
@@ -468,15 +467,17 @@ rarely, i.e. only takes a few different values at runtime. If this is the
 case, we can add a hint to promote \texttt{x}, like this:
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 def f1(x, y):
-    x = hint(x, promote=True)
+    promote(x)
     z = x * 2 + 1
     return z + y
 \end{lstlisting}
 
 The hint indicates that \texttt{x} is likely a runtime constant and the JIT
 should try to perform runtime specialization on it
-in the code that follows. When just running the code, the function has no
-effect, as it simply returns its first argument. When tracing, some extra work
+in the code that follows.\footnote{For technical reasons the promote hint needs
+to be written down slightly differently in the actual code.}  When just running
+the code, the \texttt{promote} function has no
+effect. When tracing, some extra work
 is done. Let's assume that this changed function is traced with
 the arguments \texttt{4} and \texttt{8}. The trace will be the same, except for one
 operation at the beginning:
@@ -593,7 +594,7 @@ class A(object):
         self.y = y
 
     def f(self, val):
-        self = hint(self, promote=True)
+        promote(self)
         self.y = self.compute() + val
 
     @purefunction
