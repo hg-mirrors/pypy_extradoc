@@ -743,7 +743,9 @@ Instances were optimized making the assumption that the total number of
 different instance layouts is small compared to the number of instances. For classes we
 will make an even stronger assumption. We simply assume that it is rare for
 classes to change at all. This is not totally reasonable (sometimes classes contain
-counters or similar things) but for this simple example it is good enough.
+counters or similar things) but for this simple example it is good
+enough.\footnote{There is a more complex variant of class versions that can
+accommodate class fields that change a lot better.}
 
 What we would really like is if the \texttt{Class.find\_method} method were invariant.
 But it cannot be, because it is always possible to change the class itself.
@@ -815,20 +817,14 @@ complex. If a class is changed its version changes. At the same time, the
 versions of all the classes inheriting from it need to be changed as well,
 recursively. This makes class changes expensive, but they should be rare.  On the
 other hand, a method lookup in a complex class hierarchy is as optimized in the
-trace as in our object model here.
-
-A downside of the versioning of classes that we haven't yet fixed in PyPy, is
-that some classes \emph{do} change a lot. An example would be a class that keeps a
-counter of how many instances have been created so far. This is very slow right
-now, but we have ideas about how to fix it in the future.
+trace as in our simple object model above.
 
 Another optimization is that in practice the shape of an instance is correlated
 with its class. In our code above, we allow both to vary independently.
-In PyPy's Python interpreter we act somewhat more cleverly. The class of
-an instance is not stored on the instance itself, but on the map. This means
-that we get one fewer promotion (and thus one fewer guard) in the trace,
-because the class doesn't need to
-be promoted after the map has been.
+Therefore we store the class of an instance on the map in PyPy's Python
+interpreter. This means that we get one fewer promotion (and thus one fewer
+guard) in the trace, because the class doesn't need to be promoted after the
+map has been.
 
 
 %___________________________________________________________________________
