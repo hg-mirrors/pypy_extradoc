@@ -154,7 +154,7 @@ there are values which vary very slowly, it is possible to compile multiple
 specialized versions of the same code, one for each actual value.  To exploit
 the runtime feedback, the implementation code and data structures need to be
 structured so that many such slow-varying values are at hand. The hints that
-we present allow exactly to implement such feedback and exploitation in a
+we present precisely allow us to implement such feedback and exploitation in a
 meta-tracing context.
 
 Concretely these hints are used to control how the optimizer of the
@@ -712,6 +712,10 @@ following that of see Figure~\ref{fig:trace2}. There \texttt{0xb74af4a8} is the
 memory address of the \texttt{Map} instance that has been promoted. Operations
 that can be optimized away are grayed out.
 
+\cfbolz{XXX also explain that some forwarding of guarded values is happening,
+make clearer which figures show optimized code and which show non-optimized
+code}
+
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
 a pure function and they have constant arguments. That means that \texttt{index1/2/3}
 are constant and the guards on them can be removed. All but the first guard on
@@ -988,6 +992,8 @@ variety of language semantics efficiently.
 
 
 \section*{Acknowledgements}
+
+XXX Peng Wu and David Edelsohn
 
 \bibliographystyle{abbrv}
 \bibliography{paper}
