@@ -185,6 +185,9 @@ what they do and how they are applied. Section~\ref{sec:fastobjmodel} shows how
 the hints are applied to the tiny object model and Section~\ref{sec:evaluation}
 presents benchmarks.
 
+\cfbolz{XXX stress more that "the crux of the techniques and a significant
+portion of new contributions in the paper are from how to refactoring codes to
+expose likely runtime constants and pure functions"}
 
 
 \section{Background}
@@ -372,6 +375,9 @@ Section~\ref{sec:fastobjmodel}.
 \section{Hints for Controlling Optimization}
 \label{sec:hints}
 
+\cfbolz{XXX more precise definition of what promote does}
+\cfbolz{change the hint(x, promote=True) syntax to something more readable}
+
 In this section we will describe how to add two hints that allow the
 interpreter author to increase the optimization opportunities for constant
 folding. If applied correctly these techniques can give really big speedups by
@@ -467,8 +473,8 @@ def f1(x, y):
     return z + y
 \end{lstlisting}
 
-The meaning of this hint is that the tracer should pretend that \texttt{x} is a
-constant
+The hint indicates that \texttt{x} is likely a runtime constant and the JIT
+should try to perform runtime specialization on it
 in the code that follows. When just running the code, the function has no
 effect, as it simply returns its first argument. When tracing, some extra work
 is done. Let's assume that this changed function is traced with
@@ -527,6 +533,9 @@ though in principle the argument to a Python function could be any Python type,
 in practice the argument types tend not to vary often. Therefore it is possible to
 promote the types. Section~\ref{sec:} will present a complete example of how
 this works.
+
+\cfbolz{XXX explain how value specialization on the interpreter level can lead
+to type specialization on the language level}
 
 
 \subsection{Declaring New Pure Operations}
@@ -591,6 +600,8 @@ class A(object):
     def compute(self):
         return self.x * 2 + 1
 \end{lstlisting}
+
+\cfbolz{XXX define the meaning of purefunction more precisely, particularly because add\_attribute has side effects, which is confusing}
 
 \cfbolz{should we mention that pure functions are not actually called by the optimizer, but the values that are seen during tracing are used?}
 
