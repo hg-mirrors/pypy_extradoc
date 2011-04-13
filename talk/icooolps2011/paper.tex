@@ -100,13 +100,15 @@ incremental compilers, interpreters, run-time environments]
 
 \begin{abstract}
 
-Meta-tracing JITs can be applied to a variety of different
+Meta-tracing JIT compilers can be applied to a variety of different
 languages without explicitly encoding language semantics into the compiler. So
 far, they lacked a way to feed back runtime information into the
 compiler, which restricted their performance. In this paper we describe the
 flexible mechanisms in PyPy's meta-tracing JIT that can be used to control runtime feedback in language-specific ways. These mechanisms are flexible
 enough to implement classical VM techniques such as maps and polymorphic inline
 caches.
+
+\cfbolz{XXX tracing is runtime feed back too, clarify}
 
 \end{abstract}
 
@@ -116,9 +118,9 @@ caches.
 
 One of the hardest parts of implementing a dynamic language efficiently is to
 optimize its object model. This is made harder by the fact that many recent
-languages such as Python, JavaScript or Ruby have rather complex core object
+languages such as Python, JavaScript or Ruby have a rather complex core object
 semantics. For them, even implementing just an interpreter is already a complex
-task. Implementing them efficiently with a just-in-time compiler (JIT) is
+task. Implementing these languages efficiently with a just-in-time compiler (JIT) is
 extremely challenging, because of their many corner-cases.
 
 It has long been an objective of the partial evaluation community to
@@ -157,6 +159,7 @@ structured so that many such slow-varying values are at hand. The hints that
 we present precisely allow us to implement such feedback and exploitation in a
 meta-tracing context.
 
+\cfbolz{XXX kill the next paragraph? the info is repeated in the list below}
 Concretely these hints are used to control how the optimizer of the
 tracing JIT can improve the traces of the object model. In particular the hints
 influence the constant folding
@@ -164,15 +167,15 @@ optimization. The first hint makes it possible to turn arbitrary
 variables in the trace into constant by feeding back runtime values. The
 second hint allows the definition of additional foldable operations.
 
-Together these two hints can be used to express many classic implementation
+Together these hints can be used to express many classic implementation
 techniques used for object models of dynamic languages, such as maps and
 polymorphic inline caches.
 
 The contributions of this paper are:
 \begin{itemize}
- \item A hint to turn arbitrary variables into constants in the trace, that
- means the feedback of runtime information into compilation.
- \item A way to define new pure operations which the constant folding
+ \item A hint to turn arbitrary variables into constants in the trace by
+ feeding back runtime information into compilation.
+ \item A way to annotate operations as pure which the constant folding
  optimization then recognizes.
  \item A worked-out example of a simple object model of a dynamic language and
  how it can be improved using these hints.
@@ -233,7 +236,7 @@ JavaScript \cite{gal_trace-based_2009}.
 
 A tracing JIT works by recording traces of concrete execution paths through the
 program. Those
-traces are therefore linear list of operations, which are optimized and then
+traces are linear lists of operations, which are optimized and then
 get turned into machine code. This recording automatically inlines functions:
 when a function call is encountered the operations of the called functions are
 simply put into the trace of the caller too. The tracing JIT tries to produce traces
@@ -251,10 +254,9 @@ started the interpreter is used; only the most frequently executed paths through
 program are turned into machine code. The interpreter is also used when a guard
 fails to continue the execution from the failing guard.
 
-One disadvantage of (tracing) JITs which makes them not directly applicable to
-PyPy is that they need to encode the language semantics of the language they are
-tracing. Since PyPy wants to be a
-general framework, we want to reuse our tracer for different languages.
+Since PyPy wants to be a general framework, we want to reuse our tracer for
+different languages, which makes classical tracers inapplicable, because they
+encode language semantics.
 Therefore PyPy's JIT is a \emph{meta-tracer} \cite{bolz_tracing_2009}. It does not
 trace the execution of the user program, but instead traces the execution of
 the \emph{interpreter} that is running the program. This means that the traces
@@ -270,7 +272,7 @@ construction supports the full language.
 While the operations in a trace are those of the interpreter, the loops that are
 traced by the tracer are the loops in the
 user program. To achieve this the tracer stops tracing after one iteration of
-the loop in the user function that is being considered. At this point, it probably
+the loop in the user function that is being considered; at this point, it probably
 traced many iterations of the interpreter main loop.
 
 \begin{figure}
@@ -311,7 +313,7 @@ by the optimizer can be vastly improved.
 
 As the running example of this paper we will use a very simple and bare-bones
 object model that just supports classes and instances, without any
-inheritance or other advanced features. The model has classes, which contain methods.
+inheritance or other advanced features. In the model classes contain methods.
 Instances have a class. Instances have their own attributes (or fields). When looking up an
 attribute on an instance, the instances attributes are searched. If the
 attribute is not found there, the class' methods are searched.
@@ -323,7 +325,7 @@ attribute is not found there, the class' methods are searched.
 \end{figure}
 
 
-To implement this object model, we could use the RPython code in
+To implement this object model, we use the RPython code in
 Figure~\ref{fig:interpreter-slow} as part of the interpreter source code.
 In this straightforward implementation the methods and attributes are just
 stored in dictionaries (hash maps) on the classes and instances, respectively.
@@ -334,7 +336,7 @@ any time.  Moreover, instances can change their class after they have been
 created.
 
 When using this object model in
-an interpreter, a huge amount of time will be spent doing lookups in these
+an interpreter, a large amount of time will be spent doing lookups in these
 dictionaries.
 Let's assume we trace through code that sums three attributes, such as:
 \anto{I still think it's a bit weird to call them ``methods'' and then use
@@ -405,10 +407,7 @@ It is worth clarifying what is a ``constant'' in this context.  A variable of
 the trace is said to be constant if its value is statically known by the
 optimizer.
 
-The simplest example of constants are literal values.  For example, if in the
-RPython source code we have a line like \texttt{y = x + 1}, the second operand will
-be a constant in the trace.
-
+The simplest example of constants are literal values, such as \texttt{1}.
 However, the optimizer can statically know the value of a variable even if it
 is not a constant in the original source code. For example, consider the
 following fragment of RPython code:
@@ -532,7 +531,7 @@ have values that are variable but vary little in the context of parts of a user
 program. An example would be the types of variables in a user function. Even
 though in principle the argument to a Python function could be any Python type,
 in practice the argument types tend not to vary often. Therefore it is possible to
-promote the types. Section~\ref{sec:} will present a complete example of how
+promote the types. Section~\ref{sec:fastobjmodel} will present a complete example of how
 this works.
 
 \cfbolz{XXX explain how value specialization on the interpreter level can lead
@@ -542,7 +541,7 @@ to type specialization on the language level}
 \subsection{Declaring New Pure Operations}
 
 In the previous section we saw a way to turn arbitrary variables into constants. All
-pure operations on these constants can be constant-folded. This works great for
+pure operations on these constants can be constant-folded. This works well for
 constant folding of simple types, e.g. integers. Unfortunately, in the context of an
 interpreter for a dynamic
 language, most operations actually manipulate objects, not simple types. The
@@ -638,6 +637,8 @@ subtly wrong code. Therefore, a lot of care has to be taken when using this
 annotation\footnote{The most common use case of the \texttt{purefunction}
 annotation is indeed to declare the immutability of fields. Because it is so
 common, we have special syntactic sugar for it.}.
+
+\cfbolz{XXX mention a possible debug mode for findings bugs in this, or too many values in promotion. stress more that promote is safe}
 
 
 \subsubsection{Observably Pure Functions}
