@@ -35,7 +35,7 @@
 }
 
 \newboolean{showcomments}
-\setboolean{showcomments}{false}
+\setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
   {\newcommand{\nb}[2]{
     \fbox{\bfseries\sffamily\scriptsize#1}
@@ -147,7 +147,8 @@ makes the process not completely automatic but can give good speedups over
 bare meta-tracing.
 
 In this paper we present two of these hints that are extensively used in the
-PyPy project to improve the performance of its Python interpreter. 
+PyPy project to improve the performance of its Python interpreter, particularly
+of the object model.
 
 Conceptually, the significant speed-ups that can be achieved with
 dynamic compilation depend on feeding into compilation and exploiting
@@ -160,8 +161,7 @@ we present precisely allow us to implement such feedback and exploitation in a
 meta-tracing context.
 
 \cfbolz{XXX kill the next paragraph? the info is repeated in the list below}
-Concretely these hints are used to control how the optimizer of the
-tracing JIT can improve the traces of the object model. In particular the hints
+In particular the hints
 influence the constant folding
 optimization. The first hint makes it possible to turn arbitrary
 variables in the trace into constant by feeding back runtime values. The
@@ -175,8 +175,8 @@ The contributions of this paper are:
 \begin{itemize}
  \item A hint to turn arbitrary variables into constants in the trace by
  feeding back runtime information into compilation.
- \item A way to annotate operations as pure which the constant folding
- optimization then recognizes.
+ \item A way to annotate operations which the constant folding
+ optimization then recognizes and exploits.
  \item A worked-out example of a simple object model of a dynamic language and
  how it can be improved using these hints.
 \end{itemize}
@@ -190,7 +190,7 @@ presents benchmarks.
 
 \cfbolz{XXX stress more that "the crux of the techniques and a significant
 portion of new contributions in the paper are from how to refactoring codes to
-expose likely runtime constants and pure functions"}
+expose likely runtime constants and invariant functions"}
 
 
 \section{Background}
@@ -391,8 +391,8 @@ For constant folding to work, two conditions need to be met:
 \begin{itemize}
     \item the arguments of an operation actually need to all be constant,
     i.e. statically known by the optimizer
-    \item the operation needs to be \emph{pure}, i.e. always yield the same result given
-    the same arguments.
+    \item the operation needs to be \emph{constant-foldable}, i.e. always yield
+    the same result given the same arguments.
 \end{itemize}
 
 The PyPy JIT generator automatically detects the majority of these conditions.
@@ -538,17 +538,23 @@ this works.
 to type specialization on the language level}
 
 
-\subsection{Declaring New Pure Operations}
+\subsection{Declaring New Foldable Operations}
 
 In the previous section we saw a way to turn arbitrary variables into constants. All
-pure operations on these constants can be constant-folded. This works well for
+foldable operations on these constants can be constant-folded. This works well for
 constant folding of simple types, e.g. integers. Unfortunately, in the context of an
 interpreter for a dynamic
 language, most operations actually manipulate objects, not simple types. The
-operations on objects are often not pure and might even have side-effects. If
+operations on objects are often not foldable and might even have side-effects. If
 one reads a field out of a constant reference to an object this cannot
 necessarily be folded away because the object can be mutated. Therefore, another
 hint is needed.
+
+This hint can be used to mark functions as \emph{invariant}. A function is
+termed invariant if, during the execution of the program, successive calls to
+the function with identical arguments always return the same result. From this
+definition follows that a call to an invariant function with constant arguments
+in a trace can be replaced with the result of the call.
 
 As an example, take the following class:
 
@@ -583,7 +589,7 @@ always yield the same value. To solve this problem, there is another annotation,
 which lets the interpreter author communicate invariants to the optimizer. In
 this case, she could decide that the \texttt{x} field of instances of \texttt{A} is
 immutable, and therefore \texttt{compute}
-is a pure function. To communicate this, there is a \texttt{purefunction} decorator.
+is an invariant function. To communicate this, there is a \texttt{invariant} decorator.
 If the code in \texttt{compute} should be constant-folded away, we would change the
 class as follows:
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
@@ -596,14 +602,10 @@ class A(object):
         promote(self)
         self.y = self.compute() + val
 
-    @purefunction
+    @invariant
     def compute(self):
         return self.x * 2 + 1
 \end{lstlisting}
-
-\cfbolz{XXX define the meaning of purefunction more precisely, particularly because add\_attribute has side effects, which is confusing}
-
-\cfbolz{should we mention that pure functions are not actually called by the optimizer, but the values that are seen during tracing are used?}
 
 Now the trace will look like this:
 %
@@ -616,7 +618,7 @@ $a_1$.y = $v_2$
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
 during tracing. The call to \texttt{compute} is not inlined, so that the optimizer
-has a chance to see it. Since the \texttt{compute} function is marked as pure, and its
+has a chance to see it. Since the \texttt{compute} function is marked as invariant, and its
 argument
 is a constant reference, the call will be removed by the optimizer. The final
 trace looks like this:
@@ -629,31 +631,32 @@ $a_1$.y = $v_2$
 
 (assuming that the \texttt{x} field's value is \texttt{4}).
 
-On the one hand, the \texttt{purefunction} annotation is very powerful. It can be
+On the one hand, the \texttt{invariant} annotation is very powerful. It can be
 used to constant-fold arbitrary parts of the computation in the interpreter.
-However, the annotation also gives the interpreter author ample opportunity to mess things up. If a
-function is annotated to be pure, but is not really, the optimizer can produce
+However, the annotation also gives the interpreter author ample opportunity to introduce bugs. If a
+function is annotated to be invariant, but is not really, the optimizer can produce
 subtly wrong code. Therefore, a lot of care has to be taken when using this
-annotation\footnote{The most common use case of the \texttt{purefunction}
+annotation\footnote{The most common use case of the \texttt{invariant}
 annotation is indeed to declare the immutability of fields. Because it is so
-common, we have special syntactic sugar for it.}.
+common, we have special syntactic sugar for it.}. We hope to introduce a
+debugging mode which would (slowly) check whether the annotation is applied
+incorrectly to mitigate this problem.
 
-\cfbolz{XXX mention a possible debug mode for findings bugs in this, or too many values in promotion. stress more that promote is safe}
 
+\subsubsection{Observably invariant Functions}
 
-\subsubsection{Observably Pure Functions}
+\cfbolz{XXX do we kill this section?}
 
 Why can't we simply write an analysis to find out that the \texttt{x} fields of the
-\texttt{A} instances is immutable and deduce that \texttt{compute} is a pure function,
+\texttt{A} instances is immutable and deduce that \texttt{compute} is an invariant function,
 since it only reads the \texttt{x} field and does not have side effects? This might
 be possible in this particular case, but in practice the functions that are
-annotated with the \texttt{purefunction} decorator are usually more complex.
+annotated with the \texttt{invariant} decorator are usually more complex.
 The easiest example for this is that of a function that uses memoization to
 cache its results. If this function is analyzed, it looks like the function has
 side effects, because it changes the memoizing dictionary. However, because this side
-effect is not externally visible, the function from the outside is pure. This is
-a property that is not easily detectable by analysis. Therefore, the purity
-of this function needs to be annotated manually.
+effect is not externally visible, the function is still invariant. This is
+a property that is not easily detectable by analysis.
 
 
 
@@ -675,11 +678,11 @@ hash-maps to implement its objects.
 The first step in making \texttt{getattr} faster in our object model is to optimize
 away the dictionary lookups on the instances. The hints we have looked at in the
 two previous sections don't seem to help with the current object model. There is
-no pure function to be seen, and the instance is not a candidate for promotion,
+no invariant function to be seen, and the instance is not a candidate for promotion,
 because there tend to be many instances.
 
 This is a common problem when trying to apply hints. Often, the interpreter
-needs a small rewrite to expose the pure functions and nearly-constant objects
+needs a small rewrite to expose the invariant functions and nearly-constant objects
 that are implicitly there. In the case of instance fields this rewrite is not
 entirely obvious. The basic idea is as follows. In theory instances can have
 arbitrary fields. In practice however many instances share their layout (i.e.
@@ -701,9 +704,9 @@ Figure~\ref{fig:maps}.
 In this implementation instances no longer use dictionaries to store their fields. Instead, they have a
 reference to a map, which maps field names to indexes into a storage list. The
 storage list contains the actual field values. Therefore they have to be immutable, which means
-that their \texttt{getindex} method is a pure function. When a new attribute is added
+that their \texttt{getindex} method is an invariant function. When a new attribute is added
 to an instance, a new map needs to be chosen, which is done with the
-\texttt{add\_attribute} method on the previous map. This function is also pure,
+\texttt{add\_attribute} method on the previous map. This function is also invariant,
 because it caches all new instances of \texttt{Map} that it creates, to make
 sure that objects with the same layout have the same map. Now that we have
 introduced maps, it is safe to promote the map everywhere, because we assume
@@ -719,7 +722,7 @@ make clearer which figures show optimized code and which show non-optimized
 code}
 
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
-a pure function and they have constant arguments. That means that \texttt{index1/2/3}
+an invariant function and they have constant arguments. That means that \texttt{index1/2/3}
 are constant and the guards on them can be removed. All but the first guard on
 the map will be optimized away too, because the map cannot have changed in
 between. This trace is already much better than
@@ -744,17 +747,17 @@ will make an even stronger assumption. We simply assume that it is rare for
 classes to change at all. This is not totally reasonable (sometimes classes contain
 counters or similar things) but for this simple example it is good enough.
 
-What we would really like is if the \texttt{Class.find\_method} method were pure.
+What we would really like is if the \texttt{Class.find\_method} method were invariant.
 But it cannot be, because it is always possible to change the class itself.
 Every time the class changes, \texttt{find\_method} can potentially return a
 new value.
 
 Therefore, we give every class a version object, which is changed every time a
 class gets changed (i.e., the \texttt{methods} dictionary changes).
-This means that the result of \texttt{methods.get()} for a given \texttt{(name,
-version)} pair will always be the same, i.e. it is a pure operation.  To help
+This means that the result of calls to \texttt{methods.get()} for a given \texttt{(name,
+version)} pair will always be the same, i.e. it is an invariant operation.  To help
 the JIT to detect this case, we factor it out in a helper method which is
-explicitly marked as \texttt{@purefunction}. The refactored \texttt{Class} can
+explicitly marked as \texttt{@invariant}. The refactored \texttt{Class} can
 be seen in Figure~\ref{fig:version}
 
 \begin{figure}
@@ -765,7 +768,7 @@ be seen in Figure~\ref{fig:version}
 
 What is interesting here is that \texttt{\_find\_method} takes the \texttt{version}
 argument but it does not use it at all. Its only purpose is to make the call
-pure, because when the version object changes, the result of the call might be
+invariant, because when the version object changes, the result of the call might be
 different than the previous one.
 
 \begin{figure}
@@ -995,7 +998,7 @@ variety of language semantics efficiently.
 
 \section*{Acknowledgements}
 
-XXX Peng Wu and David Edelsohn
+XXX Peng Wu and David Edelsohn, Laura Creighton
 
 \bibliographystyle{abbrv}
 \bibliography{paper}

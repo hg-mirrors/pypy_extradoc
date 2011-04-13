@@ -14,7 +14,7 @@ class Class(object):
         promote(version)
         return self._find_method(name, version)
 
-    @purefunction
+    @invariant
     def _find_method(self, name, version):
         return self.methods.get(name)
 
