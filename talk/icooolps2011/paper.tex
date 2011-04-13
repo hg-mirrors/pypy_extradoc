@@ -403,7 +403,7 @@ opportunities. There is one kind of hint for both of the conditions above.
 
 \subsection{Where Do All the Constants Come From}
 
-It is worth clarifying what is a ``constant'' in this context.  A variable of
+It is worth clarifying what a ``constant'' is in this context.  A variable of
 the trace is said to be constant if its value is statically known by the
 optimizer.
 
@@ -528,14 +528,12 @@ results. It might just lead to too much assembler code being generated.
 Promoting integers, as in the examples above, is not used that often.
 However, the internals of dynamic language interpreters often
 have values that are variable but vary little in the context of parts of a user
-program. An example would be the types of variables in a user function. Even
-though in principle the argument to a Python function could be any Python type,
-in practice the argument types tend not to vary often. Therefore it is possible to
-promote the types. Section~\ref{sec:fastobjmodel} will present a complete example of how
-this works.
-
-\cfbolz{XXX explain how value specialization on the interpreter level can lead
-to type specialization on the language level}
+program. An example would be the types of variables in a user function, which
+rarely change in a dynamic language in practice (even though they could). In the
+interpreter, these user-level types are values. Thus promoting them will lead
+to type-specialization on the level of the user program.
+Section~\ref{sec:fastobjmodel} will present a complete example of how this
+works.
 
 
 \subsection{Declaring New Foldable Operations}
