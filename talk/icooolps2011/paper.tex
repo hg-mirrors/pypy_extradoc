@@ -548,11 +548,17 @@ one reads a field out of a constant reference to an object this cannot
 necessarily be folded away because the object can be mutated. Therefore, another
 hint is needed.
 
+XXX not too happy with the definition
+
 This hint can be used to mark functions as \emph{invariant}. A function is
-termed invariant if, during the execution of the program, successive calls to
-the function with identical arguments always return the same result. From this
+termed invariant if, during the execution of the program, the results of
+subsequent calls to the function with identical arguments may be be replaced
+with the result of the first call without changing the program's behaviour.
+From this
 definition follows that a call to an invariant function with constant arguments
-in a trace can be replaced with the result of the call.
+in a trace can be replaced with the result of the call.\footnote{This property
+is less strict than that of a "pure" function, because it is only about actual
+calls during execution.}
 
 As an example, take the following class:
 
