@@ -102,13 +102,12 @@ incremental compilers, interpreters, run-time environments]
 
 Meta-tracing JIT compilers can be applied to a variety of different
 languages without explicitly encoding language semantics into the compiler. So
-far, they lacked a way to feed back runtime information into the
-compiler, which restricted their performance. In this paper we describe the
-flexible mechanisms in PyPy's meta-tracing JIT that can be used to control runtime feedback in language-specific ways. These mechanisms are flexible
-enough to implement classical VM techniques such as maps and polymorphic inline
+far, they lacked a way to give the language implementor control over runtime
+feedback. This restricted their performance. In this paper we describe the
+mechanisms in PyPy's meta-tracing JIT that can be used to control
+runtime feedback in language-specific ways. These mechanisms are flexible
+enough to express classical VM techniques such as maps and polymorphic inline
 caches.
-
-\cfbolz{XXX tracing is runtime feed back too, clarify}
 
 \end{abstract}
 
