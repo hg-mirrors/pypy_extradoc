@@ -4,11 +4,11 @@ class Map(object):
         self.indexes = {}
         self.other_maps = {}
 
-    @invariant
+    @elidable
     def getindex(self, name):
         return self.indexes.get(name, -1)
 
-    @invariant
+    @elidable
     def add_attribute(self, name):
         if name not in self.other_maps:
             newmap = Map()

@@ -190,7 +190,7 @@ presents benchmarks.
 
 \cfbolz{XXX stress more that "the crux of the techniques and a significant
 portion of new contributions in the paper are from how to refactoring codes to
-expose likely runtime constants and invariant functions"}
+expose likely runtime constants and trace-elidable functions"}
 
 
 \section{Background}
@@ -550,15 +550,15 @@ hint is needed.
 
 XXX not too happy with the definition
 
-This hint can be used to mark functions as \emph{invariant}. A function is
-termed invariant if, during the execution of the program, the results of
+This hint can be used to mark functions as \emph{trace-elidable}. A function is
+termed trace-elidable if, during the execution of the program, the results of
 subsequent calls to the function with identical arguments may be be replaced
 with the result of the first call without changing the program's behaviour.
 From this
-definition follows that a call to an invariant function with constant arguments
+definition follows that a call to an trace-elidable function with constant arguments
 in a trace can be replaced with the result of the call.\footnote{This property
 is less strict than that of a "pure" function, because it is only about actual
-calls during execution.}
+calls during execution. All pure functions are trace-elidable though.}
 
 As an example, take the following class:
 
@@ -593,7 +593,7 @@ always yield the same value. To solve this problem, there is another annotation,
 which lets the interpreter author communicate invariants to the optimizer. In
 this case, she could decide that the \texttt{x} field of instances of \texttt{A} is
 immutable, and therefore \texttt{compute}
-is an invariant function. To communicate this, there is a \texttt{invariant} decorator.
+is an trace-elidable function. To communicate this, there is a \texttt{elidable} decorator.
 If the code in \texttt{compute} should be constant-folded away, we would change the
 class as follows:
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
@@ -606,7 +606,7 @@ class A(object):
         promote(self)
         self.y = self.compute() + val
 
-    @invariant
+    @elidable
     def compute(self):
         return self.x * 2 + 1
 \end{lstlisting}
@@ -622,7 +622,7 @@ $a_1$.y = $v_2$
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
 during tracing. The call to \texttt{compute} is not inlined, so that the optimizer
-has a chance to see it. Since the \texttt{compute} function is marked as invariant, and its
+has a chance to see it. Since the \texttt{compute} function is marked as trace-elidable, and its
 argument
 is a constant reference, the call will be removed by the optimizer. The final
 trace looks like this:
@@ -635,31 +635,31 @@ $a_1$.y = $v_2$
 
 (assuming that the \texttt{x} field's value is \texttt{4}).
 
-On the one hand, the \texttt{invariant} annotation is very powerful. It can be
+On the one hand, the \texttt{elidable} annotation is very powerful. It can be
 used to constant-fold arbitrary parts of the computation in the interpreter.
 However, the annotation also gives the interpreter author ample opportunity to introduce bugs. If a
-function is annotated to be invariant, but is not really, the optimizer can produce
+function is annotated to be trace-elidable, but is not really, the optimizer can produce
 subtly wrong code. Therefore, a lot of care has to be taken when using this
-annotation\footnote{The most common use case of the \texttt{invariant}
+annotation\footnote{The most common use case of the \texttt{elidable}
 annotation is indeed to declare the immutability of fields. Because it is so
 common, we have special syntactic sugar for it.}. We hope to introduce a
 debugging mode which would (slowly) check whether the annotation is applied
 incorrectly to mitigate this problem.
 
 
-\subsubsection{Observably invariant Functions}
+\subsubsection{Observably trace-elidable Functions}
 
 \cfbolz{XXX do we kill this section?}
 
 Why can't we simply write an analysis to find out that the \texttt{x} fields of the
-\texttt{A} instances is immutable and deduce that \texttt{compute} is an invariant function,
+\texttt{A} instances is immutable and deduce that \texttt{compute} is a trace-elidable function,
 since it only reads the \texttt{x} field and does not have side effects? This might
 be possible in this particular case, but in practice the functions that are
-annotated with the \texttt{invariant} decorator are usually more complex.
+annotated with the \texttt{elidable} decorator are usually more complex.
 The easiest example for this is that of a function that uses memoization to
 cache its results. If this function is analyzed, it looks like the function has
 side effects, because it changes the memoizing dictionary. However, because this side
-effect is not externally visible, the function is still invariant. This is
+effect is not externally visible, the function is still trace-elidable. This is
 a property that is not easily detectable by analysis.
 
 
@@ -682,11 +682,11 @@ hash-maps to implement its objects.
 The first step in making \texttt{getattr} faster in our object model is to optimize
 away the dictionary lookups on the instances. The hints we have looked at in the
 two previous sections don't seem to help with the current object model. There is
-no invariant function to be seen, and the instance is not a candidate for promotion,
+no trace-elidable function to be seen, and the instance is not a candidate for promotion,
 because there tend to be many instances.
 
 This is a common problem when trying to apply hints. Often, the interpreter
-needs a small rewrite to expose the invariant functions and nearly-constant objects
+needs a small rewrite to expose the trace-elidable functions and nearly-constant objects
 that are implicitly there. In the case of instance fields this rewrite is not
 entirely obvious. The basic idea is as follows. In theory instances can have
 arbitrary fields. In practice however many instances share their layout (i.e.
@@ -708,9 +708,9 @@ Figure~\ref{fig:maps}.
 In this implementation instances no longer use dictionaries to store their fields. Instead, they have a
 reference to a map, which maps field names to indexes into a storage list. The
 storage list contains the actual field values. Therefore they have to be immutable, which means
-that their \texttt{getindex} method is an invariant function. When a new attribute is added
+that their \texttt{getindex} method is an trace-elidable function. When a new attribute is added
 to an instance, a new map needs to be chosen, which is done with the
-\texttt{add\_attribute} method on the previous map. This function is also invariant,
+\texttt{add\_attribute} method on the previous map. This function is also trace-elidable,
 because it caches all new instances of \texttt{Map} that it creates, to make
 sure that objects with the same layout have the same map. Now that we have
 introduced maps, it is safe to promote the map everywhere, because we assume
@@ -726,7 +726,7 @@ make clearer which figures show optimized code and which show non-optimized
 code}
 
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
-an invariant function and they have constant arguments. That means that \texttt{index1/2/3}
+a trace-elidable function and they have constant arguments. That means that \texttt{index1/2/3}
 are constant and the guards on them can be removed. All but the first guard on
 the map will be optimized away too, because the map cannot have changed in
 between. This trace is already much better than
@@ -753,7 +753,7 @@ counters or similar things) but for this simple example it is good
 enough.\footnote{There is a more complex variant of class versions that can
 accommodate class fields that change a lot better.}
 
-What we would really like is if the \texttt{Class.find\_method} method were invariant.
+What we would really like is if the \texttt{Class.find\_method} method were trace-elidable.
 But it cannot be, because it is always possible to change the class itself.
 Every time the class changes, \texttt{find\_method} can potentially return a
 new value.
@@ -761,9 +761,9 @@ new value.
 Therefore, we give every class a version object, which is changed every time a
 class gets changed (i.e., the \texttt{methods} dictionary changes).
 This means that the result of calls to \texttt{methods.get()} for a given \texttt{(name,
-version)} pair will always be the same, i.e. it is an invariant operation.  To help
+version)} pair will always be the same, i.e. it is a trace-elidable operation.  To help
 the JIT to detect this case, we factor it out in a helper method which is
-explicitly marked as \texttt{@invariant}. The refactored \texttt{Class} can
+explicitly marked as \texttt{@elidable}. The refactored \texttt{Class} can
 be seen in Figure~\ref{fig:version}
 
 \begin{figure}
@@ -774,7 +774,7 @@ be seen in Figure~\ref{fig:version}
 
 What is interesting here is that \texttt{\_find\_method} takes the \texttt{version}
 argument but it does not use it at all. Its only purpose is to make the call
-invariant, because when the version object changes, the result of the call might be
+trace-elidable, because when the version object changes, the result of the call might be
 different than the previous one.
 
 \begin{figure}
@@ -839,12 +839,10 @@ map has been.
 %
 %The techniques we used above to make instance and class lookups faster are
 %applicable in more general cases than the one we developed them for. A more
-%abstract view of maps is that of splitting a data-structure into a part that
-%changes slowly, and a part that changes quickly. In the concrete example of maps
-%we split the original dictionary into the map (the slow-changing part) and the
-%storage array (the quick-changing part). All the computation on the
-%slow-changing part can be constant-folded during tracing so that only the
-%manipulation of the quick-changing part remains.
+%abstract view of maps is that of splitting a data-structure into an immutable part (\eg the map)
+%and a part that changes (\eg the storage array). All the computation on the
+%immutable part is trace-elidable so that only the manipulation of the quick-changing
+%part remains in the trace after optimization.
 %
 %Similarly, versions can be used to constant-fold arbitrary functions of large data
 %structures. The version needs to be updated carefully every time the result of
