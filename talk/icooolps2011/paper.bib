@@ -1,44 +1,15 @@
 
-@inproceedings{carl_friedrich_bolz_towards_????,
-	series = {{LNCS} 6037  to appear},
-	title = {Towards {Just-In-Time} Partial Evaluation of Prolog},
-	abstract = {We introduce a just-in-time specializer for Prolog. Just-in-
-time specialization attempts to unify of the concepts and benefits of
-partial evaluation {(PE)} and just-in-time {(JIT)} compilation. It is a variant
-of {PE} that occurs purely at runtime, which lazily generates residual code
-and is constantly driven by runtime feedback.
-Our prototype is an on-line just-in-time partial evaluator. A major fo-
-cus of our work is to remove the overhead incurred when executing an
-interpreter written in Prolog. It improves over classical offline {PE} by re-
-quiring almost no heuristics nor hints from the author of the interpreter;
-it also avoids most termination issues due to interleaving execution and
-specialization. We evaluate the performance of our prototype on a small
-number of benchmarks.},
-	booktitle = {Logic-based Program Synthesis and Transformation {(LOPSTR'2009)}},
-	publisher = {{Springer-Verlag}},
-	author = {Carl Friedrich Bolz and Michael Leuschel and Armin Rigo}
-},
-
 @inproceedings{deutsch_efficient_1984,
-	address = {Salt Lake City, Utah, United States},
-	title = {Efficient implementation of the smalltalk-80 system},
+	address = {Salt Lake City, Utah},
+	title = {Efficient implementation of the Smalltalk-80 system},
 	isbn = {0-89791-125-3},
 	url = {http://portal.acm.org/citation.cfm?id=800017.800542},
 	doi = {10.1145/800017.800542},
 	abstract = {The Smalltalk-80* programming language includes dynamic storage allocation, full upward funargs, and universally polymorphic procedures; the Smalltalk-80 programming system features interactive execution with incremental compilation, and implementation portability. These features of modern programming systems are among the most difficult to implement efficiently, even individually. A new implementation of the Smalltalk-80 system, hosted on a small microprocessor-based computer, achieves high performance while retaining complete (object code) compatibility with existing implementations. This paper discusses the most significant optimization techniques developed over the course of the project, many of which are applicable to other languages. The key idea is to represent certain runtime state (both code and data) in more than one form, and to convert between forms when needed.},
-	booktitle = {Proceedings of the 11th {ACM} {SIGACT-SIGPLAN} symposium on Principles of programming languages},
+	booktitle = {{POPL}},
 	publisher = {{ACM}},
 	author = {L. Peter Deutsch and Allan M. Schiffman},
-	year = {1984},
-	pages = {297--302}
-},
-
-@phdthesis{cuni_high_2010,
-	title = {High performance implementation of Python for {CLI/.NET} with {JIT} compiler generation for dynamic languages.},
-	school = {Dipartimento di Informatica e Scienze {dell'Informazione,} University of Genova},
-	author = {Antonio Cuni},
-	year = {2010},
-	note = {Technical Report {DISI-TH-2010-05}}
+	year = {1984}
 },
 
 @inproceedings{carl_friedrich_bolz_towards_2010,
@@ -48,26 +19,11 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?id=1836102},
 	doi = {10.1145/1836089.1836102},
 	abstract = {Most Prolog implementations are implemented in low-level languages such as C and are based on a variation of the {WAM} instruction set, which enhances their performance but makes them hard to write. In addition, many of the more dynamic features of Prolog (like assert), despite their popularity, are not well supported. We present a high-level continuation-based Prolog interpreter based on the {PyPy} project. The {PyPy} project makes it possible to easily and efficiently implement dynamic languages. It provides tools that automatically generate a just-in-time compiler for a given interpreter of the target language, by using partial evaluation techniques. The resulting Prolog implementation is surprisingly efficient: it clearly outperforms existing interpreters of Prolog in high-level languages such as Java. Moreover, on some benchmarks, our system outperforms state-of-the-art {WAM-based} Prolog implementations. Our paper aims to show that declarative languages such as Prolog can indeed benefit from having a just-in-time compiler and that {PyPy} can form the basis for implementing programming languages other than Python.},
-	booktitle = {Proceedings of the 12th international {ACM} {SIGPLAN} symposium on Principles and practice of declarative programming},
+	booktitle = {{PPDP}},
 	publisher = {{ACM}},
 	author = {Carl Friedrich Bolz and Michael Leuschel and David Schneider},
 	year = {2010},
-	keywords = {interpreters, jit, logic programming, partial evaluation},
-	pages = {99--108}
-},
-
-@inproceedings{garg_compiling_2010,
-	address = {Pittsburgh, Pennsylvania},
-	title = {Compiling Python to a hybrid execution environment},
-	isbn = {978-1-60558-935-0},
-	url = {http://portal.acm.org/citation.cfm?id=1735695&dl=GUIDE&coll=GUIDE&CFID=108695705&CFTOKEN=81778166},
-	doi = {10.1145/1735688.1735695},
-	abstract = {A new compilation framework enables the execution of numerical-intensive applications, written in Python, on a hybrid execution environment formed by a {CPU} and a {GPU.} This compiler automatically computes the set of memory locations that need to be transferred to the {GPU,} and produces the correct mapping between the {CPU} and the {GPU} address spaces. Thus, the programming model implements a virtual shared address space. This framework is implemented as a combination of {unPython,} an ahead-of-time compiler from {Python/NumPy} to the C programming language, and {jit4GPU,} a just-in-time compiler from C to the {AMD} {CAL} interface. Experimental evaluation demonstrates that for some benchmarks the generated {GPU} code is 50 times faster than generated {OpenMP} code. The {GPU} performance also compares favorably with optimized {CPU} {BLAS} code for single-precision computations in most cases.},
-	booktitle = {Proceedings of the 3rd Workshop on {General-Purpose} Computation on Graphics Processing Units},
-	publisher = {{ACM}},
-	author = {Rahul Garg and Jos\'{e} Nelson Amaral},
-	year = {2010},
-	pages = {19--30}
+	keywords = {interpreters, jit, logic programming, partial evaluation}
 },
 
 @inproceedings{bebenita_spur:_2010,
@@ -78,12 +34,11 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?id=1869459.1869517&coll=GUIDE&dl=GUIDE&type=series&idx=SERIES318&part=series&WantType=Proceedings&title=OOPSLA%2FSPLASH&CFID=106280261&CFTOKEN=29377718},
 	doi = {10.1145/1869459.1869517},
 	abstract = {Tracing just-in-time compilers {(TJITs)} determine frequently executed traces (hot paths and loops) in running programs and focus their optimization effort by emitting optimized machine code specialized to these traces. Prior work has established this strategy to be especially beneficial for dynamic languages such as {JavaScript,} where the {TJIT} interfaces with the interpreter and produces machine code from the {JavaScript} trace.},
-	booktitle = {Proceedings of the {ACM} international conference on Object oriented programming systems languages and applications},
+	booktitle = {{OOPSLA}},
 	publisher = {{ACM}},
 	author = {Michael Bebenita and Florian Brandner and Manuel Fahndrich and Francesco Logozzo and Wolfram Schulte and Nikolai Tillmann and Herman Venter},
 	year = {2010},
 	keywords = {cil, dynamic compilation, javascript, just-in-time, tracing},
-	pages = {708--725},
 	annote = {{\textless}h3{\textgreater}{\textless}a {href="http://morepypy.blogspot.com/2010/07/comparing-spur-to-pypy.html"{\textgreater}Comparing} {SPUR} to {PyPy{\textless}/a{\textgreater}{\textless}/h3{\textgreater}}
 {{\textless}p{\textgreater}Recently,} I've become aware of the {\textless}a {href="http://research.microsoft.com/en-us/projects/spur/"{\textgreater}SPUR} project{\textless}/a{\textgreater} of Microsoft Research and read some of their papers (the tech report {"SPUR:} A {Trace-Based} {JIT} Compiler for {CIL"} is very cool). I found the project to be very interesting and since their approach is in many ways related to what {PyPy} is doing, I now want to compare and contrast the two projects.{\textless}/p{\textgreater}
 {\textless}div id="a-tracing-jit-for-net"{\textgreater}
@@ -150,20 +105,19 @@ number of benchmarks.},
 },
 
 @inproceedings{gal_trace-based_2009,
-	address = {New York, {NY,} {USA}},
+	address = {New York, New York},
 	series = {{PLDI} '09},
 	title = {Trace-based just-in-time type specialization for dynamic languages},
 	isbn = {978-1-60558-392-1},
 	location = {Dublin, Ireland},
 	doi = {10.1145/1542476.1542528},
 	abstract = {Dynamic languages such as {JavaScript} are more difficult to compile than statically typed ones. Since no concrete type information is available, traditional compilers need to emit generic code that can handle all possible type combinations at runtime. We present an alternative compilation technique for dynamically-typed languages that identifies frequently executed loop traces at run-time and then generates machine code on the fly that is specialized for the actual dynamic types occurring on each path through the loop. Our method provides cheap inter-procedural type specialization, and an elegant and efficient way of incrementally compiling lazily discovered alternative paths through nested loops. We have implemented a dynamic compiler for {JavaScript} based on our technique and we have measured speedups of 10x and more for certain benchmark programs.},
-	booktitle = {{ACM} {SIGPLAN} Notices},
+	booktitle = {{PLDI}},
 	publisher = {{ACM}},
 	author = {Andreas Gal and Brendan Eich and Mike Shaver and David Anderson and David Mandelin and Mohammad R Haghighat and Blake Kaplan and Graydon Hoare and Boris Zbarsky and Jason Orendorff and Jesse Ruderman and Edwin W Smith and Rick Reitmaier and Michael Bebenita and Mason Chang and Michael Franz},
 	year = {2009},
 	note = {{ACM} {ID:} 1542528},
-	keywords = {code generation, design, dynamically typed languages, experimentation, incremental compilers, languages, measurement, performance, run-time environments, trace-based compilation},
-	pages = {465{\textendash}478}
+	keywords = {code generation, design, dynamically typed languages, experimentation, incremental compilers, languages, measurement, performance, run-time environments, trace-based compilation}
 },
 
 @article{rose_bytecodes_2009,
@@ -176,9 +130,7 @@ number of benchmarks.},
 	journal = {Proceedings of the Third Workshop on Virtual Machines and Intermediate Languages},
 	author = {John R Rose},
 	year = {2009},
-	note = {{ACM} {ID:} 1711508},
-	keywords = {bytecode, code generation, combinator},
-	pages = {2:1{\textendash}2:11}
+	keywords = {bytecode, code generation, combinator}
 },
 
 @article{grant_dyc:_2000,
@@ -198,42 +150,41 @@ number of benchmarks.},
 	pages = {147{\textendash}199}
 },
 
-@article{bolz_allocation_2011,
+@inproceedings{bolz_towards_2009,
+	title = {Towards {Just-In-Time} Partial Evaluation of Prolog},
+	doi = {10.1007/978-3-642-12592-8_12},
+	booktitle = {Logic Program Synthesis and Transformation},
+	author = {Carl Friedrich Bolz and Michael Leuschel and Armin Rigo},
+	year = {2009},
+	pages = {158{\textendash}172}
+},
+
+@inproceedings{bolz_allocation_2011,
 	series = {{PEPM} '11},
 	title = {Allocation removal by partial evaluation in a tracing {JIT}},
 	location = {Austin, Texas, {USA}},
 	doi = {10.1145/1929501.1929508},
 	abstract = {The performance of many dynamic language implementations suffers from high allocation rates and runtime type checks. This makes dynamic languages less applicable to purely algorithmic problems, despite their growing popularity. In this paper we present a simple compiler optimization based on online partial evaluation to remove object allocations and runtime type checks in the context of a tracing {JIT.} We evaluate the optimization using a Python {VM} and find that it gives good results for all our (real-life) benchmarks.},
-	journal = {Proceedings of the 20th {ACM} {SIGPLAN} workshop on Partial evaluation and program manipulation},
+	booktitle = {{PEPM}},
 	author = {Carl Friedrich Bolz and Antonio Cuni and Maciej Fija\l{}kowski and Michael Leuschel and Samuele Pedroni and Armin Rigo},
 	year = {2011},
-	note = {{ACM} {ID:} 1929508},
-	keywords = {code generation, experimentation, interpreters, languages, optimization, partial evaluation, performance, run-time environments, tracing jit},
-	pages = {43{\textendash}52}
+	keywords = {code generation, experimentation, interpreters, languages, optimization, partial evaluation, performance, run-time environments, tracing jit}
 },
 
 @inproceedings{chang_tracing_2009,
-	address = {Washington, {DC,} {USA}},
+	address = {Washington, {DC}},
 	title = {Tracing for Web 3.0: Trace Compilation for the Next Generation Web Applications},
 	isbn = {978-1-60558-375-4},
 	shorttitle = {Tracing for web 3.0},
 	url = {http://portal.acm.org/citation.cfm?id=1508293.1508304},
 	doi = {10.1145/1508293.1508304},
 	abstract = {Today's web applications are pushing the limits of modern web browsers. The emergence of the browser as the platform of choice for rich client-side applications has shifted the use of in-browser {JavaScript} from small scripting programs to large computationally intensive application logic. For many web applications, {JavaScript} performance has become one of the bottlenecks preventing the development of even more interactive client side applications. While traditional just-in-time compilation is successful for statically typed virtual machine based languages like Java, compiling {JavaScript} turns out to be a challenging task. Many {JavaScript} programs and scripts are short-lived, and users expect a responsive browser during page loading. This leaves little time for compilation of {JavaScript} to generate machine code.},
-	booktitle = {Proceedings of the 2009 {ACM} {SIGPLAN/SIGOPS} International Conference on Virtual Execution Environments},
+	booktitle = {{VEE}},
 	publisher = {{ACM}},
 	author = {Mason Chang and Edwin Smith and Rick Reitmaier and Michael Bebenita and Andreas Gal and Christian Wimmer and Brendan Eich and Michael Franz},
 	year = {2009},
 	keywords = {dynamically typed languages, forth, tamarin, trace trees, tracing, type specialization},
 	pages = {71--80}
-},
-
-@phdthesis{carl_friedrich_bolz_automatic_2008,
-	type = {Master Thesis},
-	title = {Automatic {JIT} Compiler Generation with Runtime Partial Evaluation},
-	school = {{Heinrich-Heine-Universit\"{a}t} D\"{u}sseldorf},
-	author = {Carl Friedrich Bolz},
-	year = {2008}
 },
 
 @inproceedings{davide_ancona_rpython:_2007,
@@ -244,12 +195,11 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?id=1297091},
 	doi = {10.1145/1297081.1297091},
 	abstract = {Although the C-based interpreter of Python is reasonably fast, implementations on the {CLI} or the {JVM} platforms offers some advantages in terms of robustness and interoperability. Unfortunately, because the {CLI} and {JVM} are primarily designed to execute statically typed, object-oriented languages, most dynamic language implementations cannot use the native bytecodes for common operations like method calls and exception handling; as a result, they are not able to take full advantage of the power offered by the {CLI} and {JVM.}},
-	booktitle = {Proceedings of the 2007 symposium on Dynamic languages},
+	booktitle = {{DLS}},
 	publisher = {{ACM}},
 	author = {Davide Ancona and Massimo Ancona and Antonio Cuni and Nicholas D. Matsakis},
 	year = {2007},
-	keywords = {{JVM,} .net, Python},
-	pages = {53--64}
+	keywords = {{JVM,} .net, Python}
 },
 
 @article{futamura_partial_1999,
@@ -270,7 +220,7 @@ number of benchmarks.},
 	isbn = {0-13-020249-5},
 	url = {http://portal.acm.org/citation.cfm?id=153676},
 	abstract = {This book is out of print. For copies, Please refer to the following online page},
-	publisher = {{Prentice-Hall,} Inc.},
+	publisher = {{Prentice-Hall}},
 	author = {Neil D. Jones and Carsten K. Gomard and Peter Sestoft},
 	year = {1993}
 },
@@ -282,12 +232,11 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?id=1176753},
 	doi = {10.1145/1176617.1176753},
 	abstract = {The {PyPy} project seeks to prove both on a research and a practical level the feasibility of constructing a virtual machine {(VM)} for a dynamic language in a dynamic language - in this case, Python. The aim is to translate (i.e. compile) the {VM} to arbitrary target environments, ranging in level from {C/Posix} to {Smalltalk/Squeak} via Java and {CLI/.NET,} while still being of reasonable efficiency within these {environments.A} key tool to achieve this goal is the systematic reuse of the Python language as a system programming language at various levels of our architecture and translation process. For each level, we design a corresponding type system and apply a generic type inference engine - for example, the garbage collector is written in a style that manipulates simulated pointer and address objects, and when translated to C these operations become C-level pointer and address instructions.},
-	booktitle = {Companion to the 21st {ACM} {SIGPLAN} conference on Object-oriented programming systems, languages, and applications},
+	booktitle = {{DLS}},
 	publisher = {{ACM}},
 	author = {Armin Rigo and Samuele Pedroni},
 	year = {2006},
-	keywords = {metacircularity, Python, retargettable code generation, type inference, {VM}},
-	pages = {944--953}
+	keywords = {metacircularity, Python, retargettable code generation, type inference, {VM}}
 },
 
 @article{georges_statistically_2007,
@@ -297,7 +246,7 @@ number of benchmarks.},
 	doi = {10.1145/1297105.1297033},
 	abstract = {Java performance is far from being trivial to benchmark because it is affected by various factors such as the Java application, its input, the virtual machine, the garbage collector, the heap size, etc. In addition, non-determinism at run-time causes the execution time of a Java program to differ from run to run. There are a number of sources of non-determinism such as {Just-In-Time} {(JIT)} compilation and optimization in the virtual machine {(VM)} driven by timer-based method sampling, thread scheduling, garbage collection, and various.},
 	number = {10},
-	journal = {{SIGPLAN} Not.},
+	journal = {{SIGPLAN} Notices},
 	author = {Andy Georges and Dries Buytaert and Lieven Eeckhout},
 	year = {2007},
 	keywords = {benchmarking, data analysis, methodology, statistics},
@@ -313,22 +262,11 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?id=1565827},
 	doi = {10.1145/1565824.1565827},
 	abstract = {We attempt to apply the technique of Tracing {JIT} Compilers in the context of the {PyPy} project, i.e., to programs that are interpreters for some dynamic languages, including Python. Tracing {JIT} compilers can greatly speed up programs that spend most of their time in loops in which they take similar code paths. However, applying an unmodified tracing {JIT} to a program that is itself a bytecode interpreter results in very limited or no speedup. In this paper we show how to guide tracing {JIT} compilers to greatly improve the speed of bytecode interpreters. One crucial point is to unroll the bytecode dispatch loop, based on two kinds of hints provided by the implementer of the bytecode interpreter. We evaluate our technique by applying it to two {PyPy} interpreters: one is a small example, and the other one is the full Python interpreter.},
-	booktitle = {Proceedings of the 4th workshop on the Implementation, Compilation, Optimization of {Object-Oriented} Languages and Programming Systems},
+	booktitle = {{ICOOOLPS}},
 	publisher = {{ACM}},
 	author = {Carl Friedrich Bolz and Antonio Cuni and Maciej Fija\l{}kowski and Armin Rigo},
 	year = {2009},
 	pages = {18--25}
-},
-
-@techreport{armin_rigo_jit_2007,
-	title = {{JIT} Compiler Architecture},
-	url = {http://codespeak.net/pypy/dist/pypy/doc/index-report.html},
-	abstract = {{PyPy{\textquoteright}s} translation tool-chain {\textendash} from the interpreter written in {RPython} to generated {VMs} for low-level platforms {\textendash} is now able to extend those {VMs} with an automatically generated dynamic compiler, derived from the interpreter. This is achieved by a pragmatic application of partial evaluation techniques guided by a few hints added to the source of the interpreter. Crucial for the effectiveness of dynamic compilation is the use of run-time information to improve compilation results: in our approach, a novel powerful primitive called {\textquotedblleft}promotion{\textquotedblright} that {\textquotedblleft}promotes{\textquotedblright} run-time values to compile-time is used to that effect. In this report, we describe it along with other novel techniques that allow the approach to scale to something as large as {PyPy{\textquoteright}s} Python interpreter.},
-	number = {D08.2},
-	institution = {{PyPy}},
-	author = {Armin Rigo and Samuele Pedroni},
-	month = may,
-	year = {2007}
 },
 
 @article{bala_dynamo:_2000,
@@ -363,12 +301,11 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?doid=1134760.1134780},
 	doi = {10.1145/1134760.1134780},
 	abstract = {We present a just-in-time compiler for a Java {VM} that is small enough to fit on resource-constrained devices, yet is surprisingly effective. Our system dynamically identifies traces of frequently executed bytecode instructions (which may span several basic blocks across several methods) and compiles them via Static Single Assignment {(SSA)} construction. Our novel use of {SSA} form in this context allows to hoist instructions across trace side-exits without necessitating expensive compensation code in off-trace paths. The overall memory consumption (code and data) of our system is only 150 {kBytes,} yet benchmarks show a speedup that in some cases rivals heavy-weight just-in-time compilers.},
-	booktitle = {Proceedings of the 2nd international conference on Virtual execution environments},
+	booktitle = {{VEE}},
 	publisher = {{ACM}},
 	author = {Andreas Gal and Christian W. Probst and Michael Franz},
 	year = {2006},
-	keywords = {dynamic compilation, embedded, software trace scheduling, {SSA,} {VM}},
-	pages = {144--153}
+	keywords = {dynamic compilation, embedded, software trace scheduling, {SSA,} {VM}}
 },
 
 @inproceedings{mario_wolczko_towards_1999,
@@ -388,7 +325,7 @@ number of benchmarks.},
 	url = {http://portal.acm.org/citation.cfm?id=178243.178478},
 	doi = {10.1145/178243.178478},
 	abstract = {Note: {OCR} errors may be found in this Reference List extracted from the full text article. {ACM} has opted to expose the complete List rather than only correct and linked references.},
-	booktitle = {Proceedings of the {ACM} {SIGPLAN} 1994 conference on Programming language design and implementation},
+	booktitle = {{PLDI}},
 	publisher = {{ACM}},
 	author = {Urs H\"{o}lzle and David Ungar},
 	year = {1994},
@@ -410,7 +347,7 @@ language and running it on top of an optimizing trace-based virtual machine, i.e
 of guest {VM} bytecodes corresponding to a given execution path
 through the application program. The host {VM} optimizes and compiles these traces to machine code, thus eliminating the need for a custom just-in-time compiler for the guest {VM.} The guest {VM} only needs to provide basic  information about its interpreter loop to the
 host {VM.}},
-	booktitle = {Proceedings of the 5th symposium on Dynamic languages},
+	booktitle = {{DLS}},
 	publisher = {{ACM}},
 	author = {Alexander Yermolovich and Christian Wimmer and Michael Franz},
 	year = {2009},
@@ -418,35 +355,22 @@ host {VM.}},
 	pages = {79--88}
 },
 
-@inproceedings{carl_friedrich_bolz_how_2007,
-	title = {How to not write a Virtual Machine},
-	abstract = {Typical modern dynamic languages have a growing number of implementations. We explore the reasons for this situation, and the limitations it imposes on open source or academic communities that lack the resources to fine-tune and maintain them all. It is sometimes proposed that implementing dynamic languages on top of a standardized general-purpose object-oriented virtual machine (like Java or {.NET)} would help reduce this burden. We propose a complementary alternative to writing custom virtual machine {(VMs)} by hand, validated by the {PyPy} project: flexibly generating {VMs} from a high-level "specification",
-inserting features and low-level details automatically {\textendash} including good just-in-time compilers tuned to the dynamic language at hand.
-We believe this to be ultimately a better investment of efforts than the development of more and more advanced general-purpose object
-oriented {VMs.} In this paper we compare these two approaches in detail.},
-	booktitle = {Proceedings of the 3rd Workshop on Dynamic Languages and Applications {(DYLA} 2007)},
-	author = {Carl Friedrich Bolz and Armin Rigo},
-	year = {2007}
-},
-
-@article{chambers_efficient_1989,
+@inproceedings{chambers_efficient_1989,
 	title = {An efficient implementation of {SELF} a dynamically-typed object-oriented language based on prototypes},
 	volume = {24},
 	url = {http://portal.acm.org/citation.cfm?id=74884},
 	doi = {10.1145/74878.74884},
 	abstract = {We have developed and implemented techniques that double the performance of dynamically-typed object-oriented languages. Our {SELF} implementation runs twice as fast as the fastest Smalltalk implementation, despite {SELF's} lack of classes and explicit variables. To compensate for the absence of classes, our system uses implementation-level maps to transparently group objects cloned from the same prototype, providing data type information and eliminating the apparent space overhead for prototype-based systems. To compensate for dynamic typing, user-defined control structures, and the lack of explicit variables, our system dynamically compiles multiple versions of a source method, each customized according to its receiver's map. Within each version the type of the receiver is fixed, and thus the compiler can statically bind and inline all messages sent to self. Message splitting and type prediction extract and preserve even more static type information, allowing the compiler to inline many other messages. Inlining dramatically improves performance and eliminates the need to hard-wire low-level methods such as +,==, and {ifTrue:.} Despite inlining and other optimizations, our system still supports interactive programming environments. The system traverses internal dependency lists to invalidate all compiled methods affected by a programming change. The debugger reconstructs inlined stack frames from compiler-generated debugging information, making inlining invisible to the {SELF} programmer.},
-	number = {10},
-	journal = {{SIGPLAN} Not.},
+	booktitle = {{OOPSLA}},
 	author = {C. Chambers and D. Ungar and E. Lee},
 	year = {1989},
 	keywords = {self, specialization},
-	pages = {49--70},
 	annote = {{\textless}p{\textgreater}describes the first implementation of {SELF.} Since {SELF} is highly dynamic, it is not easy to optimize it well.{\textless}/p{\textgreater}
-{\textless}p{\textgreater}~{\textless}/p{\textgreater}
+{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}
 {{\textless}p{\textgreater}The} first problem is one of space, the prototypical nature of self makes its objects much larger. This is solved by "maps", which are like sharing dicts in pypy: every object has an associated map (structure object) that describes how the layout of the object. In that respect a map is a bit like a class, but user-invisible.{\textless}/p{\textgreater}
-{\textless}p{\textgreater}~{\textless}/p{\textgreater}
+{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}
 {{\textless}p{\textgreater}The} compilation behavior of {SELF} is such that the every method is specialized for the map of the first argument. Then aggressive inlining is performed, which is particularly useful for self-sends (which are syntactically easy to write in {SELF),} since the lookup of those methods can be done at compile-time since the map is static due to specialization.{\textless}/p{\textgreater}
-{\textless}p{\textgreater}~{\textless}/p{\textgreater}
+{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}
 {{\textless}p{\textgreater}Further} optimizations are removal of unused closures and method splitting (which essentially prevents merging of paths in the flow graph to keep more information).{\textless}/p{\textgreater}}
 },
 
@@ -454,11 +378,10 @@ oriented {VMs.} In this paper we compare these two approaches in detail.},
 	title = {Optimizing {Dynamically-Typed} {Object-Oriented} Languages With Polymorphic Inline Caches},
 	isbn = {3-540-54262-0},
 	url = {http://portal.acm.org/citation.cfm?id=679193&dl=ACM&coll=portal},
-	booktitle = {Proceedings of the European Conference on {Object-Oriented} Programming},
+	booktitle = {{ECOOP}},
 	publisher = {{Springer-Verlag}},
 	author = {Urs H\"{o}lzle and Craig Chambers and David Ungar},
-	year = {1991},
-	pages = {21--38}
+	year = {1991}
 },
 
 @inproceedings{rigo_representation-based_2004,
@@ -468,12 +391,11 @@ oriented {VMs.} In this paper we compare these two approaches in detail.},
 	url = {http://portal.acm.org/citation.cfm?id=1014010},
 	doi = {10.1145/1014007.1014010},
 	abstract = {A powerful application of specialization is to remove interpretative overhead: a language can be implemented with an interpreter, whose performance is then improved by specializing it for a given program source. This approach is only moderately successful with very high level languages, where the operation of each single step can be highly dependent on run-time data and context. In the present paper, the Psyco prototype for the Python language is presented. It introduces two novel techniques. The first is just-in-time specialization, or specialization by need, which introduces the "unlifting" ability for a value to be promoted from run-time to compile-time during specialization -- the inverse of the lift operator of partial evaluation. Its presence gives an unusual and powerful perspective on the specialization process. The second technique is representations, a theory of data-oriented specialization generalizing the traditional specialization domains (i.e. the compile-time/run-time dichotomy).},
-	booktitle = {Proceedings of the 2004 {ACM} {SIGPLAN} symposium on Partial evaluation and semantics-based program manipulation},
+	booktitle = {{PEPM}},
 	publisher = {{ACM}},
 	author = {Armin Rigo},
 	year = {2004},
-	keywords = {{JIT,} Python},
-	pages = {15--26}
+	keywords = {{JIT,} Python}
 },
 
 @inproceedings{sullivan_dynamic_2003,
@@ -483,25 +405,9 @@ oriented {VMs.} In this paper we compare these two approaches in detail.},
 	url = {http://portal.acm.org/citation.cfm?id=858570.858576},
 	doi = {10.1145/858570.858576},
 	abstract = {For domain specific languages, "scripting languages", dynamic languages, and for virtual machine-based languages, the most straightforward implementation strategy is to write an interpreter. A simple interpreter consists of a loop that fetches the next bytecode, dispatches to the routine handling that bytecode, then loops. There are many ways to improve upon this simple mechanism, but as long as the execution of the program is driven by a representation of the program other than as a stream of native instructions, there will be some "interpretive {overhead".There} is a long history of approaches to removing interpretive overhead from programming language implementations. In practice, what often happens is that, once an interpreted language becomes popular, pressure builds to improve performance until eventually a project is undertaken to implement a native Just In Time {(JIT)} compiler for the language. Implementing a {JIT} is usually a large effort, affects a significant part of the existing language implementation, and adds a significant amount of code and complexity to the overall code {base.In} this paper, we present an innovative approach that dynamically removes much of the interpreted overhead from language implementations, with minimal instrumentation of the original interpreter. While it does not give the performance improvements of hand-crafted native compilers, our system provides an appealing point on the language implementation spectrum.},
-	booktitle = {Proceedings of the 2003 workshop on Interpreters, virtual machines and emulators},
+	booktitle = {Workshop on Interpreters, virtual machines and emulators},
 	publisher = {{ACM}},
 	author = {Gregory T. Sullivan and Derek L. Bruening and Iris Baron and Timothy Garnett and Saman Amarasinghe},
 	year = {2003},
-	pages = {50--57},
 	annote = {{{\textless}p{\textgreater}Describes} the application of Dynamo to interpreters. The unchanged dynamo does not fare too well on interpreters, since it traces one iteration of the bytecode loop, and the next iteration is likely to be very different. Matters are improved by adding hints to the interpreter that tell the tracer what the program counter of the interpreter is. Then the tracer only closes loops at the application {level.{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}Strong} restrictions due to the fact that things happen on the assembler level.{\textless}/p{\textgreater}}
-},
-
-@incollection{carl_friedrich_bolz_back_2008,
-	title = {Back to the Future in One Week {\textemdash} Implementing a Smalltalk {VM} in {PyPy}},
-	url = {http://dx.doi.org/10.1007/978-3-540-89275-5_7},
-	abstract = {We report on our experiences with the Spy project, including implementation details and benchmark results. Spy is a re-implementation of the Squeak (i.e. Smalltalk-80) {VM} using the {PyPy} toolchain. The {PyPy} project allows code written in {RPython,} a subset of Python, to be translated
-to a multitude of different backends and architectures. During the translation, many aspects of the implementation can be
-independently tuned, such as the garbage collection algorithm or threading implementation. In this way, a whole host of interpreters
-can be derived from one abstract interpreter definition. Spy aims to bring these benefits to Squeak, allowing for greater portability and, eventually, improved performance. The current
-Spy codebase is able to run a small set of benchmarks that demonstrate performance superior to many similar Smalltalk {VMs,} but
-which still run slower than in Squeak itself. Spy was built from scratch over the course of a week during a joint {Squeak-PyPy} Sprint in Bern last autumn.},
-	booktitle = {{Self-Sustaining} Systems},
-	author = {Carl Friedrich Bolz and Adrian Kuhn and Adrian Lienhard and Nicholas Matsakis and Oscar Nierstrasz and Lukas Renggli and Armin Rigo and Toon Verwaest},
-	year = {2008},
-	pages = {123--139}
 }
