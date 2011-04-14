@@ -160,13 +160,6 @@ structured so that many such slow-varying values are at hand. The hints that
 we present precisely allow us to implement such feedback and exploitation in a
 meta-tracing context.
 
-\cfbolz{XXX kill the next paragraph? the info is repeated in the list below}
-In particular the hints
-influence the constant folding
-optimization. The first hint makes it possible to turn arbitrary
-variables in the trace into constant by feeding back runtime values. The
-second hint allows the definition of additional foldable operations.
-
 Together these hints can be used to express many classic implementation
 techniques used for object models of dynamic languages, such as maps and
 polymorphic inline caches.
@@ -179,6 +172,8 @@ The contributions of this paper are:
  optimization then recognizes and exploits.
  \item A worked-out example of a simple object model of a dynamic language and
  how it can be improved using these hints.
+ \item This example also exemplifies general techniques for refactoring code to
+ expose likely runtime constants constant folding opportunities.
 \end{itemize}
 
 The paper is structured as follows: Section~\ref{sec:Background} gives an
@@ -187,11 +182,6 @@ tiny dynamic language object model. Section~\ref{sec:hints} presents the hints,
 what they do and how they are applied. Section~\ref{sec:fastobjmodel} shows how
 the hints are applied to the tiny object model and Section~\ref{sec:evaluation}
 presents benchmarks.
-
-\cfbolz{XXX stress more that "the crux of the techniques and a significant
-portion of new contributions in the paper are from how to refactoring codes to
-expose likely runtime constants and trace-elidable functions"}
-
 
 \section{Background}
 \label{sec:Background}
@@ -432,10 +422,9 @@ stopped and the interpreter continues to run.
 
 There are cases in which it is useful to turn an arbitrary variable
 into a constant value. This process is called \emph{promotion} and it is an old idea
-in partial evaluation (it's called ``The Trick''  \cite{jones_partial_1993} there). Promotion is also heavily
-used by Psyco \cite{rigo_representation-based_2004} and by all older versions
-of PyPy's JIT. It is a technique that only works well in JIT compilers;
-in static compilers it is significantly less applicable.
+in partial evaluation (it's called ``The Trick''  \cite{jones_partial_1993}
+there). The technique is substantially more powerful in a JIT compiler than in
+the static setting of classic partial evaluation.
 
 Promotion is essentially a tool for trace specialization. There are places in
 the interpreter where knowing that a value is constant opens a lot of
@@ -490,8 +479,10 @@ return($v_2$)
 \end{lstlisting}
 
 The promotion is turned into a \texttt{guard} operation in the trace. The guard
-captures the value of $x_1$ as it was during tracing. \cfbolz{drop the word runtime feedback here?}
-From the point of view of the
+captures the value of $x_1$ as it was during tracing. Thus the runtime value of
+\texttt{x} is being made available to the compiler to exploit. The introduced
+guard specializes the trace, because it only works if the value of $x_1$ is
+\texttt{4}. From the point of view of the
 optimizer, this guard is not any different than the one produced by the \texttt{if}
 statement in the example above. After the guard, the rest of the trace can
 assume that $x_1$ is equal to \texttt{4}, meaning that the optimizer will turn this
@@ -700,11 +691,8 @@ that the number of different instance layouts is small.
 With this changed instance implementation, the trace we had above changes to the
 following that of see Figure~\ref{fig:trace2}. There \texttt{0xb74af4a8} is the
 memory address of the \texttt{Map} instance that has been promoted. Operations
-that can be optimized away are grayed out.
-
-\cfbolz{XXX also explain that some forwarding of guarded values is happening,
-make clearer which figures show optimized code and which show non-optimized
-code}
+that can be optimized away are grayed out, their results will be replaced by
+fixed values by the constant folding.
 
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
 a trace-elidable function and they have constant arguments. That means that \texttt{index1/2/3}
@@ -950,7 +938,11 @@ implementation of dynamic languages on top of JVMs easier. The bytecode gives ac
 
 We already explored promotion in other context, such as earlier versions of
 PyPy's JIT \cite{armin_rigo_jit_2007} as well as a Prolog partial evaluator
-\cite{carl_friedrich_bolz_towards_????}. Promotion is quite similar to
+\cite{carl_friedrich_bolz_towards_????}. Promotion is also heavily
+used by Psyco \cite{rigo_representation-based_2004} (promotion is called
+"unlifting" in this paper) a method-based JIT compiler for Python written by
+one of the authors. Promotion was also used in DyC \cite{grant_dyc:_2000}, a
+runtime partial evaluator for C. Promotion is quite similar to
 (polymorphic) inline caching and runtime type feedback techniques which were
 first used in Smalltalk \cite{deutsch_efficient_1984} and SELF
 \cite{hoelzle_optimizing_1991,hoelzle_optimizing_1994} implementations.
