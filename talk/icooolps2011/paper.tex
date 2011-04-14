@@ -383,10 +383,7 @@ For constant folding to work, two conditions need to be met:
     the same result given the same arguments.
 \end{itemize}
 
-The PyPy JIT generator automatically detects the majority of these conditions.
-However, for the cases in which the automatic detection does not work, the
-interpreter author can apply \textbf{hints} to improve the optimization
-opportunities. There is one kind of hint for both of the conditions above.
+There is one kind of hint for both of these conditions.
 
 
 \subsection{Where Do All the Constants Come From}
