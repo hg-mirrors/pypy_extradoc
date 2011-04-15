@@ -154,8 +154,8 @@ PyPy project to improve the performance of its Python interpreter, particularly
 of the object model.
 
 Conceptually, the significant speed-ups that can be achieved with
-dynamic compilation depend on feeding into compilation and exploiting
-values observed at runtime. In particular, if
+dynamic compilation depend on feeding into compilation values observed at
+runtime and exploiting them. In particular, if
 there are values which vary very slowly, it is possible to compile multiple
 specialized versions of the same code, one for each actual value.  To exploit
 the runtime feedback, the implementation code and data structures need to be
@@ -176,7 +176,7 @@ The contributions of this paper are:
  \item A worked-out example of a simple object model of a dynamic language and
  how it can be improved using these hints.
  \item This example also exemplifies general techniques for refactoring code to
- expose likely runtime constants constant folding opportunities.
+ expose constant folding opportunities of likely runtime constants.
 \end{itemize}
 
 The paper is structured as follows: Section~\ref{sec:Background} gives an
@@ -201,7 +201,7 @@ can therefore be translated to efficient C code.
 
 A number of languages have been implemented with PyPy, most importantly a full
 Python implementation, but also a Prolog interpreter
-\cite{carl_friedrich_bolz_towards_2010}.
+\cite{carl_friedrich_bolz_towards_2010} and some less mature experiments.
 
 The translation of the interpreter to C code adds a number of implementation details into the
 final executable that are not present in the interpreter implementation, such as
@@ -221,8 +221,8 @@ We call the code that runs on top of an interpreter implemented with PyPy the
 \label{sub:tracing}
 
 A recently popular approach to JIT compilers is that of tracing JITs. Tracing
-JITs have their origin in the Dynamo project, which used one of them for dynamic
-assembler optimization \cite{bala_dynamo:_2000}. Later they were used to implement
+JITs have their origin in the Dynamo project, which used the technique for dynamic
+machine code optimization \cite{bala_dynamo:_2000}. Later they were used to implement
 a lightweight JIT for Java \cite{gal_hotpathvm:_2006} and for dynamic languages such as
 JavaScript \cite{gal_trace-based_2009}.
 
@@ -243,7 +243,7 @@ operations that check that the assumptions are still true when the compiled trac
 To be able to do this recording, VMs with a
 tracing JIT typically contain an interpreter. After a user program is
 started the interpreter is used; only the most frequently executed paths through the user
-program are turned into machine code. The interpreter is also used when a guard
+program are traced and turned into machine code. The interpreter is also used when a guard
 fails to continue the execution from the failing guard.
 
 Since PyPy wants to be a general framework, we want to reuse our tracer for
@@ -259,7 +259,7 @@ Tracing through the execution of an interpreter has many advantages. It makes
 the tracer, its optimizers and backends reusable for a variety of languages. The
 language semantics do not need to be encoded into the JIT. Instead the tracer
 just picks them up from the interpreter. This also means that the JIT by
-construction supports the full language.
+construction supports the full language as correctly as the interpreter.
 
 While the operations in a trace are those of the interpreter, the loops that are
 traced by the tracer are the loops in the
@@ -307,7 +307,7 @@ As the running example of this paper we will use a very simple and bare-bones
 object model that just supports classes and instances, without any
 inheritance or other advanced features. In the model classes contain methods.
 Instances have a class. Instances have their own attributes (or fields). When looking up an
-attribute on an instance, the instances attributes are searched. If the
+attribute on an instance, the instance's attributes are searched. If the
 attribute is not found there, the class' methods are searched.
 
 \begin{figure}
@@ -371,7 +371,7 @@ Section~\ref{sec:fastobjmodel}.
 \section{Hints for Controlling Optimization}
 \label{sec:hints}
 
-In this section we will describe how to add two hints that allow the
+In this section we will describe two hints that allow the
 interpreter author to increase the optimization opportunities for constant
 folding. If applied correctly these techniques can give really big speedups by
 pre-computing parts of what happens at runtime. On the other
@@ -400,7 +400,7 @@ The simplest example of constants are literal values, such as \texttt{1}.
 However, the optimizer can statically know the value of a variable even if it
 is not a constant in the original source code. For example, consider the
 following fragment of RPython code on the left. If the fragment is traced with
-$x_1$ being \texttt{4}, the trace on the left is produced:
+\texttt{x} being \texttt{4}, the trace on the right is produced:
 
 
 \begin{minipage}[b]{0.5\linewidth}
@@ -424,10 +424,10 @@ $y_2$ = $y_1$ + $x_1$
 \end{minipage}
 
 
-In the trace, the value of $x_1$ is statically known after the guard.
-Remember that a guard is a runtime check. The above trace will run to
-completion when $x_1$ \texttt{== 4}. If the check fails, execution of the trace is
-stopped and the interpreter continues to run.
+A guard is a runtime check. The above trace will run to completion when $x_1$
+\texttt{== 4}. If the check fails, execution of the trace is stopped and the
+interpreter continues to run. Therefore, the value of $x_1$ is statically known
+to be \texttt{4} after the guard.
 
 There are cases in which it is useful to turn an arbitrary variable
 into a constant value. This process is called \emph{promotion} and it is an old idea
@@ -440,9 +440,10 @@ the interpreter where knowing that a value is constant opens a lot of
 optimization opportunities, even though it
 could have different values in practice. In such a place, promotion can be used. The
 typical reason to do that is if there is
-a lot of computation depending on the value of that variable.
+a lot of computation depending on the value of one variable.
 
-Let's make this more concrete. If we trace a call to the function on the left, we get the trace on the right:
+Let's make this more concrete. If we trace a call to the function (written in
+RPython) on the left, we get the trace on the right:
 
 \begin{minipage}[b]{0.5\linewidth}
 \centering
@@ -468,7 +469,7 @@ return($v_2$)
 \end{minipage}
 
 Observe how the first two operations could be constant-folded if the value of
-$x_1$ were known. Let's assume that the value of \texttt{x} in the Python code can vary, but does so
+$x_1$ were known. Let's assume that the value of \texttt{x} in the RPython code can vary, but does so
 rarely, i.e. only takes a few different values at runtime. If this is the
 case, we can add a hint to promote \texttt{x}, like this:
 
@@ -509,12 +510,12 @@ the arguments \texttt{4} and \texttt{8}. The trace will be the same, except for 
 operation at the beginning.
 
 The promotion is turned into a \texttt{guard} operation in the trace. The guard
-captures the value of $x_1$ as it was during tracing. Thus the runtime value of
-\texttt{x} is being made available to the compiler to exploit. The introduced
+captures the runtime value of \texttt{x} as it was during tracing, which can
+then be exploited by the compiler. The introduced
 guard specializes the trace, because it only works if the value of $x_1$ is
 \texttt{4}. From the point of view of the
 optimizer, this guard is not any different than the one produced by the \texttt{if}
-statement in the example above. After the guard, the rest of the trace can
+statement in the first example. After the guard, the rest of the trace can
 assume that $x_1$ is equal to \texttt{4}, meaning that the optimizer will turn this
 trace into:
 
@@ -565,9 +566,9 @@ works.
 
 In the previous section we saw a way to turn arbitrary variables into constants. All
 foldable operations on these constants can be constant-folded. This works well for
-constant folding of simple types, e.g. integers. Unfortunately, in the context of an
+constant folding of primitive types, e.g. integers. Unfortunately, in the context of an
 interpreter for a dynamic
-language, most operations actually manipulate objects, not simple types. The
+language, most operations actually manipulate objects, not primitive types. The
 operations on objects are often not foldable and might even have side-effects. If
 one reads a field out of a constant reference to an object this cannot
 necessarily be folded away because the object can be mutated. Therefore, another
@@ -581,7 +582,7 @@ idempotent side effects\footnote{This property
 is less strict than that of a pure function, because it is only about actual
 calls during execution. All pure functions are trace-elidable though.}.
 From this definition follows that a call to an trace-elidable function with
-constant arguments in a trace can be replaced with the result of the call.
+constant arguments in a trace can be replaced with the result of the call seen during tracing.
 
 As an example, take the class on the left. Tracing the call \texttt{a.f(10)} of
 some instance of \texttt{A} yields the trace on the right (note how the call to
@@ -621,7 +622,7 @@ always yield the same value. To solve this problem, there is another annotation,
 which lets the interpreter author communicate invariants to the optimizer. In
 this case, she could decide that the \texttt{x} field of instances of \texttt{A} is
 immutable, and therefore \texttt{c}
-is an trace-elidable function. To communicate this, there is a \texttt{elidable} decorator.
+is an trace-elidable function. To communicate this, there is an \texttt{@elidable} decorator.
 If the code in \texttt{c} should be constant-folded away, we would change the
 class as follows:
 
@@ -648,18 +649,18 @@ class A(object):
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
 guard($a_1$ == 
       0xb73984a8)
-$v_1$ = c($a_1$)
+$v_1$ = A.c($a_1$)
 $v_2$ = $v_1$ + $val_1$
 $a_1$.y = $v_2$
 \end{lstlisting}
 \end{minipage}
 
 Here, \texttt{0xb73984a8} is the address of the instance of \texttt{A} that was used
-during tracing. The call to \texttt{c} is not inlined, so that the optimizer
-has a chance to see it. Since the \texttt{c} function is marked as trace-elidable, and its
+during tracing. The call to \texttt{A.c} is not inlined, so that the optimizer
+has a chance to see it. Since the \texttt{A.c} method is marked as trace-elidable, and its
 argument
 is a constant reference, the call will be removed by the optimizer. The final
-trace looks like this:
+trace looks like this (assuming that the \texttt{x} field's value is \texttt{4}):
 %
 {\noop
 \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
@@ -669,14 +670,12 @@ $a_1$.y = $v_2$
 \end{lstlisting}
 }
 
-(assuming that the \texttt{x} field's value is \texttt{4}).
-
-On the one hand, the \texttt{elidable} annotation is very powerful. It can be
+On the one hand, the \texttt{@elidable} annotation is very powerful. It can be
 used to constant-fold arbitrary parts of the computation in the interpreter.
 However, the annotation also gives the interpreter author ample opportunity to introduce bugs. If a
 function is annotated to be trace-elidable, but is not really, the optimizer can produce
 subtly wrong code. Therefore, a lot of care has to be taken when using this
-annotation\footnote{The most common use case of the \texttt{elidable}
+annotation\footnote{The most common use case of the \texttt{@elidable}
 annotation is indeed to declare the immutability of fields. Because it is so
 common, we have special syntactic sugar for it.}. We hope to introduce a
 debugging mode which would (slowly) check whether the annotation is applied
@@ -726,27 +725,31 @@ Figure~\ref{fig:maps}.
 
 In this implementation instances no longer use dictionaries to store their fields. Instead, they have a
 reference to a map, which maps field names to indexes into a storage list. The
-storage list contains the actual field values. Therefore they have to be immutable, which means
+storage list contains the actual field values. Maps are shared between
+different instances, therefore they have to be immutable, which means
 that their \texttt{getindex} method is an trace-elidable function. When a new attribute is added
 to an instance, a new map needs to be chosen, which is done with the
 \texttt{add\_attribute} method on the previous map. This function is also trace-elidable,
 because it caches all new instances of \texttt{Map} that it creates, to make
-sure that objects with the same layout have the same map. Now that we have
+sure that objects with the same layout have the same map, which makes its side
+effects idempotent. Now that we have
 introduced maps, it is safe to promote the map everywhere, because we assume
 that the number of different instance layouts is small.
 
-With this changed instance implementation, the trace we had above changes to the
-following that of see Figure~\ref{fig:trace2}. There \texttt{0xb74af4a8} is the
+With this changed instance implementation, the trace we saw in Section~\ref{sub:running} changes to the
+that of Figure~\ref{fig:trace2}. There \texttt{0xb74af4a8} is the
 memory address of the \texttt{Map} instance that has been promoted. Operations
-that can be optimized away are grayed out, their results will be replaced by
+that can be optimized away are grayed out, their results will be replaced with
 fixed values by the constant folding.
 
 The calls to \texttt{Map.getindex} can be optimized away, because they are calls to
-a trace-elidable function and they have constant arguments. That means that \texttt{index1/2/3}
+a trace-elidable function and they have constant arguments. That means that $index_{1/2/3}$
 are constant and the guards on them can be removed. All but the first guard on
 the map will be optimized away too, because the map cannot have changed in
 between. This trace is already much better than
 the original one. Now we are down from five dictionary lookups to just two.
+
+XXX separation of fast and slow-changing parts
 
 \begin{figure}
 \input{code/trace2.tex}
@@ -761,13 +764,13 @@ the original one. Now we are down from five dictionary lookups to just two.
 
 \subsection{Versioning of Classes}
 
-Instances were optimized making the assumption that the total number of
+Instances were optimized by making the assumption that the total number of
 different instance layouts is small compared to the number of instances. For classes we
 will make an even stronger assumption. We simply assume that it is rare for
 classes to change at all. This is not totally reasonable (sometimes classes contain
 counters or similar things) but for this simple example it is good
-enough.\footnote{There is a more complex variant of class versions that can
-accommodate class fields that change a lot better.}
+enough.\footnote{There is a more complex variant of the presented technique that can
+accommodate quick-changing class fields a lot better.}
 
 What we would really like is if the \texttt{Class.find\_method} method were trace-elidable.
 But it cannot be, because it is always possible to change the class itself.
@@ -778,8 +781,8 @@ Therefore, we give every class a version object, which is changed every time a
 class gets changed (i.e., the \texttt{methods} dictionary changes).
 This means that the result of calls to \texttt{methods.get()} for a given \texttt{(name,
 version)} pair will always be the same, i.e. it is a trace-elidable operation.  To help
-the JIT to detect this case, we factor it out in a helper method which is
-explicitly marked as \texttt{@elidable}. The refactored \texttt{Class} can
+the JIT to detect this case, we factor it out in a helper method \texttt{\_find\_method} which is
+marked as \texttt{@elidable}. The refactored \texttt{Class} can
 be seen in Figure~\ref{fig:version}
 
 \begin{figure}
@@ -811,7 +814,7 @@ optimized trace can be seen in Figure~\ref{fig:trace5}.
 \label{fig:trace5}
 \end{figure}
 
-The index \texttt{0} that is used to read out of the \texttt{storage} array is the result
+The index \texttt{0} that is used to read out of the \texttt{storage} list is the result
 of the constant-folded \texttt{getindex} call.
 The constants \texttt{41} and \texttt{17} are the results of the folding of the
 \texttt{\_find\_method} calls. This final trace is now very good. It no longer performs any
@@ -843,9 +846,9 @@ trace as in our simple object model above.
 
 Another optimization is that in practice the shape of an instance is correlated
 with its class. In our code above, we allow both to vary independently.
-Therefore we store the class of an instance on the map in PyPy's Python
-interpreter. This means that we get one fewer promotion (and thus one fewer
-guard) in the trace, because the class doesn't need to be promoted after the
+In PyPy's Python interpreter we store the class of an instance on its map. This
+means that we get one fewer promotion and thus one fewer
+guard in the trace, because the class doesn't need to be promoted after the
 map has been.
 
 
@@ -856,7 +859,7 @@ map has been.
 %The techniques we used above to make instance and class lookups faster are
 %applicable in more general cases than the one we developed them for. A more
 %abstract view of maps is that of splitting a data-structure into an immutable part (\eg the map)
-%and a part that changes (\eg the storage array). All the computation on the
+%and a part that changes (\eg the storage list). All the computation on the
 %immutable part is trace-elidable so that only the manipulation of the quick-changing
 %part remains in the trace after optimization.
 %
@@ -878,7 +881,7 @@ templating engine of the Django web
 framework\footnote{\texttt{http://www.djangoproject.com/}}; a Monte-Carlo Go
 AI\footnote{\texttt{http://shed-skin.blogspot.com/2009/07/
 disco-elegant-python-go-player.html}}; a BZ2 decoder; a port of the classical
-Richards benchmark in Python; a Python version of the Telco decimal
+Richards benchmark to Python; a Python version of the Telco decimal
 benchmark\footnote{\texttt{http://speleotrove.com/decimal/telco.html}}, using a
 pure Python decimal floating point implementation. The results we see in these
 benchmarks seem to repeat themselves in other benchmarks using object-oriented
@@ -901,7 +904,7 @@ used as the result. The errors were computed using a confidence interval with a
 reported in Figure~\ref{fig:times}, together with the same numbers normalized to
 those of the full JIT.
 
-The optimizations give a speedup between 80\% and almost 20 times. The Richards
+The optimizations give a speedup between 80\% and almost 20 times. The Richards benchmark
 is a particularly good case for the optimizations as it makes heavy uses of
 object-oriented features. Pyflate uses mostly imperative code, so does not
 benefit as much. Together with the optimization, PyPy outperforms CPython in
@@ -948,7 +951,7 @@ match loops in the user-level functions. These hints are comparable to the one
 PyPy uses for the same reasons \cite{bolz_tracing_2009}. Their approach suffers
 mostly from the low abstraction level that machine code provides.
 
-Yermolovich et. al. describe the use of the Tamarin JavaScript tracing JIT as a
+Yermolovich et. al. \cite{yermolovich_optimization_2009} describe the use of the Tamarin JavaScript tracing JIT as a
 meta-tracer for a Lua interpreter. They compile the normal Lua interpreter in C
 to ActionScript bytecode. Again, the interpreter is annotated with some hints
 that indicate the main interpreter loop to the tracer.  No further hints are
@@ -970,6 +973,8 @@ Partial evaluation \cite{jones_partial_1993} tries to automatically transform
 interpreters into compilers using the second futamura projection
 \cite{futamura_partial_1999}. Given that classical partial evaluation works
 strictly ahead of time, it inherently cannot support runtime feedback.
+Some partial evaluator work at runtime, such as DyC \cite{grant_dyc:_2000},
+which also supports a concept similar to promotion (called dynamic-to-static promotion).
 
 An early attempt at building a general environment for implementing languages
 efficiently is described by Wolczko et. al. \cite{mario_wolczko_towards_1999}.
@@ -988,8 +993,7 @@ PyPy's JIT as well as a Prolog partial evaluator
 \cite{bolz_towards_2009}. Promotion is also heavily
 used by Psyco \cite{rigo_representation-based_2004} (promotion is called
 "unlifting" in this paper) a method-based JIT compiler for Python written by
-one of the authors. Promotion was also used in DyC \cite{grant_dyc:_2000}, a
-runtime partial evaluator for C. Promotion is quite similar to
+one of the authors. Promotion is quite similar to
 (polymorphic) inline caching and runtime type feedback techniques which were
 first used in Smalltalk \cite{deutsch_efficient_1984} and SELF
 \cite{hoelzle_optimizing_1991,hoelzle_optimizing_1994} implementations.
@@ -1018,6 +1022,8 @@ variety of language semantics efficiently.
 
 The authors would like to thank Peng Wu, David Edelsohn and Laura Creighton for
 encouragement, fruitful discussions and feedback during the writing of this paper.
+This research was partially supported by the BMBF funded project PyJIT (nr. 01QE0913B;
+Eureka Eurostars).
 
 \bibliographystyle{abbrv}
 \bibliography{paper}

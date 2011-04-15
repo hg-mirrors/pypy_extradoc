@@ -17,7 +17,8 @@ class Class(object):
 
     @elidable
     def _find_method(self, name, version):
-        return self.methods.get(name)
+        assert version is self.version
+        return self.methods.get(name, None)
 
     def write_method(self, name, value):
         self.methods[name] = value

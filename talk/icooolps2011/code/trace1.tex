@@ -7,21 +7,21 @@ guard($result_1$ is not None)               |\setcounter{lstnumber}{25}|
 
 # $inst_1$.getattr("b")                     |\setcounter{lstnumber}{21}|
 $attributes_2$ = $inst_1$.attributes        |\setcounter{lstnumber}{21}|
-$v_1$ = dict.get($attributes_2$, "b")       |\setcounter{lstnumber}{28}|
+$v_1$ = dict.get($attributes_2$, "b", None) |\setcounter{lstnumber}{28}|
 guard($v_1$ is None)                        |\setcounter{lstnumber}{29}|
 $cls_1$ = $inst_1$.cls                      |\setcounter{lstnumber}{9}|
 $methods_1$ = cls.methods                   |\setcounter{lstnumber}{9}|
-$result_2$ = dict.get($methods_1$, "b")     |\setcounter{lstnumber}{30}|
+$result_2$ = dict.get($methods_1$, "b", None) |\setcounter{lstnumber}{30}|
 guard($result_2$ is not None)               |\setcounter{lstnumber}{-2}|
 $v_2$ = $result_1$ + $result_2$             |\setcounter{lstnumber}{25}|
 
 # $inst_1$.getattr("c")                     |\setcounter{lstnumber}{21}|
 $attributes_3$ = $inst_1$.attributes        |\setcounter{lstnumber}{21}|
-$v_3$ = dict.get($attributes_3$, "c")       |\setcounter{lstnumber}{28}|
+$v_3$ = dict.get($attributes_3$, "c", None) |\setcounter{lstnumber}{28}|
 guard($v_3$ is None)                        |\setcounter{lstnumber}{29}|
 $cls_1$ = $inst_1$.cls                      |\setcounter{lstnumber}{9}|
 $methods_2$ = cls.methods                   |\setcounter{lstnumber}{9}|
-$result_3$ = dict.get($methods_2$, "c")     |\setcounter{lstnumber}{30}|
+$result_3$ = dict.get($methods_2$, "c", None) |\setcounter{lstnumber}{30}|
 guard($result_3$ is not None)               |\setcounter{lstnumber}{-3}|
 
 $v_4$ = $v_2$ + $result_3$                  |\setcounter{lstnumber}{-2}|
