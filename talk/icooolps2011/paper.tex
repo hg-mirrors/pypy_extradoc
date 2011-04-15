@@ -213,7 +213,7 @@ The advantage of this approach is that writing an interpreter is much easier
 and less error prone than manually writing a JIT compiler.  Similarly, writing
 in a high level language such as RPython is easier than writing in C.
 
-We call the code that runs on top of an interpreter implemented with PyPy the
+We call the code that runs on top of a VM implemented with PyPy the
 \emph{user code} or \emph{user program}.
 
 %___________________________________________________________________________
@@ -385,7 +385,7 @@ yield the same result given the same arguments.
 There is one kind of hint for both of these conditions.
 
 
-\subsection{Where Do All the Constants Come From}
+\subsection{Where Do All the Constants Come From?}
 
 It is worth clarifying what a ``constant'' is in this context.  A variable of
 the trace is said to be constant if its value is statically known by the
@@ -683,7 +683,7 @@ incorrectly to mitigate this problem.
 
 In this section we describe how the simple object model from
 Section~\ref{sub:running} can be made efficient using the hints described in the
-previous the section. The object model there is typical for many current
+previous section. The object model there is typical for many current
 dynamic languages (such as Python, Ruby and JavaScript) as it relies heavily on
 hash-maps to implement its objects.
 
