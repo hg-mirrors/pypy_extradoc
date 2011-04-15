@@ -378,15 +378,10 @@ pre-computing parts of what happens at runtime. On the other
 hand, if applied incorrectly they might lead to code bloat, thus making the
 resulting program actually slower.
 
-For constant folding to work, two conditions need to be met:
-
-\begin{itemize}
-    \item the arguments of an operation actually need to all be constant,
-    i.e. statically known by the optimizer
-    \item the operation needs to be \emph{constant-foldable}, i.e. always yield
-    the same result given the same arguments.
-\end{itemize}
-
+For constant folding to work, two conditions need to be met: the arguments of
+an operation actually need to all be constant, i.e. statically known by the
+optimizer and the operation needs to be \emph{constant-foldable}, i.e. always
+yield the same result given the same arguments.
 There is one kind of hint for both of these conditions.
 
 
@@ -395,7 +390,6 @@ There is one kind of hint for both of these conditions.
 It is worth clarifying what a ``constant'' is in this context.  A variable of
 the trace is said to be constant if its value is statically known by the
 optimizer.
-
 The simplest example of constants are literal values, such as \texttt{1}.
 However, the optimizer can statically know the value of a variable even if it
 is not a constant in the original source code. For example, consider the
@@ -698,8 +692,8 @@ hash-maps to implement its objects.
 \subsection{Making Instance Attributes Faster Using Maps}
 
 The first step in making \texttt{getattr} faster in our object model is to optimize
-away the dictionary lookups on the instances. The hints we have introduced in the
-two previous sections don't seem to help with the current object model. There is
+away the dictionary lookups on the instances. The hints of the previous section
+don't seem to help with the current object model. There is
 no trace-elidable function to be seen, and the instance is not a candidate for promotion,
 because there tend to be many instances.
 
@@ -749,7 +743,12 @@ the map will be optimized away too, because the map cannot have changed in
 between. This trace is already much better than
 the original one. Now we are down from five dictionary lookups to just two.
 
-XXX separation of fast and slow-changing parts
+The technique to make instance lookups faster is applicable in more general
+cases. A more abstract view of maps is that of splitting a data-structure into
+an immutable part (\eg the map) and a part that changes (\eg the storage list).
+All the computation on the immutable part is trace-elidable so that only the
+manipulation of the quick-changing part remains in the trace after
+optimization.
 
 \begin{figure}
 \input{code/trace2.tex}
@@ -856,12 +855,6 @@ map has been.
 
 %\subsection{More General Patterns}
 %
-%The techniques we used above to make instance and class lookups faster are
-%applicable in more general cases than the one we developed them for. A more
-%abstract view of maps is that of splitting a data-structure into an immutable part (\eg the map)
-%and a part that changes (\eg the storage list). All the computation on the
-%immutable part is trace-elidable so that only the manipulation of the quick-changing
-%part remains in the trace after optimization.
 %
 %Similarly, versions can be used to constant-fold arbitrary functions of large data
 %structures. The version needs to be updated carefully every time the result of
