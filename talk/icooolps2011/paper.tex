@@ -698,7 +698,7 @@ hash-maps to implement its objects.
 \subsection{Making Instance Attributes Faster Using Maps}
 
 The first step in making \texttt{getattr} faster in our object model is to optimize
-away the dictionary lookups on the instances. The hints we have looked at in the
+away the dictionary lookups on the instances. The hints we have introduced in the
 two previous sections don't seem to help with the current object model. There is
 no trace-elidable function to be seen, and the instance is not a candidate for promotion,
 because there tend to be many instances.
@@ -736,7 +736,7 @@ effects idempotent. Now that we have
 introduced maps, it is safe to promote the map everywhere, because we assume
 that the number of different instance layouts is small.
 
-With this changed instance implementation, the trace we saw in Section~\ref{sub:running} changes to the
+With this adapted instance implementation, the trace we saw in Section~\ref{sub:running} changes to the
 that of Figure~\ref{fig:trace2}. There \texttt{0xb74af4a8} is the
 memory address of the \texttt{Map} instance that has been promoted. Operations
 that can be optimized away are grayed out, their results will be replaced with
@@ -764,10 +764,10 @@ XXX separation of fast and slow-changing parts
 
 \subsection{Versioning of Classes}
 
-Instances were optimized by making the assumption that the total number of
+Above we assumed that the total number of
 different instance layouts is small compared to the number of instances. For classes we
 will make an even stronger assumption. We simply assume that it is rare for
-classes to change at all. This is not totally reasonable (sometimes classes contain
+classes to change at all. This is not always reasonable (sometimes classes contain
 counters or similar things) but for this simple example it is good
 enough.\footnote{There is a more complex variant of the presented technique that can
 accommodate quick-changing class fields a lot better.}
@@ -945,10 +945,9 @@ telco[ms]	&1209.67 $\pm$ 2.20	&738.18 $\pm$ 3.29	&153.48 $\pm$ 1.86\\
 The very first meta-tracer is described by Sullivan et. al.
 \cite{sullivan_dynamic_2003}. They used Dynamo RIO, the successor of Dynamo
 \cite{bala_dynamo:_2000} to trace through a small synthetic interpreter. As in Dynamo, tracing
-happens on the machine code level. The tracer is instructed by some hints in the
-tiny interpreter where the main interpreter loop is and for how long to trace to
-match loops in the user-level functions. These hints are comparable to the one
-PyPy uses for the same reasons \cite{bolz_tracing_2009}. Their approach suffers
+happens on the machine code level. The system needs some hints to mark the main
+interpreter loop and where the backward jumps in user programs are.
+PyPy uses similar hints to achieve this \cite{bolz_tracing_2009}. Their approach suffers
 mostly from the low abstraction level that machine code provides.
 
 Yermolovich et. al. \cite{yermolovich_optimization_2009} describe the use of the Tamarin JavaScript tracing JIT as a
@@ -973,7 +972,7 @@ Partial evaluation \cite{jones_partial_1993} tries to automatically transform
 interpreters into compilers using the second futamura projection
 \cite{futamura_partial_1999}. Given that classical partial evaluation works
 strictly ahead of time, it inherently cannot support runtime feedback.
-Some partial evaluator work at runtime, such as DyC \cite{grant_dyc:_2000},
+Some partial evaluators work at runtime, such as DyC \cite{grant_dyc:_2000},
 which also supports a concept similar to promotion (called dynamic-to-static promotion).
 
 An early attempt at building a general environment for implementing languages
@@ -986,7 +985,7 @@ compiler.
 
 Somewhat relatedly, the proposed ``invokedynamic'' bytecode
 \cite{rose_bytecodes_2009} that will be added to the JVM is supposed to make the
-implementation of dynamic languages on top of JVMs easier. The bytecode gives access to user accessible generalized inline cache. It requires of course compilation to JVM bytecode instead of simply writing an interpreter, predictability of performance across JVMs is also an open question.
+implementation of dynamic languages on top of JVMs easier. The bytecode gives the user access to generalized inline caches. It requires of course compilation to JVM bytecode instead of simply writing an interpreter, predictability of performance across JVMs is also an open question.
 
 We already explored promotion in other context, such as earlier versions of
 PyPy's JIT as well as a Prolog partial evaluator
