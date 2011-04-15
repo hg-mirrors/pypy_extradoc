@@ -102,6 +102,11 @@
 \category{D.3.4}{Programming Languages}{Processors}[code generation,
 incremental compilers, interpreters, run-time environments]
 
+\terms
+Languages, Performance, Experimentation
+
+\keywords{Tracing JIT, Runtime Feedback, Interpreter, Code Generation, Meta-Programming}
+
 \begin{abstract}
 
 Meta-tracing JIT compilers can be applied to a variety of different
@@ -981,8 +986,9 @@ Somewhat relatedly, the proposed ``invokedynamic'' bytecode
 implementation of dynamic languages on top of JVMs easier. The bytecode gives the user access to generalized inline caches. It requires of course compilation to JVM bytecode instead of simply writing an interpreter, predictability of performance across JVMs is also an open question.
 
 We already explored promotion in other context, such as earlier versions of
-PyPy's JIT as well as a Prolog partial evaluator
-\cite{bolz_towards_2009}. Promotion is also heavily
+PyPy's JIT.
+%as well as a Prolog partial evaluator \cite{bolz_towards_2009}
+Promotion is also heavily
 used by Psyco \cite{rigo_representation-based_2004} (promotion is called
 "unlifting" in this paper) a method-based JIT compiler for Python written by
 one of the authors. Promotion is quite similar to
