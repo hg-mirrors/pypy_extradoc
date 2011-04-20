@@ -13,7 +13,7 @@ Tkinter is composed of two parts:
 
 The `PyPy version of _tkinter`_ reuses the C code of as found in CPython and
 compile it through the PyPy C-API compatibility layer, ``cpyext``.  To make it
-work rwith PyPy, we had to modify it slightly, in order to remove the
+work with PyPy, we had to modify it slightly, in order to remove the
 dependency on some API functions which are not supported by PyPy.  In particular, we
 removed the dependency on the ``PyOS_InputHook`` variable, which allows a nice
 integration of Tkinter and the Python interactive prompt: the result is that,
