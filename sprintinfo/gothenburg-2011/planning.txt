@@ -19,6 +19,7 @@ tasks:
     - merge exarkun's branches, after review (Armin, Romain)
     - merge jitypes2?
     - documentation (Laura, Carl Friedrich)
+    - look at the tracker
 
 - branches to be integrated/finished afterwards
     - 32-on-64
