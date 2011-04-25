@@ -1,0 +1,38 @@
+people present:
+    - Armin
+    - Carl Friedrich
+    - Laura
+    - Håkan
+    - Lukas
+    - Anders
+    - Romain
+    - Dario
+
+
+tasks:
+- fix the projector
+- release 1.5
+    - fix the import problem (Armin, Romain)
+    - fix the jit tests (Håkan, Armin around
+    - do we have 2.7 or 2.7.1? rename the directory
+    - merge jit-lsprof (Carl Friedrich, Dario)
+    - merge exarkun's branches, after review (Armin, Romain)
+    - merge jitypes2?
+    - documentation (Laura, Carl Friedrich)
+
+- branches to be integrated/finished afterwards
+    - 32-on-64
+    - lukas' branches: list-strategies/dict-strategies
+    - new-dict-proxy (Lukas)
+    - out-of-line guards
+    - refactor-not-in-translator
+    - håkan's branches
+
+- other tasks
+    - continue tracing after invalid loops
+    - look into cython
+    - investigate Open End software on top of PyPy (Lukas, Anders)
+
+- presentations/discussions
+    - Lukas' presentation on memory improvements (Tuesday)
+    - codespeak migration
