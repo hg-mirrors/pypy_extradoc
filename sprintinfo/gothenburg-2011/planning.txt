@@ -33,6 +33,7 @@ tasks:
     - continue tracing after invalid loops
     - look into cython
     - investigate Open End software on top of PyPy (Lukas, Anders)
+    - (feedback to wesley chun's paragraphs: Armin, Laura)
 
 - presentations/discussions
     - Lukas' presentation on memory improvements (Tuesday)
