@@ -12,26 +12,28 @@ people present:
 tasks:
 - fix the projector DONE (Jacob)
 - release 1.5
-    - fix the import problem (Armin, Romain)
-    - fix the jit tests (Håkan, Armin around
+    - fix the import problem (Armin, Romain) (NOT DONE)
+    - fix the jit tests DONE
     - do we have 2.7 or 2.7.1? rename the directory
-    - merge jit-lsprof (Carl Friedrich, Dario)
-    - merge exarkun's branches, after review (Armin, Romain)
-    - merge jitypes2?
-    - documentation (Laura, Carl Friedrich)
+    - merge jit-lsprof DONE
+    - merge exarkun's branches, after review DONE
+    - documentation (Laura, Carl Friedrich) IN PROGRESS
     - look at the tracker
+    - investigate breakage (Armin, Romain)
+    - investigate Mac problems
 
 - branches to be integrated/finished afterwards
     - 32-on-64
     - lukas' branches: list-strategies/dict-strategies
-    - new-dict-proxy (Lukas)
+    - new-dict-proxy MORE TESTING
     - out-of-line guards
     - refactor-not-in-translator
     - håkan's branches
+    - jitypes2
 
 - other tasks
-    - continue tracing after invalid loops
-    - look into cython
+    - continue tracing after invalid loops (Håkan, Carl Friedrich)
+    - look into cython (Armin, Romain, Dario)
     - investigate Open End software on top of PyPy (Lukas, Anders)
     - (feedback to wesley chun's paragraphs: Armin, Laura)
 
