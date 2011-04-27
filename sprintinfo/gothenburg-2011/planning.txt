@@ -10,33 +10,33 @@ people present:
 
 
 tasks:
-- fix the projector DONE (Jacob)
 - release 1.5
-    - fix the import problem (Armin, Romain) (NOT DONE)
-    - fix the jit tests DONE
-    - do we have 2.7 or 2.7.1? rename the directory
-    - merge jit-lsprof DONE
-    - merge exarkun's branches, after review DONE
-    - documentation (Laura, Carl Friedrich) IN PROGRESS
+    - fix the import problem TESTING
+    - merge in 2.7.1 stuff (Anto, Dario)
+    - documentation (Anto, Carl Friedrich, a bit of Laura) MORE PROGRESS
     - look at the tracker
-    - investigate breakage (Armin, Romain)
-    - investigate Mac problems
+    - investigate breakage DONE
+    - investigate Mac problems (Armin, Dario, Romain, Iko)
+    - find out whether cProfile is giving interesting information (Anto, Lukas)
 
 - branches to be integrated/finished afterwards
     - 32-on-64
     - lukas' branches: list-strategies/dict-strategies
-    - new-dict-proxy MORE TESTING
+    - new-dict-proxy READY
+    - merge new-dict-proxy into post-release (Lukas)
     - out-of-line guards
     - refactor-not-in-translator
     - håkan's branches
     - jitypes2
 
 - other tasks
-    - continue tracing after invalid loops (Håkan, Carl Friedrich)
-    - look into cython (Armin, Romain, Dario)
-    - investigate Open End software on top of PyPy (Lukas, Anders)
+    - continue tracing after invalid loops TESTING
+    - look into cython (Armin, Romain, Dario) FORK + BASIC ARCH HAPPENED
+    - investigate Open End software on top of PyPy EASIER THAN FEARED
     - (feedback to wesley chun's paragraphs: Armin, Laura)
 
 - presentations/discussions
-    - Lukas' presentation on memory improvements (Tuesday)
+    - Lukas' presentation on memory improvements DONE
+    - what are håkan's branches doing? (today after lunch)
     - codespeak migration
+    - EuroPython keynote/training (Anto, Armin)
