@@ -2,41 +2,47 @@ people present:
     - Armin
     - Carl Friedrich
     - Laura
-    - Håkan
     - Lukas
     - Anders
     - Romain
     - Dario
+    - Kristján
+    - Anto
 
 
 tasks:
 - release 1.5
-    - fix the import problem TESTING
-    - merge in 2.7.1 stuff (Anto, Dario)
-    - documentation (Anto, Carl Friedrich, a bit of Laura) MORE PROGRESS
+    - merge in 2.7.1 stuff DONE
+    - documentation (Anto, Laura) MORE PROGRESS
+        - document minimark (Armin)
+        - document __builtins__ behaviour in cpython-differences
+        - mercurial in the coding-guide
+    - release announcement (Anto, Laura)
     - look at the tracker
-    - investigate breakage DONE
-    - investigate Mac problems (Armin, Dario, Romain, Iko)
+    - investigate Mac problems IN PROGRESS (Iko, Dario, Romain)
     - find out whether cProfile is giving interesting information (Anto, Lukas)
+    - add a warning about Windows 64 (Kristján, Armin)
+
+- discuss stackless+jit integration (Armin, Kristján)
+- discuss embedding issues (Armin, Kristján)
 
 - branches to be integrated/finished afterwards
     - 32-on-64
     - lukas' branches: list-strategies/dict-strategies
     - new-dict-proxy READY
-    - merge new-dict-proxy into post-release (Lukas)
+    - merge new-dict-proxy into post-release (Lukas) DONE
     - out-of-line guards
     - refactor-not-in-translator
     - håkan's branches
     - jitypes2
 
 - other tasks
-    - continue tracing after invalid loops TESTING
     - look into cython (Armin, Romain, Dario) FORK + BASIC ARCH HAPPENED
     - investigate Open End software on top of PyPy EASIER THAN FEARED
     - (feedback to wesley chun's paragraphs: Armin, Laura)
 
 - presentations/discussions
     - Lukas' presentation on memory improvements DONE
-    - what are håkan's branches doing? (today after lunch)
+    - what are håkan's branches doing? DONE
     - codespeak migration
     - EuroPython keynote/training (Anto, Armin)
