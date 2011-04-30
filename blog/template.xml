@@ -190,7 +190,7 @@ URL:      www.noaesthetic.com
    <Variable name="page.width.selector" description="Page Width Selector" type="string" default=".region-inner" value=".region-inner"/>
    <Variable name="page.width" description="Page Width" type="string" default="auto" value="auto"/>
 
-   <Variable name="main.section.margin" description="Main Section Margin" type="length" default="15px" value="15px"/>
+   <Variable name="main.section.margin" description="Main Section Margin" type="length" default="0px" value="0px"/>
    <Variable name="main.padding" description="Main Padding" type="length" default="15px" value="15px"/>
    <Variable name="main.padding.top" description="Main Padding Top" type="length" default="30px" value="30px"/>
    <Variable name="main.padding.bottom" description="Main Padding Bottom" type="length" default="30px" value="30px"/>
