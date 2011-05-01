@@ -1,51 +1,35 @@
 people present:
     - Armin
-    - Carl Friedrich
     - Laura
     - Lukas
-    - Anders
     - Romain
     - Dario
-    - Kristján
-    - Anto
-
 
 tasks:
-- release 1.5
-    - merge in 2.7.1 stuff DONE
-    - documentation (Anto, Laura) MORE PROGRESS
-        - document minimark DONE
-        - document __builtins__ behaviour in cpython-differences
-        - mercurial in the coding-guide (Anto)
-    - release announcement (Anto, Carl Friedrich)
-    - look at the tracker
-    - start the Mac build (Dario, Romain)
-    - investigate Mac problems DONE?
-    - find out whether cProfile is giving interesting information (Anto, Lukas)
-    - add a warning about Windows 64 (Kristján, Carl Friedrich) SHOULD-BE-PUSHED
-    - do a full build on Windows (Armin, Kristján)
-
-- discuss stackless+jit integration HAPPENED
-- discuss embedding issues HAPPENED
-- start playing with stack slicing (Armin, Kristján)
+- release 1.5 DONE
+- start playing with stack slicing (Armin, Kristján) STARTED
 
 - branches to be integrated/finished afterwards
     - 32-on-64
-    - lukas' branches: list-strategies/dict-strategies
-    - new-dict-proxy READY
-    - merge new-dict-proxy into post-release (Lukas) DONE
-    - out-of-line guards
-    - refactor-not-in-translator
-    - håkan's branches
+    - lukas' branches: list-strategies/dict-strategies TALK WITH CARL-FRIEDRICH
+    - lukas' branches: set-object (lukas) IN PROGRESS
+    - out-of-line guards TO BE MERGED
+    - refactor-not-in-translator READY?
+    - håkan's branches NEEDS TESTS
     - jitypes2
 
 - other tasks
-    - look into cython (Armin, Romain, Dario) FORK + BASIC ARCH HAPPENED
-    - investigate Open End software on top of PyPy EASIER THAN FEARED
+    - look into cython
+    - investigate Open End software on top of PyPy DONE
     - (feedback to wesley chun's paragraphs: Armin, Laura)
 
 - presentations/discussions
-    - Lukas' presentation on memory improvements DONE
-    - what are håkan's branches doing? DONE
+    - what are håkan's branches doing? WHERE ARE THE SLIDES?
     - codespeak migration
+        - save files: see codespeak doc
+        - mailinglists: python.org
+        - pypy.org
+        - where to store builds, releases?
+        - buildbot
+        - issue tracker: OpenEnd investigate?
     - EuroPython keynote/training (Anto, Armin)
