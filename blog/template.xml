@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
 <!-- this template contains two modifications: it adds flattr buttons, and
 adds an image of the logo just before the title -->
-
-<!DOCTYPE html>
 <html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
   <head>
 
-  <script type="text/javascript">
+  <script type='text/javascript'>
   /*  <![CDATA[ */
     (function() {
       var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
@@ -980,7 +979,7 @@ body.mobile .AdSense {
       </div>  
         
       <!--      <span style='float:left; margin:5px;'>  -->
-      <div class="post-share-buttons goog-inline-block">
+      <div class='post-share-buttons goog-inline-block'>
         <script type='text/javascript'>  
           displayFlattrButton(&#39;<data:post.id/>&#39;, &#39;<data:post.url/>&#39;, &#39;<b:if cond='data:post.labels'><b:loop values='data:post.labels' var='label'><data:label.name/><b:if cond='data:label.isLast != &quot;true&quot;'>,</b:if></b:loop></b:if>&#39;);
         </script>  
@@ -1543,7 +1542,7 @@ body.mobile .AdSense {
       }, 10);
   </script>
 
-<script type="text/javascript">
+<script type='text/javascript'>
   FlattrLoader.setup();
 </script>
 
@@ -1753,6 +1752,19 @@ body.mobile .AdSense {
 </b:includable>
 </b:widget>
 <b:widget id='HTML3' locked='false' title='Subscriber Count' type='HTML'>
+<b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+</b:widget>
+<b:widget id='HTML4' locked='false' title='Google Analytics' type='HTML'>
 <b:includable id='main'>
   <!-- only display title if it's non-empty -->
   <b:if cond='data:title != &quot;&quot;'>
