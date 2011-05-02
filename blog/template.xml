@@ -1543,7 +1543,14 @@ body.mobile .AdSense {
   </script>
 
 <script type='text/javascript'>
-  FlattrLoader.setup();
+  // http://stackoverflow.com/questions/3484924/javascript-using-flattr-api-how-to-wait-until-api-is-loaded
+  function loadFlattr() {
+    if(typeof(FlattrLoader) == "undefined")
+        setTimeout(loadFlattr, 100);
+    else
+        FlattrLoader.setup(); 
+  }
+  loadFlattr();
 </script>
 
 
