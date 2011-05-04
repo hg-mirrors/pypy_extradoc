@@ -21,7 +21,7 @@ project. There were `some experiments`_ then mostly nothing and then some more
 experiments that are documented below.
 
 The general idea that seems to be worth pursuing would be to implement NumPy in
-RPython (the implementation language of PyPy) and then leverage JIT to achieve
+RPython (the implementation language of PyPy) and then leverage the JIT to achieve
 extra speedups. The really cool thing about this part is that overall JIT
 improvements will benefit NumPy performance out of the box, without extra
 tweaking. As of now there is branch called `numpy-exp`_ which contains a
