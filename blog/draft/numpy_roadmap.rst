@@ -4,29 +4,33 @@ Numpy in PyPy - status and roadmap
 
 Hello.
 
-
 NumPy integration is one of the single most requested features for PyPy. This
 post tries to describe where we are, what we plan (or what we don't plan), and
 how you can help.
 
-**The short version for impatient: there are experiments being done, which are
-already faster and better than numpy, and there is a path forward, but there is
-a definite lack of dedicated people or money to tackle that.**
+**Short version for the impatient: we are doing experiments, which show that
+PyPy+numpy can be faster and better than CPython+numpy.  We have a plan on how
+to do it, but at the moment there is lack of dedicated people or money to tackle
+that.**
 
 The longer version
 ------------------
 
-The NumPy effort in PyPy has, for the past two years, been my on-and-off-again
-project. There were `some experiments`_ then mostly nothing and then some more
-experiments that are documented below.
+Integrating numpy in PyPy has been my pet project on an on-and-off (mostly
+off) basis over the past two years. There were `some experiments`_, then
+a long pause, and then some more experiments which are documented below.
 
-The general idea that seems to be worth pursuing would be to implement NumPy in
-RPython (the implementation language of PyPy) and then leverage JIT to achieve
-extra speedups. The really cool thing about this part is that overall JIT
-improvements will benefit NumPy performance out of the box, without extra
-tweaking. As of now there is branch called `numpy-exp`_ which contains a
+The general idea is **not** to use the existing CPython module, but to
+reimplement numpy in RPython (i.e., the language PyPy is implemented in), thus
+letting our JIT achieve extra speedups. The really cool thing about this part
+is that numpy will automatically benefit of any general JIT improvements,
+without any need of extra tweaking.
+
+At the moment, there is branch called `numpy-exp`_ which contains a
 translatable version of a very minimal version of numpy in the module called
 ``micronumpy``. `Example benchmarks`_ show the following:
+
+XXX: you should briefly describe what the benchmarks do
 
 +--------------------------------+---------------+-------------+
 |                                | add           | iterate     |
@@ -36,20 +40,30 @@ translatable version of a very minimal version of numpy in the module called
 | PyPy numpy-exp @ 3a9d77b789e1  | 0.120s (2.2x) | 0.087 (48x) |
 +--------------------------------+---------------+-------------+
 
-As you can see, the moment floats cross the numpy-python boundary, PyPy's JIT
-goes blazingly fast, but even running array addition is faster by a fair degree
-(although numexpr is still faster, we're working on it).
+The ``add`` benchmark spends most of the time inside the ``+`` operator
+between arrays, which in CPython is implemented in C.  As you can see from the
+table above, the PyPy version is ~2 times faster. (Although numexpr_ is still
+faster than PyPy, but we're working on it).
 
 The exact way how array addition is implemented is worth another blog post, but
 in short it lazily evaluates the expression forcing it at the end and avoiding
 intermediate results. This way scales much better than numexpr and can lead to
 speeding up all the operations that you can perform on matrices.
 
-The next obvious step would be to extend the JIT to use SSE operations on x86
-CPUs, which should speed it up by about additional 2x.
+``iterate`` is even more interesting, because it spends most of the time
+inside a Python loop: the PyPy version is ~48 times faster, because the JIT
+can optimize across the python/numpy boundary, showing the potential of this
+approach.
 
-Overall it seems pretty obvious that reimplementing NumPy in PyPy (in RPython)
-can bring most of the useful compatibility within a month-two-three of work.
+The next obvious step to get even more speedups would be to extend the JIT to
+use SSE operations on x86 CPUs, which should speed it up by about additional
+2x.
+
+The drawback of this approach is that we need to reimplement numpy in RPython,
+which takes time.  A very rough estimate is that it would be possible to
+implement an useful subset of it (for some definition of useful) in a period
+of time comprised between one and three man-months.
+
 It also seems that the result will be faster for most cases and the same speed
 as original numpy for other cases. The only problem is finding the dedicated
 persons willing to spend quite some time on this and however, I am willing to
