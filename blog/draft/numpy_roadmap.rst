@@ -30,8 +30,6 @@ At the moment, there is branch called `numpy-exp`_ which contains a
 translatable version of a very minimal version of numpy in the module called
 ``micronumpy``. `Example benchmarks`_ show the following:
 
-XXX: you should briefly describe what the benchmarks do
-
 +--------------------------------+---------------+-------------+
 |                                | add           | iterate     |
 +--------------------------------+---------------+-------------+
@@ -41,23 +39,25 @@ XXX: you should briefly describe what the benchmarks do
 +--------------------------------+---------------+-------------+
 
 The ``add`` benchmark spends most of the time inside the ``+`` operator
-between arrays, which in CPython is implemented in C.  As you can see from the
-table above, the PyPy version is ~2 times faster. (Although numexpr_ is still
-faster than PyPy, but we're working on it).
+between one array five times, which in CPython is implemented in C. 
+As you can see from the table above, the PyPy version is already
+~2 times faster. (Although numexpr_ is still faster than PyPy,
+but we're working on it).
 
 The exact way how array addition is implemented is worth another blog post, but
 in short it lazily evaluates the expression forcing it at the end and avoiding
 intermediate results. This way scales much better than numexpr and can lead to
 speeding up all the operations that you can perform on matrices.
 
-``iterate`` is even more interesting, because it spends most of the time
-inside a Python loop: the PyPy version is ~48 times faster, because the JIT
-can optimize across the python/numpy boundary, showing the potential of this
-approach, users are not penalized for writing their loops in Python.
-
 The next obvious step to get even more speedups would be to extend the JIT to
 use SSE operations on x86 CPUs, which should speed it up by about additional
-2x.
+2x, as well as using multiple threads to do operations.
+
+``iterate`` is also interesting, but for entirely different reasons.
+On CPython it spends most of the time
+inside a Python loop: the PyPy version is ~48 times faster, because the JIT
+can optimize across the python/numpy boundary, showing the potential of this
+approach, users are not grossly penalized for writing their loops in Python.
 
 The drawback of this approach is that we need to reimplement numpy in RPython,
 which takes time.  A very rough estimate is that it would be possible to
@@ -68,6 +68,12 @@ It also seems that the result will be faster for most cases and the same speed
 as original numpy for other cases. The only problem is finding the dedicated
 persons willing to spend quite some time on this and however, I am willing to
 both mentor such a person and encourage him or her.
+
+The good starting point for helping would be to look at what's already
+implemented in micronumpy modules and try extending it. Adding a `-` operator
+or adding integers would be an interesting start. Drop by on #pypy on
+irc.freenode.net or get in contact with developers via some other channel
+if you want to help.
 
 Another option would be to sponsor NumPy development. In case you're
 interested, please get in touch with us or leave your email in comments.
