@@ -38,7 +38,7 @@ translatable version of a very minimal version of numpy in the module called
 
 As you can see, the moment floats cross the numpy-python boundary, PyPy's JIT
 goes blazingly fast, but even running array addition is faster by a fair degree
-(although numexpr is still faster, we're working on it).
+(although `numexpr`_ is still faster, we're working on it).
 
 The exact way how array addition is implemented is worth another blog post, but
 in short it lazily evaluates the expression forcing it at the end and avoiding
@@ -64,3 +64,4 @@ fijal
 .. _`some experiments`: http://morepypy.blogspot.com/2009/07/pypy-numeric-experiments.html
 .. _`numpy-exp`: https://bitbucket.org/pypy/pypy/src/numpy-exp/
 .. _`Example benchmarks`: https://bitbucket.org/pypy/pypy/src/numpy-exp/pypy/module/micronumpy/bench
+.. _`numexpr`: http://code.google.com/p/numexpr/
