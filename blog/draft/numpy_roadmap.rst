@@ -77,5 +77,5 @@ fijal
 
 .. _`some experiments`: http://morepypy.blogspot.com/2009/07/pypy-numeric-experiments.html
 .. _`numpy-exp`: https://bitbucket.org/pypy/pypy/src/numpy-exp/
-.. _`Example benchmarks`: https://bitbucket.org/pypy/pypy/src/numpy-exp/pypy/module/micronumpy/bench
+.. _`Example benchmarks`: https://bitbucket.org/pypy/pypy/src/numpy-exp/pypy/module/micronumpy/bench/
 .. _`numexpr`: http://code.google.com/p/numexpr/
