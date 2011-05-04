@@ -4,17 +4,9 @@ Numpy in PyPy - status and roadmap
 
 Hello
 
-When it comes to PyPy's requested features, there are few features that were
-requested over and over again. In the random order:
-
-* JIT and stackless integration (discussed at the recent sprint)
-
-* 2.7 compatibility (done!)
-
-* numpy integration
-
-Among those things, only numpy integration hasn't been at least a bit tackled
-and this post discusses what's the current status and what's the possible plan.
+Among things people really want to have in PyPy is numpy integration.
+This post tries to describe where we are, what we plan (or what we don't plan)
+and how you can help.
 
 **The short version for impatient: there are experiments being done, which are
 already faster and better than numpy, and there
