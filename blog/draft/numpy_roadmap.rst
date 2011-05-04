@@ -10,18 +10,18 @@ how you can help.
 
 **Short version for the impatient: we are doing experiments, which show that
 PyPy+numpy can be faster and better than CPython+numpy.  We have a plan on how
-to do it, but at the moment there is lack of dedicated people or money to tackle
-that.**
+to move forward, but at the moment there is lack of dedicated people or money
+to tackle it.**
 
 The longer version
 ------------------
 
-Integrating numpy in PyPy has been my pet project on an on-and-off (mostly
-off) basis over the past two years. There were `some experiments`_, then
-a long pause, and then some more experiments which are documented below.
+Integrating numpy in PyPy has been my pet project on an on-and-off (mostly off)
+basis over the past two years. There were `some experiments`_, then a long
+pause, and then some more experiments which are documented below.
 
 The general idea is **not** to use the existing CPython module, but to
-reimplement numpy in RPython (i.e., the language PyPy is implemented in), thus
+reimplement numpy in RPython (i.e. the language PyPy is implemented in), thus
 letting our JIT achieve extra speedups. The really cool thing about this part
 is that numpy will automatically benefit of any general JIT improvements,
 without any need of extra tweaking.
@@ -53,7 +53,7 @@ speeding up all the operations that you can perform on matrices.
 ``iterate`` is even more interesting, because it spends most of the time
 inside a Python loop: the PyPy version is ~48 times faster, because the JIT
 can optimize across the python/numpy boundary, showing the potential of this
-approach.
+approach, users are not penalized for writing their loops in Python.
 
 The next obvious step to get even more speedups would be to extend the JIT to
 use SSE operations on x86 CPUs, which should speed it up by about additional
