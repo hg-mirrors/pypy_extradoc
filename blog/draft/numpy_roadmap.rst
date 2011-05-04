@@ -45,8 +45,8 @@ faster. (Although numexpr_ is still faster than PyPy, but we're working on it).
 
 The exact way array addition is implemented is worth another blog post, but in
 short it lazily evaluates the expression and computes it at the end, avoiding
-intermediate results. This way scales much better than numexpr (XXX numpy?) and can lead to
-speeding up all the operations that you can perform on matrices.
+intermediate results. This approach scales much better than numexpr
+and can lead to speeding up all the operations that you can perform on matrices.
 
 The next obvious step to get even more speedups would be to extend the JIT to
 use SSE operations on x86 CPUs, which should speed it up by about additional
