@@ -30,6 +30,10 @@ not the best approach, for a few reasons:
     a much faster NumPy, in a way that's more fun, and given that the people
     working on this are volunteers, it's important to keep us motivated.
 
+Finally, we are **not** proposing to rewrite the entirety of NumPy or, god
+forbid, BLAST, or any of the low level stuff that operates on C-level arrays,
+only the parts that interface with Python code directly.
+
 C bindings vs. CPython C-API
 ----------------------------
 
@@ -64,14 +68,14 @@ is to try using CPyExt, and if it works that's great, but if it fails the
 solution will be to rewrite using `ctypes`, where it will work on all Python
 VMs, not just CPython.
 
-
 And finally there are rare cases where rewriting in RPython makes more sense,
 NumPy is one of the few examples of these because we need to be able to give
 the JIT hints on how to appropriately vectorize all of the operations on an
 array.  In general writing in RPython is not necessary for almost any
 libraries, NumPy is something of a special case because it is so ubiquitous
 that every ounce of speed is valuable, and makes the way people use it leads to
-code structure where the JIT benefits enormously from extra hints.
+code structure where the JIT benefits enormously from extra hints and the
+ability to manipulate memory directly.
 
 Progress
 --------
