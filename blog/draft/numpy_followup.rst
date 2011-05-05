@@ -8,7 +8,7 @@ only the 24 hours since the post.
 Reusing the original NumPy
 --------------------------
 
-First, a lot of people asked why we cannot just reuse the original NumPy
+First, a lot of people have asked why we cannot just reuse the original NumPy
 through ``cpyext``, our CPython C-API compatibility layer.  We believe this is
 not the best approach, for a few reasons:
 
@@ -27,8 +27,8 @@ not the best approach, for a few reasons:
  3) It's not much fun. Frankly, working on ``cpyext``, debugging the crashes,
     and everything else that goes with it is not terribly fun, especially when
     you know that the end result will be slow. We've demonstrated we can build
-    a much faster NumPy, in a way that's more fun, and given the people working
-    on this are volunteers, that's important to keep us motivated.
+    a much faster NumPy, in a way that's more fun, and given that the people
+    working on this are volunteers, it's important to keep us motivated.
 
 C bindings vs. CPython C-API
 ----------------------------
@@ -48,16 +48,18 @@ API which CPython exposes, and PyPy tries to emulate. It will never be fast,
 because there is far too much overhead in all the emulation that needs to be
 done.
 
-One of the reasons people write C extension is speed.  Often, with PyPy you can
+One of the reasons people write C extensions is for speed.  Often, with PyPy 
+you can
 just forget about C, write everything in pure python and let the JIT to do its
 magic.
 
 In case the PyPy JIT alone isn't fast enough, or you just want to
-use an existing C code then it might make sense to split
+use existing C code then it might make sense to split
 your C-extension into 2 parts, one which doesn't touch the CPython C-API and
 thus can be loaded with ``ctypes`` and called from PyPy, and another which does
 the interfacing with Python for CPython (where it will be faster).
 
+XXX I find this pararagraph unclear.
 There are also libraries written in C to interface with existing C codebases,
 but for whom performance is not the largest goal, for these the right solution
 is to try using CPyExt, and if it works that's great, but if it fails the
@@ -68,7 +70,9 @@ VMs, not just CPython.
 And finally there are rare cases where rewriting in RPython makes more sense,
 NumPy is one of the few examples of these because we need to be able to give
 the JIT hints on how to appropriately vectorize all of the operations on an
-array.
+array.  XXX Why?  How can you recognize a library that should be rewritten 
+in RPython compared to one that shouldn't?  Should this be done for all
+speed critical libraries, or just certain ones, and if the latter, which?
 
 Progress
 --------
