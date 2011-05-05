@@ -17,7 +17,8 @@ not the best approach, for a few reasons:
     reference counting). Since people are using NumPy primarily for speed this
     would mean that even if we could have a working NumPy, no one would want to
     use it.  Also, as soon as the execution crosses the ``cpyext`` boundary, it
-    becomes invisible to the JIT.
+    becomes invisible to the JIT, which means the JIT has to assume the worst
+    and deoptimize stuff away.
 
  2) NumPy uses many obscure documented and undocumented details of the CPython
     C-API. Emulating these is often difficult or impossible (e.g. we can't fix
@@ -27,7 +28,7 @@ not the best approach, for a few reasons:
     and everything else that goes with it is not terribly fun, especially when
     you know that the end result will be slow. We've demonstrated we can build
     a much faster NumPy, in a way that's more fun, and given the people working
-    on this our volunteers, that's important to keep us motivated.
+    on this are volunteers, that's important to keep us motivated.
 
 C bindings vs. CPython C-API
 ----------------------------
@@ -51,7 +52,8 @@ One of the reasons people write C extension is speed.  Often, with PyPy you can
 just forget about C, write everything in pure python and let the JIT to do its
 magic.
 
-In case the PyPy JIT alone isn't fast enough then it might make sense to split
+In case the PyPy JIT alone isn't fast enough, or you just want to
+use an existing C code then it might make sense to split
 your C-extension into 2 parts, one which doesn't touch the CPython C-API and
 thus can be loaded with ``ctypes`` and called from PyPy, and another which does
 the interfacing with Python for CPython (where it will be faster).
