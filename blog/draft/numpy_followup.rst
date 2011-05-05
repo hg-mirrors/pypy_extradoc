@@ -75,8 +75,8 @@ On a more positive note, after we published the `last post`_, several new people
 came and contributed improvements to the numpy-exp branch.
 We would like to thank all of them:
 
- * nightless_night contributed: An implementation of `__len__`, fixed bounds
-   checks on `__getitem__` and `__setitem__`.
+ * nightless_night contributed: An implementation of ``__len__``, fixed bounds
+   checks on ``__getitem__`` and ``__setitem__``.
  * brentp contributed: Subtraction and division on NumPy arrays.
  * MostAwesomeDude contributed: Multiplication on NumPy arrays.
  * hodgestar contributed: Binary operations between floats and NumPy arrays.
