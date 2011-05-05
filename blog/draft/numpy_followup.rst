@@ -94,8 +94,12 @@ Those last two were technically an outstanding branch we finally merged, but
 hopefully you get the picture. In addition there was some exciting work done by
 regular PyPy contributors. I hope it's clear that there's a place to jump in
 for people with any level of PyPy familiarity. If you're interested in
-contributing please stop by #pypy on irc.freenode.net, the
-`pypy-dev <http://codespeak.net/mailman/listinfo/pypy-dev>`_ mailing list, or
-send us pull requests on `bitbucket <https://bitbucket.org/pypy/pypy>`_.
+contributing please stop by #pypy on irc.freenode.net, the `pypy-dev`_ mailing
+list, or send us pull requests on `bitbucket`_.
 
 Alex
+
+
+.. _`last post`: http://morepypy.blogspot.com/2011/05/numpy-in-pypy-status-and-roadmap.html
+.. _`pypy-dev`: http://codespeak.net/mailman/listinfo/pypy-dev
+.. _`bitbucket`: https://bitbucket.org/pypy/pypy
