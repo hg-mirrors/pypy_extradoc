@@ -48,10 +48,9 @@ API which CPython exposes, and PyPy tries to emulate. It will never be fast,
 because there is far too much overhead in all the emulation that needs to be
 done.
 
-One of the reasons people write C extensions is for speed.  Often, with PyPy 
-you can
-just forget about C, write everything in pure python and let the JIT to do its
-magic.
+One of the reasons people write C extensions is for speed.  Often, with PyPy
+you can just forget about C, write everything in pure python and let the JIT to
+do its magic.
 
 In case the PyPy JIT alone isn't fast enough, or you just want to
 use existing C code then it might make sense to split
@@ -59,7 +58,6 @@ your C-extension into 2 parts, one which doesn't touch the CPython C-API and
 thus can be loaded with ``ctypes`` and called from PyPy, and another which does
 the interfacing with Python for CPython (where it will be faster).
 
-XXX I find this pararagraph unclear.
 There are also libraries written in C to interface with existing C codebases,
 but for whom performance is not the largest goal, for these the right solution
 is to try using CPyExt, and if it works that's great, but if it fails the
@@ -70,16 +68,17 @@ VMs, not just CPython.
 And finally there are rare cases where rewriting in RPython makes more sense,
 NumPy is one of the few examples of these because we need to be able to give
 the JIT hints on how to appropriately vectorize all of the operations on an
-array.  XXX Why?  How can you recognize a library that should be rewritten 
-in RPython compared to one that shouldn't?  Should this be done for all
-speed critical libraries, or just certain ones, and if the latter, which?
+array.  In general writing in RPython is not necessary for almost any
+libraries, NumPy is something of a special case because it is so ubiquitous
+that every ounce of speed is valuable, and makes the way people use it leads to
+code structure where the JIT benefits enormously from extra hints.
 
 Progress
 --------
 
 On a more positive note, after we published the `last post`_, several new people
-came and contributed improvements to the numpy-exp branch.
-We would like to thank all of them:
+came and contributed improvements to the ``numpy-exp`` branch. We would like to
+thank all of them:
 
  * nightless_night contributed: An implementation of ``__len__``, fixed bounds
    checks on ``__getitem__`` and ``__setitem__``.
