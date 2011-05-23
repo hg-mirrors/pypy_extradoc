@@ -1,0 +1,71 @@
+PyPy Genova-Pegli Post-EuroPython Sprint June 27 - July 2 2011
+==============================================================
+
+The next PyPy sprint will be in Genova-Pegli, Italy, the week after EuroPython
+(which is in Florence, about 3h away by train). This is a fully public sprint:
+newcomers and topics other than those proposed below are welcome.
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+* Now that we have released 1.5, the sprint itself is going to be
+  mainly working on fixing issues reported by various users. Of
+  course this does not prevent people from showing up with a more
+  precise interest in mind.  If there are newcomers, we will gladly
+  give introduction talks.
+
+* We will also work on polishing and merging the long-standing
+  branches that are around, which could eventually lead to the
+  next PyPy release.  These branches are notably:
+
+  - jitypes2 (fast ctypes calls with the JIT)
+  - XXX?
+
+* Since we are almost on the beach, we can take one day off for having summer
+  relax and/or touristic visits of the nearby :-).
+
+-----------
+Exact times
+-----------
+
+The work days should be 27 June - 2 July 2011.  People may arrive on
+the 26th already and/or leave on the 3rd.
+
+-----------------------
+Location & Accomodation
+-----------------------
+
+Both the sprint venue and the lodging will be at Albergo Puppo[1] in
+Genova-Pegli, Italy.  Pegli is a nice and peaceful little quartier of Genova,
+and the hotel is directly on the beach, making it a perfect place for those
+who wants to enjoy the sea in the middle of the italian summer, as a quick
+search on Google Images shows[2] :-)
+
+[1] http://www.albergopuppo.com/inglese/index.htm
+[2] http://images.google.com/images?q=genova%20pegli
+
+The place has a good ADSL Internet connexion with wireless installed.  You can
+of course arrange your own lodging anywhere but I definitely recommend lodging
+there too.
+
+Please *confirm* that you are coming so that we can adjust the reservations as
+appropriate.  The prices are as follows, and they include breakfast and a
+parking place for the car, in case you need it:
+
+  - single room:  70 €
+  - double room:  95 €
+  - triple room: 105 €
+
+Please register by hg:
+
+  http://bitbucket.org/pypy/extradoc/src/default/sprintinfo/genova-pegli-2011/people.txt
+
+or on the pypy-dev mailing list if you do not yet have check-in rights:
+
+  http://mail.python.org/mailman/listinfo/pypy-dev
+
+
+In case you want to share a room with someone else but you don't know who,
+please let us know (either by writing it directly in people.txt or by writing
+on the mailing list) and we will try to arrange it.
