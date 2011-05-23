@@ -9,18 +9,27 @@ newcomers and topics other than those proposed below are welcome.
 Goals and topics of the sprint
 ------------------------------
 
-* Now that we have released 1.5, the sprint itself is going to be
-  mainly working on fixing issues reported by various users. Of
-  course this does not prevent people from showing up with a more
-  precise interest in mind.  If there are newcomers, we will gladly
-  give introduction talks.
+* Now that we have released 1.5, the sprint itself is going to be mainly
+  working on fixing issues reported by various users.  Possible topics
+  include, but are not limited to:
 
-* We will also work on polishing and merging the long-standing
-  branches that are around, which could eventually lead to the
-  next PyPy release.  These branches are notably:
+    - fixing issues in the bug tracker
 
-  - jitypes2 (fast ctypes calls with the JIT)
-  - XXX?
+    - improve cpyext, the C-API compatibility layer, to support more extension
+      modules
+   
+    - finish/improve/merge jitypes2, the branch which makes ctypes JIT friendly
+
+    - general JIT improvements
+
+    - improve our tools, like the jitviewer or the buildbot infrastructure
+
+    - make your favorite module/application working on PyPy, if it doesn't yet
+
+
+* Of course this does not prevent people from showing up with a more precise
+  interest in mind  If there are newcomers, we will gladly give introduction
+  talks.
 
 * Since we are almost on the beach, we can take one day off for summer
   relaxation and/or tourist visits nearby :-).
@@ -30,8 +39,7 @@ Exact times
 -----------
 
 The work days should be 27 June - 2 July 2011.  People may arrive on
-the 26th already and/or leave on the 3rd.  XXX checkin or checkout times?
-if there is no specific time, say that.
+the 26th already and/or leave on the 3rd.
 
 -----------------------
 Location & Accomodation
