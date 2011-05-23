@@ -11,6 +11,8 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Antonio Cuni         --             lives there
+Laura Creighton      26/6 - 3/7     double room w Jacob
+Jacob Hallen	     26/6 - 3/7     double room w Laura
 ==================== ============== =======================
 
 
