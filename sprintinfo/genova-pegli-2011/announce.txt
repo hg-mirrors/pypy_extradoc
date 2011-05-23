@@ -68,7 +68,7 @@ parking place for the car, in case you need it:
 
 Please register by hg:
 
-  http://bitbucket.org/pypy/extradoc/src/default/sprintinfo/genova-pegli-2011/people.txt
+  https://bitbucket.org/pypy/extradoc/src/extradoc/sprintinfo/genova-pegli-2011/people.txt
 
 or on the pypy-dev mailing list if you do not yet have check-in rights:
 
