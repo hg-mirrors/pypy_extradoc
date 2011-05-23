@@ -22,24 +22,25 @@ Goals and topics of the sprint
   - jitypes2 (fast ctypes calls with the JIT)
   - XXX?
 
-* Since we are almost on the beach, we can take one day off for having summer
-  relax and/or touristic visits of the nearby :-).
+* Since we are almost on the beach, we can take one day off for summer
+  relaxation and/or tourist visits nearby :-).
 
 -----------
 Exact times
 -----------
 
 The work days should be 27 June - 2 July 2011.  People may arrive on
-the 26th already and/or leave on the 3rd.
+the 26th already and/or leave on the 3rd.  XXX checkin or checkout times?
+if there is no specific time, say that.
 
 -----------------------
 Location & Accomodation
 -----------------------
 
 Both the sprint venue and the lodging will be at Albergo Puppo[1] in
-Genova-Pegli, Italy.  Pegli is a nice and peaceful little quartier of Genova,
+Genova-Pegli, Italy.  Pegli is a nice and peaceful little quarter of Genova,
 and the hotel is directly on the beach, making it a perfect place for those
-who wants to enjoy the sea in the middle of the italian summer, as a quick
+who want to enjoy the sea in the middle of the Italian summer, as a quick
 search on Google Images shows[2] :-)
 
 [1] http://www.albergopuppo.com/inglese/index.htm
