@@ -13,6 +13,7 @@ available yet from them.
 Antonio Cuni         --             lives there
 Laura Creighton      26/6 - 1 or 2/7     double room w Jacob
 Jacob Hallen	     26/6 - 1 or 2/7     double room w Laura
+Armin Rigo           26/6 - 3/7     room to share, anyone?
 ==================== ============== =======================
 
 
@@ -21,7 +22,6 @@ People on the following list were present at previous sprints:
 ==================== ============== =====================
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
-Armin Rigo           ?              ?
 Michael Foord        ?              ?
 Maciej Fijalkowski   ?              ?
 David Schneider      ?              ?
