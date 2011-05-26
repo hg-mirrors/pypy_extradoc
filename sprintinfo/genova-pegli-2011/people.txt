@@ -7,14 +7,15 @@ column are known to be coming but there are no details
 available yet from them.
 
 
-==================== ============== =======================
-    Name              Arrive/Depart     Accomodation 
-==================== ============== =======================
-Antonio Cuni         --             lives there
+==================== =================== =======================
+    Name              Arrive/Depart          Accomodation 
+==================== =================== =======================
+Antonio Cuni         --                  lives there
 Laura Creighton      26/6 - 1 or 2/7     double room w Jacob
 Jacob Hallen	     26/6 - 1 or 2/7     double room w Laura
-Armin Rigo           26/6 - 3/7     room to share, anyone?
-==================== ============== =======================
+Armin Rigo           26/6 - 3/7          room to share, anyone?
+Romain Guillebert    Depending on trains willing to share
+==================== =================== =======================
 
 
 People on the following list were present at previous sprints: 
