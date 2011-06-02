@@ -5,6 +5,8 @@ BUGS
   because random other code can run at that point.
 
   [fijal] - how can you access frames from another threads really?
+  [arigo] - cpython has sys._current_frames(), but not pypy; however
+            relying on this looks like it's not the job of the jit
 
 * we should run nightly 64bit benchmarks. As of mid-April, richards
   was noticably (30-50%) slower on 64bit than 32bit. I didn't notice

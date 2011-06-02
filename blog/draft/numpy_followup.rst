@@ -73,7 +73,7 @@ NumPy is one of the few examples of these because we need to be able to give
 the JIT hints on how to appropriately vectorize all of the operations on an
 array.  In general writing in RPython is not necessary for almost any
 libraries, NumPy is something of a special case because it is so ubiquitous
-that every ounce of speed is valuable, and makes the way people use it leads to
+that every ounce of speed is valuableq, and makes the way people use it leads to
 code structure where the JIT benefits enormously from extra hints and the
 ability to manipulate memory directly, which is not possible from Python.
 
