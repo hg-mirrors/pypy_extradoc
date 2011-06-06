@@ -12,7 +12,7 @@ Me
 What is Django?
 ---------------
 
-...
+ * Anyone knows here?
 
 What is PyPy?
 -------------
@@ -28,20 +28,22 @@ What is PyPy? (2)
  * Open source (MIT licensed)
  * 8 years old
  * Over 150,000 lines of test code (that's more than all of Django)
- * A replacement to Psyco
+ * A successor to Psyco
 
 Fast
 ----
 
  * Faster than CPython on almost every benchmark we have.
  * http://speed.pypy.org/
+ * A very actively developed project: http://bit.ly/ij3W9G
 
 World's shortest introduction to JITing
 ---------------------------------------
 
  * Run interpreter
  * Find frequently executed loops
- * Turn those loops into efficient assembler, by specializing for the types of variables and other things.
+ * Turn those loops into efficient assembler, by specializing for the types
+   of variables and other things.
 
 Case studies
 ------------
@@ -154,7 +156,7 @@ Django template benchmark
 Rietveld benchmark
 ------------------
 
- * Another part of the Unladen Swallow benchmark suit
+ * Another part of the Unladen Swallow benchmark suite
  * PyPy trunk: about 1.35x faster than CPython
 
 Tornado web app
