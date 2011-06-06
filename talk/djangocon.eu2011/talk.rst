@@ -155,6 +155,7 @@ Django template benchmark
 * Part of the Unladen Swallow benchmark suite
 * PyPy 1.5: almost 10x faster than CPython
 * PyPy trunk: almost 12x faster
+* http://bit.ly/ij3W9G
 
 Rietveld benchmark
 ------------------
