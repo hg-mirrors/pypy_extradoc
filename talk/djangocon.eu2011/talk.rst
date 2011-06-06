@@ -195,6 +195,7 @@ Questions?
 
 * http://alexgaynor.net/
 * http://pypy.org/
+* #pypy on irc.freenode.net
 * I want to make your apps faster, come talk to me!
 * Thank you!
 * Dank je wel!
