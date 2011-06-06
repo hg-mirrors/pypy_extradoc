@@ -179,5 +179,6 @@ Questions?
 
 * http://alexgaynor.net/
 * http://pypy.org/
+* I want to make your apps faster, come talk to me!
 * Thank you!
 * Dank je wel!
