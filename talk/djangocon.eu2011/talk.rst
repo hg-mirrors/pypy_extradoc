@@ -181,6 +181,14 @@ PyPy
 * A better platform for developing Python itself
 * A faster Python for your apps
 
+Recruiting
+----------
+
+* We could use some developers/designer to help with our performance tools.
+* We have a cool webbased profiling/analyses tool.
+* Flask/Jinja/jQuery (sorry)
+* Contributors wanted, no compiler experience needed!
+
 Questions?
 ----------
 
