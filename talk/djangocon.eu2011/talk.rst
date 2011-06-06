@@ -168,6 +168,13 @@ Tornado web app
 
 * 2x as many requests per second
 
+Memory
+------
+
+* Mixed bag.
+* Some apps use more, some use less.
+* Benchmark your own app.
+
 PyPy
 ----
 
