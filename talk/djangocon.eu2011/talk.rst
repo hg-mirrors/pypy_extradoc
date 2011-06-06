@@ -12,7 +12,7 @@ Me
 What is Django?
 ---------------
 
-* Anyone knows here?
+* Anyone here know?
 
 What is PyPy?
 -------------
@@ -106,15 +106,18 @@ Database
 
 SQLite
 ------
+
 * Standard library, just works!
 
 PostgreSQL
 ----------
+
 * RPython ``psycopg2`` compatible lib, requires compiling your own PyPy
 * ``pg8000`` and tons of other random libraries, Django doesn't work with them, but if they're pure Python they'll work with other stuff (e.g. SQLAlchemy)
 
 MySQL
 -----
+
 * (various expletives censored)
 * Nothing that works with Django ATM
 * I'm working on a ``ctypes`` based MySQLdb dropin replacement, hopefully open source soonish.
