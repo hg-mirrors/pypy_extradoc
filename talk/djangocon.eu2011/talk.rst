@@ -35,7 +35,7 @@ Fast
 
 * Faster than CPython on almost every benchmark we have.
 * http://speed.pypy.org/
-* A very actively developed project: http://bit.ly/ij3W9G
+* A very actively developed project: http://bit.ly/pypy-django-bench
 
 World's shortest introduction to JITing
 ---------------------------------------
@@ -155,7 +155,7 @@ Django template benchmark
 * Part of the Unladen Swallow benchmark suite
 * PyPy 1.5: almost 10x faster than CPython
 * PyPy trunk: almost 12x faster
-* http://bit.ly/ij3W9G
+* http://bit.ly/pypy-django-bench
 
 Rietveld benchmark
 ------------------
@@ -188,6 +188,7 @@ Recruiting
 * We have a cool webbased profiling/analyses tool.
 * Flask/Jinja/jQuery (sorry)
 * Contributors wanted, no compiler experience needed!
+* http://bit.ly/pypy-recruiting
 
 Questions?
 ----------
