@@ -1,0 +1,45 @@
+pypy
+sqrt(float):   1.20120882988
+  sqrt(int):   2.41813898087
+sqrt(Fix16):   6.11410784721
+conv3:         2.14187502861
+conv5:         2.33459997177
+
+pypy --jit enable_opts=intbounds:rewrite:virtualize:heap:unroll
+sqrt(float):   1.2082631588
+  sqrt(int):   2.42825579643
+sqrt(Fix16):   6.13569307327
+conv3:         2.14451694489
+conv5:         2.36811304092
+
+pypy --jit enable_opts=intbounds:rewrite:virtualize:heap
+sqrt(float):   1.70357894897
+  sqrt(int):   3.12929701805
+sqrt(Fix16):   10.3343019485
+conv3:         3.14458608627
+conv5:         3.42248892784
+
+gcc
+sqrt(float):   1.42
+sqrt(int):     1.93
+sqrt(Fix16):   2.04
+conv3:         1.94
+conv5:         2.36
+
+gcc -O2
+sqrt(float):   1.14
+sqrt(int):     1.86
+sqrt(Fix16):   1.90
+conv3:         1.18
+conv5:         1.34
+
+gcc -O3 -march=native
+sqrt(float):   1.14
+sqrt(int):     1.82
+sqrt(Fix16):   1.89
+conv3:         1.10
+conv5:         1.16
+
+python
+sqrt(float):   43.5761749744
+  sqrt(int):   32.1061348915
