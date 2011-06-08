@@ -115,8 +115,7 @@ far, they lacked a way to give the language implementor control over runtime
 feedback. This restricted their performance. In this paper we describe the
 mechanisms in PyPy's meta-tracing JIT that can be used to control
 runtime feedback in language-specific ways. These mechanisms are flexible
-enough to express classical VM techniques such as maps and polymorphic inline
-caches.
+enough to express classical VM techniques such as maps and runtime type feedback.
 
 \end{abstract}
 
@@ -169,8 +168,8 @@ we present precisely allow us to implement such feedback and exploitation in a
 meta-tracing context.
 
 Together these hints can be used to express many classic implementation
-techniques used for object models of dynamic languages, such as maps and
-polymorphic inline caches.
+techniques used for object models of dynamic languages, such runtime type
+feedback and maps.
 
 The contributions of this paper are:
 \begin{itemize}
@@ -435,11 +434,10 @@ there). The technique is substantially more powerful in a JIT compiler than in
 the static setting of classic partial evaluation.
 
 Promotion is essentially a tool for trace specialization. There are places in
-the interpreter where knowing that a value is constant opens a lot of
-optimization opportunities, even though it
-could have different values in practice. In such a place, promotion can be used. The
-typical reason to do that is if there is
-a lot of computation depending on the value of one variable.
+the interpreter where it would open a lot of optimization opportunities if a
+variable were constant, even though it could have different values in
+practice. In such a place, promotion can be used. The typical reason to do that
+is if there is a lot of computation depending on the value of one variable.
 
 Let us make this more concrete. If we trace a call to the function (written in
 RPython) on the left, we get the trace on the right:
@@ -982,7 +980,9 @@ compiler.
 
 Somewhat relatedly, the proposed ``invokedynamic'' bytecode
 \cite{rose_bytecodes_2009} that will be added to the JVM is supposed to make the
-implementation of dynamic languages on top of JVMs easier. The bytecode gives the user access to generalized inline caches. It requires of course compilation to JVM bytecode instead of simply writing an interpreter, predictability of performance across JVMs is also an open question.
+implementation of dynamic languages on top of JVMs easier. The bytecode gives
+the user access to generalized inline caches. It requires of course compilation
+to JVM bytecode instead of writing an interpreter.
 
 We already explored promotion in other contexts, such as earlier versions of
 PyPy's JIT.
@@ -991,11 +991,11 @@ Promotion is also heavily
 used by Psyco \cite{rigo_representation-based_2004} (promotion is called
 "unlifting" in this paper) a method-based JIT compiler for Python written by
 one of the authors. Promotion is quite similar to
-(polymorphic) inline caching and runtime type feedback techniques which were
+runtime type feedback (and also inline caching) techniques which were
 first used in Smalltalk \cite{deutsch_efficient_1984} and SELF
-\cite{hoelzle_optimizing_1991,hoelzle_optimizing_1994} implementations.
-Promotion is more general because any information can be cached in line, not
-just classes of method receivers.
+\cite{hoelzle_optimizing_1994} implementations.
+Promotion is more general because any information can be fed back into
+compilation, not just types.
 
 %is there anything about versions? smalltalks tend to clear their method caches
 %when new methods are added. self and java use dependency tracking and
