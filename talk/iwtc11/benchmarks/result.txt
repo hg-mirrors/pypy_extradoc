@@ -43,3 +43,6 @@ conv5:         1.16
 python
 sqrt(float):   43.5761749744
   sqrt(int):   32.1061348915
+sqrt(Fix16):   ???
+conv3:         76.4291441441
+conv5:         114.82663703
