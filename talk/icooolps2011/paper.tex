@@ -377,10 +377,11 @@ Section~\ref{sec:fastobjmodel}.
 
 In this section we will describe two hints that allow the
 interpreter author to increase the optimization opportunities for constant
-folding. If applied correctly these techniques can give really big speedups by
+folding.
+If applied correctly these techniques can give really big speedups by
 pre-computing parts of what happens at runtime. On the other
 hand, if applied incorrectly they might lead to code bloat, thus making the
-resulting program actually slower.
+resulting program actually slower. Note that these hints are \emph{never} put into the user program, only into the interpreter.
 
 For constant folding to work, two conditions need to be met: the arguments of
 an operation actually need to all be constant, i.e. statically known by the
@@ -498,8 +499,7 @@ return($v_2$)
 
 The hint indicates that \texttt{x} is likely a runtime constant and the JIT
 should try to perform runtime specialization on it
-in the code that follows.\footnote{For technical reasons the promote hint needs
-to be written down slightly differently in the actual code.}  When just running
+in the code that follows. When just running
 the code, the \texttt{promote} function has no
 effect. When tracing, some extra work
 is done. Let us assume that this changed function is traced with
