@@ -26,6 +26,9 @@
 % authoryear    To obtain author/year citation style instead of numeric.
 
 \usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{listings}
+
 
 \begin{document}
 
@@ -63,6 +66,160 @@ keyword1, keyword2
 \section{Introduction}
 
 The text of the paper begins here.
+
+\subsection{Running Example}
+\label{sub:example}
+
+For the purpose of this paper, we are going to use a tiny interpreter for a dynamic language with
+ a very simple object
+model, that just supports an integer and a float type. The objects support only
+two operations, \lstinline{add}, which adds two objects (promoting ints to floats in a
+mixed addition) and \lstinline{is_positive}, which returns whether the number is greater
+than zero. The implementation of \lstinline{add} uses classical Smalltalk-like
+double-dispatching.
+%These classes could be part of the implementation of a very
+%simple interpreter written in RPython.
+The classes can be seen in
+Figure~\ref{fig:objmodel} (written in RPython).
+
+\begin{figure}
+\begin{lstlisting}[mathescape,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+class Base(object):
+   pass
+
+class BoxedInteger(Base):
+   def __init__(self, intval):
+      self.intval = intval
+
+   def add(self, other):
+      return other.add__int(self.intval)
+
+   def add__int(self, intother):
+      return BoxedInteger(intother + self.intval)
+
+   def add__float(self, floatother):
+      floatvalue = floatother + float(self.intval)
+      return BoxedFloat(floatvalue)
+
+   def is_positive(self):
+      return self.intval > 0
+
+class BoxedFloat(Base):
+   def __init__(self, floatval):
+      self.floatval = floatval
+
+   def add(self, other):
+      return other.add__float(self.floatval)
+
+   def add__int(self, intother):
+      floatvalue = float(intother) + self.floatval
+      return BoxedFloat(floatvalue)
+
+   def add__float(self, floatother):
+      return BoxedFloat(floatother + self.floatval)
+
+   def is_positive(self):
+      return self.floatval > 0.0
+
+
+def f(y):
+   step = BoxedInteger(-1)
+   while y.is_positive():
+      y = y.add(step)
+   return res
+\end{lstlisting}
+\caption{An ``Interpreter'' for a Tiny Dynamic Language Written in RPython}
+\label{fig:objmodel}
+\end{figure}
+
+Using these classes to implement arithmetic shows the basic problem of a
+dynamic language implementation. All the numbers are instances of either
+\lstinline{BoxedInteger} or \lstinline{BoxedFloat}, therefore they consume space on the
+heap. Performing many arithmetic operations produces lots of garbage quickly,
+putting pressure on the garbage collector. Using double dispatching to
+implement the numeric tower needs two method calls per arithmetic operation,
+which is costly due to the method dispatch.
+
+Let us now consider a simple ``interpreter'' function \lstinline{f} that uses the
+object model (see the bottom of Figure~\ref{fig:objmodel}).
+The loop in \lstinline{f} iterates \lstinline{y} times, and computes something in the process.
+Simply running this function is slow, because there are lots of virtual method
+calls inside the loop, one for each \lstinline{is_positive} and even two for each
+call to \lstinline{add}. These method calls need to check the type of the involved
+objects repeatedly and redundantly. In addition, a lot of objects are created
+when executing that loop, many of these objects are short-lived.
+The actual computation that is performed by \lstinline{f} is simply a sequence of
+float or integer additions.
+
+
+\begin{figure}
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+# arguments to the trace: $p_{0}$, $p_{1}$
+# inside f: y = y.add(step)
+guard_class($p_{1}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{2}$ = get($p_{1}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{3}$ = get($p_{0}$, intval)
+        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $p_{5}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{5}$, intval, $i_{4}$)
+jump($p_{0}$, $p_{5}$)
+\end{lstlisting}
+\caption{An Unoptimized Trace of the Example Interpreter}
+\label{fig:unopt-trace}
+\end{figure}
+
+If the function is executed using the tracing JIT, with \lstinline{y} being a
+\lstinline{BoxedInteger}, the produced trace looks like the one of
+Figure~\ref{fig:unopt-trace} (lines starting with a hash ``\#'' are comments).
+The trace corresponds to one iteration of the while-loop in \lstinline{f}.
+
+The operations in the trace are indented
+corresponding to the stack level of the function that contains the traced
+operation. The trace is in single-assignment form, meaning that each variable is
+assigned a value exactly once. The arguments $p_0$ and $p_1$ of the loop correspond
+to the live variables \lstinline{y} and \lstinline{res} in the while-loop of
+the original function.
+
+The operations in the trace correspond to the operations in the RPython program
+in Figure~\ref{fig:objmodel}:
+
+\begin{itemize}
+    \item \lstinline{new} creates a new object.
+    \item \lstinline{get} reads an attribute of an object.
+    \item \lstinline{set} writes to an attribute of an object.
+    \item \lstinline{guard_class} is a precise type check and precedes an
+    (inlined) method call and is followed by the trace of the called method.
+    \item \lstinline{int_add} and \lstinline{int_gt} are integer addition and
+    comparison (``greater than''), respectively.
+    \item \lstinline{guard_true} checks that a boolean is true.
+\end{itemize}
+
+Method calls in the trace are preceded by a \lstinline{guard_class}
+operation, to check that the class of the receiver is the same as the one that
+was observed during tracing.\footnote{\lstinline{guard_class}
+performs a precise
+class check, not checking for subclasses.} These guards make the trace specific
+to the situation where \lstinline{y} is really a \lstinline{BoxedInteger}. When
+the trace is turned into machine code and afterwards executed with
+\lstinline{BoxedFloat}, the
+first \lstinline{guard_class} instruction will fail and execution will continue
+using the interpreter.
+
+The trace shows the inefficiencies of \lstinline{f} clearly, if one looks at
+the number of \lstinline{new}, \lstinline{set/get} and \lstinline{guard_class}
+operations. The number of \lstinline{guard_class} operation is particularly
+problematic, not only because of the time it takes to run them. All guards also
+have additional information attached that makes it possible to return to the
+interpreter, should the guard fail. This means that too many guard operations also
+consume a lot of memory.
+
+In the rest of the paper we will see how this trace can be optimized using
+partial evaluation.
+
 
 \appendix
 \section{Appendix Title}
