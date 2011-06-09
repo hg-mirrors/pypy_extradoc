@@ -6,12 +6,18 @@ if [ $1 == "gcc" ]; then
     $* sqrt/sqrt_double.c; /usr/bin/time -f %e ./a.out > /dev/null
     $* sqrt/sqrt_long.c; /usr/bin/time -f %e ./a.out > /dev/null
     $* sqrt/sqrt_fix16.c; /usr/bin/time -f %e ./a.out > /dev/null
-    $* convolution/conv3.c; /usr/bin/time -f %e ./a.out > /dev/null
-    $* convolution/conv5.c; /usr/bin/time -f %e ./a.out > /dev/null
+    $* convolution/conv3.c -lm; /usr/bin/time -f %e ./a.out 1 > /dev/null
+    $* convolution/conv5.c -lm; /usr/bin/time -f %e ./a.out 1 > /dev/null
+    $* convolution/conv3.c -lm; /usr/bin/time -f %e ./a.out 100 > /dev/null
+    $* convolution/conv5.c -lm; /usr/bin/time -f %e ./a.out 100 > /dev/null
+    $* convolution/conv3.c -lm; /usr/bin/time -f %e ./a.out 1000 > /dev/null
+    $* convolution/conv5.c -lm; /usr/bin/time -f %e ./a.out 1000 > /dev/null
     rm a.out
 else
     $* sqrt/time_sqrt.py float
     $* sqrt/time_sqrt.py int
     $* sqrt/time_sqrt.py Fix16
-    $* convolution/time_conv.py
+    $* convolution/time_conv.py 1
+    $* convolution/time_conv.py 100
+    $* convolution/time_conv.py 1000
 fi
