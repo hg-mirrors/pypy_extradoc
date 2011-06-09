@@ -12,6 +12,8 @@ if [ $1 == "gcc" ]; then
     $* convolution/conv5.c -lm; /usr/bin/time -f %e ./a.out 100 > /dev/null
     $* convolution/conv3.c -lm; /usr/bin/time -f %e ./a.out 1000 > /dev/null
     $* convolution/conv5.c -lm; /usr/bin/time -f %e ./a.out 1000 > /dev/null
+    $* convolution/conv3x3.cc -lstdc++; /usr/bin/time -f %e ./a.out 1000000 3 > /dev/null
+    $* convolution/conv3x3.cc -lstdc++; /usr/bin/time -f %e ./a.out 1000 1000 > /dev/null
     rm a.out
 else
     $* sqrt/time_sqrt.py float

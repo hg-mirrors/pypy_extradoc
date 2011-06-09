@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define N 100000000
-double a[N], b[N-4];
+double *a, *b;
 
 void conv(double *a, double *k, double *b, int n) {
 //void conv(double *__restrict__ a, double *__restrict__ k, double *__restrict__ b, int n) {
@@ -14,6 +15,8 @@ void conv(double *a, double *k, double *b, int n) {
 
 int main(int ac, char **av) {
     double k[5] = {1, 4, 6, 4, 1};
+    a = malloc(N*sizeof(double));
+    b = malloc(N*sizeof(double));
     int i;
     for (i=0; i<N; i++) a[i] = 1;
     int n = atoi(av[1]);
