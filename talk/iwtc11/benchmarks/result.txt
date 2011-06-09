@@ -40,9 +40,9 @@ sqrt(Fix16):   1.89
 conv3:         1.10
 conv5:         1.16
 
-python
-sqrt(float):   43.5761749744
-  sqrt(int):   32.1061348915
-sqrt(Fix16):   ???
-conv3:         76.4291441441
-conv5:         114.82663703
+python2.7
+sqrt(float):   35.3788838387
+  sqrt(int):   19.5545659065
+sqrt(Fix16):   978.297157049
+conv3:         72.7751071453
+conv5:         103.557267904

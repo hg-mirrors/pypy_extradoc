@@ -6,4 +6,5 @@
 ./benchmark.sh gcc
 ./benchmark.sh gcc -O2
 ./benchmark.sh gcc -O3 -march=native
-./benchmark.sh python
+./benchmark.sh python2.7
+
