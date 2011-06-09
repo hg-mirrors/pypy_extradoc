@@ -154,7 +154,7 @@ float or integer additions.
 
 \begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-# arguments to the trace: $p_{0}$, $p_{1}$
+$l_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
 guard_class($p_{1}$, BoxedInteger)
     # inside BoxedInteger.add
@@ -166,7 +166,7 @@ guard_class($p_{1}$, BoxedInteger)
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
-jump($p_{0}$, $p_{5}$)
+jump($l_0$, $p_{0}$, $p_{5}$)
 \end{lstlisting}
 \caption{An Unoptimized Trace of the Example Interpreter}
 \label{fig:unopt-trace}
@@ -183,6 +183,9 @@ operation. The trace is in single-assignment form, meaning that each variable is
 assigned a value exactly once. The arguments $p_0$ and $p_1$ of the loop correspond
 to the live variables \lstinline{y} and \lstinline{res} in the while-loop of
 the original function.
+
+The label of the loop is $l_0$ and is used by the jump instruction to
+identify it's jump target.
 
 The operations in the trace correspond to the operations in the RPython program
 in Figure~\ref{fig:objmodel}:
@@ -220,6 +223,256 @@ consume a lot of memory.
 In the rest of the paper we will see how this trace can be optimized using
 partial evaluation.
 
+\section{Optimizations}
+Before the trace is passed to a backend compiling it into machine code
+it needs to be optimized to achieve better performance.
+The focus of this paper
+is loop invariant code motion. The goal of that is to move as many
+operations as possible out of the loop making them executed only once
+and not every iteration. This we propose to achieve by loop peeling. It
+leaves the loop body intact, but prefixes it with one iteration of the
+loop. This operation by itself will not achieve anything. But if it is
+combined with other optimizations it can increase the effectiveness of
+those optimizations. For many optimization of interest some care has
+to be taken when they are combined with loop peeling. This is
+described below by first explaining the loop peeling optimization
+followed by a set of other optimizations and how they interact with
+loop peeling.
+
+\subsection{Loop peeling}
+Loop peeling is achieved by inlining the trace at the end of
+itself. The input arguments of the second iteration are replaced with
+the jump arguments of the first iterations and then the arguments of all
+the operations are updated to operate on the new input arguments. To
+keep the single-assignment form new variables has to be introduced as
+the results of all the operations. The first iteration of the loop
+will end with a jump to the second iteration of the loop while the
+second iteration will end with a jump to itself. This way the first
+copy of the trace only be executed once while the second copy will be
+used for every other iteration. The rationality here is that the
+optimizations below typically will be able to optimize the second copy
+more efficiently than the first. The trace from Figure~\ref{fig:unopt-trace} would
+after this operation become the trace in Figure~\ref{fig:peeled-trace}.
+
+\begin{figure}
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+$l_0$($p_{0}$, $p_{1}$):
+# inside f: y = y.add(step)
+guard_class($p_{1}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{2}$ = get($p_{1}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{3}$ = get($p_{0}$, intval)
+        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $p_{5}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{5}$, intval, $i_{4}$)
+jump($l_1$, $p_{0}$, $p_{5}$)
+
+$l_1$($p_{0}$, $p_{5}$):
+# inside f: y = y.add(step)
+guard_class($p_{5}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{6}$ = get($p_{5}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{7}$ = get($p_{0}$, intval)
+        $i_{8}$ = int_add($i_{6}$, $i_{7}$)
+        $p_{9}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{9}$, intval, $i_{8}$)
+jump($l_1$, $p_{0}$, $p_{9}$)
+\end{lstlisting}
+\caption{An Unoptimized Trace of the Example Interpreter}
+\label{fig:peeled-trace}
+\end{figure}
+
+When applying the following optimizations to this two iteration trace
+some care has to taken as to how the jump arguments of both
+iterations and the input arguments of the second iteration are
+treated. It has to be ensured that the second iteration stays a proper
+trace in the sens that the operations within it only operations on
+variables that are either among the input arguments of the second iterations
+or are produced within the second iterations. To ensure this we need
+to introduce a bit of formalism. 
+
+The original trace (prior too peeling) consists of three parts. 
+A vector of input
+variables, $I=\left(I_1, I_2, \cdots, I_{|I|}\right)$, a list of non
+jump operations and a single
+jump operation. The jump operation contains a vector of jump variables,
+$J=\left(J_1, J_2, \cdots, J_{|J|}\right)$, that are passed as the input variables of the target loop. After
+loop peeling there will be a second copy of this trace with input
+variables equal to the jump arguments of the first copy, $J$, and jump
+arguments $K$. Looking back at our example we have
+\begin{equation}
+  %\left\{
+    \begin{array}{lcl}
+      I &=& \left( p_0, p_1 \right) \\
+      J &=& \left( p_0, p_5 \right) \\
+      K &=& \left( p_0, p_9 \right) \\
+    \end{array}
+  %\right.
+  .
+\end{equation}
+To construct the second iteration from the first we also need a
+function, $m$, mapping the variables of the first iteration onto the
+variables of the second. This function is constructed during the
+inlining. It is initialized by mapping the input arguments, $I$, to
+the jump arguments $J$,
+\begin{equation}
+  m\left(I_i\right) = J_i \ \text{for}\ i = 1, 2, \cdots |I| .
+\end{equation}
+In the example that means (XXX which notation do we prefer?)
+\begin{equation}
+  m(v) = 
+  \left\{
+    \begin{array}{lcl}
+      p_0 &\text{if}& v=p_0 \\
+      p_5 &\text{if}& v=p_1 \\
+    \end{array}
+  \right.
+  .
+\end{equation}
+\begin{equation}
+  %\left\{
+    \begin{array}{lcl}
+      m\left(p_0\right) &=& p_0 \\
+      m\left(p_1\right) &=& p_5
+    \end{array}
+  %\right.
+  .
+\end{equation}
+Each operation in the trace is inlined in the order they are
+executed. To inline an operation with argument vector 
+$A=\left(A_1, A_2, \cdots, A_{|A|}\right)$ producing the variable $v$
+a new variable, $\hat v$ is introduced. The inlined operation will
+produce $\hat v$ from the input arguments 
+\begin{equation}
+  \left(m\left(A_1\right), m\left(A_2\right), 
+    \cdots, m\left(A_{|A|}\right)\right) . 
+\end{equation}
+Before the
+next operation is inlined, $m$ is extend by making $m\left(v\right) = \hat
+v$. After all the operations in the example have been inlined we have
+\begin{equation}
+  %\left\{
+    \begin{array}{lcl}
+      m\left(p_0\right) &=& p_0 \\
+      m\left(p_1\right) &=& p_5 \\
+      m\left(i_2\right) &=& i_6 \\
+      m\left(i_3\right) &=& i_7 \\
+      m\left(i_4\right) &=& i_8 \\
+      m\left(p_5\right) &=& p_9 \\
+    \end{array}
+  %\right.
+  .
+\end{equation}
+
+\subsection{Redundant guard removal}
+No special concerns needs to be taken when implementing redundant
+guard removal together with loop peeling. However the the guards from
+the first iteration might make the guards of the second iterations
+redundant and thus removed. So the net effect of combining redundant
+guard removal with loop peeling is that guards are moved out of the
+loop. The second iteraton of the example reduces to
+
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+$l_1$($p_{0}$, $p_{5}$):
+# inside f: y = y.add(step)
+    # inside BoxedInteger.add
+    $i_{6}$ = get($p_{5}$, intval)
+        # inside BoxedInteger.add__int
+        $i_{7}$ = get($p_{0}$, intval)
+        $i_{8}$ = int_add($i_{6}$, $i_{7}$)
+        $p_{9}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{9}$, intval, $i_{8}$)
+jump($l_1$, $p_{0}$, $p_{9}$)
+\end{lstlisting}
+
+
+\subsection{Heap caching}
+
+To implement heap caching variables has to be passed from the first
+iteration to the second by XXX
+\begin{equation}
+  \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
+\end{equation}
+\begin{equation}
+  \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H})\right)
+  .
+\end{equation}
+In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat K$.
+
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+$l_0$($p_{0}$, $p_{1}$):
+# inside f: y = y.add(step)
+guard_class($p_{1}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{2}$ = get($p_{1}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{3}$ = get($p_{0}$, intval)
+        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $p_{5}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{5}$, intval, $i_{4}$)
+jump($l_1$, $p_{0}$, $p_{5}$, $i_3$, $i_4$)
+
+$l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
+# inside f: y = y.add(step)
+    # inside BoxedInteger.add
+        # inside BoxedInteger.add__int
+        $i_{8}$ = int_add($i_{4}$, $i_{3}$)
+        $p_{9}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{9}$, intval, $i_{8}$)
+jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
+\end{lstlisting}
+
+\subsection{Virtualization}
+Using escape analysis we can XXX
+
+Let $\tilde J$ be all variables in $J$ not representing virtuals (in the
+same order). Extend it with all non virtual fields, $H_i$, of the
+removed virtuals,
+\begin{equation}
+  \hat J = \left(\tilde J_1, \tilde J_2, \cdots, \tilde J_{|\tilde J|}, 
+                 H_1, H_2, \cdots, H_{|H}\right)
+\end{equation}
+and let
+\begin{equation}
+  \hat K = \left(m\left(\hat J_1\right), m\left(\hat J_1\right), 
+                 \cdots, m\left(\hat J_{|\hat J|}\right)\right)
+  .
+\end{equation}
+
+
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+$l_0$($p_{0}$, $p_{1}$):
+# inside f: y = y.add(step)
+guard_class($p_{1}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{2}$ = get($p_{1}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{3}$ = get($p_{0}$, intval)
+        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+jump($l_1$, $p_{0}$, $i_3$, $i_4$)
+
+$l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
+# inside f: y = y.add(step)
+    # inside BoxedInteger.add
+        # inside BoxedInteger.add__int
+        $i_{8}$ = int_add($i_{4}$, $i_{3}$)
+jump($l_1$, $p_{0}$, $i_3$, $i_8$)
+\end{lstlisting}
+
+And we're down to a single integer addition!
+
+\section{Benchmarks}
 
 \appendix
 \section{Appendix Title}
