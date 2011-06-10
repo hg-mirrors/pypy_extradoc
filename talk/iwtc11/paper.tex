@@ -392,11 +392,47 @@ $l_1$($p_{0}$, $p_{5}$):
 jump($l_1$, $p_{0}$, $p_{9}$)
 \end{lstlisting}
 
+The guard on $p_5$ on line 17 of Figure~\ref{fig:unopt-trace} can be
+removed since $p_5$ is allocated on line 10 with a known class. The
+guard on $p_0$ on line 20 can be removed since it is identical to the
+guard on line 6.
 
 \subsection{Heap caching}
+The objective of heap caching is to remove \lstinline{get} and
+\lstinline{set} operations whose results can be deduced from previous
+\lstinline{get} and \lstinline{set} operations. Exact details of the
+process are outside the scope of this paper We will here assume that
+it works perfectly and only consider the interactions with loop
+peeling.
 
-To implement heap caching variables has to be passed from the first
-iteration to the second by XXX
+The issue at hand is to keep the second iteration a proper
+trace. Consider the \lstinline{get} operation on line 19 of
+Figure~\ref{fig:unopt-trace}. The result of this operation can be
+deduced to be $i_4$ from the \lstinline{set} operation on line
+12. Also, the result of the \lstinline{get} operation on line 22 can
+be deduced to be $i_3$ from the \lstinline{get} operation on line
+8. The optimization will thus remove line 19 and 22 from the trace and
+replace $i_6$ with $i_4$ and $i_7$ with $i_3$. 
+
+After that, the second
+iteration will no longer be proper as it operates on $i_3$ and $i_4$
+which are not part of it. The solution is to extend the input
+arguments, $J$, with those two variables. This will also extend the
+jump arguments of the first iteration, which is also $J$. 
+Implicitly that also extends the jump arguments of the second iteration, $K$,
+since they are the inlined versions of $J$. That is the, $I$ has to
+be replaced by $\hat I$ which is formed as a concatenation of $I$ and
+$\left(i_3, i_4\right)$. At the same time $K$ has to be replaced by
+$\hat K$ which is formed as a concatenation of $K$ and 
+$\left(m\left(i_3\right), m\left(i_4\right)\right) = \left(i_7, i_8\right)$. 
+The variable $i_7$ will then be replaced by $i_3$ by the heap caching
+algorithm as it has removed the variable $i_7$. XXX: Maybe we should
+replace $i_7=$get(...) with $i_7=i_3$ instead of removing it?
+
+In general what is needed is for the heap optimizer is to keep track of
+which variables from the first iterations it reuses in the second
+iteration. It has to construct a vector of such variables $H$ which
+can be used to update the input and jump arguments,
 \begin{equation}
   \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
 \end{equation}
@@ -404,7 +440,8 @@ iteration to the second by XXX
   \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H})\right)
   .
 \end{equation}
-In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat K$.
+In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
+K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized into
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $l_0$($p_{0}$, $p_{1}$):
