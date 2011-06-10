@@ -53,3 +53,19 @@ def conv3x3(a, k):
                       k[2,1]*a[x-1, y]   + k[1,1]*a[x, y]   + k[0,1]*a[x+1, y]   + \
                       k[2,0]*a[x-1, y+1] + k[1,0]*a[x, y+1] + k[0,0]*a[x+1, y+1]
     return b
+
+def morphology3x3(a, k, func):
+    assert k.width == k.height == 3
+    b = Array2D(a.width, a.height)
+    for y in xrange(1, a.height-1):
+        for x in xrange(1, a.width-1):
+            b[x, y] = func(k[2,2]*a[x-1, y-1], k[1,2]*a[x, y-1], k[0,2]*a[x+1, y-1], \
+                           k[2,1]*a[x-1, y]  , k[1,1]*a[x, y]  , k[0,1]*a[x+1, y]  , \
+                           k[2,0]*a[x-1, y+1], k[1,0]*a[x, y+1], k[0,0]*a[x+1, y+1])
+    return b
+
+def dilate3x3(a, k):
+    return morphology3x3(a, k, max)
+
+def erode3x3(a, k):
+    return morphology3x3(a, k, min)
