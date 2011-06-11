@@ -33,6 +33,18 @@ def uint8(img):
         res[p] = min(max(int(img[p]), 0), 255)
     return res
 
+def sobel_magnitude_uint8(img):
+    res = img.clone(typecode='B')
+    for p in img.pixeliter():
+        dx = -1.0 * img[p + (-1,-1)] + 1.0 * img[p + (1,-1)] + \
+             -2.0 * img[p + (-1, 0)] + 2.0 * img[p + (1, 0)] + \
+             -1.0 * img[p + (-1, 1)] + 1.0 * img[p + (1, 1)]
+        dy = -1.0*img[p + (-1,-1)] -2.0*img[p + (0,-1)] -1.0*img[p + (1,-1)] + \
+              1.0*img[p + (-1, 1)] +2.0*img[p + (0, 1)] +1.0*img[p + (1, 1)]
+        res[p] = min(int(sqrt(dx*dx + dy*dy) / 4.0), 255)
+    return res
+
+
 if __name__ == '__main__':
     from io import mplayer, view
     import sys
@@ -41,7 +53,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         fn = sys.argv[1]
     else:
-        fn = 'test.avi'
+        fn = 'test.avi -vf scale=640:480 -benchmark'
 
     sys.setcheckinterval(2**30)
     try:
@@ -50,10 +62,14 @@ if __name__ == '__main__':
     except ImportError:
         pass
 
-    start = time()
+    start = start0 = time()
     for fcnt, img in enumerate(mplayer(NoBorderImagePadded, fn)):
         #view(img)
         #sobeldx(img)
-        view(uint8(sobel_magnitude(img)))
-        print 1.0 / (time() - start), 'fps'
+        #view(uint8(sobel_magnitude(img)))
+        #view(sobel_magnitude_uint8(img))
+        sobel_magnitude_uint8(img)
+        print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
+        if fcnt==2:
+            start0 = time()

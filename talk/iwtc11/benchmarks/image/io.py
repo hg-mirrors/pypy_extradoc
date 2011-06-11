@@ -21,7 +21,7 @@ class MplayerViewer(object):
         if not self.width:
             self.mplayer = os.popen('mplayer -really-quiet -noframedrop - ' +
                                     '2> /dev/null ', 'w')
-            self.mplayer.write('YUV4MPEG2 W%d H%d F25:1 Ip A1:1\n' %
+            self.mplayer.write('YUV4MPEG2 W%d H%d F100:1 Ip A1:1\n' %
                                (img.width, img.height))
             self.width = img.width
             self.height = img.height
