@@ -106,7 +106,7 @@ def conv3x3range(img, k):
 
 if __name__ == '__main__':
     import time, sys
-    sys.setcheckinterval(sys.maxint)
+    sys.setcheckinterval(2**30)
     try:
         import pypyjit
         pypyjit.set_param(trace_limit=200000)
