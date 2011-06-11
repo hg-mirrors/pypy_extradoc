@@ -44,17 +44,23 @@ class NoBorderImage(object):
                 self[x, y] = data[y][x]
         return self
 
-    def clone(self):
-        return self.__class__(self.width, self.height)
+    def clone(self, **kwargs):
+        return self.__class__(self.width, self.height, **kwargs)
 
     def tofile(self, f):
         self.data.tofile(f)
 
 class NoBorderImagePadded(NoBorderImage):
-    def __init__(self, w, h):
+    def __init__(self, w, h, typecode='d', fromfile=None):
         self.width = w
         self.height = h
-        self.data = array('d', [0]) * (w*(h+2)+2)
+        self.typecode = typecode
+        if fromfile is None:
+            self.data = array(typecode, [0]) * (w*(h+2)+2)
+        else:
+            self.data = array(typecode, [0]) * (w + 1)
+            self.data.fromfile(fromfile, w*h)
+            self.data += array(typecode, [0]) * (w + 1)
 
     def _idx(self, p):
         if isinstance(p, Pixel):
@@ -67,6 +73,9 @@ class NoBorderImagePadded(NoBorderImage):
 
     def pixelrange(self):
         return xrange(self.width + 1, (self.width+1) * self.height + 1)
+
+    def tofile(self, f):
+        self.data[(self.width+1):(-self.width-1)].tofile(f)
 
 
 class Pixel(object):

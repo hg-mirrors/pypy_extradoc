@@ -1,7 +1,7 @@
 import os, re, array
 
-def mplayer(Image, fn='tv://'):
-    f = os.popen('mplayer -really-quiet -noframedrop ' + 
+def mplayer(Image, fn='tv://', options=''):
+    f = os.popen('mplayer -really-quiet -noframedrop ' + options + ' ' 
                  '-vo yuv4mpeg:file=/dev/stdout 2>/dev/null </dev/null ' + fn)
     hdr = f.readline()
     m = re.search('W(\d+) H(\d+)', hdr)
