@@ -6,13 +6,13 @@ class NoBorderImage(object):
     def __init__(self, w, h):
         self.width = w
         self.height = h
-        self.data = array('d', [0]) * (w*(h+2)+2)
+        self.data = array('d', [0]) * (w*h)
 
     def _idx(self, p):
         if isinstance(p, Pixel):
             idx = p.idx
         else:
-            idx = (p[1]+1) * self.width + p[0] + 1
+            idx = p[1] * self.width + p[0]
         return min(max(idx, 0), len(self.data)-1)
 
     def __getitem__(self, p):
@@ -22,20 +22,40 @@ class NoBorderImage(object):
         self.data[self._idx(p)] = val
 
     def pixels(self):
-        for i in xrange(self.width + 1, (self.width+1) * self.height + 1):
+        for i in self.pixelrange():
             yield Pixel(i, self.width)
 
     def pixeliter(self):
-        return PixelIter(self.width, self.height)
+        return PixelIter(self.width, self.pixelrange())
 
     def pixelrange(self):
-        return xrange(self.width + 1, (self.width+1) * self.height + 1)
+        return xrange(self.width * self.height)
 
     def setup(self, data):
         for y in xrange(self.height):
             for x in xrange(self.width):
                 self[x, y] = data[y][x]
         return self
+
+    def clone(self):
+        return self.__class__(self.width, self.height)
+
+class NoBorderImagePadded(NoBorderImage):
+    def __init__(self, w, h):
+        self.width = w
+        self.height = h
+        self.data = array('d', [0]) * (w*(h+2)+2)
+
+    def _idx(self, p):
+        if isinstance(p, Pixel):
+            idx = p.idx
+        else:
+            idx = (p[1]+1) * self.width + p[0] + 1
+        return min(max(idx, 0), len(self.data)-1)
+
+    def pixelrange(self):
+        return xrange(self.width + 1, (self.width+1) * self.height + 1)
+
 
 class Pixel(object):
     def __init__(self, idx, w):
@@ -46,24 +66,19 @@ class Pixel(object):
         return Pixel(self.idx + other[1]*self.width + other[0], self.width)
 
 class PixelIter(object):
-    def __init__(self, w, h):
+    def __init__(self, w, pixelrange):
         self.width = w
-        self.n = (w+1)*h + 1
-        self.idx = w + 1
+        self.pixelrange = iter(pixelrange)
         
     def __iter__(self):
         return self
 
     def next(self):
-        idx = self.idx
-        self.idx += 1
-        if idx >=self.n:
-            raise StopIteration
-        return Pixel(idx, self.width)
+        return Pixel(self.pixelrange.next(), self.width)
 
 def conv3x3(img, k):
     assert k.width == k.height == 3
-    res = NoBorderImage(img.width, img.height)
+    res = img.clone()
     for p in img.pixels():
         res[p] = k[2,2]*img[p + (-1,-1)] + k[1,2]*img[p + (0,-1)] + k[0,2]*img[p + (1,-1)] + \
                  k[2,1]*img[p + (-1, 0)] + k[1,1]*img[p + (0, 0)] + k[0,1]*img[p + (1, 0)] + \
@@ -72,7 +87,7 @@ def conv3x3(img, k):
 
 def conv3x3iter(img, k):
     assert k.width == k.height == 3
-    res = NoBorderImage(img.width, img.height)
+    res = img.clone()
     for p in img.pixeliter():
         res[p] = k[2,2]*img[p + (-1,-1)] + k[1,2]*img[p + (0,-1)] + k[0,2]*img[p + (1,-1)] + \
                  k[2,1]*img[p + (-1, 0)] + k[1,1]*img[p + (0, 0)] + k[0,1]*img[p + (1, 0)] + \
@@ -81,7 +96,7 @@ def conv3x3iter(img, k):
 
 def conv3x3range(img, k):
     assert k.width == k.height == 3
-    res = NoBorderImage(img.width, img.height)
+    res = img.clone()
     for i in img.pixelrange():
         p = Pixel(i, img.width)
         res[p] = k[2,2]*img[p + (-1,-1)] + k[1,2]*img[p + (0,-1)] + k[0,2]*img[p + (1,-1)] + \
@@ -95,23 +110,25 @@ if __name__ == '__main__':
         pypyjit.set_param(trace_limit=200000)
     except ImportError:
         pass
-    import time
+    import time, sys
+    Image = eval(sys.argv[1])
+    n = 1000
 
     a = time.time()
     for i in range(10):
-        conv3x3(NoBorderImage(1000, 1000), NoBorderImage(3,3))
+        conv3x3(Image(n, n), Image(3,3))
     b = time.time()
-    print 'NoBorderImage:', b - a
+    print '%s:' % Image.__name__, b - a
 
     a = time.time()
     for i in range(10):
-        conv3x3iter(NoBorderImage(1000, 1000), NoBorderImage(3,3))
+        conv3x3iter(Image(n, n), Image(3,3))
     b = time.time()
-    print 'NoBorderImage(iter):', b - a
+    print '%s(iter):' % Image.__name__, b - a
 
     a = time.time()
     for i in range(10):
-        conv3x3range(NoBorderImage(1000, 1000), NoBorderImage(3,3))
+        conv3x3range(Image(n, n), Image(3,3))
     b = time.time()
-    print 'NoBorderImage(range):', b - a
+    print '%s(range):' % Image.__name__, b - a
 
