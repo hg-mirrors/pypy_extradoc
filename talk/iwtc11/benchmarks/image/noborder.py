@@ -3,10 +3,15 @@ from array import array
 class NoBorderImage(object):
     "An image class for people who dont care about border effects"
     
-    def __init__(self, w, h):
+    def __init__(self, w, h, typecode='d', fromfile=None):
         self.width = w
         self.height = h
-        self.data = array('d', [0]) * (w*h)
+        if fromfile is not None:
+            self.data = array(typecode)
+            self.data.fromfile(fromfile, w*h)
+        else:
+            self.data = array(typecode, [0]) * (w*h)
+        self.typecode = typecode
 
     def _idx(self, p):
         if isinstance(p, Pixel):
@@ -41,6 +46,9 @@ class NoBorderImage(object):
 
     def clone(self):
         return self.__class__(self.width, self.height)
+
+    def tofile(self, f):
+        self.data.tofile(f)
 
 class NoBorderImagePadded(NoBorderImage):
     def __init__(self, w, h):
