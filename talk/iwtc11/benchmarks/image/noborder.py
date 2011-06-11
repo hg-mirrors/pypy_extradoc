@@ -105,14 +105,20 @@ def conv3x3range(img, k):
     return res
 
 if __name__ == '__main__':
+    import time, sys
+    sys.setcheckinterval(sys.maxint)
     try:
         import pypyjit
         pypyjit.set_param(trace_limit=200000)
     except ImportError:
         pass
-    import time, sys
     Image = eval(sys.argv[1])
     n = 1000
+
+    # Warmup
+    conv3x3(Image(n, n), Image(3,3))
+    conv3x3iter(Image(n, n), Image(3,3))
+    conv3x3range(Image(n, n), Image(3,3))
 
     a = time.time()
     for i in range(10):

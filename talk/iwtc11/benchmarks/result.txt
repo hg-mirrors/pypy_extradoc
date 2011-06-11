@@ -1,67 +1,77 @@
+
 pypy
-sqrt(float):   1.20007300377
-  sqrt(int):   2.42691707611
-sqrt(Fix16):   6.12388682365
-conv3(1e8):    2.07212114334
-conv5(1e8):    3.74697422981
-conv3(1e6):    0.847440004349
-conv5(1e6):    1.03422498703
-conv3(1e5):    0.828099012375
-conv5(1e5):    0.986320018768
-conv3x3(3):    0.673633098602
-conv3x3(1000): 0.797726154327
-dilate3x3(1000): 4.77046608925
-NoBorderImage: 3.19338297844
-NoBorderImage(iter): 1.2989180088
-NoBorderImage(range): 1.15420603752
+sqrt(float):   1.20330905914
+  sqrt(int):   2.41903185844
+sqrt(Fix16):   6.13185501099
+conv3(1e8):    2.07355308533
+conv5(1e8):    4.32232785225
+conv3(1e6):    0.84544801712
+conv5(1e6):    1.06041717529
+conv3(1e5):    0.779824018478
+conv5(1e5):    0.977579116821
+conv3x3(3):    0.659806966782
+conv3x3(1000): 0.754494905472
+dilate3x3(1000): 4.82968187332
+NoBorderImagePadded: 2.30471801758
+NoBorderImagePadded(iter): 0.506963014603
+NoBorderImagePadded(range): 0.498332977295
+NoBorderImage: 2.81514596939
+NoBorderImage(iter): 2.08273696899
+NoBorderImage(range): 1.95225405693
 
 pypy --jit enable_opts=intbounds:rewrite:virtualize:heap:unroll
-sqrt(float):   1.199229002
-  sqrt(int):   2.41933488846
-sqrt(Fix16):   6.10434889793
-conv3(1e8):    2.05510497093
-conv5(1e8):    2.29772686958
-conv3(1e6):    0.865077972412
-conv5(1e6):    1.00826501846
-conv3(1e5):    0.771955966949
-conv5(1e5):    0.972916841507
-conv3x3(3):    0.665695905685
-conv3x3(1000): 0.764945030212
-dilate3x3(1000): 4.81783390045
-NoBorderImage: 3.00811100006
-NoBorderImage(iter): 1.28884291649
-NoBorderImage(range): 1.17212605476
+sqrt(float):   1.20050120354
+  sqrt(int):   2.42964291573
+sqrt(Fix16):   6.13428783417
+conv3(1e8):    2.08279705048
+conv5(1e8):    2.34173488617
+conv3(1e6):    0.836614131927
+conv5(1e6):    1.040391922
+conv3(1e5):    0.779335021973
+conv5(1e5):    0.985204935074
+conv3x3(3):    0.675951004028
+conv3x3(1000): 0.778173923492
+dilate3x3(1000): 4.75176811218
+NoBorderImagePadded: 2.31103396416
+NoBorderImagePadded(iter): 0.506816864014
+NoBorderImagePadded(range): 0.496361970901
+NoBorderImage: 2.92268490791
+NoBorderImage(iter): 2.04088401794
+NoBorderImage(range): 1.93559288979
 
 pypy --jit enable_opts=intbounds:rewrite:virtualize:heap
-sqrt(float):   1.75571584702
-  sqrt(int):   3.15244197845
-sqrt(Fix16):   10.4446480274
-conv3(1e8):    3.03417396545
-conv5(1e8):    3.20520019531
-conv3(1e6):    1.79009604454
-conv5(1e6):    1.95981192589
-conv3(1e5):    1.7597720623
-conv5(1e5):    1.95497822762
-conv3x3(3):    1.12244486809
-conv3x3(1000): 1.03072309494
-dilate3x3(1000): 5.22287106514
-NoBorderImage: 2.79573297501
-NoBorderImage(iter): 1.92453217506
-NoBorderImage(range): 1.79536819458
+sqrt(float):   1.67590689659
+  sqrt(int):   3.06944203377
+sqrt(Fix16):   10.3943400383
+conv3(1e8):    2.97594094276
+conv5(1e8):    3.1732480526
+conv3(1e6):    1.7523651123
+conv5(1e6):    1.92802405357
+conv3(1e5):    1.72453904152
+conv5(1e5):    1.93651390076
+conv3x3(3):    1.10019302368
+conv3x3(1000): 1.02145695686
+dilate3x3(1000): 5.10945105553
+NoBorderImagePadded: 2.4370200634
+NoBorderImagePadded(iter): 1.55626583099
+NoBorderImagePadded(range): 1.5247399807
+NoBorderImage: 2.7648730278
+NoBorderImage(iter): 1.90325784683
+NoBorderImage(range): 2.04479312897
 
 gcc
-sqrt(float):   1.43
+sqrt(float):   1.42
 sqrt(int):     1.92
-sqrt(Fix16):   2.04
+sqrt(Fix16):   2.03
 conv3(1e8):     2.00
-conv5(1e8):     2.39
-conv3(1e6):     1.63
+conv5(1e8):     2.42
+conv3(1e6):     1.65
 conv5(1e6):     2.04
-conv3(1e5):     1.62
-conv5(1e5):     1.99
-conv3x3(3):  1.88
-conv3x3(1000):  1.79
-dilate3x3(1000):  3.25
+conv3(1e5):     1.63
+conv5(1e5):     2.01
+conv3x3(3):  1.85
+conv3x3(1000):  1.77
+dilate3x3(1000):  3.26
 
 gcc -O2
 sqrt(float):   1.15
@@ -75,19 +85,19 @@ conv3(1e5):     0.81
 conv5(1e5):     0.97
 conv3x3(3):  0.25
 conv3x3(1000):  0.23
-dilate3x3(1000):  0.26
+dilate3x3(1000):  0.27
 
 gcc -O3 -march=native
-sqrt(float):   1.15
+sqrt(float):   1.14
 sqrt(int):     1.82
-sqrt(Fix16):   1.88
-conv3(1e8):     1.12
-conv5(1e8):     1.16
-conv3(1e6):     0.96
-conv5(1e6):     0.97
+sqrt(Fix16):   1.89
+conv3(1e8):     1.13
+conv5(1e8):     1.15
+conv3(1e6):     0.97
+conv5(1e6):     0.96
 conv3(1e5):     0.66
-conv5(1e5):     0.75
+conv5(1e5):     0.76
 conv3x3(3):  0.23
 conv3x3(1000):  0.21
-dilate3x3(1000):  0.26
+dilate3x3(1000):  0.27
 
