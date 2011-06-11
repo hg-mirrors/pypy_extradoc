@@ -10,6 +10,8 @@ class NoBorderImage(object):
 
     def _idx(self, p):
         if isinstance(p, Pixel):
+            assert p.image.__class__ is self.__class__
+            assert p.image.width == self.width
             idx = p.idx
         else:
             idx = p[1] * self.width + p[0]
@@ -23,10 +25,10 @@ class NoBorderImage(object):
 
     def pixels(self):
         for i in self.pixelrange():
-            yield Pixel(i, self.width)
+            yield Pixel(i, self)
 
     def pixeliter(self):
-        return PixelIter(self.width, self.pixelrange())
+        return PixelIter(self)
 
     def pixelrange(self):
         return xrange(self.width * self.height)
@@ -48,6 +50,8 @@ class NoBorderImagePadded(NoBorderImage):
 
     def _idx(self, p):
         if isinstance(p, Pixel):
+            assert p.image.__class__ is self.__class__
+            assert p.image.width == self.width
             idx = p.idx
         else:
             idx = (p[1]+1) * self.width + p[0] + 1
@@ -58,23 +62,23 @@ class NoBorderImagePadded(NoBorderImage):
 
 
 class Pixel(object):
-    def __init__(self, idx, w):
+    def __init__(self, idx, image):
         self.idx = idx
-        self.width = w
+        self.image = image
 
     def __add__(self, other):
-        return Pixel(self.idx + other[1]*self.width + other[0], self.width)
+        return Pixel(self.idx + other[1]*self.image.width + other[0], self.image)
 
 class PixelIter(object):
-    def __init__(self, w, pixelrange):
-        self.width = w
-        self.pixelrange = iter(pixelrange)
+    def __init__(self, image):
+        self.image = image
+        self.pixelrange = iter(image.pixelrange())
         
     def __iter__(self):
         return self
 
     def next(self):
-        return Pixel(self.pixelrange.next(), self.width)
+        return Pixel(self.pixelrange.next(), self.image)
 
 def conv3x3(img, k):
     assert k.width == k.height == 3
@@ -98,7 +102,7 @@ def conv3x3range(img, k):
     assert k.width == k.height == 3
     res = img.clone()
     for i in img.pixelrange():
-        p = Pixel(i, img.width)
+        p = Pixel(i, img)
         res[p] = k[2,2]*img[p + (-1,-1)] + k[1,2]*img[p + (0,-1)] + k[0,2]*img[p + (1,-1)] + \
                  k[2,1]*img[p + (-1, 0)] + k[1,1]*img[p + (0, 0)] + k[0,1]*img[p + (1, 0)] + \
                  k[2,0]*img[p + (-1, 1)] + k[1,0]*img[p + (0, 1)] + k[0,0]*img[p + (1, 1)]
