@@ -23,8 +23,8 @@ def sobel_magnitude(img):
              -2.0 * img[p + (-1, 0)] + 2.0 * img[p + (1, 0)] + \
              -1.0 * img[p + (-1, 1)] + 1.0 * img[p + (1, 1)]
         dy = -1.0*img[p + (-1,-1)] -2.0*img[p + (0,-1)] -1.0*img[p + (1,-1)] + \
-              1.0*img[p + (-1, 1)] +2.0*img[p + (0, 1)] +2.0*img[p + (1, 1)]
-        res[p] = sqrt(dx**2 + dy**2) / 4.0
+              1.0*img[p + (-1, 1)] +2.0*img[p + (0, 1)] +1.0*img[p + (1, 1)]
+        res[p] = sqrt(dx*dx + dy*dy) / 4.0
     return res
 
 def uint8(img):
@@ -43,6 +43,7 @@ if __name__ == '__main__':
     else:
         fn = 'test.avi'
 
+    sys.setcheckinterval(2**30)
     try:
         import pypyjit
         pypyjit.set_param(trace_limit=200000)
