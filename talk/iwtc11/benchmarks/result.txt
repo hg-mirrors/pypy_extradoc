@@ -1,48 +1,93 @@
 pypy
-sqrt(float):   1.20120882988
-  sqrt(int):   2.41813898087
-sqrt(Fix16):   6.11410784721
-conv3:         2.14187502861
-conv5:         2.33459997177
+sqrt(float):   1.20007300377
+  sqrt(int):   2.42691707611
+sqrt(Fix16):   6.12388682365
+conv3(1e8):    2.07212114334
+conv5(1e8):    3.74697422981
+conv3(1e6):    0.847440004349
+conv5(1e6):    1.03422498703
+conv3(1e5):    0.828099012375
+conv5(1e5):    0.986320018768
+conv3x3(3):    0.673633098602
+conv3x3(1000): 0.797726154327
+dilate3x3(1000): 4.77046608925
+NoBorderImage: 3.19338297844
+NoBorderImage(iter): 1.2989180088
+NoBorderImage(range): 1.15420603752
 
 pypy --jit enable_opts=intbounds:rewrite:virtualize:heap:unroll
-sqrt(float):   1.2082631588
-  sqrt(int):   2.42825579643
-sqrt(Fix16):   6.13569307327
-conv3:         2.14451694489
-conv5:         2.36811304092
+sqrt(float):   1.199229002
+  sqrt(int):   2.41933488846
+sqrt(Fix16):   6.10434889793
+conv3(1e8):    2.05510497093
+conv5(1e8):    2.29772686958
+conv3(1e6):    0.865077972412
+conv5(1e6):    1.00826501846
+conv3(1e5):    0.771955966949
+conv5(1e5):    0.972916841507
+conv3x3(3):    0.665695905685
+conv3x3(1000): 0.764945030212
+dilate3x3(1000): 4.81783390045
+NoBorderImage: 3.00811100006
+NoBorderImage(iter): 1.28884291649
+NoBorderImage(range): 1.17212605476
 
 pypy --jit enable_opts=intbounds:rewrite:virtualize:heap
-sqrt(float):   1.70357894897
-  sqrt(int):   3.12929701805
-sqrt(Fix16):   10.3343019485
-conv3:         3.14458608627
-conv5:         3.42248892784
+sqrt(float):   1.75571584702
+  sqrt(int):   3.15244197845
+sqrt(Fix16):   10.4446480274
+conv3(1e8):    3.03417396545
+conv5(1e8):    3.20520019531
+conv3(1e6):    1.79009604454
+conv5(1e6):    1.95981192589
+conv3(1e5):    1.7597720623
+conv5(1e5):    1.95497822762
+conv3x3(3):    1.12244486809
+conv3x3(1000): 1.03072309494
+dilate3x3(1000): 5.22287106514
+NoBorderImage: 2.79573297501
+NoBorderImage(iter): 1.92453217506
+NoBorderImage(range): 1.79536819458
 
 gcc
-sqrt(float):   1.42
-sqrt(int):     1.93
+sqrt(float):   1.43
+sqrt(int):     1.92
 sqrt(Fix16):   2.04
-conv3:         1.94
-conv5:         2.36
+conv3(1e8):     2.00
+conv5(1e8):     2.39
+conv3(1e6):     1.63
+conv5(1e6):     2.04
+conv3(1e5):     1.62
+conv5(1e5):     1.99
+conv3x3(3):  1.88
+conv3x3(1000):  1.79
+dilate3x3(1000):  3.25
 
 gcc -O2
-sqrt(float):   1.14
+sqrt(float):   1.15
 sqrt(int):     1.86
 sqrt(Fix16):   1.90
-conv3:         1.18
-conv5:         1.34
+conv3(1e8):     1.22
+conv5(1e8):     1.37
+conv3(1e6):     1.00
+conv5(1e6):     1.04
+conv3(1e5):     0.81
+conv5(1e5):     0.97
+conv3x3(3):  0.25
+conv3x3(1000):  0.23
+dilate3x3(1000):  0.26
 
 gcc -O3 -march=native
-sqrt(float):   1.14
+sqrt(float):   1.15
 sqrt(int):     1.82
-sqrt(Fix16):   1.89
-conv3:         1.10
-conv5:         1.16
+sqrt(Fix16):   1.88
+conv3(1e8):     1.12
+conv5(1e8):     1.16
+conv3(1e6):     0.96
+conv5(1e6):     0.97
+conv3(1e5):     0.66
+conv5(1e5):     0.75
+conv3x3(3):  0.23
+conv3x3(1000):  0.21
+dilate3x3(1000):  0.26
 
-python2.7
-sqrt(float):   35.3788838387
-  sqrt(int):   19.5545659065
-sqrt(Fix16):   978.297157049
-conv3:         72.7751071453
-conv5:         103.557267904

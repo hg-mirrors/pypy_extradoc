@@ -24,4 +24,5 @@ else
     $* convolution/time_conv.py 100
     $* convolution/time_conv.py 1000
     $* convolution/time_conv2d.py
+    $* image/noborder.py
 fi
