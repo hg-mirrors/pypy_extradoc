@@ -107,3 +107,23 @@ conv3x3(1000):  0.21
 dilate3x3(1000):  0.26
 sobel_magnitude:  0.25
 
+python2.7
+sqrt(float):   34.9008591175
+  sqrt(int):   19.6919620037
+sqrt(Fix16):   966.111785889
+conv3(1e8):    69.0758299828
+conv5(1e8):    101.503945827
+conv3(1e6):    62.212736845
+conv5(1e6):    93.5375850201
+conv3(1e5):    61.4343979359
+conv5(1e5):    93.6144771576
+conv3x3(3):    198.12590003
+conv3x3(1000): 193.030704975
+dilate3x3(1000): 192.323596954
+NoBorderImagePadded: 512.473811865
+NoBorderImagePadded(iter): 503.393321991
+NoBorderImagePadded(range): 493.907886028
+NoBorderImage: 501.37309289
+NoBorderImage(iter): 495.473101139
+NoBorderImage(range): 493.572232008
+sobel(NoBorderImagePadded): 433.678281069
