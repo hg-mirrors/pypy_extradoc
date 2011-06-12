@@ -469,23 +469,72 @@ $l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
 jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 \end{lstlisting}
 
-\subsection{Virtualization}
-Using escape analysis we can XXX
+\subsection{Allocation removal}
+By using escape analysis it is possible to identify objects that are
+allocated within the loop but never escapes it. That is the object are
+short lived and no references to them exists outside the loop. This
+is performed by processing the operation from top to bottom and
+optimistically removing every \lstinline{new} operation. Later on if
+it is discovered that a reference to the object escapes the loop, the
+\lstinline{new} operation is inserted at this point. All operations
+(\lstinline{get} and \lstinline{set}) on the removed objects are also
+removed and the optimizer needs to keep track of the value of all
+attributes of the object.
 
-Let $\tilde J$ be all variables in $J$ not representing virtuals (in the
-same order). Extend it with all non virtual fields, $H_i$, of the
-removed virtuals,
+Consider again the original unoptimized trace of
+Figure~\label{fig:peeled-trace}. Line 10 contains the first
+allocation. It is removed and $p_5$ is marked as virtual. This means
+that it refers to an virtual object that was not yet
+(and might never be) allocated. Line 12 sets the \lstinline{intval}
+attribute of $p_5$. This operation is also removed and the optimizer
+registers that the attribute \lstinline{intval} of $p_5$ is $i_4$.
+
+When the optimizer reaches line 13 it needs to construct the
+arguments for the \lstinline{jump} operation, which contains the virtual
+reference $p_5$. This can be achieved by exploding $p_5$ into it's
+attributes. In this case there is only one attribute and it's value is
+$i_4$, which means the $p_5$ is replaced with $i_4$ in the jump
+arguments. 
+
+In the general case, each virtual in the jump arguments is exploded into a
+vector of variables containing the values of all it's attributes. If some
+of the attributes are themselves virtuals they are recursively exploded
+to make the vector contain only non virtual variables. Some care has
+to be taken to always place the attributes in the same order when
+performing this explosion. Notation becomes somewhat simpler if also every non
+virtual variable of the jump arguments is exploded into a vector. This will
+be a vector containing the original variable only. To summarize, for
+every variable, $J_k$, of the original jump arguments, $J$, let
 \begin{equation}
-  \hat J = \left(\tilde J_1, \tilde J_2, \cdots, \tilde J_{|\tilde J|}, 
-                 H_1, H_2, \cdots, H_{|H}\right)
+  \tilde J^{\left(k\right)} = \left\{
+      \begin{array}{ll}
+        \left(J_k\right)  & \text{if $J_k$ is not virtual} \\
+        H^{\left(k\right)} & \text{if $J_k$ is virtual}
+      \end{array}
+  \right.
+  ,
 \end{equation}
-and let
+where $H^{\left(k\right)}$ is a vector containing all non virtual
+attributes of $J_k$. The arguments of the optimized \lstinline{jump}
+operation are constructed as the concatenation all the $\tilde J^{\left(k\right)}$ vectors,
+\begin{equation}
+  \hat J = \left( 
+    \begin{array}{cccc}
+      \tilde J^{\left(1\right)} & \tilde J^{\left(2\right)} & \cdots &
+      \tilde J^{\left(|J|\right)} \\
+    \end{array}
+  \right)      
+  .
+\end{equation}
+and the arguments of the \lstinline{jump} operation of the second
+operation, $K$, are replaced by inlining $\hat J$, 
 \begin{equation}
   \hat K = \left(m\left(\hat J_1\right), m\left(\hat J_1\right), 
                  \cdots, m\left(\hat J_{|\hat J|}\right)\right)
   .
 \end{equation}
-
+In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
+K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized into
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $l_0$($p_{0}$, $p_{1}$):
@@ -497,17 +546,29 @@ guard_class($p_{1}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{3}$ = get($p_{0}$, intval)
         $i_{4}$ = int_add($i_{2}$, $i_{3}$)
-jump($l_1$, $p_{0}$, $i_3$, $i_4$)
+            # inside BoxedInteger.__init__
+jump($l_1$, $p_{0}$, $i_{4}$)
 
-$l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
+$l_1$($p_{0}$, $i_{4}$):
 # inside f: y = y.add(step)
     # inside BoxedInteger.add
+    guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
-        $i_{8}$ = int_add($i_{4}$, $i_{3}$)
-jump($l_1$, $p_{0}$, $i_3$, $i_8$)
+        $i_{7}$ = get($p_{0}$, intval)
+        $i_{8}$ = int_add($i_{4}$, $i_{7}$)
+            # inside BoxedInteger.__init__
+jump($l_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
 
-And we're down to a single integer addition!
+Note that virtuals are only exploded into their attributes when
+constructing the arguments of the jump of the first iteration. This
+explosion can't be repeated when constructing the arguments of the
+jump of the second iteration as it has to mach the first. This means
+the objects that was passed as pointers (non virtuals) from the first
+iteration to the second also has to be passed as pointers from the
+second iteration to the third. If one of these objects are virtual
+at the end of the second iteration they need to be allocated right
+before the jump. 
 
 \section{Benchmarks}
 
