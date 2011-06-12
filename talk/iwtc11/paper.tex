@@ -568,7 +568,13 @@ the objects that was passed as pointers (non virtuals) from the first
 iteration to the second also has to be passed as pointers from the
 second iteration to the third. If one of these objects are virtual
 at the end of the second iteration they need to be allocated right
-before the jump. 
+before the jump. With the simple objects considered in this paper,
+that is not a problem. However in more complicated interpreters such
+an allocation might, in combination with other optimizations, lead
+to additional variables from the first iteration being imported into
+the second. This extends both $\hat J$ and $\hat K$, which means that
+some care has to be taken, when implementing this, to allow $\hat J$ to
+grow while inlining it into $\hat K$.
 
 \section{Benchmarks}
 
