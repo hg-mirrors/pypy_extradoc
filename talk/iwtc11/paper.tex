@@ -578,6 +578,62 @@ grow while inlining it into $\hat K$.
 
 \section{Benchmarks}
 
+The loop peeling optimization was implemented in the PyPy
+framework. That means that the jit compilers generated for all
+interpreters implemented within PyPy now can take advantage of
+it. Benchmarks have been executed for a few different interpreters and
+we see improvements in several cases. The ideal loop for this optimization
+would be short numerical calculations with no failing guards and no
+external calls.
+
+\subsection{Python}
+The python interpreter of the PyPy framework is a complete python
+version 2.7 compatible interpreter. A set of numerical
+calculations where implemented in both python and in C and their
+runtimes compared. The benchmarks are
+\begin{itemize}
+\item {\bf sqrt}: approximates the square root of $y$ as $x_\infty$
+  with $x_0=y/2$ and $x_k = \left( x_{k-1} + y/x_{k-1} \right) /
+  2$. There are three different versions of this benchmark where $x_k$
+  is represented with different type of objects: int's, float's and
+  Fix16's. The later, Fix16, is a custom class that implements
+  fixpoint arithmetic with 16 bits precision. In python there is only
+  a single implementation of the benchmark that gets specialized
+  depending on the class of it's input argument, $y$, while in C,
+  there is three different implementations.
+\item {\bf conv3}: one dimensional convolution with a kernel of fixed
+  size $3$.
+\item {\bf conv5}: one dimensional convolution with a kernel of fixed
+  size $5$.
+\item {\bf conv3x3}: two dimensional convolution with kernel of fixed
+  size $3 \times 3$ using a custom class to represent two dimensional
+  arrays.
+\item {\bf dilate3x3}: two dimensional dilation with kernel of fixed
+  size $3 \times 3$. This is similar to convolution but instead of
+  summing over the elements, the maximum is taken. That places a
+  external call to a max function within the loop that prevents some
+  of the optimizations.
+\item {\bf sobel}: an low level video processing algorithm used to
+  locate edges in an image. It calculated the gradient magnitude
+  using sobel derivatives. The algorithm is in python implemented
+  on top of a custom image class that is specially designed for the
+  problem. It ensures that there will be no failing guards, and makes
+  a lot of the two dimension index calculations loop invariant. The
+  intention there is twofold. It shows that the performance impact of
+  having wrapper classes giving objects some application specific
+  properties is negligible. This is due to the inlining performed
+  during the tracing and the allocation removal of the index objects
+  introduced. It also shows that it is possible to do some low level
+  hand optimizations of the python code and hide those optimization
+  under a nice interface without loosing performance.
+\end{itemize}
+
+\subsection{Numpy}
+XXX: Fijal?
+
+\subsection{Prolog}
+XXX: Carl?
+
 \appendix
 \section{Appendix Title}
 
