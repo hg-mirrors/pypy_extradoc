@@ -25,29 +25,95 @@
 % 11pt          To set in 11-point type instead of 9-point.
 % authoryear    To obtain author/year citation style instead of numeric.
 
+\usepackage{ifthen}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{xspace}
+\usepackage{epsfig}
+\usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+
+\usepackage{listings}
+
+\usepackage[T1]{fontenc}
 \usepackage{setspace}
 \usepackage{listings}
+\usepackage{beramono}
+
+
+\definecolor{gray}{rgb}{0.3,0.3,0.3}
+
+\lstset{
+  basicstyle=\setstretch{1.05}\ttfamily\footnotesize,
+  language=Python,
+  keywordstyle=\bfseries,
+  stringstyle=\color{blue},
+  commentstyle=\color{gray}\textit,
+  fancyvrb=true,
+  showstringspaces=false,
+  %keywords={def,while,if,elif,return,class,get,set,new,guard_class}
+  numberstyle = \tiny,
+  numbersep = -20pt,
+}
+
+
+\newboolean{showcomments}
+\setboolean{showcomments}{true}
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$Id: main.tex 19055 2008-06-05 11:20:31Z cfbolz $-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\cfbolz[1]{\nb{CFB}{#1}}
+\newcommand\arigo[1]{\nb{AR}{#1}}
+\newcommand\fijal[1]{\nb{FIJAL}{#1}}
+\newcommand\david[1]{\nb{DAVID}{#1}}
+\newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\reva[1]{\nb{Reviewer 1}{#1}}
+\newcommand\revb[1]{\nb{Reviewer 2}{#1}}
+\newcommand\revc[1]{\nb{Reviewer 3}{#1}}
+\newcommand{\commentout}[1]{}
+\newcommand{\ignore}[1]{} % {{\tt \small ignore(#1)}}
+
+\newcommand\ie{i.e.,\xspace}
+\newcommand\eg{e.g.,\xspace}
+\newcommand{\etal}{\emph{et al.}\xspace}
+
+\normalem
+
+\let\oldcite=\cite
+
+\renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
 
 
 \begin{document}
 
-\conferenceinfo{WXYZ '05}{date, City.} 
-\copyrightyear{2005} 
+\conferenceinfo{IWTC '11}{XXX} 
+\copyrightyear{2011} 
 \copyrightdata{[to be supplied]} 
 
-\titlebanner{banner above paper title}        % These are ignored unless
-\preprintfooter{short description of paper}   % 'preprint' option specified.
+\titlebanner{draft}        % These are ignored unless
+%\preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{Title Text}
-\subtitle{Subtitle Text, if any}
+\title{Loop Invariant Code Motion in PyPy's Tracing JIT}
+%\subtitle{Subtitle Text, if any}
 
-\authorinfo{Name1}
+\authorinfo{Hakan Ardo XXX}
            {Affiliation1}
-           {Email1}
-\authorinfo{Name2\and Name3}
-           {Affiliation2/3}
-           {Email2/3}
+           {hakan@debian.org}
+\authorinfo{Carl Friedrich Bolz}
+           {Heinrich-Heine-Universität Düsseldorf}
+           {cfbolz@gmx.de}
 
 \maketitle
 
@@ -55,13 +121,13 @@
 This is the text of the abstract.
 \end{abstract}
 
-\category{CR-number}{subcategory}{third-level}
+\category{D.3.4}{Programming Languages}{Processors}[code generation,
+incremental compilers, interpreters, run-time environments]
 
 \terms
-term1, term2
+Languages, Performance, Experimentation
 
-\keywords
-keyword1, keyword2
+\keywords{Tracing JIT, Optimization, Loop-Invariant Code Motion}
 
 \section{Introduction}
 
@@ -132,8 +198,8 @@ def f(y):
 \label{fig:objmodel}
 \end{figure}
 
-Using these classes to implement arithmetic shows the basic problem of a
-dynamic language implementation. All the numbers are instances of either
+Using these classes to implement arithmetic shows the basic problem of many
+dynamic language implementations. All the numbers are instances of either
 \lstinline{BoxedInteger} or \lstinline{BoxedFloat}, therefore they consume space on the
 heap. Performing many arithmetic operations produces lots of garbage quickly,
 putting pressure on the garbage collector. Using double dispatching to
@@ -511,10 +577,10 @@ And we're down to a single integer addition!
 
 \section{Benchmarks}
 
-\appendix
-\section{Appendix Title}
+%\appendix
+%\section{Appendix Title}
 
-This is the text of the appendix, if you need one.
+%This is the text of the appendix, if you need one.
 
 \acks
 
@@ -523,15 +589,6 @@ Acknowledgments, if needed.
 % We recommend abbrvnat bibliography style.
 
 \bibliographystyle{abbrvnat}
-
-% The bibliography should be embedded for final submission.
-
-\begin{thebibliography}{}
-\softraggedright
-
-\bibitem[Smith et~al.(2009)Smith, Jones]{smith02}
-P. Q. Smith, and X. Y. Jones. ...reference text...
-
-\end{thebibliography}
+\bibliography{paper}
 
 \end{document}
