@@ -458,6 +458,11 @@ guard on $p_0$ on line 20 can be removed since it is identical to the
 guard on line 6.
 
 \subsection{Heap Caching}
+
+XXX gcc calles this store-sinking and I'm sure there are some
+references in the literature (none at hand though). This is a ``typical''
+compiler optimization.
+
 The objective of heap caching is to remove \lstinline{get} and
 \lstinline{set} operations whose results can be deduced from previous
 \lstinline{get} and \lstinline{set} operations. Exact details of the
