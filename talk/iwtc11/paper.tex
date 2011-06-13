@@ -109,7 +109,7 @@
 %\subtitle{Subtitle Text, if any}
 
 \authorinfo{Hakan Ardo XXX}
-           {Affiliation1}
+           {Centre for Mathematical Sciences, Lund University}
            {hakan@debian.org}
 \authorinfo{Carl Friedrich Bolz}
            {Heinrich-Heine-Universität Düsseldorf}
@@ -487,13 +487,16 @@ replace $i_7=$get(...) with $i_7=i_3$ instead of removing it?
 In general what is needed is for the heap optimizer is to keep track of
 which variables from the preamble it reuses in the peeled loop.
 It has to construct a vector of such variables $H$ which
-can be used to update the input and jump arguments,
+can be used to update the input and jump arguments using
 \begin{equation}
   \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
+  \label{eq:heap-inputargs}
 \end{equation}
+and
 \begin{equation}
   \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H})\right)
   .
+  \label{eq:heap-jumpargs}
 \end{equation}
 In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
 K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized to:
@@ -525,7 +528,16 @@ jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 \end{lstlisting}
 
 \subsection{Pure operation reusage}
-XXX
+If a pure operation appears more than once in the trace with same input
+arguments, it only needs be executed the first time and then the result
+can be reused for all other appearances. When that is combined with loop
+peeling, the single execution of the operation is placed in the
+preamble. That is, loop invariant pure operations are moved out of the
+loop. The interactions here are the same as in the previous
+section. That is, a vector, $H$, of variables produced in the preamble
+and used in the peeled loop needs to be constructed. Then the jump and
+input arguments are updated according to
+Equation~\ref{eq:heap-inputargs} and Equation~\ref{eq:heap-jumpargs}.
 
 \subsection{Allocation Removals}
 By using escape analysis it is possible to identify objects that are
