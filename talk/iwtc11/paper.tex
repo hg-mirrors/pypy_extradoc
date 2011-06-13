@@ -640,6 +640,21 @@ the second. This extends both $\hat J$ and $\hat K$, which means that
 some care has to be taken, when implementing this, to allow $\hat J$ to
 grow while inlining it into $\hat K$.
 
+\section{Limitations}
+
+XXX as of now?
+
+Loop invariant code motion as described has certain amount of limitations
+that prevent it from speeding up larger loops. Those limitations are a target
+of future work and might be lifted. Most important ones:
+
+\begin{itemize}
+\item Bridges are not well supported - if the flow is more complex than a single
+      loop, the bridge might need to jump to the beginning of the preamble,
+      making the optimization ineffective
+\item XXX write about flushing caches at calls?
+\end{itemize}
+
 \section{Benchmarks}
 
 The loop peeling optimization was implemented in the PyPy
@@ -693,9 +708,25 @@ runtimes compared. The benchmarks are
 \end{itemize}
 
 \subsection{Numpy}
-XXX: Fijal?
 
-\subsection{Prolog}
+As a part of the PyPy project, we implemented small numerical kernel for
+performing matrix operations. The exact extend of this kernel is besides
+the scope of this paper, however the basic idea is to unroll a series of
+array operations into a loop compiled into assembler. LICM is a very good
+optimization for those kind of operations. The example benchmark performs
+addition of five arrays, compiling it in a way that's equivalent to C's:
+
+\begin{figure}
+\begin{lstlisting}[mathescape,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+for (int i = 0; i < SIZE; i++) {
+   res[i] = a[i] + b[i] + c[i] + d[i] + e[i];
+}
+\end{lstlisting}
+\end{figure}
+
+Where $res$, $a$, $b$, $c$, $d$ and $e$ are $double$ arrays. 
+
+\Subsection{Prolog}
 XXX: Carl?
 
 %\appendix
