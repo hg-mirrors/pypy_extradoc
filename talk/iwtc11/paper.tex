@@ -284,7 +284,7 @@ Before the trace is passed to a backend compiling it into machine code
 it needs to be optimized to achieve better performance.
 The focus of this paper
 is loop invariant code motion. The goal of that is to move as many
-operations as possible out of the loop making them executed only once
+operations as possible out of the loop making them executed at most once
 and not every iteration. This we propose to achieve by loop peeling. It
 leaves the loop body intact, but prefixes it with one iteration of the
 loop. This operation by itself will not achieve anything. But if it is
@@ -299,13 +299,16 @@ loop peeling.
 
 XXX find reference
 
-Loop peeling is achieved by copying the traced iteration of the loop.
+Loop peeling is achieved by appending a copy of the traced iteration at
+the end of the loop. The copy  is inlined to make the two parts form a
+consitant two iteration trace. 
 The first part (called preamble) finishes with the jump the the second part
-(peeled loop). The second part ends up with the jump to itself. This way
+(called peeled loop). The second part ends up with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
 be used for every other iteration.
 The trace from Figure~\ref{fig:unopt-trace} would after this operation become
-the trace in Figure~\ref{fig:peeled-trace}.
+the trace in Figure~\ref{fig:peeled-trace}. Line 1-13 shows the
+preamble while line 15-27 shows the peeled loop.
 
 \begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
@@ -342,12 +345,12 @@ jump($l_1$, $p_{0}$, $p_{9}$)
 \end{figure}
 
 When applying the following optimizations to this two-iteration trace
-some care has to taken as to how the jump arguments of both
-iterations and the input arguments of the second iteration are
-treated. It has to be ensured that the second iteration stays a proper
-trace in the sense that the operations within it only operations on
-variables that are either among the input arguments of the second iterations
-or are produced within the second iterations. To ensure this we need
+some care has to taken as to how the arguments of the two
+\lstinline{jump} operations and the input arguments of the peeled loop are
+treated. It has to be ensured that the peeled loop stays a proper
+trace in the sense that the operations within it only operates on
+variables that are either among its input arguments 
+or produced within the peeled loop. To ensure this we need
 to introduce a bit of formalism. 
 
 The original trace (prior too peeling) consists of three parts. 
@@ -357,7 +360,7 @@ jump operations and a single
 jump operation. The jump operation contains a vector of jump variables,
 $J=\left(J_1, J_2, \cdots, J_{|J|}\right)$, that are passed as the input variables of the target loop. After
 loop peeling there will be a second copy of this trace with input
-variables equal to the jump arguments of the peeled copy, $J$, and jump
+variables equal to the jump arguments of the pereamble, $J$, and jump
 arguments $K$. Looking back at our example we have
 \begin{equation}
   %\left\{
@@ -370,8 +373,8 @@ arguments $K$. Looking back at our example we have
   .
 \end{equation}
 To construct the second iteration from the first we also need a
-function $m$, mapping the variables of the first iteration onto the
-variables of the second. This function is constructed during the
+function $m$, mapping the variables of the preamble onto the
+variables of the peeled loop. This function is constructed during the
 inlining. It is initialized by mapping the input arguments, $I$, to
 the jump arguments $J$,
 \begin{equation}
@@ -390,11 +393,11 @@ In the example that means:
 \end{equation}
 
 Each operation in the trace is inlined in order.
-To inline an operation $v=op\left(A_1, A_2, \cdots, A_{|A|}\right)$
+To inline an operation $v=\text{op}\left(A_1, A_2, \cdots, A_{|A|}\right)$
 a new variable, $\hat v$ is introduced. The inlined operation will
-produce $\hat v$ from the input arguments 
+produce $\hat v$ using
 \begin{equation}
-  \hat v = op\left(m\left(A_1\right), m\left(A_2\right), 
+  \hat v = \text{op}\left(m\left(A_1\right), m\left(A_2\right), 
     \cdots, m\left(A_{|A|}\right)\right) . 
 \end{equation}
 Before the
@@ -421,10 +424,10 @@ are discussed? Is the previous XXX precisely about this?
 
 No special concerns needs to be taken when implementing redundant
 guard removal together with loop peeling. The guards from
-the first iteration might make the guards of the second iterations
+the preamble might make the guards of the peeled loop
 redundant and thus removed. Therefore the net effect of combining redundant
 guard removal with loop peeling is that loop-invariant guards are moved out of the
-loop. The second iteration of the example reduces to
+loop. The peeled loop of the example reduces to
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $l_1$($p_{0}$, $p_{5}$):
@@ -457,7 +460,7 @@ The objective of heap caching is to remove \lstinline{get} and
 process are outside the scope of this paper. We only consider the interaction
 with loop peeling.
 
-The issue at hand is to keep the second iteration a proper
+The issue at hand is to keep the peeled loop a proper
 trace. Consider the \lstinline{get} operation on line 19 of
 Figure~\ref{fig:unopt-trace}. The result of this operation can be
 deduced to be $i_4$ from the \lstinline{set} operation on line
@@ -466,12 +469,12 @@ be deduced to be $i_3$ from the \lstinline{get} operation on line
 8. The optimization will thus remove line 19 and 22 from the trace and
 replace $i_6$ with $i_4$ and $i_7$ with $i_3$. 
 
-After that, the second
-iteration will no longer be in SSA form as it operates on $i_3$ and $i_4$
+After that, the peeled loop
+will no longer be in SSA form as it operates on $i_3$ and $i_4$
 which are not part of it. The solution is to extend the input
 arguments, $J$, with those two variables. This will also extend the
-jump arguments of the first iteration, which is also $J$. 
-Implicitly that also extends the jump arguments of the second iteration, $K$,
+jump arguments of the preamble, which is also $J$. 
+Implicitly that also extends the jump arguments of the peeled loop, $K$,
 since they are the inlined versions of $J$. For the example $I$ has to
 be replaced by $\hat I$ which is formed as a concatenation of $I$ and
 $\left(i_3, i_4\right)$. At the same time $K$ has to be replaced by
@@ -482,8 +485,8 @@ optimization as it has removed the variable $i_7$. XXX: Maybe we should
 replace $i_7=$get(...) with $i_7=i_3$ instead of removing it?
 
 In general what is needed is for the heap optimizer is to keep track of
-which variables from the first iterations it reuses in the second
-iteration. It has to construct a vector of such variables $H$ which
+which variables from the preamble it reuses in the peeled loop.
+It has to construct a vector of such variables $H$ which
 can be used to update the input and jump arguments,
 \begin{equation}
   \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
@@ -521,35 +524,38 @@ $l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
 jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 \end{lstlisting}
 
+\subsection{Pure operation reusage}
+XXX
+
 \subsection{Allocation Removals}
 By using escape analysis it is possible to identify objects that are
-allocated within the loop but never escape it. That is the object are
-short lived and no references to them exists outside the loop. This
-is performed by processing the operation from top to bottom and
+allocated within the loop but never escape it. That is 
+short lived objects with no references outside the loop. This
+is performed by processing the operation in order and
 optimistically removing every \lstinline{new} operation. Later on if
 it is discovered that a reference to the object escapes the loop, the
 \lstinline{new} operation is inserted at this point. All operations
 (\lstinline{get} and \lstinline{set}) on the removed objects are also
 removed and the optimizer needs to keep track of the value of all
-attributes of the object.
+used attributes of the object.
 
 Consider again the original unoptimized trace of
-Figure~\label{fig:peeled-trace}. Line 10 contains the first
+Figure~\ref{fig:peeled-trace}. Line 10 contains the first
 allocation. It is removed and $p_5$ is marked as virtual. This means
-that it refers to an virtual object that was not yet
+that it refers to an virtual object that was not yet been
 (and might never be) allocated. Line 12 sets the \lstinline{intval}
 attribute of $p_5$. This operation is also removed and the optimizer
 registers that the attribute \lstinline{intval} of $p_5$ is $i_4$.
 
 When the optimizer reaches line 13 it needs to construct the
-arguments for the \lstinline{jump} operation, which contains the virtual
+arguments of the \lstinline{jump} operation, which contains the virtual
 reference $p_5$. This can be achieved by exploding $p_5$ into it's
 attributes. In this case there is only one attribute and it's value is
 $i_4$, which means the $p_5$ is replaced with $i_4$ in the jump
 arguments. 
 
 In the general case, each virtual in the jump arguments is exploded into a
-vector of variables containing the values of all used attributes. If some
+vector of variables containing the values of all registered attributes. If some
 of the attributes are themselves virtuals they are recursively exploded
 to make the vector contain only non virtual variables. Some care has
 to be taken to always place the attributes in the same order when
@@ -578,8 +584,8 @@ operation are constructed as the concatenation all the $\tilde J^{\left(k\right)
   \right)      
   .
 \end{equation}
-and the arguments of the \lstinline{jump} operation of the second
-operation, $K$, are replaced by inlining $\hat J$, 
+and the arguments of the \lstinline{jump} operation of the peeled loop,
+$K$, constructed by inlining $\hat J$,
 \begin{equation}
   \hat K = \left(m\left(\hat J_1\right), m\left(\hat J_1\right), 
                  \cdots, m\left(\hat J_{|\hat J|}\right)\right)
@@ -613,20 +619,21 @@ jump($l_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
 
 Note that virtuals are only exploded into their attributes when
-constructing the arguments of the jump of the first iteration. This
+constructing the arguments of the jump of the preamble. This
 explosion can't be repeated when constructing the arguments of the
-jump of the second iteration as it has to mach the first. This means
+jump of the peeled loop as it has to mach the first. This means
 the objects that was passed as pointers (non virtuals) from the first
-iteration to the second also has to be passed as pointers from the
-second iteration to the third. If one of these objects are virtual
-at the end of the second iteration they need to be allocated right
+iteration to the second (from preamble to peeled loop) also has to be
+passed as pointers from the second iteration to the third (from peeled
+loop to peeled loop). If one of these objects are virtual 
+at the end of the peeled loop they need to be allocated right
 before the jump. With the simple objects considered in this paper,
 that is not a problem. However in more complicated interpreters such
 an allocation might, in combination with other optimizations, lead
 to additional variables from the first iteration being imported into
 the second. This extends both $\hat J$ and $\hat K$, which means that
 some care has to be taken, when implementing this, to allow $\hat J$ to
-grow while inlining it into $\hat K$.
+grow while inlining it into $\hat K$. XXX: Maybe we can skip this?
 
 \section{Limitations}
 
@@ -667,7 +674,7 @@ runtimes compared. The benchmarks are
   fixpoint arithmetic with 16 bits precision. In python there is only
   a single implementation of the benchmark that gets specialized
   depending on the class of it's input argument, $y$, while in C,
-  there is three different implementations.
+  there are three different implementations.
 \item {\bf conv3}: one dimensional convolution with a kernel of fixed
   size $3$.
 \item {\bf conv5}: one dimensional convolution with a kernel of fixed
@@ -686,9 +693,9 @@ runtimes compared. The benchmarks are
   on top of a custom image class that is specially designed for the
   problem. It ensures that there will be no failing guards, and makes
   a lot of the two dimension index calculations loop invariant. The
-  intention there is twofold. It shows that the performance impact of
+  intention here is twofold. It shows that the performance impact of
   having wrapper classes giving objects some application specific
-  properties is negligible. This is due to the inlining performed
+  properties can be negligible. This is due to the inlining performed
   during the tracing and the allocation removal of the index objects
   introduced. It also shows that it is possible to do some low level
   hand optimizations of the python code and hide those optimization
@@ -714,7 +721,7 @@ for (int i = 0; i < SIZE; i++) {
 
 Where $res$, $a$, $b$, $c$, $d$ and $e$ are $double$ arrays. 
 
-\Subsection{Prolog}
+\subsection{Prolog}
 XXX: Carl?
 
 %\appendix
