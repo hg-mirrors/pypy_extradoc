@@ -535,7 +535,7 @@ jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 
 \subsection{Allocation Removals}
 By using escape analysis it is possible to identify objects that are
-allocated within the loop but never escapes it. That is the object are
+allocated within the loop but never escape it. That is the object are
 short lived and no references to them exists outside the loop. This
 is performed by processing the operation from top to bottom and
 optimistically removing every \lstinline{new} operation. Later on if
