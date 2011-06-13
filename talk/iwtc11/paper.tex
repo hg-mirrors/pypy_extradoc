@@ -308,10 +308,11 @@ loop peeling.
 
 XXX find reference
 
-Loop peeling is achieved prefixing the loop with one iteration of itself. The
-peeled of iteration of the loop will end with a jump to the full loop, which
-ends with a jump to itself. This way the peeled of iteration will only be
-executed once while the second copy will be used for every further iteration.
+Loop peeling is achieved by copying the traced iteration of the loop.
+The first part (called preamble) finishes with the jump the the second part
+(peeled loop). The second part ends up with the jump to itself. This way
+the preamble will be executed only once while the peeled loop will
+be used for every other iteration.
 The trace from Figure~\ref{fig:unopt-trace} would after this operation become
 the trace in Figure~\ref{fig:peeled-trace}.
 
