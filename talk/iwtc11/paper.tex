@@ -211,11 +211,10 @@ which is costly due to the method dispatch.
 
 Let us now consider a simple ``interpreter'' function \lstinline{f} that uses the
 object model (see the bottom of Figure~\ref{fig:objmodel}).
-The loop in \lstinline{f} iterates \lstinline{y} times, and computes something in the process.
 Simply running this function is slow, because there are lots of virtual method
 calls inside the loop, one for each \lstinline{is_positive} and even two for each
 call to \lstinline{add}. These method calls need to check the type of the involved
-objects repeatedly and redundantly. In addition, a lot of objects are created
+objects every iteration. In addition, a lot of objects are created
 when executing that loop, many of these objects are short-lived.
 The actual computation that is performed by \lstinline{f} is simply a sequence of
 float or integer additions.
@@ -279,17 +278,6 @@ the trace is turned into machine code and afterwards executed with
 \lstinline{BoxedFloat}, the
 first \lstinline{guard_class} instruction will fail and execution will continue
 using the interpreter.
-
-The trace shows the inefficiencies of \lstinline{f} clearly, if one looks at
-the number of \lstinline{new}, \lstinline{set/get} and \lstinline{guard_class}
-operations. The number of \lstinline{guard_class} operation is particularly
-problematic, not only because of the time it takes to run them. All guards also
-have additional information attached that makes it possible to return to the
-interpreter, should the guard fail. This means that too many guard operations also
-consume a lot of memory.
-
-In the rest of the paper we will see how this trace can be optimized using
-partial evaluation.
 
 \section{Optimizations}
 Before the trace is passed to a backend compiling it into machine code
