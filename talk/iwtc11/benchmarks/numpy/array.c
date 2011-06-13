@@ -1,4 +1,6 @@
 
+// an equivalent using targetmicronumpy is aa+a+a+a+ with the same size
+
 #include <stdlib.h>
 #include <stdio.h>
 
