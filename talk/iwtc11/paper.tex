@@ -229,7 +229,7 @@ guard_class($p_{1}$, BoxedInteger)
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{3}$ = get($p_{0}$, intval)
-        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $i_{4}$ = $i_{2} + i_{3}$
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
@@ -263,8 +263,6 @@ in Figure~\ref{fig:objmodel}:
     \item \lstinline{set} writes to an attribute of an object.
     \item \lstinline{guard_class} is a precise type check and precedes an
     (inlined) method call and is followed by the trace of the called method.
-    \item \lstinline{int_add} and \lstinline{int_gt} are integer addition and
-    comparison (``greater than''), respectively.
     \item \lstinline{guard_true} checks that a boolean is true.
 \end{itemize}
 
@@ -327,7 +325,7 @@ guard_class($p_{1}$, BoxedInteger)
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{3}$ = get($p_{0}$, intval)
-        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $i_{4}$ = $i_{2}+i_{3}$
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
@@ -341,7 +339,7 @@ guard_class($p_{5}$, BoxedInteger)
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{7}$ = get($p_{0}$, intval)
-        $i_{8}$ = int_add($i_{6}$, $i_{7}$)
+        $i_{8}$ = $i_{6}+i_{7}$
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
@@ -440,7 +438,7 @@ $l_1$($p_{0}$, $p_{5}$):
     $i_{6}$ = get($p_{5}$, intval)
         # inside BoxedInteger.add__int
         $i_{7}$ = get($p_{0}$, intval)
-        $i_{8}$ = int_add($i_{6}$, $i_{7}$)
+        $i_{8}$ = $i_{6}+i_{7}$
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
@@ -506,7 +504,7 @@ guard_class($p_{1}$, BoxedInteger)
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{3}$ = get($p_{0}$, intval)
-        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $i_{4}$ = $i_{2}+i_{3}$
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
@@ -516,7 +514,7 @@ $l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
 # inside f: y = y.add(step)
     # inside BoxedInteger.add
         # inside BoxedInteger.add__int
-        $i_{8}$ = int_add($i_{4}$, $i_{3}$)
+        $i_{8}$ = $i_{4}+i_{3}$
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
@@ -599,7 +597,7 @@ guard_class($p_{1}$, BoxedInteger)
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{3}$ = get($p_{0}$, intval)
-        $i_{4}$ = int_add($i_{2}$, $i_{3}$)
+        $i_{4}$ = $i_{2}+i_{3}$
             # inside BoxedInteger.__init__
 jump($l_1$, $p_{0}$, $i_{4}$)
 
@@ -609,7 +607,7 @@ $l_1$($p_{0}$, $i_{4}$):
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{7}$ = get($p_{0}$, intval)
-        $i_{8}$ = int_add($i_{4}$, $i_{7}$)
+        $i_{8}$ = $i_{4}+i_{7}$
             # inside BoxedInteger.__init__
 jump($l_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
