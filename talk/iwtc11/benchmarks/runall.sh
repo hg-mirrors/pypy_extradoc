@@ -6,5 +6,6 @@
 ./benchmark.sh gcc
 ./benchmark.sh gcc -O2
 ./benchmark.sh gcc -O3 -march=native
+./benchmark.sh gcc -O3 -march=native -fno-tree-vectorize
 ./benchmark.sh python2.7
 
