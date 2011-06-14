@@ -18,20 +18,18 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$* -lstdc++" image/sobel.cc 1002 1002
     rm a.out
 else
-    #./runner.py -n 10 sqrt/sqrt.py main int
-    #./runner.py -n 10 sqrt/sqrt.py main float
-    #./runner.py -n 10 sqrt/sqrt.py main Fix16
+    ./runner.py -n 10 sqrt/sqrt.py main int
+    ./runner.py -n 10 sqrt/sqrt.py main float
+    ./runner.py -n 10 sqrt/sqrt.py main Fix16
     ./runner.py convolution/convolution.py conv3 1
-    ./runner.py convolution/convolution.py conv3 100
-    ./runner.py convolution/convolution.py conv3 1000
-
-#    $* sqrt/time_sqrt.py float
-#    $* sqrt/time_sqrt.py int
-#    $* sqrt/time_sqrt.py Fix16
-#    $* convolution/time_conv.py 1
-#    $* convolution/time_conv.py 100
-#    $* convolution/time_conv.py 1000
-#    $* convolution/time_conv2d.py
+    ./runner.py convolution/convolution.py conv5 1
+    ./runner.py -n 10 convolution/convolution.py conv3 100
+    ./runner.py -n 10 convolution/convolution.py conv5 100
+    ./runner.py -n 10 convolution/convolution.py conv3 1000
+    ./runner.py -n 10 convolution/convolution.py conv5 1000
+    ./runner.py -n 10 convolution/convolution.py conv3x3 1000000 3
+    ./runner.py -n 10 convolution/convolution.py conv3x3 1000 1000
+    ./runner.py -n 10 convolution/convolution.py dilate3x3 1000 1000
 #    $* image/noborder.py NoBorderImagePadded
 #    $* image/noborder.py NoBorderImage
 #    $* image/time_sobel.py NoBorderImagePadded

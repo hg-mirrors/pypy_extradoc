@@ -49,6 +49,5 @@ class Fix16(object):
         return  Fix16((Fix16(other).val << 16) / self.val, False)
 
 def main(argv):
-    global name
-    name = 'sqrt(%s)' % argv[0]
     sqrt(eval(argv[0])(123456), 100000000)
+    return 'sqrt(%s)' % argv[0]

@@ -1,4 +1,5 @@
 from array import array
+from math import log10
 
 def _conv3(a, k, n=1):
     assert len(k)==3
@@ -12,8 +13,8 @@ def _conv3(a, k, n=1):
 def conv3(args):
     n = int(args[0])
     _conv3(array('d', [1]) * (100000000/n),
-          array('d', [-1, 0, 1]), n)
-
+           array('d', [-1, 0, 1]), n)
+    return 'conv3(1e%d)' % log10(100000000/n)
 
 def _conv5(a, k, n=1):
     assert len(k)==5
@@ -23,6 +24,12 @@ def _conv5(a, k, n=1):
         for i in xrange(len(b)):
             b[i] = k[4]*a[i] + k[3]*a[i+1] + k[2]*a[i+2] + k[1]*a[i+3] + k[0]*a[i+4]
     return b
+
+def conv5(args):
+    n = int(args[0])
+    _conv5(array('d', [1]) * (100000000/n),
+           array('d', [1, 4, 6, 4, 1]), n)
+    return 'conv5(1e%d)' % log10(100000000/n)
 
 class Array2D(object):
     def __init__(self, w, h):
@@ -60,7 +67,7 @@ def _conv3x3(a, k):
                       k[2,0]*a[x-1, y+1] + k[1,0]*a[x, y+1] + k[0,0]*a[x+1, y+1]
     return b
 
-def _morphology3x3(a, k, func):
+def morphology3x3(a, k, func):
     assert k.width == k.height == 3
     b = Array2D(a.width, a.height)
     for y in xrange(1, a.height-1):
@@ -75,3 +82,11 @@ def _dilate3x3(a, k):
 
 def _erode3x3(a, k):
     return morphology3x3(a, k, min)
+
+def conv3x3(args):
+    _conv3x3(Array2D(int(args[0]), int(args[1])), Array2D(3,3))
+    return 'conv3x3(%s)' % args[1]
+
+def dilate3x3(args):
+    _dilate3x3(Array2D(int(args[0]), int(args[1])), Array2D(3,3))
+    return 'dilate3x3(%s)' % args[1]

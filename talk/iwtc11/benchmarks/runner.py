@@ -24,6 +24,12 @@ def main():
     parser.add_option('-c', dest='compile_command',
                       help='for *.c a compile command')
     options, args = parser.parse_args()
+    try:
+        import pypyjit
+    except ImportError:
+        pass
+    else:
+        pypyjit.set_param(trace_limit=20000)
     if args[0].endswith('.py'):
         mod = py.path.local(args[0]).pyimport()
         sys.stderr.write("warming up")
@@ -37,10 +43,9 @@ def main():
         all = []
         for i in range(options.no):
             t0 = time.time()
-            func(args)
+            name = func(args)
             all.append(time.time() - t0)
             print >>sys.stderr, "Next:", all[-1]
-        name = mod.name
     else:
         # not needed
         options.warmup = 0
