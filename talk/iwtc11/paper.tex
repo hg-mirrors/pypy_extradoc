@@ -742,6 +742,37 @@ Where $res$, $a$, $b$, $c$, $d$ and $e$ are $double$ arrays.
 \subsection{Prolog}
 XXX: Carl?
 
+\subsection{Conclutions}
+In this paper we have studied loop invariant code motion during trace
+compilation. We claim that loop peeling is a very convenient solution
+here since it fits well with other trace optimizations. By peeling of
+the first iteration and optimizing the resulting two iteration trace
+as a single trace, several standard optimizations can be 
+used unchanged. The only interaction needed between the loop peeling
+and the other 
+optimizations is during the constructing of the jump arguments
+connecting the peeled of iteration (the preamble) with the loop body. This
+approach 
+turns standard optimizations such as redundant guard removal, heap
+caching, pure operation reusage and allocation removals into loop
+invariant code motion optimizations.
+
+XXX: is ``loop body'' or ``peeled loop'' the preferable term?
+
+By using several benchmarks we show that the proposed algorithm can
+significantly
+improve the run time of small loops containing numerical
+calculations. 
+At least in cases where there are not too many guard
+failures. The standard way of handling guards that fail often is to 
+trace a bridge from it back to the start of some previously compiled
+loop. This is applicable here too. However the bridge will have to end
+with a jump to the preamble, which lessens the impact of the 
+proposed approach.
+In many situations it is however possible to make the bridge
+jump to the peeled loop instead. When and how this is possible will be
+focus of future work.
+
 %\appendix
 %\section{Appendix Title}
 
