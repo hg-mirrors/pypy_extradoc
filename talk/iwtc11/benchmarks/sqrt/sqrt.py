@@ -48,3 +48,5 @@ class Fix16(object):
     def __rdiv__(self, other):
         return  Fix16((Fix16(other).val << 16) / self.val, False)
 
+def main(argv):
+    sqrt(eval(argv[0])(123456), 100000000)
