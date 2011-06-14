@@ -9,5 +9,6 @@ int main() {
     x = (x + y/x) / 2.0;
   }
   printf("%f\n", x);
+  fprintf(stderr, "sqrt(float):   ");
   return 0;
 }

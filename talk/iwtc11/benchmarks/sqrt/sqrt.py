@@ -50,5 +50,5 @@ class Fix16(object):
 
 def main(argv):
     global name
-    name = 'sqrt_%s' % argv[0]
+    name = 'sqrt(%s)' % argv[0]
     sqrt(eval(argv[0])(123456), 100000000)
