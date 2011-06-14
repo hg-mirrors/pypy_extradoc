@@ -301,7 +301,7 @@ XXX find reference
 
 Loop peeling is achieved by appending a copy of the traced iteration at
 the end of the loop. The copy  is inlined to make the two parts form a
-consitant two iteration trace. 
+consistent two iteration trace. 
 The first part (called preamble) finishes with the jump the the second part
 (called peeled loop). The second part ends up with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
@@ -360,7 +360,7 @@ jump operations and a single
 jump operation. The jump operation contains a vector of jump variables,
 $J=\left(J_1, J_2, \cdots, J_{|J|}\right)$, that are passed as the input variables of the target loop. After
 loop peeling there will be a second copy of this trace with input
-variables equal to the jump arguments of the pereamble, $J$, and jump
+variables equal to the jump arguments of the preamble, $J$, and jump
 arguments $K$. Looking back at our example we have
 \begin{equation}
   %\left\{
@@ -450,7 +450,7 @@ guard on line 6.
 
 \subsection{Heap Caching}
 
-XXX gcc calles this store-sinking and I'm sure there are some
+XXX gcc calls this store-sinking and I'm sure there are some
 references in the literature (none at hand though). This is a ``typical''
 compiler optimization.
 
@@ -527,7 +527,7 @@ $l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
 jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 \end{lstlisting}
 
-\subsection{Pure operation reusage}
+\subsection{Pure operation reuse}
 If a pure operation appears more than once in the trace with same input
 arguments, it only needs be executed the first time and then the result
 can be reused for all other appearances. When that is combined with loop
@@ -754,7 +754,7 @@ optimizations is during the constructing of the jump arguments
 connecting the peeled of iteration (the preamble) with the loop body. This
 approach 
 turns standard optimizations such as redundant guard removal, heap
-caching, pure operation reusage and allocation removals into loop
+caching, pure operation reuse and allocation removals into loop
 invariant code motion optimizations.
 
 XXX: is ``loop body'' or ``peeled loop'' the preferable term?
