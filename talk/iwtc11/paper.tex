@@ -134,31 +134,31 @@ Languages, Performance, Experimentation
 
 \section{Introduction}
 
-One of the advantages that tracing JIT compilers have above traditional tracing
+One of the advantages that tracing JIT compilers have above traditional
+method-based
 JITs is that their optimizers are much easier to write. Because a tracing JIT
 produces only linear pieces of code without control flow joins, many
 optimization passes on traces can have a very simple structure. They often
 consist of one forward pass through the trace, discarding and replacing
 operations in the trace by simpler ones as they walk along it. This makes
-optimization of traces be very similar to symbolic execution. Many
+optimization of traces very similar to symbolic execution. Many
 difficult problems in traditional optimizers become tractable if the optimizer
 does not need to deal with control flow merges.
 
 One disadvantage of this simplicity is that such simple forward-passing
 optimizers ignore the only bit of control flow they have available, which is
 the fact that most traces actually represent loops. Making use of this
-information is necessary to perform such optimizations as loop-invariant code
+information is necessary to perform optimizations that take the whole loop into
+account, such as loop-invariant code
 motion or optimizations that improve across several iterations of the loop.
-Having to deal with this property of traces makes optimizers immediately more
-complex, as a more global view of a trace needs to be considered when
-optimizing.
+Having to deal with this property of traces complicates the optimization passes,
+as a more global view of a trace needs to be considered when optimizing.
 
 In this paper we want to address this problem by proposing a simple scheme that
 makes it possible to turn simple optimizations using one forward pass into
 optimizations that can do loop invariant code motion and similar loop-aware
 improvements. Using this scheme one does not need to change the underlying
 optimization much to get these advantages.
-
 
 XXX "bridge" is not a standard term
 
