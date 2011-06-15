@@ -169,8 +169,7 @@ For the purpose of this paper, we are going to use a tiny interpreter for a dyna
  a very simple object
 model, that just supports an integer and a float type (this example has been taken from a previous paper \cite{bolz_allocation_2011}). The objects support only
 two operations, \lstinline{add}, which adds two objects (promoting ints to floats in a
-mixed addition) and \lstinline{is_positive}, which returns whether the number is greater
-than zero. The implementation of \lstinline{add} uses classical Smalltalk-like
+mixed addition). The implementation of \lstinline{add} uses classical Smalltalk-like
 double-dispatching.
 %These classes could be part of the implementation of a very
 %simple interpreter written in RPython.
@@ -196,8 +195,6 @@ class BoxedInteger(Base):
       floatvalue = floatother + float(self.intval)
       return BoxedFloat(floatvalue)
 
-   def is_positive(self):
-      return self.intval > 0
 
 class BoxedFloat(Base):
    def __init__(self, floatval):
@@ -213,15 +210,11 @@ class BoxedFloat(Base):
    def add__float(self, floatother):
       return BoxedFloat(floatother + self.floatval)
 
-   def is_positive(self):
-      return self.floatval > 0.0
-
 
 def f(y):
    step = BoxedInteger(-1)
-   while y.is_positive():
+   while True:
       y = y.add(step)
-   return res
 \end{lstlisting}
 \caption{An ``Interpreter'' for a Tiny Dynamic Language Written in RPython}
 \label{fig:objmodel}
@@ -238,16 +231,16 @@ which is costly due to the method dispatch.
 Let us now consider a simple ``interpreter'' function \lstinline{f} that uses the
 object model (see the bottom of Figure~\ref{fig:objmodel}).
 Simply running this function is slow, because there are lots of virtual method
-calls inside the loop, one for each \lstinline{is_positive} and even two for each
+calls inside the loop, two for each
 call to \lstinline{add}. These method calls need to check the type of the involved
 objects every iteration. In addition, a lot of objects are created
 when executing that loop, many of these objects are short-lived.
 The actual computation that is performed by \lstinline{f} is simply a sequence of
-float or integer additions.
+float or integer additions (note that \lstinline{f} does not actually terminate,
+but it is still instructive to look at the produced traces).
 
 
 \begin{figure}
-XXX the code for is\_positive is missing everywhere
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $l_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
