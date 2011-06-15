@@ -78,6 +78,14 @@ class NoBorderImagePadded(NoBorderImage):
         self.data[(self.width+1):(-self.width-1)].tofile(f)
 
 
+class NoBorderImagePadded640x480(NoBorderImagePadded):
+    def _idx(self, p):
+        assert self.width == 640
+        assert self.height == 480
+        assert len(self.data) == 640*(480+2)+2
+        return NoBorderImagePadded._idx(self, p)
+    
+
 class Pixel(object):
     def __init__(self, idx, image):
         self.idx = idx
