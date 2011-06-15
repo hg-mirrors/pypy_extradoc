@@ -1,7 +1,7 @@
 def sqrt(y, n=10000):
     x = y / 2
     while n > 0:
-        assert y > 0 and x > 0
+        #assert y > 0 and x > 0
         n -= 1
         x = (x + y/x) / 2
     return x
