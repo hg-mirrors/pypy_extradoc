@@ -15,6 +15,7 @@ class Fix16(object):
                 self.val = int(val * 2**16)
             else:
                 self.val = val
+        #assert self.val <= 2147483647>>8
 
     def __add__(self, other):
         return  Fix16(self.val + Fix16(other).val, False)
@@ -26,7 +27,7 @@ class Fix16(object):
         return  Fix16((self.val >> 8) * (Fix16(other).val >> 8), False)
 
     def __div__(self, other):
-        return  Fix16((self.val << 16) / Fix16(other).val, False)
+        return  Fix16((self.val << 8) / (Fix16(other).val >> 8), False)
 
 
     def __float__(self):
@@ -46,8 +47,8 @@ class Fix16(object):
     def __rsub__(self, other):
         return  Fix16(Fix16(other).val - self.val, False)
     def __rdiv__(self, other):
-        return  Fix16((Fix16(other).val << 16) / self.val, False)
+        return  Fix16((Fix16(other).val << 8) / (self.val >> 8), False)
 
 def main(argv):
-    sqrt(eval(argv[0])(123456), 100000000)
+    sqrt(eval(argv[0])(123), 100000000)
     return 'sqrt(%s)' % argv[0]
