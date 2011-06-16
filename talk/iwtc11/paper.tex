@@ -155,10 +155,14 @@ Having to deal with this property of traces complicates the optimization passes,
 as a more global view of a trace needs to be considered when optimizing.
 
 In this paper we want to address this problem by proposing a simple scheme that
-makes it possible to turn simple optimizations using one forward pass into
+makes it possible to turn optimizations using one forward pass into
 optimizations that can do loop invariant code motion and similar loop-aware
 improvements. Using this scheme one does not need to change the underlying
 optimization much to get these advantages.
+
+The resulting optimizations one gets using this scheme are in no way novel, most
+of them are well-known loop optimizations. However, the way to implement them is
+a lot simpler than directly implementing loop-aware optimizations.
 
 XXX "bridge" is not a standard term
 
@@ -427,7 +431,7 @@ loop peeling.
 XXX find reference of prior work on this
 
 Loop peeling is achieved by appending an copy of the traced iteration at
-the end of itselfe. See Figure~\ref{fig:overview} for an illustration.
+the end of itself. See Figure~\ref{fig:overview} for an illustration.
 The first part (called \emph{preamble}) finishes with the jump the the second part
 (called the \emph{peeled loop}). The second part end with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
