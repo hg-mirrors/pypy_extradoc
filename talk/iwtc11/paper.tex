@@ -246,14 +246,15 @@ The final result is that the loop-invariant code was moved out of the loop into
 the peeled-off iteration. Thus the addition is only executed in the first
 iteration, while the result is reused in all further iterations.
 
-This scheme is quite powerful. It allows simple linear optimization passes to
+This scheme is quite powerful and generalizes to other optimizations than just
+common subexpression elimination. It allows simple linear optimization passes to
 perform loop-aware optimizations, such as loop-invariant code motion without
 changing them at all. All that is needed is to peel off one iteration, then
 apply simple one-pass optimizations and make sure that the necessary extra
 arguments are inserted into the label of the loop itself and the jumps
-afterwards. The peeling off of one iteration gives the optimization enough
-context to remove operations from the peeled loop, because the optimization
-detects that the operation was performed in the preamble already.
+afterwards. Giving the optimizations two iterations together
+gives the optimization enough context to remove operations from the peeled loop,
+because it detects that the operation was performed in the preamble already.
 
 
 % section Motivation (end)
