@@ -889,6 +889,25 @@ runtimes compared. The benchmarks are
   under a nice interface without loosing performance.
 \end{itemize}
 
+Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM in
+32bit mode.
+The machine was otherwise unoccupied. We run the following software
+for benchmarks:
+
+\begin{itemize}
+\item PyPy 1.5
+\item CPython 2.7.2
+\item Psyco 1.6 with CPython 2.6.6
+\item GCC 4.4.5 shipped with Ubuntu 11.4
+\end{itemize}
+
+We run GCC both with -O2 optimization and -O3 -march=native, disabling the
+automatic loop vectorization. In all cases, SSE2 instructions were used for
+floating point operations, except Psyco which uses x87 FPU instructions.
+We also run PyPy with loop peeling optimization and without (but otherwise
+identical).
+
+XXX discuss some more, explain why gcc is faster
 XXX we need Psyco numbers
 
 \subsection{Numpy}
