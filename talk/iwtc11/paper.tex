@@ -907,6 +907,11 @@ floating point operations, except Psyco which uses x87 FPU instructions.
 We also run PyPy with loop peeling optimization and without (but otherwise
 identical).
 
+For all JITted run (PyPy and Psyco) 3 iterations were run to warm up the JIT,
+followed by 10 iterations for averaging. For GCC and CPython, 5 iterations
+were run. In all cases, the standard deviation is very low, making benchmarks
+very well reproducible.
+
 XXX discuss some more, explain why gcc is faster
 XXX we need Psyco numbers
 
