@@ -307,7 +307,7 @@ the trace is turned into machine code and afterwards executed with
 first \lstinline{guard_class} instruction will fail and execution will continue
 using the interpreter.
 
-\section{Trace Optimizations}
+\section{Making Trace Optimizations Loop Aware}
 
 XXX make clear that the preamble is not necessarily the \emph{first} iteration
 of a loop
@@ -333,54 +333,19 @@ loop peeling.
 \begin{center}
 \includegraphics[scale=1]{figures/overview}
 \end{center}
+\caption{Overview of Loop Peeling}
+\label{fig:overview}
 \end{figure}
 
-XXX find reference
+XXX find reference of prior work on this
 
 Loop peeling is achieved by appending a copy of the traced iteration at
-the end of the loop. The copy  is inlined to make the two parts form a
-consistent two iteration trace. 
-The first part (called preamble) finishes with the jump the the second part
-(called peeled loop). The second part ends up with the jump to itself. This way
+the end of the loop. See Figure~\ref{fig:overview}
+The first part (called \emph{preamble}) finishes with the jump the the second part
+(called the \emph{peeled loop}). The second part end with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
-be used for every other iteration.
-The trace from Figure~\ref{fig:unopt-trace} would after this operation become
-the trace in Figure~\ref{fig:peeled-trace}. Line 1-13 shows the
-preamble while line 15-27 shows the peeled loop.
+be used for every further iteration.
 
-\begin{figure}
-\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($p_{0}$, $p_{1}$):
-# inside f: y = y.add(step)
-guard_class($p_{1}$, BoxedInteger)
-    # inside BoxedInteger.add
-    $i_{2}$ = get($p_{1}$, intval)
-    guard_class($p_{0}$, BoxedInteger)
-        # inside BoxedInteger.add__int
-        $i_{3}$ = get($p_{0}$, intval)
-        $i_{4}$ = $i_{2}+i_{3}$
-        $p_{5}$ = new(BoxedInteger)
-            # inside BoxedInteger.__init__
-            set($p_{5}$, intval, $i_{4}$)
-jump($l_1$, $p_{0}$, $p_{5}$)
-
-$l_1$($p_{0}$, $p_{5}$):
-# inside f: y = y.add(step)
-guard_class($p_{5}$, BoxedInteger)
-    # inside BoxedInteger.add
-    $i_{6}$ = get($p_{5}$, intval)
-    guard_class($p_{0}$, BoxedInteger)
-        # inside BoxedInteger.add__int
-        $i_{7}$ = get($p_{0}$, intval)
-        $i_{8}$ = $i_{6}+i_{7}$
-        $p_{9}$ = new(BoxedInteger)
-            # inside BoxedInteger.__init__
-            set($p_{9}$, intval, $i_{8}$)
-jump($l_1$, $p_{0}$, $p_{9}$)
-\end{lstlisting}
-\caption{A peeled trace of the Example Interpreter}
-\label{fig:peeled-trace}
-\end{figure}
 
 When applying the following optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
@@ -430,17 +395,19 @@ In the example that means:
   .
 \end{equation}
 
-Each operation in the trace is inlined in order.
-To inline an operation $v=\text{op}\left(A_1, A_2, \cdots, A_{|A|}\right)$
-a new variable, $\hat v$ is introduced. The inlined operation will
-produce $\hat v$ using
+
+
+Each operation in the trace is copied in order.
+To copy an operation $v=\text{op}\left(A_1, A_2, \cdots, A_{|A|}\right)$
+a new variable, $\hat v$ is introduced. The copied operation will
+return $\hat v$ using
 \begin{equation}
   \hat v = \text{op}\left(m\left(A_1\right), m\left(A_2\right), 
     \cdots, m\left(A_{|A|}\right)\right) . 
 \end{equation}
 Before the
-next operation is inlined, $m$ is extend by assigning $m\left(v\right) = \hat
-v$. For the example above, after all the operations have been inlined we have
+next operation is copied, $m$ is extend by assigning $m\left(v\right) = \hat
+v$. For the example above, after all the operations have been copied we have
 \begin{equation}
   %\left\{
     \begin{array}{lcl}
@@ -455,10 +422,50 @@ v$. For the example above, after all the operations have been inlined we have
   .
 \end{equation}
 
+The trace from Figure~\ref{fig:unopt-trace} would after this operation become
+the trace in Figure~\ref{fig:peeled-trace}. Line 1-13 shows the
+preamble while line 15-27 shows the peeled loop.
+
+\begin{figure}
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+$l_0$($p_{0}$, $p_{1}$):
+# inside f: y = y.add(step)
+guard_class($p_{1}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{2}$ = get($p_{1}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{3}$ = get($p_{0}$, intval)
+        $i_{4}$ = $i_{2}+i_{3}$
+        $p_{5}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{5}$, intval, $i_{4}$)
+jump($l_1$, $p_{0}$, $p_{5}$)
+
+$l_1$($p_{0}$, $p_{5}$):
+# inside f: y = y.add(step)
+guard_class($p_{5}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{6}$ = get($p_{5}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{7}$ = get($p_{0}$, intval)
+        $i_{8}$ = $i_{6}+i_{7}$
+        $p_{9}$ = new(BoxedInteger)
+            # inside BoxedInteger.__init__
+            set($p_{9}$, intval, $i_{8}$)
+jump($l_1$, $p_{0}$, $p_{9}$)
+\end{lstlisting}
+\caption{A peeled trace of the Example Interpreter}
+\label{fig:peeled-trace}
+\end{figure}
+
+\section{Interaction of Optimizations with Loop Peeling}
+
 \subsection{Redundant Guard Removal}
 
 XXX should we have a mention where in the previous papers those optimizations
-are discussed? Is the previous XXX precisely about this?
+are discussed?
 
 No special concerns needs to be taken when implementing redundant
 guard removal together with loop peeling. The guards from
