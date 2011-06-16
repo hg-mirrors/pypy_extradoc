@@ -178,13 +178,13 @@ To motivate the approach we propose here, let's look at a trivial (unrealistic)
 trace which corresponds to an infinite loop:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($i_{0}$):
+$L_0$($i_{0}$):
 $i_1$ = $i_0$ + 1
 print($i_1$)
-jump($l_0$, $i_0$)
+jump($L_0$, $i_0$)
 \end{lstlisting}
 
-The first line is a label $l_0$ with argument $i_0$. Every label has a list of
+The first line is a label $L_0$ with argument $i_0$. Every label has a list of
 arguments. The \lstinline{print} operation just prints its argument (it is not
 an operation that PyPy's tracing JIT really supports, we just use it for this
 example). The \lstinline{jump} operation jumps back to the beginning of the
@@ -197,15 +197,15 @@ without changing them too much. To achieve this, we peel one iteration off the
 loop before running the optimizations. This peeling gives the following trace:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($i_{0}$):
+$L_0$($i_{0}$):
 $i_1$ = $i_0$ + 1
 print($i_1$)
-jump($l_1$, $i_0$)
+jump($L_1$, $i_0$)
 
-$l_1$($i_{0}$):
+$L_1$($i_{0}$):
 $i_2$ = $i_0$ + 1
 print($i_2$)
-jump($l_1$, $i_0$)
+jump($L_1$, $i_0$)
 \end{lstlisting}
 
 The iteration of the loop that was peeled off (lines 1-4) is called the
@@ -217,29 +217,29 @@ subexpression elimination will discover that the two additions are the same, and
 replace $i_2$ with $i_1$. This leads to the following trace:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($i_{0}$):
+$L_0$($i_{0}$):
 $i_1$ = $i_0$ + 1
 print($i_1$)
-jump($l_1$, $i_0$)
+jump($L_1$, $i_0$)
 
-$l_1$($i_{0}$):
+$L_1$($i_{0}$):
 print($i_1$)
-jump($l_1$, $i_0$)
+jump($L_1$, $i_0$)
 \end{lstlisting}
 
-This trace is malformed, because $i_1$ is used after the label $l_1$ without
+This trace is malformed, because $i_1$ is used after the label $L_1$ without
 being passed there, so we need to add $i_1$ as an argument to the label and pass
 it along the \lstinline{jump}s:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($i_{0}$):
+$L_0$($i_{0}$):
 $i_1$ = $i_0$ + 1
 print($i_1$)
-jump($l_1$, $i_0$, $i_1$)
+jump($L_1$, $i_0$, $i_1$)
 
-$l_1$($i_{0}$, $i_1$):
+$L_1$($i_{0}$, $i_1$):
 print($i_1$)
-jump($l_1$, $i_0$, $i_1$)
+jump($L_1$, $i_0$, $i_1$)
 \end{lstlisting}
 
 The final result is that the loop-invariant code was moved out of the loop into
@@ -339,7 +339,7 @@ but it is still instructive to look at the produced traces).
 
 \begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($p_{0}$, $p_{1}$):
+$L_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
 guard_class($p_{1}$, BoxedInteger)
     # inside BoxedInteger.add
@@ -351,7 +351,7 @@ guard_class($p_{1}$, BoxedInteger)
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
-jump($l_0$, $p_{0}$, $p_{5}$)
+jump($L_0$, $p_{0}$, $p_{5}$)
 \end{lstlisting}
 \caption{An Unoptimized Trace of the Example Interpreter}
 \label{fig:unopt-trace}
@@ -369,7 +369,7 @@ assigned a value exactly once. The arguments $p_0$ and $p_1$ of the loop corresp
 to the live variables \lstinline{y} and \lstinline{step} in the while-loop of
 the original function.
 
-The label of the loop is $l_0$ and is used by the jump instruction to
+The label of the loop is $L_0$ and is used by the jump instruction to
 identify it's jump target.
 
 The operations in the trace correspond to the operations in the RPython program
@@ -427,7 +427,7 @@ loop peeling.
 XXX find reference of prior work on this
 
 Loop peeling is achieved by appending an copy of the traced iteration at
-the end of itselfe. See Figure~\ref{fig:overview}.
+the end of itselfe. See Figure~\ref{fig:overview} for an illustration.
 The first part (called \emph{preamble}) finishes with the jump the the second part
 (called the \emph{peeled loop}). The second part end with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
@@ -515,7 +515,7 @@ preamble while line 15-27 shows the peeled loop.
 
 \begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($p_{0}$, $p_{1}$):
+$L_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
 guard_class($p_{1}$, BoxedInteger)
     # inside BoxedInteger.add
@@ -527,9 +527,9 @@ guard_class($p_{1}$, BoxedInteger)
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
-jump($l_1$, $p_{0}$, $p_{5}$)
+jump($L_1$, $p_{0}$, $p_{5}$)
 
-$l_1$($p_{0}$, $p_{5}$):
+$L_1$($p_{0}$, $p_{5}$):
 # inside f: y = y.add(step)
 guard_class($p_{5}$, BoxedInteger)
     # inside BoxedInteger.add
@@ -541,7 +541,7 @@ guard_class($p_{5}$, BoxedInteger)
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
-jump($l_1$, $p_{0}$, $p_{9}$)
+jump($L_1$, $p_{0}$, $p_{9}$)
 \end{lstlisting}
 \caption{A peeled trace of the Example Interpreter}
 \label{fig:peeled-trace}
@@ -562,7 +562,7 @@ guard removal with loop peeling is that loop-invariant guards are moved out of t
 loop. The peeled loop of the example reduces to
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_1$($p_{0}$, $p_{5}$):
+$L_1$($p_{0}$, $p_{5}$):
 # inside f: y = y.add(step)
     # inside BoxedInteger.add
     $i_{6}$ = get($p_{5}$, intval)
@@ -572,7 +572,7 @@ $l_1$($p_{0}$, $p_{5}$):
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
-jump($l_1$, $p_{0}$, $p_{9}$)
+jump($L_1$, $p_{0}$, $p_{9}$)
 \end{lstlisting}
 
 The guard on $p_5$ on line 17 of Figure~\ref{fig:peeled-trace} can be
@@ -638,7 +638,7 @@ In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
 K$. The trace from Figure~\ref{fig:peeled-trace} will be optimized to:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($p_{0}$, $p_{1}$):
+$L_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
 guard_class($p_{1}$, BoxedInteger)
     # inside BoxedInteger.add
@@ -650,9 +650,9 @@ guard_class($p_{1}$, BoxedInteger)
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
-jump($l_1$, $p_{0}$, $p_{5}$, $i_3$, $i_4$)
+jump($L_1$, $p_{0}$, $p_{5}$, $i_3$, $i_4$)
 
-$l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
+$L_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
 # inside f: y = y.add(step)
     # inside BoxedInteger.add
         # inside BoxedInteger.add__int
@@ -660,7 +660,7 @@ $l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
-jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
+jump($L_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 \end{lstlisting}
 
 Note how the loop invaraint \lstinline{get} on $p_0$ was moved out of
@@ -747,7 +747,7 @@ In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
 K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized into
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-$l_0$($p_{0}$, $p_{1}$):
+$L_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
 guard_class($p_{1}$, BoxedInteger)
     # inside BoxedInteger.add
@@ -757,9 +757,9 @@ guard_class($p_{1}$, BoxedInteger)
         $i_{3}$ = get($p_{0}$, intval)
         $i_{4}$ = $i_{2}+i_{3}$
             # inside BoxedInteger.__init__
-jump($l_1$, $p_{0}$, $i_{4}$)
+jump($L_1$, $p_{0}$, $i_{4}$)
 
-$l_1$($p_{0}$, $i_{4}$):
+$L_1$($p_{0}$, $i_{4}$):
 # inside f: y = y.add(step)
     # inside BoxedInteger.add
     guard_class($p_{0}$, BoxedInteger)
@@ -767,7 +767,7 @@ $l_1$($p_{0}$, $i_{4}$):
         $i_{7}$ = get($p_{0}$, intval)
         $i_{8}$ = $i_{4}+i_{7}$
             # inside BoxedInteger.__init__
-jump($l_1$, $p_{0}$, $i_8$)
+jump($L_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
 
 Note that virtuals are only exploded into their attributes when
