@@ -162,6 +162,15 @@ optimization much to get these advantages.
 
 XXX "bridge" is not a standard term
 
+XXX loop peeling does a lot more than loop-invariant code motion
+% take this loop as an example:
+% [i1, i2]
+% i3 = i1 + 1
+% i4 = i2 + 1
+% escape(i4)
+% jump(i2, i3)
+% none of the operations is loop-invariant, but loop peeling will still remove the second addition
+
 \subsection{Running Example}
 \label{sub:example}
 
