@@ -44,6 +44,17 @@ def sobel_magnitude_uint8(img):
         res[p] = min(int(sqrt(dx*dx + dy*dy) / 4.0), 255)
     return res
 
+def main(args):
+    Image = eval(args[0])
+    n = 1000
+    if len(args) == 1:
+        for i in range(10):
+            sobel_magnitude(Image(n, n))
+        return 'sobel(%s)' % Image.__name__
+    else:
+        for i in range(10):
+            sobel_magnitude_uint8(Image(n, n, typecode='B'))
+        return 'sobel_uint8(%s)' % Image.__name__
 
 if __name__ == '__main__':
     from io import mplayer, view

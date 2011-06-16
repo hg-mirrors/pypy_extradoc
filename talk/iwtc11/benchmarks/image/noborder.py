@@ -133,6 +133,20 @@ def conv3x3range(img, k):
                  k[2,0]*img[p + (-1, 1)] + k[1,0]*img[p + (0, 1)] + k[0,0]*img[p + (1, 1)]
     return res
 
+def main(args):
+    Image = eval(args[0])
+    if len(args) == 1:
+        func = conv3x3
+    else:
+        func = eval('conv3x3' + args[1])
+    n = 1000
+    for i in range(10):
+        func(Image(n, n), Image(3, 3))
+    if len(args) > 1:
+        return '%s(%s)' % (Image.__name__, args[1])
+    else:
+        return Image.__name__
+
 if __name__ == '__main__':
     import time, sys
     sys.setcheckinterval(2**30)
