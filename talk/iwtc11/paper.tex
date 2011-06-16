@@ -177,7 +177,7 @@ XXX loop peeling does a lot more than loop-invariant code motion
 For the purpose of this paper, we are going to use a tiny interpreter for a dynamic language with
  a very simple object
 model, that just supports an integer and a float type (this example has been taken from a previous paper \cite{bolz_allocation_2011}). The objects support only
-two operations, \lstinline{add}, which adds two objects (promoting ints to floats in a
+one operation, \lstinline{add}, which adds two objects (promoting ints to floats in a
 mixed addition). The implementation of \lstinline{add} uses classical Smalltalk-like
 double-dispatching.
 %These classes could be part of the implementation of a very
@@ -278,7 +278,7 @@ The operations in the trace are indented
 corresponding to the stack level of the function that contains the traced
 operation. The trace is in single-assignment form, meaning that each variable is
 assigned a value exactly once. The arguments $p_0$ and $p_1$ of the loop correspond
-to the live variables \lstinline{y} and \lstinline{res} in the while-loop of
+to the live variables \lstinline{y} and \lstinline{step} in the while-loop of
 the original function.
 
 The label of the loop is $l_0$ and is used by the jump instruction to
@@ -339,8 +339,8 @@ loop peeling.
 
 XXX find reference of prior work on this
 
-Loop peeling is achieved by appending a copy of the traced iteration at
-the end of the loop. See Figure~\ref{fig:overview}
+Loop peeling is achieved by appending an inlined copy of the traced iteration at
+the end of itselfe. See Figure~\ref{fig:overview}.
 The first part (called \emph{preamble}) finishes with the jump the the second part
 (called the \emph{peeled loop}). The second part end with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
@@ -364,7 +364,7 @@ jump operation. The jump operation contains a vector of jump variables,
 $J=\left(J_1, J_2, \cdots, J_{|J|}\right)$, that are passed as the input variables of the target loop. After
 loop peeling there will be a second copy of this trace with input
 variables equal to the jump arguments of the preamble, $J$, and jump
-arguments $K$. Looking back at our example we have
+arguments $K$. Looking  at the peeled version of our example in Figure~\ref{fig:peeled-trace} we have
 \begin{equation}
   %\left\{
     \begin{array}{lcl}
@@ -470,7 +470,7 @@ are discussed?
 No special concerns needs to be taken when implementing redundant
 guard removal together with loop peeling. The guards from
 the preamble might make the guards of the peeled loop
-redundant and thus removed. Therefore the net effect of combining redundant
+redundant and thus removed. Therefore one effect of combining redundant
 guard removal with loop peeling is that loop-invariant guards are moved out of the
 loop. The peeled loop of the example reduces to
 
@@ -488,10 +488,14 @@ $l_1$($p_{0}$, $p_{5}$):
 jump($l_1$, $p_{0}$, $p_{9}$)
 \end{lstlisting}
 
-The guard on $p_5$ on line 17 of Figure~\ref{fig:unopt-trace} can be
+The guard on $p_5$ on line 17 of Figure~\ref{fig:peeled-trace} can be
 removed since $p_5$ is allocated on line 10 with a known class. The
 guard on $p_0$ on line 20 can be removed since it is identical to the
 guard on line 6.
+
+Note that the guard on $p_5$ is removed even though $p_5$ is not loop
+invariant, which shows that loop invariant code motion is not the only
+effect of loop peeling.
 
 \subsection{Heap Caching}
 
@@ -507,7 +511,7 @@ with loop peeling.
 
 The issue at hand is to keep the peeled loop a proper
 trace. Consider the \lstinline{get} operation on line 19 of
-Figure~\ref{fig:unopt-trace}. The result of this operation can be
+Figure~\ref{fig:peeled-trace}. The result of this operation can be
 deduced to be $i_4$ from the \lstinline{set} operation on line
 12. Also, the result of the \lstinline{get} operation on line 22 can
 be deduced to be $i_3$ from the \lstinline{get} operation on line
@@ -531,7 +535,7 @@ replace $i_7=$get(...) with $i_7=i_3$ instead of removing it?
 
 In general what is needed is for the heap optimizer is to keep track of
 which variables from the preamble it reuses in the peeled loop.
-It has to construct a vector of such variables $H$ which
+It has to construct a vector, $H$,  of such variables which
 can be used to update the input and jump arguments using
 \begin{equation}
   \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
@@ -544,7 +548,7 @@ and
   \label{eq:heap-jumpargs}
 \end{equation}
 In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
-K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized to:
+K$. The trace from Figure~\ref{fig:peeled-trace} will be optimized to:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $l_0$($p_{0}$, $p_{1}$):
@@ -571,6 +575,10 @@ $l_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
             set($p_{9}$, intval, $i_{8}$)
 jump($l_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 \end{lstlisting}
+
+Note how the loop invaraint \lstinline{get} on $p_0$ was moved out of
+the loop, and how the non loop invariant \lstinline{get} on $p_5$ was
+removed entierly. 
 
 \subsection{Common Subexpression Elimination}
 If a pure operation appears more than once in the trace with same input
@@ -599,7 +607,7 @@ used attributes of the object.
 Consider again the original unoptimized trace of
 Figure~\ref{fig:peeled-trace}. Line 10 contains the first
 allocation. It is removed and $p_5$ is marked as virtual. This means
-that it refers to an virtual object that was not yet been
+that it refers to an virtual object that has not yet been
 (and might never be) allocated. Line 12 sets the \lstinline{intval}
 attribute of $p_5$. This operation is also removed and the optimizer
 registers that the attribute \lstinline{intval} of $p_5$ is $i_4$.
@@ -608,7 +616,7 @@ When the optimizer reaches line 13 it needs to construct the
 arguments of the \lstinline{jump} operation, which contains the virtual
 reference $p_5$. This can be achieved by exploding $p_5$ into it's
 attributes. In this case there is only one attribute and it's value is
-$i_4$, which means the $p_5$ is replaced with $i_4$ in the jump
+$i_4$, which means that $p_5$ is replaced with $i_4$ in the jump
 arguments. 
 
 In the general case, each virtual in the jump arguments is exploded into a
@@ -641,8 +649,8 @@ operation are constructed as the concatenation all the $\tilde J^{\left(k\right)
   \right)      
   .
 \end{equation}
-and the arguments of the \lstinline{jump} operation of the peeled loop,
-$K$, constructed by inlining $\hat J$,
+The arguments of the \lstinline{jump} operation of the peeled loop,
+$K$, is constructed by inlining $\hat J$,
 \begin{equation}
   \hat K = \left(m\left(\hat J_1\right), m\left(\hat J_1\right), 
                  \cdots, m\left(\hat J_{|\hat J|}\right)\right)
@@ -678,7 +686,7 @@ jump($l_1$, $p_{0}$, $i_8$)
 Note that virtuals are only exploded into their attributes when
 constructing the arguments of the jump of the preamble. This
 explosion can't be repeated when constructing the arguments of the
-jump of the peeled loop as it has to mach the first. This means
+jump of the peeled loop as it has to mach the first jump. This means that
 the objects that was passed as pointers (non virtuals) from the first
 iteration to the second (from preamble to peeled loop) also has to be
 passed as pointers from the second iteration to the third (from peeled
@@ -687,7 +695,7 @@ at the end of the peeled loop they need to be allocated right
 before the jump. With the simple objects considered in this paper,
 that is not a problem. However in more complicated interpreters such
 an allocation might, in combination with other optimizations, lead
-to additional variables from the first iteration being imported into
+to additional variables from the preamble being imported into
 the second. This extends both $\hat J$ and $\hat K$, which means that
 some care has to be taken, when implementing this, to allow $\hat J$ to
 grow while inlining it into $\hat K$. XXX: Maybe we can skip this?
@@ -798,8 +806,9 @@ and the other
 optimizations is during the constructing of the jump arguments
 connecting the peeled of iteration (the preamble) with the loop body. This
 approach 
-turns standard optimizations such as redundant guard removal, heap
-caching, pure operation reuse and allocation removals into loop
+improves the effect of standard optimizations such as redundant guard removal, heap
+caching, common subexpression elimination and allocation removals. The
+most prominent effect is that they all become loop
 invariant code motion optimizations.
 
 XXX: is ``loop body'' or ``peeled loop'' the preferable term?
@@ -809,7 +818,7 @@ significantly
 improve the run time of small loops containing numerical
 calculations. 
 At least in cases where there are not too many guard
-failures. The standard way of handling guards that fail often is to 
+failures. A common way of handling a guard that fails often is to 
 trace a bridge from it back to the start of some previously compiled
 loop. This is applicable here too. However the bridge will have to end
 with a jump to the preamble, which lessens the impact of the 
