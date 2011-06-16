@@ -139,9 +139,9 @@ method-based
 JITs is that their optimizers are much easier to write. Because a tracing JIT
 produces only linear pieces of code without control flow joins, many
 optimization passes on traces can have a very simple structure. They often
-consist of one forward pass through the trace, discarding and replacing
-operations in the trace by simpler ones as they walk along it. This makes
-optimization of traces very similar to symbolic execution. Many
+consist of one forward pass replacing operations by simpler ones or even
+discarding them as they walk along it. This makes
+optimization of traces very similar to symbolic execution. Also, many
 difficult problems in traditional optimizers become tractable if the optimizer
 does not need to deal with control flow merges.
 
