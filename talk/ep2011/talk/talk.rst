@@ -49,7 +49,7 @@ What is PyPy? (seriously)
 PyPy 1.5
 ---------
 
-* Releseased on 30 April, 2011
+* Released on 30 April, 2011
 
 * Python 2.7.1
 
@@ -62,6 +62,38 @@ PyPy 1.5
 |pause|
 
 * **fast**
+
+
+PyPy features
+---------------
+
+* JIT
+
+  - automatically generated
+
+  - complete/correct by construction
+
+  - multiple backends: x86-32, x86-64, ARM
+
+|pause|
+
+* Stackless
+
+  - not yet integrated with the JIT (in-progress)
+
+|pause|
+
+* cpyext
+
+  - CPython C-API compatibility layer
+
+  - not always working
+
+  - often working: wxPython, PIL, cx_Oracle, mysqldb, pycairo, ...
+
+|pause|
+
+* compact instances (as using ``__slots__``)
 
 
 Speed
@@ -88,6 +120,61 @@ Compare to CPython
    :align: center
 
 
+Real world use case (1)
+-----------------------
+
+* LWN's gitdm
+
+  - http://lwn.net/Articles/442268/
+
+  - data mining tool
+
+  - reads the output of ``git log``
+
+  - generate kernel development statistics
+
+|pause|
+
+* Performance
+
+  - CPython: 63 seconds
+
+  - PyPy: **21 seconds**
+
+|pause|
+
+|example<| ``lwn.net`` |>|
+|small|
+
+  [...] PyPy is ready for prime time; it implements the (Python 2.x)
+  language faithfully, and it is fast.
+
+|end_small|
+|end_example|
+
+
+Real world use case (2)
+-----------------------
+
+XXX write slide about this, the site is down ATM
+http://www.myhdl.org/doku.php/performance
+
+
+Real world use case (3)
+-----------------------
+
+- Translating PyPy itself
+
+- Huge, complex piece of software
+
+- All possible (and impossible :-)) kinds of dynamic and metaprogrammig tricks
+
+- ~2.5x faster with PyPy
+
+- (slow warm-up phase, though)
+
+- Ouroboros! |snake|
+
 Not convinced yet?
 ------------------
 
@@ -111,4 +198,13 @@ Not convinced yet?
 
 |end_small|
 |end_example|
+
+Live demo
+---------
+
+.. image:: demo.png
+   :scale: 38%
+   :align: center
+
+
 

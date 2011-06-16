@@ -83,3 +83,8 @@
 
       \end{column}
    \end{columns}
+
+
+.. |snake| image:: ../../img/py-web-new.png
+           :scale: 15%
+           
