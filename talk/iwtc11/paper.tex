@@ -425,13 +425,13 @@ loop peeling.
 
 XXX find reference of prior work on this
 
-Loop peeling is achieved by appending an inlined copy of the traced iteration at
+Loop peeling is achieved by appending an copy of the traced iteration at
 the end of itselfe. See Figure~\ref{fig:overview}.
 The first part (called \emph{preamble}) finishes with the jump the the second part
 (called the \emph{peeled loop}). The second part end with the jump to itself. This way
 the preamble will be executed only once while the peeled loop will
-be used for every further iteration.
-
+be used for every further iteration. New variable names have to be
+introduced in the entire copied trace in order to maintian the SSA-property.
 When applying the following optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
 \lstinline{jump} operations and the input arguments of the peeled loop are
@@ -460,10 +460,11 @@ arguments $K$. Looking  at the peeled version of our example in Figure~\ref{fig:
   %\right.
   .
 \end{equation}
-To construct the second iteration from the first we also need a
+To construct the second copy of the trace (the peeled loop) from the
+first (the preeamble) we need a
 function $m$, mapping the variables of the preamble onto the
 variables of the peeled loop. This function is constructed during the
-inlining. It is initialized by mapping the input arguments, $I$, to
+copying. It is initialized by mapping the input arguments, $I$, to
 the jump arguments $J$,
 \begin{equation}
   m\left(I_i\right) = J_i \ \text{for}\ i = 1, 2, \cdots |I| .
@@ -609,7 +610,7 @@ which are not part of it. The solution is to extend the input
 arguments, $J$, with those two variables. This will also extend the
 jump arguments of the preamble, which is also $J$. 
 Implicitly that also extends the jump arguments of the peeled loop, $K$,
-since they are the inlined versions of $J$. For the example $I$ has to
+since they are the image of $J$ under $m$. For the example $I$ has to
 be replaced by $\hat I$ which is formed as a concatenation of $I$ and
 $\left(i_3, i_4\right)$. At the same time $K$ has to be replaced by
 $\hat K$ which is formed as a concatenation of $K$ and 
