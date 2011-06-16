@@ -683,7 +683,9 @@ jump($L_1$, $p_{0}$, $p_{5}$, $i_3$, $i_4$)
 
 $L_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
 # inside f: y = y.add(step)
+guard_class($p_{5}$, BoxedInteger)
     # inside BoxedInteger.add
+    guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{8}$ = $i_{4}+i_{3}$
         $p_{9}$ = new(BoxedInteger)
@@ -694,7 +696,7 @@ jump($L_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
 
 Note how the loop invaraint \lstinline{get} on $p_0$ was moved out of
 the loop, and how the non loop invariant \lstinline{get} on $p_5$ was
-removed entierly. 
+removed entierly.
 
 \subsection{Common Subexpression Elimination}
 If a pure operation appears more than once in the trace with same input
@@ -920,14 +922,12 @@ as a single trace, several standard optimizations can be
 used unchanged. The only interaction needed between the loop peeling
 and the other 
 optimizations is during the constructing of the jump arguments
-connecting the peeled of iteration (the preamble) with the loop body. This
+connecting the peeled of iteration (the preamble) with the peeled loop. This
 approach 
 improves the effect of standard optimizations such as redundant guard removal, heap
 caching, common subexpression elimination and allocation removals. The
 most prominent effect is that they all become loop
 invariant code motion optimizations.
-
-XXX: is ``loop body'' or ``peeled loop'' the preferable term?
 
 By using several benchmarks we show that the proposed algorithm can
 significantly
