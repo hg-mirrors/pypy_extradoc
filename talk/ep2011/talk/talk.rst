@@ -223,4 +223,222 @@ Live demo
    :align: center
 
 
+Why Python is slow?
+-------------------
+
+- Huge stack of layers over the bare metal
+
+- Abstraction has a cost |pause| (... or not?) |pause|
+
+- XXX: write a nice diagram showing how far is "a+b" from "add EAX, EBX" (or
+  equivalent)
+
+
+Killing the abstraction overhead
+--------------------------------
+
+|scriptsize|
+|column1|
+|example<| Python |>|
+
+.. sourcecode:: python
+
+    class Point(object):
+
+      def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+      def __add__(self, q):
+        if not isinstance(q, Point):
+            raise TypeError
+        x1 = self.x + q.x
+        y1 = self.y + q.y
+        return Point(x1, y1)
+
+    def main():
+      p = Point(0.0, 0.0)
+      while p.x < 2000.0:
+        p = p + Point(1.0, 0.5)
+      print p.x, p.y
+
+|end_example|
+
+|pause|
+
+|column2|
+|example<| C |>|
+
+.. sourcecode:: c
+
+   #include <stdio.h>
+
+
+
+
+
+
+
+    
+
+    int main() {
+        float px = 0.0, py = 0.0;
+        while (px < 2000.0) {
+            px += 1.0;
+            py += 0.5;
+        }
+        printf("%f %f\n", px, py);
+    }
+
+|end_example|
+|end_columns|
+|end_scriptsize|
+
+.. at this point, we show it in the jitviewer
+
+Useless optimization techniques
+-------------------------------
+
+.. XXX: I'm not sure how useful is this slide
+
+|scriptsize|
+
+|column1|
+|example<| |>|
+
+.. sourcecode:: python
+   
+   #
+   for item in some_large_list:
+       self.meth(item)
+
+|end_example|
+|column2|
+|example<| |>|
+
+.. sourcecode:: python
+
+   meth = self.meth
+   for item in some_large_list:
+       meth(item)
+
+
+|end_example|
+|end_columns|
+
+|pause|
+
+|column1|
+|example<| |>|
+
+.. sourcecode:: python
+   
+   def foo():
+       res = 0
+       for item in some_large_list:
+           res = res + abs(item)
+       return res
+
+|end_example|
+|column2|
+|example<| |>|
+
+.. sourcecode:: python
+
+   def foo(abs=abs):
+       res = 0
+       for item in some_large_list:
+           res = res + abs(item)
+       return res
+
+|end_example|
+|end_columns|
+
+|pause|
+
+|column1|
+|example<| |>|
+
+.. sourcecode:: python
+
+   #
+
+   [i**2 for i in range(100)]
+
+|end_example|
+|column2|
+|example<| |>|
+
+.. sourcecode:: python
+
+   from itertools import *
+   list(imap(pow, count(0), 
+             repeat(2, 100)))
+
+|end_example|
+|end_columns|
+
+|pause|
+
+|column1|
+|example<| |>|
+
+.. sourcecode:: python
+
+   for i in range(large_number):
+       ...
+
+|end_example|
+|column2|
+|example<| |>|
+
+.. sourcecode:: python
+
+   for i in xrange(large_number):
+       ...
+
+|end_example|
+|end_columns|
+
+|pause|
+
+|column1|
+|example<| |>|
+
+.. sourcecode:: python
+
+   class A(object):
+       pass
+
+|end_example|
+|column2|
+|example<| |>|
+
+.. sourcecode:: python
+
+   class A(object):
+       __slots__ = ['a', 'b', 'c']
+
+|end_example|
+|end_columns|
+
+|end_scriptsize|
+
+
+Concrete example: ``ctypes``
+----------------------------
+
+|example<| |>|
+|scriptsize|
+
+.. sourcecode:: python
+
+    import ctypes
+    libm = ctypes.CDLL('libm.so')
+    pow = libm.pow
+    pow.argtypes = [ctypes.c_double, ctypes.c_double]
+    pow.restype = ctypes.c_double
+
+|end_scriptsize|
+|end_example|
 
