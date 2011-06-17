@@ -122,14 +122,15 @@
 
 \begin{abstract}
 By introducing loop peeling into the optimization step of a tracing
-jit, the effect of optimizations already in place will be increased
+jit the effect of optimizations already in place will be increased
 greatly. Not only will they become able to move loop invariant code
 out of loop. They will also become able to reuse results from the
 previous iteration. Also, the implementation of excising optimizations
 can be left almost intact as they will not have to interact much with
 the loop peeling.
 
-Several benchmarks executed on the PyPy python JIT show over 2
+Several benchmarks, with few guard failures, executed on the
+PyPy python JIT show over 2 
 times increase in speed when loop peeling was introduced. This makes
 some of them almost match optimized C performance and become over XXX
 times faster than cpython.
