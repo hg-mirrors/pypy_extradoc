@@ -80,3 +80,27 @@ NoBorderImagePadded: 543.731127977
 NoBorderImagePadded(iter): 546.704558849
 NoBorderImagePadded(range): 550.923794985
 NoBorderImage: 537.306480885
+NoBorderImage(iter): 548.317567825
+NoBorderImage(range): 534.642185926
+sobel(NoBorderImagePadded): 461.142298937
+sobel_uint8(NoBorderImagePadded): 476.717667103
+
+python2.6 psyco-wrapper.py
+sqrt(int): 1.77652692795
+sqrt(float): 5.52010679245
+sqrt(Fix16): 421.651717901
+conv3(1e6): 9.58111596107
+conv5(1e6): 16.7954330444
+conv3(1e5): 9.51570010185
+conv5(1e5): 16.6677658558
+conv3x3(3): 12.7717211246
+conv3x3(1000): 12.7678999901
+dilate3x3(1000): 12.9881358147
+NoBorderImagePadded: 333.201485157
+NoBorderImagePadded(iter): 309.316030979
+NoBorderImagePadded(range): 318.333670855
+NoBorderImage: 329.979980946
+NoBorderImage(iter): 304.132736921
+NoBorderImage(range): 317.337441921
+sobel(NoBorderImagePadded): 258.021892071
+sobel_uint8(NoBorderImagePadded): 275.499665976
