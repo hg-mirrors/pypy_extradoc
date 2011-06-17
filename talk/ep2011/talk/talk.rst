@@ -252,6 +252,8 @@ Is Python slow?
 - XXX: write a nice diagram showing how far is "a+b" from "add EAX, EBX" (or
   equivalent)
 
+.. XXX those slides from google talk can be showed here: http://paste.pocoo.org/show/413859/
+
 
 Killing the abstraction overhead
 --------------------------------
