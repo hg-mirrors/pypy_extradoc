@@ -236,8 +236,14 @@ Live demo
    :align: center
 
 
-Why Python is slow?
--------------------
+Is Python slow?
+----------------
+
+- |strike<| Python is slow |>|
+
+- Python is hard to optimize
+
+|pause|
 
 - Huge stack of layers over the bare metal
 
@@ -264,7 +270,7 @@ Killing the abstraction overhead
 
       def __add__(self, q):
         if not isinstance(q, Point):
-            raise TypeError
+          raise TypeError
         x1 = self.x + q.x
         y1 = self.y + q.y
         return Point(x1, y1)
@@ -441,8 +447,8 @@ Pointless optimization techniques
 Concrete example: ``ctypes``
 ----------------------------
 
-|example<| |>|
 |scriptsize|
+|example<| |>|
 
 .. sourcecode:: python
 
@@ -451,7 +457,73 @@ Concrete example: ``ctypes``
     pow = libm.pow
     pow.argtypes = [ctypes.c_double, ctypes.c_double]
     pow.restype = ctypes.c_double
+    pow(2, 3) # <---
 
+|end_example|
 |end_scriptsize|
+
+Layers and layers
+----------------------------
+
+.. raw:: latex
+
+   \setbeamercovered{invisible}
+
+
+|scriptsize|
+
+|example<| |small| ``CFuncPtrFast.__call__`` (Python) |end_small| |>|
+check that the cache is still valid |pause|
+
+|nested| |example<| |small| ``CFuncPtrFast._call_funcptr`` (Python) |end_small| |>|
+some runtime checks (e.g. ``_flags_``) |pause|
+
+|nested| |example<| |small| ``_ffi.FuncPtr.__call__`` (RPython) |end_small| |>|
+typecheck/unbox arguments, put them in raw C buffers |pause|
+
+|nested| |example<| |small| ``c_ffi_call`` (C) [libffi.so] |end_small| |>|
+takes arguments from the raw C buffers |pause|
+
+|nested| |alert<| |small| ``pow@0xf72de000`` (C) [libm.so]  |end_small| |>|
+return 8
+
+|end_alert| |end_nested|
+|end_example| |end_nested|
+|end_example| |end_nested|
+|end_example| |end_nested|
 |end_example|
 
+|end_scriptsize|
+
+``ctypes`` demo
+----------------
+
+Conclusion
+----------
+
+- PyPy is fast
+
+- mature
+
+- stable
+
+- abstractions for free!
+
+|pause|
+
+- (I wonder why you all are still here instead of busy trying PyPy :-))
+
+Contacts, Q/A
+--------------
+
+- http://pypy.org
+
+- blog: http://morepypy.blogspot.com
+
+- mailing list: pypy-dev (at) python.org
+
+- IRC: #pypy on freenode
+
+.. image:: question-mark.png
+   :scale: 10%
+   :align: center

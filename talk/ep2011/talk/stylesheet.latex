@@ -1,3 +1,4 @@
+\usepackage{ulem}
 \usetheme{Boadilla}
 \usecolortheme{whale}
 \setbeamercovered{transparent}
