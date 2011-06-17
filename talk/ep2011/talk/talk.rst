@@ -515,6 +515,8 @@ Conclusion
 
 - (I wonder why you all are still here instead of busy trying PyPy :-))
 
+.. XXX [fijal] instead of this comment I would do a slide on downsides
+
 Contacts, Q/A
 --------------
 
