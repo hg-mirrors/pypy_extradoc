@@ -191,6 +191,19 @@ Real world use case (3)
 
 - Ouroboros! |snake|
 
+
+Real world use case (4)
+-----------------------
+
+.. image:: Uncle_Sam.png
+   :scale: 50%
+   :align: center
+
+* Your own application
+
+* Try PyPy, it might be worth it
+
+
 Not convinced yet?
 ------------------
 
@@ -296,8 +309,8 @@ Killing the abstraction overhead
 
 .. at this point, we show it in the jitviewer
 
-Useless optimization techniques
--------------------------------
+Pointless optimization techniques
+---------------------------------
 
 .. XXX: I'm not sure how useful is this slide
 
