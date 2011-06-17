@@ -874,10 +874,8 @@ runtimes compared. The benchmarks are
   a single implementation of the benchmark that gets specialized
   depending on the class of it's input argument, $y$, while in C,
   there are three different implementations.
-\item {\bf conv3}: one-dimensional convolution with a kernel of fixed
-  size $3$.
-\item {\bf conv5}: one-dimensional convolution with a kernel of fixed
-  size $5$.
+\item {\bf conv3}: one-dimensional convolution with fixed kernel-size $3$.
+\item {\bf conv5}: one-dimensional convolution with fixed kernel-size $5$.
 \item {\bf conv3x3}: two-dimensional convolution with kernel of fixed
   size $3 \times 3$ using a custom class to represent two-dimensional
   arrays.
@@ -903,7 +901,7 @@ runtimes compared. The benchmarks are
 
 Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM in
 32bit mode.
-The machine was otherwise unoccupied. We run the following software
+The machine was otherwise unoccupied. We use the following software
 for benchmarks:
 
 \begin{itemize}
@@ -919,7 +917,7 @@ floating point operations, except Psyco which uses x87 FPU instructions.
 We also run PyPy with loop peeling optimization and without (but otherwise
 identical).
 
-For all JITted run (PyPy and Psyco) 3 iterations were run to warm up the JIT,
+For all JIT:ed runs (PyPy and Psyco) 3 iterations were run to warm up the JIT,
 followed by 10 iterations for averaging. For GCC and CPython, 5 iterations
 were run. In all cases, the standard deviation is very low, making benchmarks
 very well reproducible.
@@ -936,13 +934,13 @@ array operations into a loop compiled into assembler. LICM is a very good
 optimization for those kind of operations. The example benchmark performs
 addition of five arrays, compiling it in a way that's equivalent to C's:
 
-\begin{figure}
+%\begin{figure}
 \begin{lstlisting}[mathescape,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 for (int i = 0; i < SIZE; i++) {
    res[i] = a[i] + b[i] + c[i] + d[i] + e[i];
 }
 \end{lstlisting}
-\end{figure}
+%\end{figure}
 
 Where $res$, $a$, $b$, $c$, $d$ and $e$ are $double$ arrays. 
 
