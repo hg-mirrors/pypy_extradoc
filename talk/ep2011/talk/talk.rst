@@ -156,8 +156,24 @@ Real world use case (1)
 Real world use case (2)
 -----------------------
 
-XXX write slide about this, the site is down ATM
-http://www.myhdl.org/doku.php/performance
+* **MyHDL**: VHDL-like language written in Python
+
+  - |scriptsize| http://www.myhdl.org/doku.php/performance |end_scriptsize|
+
+  - (now) competitive with "real world" VHDL and Verilog simulators
+
+
+|pause|
+
+|example<| ``myhdl.org`` |>|
+|small|
+
+  [...] the results are spectacular. By simply using a different interpreter,
+  our simulations run 6 to 12 times faster.
+
+|end_small|
+|end_example|
+
 
 
 Real world use case (3)
