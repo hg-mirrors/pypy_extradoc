@@ -20,6 +20,17 @@
 
    }
 
+.. |scriptsize| raw:: latex
+
+   {\scriptsize
+
+.. |end_scriptsize| raw:: latex
+
+   }
+
+.. |strike<| raw:: latex
+
+   \sout{
 
 .. closed bracket
 .. ===========================
@@ -72,6 +83,26 @@
 
 
 .. |end_columns| raw:: latex
+
+      \end{column}
+   \end{columns}
+
+
+
+.. |snake| image:: ../../img/py-web-new.png
+           :scale: 15%
+           
+
+
+.. nested blocks
+.. ===========================
+
+.. |nested| raw:: latex
+
+   \begin{columns}
+      \begin{column}{0.85\textwidth}
+
+.. |end_nested| raw:: latex
 
       \end{column}
    \end{columns}
