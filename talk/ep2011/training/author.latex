@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy training session]{PyPy training session}
+\author[antocuni, arigo]
+{Antonio Cuni \\ Armin Rigo}
+
+\institute{EuroPython 2011}
+\date{June 21 2011}
