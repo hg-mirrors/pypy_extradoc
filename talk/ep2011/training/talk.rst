@@ -25,6 +25,23 @@ How to run PyPy
 
 * That's it!
 
+  - (modulo details)
+
+Challenge
+---------
+
+* ``html_fibo.py``
+
+* HTML list of fibonacci numbers
+
+* (the most complicate ever)
+
+* run it on CPython
+
+* run it on PyPy
+
+* fix it!
+
 
 Refcounting vs generational GC (1)
 ----------------------------------
@@ -81,12 +98,6 @@ Refcounting vs generational GC (2)
 
 * ``finally`` inside generators
 
-Challenge
----------
-
-- Find the bug!
-
-XXX write me :-(
 
 
 How the JIT works
@@ -98,11 +109,15 @@ XXX write me
 PYPYLOG
 --------
 
+|small|
+
 * ``PYPYLOG=categories:logfile pypy program.py``
+
+|end_small|
 
 * categories:
 
-  - gc
+  - gc-minor, gc-major
 
   - jit-log-noopt, jit-log-opt
 
@@ -110,12 +125,48 @@ PYPYLOG
 
   - jit-backend-counts
 
-* ``PYPYLOG=jit-log-opt:log.pypylog pypy foo.py``
 
-XXX: write foo.py
+Inspecting the JIT log
+-----------------------
+
+|scriptsize|
+|example<| |scriptsize| ``count.py`` |end_scriptsize| |>|
+
+.. sourcecode:: python
+
+    def count_mult_of_5(N):
+        mult = 0
+        not_mult = 0
+        for i in range(N):
+            if i % 5 == 0:
+                mult += 1
+            else:
+                not_mult += 1
+        return mult, not_mult
+
+|end_example|
+|end_scriptsize|
+
+|small|
+
+* ``PYPYLOG=jit-log-opt:mylog pypy count.py 2000``
+
+* ``PYPYLOG=jit-log-opt:mylog pypy count.py 10000``
+
+|end_small|
 
 
 The jitviewer
 -------------
 
-- ``jitviewer.py log.pypylog``
+|scriptsize|
+
+* ``PYPYLOG=jit-log-opt,jit-backend-counts:mylog pypy count.py 2000``
+
+* ``PYPYLOG=jit-log-opt,jit-backend-counts:mylog pypy count.py 10000``
+
+* ``jitviewer.py log.pypylog``
+
+* Look at the (missing) bridge!
+
+|end_scriptsize|
