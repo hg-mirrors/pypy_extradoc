@@ -33,7 +33,7 @@ def html_fibo(f):
 
 def write_file():
     f = open('fibo.txt', 'w')
-    for n in html<_fibo(f):
+    for n in html_fibo(f):
         f.write('%d' % n)
         if n > 100:
             break
