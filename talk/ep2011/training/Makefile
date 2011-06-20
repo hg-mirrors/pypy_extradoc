@@ -10,6 +10,12 @@ talk.pdf: talk.rst author.latex title.latex stylesheet.latex
 	sed 's/\\maketitle/\\input{title.latex}/' -i talk.latex || exit
 	pdflatex talk.latex  || exit
 
+teaser.pdf: teaser.rst author.latex title.latex stylesheet.latex
+	rst2beamer.py --stylesheet=stylesheet.latex --documentoptions=14pt teaser.rst teaser.latex || exit
+	sed 's/\\date{}/\\input{author.latex}/' -i teaser.latex || exit
+	sed 's/\\maketitle/\\input{title.latex}/' -i teaser.latex || exit
+	pdflatex teaser.latex  || exit
+
 view: talk.pdf
 	evince talk.pdf &
 
