@@ -807,23 +807,6 @@ $L_1$($p_{0}$, $i_{4}$):
 jump($L_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
 
-Note that virtuals are only exploded into their attributes when
-constructing the arguments of the jump of the preamble. This
-explosion can't be repeated when constructing the arguments of the
-jump of the peeled loop as it has to match the first jump. This means that
-the objects that was passed as pointers (non virtuals) from the first
-iteration to the second (from preamble to peeled loop) also has to be
-passed as pointers from the second iteration to the third (from peeled
-loop to peeled loop). If one of these objects are allocation-removed
-at the end of the peeled loop they need to be allocated right
-before the jump. With the simple objects considered in this paper,
-that is not a problem. However in more complicated interpreters such
-an allocation might, in combination with other optimizations, lead
-to additional variables from the preamble being imported into
-the second. This extends both $\hat J$ and $\hat K$, which means that
-some care has to be taken, when implementing this, to allow $\hat J$ to
-grow while inlining it into $\hat K$. XXX: Maybe we can skip this?
-
 XXX explain that this is effectively type-specializing a loop
 
 \section{Limitations}
