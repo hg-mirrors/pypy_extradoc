@@ -130,10 +130,10 @@ can be left almost intact as they will not have to interact much with
 the loop peeling.
 
 Several benchmarks, with few guard failures, executed on the
-PyPy python JIT show over 2 
+PyPy Python JIT show over 2
 times increase in speed when loop peeling was introduced. This makes
 some of them almost match optimized C performance and become over XXX
-times faster than cpython.
+times faster than CPython.
 \end{abstract}
 
 \category{D.3.4}{Programming Languages}{Processors}[code generation,
@@ -623,60 +623,34 @@ guard on line 6.
 
 Note that the guard on $p_5$ is removed even though $p_5$ is not loop
 invariant, which shows that loop invariant code motion is not the only
-effect of loop peeling.
+effect of loop peeling. Loop peeling can also remove guards that are implied by
+the guards of the previous iteration.
 
-\subsection{Heap Caching}
 
-XXX gcc calls this store-sinking and I'm sure there are some
-references in the literature (none at hand though). This is a ``typical''
-compiler optimization.
 
-The objective of heap caching is to remove \lstinline{get} and
-\lstinline{set} operations whose results can be deduced from previous
-\lstinline{get} and \lstinline{set} operations. Exact details of the
-process are outside the scope of this paper. We only consider the interaction
-with loop peeling.
+\subsection{Common Subexpression Elimination and Heap Optimizations}
 
-The issue at hand is to keep the peeled loop a proper
-trace. Consider the \lstinline{get} operation on line 19 of
+If a pure operation appears more than once in the trace with the same input
+arguments, it only needs be executed the first time and then the result
+can be reused for all other appearances. PyPy's optimizers can also remove
+repeated heap reads if the intermediate operations cannot have changed their
+value\footnote{We perform a simple type-based alias analysis to know which
+writes can affect which reads. In addition writes on newly allocated objects
+can never change the value of old existing ones.}.
+
+When that is combined with loop peeling, the single execution of the operation
+is placed in the preamble. That is, loop invariant pure operations and heap
+reads are moved out of the loop. 
+
+Consider the \lstinline{get} operation on line 22 of
 Figure~\ref{fig:peeled-trace}. The result of this operation can be
-deduced to be $i_4$ from the \lstinline{set} operation on line
-12. Also, the result of the \lstinline{get} operation on line 22 can
-be deduced to be $i_3$ from the \lstinline{get} operation on line
-8. The optimization will thus remove line 19 and 22 from the trace and
-replace $i_6$ with $i_4$ and $i_7$ with $i_3$. 
+deduced to be $i_3$ from the \lstinline{get} operation on line
+8. The optimization will thus remove line 22 from the trace and
+replace $i_7$ with $i_3$. Afterwards the trace is no longer in the correct
+form, because the argument $i_3$ is not passed along the loop arguments. It
+thus needs to be added there.
 
-After that, the peeled loop
-will no longer be in SSA form as it operates on $i_3$ and $i_4$
-which are not part of it. The solution is to extend the input
-arguments, $J$, with those two variables. This will also extend the
-jump arguments of the preamble, which is also $J$. 
-Implicitly that also extends the jump arguments of the peeled loop, $K$,
-since they are the image of $J$ under $m$. For the example $I$ has to
-be replaced by $\hat I$ which is formed as a concatenation of $I$ and
-$\left(i_3, i_4\right)$. At the same time $K$ has to be replaced by
-$\hat K$ which is formed as a concatenation of $K$ and 
-$\left(m\left(i_3\right), m\left(i_4\right)\right) = \left(i_7, i_8\right)$. 
-The variable $i_7$ will then be replaced by $i_3$ by the heap caching
-optimization as it has removed the variable $i_7$. XXX: Maybe we should
-replace $i_7=$get(...) with $i_7=i_3$ instead of removing it?
-
-In general what is needed is for the heap optimizer is to keep track of
-which variables from the preamble it reuses in the peeled loop.
-It has to construct a vector, $H$,  of such variables which
-can be used to update the input and jump arguments using
-\begin{equation}
-  \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
-  \label{eq:heap-inputargs}
-\end{equation}
-and
-\begin{equation}
-  \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H})\right)
-  .
-  \label{eq:heap-jumpargs}
-\end{equation}
-In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
-K$. The trace from Figure~\ref{fig:peeled-trace} will be optimized to:
+The trace from Figure~\ref{fig:peeled-trace} will therefore be optimized to:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($p_{0}$, $p_{1}$):
@@ -691,36 +665,51 @@ guard_class($p_{1}$, BoxedInteger)
         $p_{5}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{5}$, intval, $i_{4}$)
-jump($L_1$, $p_{0}$, $p_{5}$, $i_3$, $i_4$)
+jump($L_1$, $p_{0}$, $p_{5}$, $i_3$)
 
-$L_1$($p_{0}$, $p_{5}$, $i_3$, $i_4$):
+$L_1$($p_{0}$, $p_{5}$, $i_3$):
 # inside f: y = y.add(step)
 guard_class($p_{5}$, BoxedInteger)
     # inside BoxedInteger.add
+    $i_{6}$ = get($p_{5}$, intval)
     guard_class($p_{0}$, BoxedInteger)
         # inside BoxedInteger.add__int
         $i_{8}$ = $i_{4}+i_{3}$
         $p_{9}$ = new(BoxedInteger)
             # inside BoxedInteger.__init__
             set($p_{9}$, intval, $i_{8}$)
-jump($L_1$, $p_{0}$, $p_{9}$, $i_3$, $i_8$)
+jump($L_1$, $p_{0}$, $p_{9}$, $i_3$)
 \end{lstlisting}
 
-Note how the loop invaraint \lstinline{get} on $p_0$ was moved out of
-the loop, and how the non loop invariant \lstinline{get} on $p_5$ was
-removed entierly.
+In general, after loop peeling and redundant operation removal the peeled loop
+will no longer be in SSA form as it operates on variables that are the result
+of pure operations in the preamble. The solution is to extend the input
+arguments, $J$, with those variables. This will also extend the
+jump arguments of the preamble, which is also $J$. 
+Implicitly that also extends the jump arguments of the peeled loop, $K$,
+since they are the image of $J$ under $m$. For the example $I$ has to
+be replaced by $\hat I$ which is formed by appending $i_3$ to $I$.
+At the same time $K$ has to be replaced by
+$\hat K$ which is formed by appending $m\left(i_3\right)=i_7$ to $K$.
+The variable $i_7$ will then be replaced by $i_3$ by the heap caching
+optimization as it has removed the variable $i_7$.
 
-\subsection{Common Subexpression Elimination}
-If a pure operation appears more than once in the trace with same input
-arguments, it only needs be executed the first time and then the result
-can be reused for all other appearances. When that is combined with loop
-peeling, the single execution of the operation is placed in the
-preamble. That is, loop invariant pure operations are moved out of the
-loop. The interactions here are the same as in the previous
-section. That is, a vector, $H$, of variables produced in the preamble
-and used in the peeled loop needs to be constructed. Then the jump and
-input arguments are updated according to
-Equation~\ref{eq:heap-inputargs} and Equation~\ref{eq:heap-jumpargs}.
+In general what is needed is to keep track of
+which variables from the preamble it reuses in the peeled loop.
+It has to construct a vector, $H$,  of such variables which
+can be used to update the input and jump arguments using
+\begin{equation}
+  \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
+  \label{eq:heap-inputargs}
+\end{equation}
+and
+\begin{equation}
+  \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H})\right)
+  .
+  \label{eq:heap-jumpargs}
+\end{equation}
+In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
+K$.
 
 \subsection{Allocation Removals}
 By using escape analysis it is possible to identify objects that are
@@ -862,7 +851,7 @@ XXX reason why we use small numerical kernels for benchmarks
 XXX we either need to explain that we use C++ or consistently use C
 
 \subsection{Python}
-The python interpreter of the PyPy framework is a complete Python
+The Python interpreter of the PyPy framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python and in C and their
 runtimes compared. The benchmarks are
