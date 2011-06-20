@@ -31,10 +31,6 @@ Make sure that the following prerequisites are met:
 
     $ /path/to/pypy-1.5/bin/pypy setup.py develop
 
-  * Download the source code which will be used during the session:
-
-    - http://wyvern.cs.uni-duesseldorf.de/~antocuni/ep2011-training.zip
-
 If you intend to follow also the second part ("Write your own interpreter with
 PyPy"), you need to make sure you have a working developing environment:
 http://doc.pypy.org/en/latest/getting-started-python.html#translating-the-pypy-python-interpreter
