@@ -820,7 +820,7 @@ it. Benchmarks have been executed for a few different interpreters and
 we see improvements in several cases. The ideal loop for this optimization
 would be short numerical calculations with no failing guards and no
 external calls. Larger loops involving many operations on complex objects
-typically benefit less from it. Loop peeling never makes performance worse, in
+typically benefit less from it. Loop peeling never makes runtime performance worse, in
 the worst case the peeled loop is exactly the same as the preamble. Therefore we
 chose to present benchmarks of small numeric kernels where loop peeling can show
 its use.
@@ -854,18 +854,24 @@ runtimes compared. The benchmarks are
   of the optimizations.
 \item {\bf sobel}: a low-level video processing algorithm used to
   locate edges in an image. It calculates the gradient magnitude
-  using sobel derivatives. In Python the algorithm is implemented
-  on top of a custom image class that is specially designed for the
-  problem. It ensures that there will be no failing guards, and makes
-  a lot of the two dimension index calculations loop invariant. The
-  intention here is twofold. It shows that the performance-impact of
-  having wrapper classes giving objects some application-specific
-  properties can be negligible. This is due to the inlining performed
-  during the tracing and the allocation removal of the index objects
-  introduced. It also shows that it is possible to do some low-level
-  hand optimizations of the Python code and hide those optimization
-  under a nice interface without loosing performance.
+  using sobel derivatives. 
 \end{itemize}
+
+The sobel and conv3x3 benchmarks are implemented
+on top of two different two-dimensional array classes: Array2D
+and NoBorderPadded. Array2D is 
+a simple straight forward implementation providing 2 dimensionall
+indexing with out of bounds checks. NoBorderPadded is optimized for
+this specific application.
+It ensures that there will be no failing guards, and makes
+a lot of the two dimension index calculations loop invariant. The
+intention here is twofold. It shows that the performance-impact of
+having wrapper classes giving objects some application-specific
+properties can be negligible. This is due to the inlining performed
+during the tracing and the allocation removal of the index objects
+introduced. It also shows that it is possible to do some low-level
+hand optimizations of the Python code and hide those optimization
+under a nice interface without loosing performance.
 
 Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM in
 32bit mode.
