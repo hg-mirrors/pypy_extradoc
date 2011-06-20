@@ -913,27 +913,8 @@ comparable with native-compiled C code. Missing performance we attribute to
 the relative immaturity of PyPy's JIT assembler backend as well as missing
 optimizations, like instruction scheduling.
 
-\subsection{Numpy}
-
-As a part of the PyPy project, we implemented small numerical kernel for
-performing matrix operations. The exact extend of this kernel is besides
-the scope of this paper, however the basic idea is to unroll a series of
-array operations into a loop compiled into assembler. LICM is a very good
-optimization for those kind of operations. The example benchmark performs
-addition of five arrays, compiling it in a way that's equivalent to C's:
-
-%\begin{figure}
-\begin{lstlisting}[mathescape,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
-for (int i = 0; i < SIZE; i++) {
-   res[i] = a[i] + b[i] + c[i] + d[i] + e[i];
-}
-\end{lstlisting}
-%\end{figure}
-
-Where $res$, $a$, $b$, $c$, $d$ and $e$ are $double$ arrays. 
-
-\subsection{Prolog}
-XXX: Carl?
+XXX add a small note somewhere that numpy and prolog are helped by this
+optimization
 
 \subsection{Conclusions}
 In this paper we have studied loop invariant code motion during trace
