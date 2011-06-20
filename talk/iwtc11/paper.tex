@@ -809,20 +809,6 @@ jump($L_1$, $p_{0}$, $i_8$)
 
 XXX explain that this is effectively type-specializing a loop
 
-\section{Limitations}
-
-XXX as of now?
-
-Loop invariant code motion as described has certain amount of limitations
-that prevent it from speeding up larger loops. Those limitations are a target
-of future work and might be lifted. Most important ones:
-
-\begin{itemize}
-\item Bridges are not well supported - if the flow is more complex than a single
-      loop, the bridge might need to jump to the beginning of the preamble,
-      making the optimization ineffective
-\item XXX write about flushing caches at calls?
-\end{itemize}
 
 \section{Benchmarks}
 
@@ -916,35 +902,31 @@ optimizations, like instruction scheduling.
 XXX add a small note somewhere that numpy and prolog are helped by this
 optimization
 
-\subsection{Conclusions}
+\section{Related Work}
+\label{sec:related}
+
+XXX
+% section Related Work (end)
+
+\section{Conclusions}
+
 In this paper we have studied loop invariant code motion during trace
 compilation. We claim that loop peeling is a very convenient solution
-here since it fits well with other trace optimizations. By peeling of
-the first iteration and optimizing the resulting two iteration trace
-as a single trace, several standard optimizations can be 
-used unchanged. The only interaction needed between the loop peeling
-and the other 
-optimizations is during the constructing of the jump arguments
-connecting the peeled of iteration (the preamble) with the peeled loop. This
-approach 
-improves the effect of standard optimizations such as redundant guard removal, heap
-caching, common subexpression elimination and allocation removals. The
-most prominent effect is that they all become loop
+here since it fits well with other trace optimizations and does not require
+large changes to them. This approach improves the effect of standard
+optimizations such as redundant guard removal, common subexpression elimination
+and allocation removal. The most prominent effect is that they all become loop
 invariant code motion optimizations.
 
 By using several benchmarks we show that the proposed algorithm can
-significantly
-improve the run time of small loops containing numerical
+significantly improve the run time of small loops containing numerical
 calculations. 
-At least in cases where there are not too many guard
-failures. A common way of handling a guard that fails often is to 
-trace a bridge from it back to the start of some previously compiled
-loop. This is applicable here too. However the bridge will have to end
-with a jump to the preamble, which lessens the impact of the 
-proposed approach.
-In many situations it is however possible to make the bridge
-jump to the peeled loop instead. When and how this is possible will be
-focus of future work.
+
+The current approach still has some limitations which we plan to lift in the
+future. In particular loop peeling is working less well in combination with
+trace trees or trace stitching. The side exits attached guards that fail often
+currently have to jump to the preamble which makes loops with several equally
+common paths less efficient than they could be.
 
 %\appendix
 %\section{Appendix Title}
