@@ -902,22 +902,22 @@ optimizations, like instruction scheduling. Results:
 
 \begin{figure}
 \begin{center}
-{\small
+{\smaller
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
- & CPython & Psyco & PyPy no loop peeling & PyPy & GCC -O2 & GCC -O3\\
+ & CPython & Psyco & PyPy no LP & PyPy & GCC -O2 & GCC -O3\\
 \hline
-NoBorderImage & 537.31 & 329.98 & 2.22 +- 0.03 & 2.17 +- 0.02 & - & -\\
+NoBorder & 537.31 & 329.98 & 2.22 +- 0.03 & 2.17 +- 0.02 & - & -\\
 \hline
-NoBorderImage(iter) & 548.32 & 304.13 & 1.45 +- 0.03 & 1.47 +- 0.02 & - & -\\
+NoBorder(iter) & 548.32 & 304.13 & 1.45 +- 0.03 & 1.47 +- 0.02 & - & -\\
 \hline
-NoBorderImage(range) & 534.64 & 317.34 & 1.34 +- 0.03 & 1.40 +- 0.04 & - & -\\
+NoBorder(range) & 534.64 & 317.34 & 1.34 +- 0.03 & 1.40 +- 0.04 & - & -\\
 \hline
-NoBorderImagePadded & 543.73 & 333.20 & 2.09 +- 0.12 & 1.93 +- 0.05 & - & -\\
+NoBorderPadded & 543.73 & 333.20 & 2.09 +- 0.12 & 1.93 +- 0.05 & - & -\\
 \hline
-NoBorderImagePadded(iter) & 546.70 & 309.32 & 1.21 +- 0.02 & 0.49 +- 0.02 & - & -\\
+NoBorderPadded(iter) & 546.70 & 309.32 & 1.21 +- 0.02 & 0.49 +- 0.02 & - & -\\
 \hline
-NoBorderImagePadded(range) & 550.92 & 318.33 & 1.12 +- 0.03 & 0.48 +- 0.01 & - & -\\
+NoBorderPadded(range) & 550.92 & 318.33 & 1.12 +- 0.03 & 0.48 +- 0.01 & - & -\\
 \hline
 conv3(1e5) & 77.89 & 9.52 & 1.77 +- 0.06 & 0.68 +- 0.02 & 0.70 +- 0.05 & 0.59 +- 0.01\\
 \hline
@@ -933,11 +933,11 @@ conv5(1e6) & 125.77 & 16.80 & 1.92 +- 0.03 & 1.09 +- 0.02 & 1.07 +- 0.05 & 0.80 
 \hline
 dilate3x3(1000) & 23.29 & 12.99 & 0.41 +- 0.04 & 0.39 +- 0.01 & 0.26 +- 0.00 & 0.26 +- 0.01\\
 \hline
-sobel(NoBorderImagePadded) & 461.14 & 258.02 & 1.01 +- 0.03 & 0.48 +- 0.03 & - & -\\
+sobel(NoBorderPadded) & 461.14 & 258.02 & 1.01 +- 0.03 & 0.48 +- 0.03 & - & -\\
 \hline
 sobel\_magnitude & - & - & - & - & 0.19 +- 0.01 & 0.20 +- 0.01\\
 \hline
-sobel\_uint8(NoBorderImagePadded) & 476.72 & 275.50 & 1.05 +- 0.01 & 0.51 +- 0.00 & - & -\\
+sobel\_uint8(NoBorderPadded) & 476.72 & 275.50 & 1.05 +- 0.01 & 0.51 +- 0.00 & - & -\\
 \hline
 sqrt(Fix16) & 744.35 & 421.65 & 3.93 +- 0.11 & 2.14 +- 0.02 & 0.97 +- 0.02 & 0.96 +- 0.01\\
 \hline
