@@ -832,9 +832,11 @@ interpreters implemented within PyPy now can take advantage of
 it. Benchmarks have been executed for a few different interpreters and
 we see improvements in several cases. The ideal loop for this optimization
 would be short numerical calculations with no failing guards and no
-external calls.
-
-XXX reason why we use small numerical kernels for benchmarks
+external calls. Larger loops involving many operations on complex objects
+typically benefit less from it. Loop peeling never makes performance worse, in
+the worst case the peeled loop is exactly the same as the preamble. Therefore we
+chose to present benchmarks of small numeric kernels where loop peeling can show
+its use.
 
 XXX we either need to explain that we use C++ or consistently use C
 
