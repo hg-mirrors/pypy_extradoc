@@ -36,6 +36,7 @@ else
     $* ./runner.py $EXTRA_OPTS convolution/convolution.py conv3x3 1000000 3
     $* ./runner.py $EXTRA_OPTS convolution/convolution.py conv3x3 1000 1000
     $* ./runner.py $EXTRA_OPTS convolution/convolution.py dilate3x3 1000 1000
+    $* ./runner.py $EXTRA_OPTS convolution/convolution.py sobel_magnitude 1000 1000
     $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded
     $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded iter
     $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded range

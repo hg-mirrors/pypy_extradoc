@@ -50,11 +50,11 @@ def main(args):
     if len(args) == 1:
         for i in range(10):
             sobel_magnitude(Image(n, n))
-        return 'sobel(%s)' % Image.__name__
+        return 'sobel(%s(%dx%d))' % (Image.__name__, n, n)
     else:
         for i in range(10):
             sobel_magnitude_uint8(Image(n, n, typecode='B'))
-        return 'sobel_uint8(%s)' % Image.__name__
+        return 'sobel_uint8(%s(%dx%d))' % (Image.__name__, n, n)
 
 if __name__ == '__main__':
     from io import mplayer, view

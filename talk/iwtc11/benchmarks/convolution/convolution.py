@@ -1,5 +1,5 @@
 from array import array
-from math import log10
+from math import log10, sqrt
 
 def _conv3(a, k, n=1):
     assert len(k)==3
@@ -14,7 +14,7 @@ def conv3(args):
     n = int(args[0])
     _conv3(array('d', [1]) * (100000000/n),
            array('d', [-1, 0, 1]), n)
-    return 'conv3(1e%d)' % log10(100000000/n)
+    return 'conv3(array(1e%d))' % log10(100000000/n)
 
 def _conv5(a, k, n=1):
     assert len(k)==5
@@ -29,7 +29,7 @@ def conv5(args):
     n = int(args[0])
     _conv5(array('d', [1]) * (100000000/n),
            array('d', [1, 4, 6, 4, 1]), n)
-    return 'conv5(1e%d)' % log10(100000000/n)
+    return 'conv5(array(1e%d))' % log10(100000000/n)
 
 class Array2D(object):
     def __init__(self, w, h):
@@ -84,9 +84,28 @@ def _erode3x3(a, k):
     return morphology3x3(a, k, min)
 
 def conv3x3(args):
-    _conv3x3(Array2D(int(args[0]), int(args[1])), Array2D(3,3))
-    return 'conv3x3(%s)' % args[1]
+    for i in range(10):
+        _conv3x3(Array2D(int(args[0]), int(args[1])), Array2D(3,3))
+    return 'conv3x3(Array2D(%sx%s))' % tuple(args)
 
 def dilate3x3(args):
-    _dilate3x3(Array2D(int(args[0]), int(args[1])), Array2D(3,3))
-    return 'dilate3x3(%s)' % args[1]
+    for i in range(10):
+        _dilate3x3(Array2D(int(args[0]), int(args[1])), Array2D(3,3))
+    return 'dilate3x3(Array2D(%sx%s))' % tuple(args)
+
+def _sobel_magnitude(a):
+    b = Array2D(a.width, a.height)    
+    for y in xrange(1, a.height-1):
+        for x in xrange(1, a.width-1):
+            dx = -1.0 * a[x-1, y-1] + 1.0 * a[x+1, y-1] + \
+                 -2.0 * a[x-1, y]   + 2.0 * a[x+1, y] + \
+                 -1.0 * a[x-1, y+1] + 1.0 * a[x+1, y+1]
+            dy = -1.0 * a[x-1, y-1] -2.0 * a[x, y-1] -1.0 * a[x+1, y-1] + \
+                  1.0 * a[x-1, y+1] +2.0 * a[x, y+1] +1.0 * a[x+1, y+1]
+            b[x, y] = sqrt(dx*dx + dy*dy) / 4.0
+    return b
+
+def sobel_magnitude(args):
+    for i in range(10):
+        _sobel_magnitude(Array2D(int(args[0]), int(args[1])))
+    return 'sobel(Array2D(%sx%s))' % tuple(args)

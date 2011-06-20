@@ -46,6 +46,6 @@ int main(int ac, char **av) {
     sobel_magnitude(a, b);
     printf("%f\n", b(1,1));
   }
-  fprintf(stderr, "sobel_magnitude:  ", h);
+  fprintf(stderr, "sobel(Array2D(%dx%d)):  ", w, h);
   return 0;
 }

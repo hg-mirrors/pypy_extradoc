@@ -143,7 +143,7 @@ def main(args):
     for i in range(10):
         func(Image(n, n), Image(3, 3))
     if len(args) > 1:
-        return '%s(%s)' % (Image.__name__, args[1])
+        return 'conv3x3%s(%s(%dx%d))' % (args[1], Image.__name__, n, n)
     else:
         return Image.__name__
 
@@ -167,17 +167,17 @@ if __name__ == '__main__':
     for i in range(10):
         conv3x3(Image(n, n), Image(3,3))
     b = time.time()
-    print '%s:' % Image.__name__, b - a
+    print 'conv3x3(%s(%dx%d)):' % (Image.__name__, n, n), b - a
 
     a = time.time()
     for i in range(10):
         conv3x3iter(Image(n, n), Image(3,3))
     b = time.time()
-    print '%s(iter):' % Image.__name__, b - a
+    print 'conv3x3iter(%s(%dx%d)):' % (Image.__name__, n, n), b - a
 
     a = time.time()
     for i in range(10):
         conv3x3range(Image(n, n), Image(3,3))
     b = time.time()
-    print '%s(range):' % Image.__name__, b - a
+    print 'conv3x3range(%s(%dx%d)):' % (Image.__name__, n, n), b - a
 
