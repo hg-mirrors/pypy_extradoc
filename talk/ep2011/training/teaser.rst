@@ -176,3 +176,13 @@ The jitviewer
 * Look at the (missing) bridge!
 
 |end_scriptsize|
+
+
+Preparation
+------------
+
+  * Bring your laptop!
+
+  * With PyPy already installed :-)
+
+  * http://ep2011.europython.eu/conference/talks/pypy-hands-on
