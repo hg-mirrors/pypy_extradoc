@@ -712,51 +712,56 @@ In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
 K$.
 
 \subsection{Allocation Removals}
-By using escape analysis it is possible to identify objects that are
-allocated within the loop but never escape it. That is 
-short lived objects with no references outside the loop. This
-is performed by processing the operation in order and
+PyPy's allocation removal optimization \cite{bolz_allocation_2011} makes it
+possible to identify objects that are allocated within the loop but never
+escape it. Those objects have to be allocated in the loop, but no outside
+object ever gets a reference short lived objects with no references outside the
+loop. This
+is performed by processing the operations in order and
 optimistically removing every \lstinline{new} operation. Later on if
 it is discovered that a reference to the object escapes the loop, the
 \lstinline{new} operation is inserted at this point. All operations
-(\lstinline{get} and \lstinline{set}) on the removed objects are also
-removed and the optimizer needs to keep track of the value of all
-used attributes of the object.
+(\lstinline{get}, \lstinline{set} and \lstinline{guard}) on the removed objects
+are also removed and the optimizer needs to keep track of the value of all used
+attributes of the object.
 
 Consider again the original unoptimized trace of
 Figure~\ref{fig:peeled-trace}. Line 10 contains the first
-allocation. It is removed and $p_5$ is marked as virtual. This means
-that it refers to an virtual object that has not yet been
+allocation. It is removed and $p_5$ is marked as allocation-removed. This means
+that it refers to an object that has not yet been
 (and might never be) allocated. Line 12 sets the \lstinline{intval}
 attribute of $p_5$. This operation is also removed and the optimizer
 registers that the attribute \lstinline{intval} of $p_5$ is $i_4$.
 
 When the optimizer reaches line 13 it needs to construct the
-arguments of the \lstinline{jump} operation, which contains the virtual
-reference $p_5$. This can be achieved by exploding $p_5$ into it's
-attributes. In this case there is only one attribute and it's value is
+arguments of the \lstinline{jump} operation, which contains the
+reference to the allocation-removed object in $p_5$. This can be achieved by
+exploding $p_5$ into the fields of the allocation-removed object.
+In this case there is only one such field and its value is
 $i_4$, which means that $p_5$ is replaced with $i_4$ in the jump
 arguments. 
 
-In the general case, each virtual in the jump arguments is exploded into a
-vector of variables containing the values of all registered attributes. If some
-of the attributes are themselves virtuals they are recursively exploded
-to make the vector contain only non-virtual variables. Some care has
-to be taken to always place the attributes in the same order when
-performing this explosion. Notation becomes somewhat simpler if also every non-
-virtual variable of the jump arguments is exploded into a vector. This will
-be a vector containing the original variable only. To summarize, for
+In the general case, each allocation-removed object in the jump arguments is exploded into a
+vector of variables containing the values of all registered
+fields\footnote{This is sometimes called \emph{scalar replacement}. XXX check
+whether that's true}. If some of the fields are themselves references to
+allocation-removed objects they are recursively exploded
+to make the vector contain only concrete variables. Some care has
+to be taken to always place the fields in the same order when
+performing this explosion. Notation becomes somewhat simpler if also every
+concrete variable of the jump arguments is exploded into a vector containing
+itself. For
 every variable, $J_k$, of the original jump arguments, $J$, let
 \begin{equation}
   \tilde J^{\left(k\right)} = \left\{
       \begin{array}{ll}
-        \left(J_k\right)  & \text{if $J_k$ is not virtual} \\
-        H^{\left(k\right)} & \text{if $J_k$ is virtual}
+        \left(J_k\right)  & \text{if $J_k$ is concrete} \\
+        H^{\left(k\right)} & \text{if $J_k$ is allocation-removed}
       \end{array}
   \right.
   ,
 \end{equation}
-where $H^{\left(k\right)}$ is a vector containing all non virtual
+where $H^{\left(k\right)}$ is a vector containing all concrete
 attributes of $J_k$. The arguments of the optimized \lstinline{jump}
 operation are constructed as the concatenation all the $\tilde J^{\left(k\right)}$ vectors,
 \begin{equation}
@@ -809,7 +814,7 @@ jump of the peeled loop as it has to match the first jump. This means that
 the objects that was passed as pointers (non virtuals) from the first
 iteration to the second (from preamble to peeled loop) also has to be
 passed as pointers from the second iteration to the third (from peeled
-loop to peeled loop). If one of these objects are virtual 
+loop to peeled loop). If one of these objects are allocation-removed
 at the end of the peeled loop they need to be allocated right
 before the jump. With the simple objects considered in this paper,
 that is not a problem. However in more complicated interpreters such
