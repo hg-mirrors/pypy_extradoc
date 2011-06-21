@@ -982,9 +982,9 @@ By using several benchmarks we show that the proposed algorithm can
 significantly improve the run time of small loops containing numerical
 calculations. 
 
-The current approach still has some limitations which we plan to lift in the
-future. In particular loop peeling is working less well in combination with
-trace trees or trace stitching. The side exits attached guards that fail often
+The current approach still has some limitations which we plan to address in the
+future. In particular loop peeling works poorly in combination with trace
+trees or trace stitching. The side exits attached guards that fail often
 currently have to jump to the preamble which makes loops with several equally
 common paths less efficient than they could be.
 
