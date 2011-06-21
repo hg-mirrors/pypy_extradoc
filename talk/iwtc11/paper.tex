@@ -876,7 +876,7 @@ sqrt(int) & 20.84 & 1.78 & 2.26 $\pm$ 0.01 & 1.82 $\pm$ 0.01 & 0.81 $\pm$ 0.01 &
 }
 \end{center}
 \label{fig:benchmarks}
-\caption{XXX}
+\caption{Benchmark Results in Seconds}
 \end{figure*}
 
 \subsection{Python}
@@ -967,13 +967,26 @@ this paper.
 \section{Related Work}
 \label{sec:related}
 
-All the optimizations presented here are completely standard \cite{XXX} [dragon
-book or similar]. 
+All the optimizations presented here are completely standard
+\cite{muchnick_advanced_1997}. XXX
 
-LuaJIT does the same
+Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
+have developped the described technique independently. There are no papers about
+LuaJIT but the author of it writes on a mailing list: "The LOOP pass does
+synthetic unrolling of the recorded IR, combining copy-substitution with
+redundancy elimination to achieve code hoisting. The unrolled and
+copy-substituted instructions are simply fed back into the compiler pipeline,
+which allows reuse of all optimizations for redundancy elimination. Loop
+recurrences are detected on-the-fly and a minimized set of PHIs is generated."
+\cite{pall_luajit_2009}
 
-SPUR does all these optimizations manually, moves allocations out of loop but
-does not explode objects
+SPUR \cite{bebenita_spur:_2010} implements loop-invariant code motion
+directly, by explicitly marking as loop-invariant all variables that stay the
+same along all looping paths and then moving all pure computation that depends
+only on these variables out of the loop. SPUR can also hoist loads out of the
+loop if nothing in the loop can ever write to the memory location. It can also
+move allocations out of the loop, but does not replace the object by its fields.
+This saves only the allocation, not the access to the object fields.
 
 
 XXX
