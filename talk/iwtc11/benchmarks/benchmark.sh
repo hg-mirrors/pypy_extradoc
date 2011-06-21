@@ -15,7 +15,7 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$* -lstdc++" convolution/conv3x3.cc 1000000 3
     ./runner.py -n 5 -c "$* -lstdc++" convolution/conv3x3.cc 1000 1000
     ./runner.py -n 5 -c "$* -lstdc++" convolution/dilate3x3.cc 1000 1000
-    ./runner.py -n 5 -c "$* -lstdc++" image/sobel.cc 1002 1002
+    ./runner.py -n 5 -c "$* -lstdc++" image/sobel.cc 1000 1000
     rm a.out
 else
     if [ "$1" == "python2.7" ]; then
@@ -37,12 +37,12 @@ else
     $* ./runner.py $EXTRA_OPTS convolution/convolution.py conv3x3 1000 1000
     $* ./runner.py $EXTRA_OPTS convolution/convolution.py dilate3x3 1000 1000
     $* ./runner.py $EXTRA_OPTS convolution/convolution.py sobel_magnitude 1000 1000
-    $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded
-    $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded iter
-    $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded range
-    $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage
-    $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage iter
-    $* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage range
-    $* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded
-    $* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded uint8
+    #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded
+    #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded iter
+    #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImagePadded range
+    #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage
+    #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage iter
+    #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage range
+    #$* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded
+    #$* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded uint8
 fi
