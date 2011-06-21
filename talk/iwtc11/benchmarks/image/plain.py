@@ -30,7 +30,7 @@ class Image(object):
         for y in xrange(border, self.height-border):
             for x in xrange(border, self.width-border):
                 yield x, y
-                
+
 
 def sobel_magnitude(a):
     b = Image(a.width, a.height, typecode='B')
