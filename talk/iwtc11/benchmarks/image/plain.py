@@ -26,6 +26,12 @@ class Image(object):
     def __setitem__(self, (x, y), val):
         self.data[self._idx(x, y)] = val
 
+    def pixels(self, border=0):
+        for y in xrange(border, self.height-border):
+            for x in xrange(border, self.width-border):
+                yield x, y
+                
+
 def sobel_magnitude(a):
     b = Image(a.width, a.height, typecode='B')
     for y in xrange(1, a.height-1):
@@ -36,6 +42,18 @@ def sobel_magnitude(a):
             dy = -1.0 * a[x-1, y-1] -2.0 * a[x, y-1] -1.0 * a[x+1, y-1] + \
                   1.0 * a[x-1, y+1] +2.0 * a[x, y+1] +1.0 * a[x+1, y+1]
             b[x, y] = min(int(sqrt(dx*dx + dy*dy) / 4.0), 255)
+
+    return b
+
+def sobel_magnitude_generator(a):
+    b = Image(a.width, a.height, typecode='B')
+    for x, y in a.pixels(border=1):
+        dx = -1.0 * a[x-1, y-1] + 1.0 * a[x+1, y-1] + \
+             -2.0 * a[x-1, y]   + 2.0 * a[x+1, y] + \
+             -1.0 * a[x-1, y+1] + 1.0 * a[x+1, y+1]
+        dy = -1.0 * a[x-1, y-1] -2.0 * a[x, y-1] -1.0 * a[x+1, y-1] + \
+              1.0 * a[x-1, y+1] +2.0 * a[x, y+1] +1.0 * a[x+1, y+1]
+        b[x, y] = min(int(sqrt(dx*dx + dy*dy) / 4.0), 255)
 
     return b
 
@@ -60,6 +78,8 @@ if __name__ == '__main__':
     for fcnt, img in enumerate(mplayer(Image, fn)):
         #view(img)
         view(sobel_magnitude(img))
+        #view(sobel_magnitude_generator(img))
+        #sobel_magnitude_generator(img)
         #sobel_magnitude(img)
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
