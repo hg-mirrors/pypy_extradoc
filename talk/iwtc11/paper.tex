@@ -956,12 +956,13 @@ advantages and optimizations we discussed in XXX [ref to other paper]. Loop
 peeling gives an additional XXX on average, which makes benchmark times
 comparable with native-compiled C code. Missing performance we attribute to
 the relative immaturity of PyPy's JIT assembler backend as well as missing
-optimizations, like instruction scheduling. Results:
+optimizations, like instruction scheduling.
 
-
-
-XXX add a small note somewhere that numpy and prolog are helped by this
-optimization
+Other interesting interpreters that are helped greatly by this
+optimization are for
+example our Prolog interpreter written in RPython, as well as numerical
+kernel used for array manipulation. The exact extent is out of scope for
+this paper.
 
 \section{Related Work}
 \label{sec:related}
