@@ -177,9 +177,7 @@ The resulting optimizations one gets using this scheme are in no way novel, most
 of them are well-known loop optimizations. However, the way to implement them is
 a lot simpler than directly implementing loop-aware optimizations.
 
-XXX "bridge" is not a standard term
-
-XXX loop peeling does a lot more than loop-invariant code motion
+% loop peeling does a lot more than loop-invariant code motion
 % take this loop as an example:
 % [i1, i2]
 % i3 = i1 + 1
@@ -475,7 +473,12 @@ The first part (called \emph{preamble}) finishes with the jump the the second pa
 the preamble will be executed only once while the peeled loop will
 be used for every further iteration. New variable names have to be
 introduced in the entire copied trace in order to maintian the SSA-property.
-When applying the following optimizations to this two-iteration trace
+Note that the peeled loop is not necessary the \emph{first} iteration of the
+loop execution, it is general enough to correspond to any iteration of the loop.
+However, the peeled loop can then be optimized using the assumption that a
+previous iteration has happened.
+
+When applying optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
 \lstinline{jump} operations and the input arguments of the peeled loop are
 treated. It has to be ensured that the peeled loop stays a proper
@@ -592,9 +595,6 @@ jump($L_1$, $p_{0}$, $p_{9}$)
 \section{Interaction of Optimizations with Loop Peeling}
 
 \subsection{Redundant Guard Removal}
-
-XXX should we have a mention where in the previous papers those optimizations
-are discussed?
 
 No special concerns needs to be taken when implementing redundant
 guard removal together with loop peeling. The guards from
@@ -814,7 +814,7 @@ XXX explain that this is effectively type-specializing a loop
 \section{Benchmarks}
 
 The loop peeling optimization was implemented in the PyPy
-framework. That means that the JIT-compilers generated for all
+framework in about 450 lines of RPython code. That means that the JIT-compilers generated for all
 interpreters implemented within PyPy now can take advantage of
 it. Benchmarks have been executed for a few different interpreters and
 we see improvements in several cases. The ideal loop for this optimization
@@ -966,6 +966,15 @@ this paper.
 
 \section{Related Work}
 \label{sec:related}
+
+All the optimizations presented here are completely standard \cite{XXX} [dragon
+book or similar]. 
+
+LuaJIT does the same
+
+SPUR does all these optimizations manually, moves allocations out of loop but
+does not explode objects
+
 
 XXX
 % section Related Work (end)
