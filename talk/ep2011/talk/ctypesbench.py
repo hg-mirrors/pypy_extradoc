@@ -16,6 +16,8 @@ def main(N):
         i += 1
     end = time.clock()
     print 'total:', end-start
+    if hasattr(pow, '_ptr'):
+        print 'address:', pow._ptr.getaddr()
     return res
 
 
