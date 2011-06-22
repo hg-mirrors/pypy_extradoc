@@ -247,12 +247,37 @@ Is Python slow?
 
 - Huge stack of layers over the bare metal
 
-- Abstraction has a cost |pause| (... or not?) |pause|
+- Abstraction has a cost |pause| (... or not?)
 
-- XXX: write a nice diagram showing how far is "a+b" from "add EAX, EBX" (or
-  equivalent)
 
-.. XXX those slides from google talk can be showed here: http://paste.pocoo.org/show/413859/
+Python is complicated
+---------------------
+
+How ``a + b`` works (simplified!):
+
+* look up the method ``__add__`` on the type of a
+
+* if there is one, call it
+
+* if it returns NotImplemented, or if there is none,
+  look up the method ``__radd__`` on the type of b
+
+* if there is one, call it
+
+* if there is none, or we get ``NotImplemented`` again,
+  raise an exception ``TypeError``
+
+
+Python is a mess
+----------------
+
+How ``obj.attr`` or ``obj.method()`` works:
+
+* ...
+
+|pause|
+
+* no way to write it down in just one slide
 
 
 Killing the abstraction overhead
@@ -515,7 +540,7 @@ Conclusion
 
 - (I wonder why you all are still here instead of busy trying PyPy :-))
 
-  * not all C extensions are supported
+  * not all C extensions are supported (numpy anyone?)
 
   * too much memory (sometimes)
 
