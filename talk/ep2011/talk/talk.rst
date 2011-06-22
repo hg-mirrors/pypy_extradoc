@@ -501,7 +501,7 @@ return 8
 ----------------
 
 Conclusion
-----------
+--------------
 
 - PyPy is fast
 
@@ -515,7 +515,38 @@ Conclusion
 
 - (I wonder why you all are still here instead of busy trying PyPy :-))
 
-.. XXX [fijal] instead of this comment I would do a slide on downsides
+  * not all C extensions are supported
+
+  * too much memory (sometimes)
+
+
+How to help PyPy?
+-----------------
+
+* Try it on your application
+
+  - if it's slow, we want to know!
+
+  - if it does not work, too :-)
+
+  - if it works and it's fast, that as well
+
+* Tell people about PyPy
+
+* Contribute to PyPy! (it's not **that** hard :-))
+
+|pause|
+
+* Give us money, to make PyPy better
+
+  - donations
+
+  - per feature contracts
+
+  - consultancy (hire us to speed up your code)
+
+  - support contracts
+
 
 Contacts, Q/A
 --------------
