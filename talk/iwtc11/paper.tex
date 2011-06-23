@@ -826,44 +826,41 @@ chose to present benchmarks of small numeric kernels where loop peeling can show
 its use.
 
 XXX we either need to explain that we use C++ or consistently use C
-\begin{figure*}
+\begin{figure}
 \begin{center}
 {\smaller
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
- & CPython & Psyco & PyPy no LP & PyPy & GCC -O2 & GCC -O3\\
+ & CPython & Psyco & PyPy no LP & PyPy & GCC -O3\\
 \hline
-conv3(array(1e5)) & 77.89 & 9.52 & 1.77 $\pm$ 0.06 & 0.68 $\pm$ 0.02 & 0.70 $\pm$ 0.05 & 0.59 $\pm$ 0.01\\
+conv3(1e5) & 77.89 & 9.52 & 1.77 $\pm$ 0.06 & 0.68 $\pm$ 0.02 &  0.59 $\pm$ 0.01\\
 \hline
-conv3(array(1e6)) & 77.15 & 9.58 & 1.69 $\pm$ 0.01 & 0.77 $\pm$ 0.01 & 0.84 $\pm$ 0.05 & 0.74 $\pm$ 0.01\\
+conv3(1e6) & 77.15 & 9.58 & 1.69 $\pm$ 0.01 & 0.77 $\pm$ 0.01 &  0.74 $\pm$ 0.01\\
 \hline
-conv3x3(Array2D(1000x1000)) & 23.72 & 12.77 & 0.07 $\pm$ 0.00 & 0.05 $\pm$ 0.03 & 0.24 $\pm$ 0.00 & 0.25 $\pm$ 0.01\\
+conv3x3(1000) & 23.72 & 12.77 & 0.07 $\pm$ 0.00 & 0.05 $\pm$ 0.03 &  0.25 $\pm$ 0.01\\
 \hline
-conv3x3(Array2D(1000000x3)) & 23.85 & 12.77 & 0.10 $\pm$ 0.00 & 0.07 $\pm$ 0.00 & 0.27 $\pm$ 0.01 & 0.27 $\pm$ 0.01\\
+conv3x3(3) & 23.85 & 12.77 & 0.10 $\pm$ 0.00 & 0.07 $\pm$ 0.00 &  0.27 $\pm$ 0.01\\
 \hline
-conv5(array(1e5)) & 122.54 & 16.67 & 1.86 $\pm$ 0.02 & 1.05 $\pm$ 0.03 & 1.03 $\pm$ 0.05 & 0.65 $\pm$ 0.01\\
+conv5(1e5) & 122.54 & 16.67 & 1.86 $\pm$ 0.02 & 1.05 $\pm$ 0.03 &  0.65 $\pm$ 0.01\\
 \hline
-conv5(array(1e6)) & 125.77 & 16.80 & 1.92 $\pm$ 0.03 & 1.09 $\pm$ 0.02 & 1.07 $\pm$ 0.05 & 0.80 $\pm$ 0.01\\
+conv5(1e6) & 125.77 & 16.80 & 1.92 $\pm$ 0.03 & 1.09 $\pm$ 0.02 &  0.80 $\pm$ 0.01\\
 \hline
-dilate3x3(Array2D(1000x1000)) & 23.29 & 12.99 & 0.41 $\pm$ 0.04 & 0.39 $\pm$ 0.01 & 0.26 $\pm$ 0.00 & 0.26 $\pm$ 0.01\\
+dilate3x3(1000) & 23.29 & 12.99 & 0.41 $\pm$ 0.04 & 0.39 $\pm$ 0.01 &  0.26 $\pm$ 0.01\\
 \hline
-sobel(Array2D(1000x1000)) & - & - & - & - & 0.19 $\pm$ 0.01 & 0.20 $\pm$ 0.01\\
+sobel(1000) & - & - & - & - & 0.20 $\pm$ 0.01\\
 \hline
-%sobel\_uint8(NoBorderPadded) & 476.72 & 275.50 & 1.05 $\pm$ 0.01 & 0.51 $\pm$ 0.00 & - & -\\
-%\hline
-sqrt(Fix16) & 744.35 & 421.65 & 3.93 $\pm$ 0.11 & 2.14 $\pm$ 0.02 & 0.97 $\pm$ 0.02 & 0.96 $\pm$ 0.01\\
+sqrt(Fix16) & 744.35 & 421.65 & 3.93 $\pm$ 0.11 & 2.14 $\pm$ 0.02 & 0.96 $\pm$ 0.01\\
 \hline
-sqrt(float) & 24.21 & 5.52 & 1.36 $\pm$ 0.03 & 1.00 $\pm$ 0.00 & 0.98 $\pm$ 0.00 & 0.98 $\pm$ 0.00\\
+sqrt(float) & 24.21 & 5.52 & 1.36 $\pm$ 0.03 & 1.00 $\pm$ 0.00 & 0.98 $\pm$ 0.00\\
 \hline
-sqrt(int) & 20.84 & 1.78 & 2.26 $\pm$ 0.01 & 1.82 $\pm$ 0.01 & 0.81 $\pm$ 0.01 & 0.80 $\pm$ 0.01\\
+sqrt(int) & 20.84 & 1.78 & 2.26 $\pm$ 0.01 & 1.82 $\pm$ 0.01 & 0.80 $\pm$ 0.01\\
 \hline
-
 \end{tabular}
 }
 \end{center}
 \label{fig:benchmarks}
 \caption{Benchmark Results in Seconds}
-\end{figure*}
+\end{figure}
 
 \subsection{Python}
 The Python interpreter of the PyPy framework is a complete Python
