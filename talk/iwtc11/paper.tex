@@ -808,8 +808,11 @@ $L_1$($p_{0}$, $i_{4}$):
 jump($L_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
 
-XXX explain that this is effectively type-specializing a loop
-
+If all the optimizations presented above are applied, the resulting
+optimized peeled loop will consist of a single integer addition
+only. That is it will become type-specialized to the types of the
+variables \lstinline{step} and \lstinline{y}, and the overhead of
+using boxed values is removed.
 
 \section{Benchmarks}
 
@@ -865,8 +868,9 @@ Variations & - & - & $\pm 0.03$ & $\pm 0.01$ & $\pm 0.01$ \\
 \label{fig:benchmarks}
 \caption{Benchmark Results in Seconds. Arrays of length $10^5$ and
   $10^6$ and matrixes of size $1000\times 1000$ and $1000000 \times
-  3$ are used. This is indicated in the leftmost column. For the
-  matrixes, only the number of rows are listed.} 
+  3$ are used. The one used in each benchmark is indicated in
+  the leftmost column. For the matrixes, only the number of rows are
+  specified.} 
 \end{figure}
 
 \subsection{Python}
