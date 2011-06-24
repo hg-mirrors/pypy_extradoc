@@ -828,7 +828,6 @@ the worst case the peeled loop is exactly the same as the preamble. Therefore we
 chose to present benchmarks of small numeric kernels where loop peeling can show
 its use.
 
-XXX we either need to explain that we use C++ or consistently use C
 \begin{figure}
 \begin{center}
 {\smaller
@@ -904,10 +903,12 @@ runtimes are compared in Figure~\ref{fig:benchmarks}. The benchmarks are
 \end{itemize}
 
 The sobel and conv3x3 benchmarks are implemented
-on top of a custom two-dimensional array class,  Array2D.
+on top of a custom two-dimensional array class.
 It is
 a simple straight forward implementation providing 2 dimensionall
-indexing with out of bounds checks. 
+indexing with out of bounds checks. For the C implementations it is
+implemented as a C++ class. The other benchmarks are implemented in
+plain C. 
 
 Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM in
 32bit mode.
