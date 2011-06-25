@@ -100,10 +100,54 @@ Refcounting vs generational GC (2)
 
 
 
-How the JIT works
------------------------
+Just-in-Time Compilation
+------------------------
 
-XXX write me
+* Tracing JIT, like TraceMonkey
+
+* Complete by construction
+
+* Supports Intel x86, amd64, and soon ARM
+
+
+Short introduction to JITting
+-----------------------------
+
+* run code with the interpreter
+
+* observe what it does
+
+* generate optimized machine code for commonly executed paths
+
+* using runtime knowledge (types, paths taken)
+
+Tracing JIT
+-----------
+
+* compiles one loop at a time
+
+* generates linear code paths, recording what the interpreter did
+
+* for each possible branch, generate a guard, that exits assembler on triggering
+
+* if guard fails often enough, start tracing from the failure
+
+Meta-Tracing in PyPy
+--------------------
+
+* The explanation above assumes a tracing JIT for the full Python
+  language
+
+* Would need to be maintained whenever we change the Python version we
+  support
+
+* Instead, we have a "meta-tracing JIT"
+
+* A very important point for us since we don't have a huge team
+  to implement all Python semantics for the JIT
+
+* We trace the python interpreter's main loop (running N times) interpreting
+  a python loop (running once)
 
 
 PYPYLOG
