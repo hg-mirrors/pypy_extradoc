@@ -45,7 +45,6 @@
 \usepackage{listings}
 \usepackage{beramono}
 
-
 \definecolor{gray}{rgb}{0.3,0.3,0.3}
 
 \lstset{
@@ -444,9 +443,6 @@ using the interpreter.
 
 \section{Making Trace Optimizations Loop Aware}
 
-XXX make clear that the preamble is not necessarily the \emph{first} iteration
-of a loop
-
 Before the trace is passed to a backend compiling it into machine code
 it needs to be optimized to achieve better performance.
 The focus of this paper
@@ -485,6 +481,8 @@ Note that the peeled loop is not necessary the \emph{first} iteration of the
 loop execution, it is general enough to correspond to any iteration of the loop.
 However, the peeled loop can then be optimized using the assumption that a
 previous iteration has happened.
+
+XXX (samuele): the point about the first iteration is hard to understand
 
 When applying optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
@@ -752,8 +750,8 @@ arguments.
 
 In the general case, each allocation-removed object in the jump arguments is exploded into a
 vector of variables containing the values of all registered
-fields\footnote{This is sometimes called \emph{scalar replacement}. XXX check
-whether that's true}. If some of the fields are themselves references to
+fields\footnote{This is sometimes called \emph{scalar replacement}.}.
+If some of the fields are themselves references to
 allocation-removed objects they are recursively exploded
 to make the vector contain only concrete variables. Some care has
 to be taken to always place the fields in the same order when
@@ -945,7 +943,8 @@ very well reproducible.
 
 We can observe that PyPy (even without loop peeling) is orders of magnitude
 faster than either CPython or Psyco. This is due to the JIT compilation
-advantages and optimizations we discussed in XXX [ref to other paper]. Loop
+advantages and optimizations we discussed in previous work
+\cite{bolz_allocation_2011, bolz_runtime_2011}. Loop
 peeling gives an additional XXX on average, which makes benchmark times
 comparable with native-compiled C code. Missing performance we attribute to
 the relative immaturity of PyPy's JIT assembler backend as well as missing
@@ -960,8 +959,10 @@ this paper.
 \section{Related Work}
 \label{sec:related}
 
-All the optimizations presented here are completely standard
-\cite{muchnick_advanced_1997}. XXX
+The effect of combining a one ass optimization with loop peeling gives
+completely standard loop invariant code motion optimizations
+\cite{muchnick_advanced_1997}. We do not claim any novelty in the effect, but
+think that our implementation scheme is a very simple one.
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
 have developped the described technique independently. There are no papers about
