@@ -719,6 +719,8 @@ In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
 K$.
 
 \subsection{Allocation Removals}
+\label{sub:allocation}
+
 PyPy's allocation removal optimization \cite{bolz_allocation_2011} makes it
 possible to identify objects that are allocated within the loop but never
 escape it. Those objects have to be allocated in the loop, but no outside
@@ -974,7 +976,8 @@ which allows reuse of all optimizations for redundancy elimination. Loop
 recurrences are detected on-the-fly and a minimized set of PHIs is generated.''
 \cite{pall_luajit_2009}
 
-SPUR \cite{bebenita_spur:_2010} implements loop-invariant code motion
+Both the Hotpath VM \cite{gal_hotpathvm:_2006} and SPUR
+\cite{bebenita_spur:_2010} implements loop-invariant code motion
 directly, by explicitly marking as loop-invariant all variables that stay the
 same along all looping paths and then moving all pure computation that depends
 only on these variables out of the loop. SPUR can also hoist loads out of the
@@ -982,8 +985,12 @@ loop if nothing in the loop can ever write to the memory location. It can also
 move allocations out of the loop, but does not replace the object by its fields.
 This saves only the allocation, not the access to the object fields.
 
+The type specialization described by Gal \etal \cite{gal_trace-based_2009} can
+be seen as doing a similar optimization (again by manually implementing it)
+than the one described in Section~\ref{sub:allocation}: The effect of both is
+that type checks are fully done before a loop is even entered.
 
-XXX
+
 % section Related Work (end)
 
 \section{Conclusions}
@@ -1011,9 +1018,8 @@ common paths less efficient than they could be.
 
 %This is the text of the appendix, if you need one.
 
-\acks
-
-Acknowledgments, if needed.
+%\acks
+%Acknowledgments, if needed.
 
 % We recommend abbrvnat bibliography style.
 
