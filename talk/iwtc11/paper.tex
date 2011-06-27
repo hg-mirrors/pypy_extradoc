@@ -944,9 +944,9 @@ very well reproducible.
 We can observe that PyPy (even without loop peeling) is orders of magnitude
 faster than either CPython or Psyco. This is due to the JIT compilation
 advantages and optimizations we discussed in previous work
-\cite{bolz_allocation_2011, bolz_runtime_2011}. Loop
-peeling gives an additional XXX on average, which makes benchmark times
-comparable with native-compiled C code. Missing performance we attribute to
+\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
+speedup of loop peeling is 70\%, which makes benchmark times
+comparable with native-compiled C code. We attribute the performance gap to C code to
 the relative immaturity of PyPy's JIT assembler backend as well as missing
 optimizations, like instruction scheduling.
 
