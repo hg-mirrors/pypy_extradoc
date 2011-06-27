@@ -116,7 +116,7 @@
            {Heinrich-Heine-Universität Düsseldorf}
            {cfbolz@gmx.de}
 \authorinfo{Maciej Fijałkowski}
-           {Unaffiliated}
+           {}
            {fijall@gmail.com}
 
 \maketitle
@@ -233,8 +233,11 @@ new value of $i_0$ is $i_0$, making it a loop-invariant.
 
 Because $i_0$ is loop-invariant, the addition could be moved out of the loop.
 However, we want to get this effect using our existing optimization passes
-without changing them too much. To achieve this, we peel one iteration off the
-loop before running the optimizations. This peeling gives the following trace:
+without changing them too much. Simple optimizations with one forward pass
+cannot directly get this effect: They just look at the trace without taking
+into account that the trace executes many times in a row. Therefore to achieve
+loop-invariant code motion, we peel one iteration off the loop before running
+the optimizations. This peeling gives the following trace:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($i_{0}$):
@@ -292,9 +295,14 @@ perform loop-aware optimizations, such as loop-invariant code motion without
 changing them at all. All that is needed is to peel off one iteration, then
 apply simple one-pass optimizations and make sure that the necessary extra
 arguments are inserted into the label of the loop itself and the jumps
-afterwards. Giving the optimizations two iterations together
-gives the optimization enough context to remove operations from the peeled loop,
-because it detects that the operation was performed in the preamble already.
+afterwards.
+
+This is the key insight of the proposed implementation scheme: Giving an
+optimization two iterations together at the same time gives the optimization
+enough context to remove operations from the peeled loop, because it detects
+that the operation was performed in the preamble already. Thus at runtime these
+moved operations are only executed once when entering the loop and the results
+are reused in further iterations.
 
 
 % section Motivation (end)
@@ -957,12 +965,12 @@ All the optimizations presented here are completely standard
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
 have developped the described technique independently. There are no papers about
-LuaJIT but the author of it writes on a mailing list: "The LOOP pass does
+LuaJIT but the author of it writes on a mailing list: ``The LOOP pass does
 synthetic unrolling of the recorded IR, combining copy-substitution with
 redundancy elimination to achieve code hoisting. The unrolled and
 copy-substituted instructions are simply fed back into the compiler pipeline,
 which allows reuse of all optimizations for redundancy elimination. Loop
-recurrences are detected on-the-fly and a minimized set of PHIs is generated."
+recurrences are detected on-the-fly and a minimized set of PHIs is generated.''
 \cite{pall_luajit_2009}
 
 SPUR \cite{bebenita_spur:_2010} implements loop-invariant code motion
