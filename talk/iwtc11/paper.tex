@@ -45,7 +45,6 @@
 \usepackage{listings}
 \usepackage{beramono}
 
-
 \definecolor{gray}{rgb}{0.3,0.3,0.3}
 
 \lstset{
@@ -116,7 +115,7 @@
            {Heinrich-Heine-Universität Düsseldorf}
            {cfbolz@gmx.de}
 \authorinfo{Maciej Fijałkowski}
-           {Unaffiliated}
+           {}
            {fijall@gmail.com}
 
 \maketitle
@@ -233,8 +232,11 @@ new value of $i_0$ is $i_0$, making it a loop-invariant.
 
 Because $i_0$ is loop-invariant, the addition could be moved out of the loop.
 However, we want to get this effect using our existing optimization passes
-without changing them too much. To achieve this, we peel one iteration off the
-loop before running the optimizations. This peeling gives the following trace:
+without changing them too much. Simple optimizations with one forward pass
+cannot directly get this effect: They just look at the trace without taking
+into account that the trace executes many times in a row. Therefore to achieve
+loop-invariant code motion, we peel one iteration off the loop before running
+the optimizations. This peeling gives the following trace:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($i_{0}$):
@@ -292,9 +294,14 @@ perform loop-aware optimizations, such as loop-invariant code motion without
 changing them at all. All that is needed is to peel off one iteration, then
 apply simple one-pass optimizations and make sure that the necessary extra
 arguments are inserted into the label of the loop itself and the jumps
-afterwards. Giving the optimizations two iterations together
-gives the optimization enough context to remove operations from the peeled loop,
-because it detects that the operation was performed in the preamble already.
+afterwards.
+
+This is the key insight of the proposed implementation scheme: Giving an
+optimization two iterations together at the same time gives the optimization
+enough context to remove operations from the peeled loop, because it detects
+that the operation was performed in the preamble already. Thus at runtime these
+moved operations are only executed once when entering the loop and the results
+are reused in further iterations.
 
 
 % section Motivation (end)
@@ -436,9 +443,6 @@ using the interpreter.
 
 \section{Making Trace Optimizations Loop Aware}
 
-XXX make clear that the preamble is not necessarily the \emph{first} iteration
-of a loop
-
 Before the trace is passed to a backend compiling it into machine code
 it needs to be optimized to achieve better performance.
 The focus of this paper
@@ -477,6 +481,8 @@ Note that the peeled loop is not necessary the \emph{first} iteration of the
 loop execution, it is general enough to correspond to any iteration of the loop.
 However, the peeled loop can then be optimized using the assumption that a
 previous iteration has happened.
+
+XXX (samuele): the point about the first iteration is hard to understand
 
 When applying optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
@@ -713,6 +719,8 @@ In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
 K$.
 
 \subsection{Allocation Removals}
+\label{sub:allocation}
+
 PyPy's allocation removal optimization \cite{bolz_allocation_2011} makes it
 possible to identify objects that are allocated within the loop but never
 escape it. Those objects have to be allocated in the loop, but no outside
@@ -744,8 +752,8 @@ arguments.
 
 In the general case, each allocation-removed object in the jump arguments is exploded into a
 vector of variables containing the values of all registered
-fields\footnote{This is sometimes called \emph{scalar replacement}. XXX check
-whether that's true}. If some of the fields are themselves references to
+fields\footnote{This is sometimes called \emph{scalar replacement}.}.
+If some of the fields are themselves references to
 allocation-removed objects they are recursively exploded
 to make the vector contain only concrete variables. Some care has
 to be taken to always place the fields in the same order when
@@ -937,9 +945,10 @@ very well reproducible.
 
 We can observe that PyPy (even without loop peeling) is orders of magnitude
 faster than either CPython or Psyco. This is due to the JIT compilation
-advantages and optimizations we discussed in XXX [ref to other paper]. Loop
-peeling gives an additional XXX on average, which makes benchmark times
-comparable with native-compiled C code. Missing performance we attribute to
+advantages and optimizations we discussed in previous work
+\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
+speedup of loop peeling is 70\%, which makes benchmark times
+comparable with native-compiled C code. We attribute the performance gap to C code to
 the relative immaturity of PyPy's JIT assembler backend as well as missing
 optimizations, like instruction scheduling.
 
@@ -952,20 +961,23 @@ this paper.
 \section{Related Work}
 \label{sec:related}
 
-All the optimizations presented here are completely standard
-\cite{muchnick_advanced_1997}. XXX
+The effect of combining a one ass optimization with loop peeling gives
+completely standard loop invariant code motion optimizations
+\cite{muchnick_advanced_1997}. We do not claim any novelty in the effect, but
+think that our implementation scheme is a very simple one.
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
 have developped the described technique independently. There are no papers about
-LuaJIT but the author of it writes on a mailing list: "The LOOP pass does
+LuaJIT but the author of it writes on a mailing list: ``The LOOP pass does
 synthetic unrolling of the recorded IR, combining copy-substitution with
 redundancy elimination to achieve code hoisting. The unrolled and
 copy-substituted instructions are simply fed back into the compiler pipeline,
 which allows reuse of all optimizations for redundancy elimination. Loop
-recurrences are detected on-the-fly and a minimized set of PHIs is generated."
+recurrences are detected on-the-fly and a minimized set of PHIs is generated.''
 \cite{pall_luajit_2009}
 
-SPUR \cite{bebenita_spur:_2010} implements loop-invariant code motion
+Both the Hotpath VM \cite{gal_hotpathvm:_2006} and SPUR
+\cite{bebenita_spur:_2010} implements loop-invariant code motion
 directly, by explicitly marking as loop-invariant all variables that stay the
 same along all looping paths and then moving all pure computation that depends
 only on these variables out of the loop. SPUR can also hoist loads out of the
@@ -973,8 +985,12 @@ loop if nothing in the loop can ever write to the memory location. It can also
 move allocations out of the loop, but does not replace the object by its fields.
 This saves only the allocation, not the access to the object fields.
 
+The type specialization described by Gal \etal \cite{gal_trace-based_2009} can
+be seen as doing a similar optimization (again by manually implementing it)
+than the one described in Section~\ref{sub:allocation}: The effect of both is
+that type checks are fully done before a loop is even entered.
 
-XXX
+
 % section Related Work (end)
 
 \section{Conclusions}
@@ -1002,9 +1018,8 @@ common paths less efficient than they could be.
 
 %This is the text of the appendix, if you need one.
 
-\acks
-
-Acknowledgments, if needed.
+%\acks
+%Acknowledgments, if needed.
 
 % We recommend abbrvnat bibliography style.
 
