@@ -123,7 +123,7 @@
 \begin{abstract}
 By introducing loop peeling into the optimization step of a tracing
 jit the effect of optimizations already in place will be increased
-greatly. Not only will they become able to move loop invariant code
+greatly. Not only does it make them move loop invariant code
 out of loop. They will also become able to reuse results from the
 previous iteration. Also, the implementation of excising optimizations
 can be left almost intact as they will not have to interact much with
@@ -444,17 +444,16 @@ using the interpreter.
 \section{Making Trace Optimizations Loop Aware}
 
 Before the trace is passed to a backend compiling it into machine code
-it needs to be optimized to achieve better performance.
-The focus of this paper
-is loop invariant code motion. The goal of that is to move as many
-operations as possible out of the loop making them executed at most once
+it is optimized to achieve better performance.
+One goal of that is to move 
+operations out of the loop making them executed only once
 and not every iteration. This we propose to achieve by loop peeling. It
 leaves the loop body intact, but prefixes it with one iteration of the
 loop. This operation by itself will not achieve anything. But if it is
 combined with other optimizations it can increase the effectiveness of
 those optimizations. For many optimization of interest some care has
 to be taken when they are combined with loop peeling. This is
-described below by first explaining the loop peeling optimization
+described below by explaining the loop peeling optimization
 followed by a set of other optimizations and how they interact with
 loop peeling.
 
@@ -472,8 +471,8 @@ XXX find reference of prior work on this
 
 Loop peeling is achieved by appending an copy of the traced iteration at
 the end of itself. See Figure~\ref{fig:overview} for an illustration.
-The first part (called \emph{preamble}) finishes with the jump the the second part
-(called the \emph{peeled loop}). The second part end with the jump to itself. This way
+The first part (called \emph{preamble}) finishes with a jump the the second part
+(called the \emph{peeled loop}). The second part finishes with a jump to itself. This way
 the preamble will be executed only once while the peeled loop will
 be used for every further iteration. New variable names have to be
 introduced in the entire copied trace in order to maintian the SSA-property.
@@ -501,17 +500,13 @@ jump operation. The jump operation contains a vector of jump variables,
 $J=\left(J_1, J_2, \cdots, J_{|J|}\right)$, that are passed as the input variables of the target loop. After
 loop peeling there will be a second copy of this trace with input
 variables equal to the jump arguments of the preamble, $J$, and jump
-arguments $K$. Looking  at the peeled version of our example in Figure~\ref{fig:peeled-trace} we have
-\begin{equation}
-  %\left\{
-    \begin{array}{lcl}
-      I &=& \left( p_0, p_1 \right) \\
-      J &=& \left( p_0, p_5 \right) \\
-      K &=& \left( p_0, p_9 \right) \\
-    \end{array}
-  %\right.
-  .
-\end{equation}
+arguments $K$. 
+Figure~\ref{fig:overview} illustrates the general case. The running
+example in Figure~\ref{fig:unopt-trace} has  $I = \left( p_0, p_1
+\right)$ and $J = \left( p_0, p_5 \right)$. The result of applying
+loop peeling to it is shown in Figure~\ref{fig:peeled-trace} with 
+$K = \left( p_0, p_9 \right)$. 
+
 To construct the second copy of the trace (the peeled loop) from the
 first (the preeamble) we need a
 function $m$, mapping the variables of the preamble onto the
@@ -545,12 +540,10 @@ return $\hat v$ using
 \end{equation}
 Before the
 next operation is copied, $m$ is extend by assigning $m\left(v\right) = \hat
-v$. For the example above, after all the operations have been copied we have
+v$. For the example above, that will extend $m$ with
 \begin{equation}
   %\left\{
     \begin{array}{lcl}
-      m\left(p_0\right) &=& p_0 \\
-      m\left(p_1\right) &=& p_5 \\
       m\left(i_2\right) &=& i_6 \\
       m\left(i_3\right) &=& i_7 \\
       m\left(i_4\right) &=& i_8 \\
@@ -559,10 +552,6 @@ v$. For the example above, after all the operations have been copied we have
   %\right.
   .
 \end{equation}
-
-The trace from Figure~\ref{fig:unopt-trace} would after this operation become
-the trace in Figure~\ref{fig:peeled-trace}. Line 1-13 shows the
-preamble while line 15-27 shows the peeled loop.
 
 \begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
@@ -688,9 +677,9 @@ guard_class($p_{5}$, BoxedInteger)
 jump($L_1$, $p_{0}$, $p_{9}$, $i_3$)
 \end{lstlisting}
 
-In general, after loop peeling and redundant operation removal the peeled loop
-will no longer be in SSA form as it operates on variables that are the result
-of pure operations in the preamble. The solution is to extend the input
+After loop peeling and redundant operation removal the peeled loop
+will typically no longer be in SSA form but operate on variables that are the result
+of operations in the preamble. The solution is to extend the input
 arguments, $J$, with those variables. This will also extend the
 jump arguments of the preamble, which is also $J$. 
 Implicitly that also extends the jump arguments of the peeled loop, $K$,
@@ -702,9 +691,9 @@ The variable $i_7$ will then be replaced by $i_3$ by the heap caching
 optimization as it has removed the variable $i_7$.
 
 In general what is needed is to keep track of
-which variables from the preamble it reuses in the peeled loop.
-It has to construct a vector, $H$,  of such variables which
-can be used to update the input and jump arguments using
+which variables from the preamble are reused in the peeled loop.
+By constructing a vector, $H$,  of such variables, the input and jump
+arguments can be updated using
 \begin{equation}
   \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
   \label{eq:heap-inputargs}
@@ -723,9 +712,8 @@ K$.
 
 PyPy's allocation removal optimization \cite{bolz_allocation_2011} makes it
 possible to identify objects that are allocated within the loop but never
-escape it. Those objects have to be allocated in the loop, but no outside
-object ever gets a reference short lived objects with no references outside the
-loop. This
+escape it. That is, no outside
+object ever gets a reference to them. This
 is performed by processing the operations in order and
 optimistically removing every \lstinline{new} operation. Later on if
 it is discovered that a reference to the object escapes the loop, the
@@ -745,18 +733,18 @@ registers that the attribute \lstinline{intval} of $p_5$ is $i_4$.
 When the optimizer reaches line 13 it needs to construct the
 arguments of the \lstinline{jump} operation, which contains the
 reference to the allocation-removed object in $p_5$. This can be achieved by
-exploding $p_5$ into the fields of the allocation-removed object.
-In this case there is only one such field and its value is
+exploding $p_5$ into the attributes of the allocation-removed object.
+In this case there is only one such attribute and its value is
 $i_4$, which means that $p_5$ is replaced with $i_4$ in the jump
 arguments. 
 
 In the general case, each allocation-removed object in the jump arguments is exploded into a
 vector of variables containing the values of all registered
-fields\footnote{This is sometimes called \emph{scalar replacement}.}.
-If some of the fields are themselves references to
+attributes\footnote{This is sometimes called \emph{scalar replacement}.}.
+If some of the attributes are themselves references to
 allocation-removed objects they are recursively exploded
 to make the vector contain only concrete variables. Some care has
-to be taken to always place the fields in the same order when
+to be taken to always place the attributes in the same order when
 performing this explosion. Notation becomes somewhat simpler if also every
 concrete variable of the jump arguments is exploded into a vector containing
 itself. For
@@ -829,7 +817,7 @@ framework in about 450 lines of RPython code. That means that the JIT-compilers 
 interpreters implemented within PyPy now can take advantage of
 it. Benchmarks have been executed for a few different interpreters and
 we see improvements in several cases. The ideal loop for this optimization
-would be short numerical calculations with no failing guards and no
+is short and contains numerical calculations with no failing guards and no
 external calls. Larger loops involving many operations on complex objects
 typically benefit less from it. Loop peeling never makes runtime performance worse, in
 the worst case the peeled loop is exactly the same as the preamble. Therefore we
@@ -961,7 +949,7 @@ this paper.
 \section{Related Work}
 \label{sec:related}
 
-The effect of combining a one ass optimization with loop peeling gives
+The effect of combining a one pass optimization with loop peeling gives
 completely standard loop invariant code motion optimizations
 \cite{muchnick_advanced_1997}. We do not claim any novelty in the effect, but
 think that our implementation scheme is a very simple one.
@@ -982,8 +970,8 @@ directly, by explicitly marking as loop-invariant all variables that stay the
 same along all looping paths and then moving all pure computation that depends
 only on these variables out of the loop. SPUR can also hoist loads out of the
 loop if nothing in the loop can ever write to the memory location. It can also
-move allocations out of the loop, but does not replace the object by its fields.
-This saves only the allocation, not the access to the object fields.
+move allocations out of the loop, but does not replace the object by its attributes.
+This saves only the allocation, not the access to the object attributes.
 
 The type specialization described by Gal \etal \cite{gal_trace-based_2009} can
 be seen as doing a similar optimization (again by manually implementing it)
