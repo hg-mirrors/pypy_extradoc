@@ -1,8 +1,8 @@
 Global Interpreter Lock, or how to kill it
 ==========================================
 
-People that listened to my lightning talk at EuroPython know that
-(suddenly) we have a plan to remove the Global Interpreter Lock --- the
+People that listened to my (Armin Rigo) lightning talk at EuroPython know that
+suddenly, we have a plan to remove the Global Interpreter Lock --- the
 infamous GIL, the thing in CPython that prevents multiple threads from
 actually running in your Python code in parallel.
 
@@ -84,11 +84,11 @@ This is very similar to what is going on in CPython with the GIL.  In
 particular, it means that it gives programmers all the same guarantees
 as the GIL does.  The *only* difference is that it can actually run
 multiple threads in parallel, as long as their code does not interfere
-with each other.  
-
-XXX how much slower would it make things for the person whose code
-isn't suitable to try to run it?  All of us?  Is this an option you
-could enable?
+with each other.  (In particular, if you need not just the GIL but actual
+locks in your existing multi-threaded program, then this will not
+magically remove the need for them.  You might get an additional built-in
+module that exposes STM to your Python programs, if you prefer it over
+locks, but that's another question.)
 
 Why not apply that idea to CPython?  Because we would need to change
 everything everywhere.  In the example above, you may have noted that I
@@ -100,7 +100,12 @@ record the change in the ``transation`` object.  If our interpreter is
 written in C, as CPython is, then we need to write it explicitly
 everywhere.  If it is written instead in a higher-level language, as
 PyPy is, then we can add this behavior as as set of translation rules, and 
-apply them automatically wherever it is necessary.
+apply them automatically wherever it is necessary.  Moreover, it can be
+a translation-time option: you can either get the current "pypy" with a
+GIL, or a version with STM, which would be slower due to the extra
+bookkeeping.  (How much slower?  I have no clue, but as a wild guess,
+maybe between 2 and 5 times slower.  That is fine if you have enough
+cores, as long as it scales nicely :-)
 
 A final note: as STM research is very recent (it started around 2003),
 there are a number of variants around, and it's not clear yet which one
@@ -109,20 +114,19 @@ in "A Comprehensive Strategy for Contention Management in Software
 Transactional Memory" seems to be one possible state-of-the-art; it also
 seems to be "good enough for all cases".
 
-So, when will it be done?  No clue so far.  It is still at the idea
+So, when will it be done?  I cannot say yet.  It is still at the idea
 stage, but I *think* that it can work.  How long would it take us to
 write it?  Again no clue, but we are looking at many months rather
-than many days.  This is the sort of thing that I (Armin Rigo) would
+than many days.  This is the sort of thing that I would
 like to be able to work on full time after the `Eurostars funding`_
 runs out on September 1.  We are currently looking at ways to use
 `crowdfunding`_ to raise money so that I can do exactly that.  Expect
 a blog post about that very soon.  But this looks like a perfect
 candidate for crowdfunding -- there are at least thousands of you who
-would be willing to pay 10s of Euros to Kill the Gil.  Now we only
+would be willing to pay 10s of Euros to Kill the GIL.  Now we only
 have to make this happen.
 
 
 .. _`Software Transactional Memory`: http://en.wikipedia.org/wiki/Software_transactional_memory
-.. _`this paper`: 
 .. _`Eurostars funding`: http://morepypy.blogspot.com/2010/12/oh-and-btw-pypy-gets-funding-through.html
 .. _`crowdfunding`:http://en.wikipedia.org/wiki/Crowd_funding
