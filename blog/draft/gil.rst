@@ -129,4 +129,4 @@ have to make this happen.
 
 .. _`Software Transactional Memory`: http://en.wikipedia.org/wiki/Software_transactional_memory
 .. _`Eurostars funding`: http://morepypy.blogspot.com/2010/12/oh-and-btw-pypy-gets-funding-through.html
-.. _`crowdfunding`:http://en.wikipedia.org/wiki/Crowd_funding
+. _`crowdfunding`: http://en.wikipedia.org/wiki/Crowd_funding
