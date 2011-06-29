@@ -1,15 +1,23 @@
 present arigato antocuni tismer berdario jacob22 hardshooter lac
 
-1.  cython backend (anto hardshooter)
+1.  cython backend (anto hardshooter) (not done)
 2.  crowdsourcing as a way to get funded (kickstarter like website?  Haskell
-Industry approach? we need a "we are bloody fast" website (lac, all)
-3.  discuss GIL removal plan (arigo, all)
-4.  embedding pypy as a .so  
-5.  ootype progress, play with jpype (berdario, anto)
-6.  pypy logging improvements (berdario + others)
-7.  look in the list of reported bugs and fix them (everybody)
-8.  improving the performance of shadowstack (arigo + somebody)
+Industry approach? we need a "we are bloody fast" website (lac, all) (half done)
+3.  discuss GIL removal plan (arigo, all) (not done)
+4.  embedding pypy as a .so  (not done)
+5.  ootype progress, play with jpype (berdario, anto) (not done)
+6.  pypy logging improvements (berdario + others) (not done)
+7.  look in the list of reported bugs and fix them (everybody) (did some)
+8.  improving the performance of shadowstack (arigo + somebody) (not done)
 9.  CCP games issues / windows on 64 bit machines  (tismer + others)
 10. status of tealet and enhance it (tismer + arigo)
-    prrof of concept works, but only with Boehm
-?.  work on "success stories" part of pypy.org
+    proof of concept works, but only with Boehm
+11. work on "success stories" part of pypy.org
+
+we actually did bug 767, improved some gc behaviour. and we investigated 
+crowdsourcing options.
+
+The plan for today is to continue with the plan for yesterday, but
+try to do more of it.  Anto has brought an access point.  Maybe this
+will be better.
+
