@@ -121,19 +121,14 @@
 \maketitle
 
 \begin{abstract}
-By introducing loop peeling into the optimization step of a tracing
-jit the effect of optimizations already in place will be increased
-greatly. Not only does it make them move loop invariant code
-out of loop. They will also become able to reuse results from the
-previous iteration. Also, the implementation of excising optimizations
-can be left almost intact as they will not have to interact much with
-the loop peeling.
-
-Several benchmarks, with few guard failures, executed on the
-PyPy Python JIT show over 2
-times increase in speed when loop peeling was introduced. This makes
-some of them almost match optimized C performance and become over 900
-times faster than CPython.
+One of the nice properties of a tracing JIT is that many of its optimization
+are simple requiring one forward pass. This is not true for loop-invariant code
+motion which is a very important optimization for code with tight kernels.
+In this paper we present a scheme for making simple optimizations loop-aware by
+using a simple pre-processing step on the trace and not changing the
+optimizations themselves. The scheme can give performance improvements of a
+factor over two for PyPy's Python JIT executing simple numerical kernels
+bringing the performance close to that of compiled C code.
 \end{abstract}
 
 \category{D.3.4}{Programming Languages}{Processors}[code generation,
@@ -467,7 +462,7 @@ loop peeling.
 \label{fig:overview}
 \end{figure}
 
-XXX find reference of prior work on this
+%XXX find reference of prior work on this
 
 Loop peeling is achieved by appending an copy of the traced iteration at
 the end of itself. See Figure~\ref{fig:overview} for an illustration.
@@ -481,7 +476,7 @@ loop execution, it is general enough to correspond to any iteration of the loop.
 However, the peeled loop can then be optimized using the assumption that a
 previous iteration has happened.
 
-XXX (samuele): the point about the first iteration is hard to understand
+%XXX (samuele): the point about the first iteration is hard to understand
 
 When applying optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
