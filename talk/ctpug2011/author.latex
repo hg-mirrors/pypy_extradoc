@@ -1,8 +1,8 @@
 \definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
 
-\title[PyPy training session]{PyPy training session}
-\author[antocuni, arigo]
-{Antonio Cuni \\ Armin Rigo}
+\title[PyPy hands on]{PyPy hands on}
+\author[fijal]
+{Maciej Fijałkowski}
 
-\institute{EuroPython 2011}
-\date{June 20 2011}
+\institute{Cape Town PUG 2011}
+\date{June 30 2011}

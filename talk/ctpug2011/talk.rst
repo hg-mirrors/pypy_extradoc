@@ -1,22 +1,30 @@
 .. include:: beamerdefs.txt
 
 ================================
-PyPy training session
+PyPy hands on
 ================================
 
-PyPy training session
+PyPy hands on
 ---------------------
 
-- Part 1: Run your application under PyPy
+* What is PyPy (briefly)?
 
-- Part 2: Write your own interpreter with PyPy
+* How to use it?
 
+* How does it work?
 
-Part 1
-------
+* How to analyse performance?
 
-* Run your application under PyPy
+What is PyPy
+------------
 
+* A python interpreter
+
+|pause|
+
+* Features speed
+
+* Together with a fully transparent JIT compiler
 
 How to run PyPy
 ----------------
@@ -98,6 +106,14 @@ Refcounting vs generational GC (2)
 
 * ``finally`` inside generators
 
+How the python interpreter works
+--------------------------------
+
+* compiles down to bytecode
+
+* executes it one intruction at a time
+
+* (PyPy, Psyco) compiles it further down to assembler
 
 
 Just-in-Time Compilation
