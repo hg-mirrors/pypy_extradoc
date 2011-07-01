@@ -1,3 +1,4 @@
+import errno
 from noborder import NoBorderImagePadded
 from math import sqrt
 
@@ -78,8 +79,15 @@ if __name__ == '__main__':
         #view(img)
         #sobeldx(img)
         #view(uint8(sobel_magnitude(img)))
-        view(sobel_magnitude_uint8(img))
         #sobel_magnitude_uint8(img)
+        try:
+            view(sobel_magnitude_uint8(img))
+        except IOError, e:
+            if e.errno != errno.EPIPE:
+                raise
+            print 'Exiting'
+            break
+
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:

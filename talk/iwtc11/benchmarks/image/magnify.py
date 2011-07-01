@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+import errno
 from plain import Image
 from math import atan2, sqrt, sin, cos, ceil, floor
 
@@ -65,7 +68,13 @@ if __name__ == '__main__':
 
     start = start0 = time()
     for fcnt, img in enumerate(mplayer(MyImage, fn)):
-        view(magnify(img))
+        try:
+            view(magnify(img))
+        except IOError, e:
+            if e.errno != errno.EPIPE:
+                raise
+            print 'Exiting'
+            break
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:
