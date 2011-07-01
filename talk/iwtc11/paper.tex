@@ -122,7 +122,7 @@
 
 \begin{abstract}
 One of the nice properties of a tracing JIT is that many of its optimization
-are simple requiring one forward pass. This is not true for loop-invariant code
+are simple requiring one forward pass only. This is not true for loop-invariant code
 motion which is a very important optimization for code with tight kernels.
 In this paper we present a scheme for making simple optimizations loop-aware by
 using a simple pre-processing step on the trace and not changing the
@@ -246,7 +246,7 @@ jump($L_1$, $i_0$)
 \end{lstlisting}
 
 The iteration of the loop that was peeled off (lines 1-4) is called the
-\emph{preamble}, the loop afterwards the \emph{peeled loop}.
+\emph{preamble}, the loop afterwards (lines 6-9) the \emph{peeled loop}.
 
 Now the optimizer optimizes both of these two iterations of the loop together,
 disregarding the \lstinline{jump} and the label in lines 4-6. Doing this, common
@@ -438,7 +438,7 @@ using the interpreter.
 
 \section{Making Trace Optimizations Loop Aware}
 
-Before the trace is passed to a backend compiling it into machine code
+Before a trace is passed to the backend compiling it into machine code
 it is optimized to achieve better performance.
 One goal of that is to move 
 operations out of the loop making them executed only once
@@ -446,8 +446,8 @@ and not every iteration. This we propose to achieve by loop peeling. It
 leaves the loop body intact, but prefixes it with one iteration of the
 loop. This operation by itself will not achieve anything. But if it is
 combined with other optimizations it can increase the effectiveness of
-those optimizations. For many optimization of interest some care has
-to be taken when they are combined with loop peeling. This is
+those optimizations. For many optimization of interest only a few
+additional details has to be considered when they are combined with loop peeling. These are
 described below by explaining the loop peeling optimization
 followed by a set of other optimizations and how they interact with
 loop peeling.
