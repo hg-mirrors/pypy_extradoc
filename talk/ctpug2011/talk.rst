@@ -148,23 +148,6 @@ Tracing JIT
 
 * if guard fails often enough, start tracing from the failure
 
-Meta-Tracing in PyPy
---------------------
-
-* The explanation above assumes a tracing JIT for the full Python
-  language
-
-* Would need to be maintained whenever we change the Python version we
-  support
-
-* Instead, we have a "meta-tracing JIT"
-
-* A very important point for us since we don't have a huge team
-  to implement all Python semantics for the JIT
-
-* We trace the python interpreter's main loop (running N times) interpreting
-  a python loop (running once)
-
 
 PYPYLOG
 --------
