@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import errno
 from noborder import NoBorderImagePadded
 from math import sqrt
