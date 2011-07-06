@@ -12,7 +12,18 @@ Actually, it turns out that the PyPy JIT compiler produces code which is fast
 enough to do realtime video processing using two simple algorithms implemented
 by Håkan Ardö.
 
-XXX: add a very brief description of the algorithms
+sobel.py implements a classical way of locating edges in images,
+`the Sobel operator`:http://en.wikipedia.org/wiki/Sobel_operator. It
+is an approximation of the magnitude of the 
+`image gradient`:http://en.wikipedia.org/wiki/Image_gradient. The
+processing time is spend on two
+`convolutions`:http://en.wikipedia.org/wiki/Convolution between the
+image and 3x3-kernels.
+
+magnify.py implements a pixel coordinate transformation that rearranges
+the pixels in the image to form a magnifying effect in the center.
+It consists of a single loop over the pixels in the output image copying
+pixels from the input image. 
 
 You can try by yourself by downloading the appropriate demo:
 
@@ -38,6 +49,22 @@ use your webcam by passing the appropriate mplayer parameters to the scripts,
 e.g::
 
   $ pypy demo/sobel.py tv://
+
+By default magnify.py uses
+`nearest-neighbor
+interpolation.`:http://en.wikipedia.org/wiki/Nearest-neighbor_interpolation
+By adding the option -b,
+`bilinear interpolation`:http://en.wikipedia.org/wiki/Bilinear_interpolation
+will be used instead, which gives smoother result.
+
+  $ pypy demo/magnify.py -b
+
+There is only a single implementation of the algorithm in
+magnify.py. The two different interpolation methods are implemented by
+subclassing the class used to represent images and embed the
+interpolation within the pixel access method. PyPy is able to achieve good
+performance with this kind of abstractions because it can inline
+virtual methods and specialize functions.
 
 To have a feeling on how much PyPy is faster than CPython, try to run the demo
 with the latter.  On my machine, PyPy runs ``sobel.py`` at ~47.23 fps on
