@@ -64,7 +64,9 @@ magnify.py. The two different interpolation methods are implemented by
 subclassing the class used to represent images and embed the
 interpolation within the pixel access method. PyPy is able to achieve good
 performance with this kind of abstractions because it can inline
-virtual methods and specialize functions.
+the pixel access method and specialize the implementation of the algorithm.
+In C++ that kind of pixel access method would be virtual and you'll need to use
+templates to get the same effect. XXX: Is that correct?
 
 To have a feeling on how much PyPy is faster than CPython, try to run the demo
 with the latter.  On my machine, PyPy runs ``sobel.py`` at ~47.23 fps on
