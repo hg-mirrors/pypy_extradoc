@@ -69,10 +69,24 @@ In C++ that kind of pixel access method would be virtual and you'll need to use
 templates to get the same effect. XXX: Is that correct?
 
 To have a feeling on how much PyPy is faster than CPython, try to run the demo
-with the latter.  On my machine, PyPy runs ``sobel.py`` at ~47.23 fps on
-average, while CPython runs it at ~0.08 fps, meaning that PyPy is **590 times
-faster**.  On ``magnify.py`` the difference is much less evident, ~26.92 fps
-vs ~1.78 fps, and the speedup is "only" 15x.
+with the latter.  These are the the average fps (frames per second) that I get
+on my machine (Ubuntu 64 bit, Intel i7 920, 4GB RAM) when processing the
+default ``test.avi`` video and using the prebuilt PyPy binary found in the
+full_ tarball alinked above.  For ``sobel.py``:
+
+  - PyPy: ~47.23 fps
+  - CPython: ~0.08 fps
+
+For ``magnify.py``:
+
+  - PyPy: ~26.92 fps
+  - CPython: ~1.78 fps
+
+This means that on ``sobel.py``, PyPy is **590 times faster**.  On
+``magnify.py`` the difference is much less evident and the speedup is "only"
+15x.
+
+.. _full: http://wyvern.cs.uni-duesseldorf.de/~antocuni/pypy-image-demo-full.tar.bz2
 
 It must be noted that this is an extreme example of what PyPy can do.  In
 particular, you cannot expect (yet :-)) PyPy to be fast enough to run an
