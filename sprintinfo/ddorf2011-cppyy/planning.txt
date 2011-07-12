@@ -1,5 +1,6 @@
-people present:
+people:
 
+ - Sven
  - Armin
  - Carl Friedrich
  - Wim
