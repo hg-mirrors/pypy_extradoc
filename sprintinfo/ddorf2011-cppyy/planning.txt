@@ -1,0 +1,16 @@
+people:
+
+ - Sven
+ - Armin
+ - Carl Friedrich
+ - Wim
+
+tasks:
+
+cppyy
+ - memory management
+ - split between rpython/python (Carl Friedrich, Sven)
+ - fast path improvements
+ - global data members
+ - code duplication (Armin, Wim)
+ - array (Armin, Wim)
