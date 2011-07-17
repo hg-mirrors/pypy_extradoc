@@ -80,6 +80,16 @@ Things we can do mostly by editing optimizeopt/:
   maybe we should move promote even higher, before the first use and we
   could possibly remove more stuff?
 
+  This shows up in another way as well, the Python code
+
+  if x is None:
+      i += x
+
+  We promote the guard_nonnull when we load x into guard_nonnull class,
+  however this happens after the optimizer sees `x is None`, so that ptr_eq
+  still remains, even though it's obviously not necessary since x and None
+  will have different known_classes.
+
 - f31 = f17 * f16
   f32 = f16 * f17
 
