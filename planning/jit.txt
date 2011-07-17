@@ -90,11 +90,6 @@ Things we can do mostly by editing optimizeopt/:
   still remains, even though it's obviously not necessary since x and None
   will have different known_classes.
 
-- f31 = f17 * f16
-  f32 = f16 * f17
-
-  Should be just a matter of synthesizing reverse operations in rewrite.py
-
 - optimize arraycopy also in the cases where one of the arrays is a virtual and
   short. This is seen a lot in translate.py
 
