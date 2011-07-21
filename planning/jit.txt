@@ -8,11 +8,6 @@ BUGS
   [arigo] - cpython has sys._current_frames(), but not pypy; however
             relying on this looks like it's not the job of the jit
 
-* we should run nightly 64bit benchmarks. As of mid-April, richards
-  was noticably (30-50%) slower on 64bit than 32bit. I didn't notice
-  other benchmarks, but since we don't run it, we don't have a way
-  to compare.
-
 NEW TASKS
 ---------
 
