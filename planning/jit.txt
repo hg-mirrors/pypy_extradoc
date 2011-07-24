@@ -1,3 +1,5 @@
+tasks with "(( ))" around them are unlikely.
+
 BUGS
 ----
 
@@ -8,18 +10,15 @@ BUGS
   [arigo] - cpython has sys._current_frames(), but not pypy; however
             relying on this looks like it's not the job of the jit
 
+* fix the cases of MemoryError during the execution of machine code
+  (they are now a fatal RPython error)
+
+
 NEW TASKS
 ---------
 
-- think about whether W_TypeObject._pure_lookup_where_with_method_cache needs a
-  different decorator, because it cannot be moved around arbitrarily.
-
 - have benchmarks for jit compile time and jit memory usage
   
-- kill GUARD_(NO)_EXCEPTION; replace that by LAST_EXC_VALUE to load the
-  current exception from the struct in memory, followed by a regular
-  GUARD_CLASS.  (Armin: Look like a simplification, but it's a bit messy too)
-
 - maybe refactor a bit the x86 backend, particularly the register
   allocation
 
@@ -27,16 +26,7 @@ NEW TASKS
   is a compile time constant (and call unrolled version of string formatting
   loop in this case).
 
-- generators??
-
 - consider how much old style classes in stdlib hurt us.
-
-- support raw mallocs
-
-- support casting from Signed to an opaque pointer
-
-- local imports should be jitted more efficiently, right now they produce a
-  long trace and they are rather common (e.g. in translate.py)
 
 - the integer range analysis cannot deal with int_between, because it is
   lowered to uint arithmetic too early
@@ -47,7 +37,7 @@ NEW TASKS
   re.search("(ab)+", "a" * 1000 + "b") almost doesn't get compiled and
   gets very modest speedups with the JIT on (10-20%)
 
-- consider an automated way to take a function with a loop and generate a
+- consider an automated way in RPython: a function with a loop and generate a
   JITable preamble and postamble with a call to the loop in the middle.
 
 - implement small tuples, there are a lot of places where they are hashed and
@@ -57,12 +47,6 @@ OPTIMIZATIONS
 -------------
 
 Things we can do mostly by editing optimizeopt/:
-
-- getfields which result is never used never get removed (probable cause -
-  they used to be as livevars in removed guards). also getfields which result
-  is only used as a livevar in a guard should be removed and encoded in
-  the guard recovert code (only if we are sure that the stored field cannot
-  change)
 
 - if we move a promotion up the chain, some arguments don't get replaced
   with constants (those between current and previous locations). So we get
@@ -95,36 +79,17 @@ PYTHON EXAMPLES
 Extracted from some real-life Python programs, examples that don't give
 nice code at all so far:
 
-- string manipulation: s[n], s[-n], s[i:j], most operations on single
-  chars, building a big string with repeated "s += t", "a,b=s.split()",
-  etc.  PARTIALLY DONE with virtual strings
-
-- http://paste.pocoo.org/show/188520/
-  this will compile new assembler path for each new type, even though that's
-  overspecialization since in this particular case it's not relevant.
-  This is treated as a megamorphic call (promotion of w_self in typeobject.py)
-  while in fact it is not.
-
-- guard_true(frame.is_being_profiled) all over the place
-
-- cProfile should be supported (right now it prevents JITting completely):
-  the calls to get the time should be done with the single assembler
-  instruction "read high-perf time stamp".  The dict lookups done by
-  cProfile should be folded away. IN PROGRESS
-
 - let super() work with the method cache.
 
-- turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
-  floats.
-
-- xxx (find more examples :-)
+- ((turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
+  floats.))
 
 BACKEND TASKS
 -------------
 
-Look into avoiding double load of memory into register on 64bit.
+Look into avoiding double load of constant into register on 64bit.
 In case we want to first read a value, increment it and store (for example),
-we end up with double load of memory into register. Like:
+we end up with double load of constant into register. Like:
 
 movabs 0xsomemem,r11
 mov    (r11), r10
@@ -139,14 +104,12 @@ LATER (maybe) TASKS
 
 - think out looking into functions or not, based on arguments,
   for example contains__Tuple should be unrolled if tuple is of constant
-  length. HARD, blocked by the fact that we don't know constants soon enough
+  length.  This should be possible now that we do some heap opt during
+  tracing.
   Also, an unrolled loop means several copies of the guards, which may
   fail independently, leading to an exponential number of bridges
 
-- out-of-line guards (when an external change would invalidate existing
-  pieces of assembler)
-
-- merge tails of loops-and-bridges?
+- ((merge tails of loops-and-bridges?))
 
 UNROLLING
 ---------
