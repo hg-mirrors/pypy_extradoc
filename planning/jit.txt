@@ -43,6 +43,8 @@ NEW TASKS
 - implement small tuples, there are a lot of places where they are hashed and
   compared
 
+- support single floats in the JIT
+
 OPTIMIZATIONS
 -------------
 
