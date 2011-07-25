@@ -90,11 +90,9 @@
 \begin{frame}
   \frametitle{Good JIT Compilers for Dynamic Languages are Hard}
   \begin{itemize}
-      \item implementing the object model well is crucial
       \item recent languages like Python, Ruby, JS have complex core semantics
       \item many corner cases, even hard to interpret correctly
       \pause
-      \item to get efficiency, the correct fast path through the tree of implementations must be generated XXX
       \item feedback of runtime information to the compiler is necessary
       \item correct exploitation of this information in the compiler
   \end{itemize}
@@ -114,7 +112,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{A Tracing JIT}
+  \frametitle{An Interpreter}
   \includegraphics[scale=0.5]{figures/trace02.pdf}
 \end{frame}
 
@@ -212,7 +210,7 @@
   \begin{block}{PyPy's Meta-Tracing JIT}
       \begin{itemize}
           \item PyPy contains a meta-tracing JIT for interpreters in RPython
-          \item needs a few source-code hints (or annotations) in the interpreter
+          \item needs a few source-code hints (or annotations) \emph{in the interpreter}
           \item powerful general optimizations
       \end{itemize}
   \end{block}
@@ -257,7 +255,7 @@
 \PY{k}{class} \PY{n+nc}{Map}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
     \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{indexes}\PY{p}{)}\PY{p}{:}
         \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes} \PY{o}{=} \PY{n}{indexes}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+        \PY{o}{.}\PY{o}{.}\PY{o}{.}
 
     \PY{k}{def} \PY{n+nf}{getindex}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
         \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
@@ -290,14 +288,14 @@
 \begin{frame}[plain,containsverbatim]
 \frametitle{Trace for code \texttt{inst.a + inst.b}}
 \begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]]
-# $inst_1$.getattr("a")
+# $inst_1$.getfield("a")
 $map_1$ = $inst_1$.map
 $index_1$ = Map.getindex($map_1$, "a")
 guard($index_1$ != -1)
 $storage_1$ = $inst_1$.storage
 $result_1$ = $storage_1$[$index_1$]
 |\pause|
-# $inst_1$.getattr("b")
+# $inst_1$.getfield("b")
 $map_2$ = $inst_1$.map
 $index_2$ = Map.getindex($map_2$, "b")
 guard($index_2$ != -1)
@@ -305,21 +303,20 @@ $storage_2$ = $inst_1$.storage
 $result_2$ = $storage_2$[$index_2$]
 
 $v_1$ = $result_1$ + $result_2$
-return($v_1$)
 \end{lstlisting}
 \end{frame}
 
 \begin{frame}[plain,containsverbatim]
-\frametitle{Trace for code \texttt{inst.a + inst.b}}
+\frametitle{Trace for Code \texttt{inst.a + inst.b}}
 \begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]]
-# $inst_1$.getattr("a")
+# $inst_1$.getfield("a")
 $map_1$ = $inst_1$.map
 $index_1$ = Map.getindex($map_1$, "a")
 guard($index_1$ != -1)
 $storage_1$ = $inst_1$.storage
 $result_1$ = $storage_1$[$index_1$]
 
-# $inst_1$.getattr("b")
+# $inst_1$.getfield("b")
 $map_2$ = $inst_1$.map
 $index_2$ = Map.getindex($map_2$, "b")
 guard($index_2$ != -1)
@@ -327,7 +324,6 @@ $storage_2$ = $inst_1$.storage
 $result_2$ = $storage_2$[$index_2$]
 
 $v_1$ = $result_1$ + $result_2$
-return($v_1$)
 \end{lstlisting}
 \end{frame}
 
@@ -340,7 +336,10 @@ return($v_1$)
       \item should be used only for variables that take few values
   \end{itemize}
   \pause
+\end{frame}
 
+\begin{frame}[containsverbatim]
+  \frametitle{Tiny Example}
   \begin{minipage}[b]{6cm}
       \centering
       {\noop
@@ -356,71 +355,10 @@ def f1(x, y):
   \hspace{0.5cm}
   \begin{minipage}[b]{4cm}
       {\noop
-      \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+      \begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]
 guard($x_1$ == 4)
-$v_1$ = $x_1$ * 2
-$z_1$ = $v_1$ + 1
-$v_2$ = $z_1$ + $y_1$
-return($v_2$)
-      \end{lstlisting}
-      }
-  \end{minipage}
-\end{frame}
-
-\begin{frame}[containsverbatim]
-  \frametitle{Runtime Feedback Controlled by the Interpreter Author}
-  \begin{itemize}
-      \item give the interpreter author a way to feed back runtime values into the trace
-      \item written as \texttt{promote(x)}
-      \item captures the argument's runtime value during tracing
-      \item should be used only for variables that take few values
-  \end{itemize}
-
-  \begin{minipage}[b]{6cm}
-      \centering
-      {\noop
-      \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-def f1(x, y):
-    promote(x)
-    z = x * 2 + 1
-    return z + y
-
-
-      \end{lstlisting}
-      }
-  \end{minipage}
-\end{frame}
-
-\begin{frame}[containsverbatim]
-  \frametitle{Runtime Feedback Controlled by the Interpreter Author}
-  \begin{itemize}
-      \item give the interpreter author a way to feed back runtime values into the trace
-      \item written as \texttt{promote(x)}
-      \item captures the argument's runtime value during tracing
-      \item should be used only for variables that take few values
-  \end{itemize}
-  
-  \begin{minipage}[b]{6cm}
-      \centering
-      {\noop
-      \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-def f1(x, y):
-    promote(x)
-    z = x * 2 + 1
-    return z + y
-
-
-      \end{lstlisting}
-      }
-  \end{minipage}
-  \vline
-  \hspace{0.5cm}
-  \begin{minipage}[b]{4cm}
-      {\noop
-      \begin{lstlisting}[mathescape,basicstyle=\ttfamily]
-guard($x_1$ == 4)
-$v_1$ = $x_1$ * 2
-$z_1$ = $v_1$ + 1
+|{\color{gray}$v_1$ = $x_1$ * 2}|
+|{\color{gray}$z_1$ = $v_1$ + 1}|
 $v_2$ = $z_1$ + $y_1$
 return($v_2$)
       \end{lstlisting}
@@ -449,7 +387,7 @@ return($v_2$)
 \PY{k}{class} \PY{n+nc}{Map}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
     \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{indexes}\PY{p}{)}\PY{p}{:}
         \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes} \PY{o}{=} \PY{n}{indexes}
-        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{other\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+        \PY{o}{.}\PY{o}{.}\PY{o}{.}
 
     \PY{n+nd}{@elidable}
     \PY{k}{def} \PY{n+nf}{getindex}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
@@ -459,7 +397,7 @@ return($v_2$)
     \PY{k}{def} \PY{n+nf}{add\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
         \PY{o}{.}\PY{o}{.}\PY{o}{.}
 
-\PY{n}{EMPTY\PYZus{}MAP} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{)}
+\PY{n}{EMPTY\PYZus{}MAP} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}\PY{p}{)}
 \end{Verbatim}
 \end{frame}
 
@@ -467,8 +405,6 @@ return($v_2$)
 \frametitle{Adding Hints to Maps}
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{EMPTY\PYZus{}MAP} \PY{o}{=} \PY{n}{Map}\PY{p}{(}\PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}\PY{p}{)}
-
 \PY{k}{class} \PY{n+nc}{Instance}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
     \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
         \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{map} \PY{o}{=} \PY{n}{EMPTY\PYZus{}MAP}
@@ -488,40 +424,37 @@ return($v_2$)
 
 
 \begin{frame}[containsverbatim,plain]
-  \frametitle{Trace with Hints}
+  \frametitle{Trace with Hints for Code \texttt{inst.a + inst.b}}
 \begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]]
-# $inst_1$.getattr("a")
+# $inst_1$.getfield("a")
 $map_1$ = $inst_1$.map
 guard($map_1$ == 0xb74af4a8)
-|{\color{gray}$index_1$ = Map.getindex($map_1$, "a")|
-|{\color{gray}guard($index_1$ != -1)|
+|{\color{gray}$index_1$ = Map.getindex($map_1$, "a")}|
+|{\color{gray}guard($index_1$ != -1)}|
 $storage_1$ = $inst_1$.storage
-$result_1$ = $storage_1$[$index_1$]
+$result_1$ = $storage_1$[$index_1$}]
 
-# $inst_1$.getattr("b")
+# $inst_1$.getfield("b")
 |{\color{gray}$map_2$ = $inst_1$.map|
-|{\color{gray}guard($map_2$ == 0xb74af4a8)|
-|{\color{gray}$index_2$ = Map.getindex($map_2$, "b")|
-|{\color{gray}guard($index_2$ != -1)|
-|{\color{gray}$storage_2$ = $inst_1$.storage|
+|{\color{gray}guard($map_2$ == 0xb74af4a8)}|
+|{\color{gray}$index_2$ = Map.getindex($map_2$, "b")}|
+|{\color{gray}guard($index_2$ != -1)}|
+|{\color{gray}$storage_2$ = $inst_1$.storage}|
 $result_2$ = $storage_2$[$index_2$]
 
 $v_1$ = $result_1$ + $result_2$
-return($v_1$)
 \end{lstlisting}
 \end{frame}
 
 \begin{frame}[containsverbatim,plain]
   \frametitle{Final Trace}
 \begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]]
-# $inst_1$.getattr("a")
 $map_1$ = $inst_1$.map
 guard($map_1$ == 0xb74af4a8)
 $storage_1$ = $inst_1$.storage
 $result_1$ = $storage_1$[$0$]
 $result_2$ = $storage_2$[$1$]
 $v_1$ = $result_1$ + $result_2$
-return($v_1$)
 \end{lstlisting}
 \end{frame}
 
@@ -551,6 +484,8 @@ return($v_1$)
   \begin{itemize}
       \item benchmarks done using PyPy's Python interpreter
       \item about 30'000 lines of code
+      \item 20 calls to \texttt{promote}
+      \item 10 applications of \texttt{@elidable}
   \end{itemize}
 \end{frame}
 
@@ -562,8 +497,9 @@ return($v_1$)
 \begin{frame}
   \frametitle{Conclusion}
   \begin{itemize}
-      \item meta-tracing can make the efficient implementation of complex dynamic languaes easier
-      \item two kinds of hints to be added by the interpreter author allows arbitrary runtime feedback
+      \item meta-tracing can make the efficient implementation of complex dynamic languages easier
+      \item only requires to write a correct interpreter
+      \item two kinds of hints to be added by the interpreter author allow arbitrary runtime feedback and its exploitation
       \item the hints are expressive enough to re-implement classical optimizations such as maps
       \item usage of the hints leads to good speedups for object-oriented code in PyPy's Python interpreter
   \end{itemize}
@@ -571,6 +507,19 @@ return($v_1$)
 
 \begin{frame}
   \frametitle{Bonus: Comparison with Partial Evaluation}
+  \begin{itemize}
+      \pause
+      \item the only difference between meta-tracing and partial evaluation is that meta-tracing works
+      \pause
+      \item ... mostly kidding
+      \pause
+      \item very similar from the motivation and ideas
+      \item PE was never scaled up to perform well on large interpreters
+      \item classical PE mostly ahead of time
+      \item PE tried very carefully to select the right paths to inline and optimize
+      \item quite often this fails and inlines too much or too little
+      \item tracing is much more pragmatic: simply look what happens
+  \end{itemize}
 \end{frame}
 
 
