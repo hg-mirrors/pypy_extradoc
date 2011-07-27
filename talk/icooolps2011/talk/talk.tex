@@ -107,12 +107,12 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{A Tracing JIT}
+  \frametitle{An Interpreter}
   \includegraphics[scale=0.5]{figures/trace01.pdf}
 \end{frame}
 
 \begin{frame}
-  \frametitle{An Interpreter}
+  \frametitle{A Tracing JIT}
   \includegraphics[scale=0.5]{figures/trace02.pdf}
 \end{frame}
 
@@ -149,6 +149,7 @@
 \begin{frame}
   \frametitle{Example: Attribute Reads in Python}
   What happens when an attribute \texttt{x.m} is read? (simplified)
+  \pause
   \begin{itemize}
       \item check for \texttt{x.\_\_getattribute\_\_}, if there, call it
       \pause
@@ -180,7 +181,7 @@
   \frametitle{Meta-Tracing JITs}
   \begin{block}{Advantages:}
     \begin{itemize}
-        \item semantics is always like that of the interpreter
+        \item semantics are always like that of the interpreter
         \item trace fully contains language semantics
         \item meta-tracers can be reused for various interpreters
     \end{itemize}
@@ -240,12 +241,17 @@
 
 \begin{frame}
   \frametitle{Example: Instances with Maps}
-  \includegraphics[scale=0.5]{figures/map01.pdf}
+  \includegraphics[scale=0.7]{figures/map01.pdf}
 \end{frame}
 
 \begin{frame}
   \frametitle{Example: Instances with Maps}
-  \includegraphics[scale=0.5]{figures/map02.pdf}
+  \includegraphics[scale=0.7]{figures/map02.pdf}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example: Instances with Maps}
+  \includegraphics[scale=0.7]{figures/map03.pdf}
 \end{frame}
 
 \begin{frame}[containsverbatim]
@@ -286,7 +292,7 @@
 \end{frame}
 
 \begin{frame}[plain,containsverbatim]
-\frametitle{Trace for code \texttt{inst.a + inst.b}}
+\frametitle{Trace for Code \texttt{inst.a + inst.b}}
 \begin{lstlisting}[mathescape,escapechar=|,basicstyle=\ttfamily]]
 # $inst_1$.getfield("a")
 $map_1$ = $inst_1$.map
@@ -393,7 +399,6 @@ return($v_2$)
     \PY{k}{def} \PY{n+nf}{getindex}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
         \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{indexes}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{name}\PY{p}{,} \PY{o}{-}\PY{l+m+mi}{1}\PY{p}{)}
 
-    \PY{n+nd}{@elidable}
     \PY{k}{def} \PY{n+nf}{add\PYZus{}attribute}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{)}\PY{p}{:}
         \PY{o}{.}\PY{o}{.}\PY{o}{.}
 
