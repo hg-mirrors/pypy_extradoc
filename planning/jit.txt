@@ -164,3 +164,33 @@ UNROLLING
     at the end of the preamble unnessesary. If that policy wont hold
     in the long run it should be straight forward to augument the
     VirtualState objects with information about storesinking.
+
+
+Random ideas from hakanardo
+----------------------------
+
+  - Let bridges inherit more information form their parent traces to allow
+	them to be better optimized. One idea is to augument the resumedata with
+	the index within the trace inputargs for each failarg that comes directly
+	from the inputargs. That way a lot of info can be deduced from the short
+	preamble. Another idea is to actually store a lot of status information on
+	the guards as they are generated, but then forget (and free) that info as
+	the guards grow older (in terms of the number of generated guards or
+	something).
+
+  - Generalisation strategies. Once jit-short_from_state is merged we'll have
+	a nice platform to experiment with generalizing the loops created. Today
+	unrolling makes the jit specialize as much as possible which is one reason
+	it's hard for bridges to reuse the created peeled loops. There is also a
+	tradeoff between forcing things to be able to reuse an existing loop and
+	retracing it to form a new specialized version.
+
+  - Better pointer aliasing analyzer that will emit guards that pointers are
+	different when needed.
+
+  - Make heap optimizer aware of setitems produced by forcing virtuals.
+
+  - Movinging loop-invariant setitems out of the loops entierly.
+
+  - Better support for generators (I red some irc log about inlining them into
+	their parent frames)
