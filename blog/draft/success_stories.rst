@@ -5,7 +5,8 @@ Regular readers of this blog know the great progresses that PyPy achieved in
 the past few years in terms of speed_, stability, and adoption.
 
 All of this has been made possibile thanks to the help of the Open Source
-community, but also thanks to the `Eurostars programme`_, which let some of us
+community, but also thanks to the German and Swedish governments, which
+funded us through the `Eurostars programme`_.  This let some of us
 core developers work full time on PyPy for the past two years. 
 
 Our participation to Eurostars is ending in August, and at the moment we are
@@ -48,3 +49,5 @@ _becoming_ one of these sponsors, we would like to hear about that, as well.
 
 Thanks very much (in advance) for all your help,
 Laura and Anto (for the entire PyPy team)
+
+_`Eurostars programme` : http://www.eurostars-eureka.eu/
