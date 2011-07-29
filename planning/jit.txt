@@ -192,5 +192,3 @@ Random ideas from hakanardo
 
   - Movinging loop-invariant setitems out of the loops entierly.
 
-  - Better support for generators (I red some irc log about inlining them into
-	their parent frames)
