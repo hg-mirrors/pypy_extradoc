@@ -48,3 +48,20 @@ performance). It took .85 seconds to execute under PyPy, and 1.63 seconds with
 the compiled binary. We think this demonstrates the incredible potential of
 dynamic compilation, GCC is unable to inline or unroll the ``sprintf`` call,
 because it sits inside of libc.
+
+Benchmarking the C code::
+
+    #include <stdio.h>
+    #include <stdlib.h>
+
+
+    int main() {
+        int i = 0;
+        for (i = 0; i < 10000000; i++) {
+            char *x = malloc(23 * sizeof(char));
+            sprintf(x, "%d %d", i, i);
+            free(x);
+        }
+    }
+
+Which as discussed above, is more comperable to the Python, takes 1.93 seconds.
