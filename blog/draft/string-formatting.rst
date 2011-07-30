@@ -1,5 +1,5 @@
-String formatting with PyPy
-===========================
+PyPy is faster than C, again: string formatting
+===============================================
 
 String formatting is probably something you do just about every day in Python,
 and never think about.  It's so easy, just ``"%d %d" % (i, i)`` and you're
