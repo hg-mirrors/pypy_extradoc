@@ -15,8 +15,8 @@ will write more about that in the next days.  During this process, it is
 important to show that PyPy has stopped being "just" a research project, but
 that it is also a robust and solid solution for industry.
 
-We would like to write a list of "PyPy success stories", and thus we ask for your
-help:
+We would like to write a list of "PyPy success stories", and thus we ask
+for your help:
 
   - if you are already using PyPy in production;
 
