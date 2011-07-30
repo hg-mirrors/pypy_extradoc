@@ -11,9 +11,11 @@ equivilant might be::
     sprintf(x, "%d %d", i, i);
 
 Note that we had to stop for a second and consider how big numbers might get
-and overestimate the size (42 = length of the biggest number on 64bit (20) +
+and overestimate the size (44 = length of the biggest number on 64bit (20) +
 1 for the sign * 2 + 1 (for the space) + 1 (NUL byte)), it took the authors of
-this post, two experienced programmers, 3 tries to get the math right on this.
+this post, two experienced programmers, 3 tries to get the math
+right on this :-)
+
 This is fine, except you can't even return ``x`` from this function, a more
 fair comparison might be::
 
