@@ -7,16 +7,17 @@ done.  No thinking about how to size your result buffer, whether your output
 has an appropriae NULL byte at the end, or any other details.  A C
 equivilant might be::
 
-    char x[41];
+    char x[42];
     sprintf(x, "%d %d", i, i);
 
 Note that we had to stop for a second and consider how big numbers might get
-and overestimate the size (41 = length of the biggest number on 64bit + 1 for
-the sign).
+and overestimate the size (42 surprisingly enough is also the (length of the 
+biggest number on 64bit + 1 for
+the sign) * 2 + 1 for space + 1 for the NULL byte).
 This is fine, except you can't even return ``x`` from this function, a more
 fair comparison might be::
 
-    char *x = malloc(41 * sizeof(char));
+    char *x = malloc(42 * sizeof(char));
     sprintf(x, "%d %d", i, i);
 
 ``x`` is slightly overallocated in some situations, but that's fine.
@@ -39,7 +40,7 @@ and the C code::
 
     int main() {
         int i = 0;
-        char x[41];
+        char x[42];
         for (i = 0; i < 10000000; i++) {
             sprintf(x, "%d %d", i, i);
         }
