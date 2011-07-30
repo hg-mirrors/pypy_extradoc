@@ -4,16 +4,19 @@ PyPy is faster than C, again: string formatting
 String formatting is probably something you do just about every day in Python,
 and never think about.  It's so easy, just ``"%d %d" % (i, i)`` and you're
 done.  No thinking about how to size your result buffer, whether your output
-has an appropriae NUL byte at the end, or any other details.  A simple C
+has an appropriae NULL byte at the end, or any other details.  A C
 equivilant might be::
 
-    char x[23];
+    char x[41];
     sprintf(x, "%d %d", i, i);
 
-Which is fine, except you can't even return ``x`` from this function, a more
+Note that we had to stop for a second and consider how big numbers might get
+and overestimate the size (41 = length of the biggest number on 64bit + 1 for
+the sign).
+This is fine, except you can't even return ``x`` from this function, a more
 fair comparison might be::
 
-    char *x = calloc(23, sizeof(char));
+    char *x = malloc(41 * sizeof(char));
     sprintf(x, "%d %d", i, i);
 
 ``x`` is slightly overallocated in some situations, but that's fine.
@@ -36,7 +39,7 @@ and the C code::
 
     int main() {
         int i = 0;
-        char x[23];
+        char x[41];
         for (i = 0; i < 10000000; i++) {
             sprintf(x, "%d %d", i, i);
         }
