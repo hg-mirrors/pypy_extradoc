@@ -67,4 +67,4 @@ Benchmarking the C code::
         }
     }
 
-Which as discussed above, is more comperable to the Python, takes 1.93 seconds.
+Which as discussed above, is more comperable to the Python, takes 1.96 seconds.
