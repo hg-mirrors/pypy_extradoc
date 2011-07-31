@@ -12,7 +12,7 @@ The dictionary would be specialized for integer keys, obviating the need to
 allocate W_IntObjects (PyPy's equivilant to PyInt_Object).
 
 This, however introduces interesting behavior surrounding object identity
-(*only* with respect to primitive objects, none of what is discussed effects
+(*only* with respect to primitive objects, none of what is discussed affects
 either mutable, or user-defined objects), specifically the follow code no
 longer works::
 
