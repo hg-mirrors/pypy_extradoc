@@ -66,5 +66,5 @@ primitive type objects.  That is to say, the following code would work::
 
 As actually assigning allocating W_IntObjects will not occur.
 
-Opinioning welcome,
+Opinions welcome,
 Alex
