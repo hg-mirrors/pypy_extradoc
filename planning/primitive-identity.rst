@@ -9,10 +9,10 @@ type-specializing dictionaries. That means if you write something like::
     strs = {x: str(x) for x in xrange(100000)}
 
 The dictionary would be specialized for integer keys, obviating the need to
-allocate W_IntObjects (PyPy's equivilant to PyInt_Object).
+allocate W_IntObjects (PyPy's equivalent to PyIntObject).
 
 This, however introduces interesting behavior surrounding object identity
-(*only* with respect to primitive objects, none of what is discussed effects
+(*only* with respect to primitive objects, none of what is discussed affects
 either mutable, or user-defined objects), specifically the follow code no
 longer works::
 
@@ -30,7 +30,7 @@ There are several arguments in favor:
    interpreter implementation, and allows for better performance.
 
 2) For all of these objects, identity is trivial. That is to say identity could
-   always be replacement by an equality test and no semantics would be voilated.
+   always be replacement by an equality test and no semantics would be violated.
    In that respect requiring that identity be maintained adds no value, the
    new object is completely indistinguishable
 
@@ -66,5 +66,5 @@ primitive type objects.  That is to say, the following code would work::
 
 As actually assigning allocating W_IntObjects will not occur.
 
-Opinionig welcome,
+Opinioning welcome,
 Alex

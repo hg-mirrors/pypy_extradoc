@@ -4,8 +4,8 @@ PyPy is faster than C, again: string formatting
 String formatting is probably something you do just about every day in Python,
 and never think about.  It's so easy, just ``"%d %d" % (i, i)`` and you're
 done.  No thinking about how to size your result buffer, whether your output
-has an appropriae NULL byte at the end, or any other details.  A C
-equivilant might be::
+has an appropriate NULL byte at the end, or any other details.  A C
+equivalent might be::
 
     char x[44];
     sprintf(x, "%d %d", i, i);
@@ -13,8 +13,7 @@ equivilant might be::
 Note that we had to stop for a second and consider how big numbers might get
 and overestimate the size (44 = length of the biggest number on 64bit (20) +
 1 for the sign * 2 + 1 (for the space) + 1 (NUL byte)), it took the authors of
-this post, fijal and alex, 3 tries to get the math
-right on this :-)
+this post, fijal and alex, 3 tries to get the math right on this :-)
 
 This is fine, except you can't even return ``x`` from this function, a more
 fair comparison might be::
@@ -24,9 +23,9 @@ fair comparison might be::
 
 ``x`` is slightly overallocated in some situations, but that's fine.
 
-But we're not here to discuss the exact syntax of string formatting, we're here
-to discuss how blazing fast PyPy is at it, with the new ``unroll-if-alt``
-branch.  Given the Python code::
+But we're not here to just discuss the implementation of string
+formatting, we're here to discuss how blazing fast PyPy is at it, with
+the new ``unroll-if-alt`` branch.  Given the Python code::
 
     def main():
         for i in xrange(10000000):
@@ -48,12 +47,12 @@ and the C code::
         }
     }
 
-Ran under PyPy, at the head of the ``unroll-if-alt`` branch, and compiled with
-GCC 4.5.2 at -O4 (other optimization levels were tested, this produced the best
-performance). It took **0.85** seconds to execute under PyPy,
-and **1.63** seconds with
-the compiled binary. We think this demonstrates the incredible potential of
-dynamic compilation, GCC is unable to inline or unroll the ``sprintf`` call,
+Run under PyPy, at the head of the ``unroll-if-alt`` branch, and
+compiled with GCC 4.5.2 at -O4 (other optimization levels were tested,
+this produced the best performance). It took **0.85** seconds to
+execute under PyPy, and **1.63** seconds with the compiled binary. We
+think this demonstrates the incredible potential of dynamic
+compilation, GCC is unable to inline or unroll the ``sprintf`` call,
 because it sits inside of libc.
 
 Benchmarking the C code::
@@ -71,8 +70,8 @@ Benchmarking the C code::
         }
     }
 
-Which as discussed above, is more comperable to the Python,
-takes **1.96** seconds.
+Which as discussed above, is more comperable to the Python, gives a
+result of **1.96** seconds.
 
 Summary of performance:
 
@@ -84,12 +83,12 @@ Summary of performance:
 | relative to C |           1x |        0.83x |   0.16x |             **1.9x** |
 +---------------+--------------+--------------+---------+----------------------+
 
-So overall PyPy is almost **2x** faster. In this case this is clearly win
-of dynamic compilation over static one - `sprintf` function lives in libc
-and has no way of specializing over the constant string so it has to parse
-string every time it's executed. In the case of PyPy, we specialize assembler
-if we detect the left hand string of the modulo operator to be string and
-constant.
+Overall PyPy is almost **2x** faster. This is clearly win for dynamic
+compilation over static - the `sprintf` function lives in libc and so
+cannot be specializing over the constant string has to parse the
+string every time it's executed. In the case of PyPy, we specialize
+the assembler if we detect the left hand string of the modulo operator
+is constant.
 
 Cheers,
 alex & fijal
