@@ -5,7 +5,7 @@ String formatting is probably something you do just about every day in Python,
 and never think about.  It's so easy, just ``"%d %d" % (i, i)`` and you're
 done.  No thinking about how to size your result buffer, whether your output
 has an appropriae NULL byte at the end, or any other details.  A C
-equivilant might be::
+equivalent might be::
 
     char x[44];
     sprintf(x, "%d %d", i, i);
