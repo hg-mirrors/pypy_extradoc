@@ -85,10 +85,10 @@ Summary of performance:
 
 Overall PyPy is almost **2x** faster. This is clearly win for dynamic
 compilation over static - the `sprintf` function lives in libc and so
-cannot be specializing over the constant string has to parse the
-string every time it's executed. In the case of PyPy, we specialize
+cannot be specializing over the constant string, which has to be parsed
+every time it's executed. In the case of PyPy, we specialize
 the assembler if we detect the left hand string of the modulo operator
-is constant.
+to be constant.
 
 Cheers,
 alex & fijal
