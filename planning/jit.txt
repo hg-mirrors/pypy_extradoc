@@ -3,13 +3,6 @@ tasks with "(( ))" around them are unlikely.
 BUGS
 ----
 
-* a CALL that may release the GIL needs to have effectinfo=None,
-  because random other code can run at that point.
-
-  [fijal] - how can you access frames from another threads really?
-  [arigo] - cpython has sys._current_frames(), but not pypy; however
-            relying on this looks like it's not the job of the jit
-
 * fix the cases of MemoryError during the execution of machine code
   (they are now a fatal RPython error)
 
@@ -24,7 +17,7 @@ NEW TASKS
 
 - think about having different bytecode for "xyz %s" % stuff when left side
   is a compile time constant (and call unrolled version of string formatting
-  loop in this case).
+  loop in this case). (done on unroll-if-alt, different approach though)
 
 - consider how much old style classes in stdlib hurt us.
 
@@ -84,7 +77,7 @@ nice code at all so far:
 - let super() work with the method cache.
 
 - ((turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
-  floats.))
+  floats.)) (a mess, MAXSD/MINSD have different semantics WRT nan)
 
 BACKEND TASKS
 -------------
@@ -110,6 +103,8 @@ LATER (maybe) TASKS
   tracing.
   Also, an unrolled loop means several copies of the guards, which may
   fail independently, leading to an exponential number of bridges
+  (done on unroll-if-alt branch, more opts in frontend needed to work all
+  the time)
 
 - ((merge tails of loops-and-bridges?))
 
