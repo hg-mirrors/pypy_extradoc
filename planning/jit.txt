@@ -82,17 +82,20 @@ nice code at all so far:
 BACKEND TASKS
 -------------
 
-Look into avoiding double load of constant into register on 64bit.
-In case we want to first read a value, increment it and store (for example),
-we end up with double load of constant into register. Like:
+- Look into avoiding double load of constant into register on 64bit.
+  In case we want to first read a value, increment it and store (for example),
+  we end up with double load of constant into register. Like:
 
-movabs 0xsomemem,r11
-mov    (r11), r10
-add    0x1, r10
-movabs 0xsomemem,r11
-mov    r10, (r11)
+    movabs 0xsomemem,r11
+    mov    (r11), r10
+    add    0x1, r10
+    movabs 0xsomemem,r11
+    mov    r10, (r11)
 
-(second movabs could have been avoided)
+    (second movabs could have been avoided)
+
+- Look into this: http://paste.pocoo.org/show/450051/
+  commenting out the first line of f makes ~30% improvement
 
 LATER (maybe) TASKS
 -------------------
