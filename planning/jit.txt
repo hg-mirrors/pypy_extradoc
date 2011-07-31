@@ -95,7 +95,10 @@ BACKEND TASKS
     (second movabs could have been avoided)
 
 - Look into this: http://paste.pocoo.org/show/450051/
-  commenting out the first line of f makes ~30% improvement
+  commenting out the first line of f makes ~30% improvement. This is due to
+  the fact of reordering locals and valuestack when jumping across incompatible
+  loops (for no good reason really, but it does make a lot of assembler)
+
 
 LATER (maybe) TASKS
 -------------------
