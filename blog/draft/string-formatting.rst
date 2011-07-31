@@ -50,7 +50,8 @@ and the C code::
 
 Ran under PyPy, at the head of the ``unroll-if-alt`` branch, and compiled with
 GCC 4.5.2 at -O4 (other optimization levels were tested, this produced the best
-performance). It took .85 seconds to execute under PyPy, and 1.63 seconds with
+performance). It took **0.85** seconds to execute under PyPy,
+and **1.63** seconds with
 the compiled binary. We think this demonstrates the incredible potential of
 dynamic compilation, GCC is unable to inline or unroll the ``sprintf`` call,
 because it sits inside of libc.
@@ -70,4 +71,25 @@ Benchmarking the C code::
         }
     }
 
-Which as discussed above, is more comperable to the Python, takes 1.96 seconds.
+Which as discussed above, is more comperable to the Python,
+takes **1.96** seconds.
+
+Summary of performance:
+
++---------------+--------------+--------------+---------+----------------------+
+| Platform      | GCC (stack)  | GCC (malloc) | CPython | PyPy (unroll-if-alt) |
++---------------+--------------+--------------+---------+----------------------+
+| Time          |        1.63s |        1.96s |   10.2s |                0.85s |
++---------------+--------------+--------------+---------+----------------------+
+| relative to C |           1x |        0.83x |   0.16x |             **1.9x** |
++---------------+--------------+--------------+---------+----------------------+
+
+So overall PyPy is almost **2x** faster. In this case this is clearly win
+of dynamic compilation over static one - `sprintf` function lives in libc
+and has no way of specializing over the constant string so it has to parse
+string every time it's executed. In the case of PyPy, we specialize assembler
+if we detect the left hand string of the modulo operator to be string and
+constant.
+
+Cheers,
+alex & fijal
