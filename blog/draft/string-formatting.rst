@@ -12,11 +12,11 @@ equivalent might be::
 
 Note that we had to stop for a second and consider how big numbers might get
 and overestimate the size (44 = length of the biggest number on 64bit (20) +
-1 for the sign * 2 + 1 (for the space) + 1 (NUL byte)), it took the authors of
+1 for the sign * 2 + 1 (for the space) + 1 (NUL byte)): it took the authors of
 this post, fijal and alex, 3 tries to get the math right on this :-)
 
-This is fine, except you can't even return ``x`` from this function, a more
-fair comparison might be::
+This is fine, except you can't even return ``x`` from this function because
+it's allocated on the stack. A more fair comparison might be::
 
     char *x = malloc(44 * sizeof(char));
     sprintf(x, "%d %d", i, i);
@@ -50,7 +50,7 @@ and the C code::
 Run under PyPy, at the head of the ``unroll-if-alt`` branch, and
 compiled with GCC 4.5.2 at -O4 (other optimization levels were tested,
 this produced the best performance). It took **0.85** seconds to
-execute under PyPy, and **1.63** seconds with the compiled binary. We
+execute under PyPy, and **1.63** seconds with the compiled C binary. We
 think this demonstrates the incredible potential of dynamic
 compilation, GCC is unable to inline or unroll the ``sprintf`` call,
 because it sits inside of libc.
@@ -70,7 +70,7 @@ Benchmarking the C code::
         }
     }
 
-Which as discussed above, is more comperable to the Python, gives a
+Which as discussed above, is more comparable to the Python one, gives a
 result of **1.96** seconds.
 
 Summary of performance:
@@ -84,7 +84,7 @@ Summary of performance:
 +---------------+--------------+--------------+---------+----------------------+
 
 Overall PyPy is almost **2x** faster. This is clearly win for dynamic
-compilation over static - the `sprintf` function lives in libc and so
+compilation over static - the ``sprintf`` function lives in libc and so
 cannot be specializing over the constant string, which has to be parsed
 every time it's executed. In the case of PyPy, we specialize
 the assembler if we detect the left hand string of the modulo operator
