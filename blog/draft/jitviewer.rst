@@ -7,8 +7,8 @@ We're proud to announce the first public release of the jitviewer. As of now,
 jitviewer is a slightly internal tool that helps understanding how your Python 
 source code is compiled by the PyPy's JIT all the way down to machine code.
 
-To install it, you need a recent version of PyPy, for example one of the
-`nightly builds`_: 
+To install it, you need a very recent version of PyPy
+(newer than 9th of August), for example one of the `nightly builds`_: 
 
   - install ``pip`` and ``distribute`` either by creating a PyPy virtualenv_
     or by following the `installation instructions`_.
