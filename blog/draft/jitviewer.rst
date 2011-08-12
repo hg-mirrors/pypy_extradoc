@@ -69,7 +69,7 @@ levels:
   operations (like integer addition, reading fields out of structures) and
   guards (which check that the assumptions we made are actually true). Guards
   are in red.  These operations are "at the same level as C": so, for example,
-  ``int_add`` takes two unboxed integers which can be stored into the register
+  ``+`` takes two unboxed integers which can be stored into the register
   of the CPU.
 
 * Assembler: you can see it by clicking on "Show assembler" in the menu on the
