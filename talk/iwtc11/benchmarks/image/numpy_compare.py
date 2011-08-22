@@ -1,5 +1,5 @@
 from array import array
-import math
+import math, os, re
 
 try:
     import numpy
@@ -19,24 +19,54 @@ else:
         @property
         def height(self):
             return self.shape[0]
-    
 
+    class NumpyNNImage(numpy.ndarray):
+        def __getitem__(self, (y, x)):
+            if isinstance(y, slice):
+                return numpy.ndarray.__getitem__(self, (y, x))
+            return numpy.ndarray.__getitem__(self, ((y + 0.5).astype(int),
+                                                    (x + 0.5).astype(int)))
+
+    class NumpyBilinImage(numpy.ndarray):
+        def __getitem__(self, (y, x)):
+            if isinstance(y, slice) or y.dtype==int:
+                return numpy.ndarray.__getitem__(self, (y, x))
+            x0, x1 = numpy.floor(x).astype(int), numpy.ceil(x).astype(int)
+            y0, y1 = numpy.floor(y).astype(int), numpy.ceil(y).astype(int)
+            xoff, yoff = x-x0, y-y0
+            return (1.0-xoff)*(1.0-yoff) * self[y0, x0] + \
+                   (    xoff)*(1.0-yoff) * self[y0, x1] + \
+                   (1.0-xoff)*(    yoff) * self[y1, x0] + \
+                   (    xoff)*(    yoff) * self[y1, x1]
+
+def wrap_numpy(fn):
+    def f(a):
+        return NumpyImage(fn(a.ndarray()))
+    return f
+    
+######################################################################
+        
 class Image(array):
-    def __new__(cls, w, h, typecode='d', fromfile=None):
+    def __new__(cls, w, h, typecode='d', data=None):
         self = array.__new__(cls, typecode)
         return self
         
-    def __init__(self, w, h, typecode='d', fromfile=None):
+    def __init__(self, w, h, typecode='d', data=None):
         self.width = w
         self.height = h
-        if fromfile is not None:
-            self.fromfile(fromfile, w * h)
-        else:
+        if data is None:
             self.append(0)
             self *= w*h
+        elif isinstance(data, file):
+            self.fromfile(data, w * h)
+        else:
+            self.extend(data)
 
     def new(self):
         return Image(self.width, self.height, self.typecode)
+
+    def clone(self):
+        return Image(self.width, self.height, self.typecode, self)
             
     def _idx(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -49,9 +79,13 @@ class Image(array):
     def __setitem__(self, (x, y), val):
         array.__setitem__(self, self._idx(x, y), val)
 
-    def pixels(self, border=0):
-        for y in xrange(border, self.height-border):
-            for x in xrange(border, self.width-border):
+    def pixels(self, border=0, xborder=None, yborder=None):
+        if xborder is None:
+            xborder = border
+        if yborder is None:
+            yborder = border
+        for y in xrange(border, self.height-yborder):
+            for x in xrange(border, self.width-xborder):
                 yield x, y
 
     def ndarray(self):
@@ -64,12 +98,32 @@ class ZeroPaddedImage(Image):
         except IndexError:
             return 0
 
-def wrap_numpy(fn):
-    def f(a):
-        return NumpyImage(fn(a.ndarray()))
-    return f
-    
-def sobel_magnitude(a):
+class NNImage(Image):
+    def __getitem__(self, (x, y)):
+        return Image.__getitem__(self, (int(x + 0.5), int(y + 0.5)))
+
+    def ndarray(self):
+        return NumpyNNImage((self.height, self.width), self.typecode, self)
+
+class BilinImage(Image):
+    def __getitem__(self, (x, y)):
+        if isinstance(x, float) and isinstance(y, float):
+            x0, x1 = int(math.floor(x)), int(math.ceil(x))
+            y0, y1 = int(math.floor(y)), int(math.ceil(y))
+            xoff, yoff = x-x0, y-y0
+            return (1.0-xoff)*(1.0-yoff) * self[x0, y0] + \
+                   (1.0-xoff)*(    yoff) * self[x0, y1] + \
+                   (    xoff)*(1.0-yoff) * self[x1, y0] + \
+                   (    xoff)*(    yoff) * self[x1, y1]
+        else:
+            return Image.__getitem__(self, (x, y))
+
+    def ndarray(self):
+        return NumpyBilinImage((self.height, self.width), self.typecode, self)
+
+######################################################################
+
+def sobel_magnitude(a): # pypy: 106 fps, cpython: 0.74 fps 
     b = a.new()
     for x, y in a.pixels(border=1):
         dx = -1.0 * a[x-1, y-1] + 1.0 * a[x+1, y-1] + \
@@ -81,7 +135,7 @@ def sobel_magnitude(a):
     return b
 
 @wrap_numpy
-def sobel_magnitude_numpy(a):
+def sobel_magnitude_numpy(a): # 38 fps
     dx = scipy.signal.convolve2d(a, numpy.array([[-1.0, 0.0, 1.0],
                                                  [-2.0, 0.0, 2.0],
                                                  [-1.0, 0.0, 1.0]]), 'same')
@@ -91,7 +145,7 @@ def sobel_magnitude_numpy(a):
     return numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255).astype('B')
 
 @wrap_numpy
-def sobel_magnitude_numpy2(a):
+def sobel_magnitude_numpy2(a): # 89 fps
     dx = -1.0 * a[0:-3, 0:-3] + 1.0 * a[0:-3, 2:-1] + \
          -2.0 * a[1:-2, 0:-3] + 2.0 * a[1:-2, 2:-1] + \
          -1.0 * a[2:-1, 0:-3] + 1.0 * a[2:-1, 2:-1]
@@ -100,9 +154,82 @@ def sobel_magnitude_numpy2(a):
     res = numpy.zeros(a.shape)
     res[1:-2, 1:-2] = numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255)
     return res.astype('B')
+
+######################################################################
+
+def magnify(img): # pypy: 86 fps, cpython: 3.4 fps (NNImage)
+                  # pypy: 78 fps, cpython: 2.1 fps (BilinImage)
+    out = img.clone()
+    maxr = img.height/3
+    for x, y in img.pixels(xborder=img.width/2 - maxr, yborder=img.height/2 - maxr):
+            dx, dy = x - img.width/2, y - img.height/2
+            a = math.atan2(dy, dx)
+            r = math.sqrt(dx ** 2 + dy ** 2)
+            if r < maxr:
+                nr = r*r / maxr
+                nx, ny = nr*math.cos(a), nr*math.sin(a)
+                out[x,y] = min(int(img[nx + img.width/2, ny + img.height/2]), 255)
+            else:
+                out[x,y] = img[x,y]
+    return out
+
+@wrap_numpy
+def magnify_numpy(img): # 83 fps (NNImage), 62 fps (BilinImage)
+    out = img.copy()
+    maxr = img.shape[0]/3
+    x, y = numpy.meshgrid(range(img.shape[1]/2 - maxr, img.shape[1]/2 + maxr),
+                          range(img.shape[0]/2 - maxr, img.shape[0]/2 + maxr))
+    dx, dy = x - img.shape[1]/2, y - img.shape[0]/2
+    a = numpy.arctan2(dy, dx)
+    r = numpy.sqrt(dx ** 2 + dy ** 2)
+    nr = r*r / maxr
+    nx, ny = nr*numpy.cos(a) + img.shape[1]/2, nr*numpy.sin(a) + img.shape[0]/2
+    outsub = out[img.shape[0]/2 - maxr : img.shape[0]/2 + maxr,
+                 img.shape[1]/2 - maxr : img.shape[1]/2 + maxr]
+    outsub[r<maxr] = img[ny[r<maxr], nx[r<maxr]]
+    return numpy.minimum(out, 255).astype('B')
+
+######################################################################
+
+def mplayer(Image, fn='tv://', options=''):
+    f = os.popen('mplayer -really-quiet -noframedrop ' + options + ' ' 
+                 '-vo yuv4mpeg:file=/dev/stdout 2>/dev/null </dev/null ' + fn)
+    hdr = f.readline()
+    m = re.search('W(\d+) H(\d+)', hdr)
+    w, h = int(m.group(1)), int(m.group(2))
+    while True:
+        hdr = f.readline()
+        if hdr != 'FRAME\n':
+            break
+        yield Image(w, h, 'B', f)
+        f.read(w*h/2) # Color data
+
+class MplayerViewer(object):
+    def __init__(self):
+        self.width = self.height = None
+    def view(self, img):
+        assert img.typecode == 'B'
+        if not self.width:
+            self.mplayer = os.popen('mplayer -really-quiet -noframedrop - ' +
+                                    '2> /dev/null ', 'w')
+            self.mplayer.write('YUV4MPEG2 W%d H%d F100:1 Ip A1:1\n' %
+                               (img.width, img.height))
+            self.width = img.width
+            self.height = img.height
+            self.color_data = array('B', [127]) * (img.width * img.height / 2)
+        assert self.width == img.width
+        assert self.height == img.height
+        self.mplayer.write('FRAME\n')
+        img.tofile(self.mplayer)
+        self.color_data.tofile(self.mplayer)
+
+default_viewer = MplayerViewer()
+
+def view(img):
+    default_viewer.view(img)
     
+
 if __name__ == '__main__':
-    from io import mplayer, view
     from time import time
 
     try:
@@ -112,10 +239,12 @@ if __name__ == '__main__':
         pass
 
     start = start0 = time()
-    for fcnt, img in enumerate(mplayer(Image, 'test.avi', '-benchmark')):
+    for fcnt, img in enumerate(mplayer(BilinImage, 'test.avi', '-benchmark')):
         #view(img)
         #view(sobel_magnitude(img))
-        view(sobel_magnitude_numpy2(img))
+        #view(sobel_magnitude_numpy(img))
+        #view(magnify(img))
+        view(magnify_numpy(img))
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:
