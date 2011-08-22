@@ -73,7 +73,7 @@ def sobel_magnitude(a):
     b = a.new()
     for x, y in a.pixels(border=1):
         dx = -1.0 * a[x-1, y-1] + 1.0 * a[x+1, y-1] + \
-             -2.0 * a[x-1, y]   + 2.0 * a[x+1, y]   + \
+             -2.0 * a[x-1, y  ] + 2.0 * a[x+1, y  ] + \
              -1.0 * a[x-1, y+1] + 1.0 * a[x+1, y+1]
         dy = -1.0 * a[x-1, y-1] - 2.0 * a[x, y-1] - 1.0 * a[x+1, y-1] + \
               1.0 * a[x-1, y+1] + 2.0 * a[x, y+1] + 1.0 * a[x+1, y+1]
@@ -89,6 +89,17 @@ def sobel_magnitude_numpy(a):
                                                  [ 0.0,  0.0,  0.0],
                                                  [ 1.0,  2.0,  1.0]]), 'same')
     return numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255).astype('B')
+
+@wrap_numpy
+def sobel_magnitude_numpy2(a):
+    dx = -1.0 * a[0:-3, 0:-3] + 1.0 * a[0:-3, 2:-1] + \
+         -2.0 * a[1:-2, 0:-3] + 2.0 * a[1:-2, 2:-1] + \
+         -1.0 * a[2:-1, 0:-3] + 1.0 * a[2:-1, 2:-1]
+    dy = -1.0 * a[0:-3, 0:-3] - 2.0 * a[0:-3, 1:-2] - 1.0 * a[0:-3, 2:-1] + \
+          1.0 * a[2:-1, 0:-3] + 2.0 * a[2:-1, 1:-2] + 1.0 * a[2:-1, 2:-1] 
+    res = numpy.zeros(a.shape)
+    res[1:-2, 1:-2] = numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255)
+    return res.astype('B')
     
 if __name__ == '__main__':
     from io import mplayer, view
@@ -104,7 +115,7 @@ if __name__ == '__main__':
     for fcnt, img in enumerate(mplayer(Image, 'test.avi', '-benchmark')):
         #view(img)
         #view(sobel_magnitude(img))
-        view(sobel_magnitude_numpy(img))
+        view(sobel_magnitude_numpy2(img))
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:
