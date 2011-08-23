@@ -4,6 +4,7 @@ import math, os, re
 try:
     import numpy
     import scipy.signal
+    import scipy.ndimage.filters
 except ImportError:
     pass
 else:
@@ -155,6 +156,26 @@ def sobel_magnitude_numpy2(a): # 89 fps
     res[1:-2, 1:-2] = numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255)
     return res.astype('B')
 
+@wrap_numpy
+def sobel_magnitude_numpy3(a):
+    dx = numpy.zeros(a.shape)
+    scipy.ndimage.filters.sobel(a, 1, dx)
+    dy = numpy.zeros(a.shape)
+    scipy.ndimage.filters.sobel(a, 0, dy)
+    return numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255).astype('B')
+
+@wrap_numpy
+def sobel_magnitude_numpy4(a):
+    dx = numpy.zeros(a.shape)
+    scipy.ndimage.filters.convolve(a, numpy.array([[-1.0, 0.0, 1.0],
+                                                   [-2.0, 0.0, 2.0],
+                                                   [-1.0, 0.0, 1.0]]), dx)
+    dy = numpy.zeros(a.shape)
+    scipy.ndimage.filters.convolve(a, numpy.array([[-1.0, -2.0, -1.0],
+                                                   [ 0.0,  0.0,  0.0],
+                                                   [ 1.0,  2.0,  1.0]]), dy)
+    return numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255).astype('B')
+
 ######################################################################
 
 def magnify(img): # pypy: 86 fps, cpython: 3.4 fps (NNImage)
@@ -241,10 +262,10 @@ if __name__ == '__main__':
     start = start0 = time()
     for fcnt, img in enumerate(mplayer(BilinImage, 'test.avi', '-benchmark')):
         #view(img)
-        #view(sobel_magnitude(img))
+        view(sobel_magnitude(img))
         #view(sobel_magnitude_numpy(img))
         #view(magnify(img))
-        view(magnify_numpy(img))
+        #view(magnify_numpy(img))
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:
