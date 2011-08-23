@@ -11,7 +11,7 @@ NEW TASKS
 ---------
 
 - have benchmarks for jit compile time and jit memory usage
-  
+
 - maybe refactor a bit the x86 backend, particularly the register
   allocation
 
@@ -36,7 +36,18 @@ NEW TASKS
 - implement small tuples, there are a lot of places where they are hashed and
   compared
 
-- support single floats in the JIT
+- implement INT_ABS in the JIT, currently jtransform generates a call to an
+  inlined function, which does the trivial branching. However, GCC shows that
+  it can be done branchless in the ASM (as we do for FLOAT_ABS, which is easier
+  because it has an explicit sign bit). GCC generates:
+
+    movq    %rdi, %rdx
+    sarq    $63, %rdx
+    movq    %rdx, %rax
+    xorq    %rdi, %rax
+    subq    %rdx, %rax
+    ret
+
 
 OPTIMIZATIONS
 -------------
