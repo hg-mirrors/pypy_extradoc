@@ -212,6 +212,39 @@ def magnify_numpy(img): # 83 fps (NNImage), 62 fps (BilinImage)
 
 ######################################################################
 
+def range2d(a, b):
+    for y in range(a, b):
+        for x in range(a, b):
+            yield x, y
+            
+def local_max(img):  # pypy: 4.72 fps, cpython: 0.31 fps 
+    s = 3
+    out = img.new()
+    for x, y in img.pixels(border=s):
+        for dx, dy in range2d(-s, s+1):
+            if img[x+dx, y+dy] > img[x, y]:
+                break
+        else:
+            out[x, y] = 255
+    return out
+
+def local_edge(img):  # pypy: 10.25 fps, cpython: 0.25 fps (including sobel_magnitude)
+    out = img.new()
+    for x, y in img.pixels(border=1):
+        n = len([1 for dx, dy in range2d(-1, 2) if img[x+dx, y+dy] > img[x, y]])
+        if n <= 3 and img[x,y] > 20:
+            out[x, y] = 255
+    return out
+
+# Haar detector
+# Tracing linesegments
+# Subpixel edge-detection
+# Distance-transform
+# Subpixel correlation/edge-detection
+                
+######################################################################
+
+
 def mplayer(Image, fn='tv://', options=''):
     f = os.popen('mplayer -really-quiet -noframedrop ' + options + ' ' 
                  '-vo yuv4mpeg:file=/dev/stdout 2>/dev/null </dev/null ' + fn)
@@ -266,6 +299,8 @@ if __name__ == '__main__':
         #view(sobel_magnitude_numpy(img))
         #view(magnify(img))
         #view(magnify_numpy(img))
+        #view(local_max(img))
+        view(local_edge(sobel_magnitude(img)))
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:
