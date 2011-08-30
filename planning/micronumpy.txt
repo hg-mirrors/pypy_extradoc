@@ -8,8 +8,6 @@ NEW TASKS
 - add more ways to select dtypes (aliases or more advanced code to choose the 
   types)
 
-- move reduce functions to be ufuncs and get them jitted properly
-
 - astype
 
 - a good sort function
