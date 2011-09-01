@@ -146,7 +146,7 @@ def sobel_magnitude_numpy(a): # 38 fps
     return numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255).astype('B')
 
 @wrap_numpy
-def sobel_magnitude_numpy2(a): # 89 fps
+def sobel_magnitude_numpy2(a): # 89 fps (Image), 81 fps (NNImage),  80 fps (BilinImage)
     dx = -1.0 * a[0:-3, 0:-3] + 1.0 * a[0:-3, 2:-1] + \
          -2.0 * a[1:-2, 0:-3] + 2.0 * a[1:-2, 2:-1] + \
          -1.0 * a[2:-1, 0:-3] + 1.0 * a[2:-1, 2:-1]
@@ -157,7 +157,7 @@ def sobel_magnitude_numpy2(a): # 89 fps
     return res.astype('B')
 
 @wrap_numpy
-def sobel_magnitude_numpy3(a):
+def sobel_magnitude_numpy3(a): # 106 fps
     dx = numpy.zeros(a.shape)
     scipy.ndimage.filters.sobel(a, 1, dx)
     dy = numpy.zeros(a.shape)
@@ -165,7 +165,7 @@ def sobel_magnitude_numpy3(a):
     return numpy.minimum(numpy.sqrt(dx*dx + dy*dy) / 4.0, 255).astype('B')
 
 @wrap_numpy
-def sobel_magnitude_numpy4(a):
+def sobel_magnitude_numpy4(a): # 105 fps
     dx = numpy.zeros(a.shape)
     scipy.ndimage.filters.convolve(a, numpy.array([[-1.0, 0.0, 1.0],
                                                    [-2.0, 0.0, 2.0],
@@ -295,12 +295,12 @@ if __name__ == '__main__':
     start = start0 = time()
     for fcnt, img in enumerate(mplayer(BilinImage, 'test.avi', '-benchmark')):
         #view(img)
-        view(sobel_magnitude(img))
-        #view(sobel_magnitude_numpy(img))
+        #view(sobel_magnitude(img))
+        #view(sobel_magnitude_numpy2(img))
         #view(magnify(img))
-        #view(magnify_numpy(img))
+        view(magnify_numpy(img))
         #view(local_max(img))
-        view(local_edge(sobel_magnitude(img)))
+        #view(local_edge(sobel_magnitude(img)))
         print 1.0 / (time() - start), 'fps, ', (fcnt-2) / (time() - start0), 'average fps'
         start = time()
         if fcnt==2:
