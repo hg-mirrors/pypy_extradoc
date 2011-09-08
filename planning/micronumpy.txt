@@ -16,7 +16,11 @@ NEW TASKS
 
 - a good sort function
 
-- indexing by tuples and lists
+- indexing by arrays and lists
+
+- endianness
+
+- scalar types like numpy.int8
 
 - add multi-dim arrays
 
