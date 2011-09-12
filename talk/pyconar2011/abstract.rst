@@ -10,4 +10,4 @@ video processing, numeric array manipulation faster than in C etc. etc.
 During the talk I'll present some demos and talk what things are possible having
 a decent optimizing just-in-time compiler and briefly discuss strategies that
 we used for achieving this. I'll also discuss how faster-than-C, pypy's original
-goal from years ago, was after all not that far off.
+goal from years ago, is after all not that far off.
