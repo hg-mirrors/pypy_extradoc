@@ -12,4 +12,3 @@ Thanks,
 The PyPy Team
 
 .. _`detailed plan`: http://pypy.org/py3donate.html
-.. _`our website`: http://pypy.org
