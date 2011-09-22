@@ -1,8 +1,8 @@
+.. include:: beamerdefs.txt
 
-Little things that PyPy makes possible
-======================================
-
-xxx
+=============================
+Making little things possible
+=============================
 
 Python
 ------
@@ -20,12 +20,24 @@ Python
 Is it?
 ------
 
-* xkcd [citation needed]
+.. image:: wikipedian_protester.png
+   :scale: 700%
+   :align: center
 
-Things you can do with PyPy
----------------------------
+Things you can do with PyPy (and not with CPython)
+--------------------------------------------------
 
-* XXX demos
+|pause|
+
+* real time video processing
+
+|pause|
+
+* software-rendered games
+
+|pause|
+
+* this is just the beginning!
 
 What is PyPy?
 -------------
