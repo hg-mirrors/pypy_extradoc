@@ -86,7 +86,7 @@ PyPy 1.6 - what you can do
 
 * a lot of libraries just work
 
-* your programs either no or minimal changes
+* your programs need either no or minimal changes
 
 Real world use case (1)
 -----------------------
