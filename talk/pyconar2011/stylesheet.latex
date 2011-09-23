@@ -1,3 +1,10 @@
+
+%%% Custom LaTeX preamble
+% PDF Standard Fonts
+\usepackage{mathptmx} % Times
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+
 \usepackage{ulem}
 \usetheme{Boadilla}
 \usecolortheme{whale}

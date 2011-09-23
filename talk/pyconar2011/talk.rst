@@ -17,27 +17,20 @@ Python
 
 * Python is slow
 
-Is it?
-------
+Is python slow?
+---------------
 
 .. image:: wikipedian_protester.png
-   :scale: 700%
+   :scale: 500%
    :align: center
 
-Things you can do with PyPy (and not with CPython)
---------------------------------------------------
+|small|
 
-|pause|
+* http://blog.bossylobster.com/2011/08/lesson-v8-can-teach-python-and-other.html
 
-* real time video processing
+|end_small|
 
-|pause|
-
-* software-rendered games
-
-|pause|
-
-* this is just the beginning!
+* PyPy **29 wins**, Node.js (V8) **20 wins**, one tie
 
 What is PyPy?
 -------------
@@ -55,24 +48,19 @@ What is PyPy (2)?
 
 * Comes with a JIT compiler
 
-How fast is PyPy?
------------------
+* Stackless
 
-* XXX speed website
+|pause|
 
-* XXX django over time
-
-* XXX v8 vs pypy
+* **fast**
 
 How fast is PyPy?
 -----------------
-
-* pretty damn fast
 
 PyPy 1.6 - status
 -----------------
 
-* Released on XXX
+* Released on 16th of August
 
 * Python 2.7.1
 
@@ -81,6 +69,108 @@ PyPy 1.6 - status
 * Most programs just work
 
 * (C extensions might not)
+
+PyPy 1.6 - status (2)
+---------------------
+
+* numpy (in progress)
+
+* ctypes (fast)
+
+* stable and compatible
+
+PyPy 1.6 - what you can do
+--------------------------
+
+* try using on your own programs
+
+* a lot of libraries just work
+
+* your programs either no or minimal changes
+
+Real world use case (1)
+-----------------------
+
+* LWN's gitdm
+
+  - http://lwn.net/Articles/442268/
+
+  - data mining tool
+
+  - reads the output of ``git log``
+
+  - generate kernel development statistics
+
+|pause|
+
+* Performance
+
+  - CPython: 63 seconds
+
+  - PyPy: **21 seconds**
+
+|pause|
+
+|example<| ``lwn.net`` |>|
+|small|
+
+  [...] PyPy is ready for prime time; it implements the (Python 2.x)
+  language faithfully, and it is fast.
+
+|end_small|
+|end_example|
+
+
+Real world use case (2)
+-----------------------
+
+* **MyHDL**: VHDL-like language written in Python
+
+  - |scriptsize| http://www.myhdl.org/doku.php/performance |end_scriptsize|
+
+  - (now) competitive with "real world" VHDL and Verilog simulators
+
+
+|pause|
+
+|example<| ``myhdl.org`` |>|
+|small|
+
+  [...] the results are spectacular. By simply using a different interpreter,
+  our simulations run 6 to 12 times faster.
+
+|end_small|
+|end_example|
+
+How you can help?
+-----------------
+
+* Try it on your application
+
+  - if it's slow, we want to know!
+
+  - if it does not work, too :-)
+
+  - if it works and it's fast, that as well
+
+* Tell people about PyPy
+
+* Contribute to PyPy! (it's not **that** hard :-))
+
+Things you can do with Python using PyPy
+----------------------------------------
+
+|pause|
+
+* real time video processing
+
+|pause|
+
+* software-rendered games
+
+|pause|
+
+* this is just the beginning!
 
 Contacts, Q/A
 --------------
