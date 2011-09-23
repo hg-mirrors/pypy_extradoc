@@ -190,8 +190,8 @@ Contacts, Q/A
 Shameless ad
 ------------
 
-* Want to make run your software fast?
+* Want your software to run faster?
 
-* We can make it happen
+* We can make it happen!
 
 * fijall@gmail.com
