@@ -157,6 +157,8 @@ How you can help?
 
 * Contribute to PyPy! (it's not **that** hard :-))
 
+* Donate (py3k, numpy)
+
 Things you can do with Python using PyPy
 ----------------------------------------
 
