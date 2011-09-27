@@ -15,10 +15,6 @@ NEW TASKS
 - maybe refactor a bit the x86 backend, particularly the register
   allocation
 
-- think about having different bytecode for "xyz %s" % stuff when left side
-  is a compile time constant (and call unrolled version of string formatting
-  loop in this case). (done on unroll-if-alt, different approach though)
-
 - consider how much old style classes in stdlib hurt us.
 
 - the integer range analysis cannot deal with int_between, because it is
@@ -90,6 +86,9 @@ nice code at all so far:
 - ((turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
   floats.)) (a mess, MAXSD/MINSD have different semantics WRT nan)
 
+- list.pop() (with no arguments) calls into delitem, rather than recognizing that
+  no items need to be moved
+
 BACKEND TASKS
 -------------
 
@@ -113,15 +112,6 @@ BACKEND TASKS
 
 LATER (maybe) TASKS
 -------------------
-
-- think out looking into functions or not, based on arguments,
-  for example contains__Tuple should be unrolled if tuple is of constant
-  length.  This should be possible now that we do some heap opt during
-  tracing.
-  Also, an unrolled loop means several copies of the guards, which may
-  fail independently, leading to an exponential number of bridges
-  (done on unroll-if-alt branch, more opts in frontend needed to work all
-  the time)
 
 - ((merge tails of loops-and-bridges?))
 
