@@ -142,6 +142,30 @@ Real world use case (2)
 |end_small|
 |end_example|
 
+Real world use case (3)
+-----------------------
+
+XXX Quora
+
+Real world use case (4)
+-----------------------
+
+* pypy
+
+* django, piston, gunicorn, psycopg2-ct (ctypes implementation of psycopg2), thrift (without the fastbinary module)
+
+* cassandra, postgresql
+
+* ELB (amazon load balancer) to nginx with 3-10 worker processes
+
+|pause|
+
+* cpython2.6 - **12mb/s** - CPU LIMITED
+
+* pypy - **100mb/s** - NETWORK LIMITED
+
+* http://www.reddit.com/r/Python/comments/kt8bx/ask_rpython_whats_your_experience_with_pypy_and/c2n5pog
+
 How you can help?
 -----------------
 
