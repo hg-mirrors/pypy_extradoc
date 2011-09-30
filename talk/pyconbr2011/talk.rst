@@ -145,18 +145,22 @@ Real world use case (2)
 Real world use case (3)
 -----------------------
 
-XXX Quora
+* Quora
+
+* http://b.qr.ae/q2Rer2
+
+|example<| ``quora.com`` |>|
+|small|
+
+  [...] benchmarking the site internally has shown a 2x speed increase in page load times, and we've already heard from users that the site feels faster.
+
+|end_small|
+|end_example|
 
 Real world use case (4)
 -----------------------
 
-* pypy
-
-* django, piston, gunicorn, psycopg2-ct (ctypes implementation of psycopg2), thrift (without the fastbinary module)
-
-* cassandra, postgresql
-
-* ELB (amazon load balancer) to nginx with 3-10 worker processes
+* pypy, django, piston, gunicorn, psycopg2-ct (ctypes implementation of psycopg2), thrift (without the fastbinary module), cassandra, postgresql, ELB (amazon load balancer) to nginx with 3-10 worker processes
 
 |pause|
 
@@ -164,7 +168,20 @@ Real world use case (4)
 
 * pypy - **100mb/s** - NETWORK LIMITED
 
-* http://www.reddit.com/r/Python/comments/kt8bx/ask_rpython_whats_your_experience_with_pypy_and/c2n5pog
+* http://bit.ly/mT2dgQ
+
+|example<| ``ficture.it`` |>|
+|small|
+
+  [...] Give your pypy lots of memory. Give your pypy lots of time to warm up. You won't be sorry.
+
+|end_small|
+|end_example|
+
+Real world use case (5)
+-----------------------
+
+* Your application!
 
 How you can help?
 -----------------
