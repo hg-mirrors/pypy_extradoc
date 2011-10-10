@@ -20,4 +20,5 @@ each of the examples will be to highlight the type of work that is sped up
 and why this represents both a boon for existing Python programmers, as well
 as an opportunity for Python to expand to new audiences.
 
-We'll also explain a bit PyPy's current status, its goals and near future.
+We'll also explain a bit PyPy's accomplishements in the passing year that
+make all of this possible, current status, its goals and the near future.
