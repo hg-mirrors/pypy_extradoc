@@ -47,5 +47,6 @@ conferences, they're also both very active PyPy core developers.
 
 We don't think tutorial assistants would be necessary.
 
-Outline: ...
-
+It's a bit hard to give a reasonable outline by now. Since the project
+evolves a lot, it's very likely a completely new set of tools will
+be available by the time we conduct the tutorial.
