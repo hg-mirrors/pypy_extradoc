@@ -20,6 +20,7 @@ Some of the things we're working on at the moment:
 
 * More dtypes, including unsigned integers, singe floats, and complex doubles.
 * Subscripting arrays by other array as indices, and by bool arrays as masks.
+* Starting to reuse python-level original numpy
 
 Some of the things on the near horizon are:
 
