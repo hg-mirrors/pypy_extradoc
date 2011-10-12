@@ -44,7 +44,7 @@ def sobel_magnitude_uint8(img):
              -1.0 * img[p + (-1, 1)] + 1.0 * img[p + (1, 1)]
         dy = -1.0*img[p + (-1,-1)] -2.0*img[p + (0,-1)] -1.0*img[p + (1,-1)] + \
               1.0*img[p + (-1, 1)] +2.0*img[p + (0, 1)] +1.0*img[p + (1, 1)]
-        res[p] = min(int(sqrt(dx*dx + dy*dy) / 4.0), 255)
+        res[p] = min(int(sqrt(dx*dx + dy*dy) / 2.0), 255)
     return res
 
 def main(args):
