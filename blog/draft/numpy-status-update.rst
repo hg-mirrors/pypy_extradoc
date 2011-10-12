@@ -1,10 +1,13 @@
-NumPy Status Update
--------------------
+NumPy funding and status update
+-------------------------------
 
 Hi everyone,
 
-It's been a little while since we wrote about NumPy on PyPy, so I wanted to
+It's been a little while since we wrote about NumPy on PyPy, so we wanted to
 give everyone an update on what we've been up to, and what's up next for us.
+
+We would also like to note that we're launching a **funding campaign**
+for NumPy support in PyPy. Details can be found on the `donation page`_.
 
 Some of the things that have happened since last we wrote are:
 
@@ -31,3 +34,5 @@ Some of the things on the near horizon are:
 
 If you're interested in helping out, we always love more contributors,
 Alex, Maciej, Justin, and the whole PyPy team
+
+.. _`donation page`: http://pypy.org/numpy_donate.html
