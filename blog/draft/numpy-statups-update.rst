@@ -18,9 +18,9 @@ Some of the things that have happened since last we wrote are:
 
 Some of the things we're working on at the moment:
 
-* More dtypes, including unsigned integers, singe floats, and complex doubles.
+* More dtypes, including complex values and user-defined dtypes.
 * Subscripting arrays by other array as indices, and by bool arrays as masks.
-* Starting to reuse python-level original numpy
+* Starting to reuse Python code from the original numpy.
 
 Some of the things on the near horizon are:
 
