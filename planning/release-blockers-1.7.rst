@@ -7,5 +7,5 @@
 
 * twisted threading tests (?) https://bugs.pypy.org/issue645
 
-* https://bugs.pypy.org/issue889
+* cpyext header files: https://bugs.pypy.org/issue889
 
