@@ -3,3 +3,4 @@
 
 * django tests (?) https://bugs.pypy.org/issue908
 
+* urllib2_localnet test failure
