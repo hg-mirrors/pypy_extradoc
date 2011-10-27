@@ -119,8 +119,13 @@ PyPy's JIT is good
 --------------------------
 
 I was pretty surprised, but the JIT actually did make stuff work nicely.
-It is possible to write code in Python and make it run fast, but you have
-to be a bit careful. Again, jitviewer is your friend.
+The changes that were done were relatively minor and straightforward, once
+the module was cleaned to the normal "pythonic" state.
+It is worth noting that it's possible to write code in Python and make it
+run really fast, but you have to be a bit careful. Again, jitviewer is your
+friend when determining why things are slow. I hope we can write more tools
+in the future that would more automatically guide people through potential
+performance pitfals.
 
 Cheers,
 fijal
