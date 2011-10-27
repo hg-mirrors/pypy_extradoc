@@ -11,7 +11,8 @@ explain in one line what the benchmark does?
 For this particular benchmark, the numbers are as follow. **Note that CPython by
 default uses the optimized C extension, while PyPy uses the pure Python one**.
 PyPy trunk contains another pure Python version which has been optimized
-specifically for the PyPy JIT, which is the subject of this post.
+specifically for the PyPy JIT. Detailed optimizations are described later in
+this post.
 
 The number reported is the time taken for the third run, when things are
 warmed up. Full session `here`_.
@@ -40,10 +41,13 @@ Expectations are high
 
 A lot of performance critical stuff in Python world is already written in a hand
 optimized C. Writing C (especially when you interface with CPython C API) is
-ugly and takes significant effort so it's only true for places which are
-well separated enough, but still. People would expect PyPy to outperform
-C extensions. Fortunately it's possible, but requires a bit of effort on
-the programmer side as well.
+ugly and takes significant effort. This approach does not scale well when
+there is a lot of code to be written or when there is a very tight coupling
+between the part to be rewritten and the rest of the code. Still, people would
+expect PyPy to be better at "tasks" and not precisely at running equivalent
+code, hence a comparison between the C extension and the pure python version
+is sound. Fortunately it's possible to outperform the C extension, but requires
+a bit of effort on the programmer side as well.
 
 Often interface between the C and Python part is ugly
 -----------------------------------------------------
@@ -69,13 +73,13 @@ No nice and fast way to build strings in Python
 -----------------------------------------------
 
 PyPy has a custom thing called ``__pypy__.builders.StringBuilder``. It has
-few features that make it much easier to optimize than other ways like
+a few features that make it much easier to optimize than other ways like
 ``str.join()`` or ``cStringIO``.
 
-* You can specify the start size. Helps a lot if you can even provide a rough
-  estimate on the size of the string (less copying)
-* Only append and build allowed. While string is built you can't seek or
-  do anything else. Once it's built you can never append any more.
+* You can specify the start size, which helps a lot if you can even provide
+  a rough estimate on the size of the string (less copying)
+* Only append and build are allowed. After the string is built you
+  can't seek or do anything else. Once it's built you can never append any more.
 * Unicode version available as well as ``__pypy__.builders.UnicodeBuilder``.
 
 Method calls are ok, immutable globals are ok
