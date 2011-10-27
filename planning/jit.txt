@@ -190,7 +190,5 @@ Random ideas from hakanardo
   - Better pointer aliasing analyzer that will emit guards that pointers are
 	different when needed.
 
-  - Make heap optimizer aware of setitems produced by forcing virtuals.
-
   - Movinging loop-invariant setitems out of the loops entierly.
 
