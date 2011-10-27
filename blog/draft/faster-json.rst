@@ -102,7 +102,7 @@ is faster than::
   for c in s:
     pass
 
-This is a PyPy performance bug and should be fixed, but on different branch ;-)
+This is a PyPy performance bug and should be fixed, but on a different branch ;-)
 
 PyPy's JIT is good
 --------------------------
