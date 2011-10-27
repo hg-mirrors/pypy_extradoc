@@ -4,13 +4,17 @@ Speeding up JSON encoding in PyPy
 Hi
 
 Recently I spent a bit of effort into speeding up JSON in PyPy. I started with
-writing a `benchmark`_, which is admiteddly not very good, but it's better
-than nothing (suggestions to improve welcomed!).
+writing a `benchmark`_, which is admittedly not a very good one, but it's
+better than nothing (suggestions on how to improve it are welcome!). XXX:
+explain in one line what the benchmark does?
 
-For this particular benchmark, the numbers are as follow. Note that CPython
-uses hand-optimized C extension and PyPy uses a pure python version,
-hand-optimized in trunk, default in older versions. I'm taking the third run,
-when things are warmed up, full session `here`_.
+For this particular benchmark, the numbers are as follow. Note that CPython by
+default uses the optimized C extension, while PyPy uses the pure Python one.
+PyPy trunk contains another pure Python version which has been optimized
+specifically for the PyPy JIT, which is the subject of this post.
+
+The number reported is the time taken for the third run, when things are
+warmed up. Full session `here`_.
 
 +----------------------------+-------------+
 | CPython 2.6                | 22s         |
@@ -84,7 +88,7 @@ locals) is fast enough and improves code readability.
 I must admit I worked around PyPy's performance bug
 ---------------------------------------------------
 
-For reasons obscure (although fixable), this::
+For obscure (although eventually fixable) reasons, this::
 
   for c in s: # s is string
     del c
@@ -94,14 +98,14 @@ is faster than::
   for c in s:
     pass
 
-This is a bug and should be fixed, but on different branch ;-)
+This is a PyPy performance bug and should be fixed, but on different branch ;-)
 
-PyPy's JIT is kind of good
+PyPy's JIT is good
 --------------------------
 
-I was pretty surprised, but the JIT actually did make stuff work nicely. Seems
-you can write code in Python if you want to make it run fast, but you have
-to be a bit careful. Again, jitviewer is your friend
+I was pretty surprised, but the JIT actually did make stuff work nicely.
+It is possible to write code in Python and make it run fast, but you have
+to be a bit careful. Again, jitviewer is your friend.
 
 Cheers,
 fijal
