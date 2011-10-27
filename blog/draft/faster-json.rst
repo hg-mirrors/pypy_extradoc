@@ -73,19 +73,19 @@ No nice and fast way to build strings in Python
 -----------------------------------------------
 
 PyPy has a custom thing called ``__pypy__.builders.StringBuilder``. It has
-a few features that make it much easier to optimize than other ways like
+a few a features that make it much easier to optimize than other ways like
 ``str.join()`` or ``cStringIO``.
 
 * You can specify the start size, which helps a lot if you can even provide
   a rough estimate on the size of the string (less copying)
-* Only append and build are allowed. After the string is built you
-  can't seek or do anything else. Once it's built you can never append any more.
+* Only append and build are allowed. While  the string is being built you
+  can't seek or do anything else. After it's built you can never append any more.
 * Unicode version available as well as ``__pypy__.builders.UnicodeBuilder``.
 
 Method calls are ok, immutable globals are ok
 ---------------------------------------------
 
-PyPy's JIT seem to be good enough than at least in simple cases, calling
+PyPy's JIT seems to be good enough for at least the simple cases. Calling
 methods for common infrastructure or loading globals (instead of rebinding as
 locals) is fast enough and improves code readability.
 
