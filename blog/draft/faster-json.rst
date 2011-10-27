@@ -8,8 +8,8 @@ writing a `benchmark`_, which is admittedly not a very good one, but it's
 better than nothing (suggestions on how to improve it are welcome!). XXX:
 explain in one line what the benchmark does?
 
-For this particular benchmark, the numbers are as follow. Note that CPython by
-default uses the optimized C extension, while PyPy uses the pure Python one.
+For this particular benchmark, the numbers are as follow. **Note that CPython by
+default uses the optimized C extension, while PyPy uses the pure Python one**.
 PyPy trunk contains another pure Python version which has been optimized
 specifically for the PyPy JIT, which is the subject of this post.
 
