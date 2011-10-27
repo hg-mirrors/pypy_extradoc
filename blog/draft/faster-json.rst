@@ -89,12 +89,13 @@ PyPy's JIT seems to be good enough for at least the simple cases. Calling
 methods for common infrastructure or loading globals (instead of rebinding as
 locals) is fast enough and improves code readability.
 
-Copying is expensive
---------------------
+String copying is expensive
+---------------------------
 
-If you use regular expressions replace, this would always copy a string as of
-now. If you know your regexp is simple, first try to match it if there is
-anything to replace in the first place. This is a pretty hard optimization to
+If you use ``re.sub``, the current implementation will always create a copy
+of the string even if there was no match to replace.
+If you know your regexp is simple, first try to check if there is
+anything to replace. This is a pretty hard optimization to
 do automatically -- simply matching the regular expression can be too costly
 for it to make sense. In our particular example however, the regexp is really
 simple, checking ranges of characters. It also seems that this is by far the
