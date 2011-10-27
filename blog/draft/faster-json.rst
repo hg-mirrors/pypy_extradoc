@@ -7,9 +7,9 @@ Recently I spent a bit of effort into speeding up JSON in PyPy. I started with
 writing a `benchmark`_, which is admiteddly not very good, but it's better
 than nothing (suggestions to improve welcomed!).
 
-For this particular benchmark, the numbers are as follow. Note that CPython
+For this particular benchmark, the numbers are as follow. **Note that CPython
 uses hand-optimized C extension and PyPy uses a pure python version,
-hand-optimized in trunk, default in older versions. I'm taking the third run,
+hand-optimized in trunk, default in older versions**. I'm taking the third run,
 when things are warmed up, full session `here`_.
 
 +----------------------------+-------------+
