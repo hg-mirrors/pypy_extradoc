@@ -89,6 +89,17 @@ PyPy's JIT seems to be good enough for at least the simple cases. Calling
 methods for common infrastructure or loading globals (instead of rebinding as
 locals) is fast enough and improves code readability.
 
+Generators are slower than they should be
+-----------------------------------------
+
+I changed the entire thing to simply call ``builder.append`` instead of
+yielding to the main loop where it would be gathered. This is kind of a PyPy
+bug that using generators extensively is slower, but a bit hard to fix.
+Especially in cases where there is relatively little data being passed around
+(few bytes), it makes sense to gather it first. If I were to implement an
+efficient version of ``iterencode``, I would probably handle chunks of
+predetermined size, about 1000 bytes instead of yielding data every few bytes.
+
 I must admit I worked around PyPy's performance bug
 ---------------------------------------------------
 
