@@ -55,8 +55,8 @@ Often interface between the C and Python part is ugly
 This is very clear if you look at json module as implemented in CPython's
 standard library. Not everything is in C (it would probably be just too
 much effort) and the interface to what is in C is guided via profiling not
-via what kind of interface makes sense. It's clear from CPython 2.6 to 2.7.
-Just adapting the code to interface with C made the Python version slower.
+by what kind of interface makes sense. This especially is evident comparing CPython 2.6 to 2.7.
+Just adapting the code to an interface with C made the Python version slower.
 Removing this clutter improves the readability a lot and improves PyPy's version
 a bit, although I don't have hard numbers.
 
