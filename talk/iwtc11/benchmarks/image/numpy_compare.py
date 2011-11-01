@@ -63,8 +63,14 @@ class Image(array):
         else:
             self.extend(data)
 
-    def new(self):
-        return Image(self.width, self.height, self.typecode)
+    def new(self, width=None, height=None, typecode=None):
+        if width is None:
+            width = self.width
+        if height is None:
+            height = self.height
+        if typecode is None:
+            typecode = self.typecode
+        return Image(width, height, typecode)
 
     def clone(self):
         return Image(self.width, self.height, self.typecode, self)
