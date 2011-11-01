@@ -24,6 +24,6 @@ int main(int ac, char **av) {
   double *a = malloc(W*H*sizeof(double));
   int i, n = atoi(av[1]);
   for (i=0; i<n; i++) result=sum(a, W, H);
-  fprintf(stderr, "sum2d:     ");
+  fprintf(stderr, "ripple2d:     ");
   return 0;
 }

@@ -25,6 +25,6 @@ int main(int ac, char **av) {
   double data[] = {-1.0, 1.0};
   for (i=0; i<N; i++) a[i] = data[i&1];
   for (i=0; i<n; i++) result = sum(a, N);
-  fprintf(stderr, "sum1d:     ");
+  fprintf(stderr, "median1d:     ");
   return 0;
 }
