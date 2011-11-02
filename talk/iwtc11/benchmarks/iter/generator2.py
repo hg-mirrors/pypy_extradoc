@@ -152,4 +152,6 @@ def run2d(args, f, data=None):
         f(a, 10000, 10000)
     return "sum1d"
 
-    
+if __name__ == '__main__':
+    import sys
+    eval(sys.argv[1])(sys.argv[2:])

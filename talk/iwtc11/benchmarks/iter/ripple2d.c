@@ -23,6 +23,8 @@ double sum(double *a, int w, int h) {
 int main(int ac, char **av) {
   double *a = malloc(W*H*sizeof(double));
   int i, n = atoi(av[1]);
+  double data[] = {-1.0, 1.0};
+  for (i=0; i<W*H; i++) a[i] = data[i&1];
   for (i=0; i<n; i++) result=sum(a, W, H);
   fprintf(stderr, "ripple2d:     ");
   return 0;
