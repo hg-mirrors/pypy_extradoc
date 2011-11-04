@@ -82,6 +82,36 @@ def _xysum2d(a, w, h):
     for x, y in range2(w, h):
         sa += a[y*w + x] + x + y
 
+def _mean1d(a):
+    sa = 0
+    for i in range1(len(a)):
+        sa = (i*sa + a[i])/(i + 1.0);
+        
+def _median1d(a):
+    sa = 0
+    for i in range1(len(a)):
+        if sa > a[i]:
+            sa -= 1.0/(i + 1.0)
+        elif sa < a[i]:
+            sa += 1.0/(i + 1.0)
+
+def _ripple1d(a):
+    sa = 0
+    for i in range1(len(a)):
+        if sa > a[i]:
+            sa -= 0.1
+        elif sa < a[i]:
+            sa += 0.1
+
+def _ripple2d(a, w, h):
+    sa = 0
+    for x, y in range2(w, h):
+        if sa > a[y*w + x]:
+            sa -= 0.1
+        elif sa < a[y*w + x]:
+            sa += 0.1
+        
+
 def sum1d(args):
     run1d(args, _sum1d)
     return "sum1d"
@@ -114,18 +144,42 @@ def xysum2d(args):
     run2d(args, _xysum2d)
     return "xysum2d"
 
-def run1d(args, f):
-    a = array('d', [1]) * 100000000
+def mean1d(args):
+    run1d(args, _mean1d, [1, -1])
+    return "mean1d"
+
+def median1d(args):
+    run1d(args, _median1d, [1, -1])
+    return "median1d"
+
+def ripple1d(args):
+    run1d(args, _ripple1d, [1, -1])
+    return "ripple1d"
+
+def ripple2d(args):
+    run2d(args, _ripple2d, [1, -1])
+    return "ripple2d"
+
+def run1d(args, f, data=None):
+    if data:
+        a = array('d', data) * (100000000/len(data))
+    else:
+        a = array('d', [1]) * 100000000
     n = int(args[0])
     for i in xrange(n):
         f(a)
     return "sum1d"
 
-def run2d(args, f):
-    a = array('d', [1]) * 100000000
+def run2d(args, f, data=None):
+    if data:
+        a = array('d', data) * (100000000/len(data))
+    else:
+        a = array('d', [1]) * 100000000
     n = int(args[0])
     for i in xrange(n):
         f(a, 10000, 10000)
     return "sum1d"
 
-    
+if __name__ == '__main__':
+    import sys
+    eval(sys.argv[1])(sys.argv[2:])
