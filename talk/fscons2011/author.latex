@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy in Production]{PyPy}
+\author[Armin Rigo]
+{Armin Rigo}
+
+\institute{FSCONS 2011}
+\date{November 13 2011}
