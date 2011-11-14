@@ -9,20 +9,19 @@ PyPy
 --------
 
 
-
 Speed
 ---------
 
-.. image:: progress.png
-   :scale: 40%
+.. image:: speed.png
+   :scale: 45%
    :align: center
 
 
 Speed
 ---------
 
-.. image:: speed.png
-   :scale: 40%
+.. image:: progress.png
+   :scale: 50%
    :align: center
 
 
@@ -61,7 +60,7 @@ Framework for fast dynamic languages
 
 * It is easy to implement a new language with PyPy
 
-* Better suited to dynamic languages
+* Suited for *dynamic* languages (preferrably)
 
 |pause|
 
@@ -109,7 +108,7 @@ Just-in-Time Compilation
 
 * Pyrolog, a Prolog interpreter, is fast too
 
-* Haskell and a number of other experiments
+* Haskell, GameBoy, ...
 
 |pause|
 
@@ -121,7 +120,7 @@ Just-in-Time Compilation
 
 * Tracing JIT Compiler
 
-* Not unlike TraceMonkey for JavaScript in FireFox
+* Not unlike TraceMonkey for JavaScript in Firefox
 
 * But two levels
 
@@ -165,6 +164,38 @@ PyPy's future?
         |                        |
         V                        V
 
+     PyPy 1.x    <------>    PyPy3 1.x
+
+
+PyPy's future?
+--------------------
+
+.. sourcecode:: plain
+
+   CPython 2.7   ------->   CPython 3.x
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ^      written in C      ^
+        |                        |
+        |                        |
+        |                        |
+        V                        V
+
+     PyPy 1.x    <------>    PyPy3 1.x
+
+
+PyPy's future?
+--------------------
+
+.. sourcecode:: plain
+
+   CPython 2.7   ------->   CPython 3.x
+
+        ^                        ^
+        |                        |
+        |                        |
+        |       written in       |
+        V      Python 2.5-7      V
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      PyPy 1.x    <------>    PyPy3 1.x
 
 
