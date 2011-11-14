@@ -1,11 +1,11 @@
 Gothenburg sprint report
 =========================
 
-In the past days, we have been busy hacking on PyPy at the Gothenburg sprint,
+In the past week, we have been busy hacking on PyPy at the Gothenburg sprint,
 the second of this 2011.  The sprint was hold at Laura's and Jacob's place,
 and here is a brief report of what happened.
 
-<INSERT PICTURE OF THE CAKE>
+.. img:: 5x-cake.jpg
 
 In the first day we welcomed Mark Pearse, which was new to PyPy and at his
 first sprint.  Mark worked the whole sprint at the new SpecialisedTuple_
@@ -66,7 +66,8 @@ wrote f2pypy_, which is similar to the existing ``f2py`` but instead of
 producing a CPython extension module it produces a pure python modules based
 on ``ctypes``.  More work is needed before it can be considered complete, but
 ``f2pypy`` is already able to produce a wrapper for BLAS which passes most of
-the tests (although not all).
+the tests under CPython, although there's still work left to get it working
+for PyPy.
 
 .. _f2pypy: http://bitbucket.org/pypy/f2pypy
 
