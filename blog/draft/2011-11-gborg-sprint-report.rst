@@ -51,7 +51,7 @@ calling convention.
 
 .. _STM: http://bitbucket.org/pypy/pypy/changesets/tip/branch("stm")
 
-Håkan, with some help from Armim, worked on the `jit-targets`_ branch, whose goal
+Håkan, with some help from Armin, worked on the `jit-targets`_ branch, whose goal
 is to heavily refactor the way the traces are internally represented by the
 JIT, so that in the end we can produce (even :-)) better code than what we do
 nowadays.  More details in this mail_.
