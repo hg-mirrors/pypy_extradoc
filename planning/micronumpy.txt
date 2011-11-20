@@ -22,3 +22,7 @@ NEW TASKS
 - frompyfunc to create ufuncs from python functions
 
 - more ufuncs
+
+- arange/linspace/other ranges
+
+- numpy.flatiter array.flat and friends
