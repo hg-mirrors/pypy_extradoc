@@ -26,3 +26,5 @@ NEW TASKS
 - arange/linspace/other ranges
 
 - numpy.flatiter array.flat and friends
+
+- change numpy.array into numpy.array and numpy.ndarray
