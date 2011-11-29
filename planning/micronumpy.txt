@@ -15,16 +15,12 @@ NEW TASKS
 
 - scalar types like numpy.int8 (numpy-dtype-refacotr branch)
 
-- add multi-dim arrays (numpy-multidim-shards branch)
-
-  - will need to refactor some functions
-
 - frompyfunc to create ufuncs from python functions
 
 - more ufuncs
 
-- arange/linspace/other ranges
-
-- numpy.flatiter array.flat and friends
+- linspace/other ranges
 
 - change numpy.array into numpy.array and numpy.ndarray
+
+- more attributes/methods on numpy.flatiter
