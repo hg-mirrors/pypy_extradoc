@@ -1,10 +1,6 @@
 NEW TASKS
 ---------
 
-- add in numpy.generic and the various subclasses, use them in returning
-  instances from subscripting (and possibly internally), also make them valid
-  for the dtype arguments (numpy-dtype-refactor branch)
-
 - astype
 
 - a good sort function
@@ -13,14 +9,13 @@ NEW TASKS
 
 - endianness
 
-- scalar types like numpy.int8 (numpy-dtype-refacotr branch)
-
 - frompyfunc to create ufuncs from python functions
 
 - more ufuncs
 
 - linspace/other ranges
 
-- change numpy.array into numpy.array and numpy.ndarray
-
 - more attributes/methods on numpy.flatiter
+
+- axis= parameter to various methods
+
