@@ -46,8 +46,9 @@ Now, how to reproduce it:
 
 * Speaking of which, you need a reasonably recent PyPy.
 
-* The approach is generally portable (XXX: why not?), however the implementation is not. Works
-  on 64bit linux, would not bet for anything else.
+* The approach is generally portable, however the implementation has not been
+  tested on any platforms other than 64-bit Linux. Try anything else at your
+  own peril.
 
 * You need to install python2.6, the python2.6 development headers, and have
   numpy and matplotlib installed on that python.
