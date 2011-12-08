@@ -80,3 +80,6 @@ possible in PyPy to make it nice and fast :)
 
 Cheers,
 fijal
+
+.. _`hacks directory`: https://bitbucket.org/fijal/hack2
+.. _`the demo`: https://bitbucket.org/fijal/hack2/src/default/embed/embed/matplotwrapper.py
