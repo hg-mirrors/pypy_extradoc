@@ -83,3 +83,4 @@ fijal
 
 .. _`hacks directory`: https://bitbucket.org/fijal/hack2
 .. _`the demo`: https://bitbucket.org/fijal/hack2/src/default/embed/embed/matplotwrapper.py
+.. _`embedding`: http://docs.python.org/extending/embedding.html
