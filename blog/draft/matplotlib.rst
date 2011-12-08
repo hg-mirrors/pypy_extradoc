@@ -46,8 +46,8 @@ Now, how to reproduce it:
 
 * Speaking of which, you need a reasonably recent PyPy.
 
-* The approach is generally portable (XXX: why not?), however the implementation is not. Works
-  on 64bit linux, would not bet for anything else.
+* The approach is generally portable, however the implementation has been
+  tested only on 64bit linux. Few tweaks might be required.
 
 * You need to install python2.6, the python2.6 development headers, and have
   numpy and matplotlib installed on that python.
@@ -72,10 +72,11 @@ but probably the same strategy can be applied to anything, like GTK or QT.
 It's just a matter of extending a hack into a working library.
 
 To summarize, while we're busy making numpypy better and faster, it seems
-that all heavy lifting on the C side can be done using an embedded Python
+that all external libraries on the C side can be done using an embedded Python
 interpreter with relatively little effort. To get to that point, I spent
 a day and a half to learn how to embed CPython, with very little prior
-experience in the CPython APIs. (XXX: this should make clear that you can use it for integration, but for speed you should keep stuff all in PyPy)
+experience in the CPython APIs. Of course you should still keep as much as
+possible in PyPy to make it nice and fast :)
 
 Cheers,
 fijal
