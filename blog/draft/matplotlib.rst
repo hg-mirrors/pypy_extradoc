@@ -2,14 +2,15 @@
 Plotting using matplotlib from PyPy
 ===================================
 
-**Big fat warning** This is just a proof of concept. It actually barely works.
-There are missing pieces left and right there were replaced with hacks so
-I can get this to run and show it's possible. Don't try that at home,
-especially your home. You have been warned.
+**Big fat warning** This is just a proof of concept. It barely works. There are
+missing pieces left and right, which were replaced with hacks so I can get this
+to run and prove it's possible. Don't try this at home, especially your home.
+You have been warned.
 
-There was a lot of talking about PyPy not integrating well with the current
-scientific python ecosystem and numpypy (a numpy reimplementation on top
-of pypy) was dubbed "a fancy array library". I'm going to show it is possible.
+There has been a lot of talking about PyPy not integrating well with the
+current scientific Python ecosystem, and ``numpypy`` (a NumPy reimplementation
+on top of pypy) was dubbed "a fancy array library". I'm going to show that
+integration with this ecosystem is possible with our design.
 
 First, `the demo`_::
 
@@ -45,25 +46,25 @@ Now, how to reproduce it:
 
 * Speaking of which, you need a reasonably recent PyPy.
 
-* The approach is generally portable, however the implementation is not. Works
+* The approach is generally portable (XXX: why not?), however the implementation is not. Works
   on 64bit linux, would not bet for anything else.
 
-* You need to install python2.6, python2.6 development headers and have numpy
-  and matplotlib installed on that python.
+* You need to install python2.6, the python2.6 development headers, and have
+  numpy and matplotlib installed on that python.
 
 * You need a checkout of my `hacks directory`_ and put embedded on your
-  ``PYTHONPATH``, pypy checkout also has to be on the ``PYTHONPATH``.
+  ``PYTHONPATH``, your pypy checkout also has to be on the ``PYTHONPATH``.
 
 Er wait, what happened?
 -----------------------
 
 What didn't happen is we did not reimplement matplotlib on top of PyPy. What
-did happen is we run a CPython instance in PyPy using ctypes. We instantiate
-it and nicely follow `embedding`_ tutorial for CPython. Since numpy arrays
-are not movable, we're able to pass around an integer that's a pointer to array
-data and reconstruct it in the embedded interpreter. Hence with a relatively
-little effort we managed to reuse the sama array data on both sides to
-plot at array. Easy, no?
+did happen is we embed CPython inside of PyPy using ctypes. We instantiate it.
+and follow the `embedding`_ tutorial for CPython. Since numpy arrays are not
+movable, we're able to pass around an integer that's represents the memory
+address of the array data and reconstruct it in the embedded interpreter. Hence
+with a relatively little effort we managed to reuse the same array data on both
+sides to plot at array. Easy, no?
 
 This approach can be extended to support anything that's not too tied with
 python objects. SciPy and matplotlib both fall into the same category
@@ -74,7 +75,7 @@ To summarize, while we're busy making numpypy better and faster, it seems
 that all heavy lifting on the C side can be done using an embedded Python
 interpreter with relatively little effort. To get to that point, I spent
 a day and a half to learn how to embed CPython, with very little prior
-experience in the CPython APIs.
+experience in the CPython APIs. (XXX: this should make clear that you can use it for integration, but for speed you should keep stuff all in PyPy)
 
 Cheers,
 fijal
