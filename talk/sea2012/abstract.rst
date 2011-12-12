@@ -11,6 +11,7 @@ PyPy project that is showing significant performance
 improvements in each release, Python is nearing performance comparable
 to native C language implementations. In this talk I will
 describe three stages: how to use it right now, in the near future and
+(xxx give before this line a hint that "we" or "our" means "pypy developers")
 our plans to provide a very robust infrastructure for implementing
 numerical computations. I also will spend some time exploring ideas
 how dynamic compilation eventually can outperform static compilation
