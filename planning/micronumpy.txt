@@ -19,3 +19,4 @@ NEW TASKS
 
 - axis= parameter to various methods
 
+- expose ndarray.ctypes
