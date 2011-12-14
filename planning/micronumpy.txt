@@ -20,3 +20,9 @@ NEW TASKS
 - axis= parameter to various methods
 
 - expose ndarray.ctypes
+
+- subclassing ndarray (instantiating subcalsses curently returns the wrong type)
+
+  * keep subclass type when slicing, __array_finalize__
+
+  * ndarray.view
