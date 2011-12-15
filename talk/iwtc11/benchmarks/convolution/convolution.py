@@ -57,6 +57,19 @@ class Array2D(object):
                 self[x, y] = data[y][x]
         return self
 
+class NumpyArray(Array2D):
+    def __init__(self, w, h):
+        self.width = w
+        self.height = h
+        import numpypy
+        self.data = numpypy.zeros([h, w], 'd')
+
+    def __getitem__(self, (x, y)):
+        return self.data[y, x]
+
+    def __setitem__(self, (x, y), val):
+        self.data[y, x] = val
+
 def _conv3x3(a, b, k):
     assert k.width == k.height == 3
     for y in xrange(1, a.height-1):
@@ -87,6 +100,13 @@ def conv3x3(args):
     for i in range(10):
         _conv3x3(a, b, Array2D(3,3))
     return 'conv3x3(Array2D(%sx%s))' % tuple(args)
+
+def conv3x3_numpy(args):
+    a = NumpyArray(int(args[0]), int(args[1]))
+    b = NumpyArray(a.width, a.height)
+    for i in range(10):
+        _conv3x3(a, b, NumpyArray(3,3))
+    return 'conv3x3(NumpyArray(%sx%s))' % tuple(args)
 
 def dilate3x3(args):
     a = Array2D(int(args[0]), int(args[1]))
