@@ -86,8 +86,6 @@ nice code at all so far:
 - ((turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
   floats.)) (a mess, MAXSD/MINSD have different semantics WRT nan)
 
-- list.pop() (with no arguments) calls into delitem, rather than recognizing that
-  no items need to be moved
 
 BACKEND TASKS
 -------------
