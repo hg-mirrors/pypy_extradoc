@@ -13,7 +13,7 @@ Here are the abstracts for the tutorials and talks:
   perform much better. In this tutorial we'll give you insights on how to push
   PyPy to it's limits. We'll focus on understanding the performance
   characteristics of PyPy, and learning the analysis tools in order to maximize
-  your applications performance.
+  your applications performance. *This is the tutorial.*
 
 * **Why PyPy by example**, by Maciej Fijalkowski, Alex Gaynor and Armin Rigo:
   One of the goals of PyPy is to make existing Python code faster, however an
