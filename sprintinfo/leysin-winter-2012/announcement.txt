@@ -10,7 +10,14 @@ other than those proposed below are welcome.
 Goals and topics of the sprint
 ------------------------------
 
-* xxx
+* Py3k topics: ...
+
+* NumPyPy topics: ...
+
+* JIT backends: integrate tests for ARM; look at the PowerPC 64;
+  maybe try again to write an LLVM- or GCC-based one
+
+* STM and STM-related topics; or the Concurrent Mark-n-Sweep GC
 
 * And as usual, the main side goal is to have fun in winter sports :-)
   We can take a day off for ski.
