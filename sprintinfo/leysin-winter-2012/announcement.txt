@@ -10,9 +10,9 @@ other than those proposed below are welcome.
 Goals and topics of the sprint
 ------------------------------
 
-* Py3k topics: ...
+* Py3k: work towards supporting Python 3 in PyPy 
 
-* NumPyPy topics: ...
+* NumPyPy: work towards supporting the numpy module in PyPy 
 
 * JIT backends: integrate tests for ARM; look at the PowerPC 64;
   maybe try again to write an LLVM- or GCC-based one
