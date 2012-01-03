@@ -1,4 +1,6 @@
 import os, re, array
+from subprocess import Popen, PIPE, STDOUT
+
 
 def mplayer(Image, fn='tv://', options=''):
     f = os.popen('mplayer -really-quiet -noframedrop ' + options + ' ' 
@@ -19,18 +21,18 @@ class MplayerViewer(object):
     def view(self, img):
         assert img.typecode == 'B'
         if not self.width:
-            self.mplayer = os.popen('mplayer -really-quiet -noframedrop - ' +
-                                    '2> /dev/null ', 'w')
-            self.mplayer.write('YUV4MPEG2 W%d H%d F100:1 Ip A1:1\n' %
-                               (img.width, img.height))
+            w, h = img.width, img.height
+            self.mplayer = Popen(['mplayer', '-', '-benchmark',
+                                  '-demuxer', 'rawvideo',
+                                 '-rawvideo', 'w=%d:h=%d:format=y8' % (w, h),
+                                 '-really-quiet'],
+                                 stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            
             self.width = img.width
             self.height = img.height
-            self.color_data = array.array('B', [127]) * (img.width * img.height / 2)
         assert self.width == img.width
         assert self.height == img.height
-        self.mplayer.write('FRAME\n')
-        img.tofile(self.mplayer)
-        self.color_data.tofile(self.mplayer)
+        img.tofile(self.mplayer.stdin)
 
 default_viewer = MplayerViewer()
 
