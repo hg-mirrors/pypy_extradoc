@@ -11,6 +11,7 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo                          private
+David Schneider      17/22          ermina
 ==================== ============== =======================
 
 
