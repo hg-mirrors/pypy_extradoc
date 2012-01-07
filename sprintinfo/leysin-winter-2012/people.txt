@@ -13,6 +13,7 @@ available yet from them.
 Armin Rigo                          private
 David Schneider      17/22          ermina
 Antonio Cuni         16/22          ermina, might arrive on the 15th
+Romain Guillebert    15/22          ermina
 ==================== ============== =======================
 
 
