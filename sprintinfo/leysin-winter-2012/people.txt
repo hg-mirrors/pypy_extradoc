@@ -12,6 +12,7 @@ available yet from them.
 ==================== ============== =======================
 Armin Rigo                          private
 David Schneider      17/22          ermina
+Antonio Cuni         16/22          ermina
 ==================== ============== =======================
 
 
