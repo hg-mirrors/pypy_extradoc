@@ -61,9 +61,9 @@ for us though, the braindead Python version takes longer and PyPy is not able
 to take advantage of the knowledge that the data is independent, but it is in
 the same ballpark as the C versions - **15% - 170%** slower, but the algorithm
 you choose matters more than the language. By comparison, the slow versions
-take about **5.75s** each on CPython 2.6 **per iteration**, and by estimating,
-are about **200x** slower than the PyPy equivalent. I didn't measure the full
-run though :)
+take about **5.75s** each on CPython 2.6 per iteration, and by estimating,
+are about **200x** slower than the PyPy equivalent, if I had the patience to
+measure the full run.
 
 The next step is to use NumPy expressions. The first problem we run into is
 that computing the error requires walking the entire array a second time. This
