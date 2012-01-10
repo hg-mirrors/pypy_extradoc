@@ -160,8 +160,9 @@ faster than NumPy on CPython, almost always by more than 2x on this relatively
 real-world example. This is not the end though, in fact it's hardly the
 beginning: as we continue work, we hope to make even much better use of the
 high level information that we have. Looking at the generated assembler by
-gcc in this example it's pretty clear we can outperform it by having a much
-better aliasing information and hence a better possibilities for vectorization.
+gcc in this example it's pretty clear we can outperform it, thanks to better
+aliasing information and hence better possibilities for vectorization.
+Stay tuned.
 
 Cheers,
 fijal
