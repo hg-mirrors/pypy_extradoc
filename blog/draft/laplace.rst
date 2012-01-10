@@ -152,7 +152,7 @@ error is computed.
 | numeric 4             | 11ms        | 31ms           |
 +-----------------------+-------------+----------------+
 | numeric 5             | 9.3ms       | 21ms           |
-+-----------------------+-------------+-----------------
++-----------------------+-------------+----------------+
 
 We think that these preliminary results are pretty good, they're not as fast as
 the C version (or as fast as we'd like them to be), but we're already much
