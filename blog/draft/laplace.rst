@@ -167,3 +167,4 @@ Cheers,
 fijal
 
 .. _`PerformancePython`: http://www.scipy.org/PerformancePython
+.. _`fijal's hack`: https://bitbucket.org/fijal/hack2/src/default/bench/laplace
