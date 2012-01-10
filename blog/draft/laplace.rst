@@ -5,10 +5,11 @@ Hello.
 
 I'm pleased to inform you about the progress we have made on NumPyPy, both in
 terms of completeness and performance. This post mostly deals with the
-performance side and how far we have come so far. **Word of warning:** It's worth noting that the performance work on NumPyPy isn't done - we're maybe half way
-to where we want to be and there are many trivial and not so trivial
-optimizations to be performed. In fact we haven't even started to implement
-important optimizations, like vectorization.
+performance side and how far we have come so far. **Word of warning:** the
+performance work on NumPyPy isn't done - we're maybe half way to where we want
+to be and there are many trivial and not so trivial optimizations to be
+performed. In fact we haven't even started to implement important
+optimizations, like vectorization.
 
 Benchmark
 ---------
