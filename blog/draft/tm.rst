@@ -2,7 +2,8 @@ Transactional Memory
 ====================
 
 Here is an update about the `previous blog post`__ about the
-Global Interpreter Lock (GIL).
+Global Interpreter Lock (GIL).  In 5 months, the point of view
+changed quite a bit.
 
 .. __: http://morepypy.blogspot.com/p/global-interpreter-lock-or-how-to-kill.html
 
