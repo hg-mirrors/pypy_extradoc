@@ -192,8 +192,8 @@ back needs to be aware of the fact that it's not in the same transaction
 as the original setting up, which means that other unrelated
 transactions may have run in-between.
 
-One step in the future?
------------------------
+One step towards the future?
+----------------------------
 
 These, and others, are the problems of the TM approach.  They are "new"
 problems, too, in the sense that the existing ways of programming don't
