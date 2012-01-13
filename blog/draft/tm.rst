@@ -102,7 +102,8 @@ to ensure correctness.
 Events might also be *mostly independent*, i.e. they rarely access the same
 object concurrently.  Of course, in a multi-threaded world we would still need
 a lock to ensure correctness, but the point is that without the lock the
-program would run correctly "most of the time".
+program would run correctly "most of the time" (and likely segfault the rest
+of the time).
 
 Consider again the Twisted example I gave above.  There are often several
 events pending in the dispatch queue (assuming the program is using 100%
