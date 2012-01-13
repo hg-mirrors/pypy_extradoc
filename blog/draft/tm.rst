@@ -11,16 +11,25 @@ Let me remind you that the GIL is the technique used in both CPython and
 PyPy to safely run multi-threaded programs: it is a global lock that
 prevents multiple threads from actually running at the same time.  The
 reason to do that is that it would have disastrous effects in the
-interpreter if both threads access the same object concurrently --- to
+interpreter if several threads access the same object concurrently --- to
 the point that in CPython even just manipulating the object's reference
 counter needs to be protected by the lock.
 
-So far, the ultimate goal to enable true multi-CPU usage has been to remove
-the infamous GIL from the interpreter, so that multiple threads could actually
-run in parallel.  But we think we have a plan to implement a
-different model for using multiple cores.  Believe it or not, this is
-*better* than just removing the GIL from PyPy.  You might get to use all
-your cores *without ever writing threads.*
+So far, the ultimate goal to enable true multi-CPU usage has been to
+remove the infamous GIL from the interpreter, so that multiple threads
+could actually run in parallel.  It's a lot of work, but this has been
+done in Jython.  The reason that it has not been done in CPython so far
+is that it's even more work: we would need to care not only about
+carefully adding fine-grained locks everywhere, but also about reference
+counting; and there are a lot more C extension modules that would need
+care, too.  And we don't have locking primitives as performant as
+Java's, which have been hand-tuned since ages (e.g. to use help from the
+JIT compiler).
+
+But we think we have a plan to implement a different model for using
+multiple cores.  Believe it or not, this is *better* than just removing
+the GIL from PyPy.  You might get to use all your cores *without ever
+writing threads.*
 
 You would instead just use some event dispatcher, say from Twisted, from
 Stackless, or from your favorite GUI; or just write your own.  From
