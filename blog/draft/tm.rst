@@ -194,4 +194,6 @@ possibly a big win --- a win that might be on the same scale for the age
 of multiple CPUs as automatic garbage collection was 20 years ago for
 the age of RAM size explosion.
 
+Stay tuned for more!
+
 --- Armin
