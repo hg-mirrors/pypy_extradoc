@@ -82,17 +82,14 @@ The problem can also be down-sized to very small programs, like the kind
 of hacks that you do and forget about.  In this case, the dependencies
 might be simpler, but you still have to learn and use subtle locking
 patterns or a complex inter-process library, which is overkill for the
-purpose.  I would even argue that this is similar to how we might feel a
-priori that automatic memory management is unnecessary in small programs
---- but of course anyone who wrote a number of 15-line Python scripts
-knows this to be wrong.  This is even *so* wrong that the opposite is
-obvious nowadays: it makes no sense whatsoever to manage object
-lifetimes explicitly in most small scripts.  A garbage collector is not
-overkill; it is part of the basics that you expect.
+purpose.
 
-(I think the same will eventually be true for using multiple CPUs, but
-the correct solution will take time to mature, like garbage collectors
-did.  This post is a step in hopefully the right direction ``:-)``)
+(This is similar to how explicit memory management is not very hard for
+small programs --- but still, nowadays a lot of people agree that
+automatic memory management is easier for programs of all sizes.  I
+think the same will eventually be true for using multiple CPUs, but the
+correct solution will take time to mature, like garbage collectors did.
+This post is a step in hopefully the right direction ``:-)``)
 
 Events in Transactions
 ----------------------
