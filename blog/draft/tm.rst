@@ -10,7 +10,7 @@ changed quite a bit.
 Let me remind you that the GIL is the technique used in both CPython and
 PyPy to safely run multi-threaded programs: it is a global lock that
 prevents multiple threads from actually running at the same time.  The
-reason to do that is that it would have desastrous effects in the
+reason to do that is that it would have disastrous effects in the
 interpreter if both threads access the same object concurrently --- to
 the point that in CPython even just manipulating the object's reference
 counter needs to be protected by the lock.
