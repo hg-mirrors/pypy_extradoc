@@ -101,9 +101,10 @@ to ensure correctness.
 
 Events might also be *mostly independent*, i.e. they rarely access the same
 object concurrently.  Of course, in a multi-threaded world we would still need
-a lock to ensure correctness, but the point is that without the lock the
-program would run correctly "most of the time" (and likely segfault the rest
-of the time).
+locks to ensure correctness, but the point is that the locks are rarely causing
+pauses: `lock contention`_ is low.
+
+.. _`lock contention`: http://en.wikipedia.org/wiki/Lock_%28computer_science%29
 
 Consider again the Twisted example I gave above.  There are often several
 events pending in the dispatch queue (assuming the program is using 100%
