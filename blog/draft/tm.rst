@@ -1,8 +1,8 @@
 Transactional Memory
 ====================
 
-Here is an update about the previous blog post about the
-`Global Interpreter Lock`__ (GIL).
+Here is an update about the `previous blog post`__ about the
+Global Interpreter Lock (GIL).
 
 .. __: http://morepypy.blogspot.com/p/global-interpreter-lock-or-how-to-kill.html
 
@@ -11,8 +11,8 @@ PyPy to safely run multi-threaded programs: it is a global lock that
 prevents multiple threads from actually running at the same time.  The
 reason to do that is that it would have desastrous effects in the
 interpreter if both threads access the same object concurrently --- to
-the point that in CPython even just manipulating the reference counter
-needs to be protected by the lock.
+the point that in CPython even just manipulating the object's reference
+counter needs to be protected by the lock.
 
 Keeping your Python interpreter unchanged while managing to remove the
 infamous GIL: so far, this is regarded as the ultimate goal to enable
@@ -82,11 +82,12 @@ of hacks that you do and forget about.  In this case, the dependencies
 might be simpler, but you still have to learn and use subtle locking
 patterns or a complex inter-process library, which is overkill for the
 purpose.  I would even argue that this is similar to how we might feel a
-priori that automatic memory management is overkill in small programs
---- of course anyone who wrote a number of 15-line Python scripts knows
-this to be wrong.  This is even *so* wrong that the opposite is obvious
-nowadays: it makes no sense whatsoever to manage object lifetimes
-explicitly in most small scripts.
+priori that automatic memory management is unnecessary in small programs
+--- but of course anyone who wrote a number of 15-line Python scripts
+knows this to be wrong.  This is even *so* wrong that the opposite is
+obvious nowadays: it makes no sense whatsoever to manage object
+lifetimes explicitly in most small scripts.  A garbage collector is not
+overkill; it is part of the basics that you expect.
 
 (I think the same will eventually be true for using multiple CPUs, but
 the correct solution will take time to mature, like garbage collectors
