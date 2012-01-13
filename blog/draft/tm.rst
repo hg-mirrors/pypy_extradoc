@@ -1,6 +1,8 @@
 Transactional Memory
 ====================
 
+XXX intro: what's the GIL and what's the problem
+
 Here is an update about the previous blog post about the
 `Global Interpreter Lock`__ (GIL).
 
@@ -19,6 +21,12 @@ of automatic parallelization.  The basic idea is simple: start handling
 multiple events in parallel, but give each one its own transaction_.
 
 .. _transaction: http://en.wikipedia.org/wiki/Transactional_memory
+
+XXX point to Erlang
+
+XXX Twisted != Stackless; my point is that you should be able to tweak
+ both Twisted's event loops and Stackless's, to get TM benefits without
+ changing neither the Twisted model nor the Stackless model
 
 Threads or Events?
 ------------------
@@ -98,7 +106,7 @@ transactions, we cancel the whole transaction and restart it from
 scratch.
 
 By now, the fact that it can basically work should be clear: multiple
-transactions will only get into conflicts when modifying the same data
+transactions will only get into conflict when modifying the same data
 structures, which is the case where the magical wand above would have
 put locks.  If the magical program could progress without too many
 locks, then the transactional program can progress without too many
@@ -108,4 +116,57 @@ that from each event's point of view, we have the illusion that nobody
 else is running concurrently.  This is exactly what all existing
 Twisted-/Stackless-/etc.-based programs are assuming.
 
-xxx
+Not a perfect solution
+----------------------
+
+I would like to put some emphasis on the fact that TM is not a perfect
+solution either.  Right now, the biggest issue is that of the
+performance hit that comes from STM.  In time, HTM will help mitigate
+the problem; but I won't deny the fact that in some cases, because it's
+simple enough and/or because you really need the top performance, TM is
+not the best solution.
+
+Also, the explanations above are silent on what is a hard point for TM,
+namely system calls.  The basic general solution is to suspend other
+transactions when a transaction wants to do a system call, so that we
+are sure that the transaction will succeed.  Of course this solution is
+far from optimal.  Interestingly, it's possible to do better on a
+case-by-case basis: for example, by adding in-process buffers, we can
+improve the situation for sockets, by having recv() store in a buffer
+what is received so that it can be re-recv()-ed later if the transaction
+is cancelled; similarly, send() can be delayed in another buffer until
+we are sure that the transaction can be committed.
+
+From my point of view, the most important point is that the TM solution
+comes from the correct side of the "determinism" scale.  With threads,
+you have to prune down non-determinism.  With TM, you start from a
+mostly deterministic point, and if needed, you add non-determinism.  The
+reason you would want to do so is to make the transactions shorter:
+shorter transactions have less risks of conflicts, and when there are
+conflicts, less things to redo.  So making transactions shorter
+increases the parallelism that your program can achieve, while at the
+same time requiring more careful thinking about the program
+
+In terms of an event-driven model, the equivalent would be to divide the
+response of a big processing event into several events that are handled
+one after the other: the first event sets things up and fires the second
+event, which does the actual computation; and afterwards a third event
+writes the results back.  As a result, the second event's transaction
+has little risks of getting cancelled.  On the other hand, the writing
+back needs to be aware of the fact that it's not in the same transaction
+as the original setting up, which means that other unrelated
+transactions may have run in-between.
+
+One step in the future?
+-----------------------
+
+These, and others, are the problems of the TM approach.  They are "new"
+problems, too, in the sense that the existing ways of programming don't
+have these problems.
+
+Still, as you have guessed, I think that it is overall a win, and
+possibly a big win --- a win that might be on the same scale for the age
+of multiple-CPUs as automatic garbage collection was for the age of
+plenty-of-RAM.
+
+--- Armin
