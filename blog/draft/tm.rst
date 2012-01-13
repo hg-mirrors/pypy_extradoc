@@ -97,13 +97,22 @@ did.  This post is a step in hopefully the right direction ``:-)``)
 Events in Transactions
 ----------------------
 
-Consider again the Twisted example I gave above.  The case I am
-interested in is the case in which events are *generally mostly
-independent.*  By this I mean the following: there are often several
+Let me introduce the notion of *independent events*: two events are
+independent if they don't touch the same set of objects. In a multi-threaded
+world, it means that they can be executed in parallel without needing any lock
+to ensure correctness.
+
+Events might also be *mostly independent*, i.e. they rarely access the same
+object concurrently.  Of course, in a multi-threaded world we would still need
+a lock to ensure correctness, but the point is that without the lock the
+program would run correctly "most of the time".
+
+Consider again the Twisted example I gave above.  There are often several
 events pending in the dispatch queue (assuming the program is using 100%
-of our single usable CPU, otherwise the whole discussion is moot).
-Handling these events is often mostly independent --- but the point is
-that they don't *have* to be proved independent.  In fact it is fine if
+of our single usable CPU, otherwise the whole discussion is moot).  The case I am
+interested in is the case in which these events are *generally mostly
+independent*, i.e. we expect few conflicts between them.  However
+they don't *have* to be proved independent.  In fact it is fine if
 they have arbitrary complicated dependencies as described above.  The
 point is the expected common case.  Imagine that you have a GIL-less
 Python and that you can, by a wave of your hand, have all the careful
