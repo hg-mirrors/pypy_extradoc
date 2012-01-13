@@ -14,9 +14,9 @@ interpreter if both threads access the same object concurrently --- to
 the point that in CPython even just manipulating the object's reference
 counter needs to be protected by the lock.
 
-Keeping your Python interpreter unchanged while managing to remove the
-infamous GIL: so far, this is regarded as the ultimate goal to enable
-true multi-CPU usage.  But we believe we have a plan to implement a
+So far, the ultimate goal to enable true multi-CPU usage has been to remove
+the infamous GIL from the interpreter, so that multiple threads could actually
+run in parallel.  But we think we have a plan to implement a
 different model for using multiple cores.  Believe it or not, this is
 *better* than just removing the GIL from PyPy.  You might get to use all
 your cores *without ever writing threads.*
@@ -24,7 +24,8 @@ your cores *without ever writing threads.*
 You would instead just use some event dispatcher, say from Twisted, from
 Stackless, or from your favorite GUI; or just write your own.  From
 there, you (or someone else) would add some minimal extra code to the
-event dispatcher's source code.  Then you would run your program on a
+event dispatcher's source code, to exploit the new transactional features
+offered by PyPy.  Then you would run your program on a
 special version of PyPy, and get some form of automatic parallelization.
 Sounds magic, but the basic idea is simple: start handling multiple
 events in parallel, giving each one its own *transaction.*  More about
