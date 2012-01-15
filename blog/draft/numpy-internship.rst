@@ -3,11 +3,11 @@ Hello, everyone
 
 I would like to inform you that there is a very interesting opportunity
 for doing an internship at `NCAR`_ in the lovely town of `Boulder`_, situated
-on the foothils of Rocky Mountains. Before you read on, make sure:
+on the foothils of Rocky Mountains. Before you read on, make sure you:
 
-* are a student of a US University, who is legally egligible to work in the US
+* are a student of a US University, who is legally eligible to work in the US
 
-* are at least finishing second year this year,
+* are at least finishing second year this year
 
 * apply before February 3rd.
 
@@ -22,7 +22,7 @@ A few interesting links:
 * `program website`_
 
 * `internship proposal`_ - note that the actual roadmap is very flexible, as
-  long as it's numeric kernel of an atmospheric model using PyPy.
+  long as it's a numeric kernel of an atmospheric model using PyPy.
 
 Feel free to contact Davide for details about the proposal and `pypy-dev`_ or
 me directly for details about PyPy.
