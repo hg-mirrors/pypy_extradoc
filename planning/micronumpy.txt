@@ -17,8 +17,6 @@ NEW TASKS
 
 - more attributes/methods on numpy.flatiter
 
-- axis= parameter to various methods
-
 - expose ndarray.ctypes
 
 - subclassing ndarray (instantiating subcalsses curently returns the wrong type)
