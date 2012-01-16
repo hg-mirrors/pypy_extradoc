@@ -1,0 +1,25 @@
+
+People present
+--------------
+
+* Antonio Cuni
+* Armin Rigo
+* Romain Guillebert
+
+Things we want to do
+--------------------
+
+* some skiing
+
+* review the JVM backend pull request (anto)
+
+* py3k (romain)
+
+* ffistruct
+
+* Cython backend (romain)
+
+* STM
+  start work on the GC (anto, arigo)
+
+* concurrent-marksweep GC
