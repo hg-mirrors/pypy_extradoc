@@ -24,3 +24,10 @@ NEW TASKS
   * keep subclass type when slicing, __array_finalize__
 
   * ndarray.view
+
+OPTIMIZATIONS
+-------------
+
+- SSE
+
+- count number of True's for bool arrays, so we don't have to recompute
