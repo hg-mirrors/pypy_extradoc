@@ -31,3 +31,8 @@ OPTIMIZATIONS
 - SSE
 
 - count number of True's for bool arrays, so we don't have to recompute
+
+- bridges are a tad too complicated - we need to store optimizer info
+  in order to improve though
+
+- iterators should possibly not require reinstantiating them.
