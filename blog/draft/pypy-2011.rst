@@ -24,6 +24,10 @@ with some semi-serious statistics:
 * We made PyPy over 2x faster (on a select set of benchmarks),
   `1.4 and nightly`_ comparison
 
+* We got 71 new people which did at least one commit in the PyPy repository
+  (XXX: this is what I got by doing wc on contributors.txt at 2011-01-01 and
+  the current contributors.rst, but we still need to update the latter)
+
 * We made PyPy 17x more compatible (of course this is unmeasurable, so why
   not just claim it)
 
