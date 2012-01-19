@@ -10,20 +10,21 @@ People present
 Things we want to do
 --------------------
 
-* some skiing (anto, armin)
+* some skiing (DONE)
 
 * review the JVM backend pull request (DONE)
 
-* py3k (romain)
+* py3k (romain, anto)
 
 * ffistruct
 
 * Cython backend
 
-* Debug the ARM backend (bivab)
+* Debug the ARM backend (bivab, armin around)
 
 * STM
-  - refactored the RPython API: mostly done, must adapt targetdemo*.py
+  - refactored the RPython API (DONE)
+  - app-level transaction module (armin, bivab around)
   - start work on the GC
 
 * concurrent-marksweep GC
