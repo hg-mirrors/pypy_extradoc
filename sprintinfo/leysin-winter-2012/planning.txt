@@ -14,17 +14,19 @@ Things we want to do
 
 * review the JVM backend pull request (DONE)
 
-* py3k (romain, anto)
+* py3k (romain, anto) (some progress)
 
 * ffistruct
 
 * Cython backend
 
-* Debug the ARM backend (bivab, armin around)
+* Debug the ARM backend (bivab, armin around) (some progress)
 
 * STM
   - refactored the RPython API (DONE)
-  - app-level transaction module (armin, bivab around)
+  - app-level transaction module (DONE)
   - start work on the GC
 
 * concurrent-marksweep GC
+
+* lightweight tracing experiment (everyone)
