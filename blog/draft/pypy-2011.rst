@@ -3,35 +3,44 @@ PyPy development in 2011
 
 Hello everyone.
 
-PyPy development is fast, sometimes very fast. We try to do 3-4 releases a year
-and yet a lot of time when someone complains about the last release being slow
-we usually say "oh, but it's the release, that was AGES ago". That makes
-something as big as summarizing a year next to impossible, but using my
-external IQ amplifiers like internet and hg log, I will try to provide you
-with some semi-serious statistics:
+PyPy's development is fast, sometimes very fast. We try to do 3-4 releases a
+year and still many times when someone complains about the latest release being
+slow we usually say "oh, that release was AGES ago". This makes something as
+big as summarizing a year next to impossible, but using my external IQ
+amplifiers, like internet and hg log, I will try to provide you with some
+semi-serious statistics:
 
-* We made 3 releases last year, boringly, 1.5, 1.6 and 1.7
+* We did 3 releases last year, boringly named, 1.5, 1.6 and 1.7
 
-* Number of visitors on pypy.org grew from about 200 to 800 per day (averaged
-  weekly)
+* The number of visitors on pypy.org grew from about 200 to 800 per day
+  (averaged weekly)
 
 * We spoke at 15 conferences/meetups
+  (XXX: can we put a list in a comment to be sure it's correct)
 
-* We made 10660 commits, or 29 per day (mostly typos ;-)
+* We made 10660 commits, or 29 per day (mostly typos ;-))
 
 * We published 43 blog posts, keeping you entertained almost weekly
 
-* We made PyPy over 2x faster (on a select set of benchmarks),
+* We made PyPy over 2x faster (on a select set of benchmarks), see the
   `1.4 and nightly`_ comparison
 
-* We got 71 new people which did at least one commit in the PyPy repository
+* 71 brand new people contributed at least one commit to the PyPy repository.
   (XXX: this is what I got by doing wc on contributors.txt at 2011-01-01 and
   the current contributors.rst, but we still need to update the latter)
 
-* We made PyPy 17x more compatible (of course this is unmeasurable, so why
-  not just claim it)
+* We made PyPy 17x more compatible (of course this is not measurable, so we're
+  going to claim it!)
 
-* We probably have [XXX insert unicode for infinity] infinitely many times more users now, since noone used
-  1.4 in production
+* We have [XXX insert unicode for infinity] infinitely many times more users
+  now, since no one used 1.4 in production
+
+2011 was a very exciting year for us. But we're pretty sure 2012 is going to be
+even more exciting! So watch this space for more exciting news, try PyPy out on
+your projects, and, as always, we invite you to join us and contribute to PyPy
+in any way you can.
+
+Signed,
+The PyPy Developers
 
 .. _`1.4 and nightly` http://speed.pypy.org/comparison/?exe=1%2B172%2C1%2BL%2Bdefault&ben=1%2C34%2C27%2C2%2C25%2C3%2C4%2C5%2C22%2C6%2C39%2C7%2C8%2C23%2C24%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C35%2C36%2C37%2C38%2C16%2C28%2C30%2C32%2C29%2C33%2C17%2C18%2C19%2C20&env=1%2C2&hor=true&bas=1%2B172&chart=normal+bars
