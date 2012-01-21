@@ -2,7 +2,6 @@
 People present
 --------------
 
-* Antonio Cuni
 * Armin Rigo
 * Romain Guillebert
 * David Schneider
@@ -14,19 +13,13 @@ Things we want to do
 
 * review the JVM backend pull request (DONE)
 
-* py3k (romain, anto) (some progress)
+* py3k (romain) (little bit of progress)
 
-* ffistruct
-
-* Cython backend
-
-* Debug the ARM backend (bivab, armin around) (some progress)
+* Debug the ARM backend (bivab, armin around) (some more progress)
 
 * STM
   - refactored the RPython API (DONE)
   - app-level transaction module (DONE)
-  - start work on the GC
+  - start work on the GC (armin)
 
-* concurrent-marksweep GC
-
-* lightweight tracing experiment (everyone)
+* lightweight tracing experiment (DONE but still experimental)
