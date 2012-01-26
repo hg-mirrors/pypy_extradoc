@@ -2,26 +2,24 @@
 People present
 --------------
 
-* Antonio Cuni
 * Armin Rigo
 * Romain Guillebert
+* David Schneider
 
 Things we want to do
 --------------------
 
-* some skiing: wednesday (last day of sun :-/ )
+* some skiing (DONE)
 
 * review the JVM backend pull request (DONE)
 
-* py3k (romain, anto later)
+* py3k (romain) (little bit of progress)
 
-* ffistruct
-
-* Cython backend
+* Debug the ARM backend (bivab, armin around) (some more progress)
 
 * STM
-  - refactored the RPython API: mostly done, must adapt targetdemo*.py
-    (anto, arigo)
-  - start work on the GC (arigo later?)
+  - refactored the RPython API (DONE)
+  - app-level transaction module (DONE)
+  - start work on the GC (armin)
 
-* concurrent-marksweep GC
+* lightweight tracing experiment (DONE but still experimental)

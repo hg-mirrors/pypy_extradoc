@@ -19,6 +19,8 @@ NEW TASKS
 
 - expose ndarray.ctypes
 
+- Make .T not force a lazy array.
+
 - subclassing ndarray (instantiating subcalsses curently returns the wrong type)
 
   * keep subclass type when slicing, __array_finalize__
