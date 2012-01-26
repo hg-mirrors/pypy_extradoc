@@ -1,0 +1,61 @@
+============
+STM planning
+============
+
+Overview
+--------
+
+A saner approach (and likely better results that now): integrate with
+the GC.  Here is the basic plan.
+
+Let T be the number of threads.  Use a custom GC, with T nurseries and
+one "global area."  Every object in the nursery t is only visible to
+thread t.  Every object in the global area is shared but read-only.
+Changes to global objects are only done by committing.
+
+Every thread t allocates new objects in the nursery t.  Accesses to
+nursery objects are the fastest, not monitored at all.  When we need
+read access to a global object, we can read it directly, but we need to
+record the version of the object that we read.  When we need write
+access to a global object, we need to make a whole copy of it into our
+nursery.
+
+The RPython program should have at least one hint: "force for writing",
+which is like writing to an object in the sense that it forces a local
+copy.
+
+We need annotator support to track which variables contain objects that
+are known to be local.  It lets us avoid the run-time check.  That's
+useful for all freshly malloc'ed objects, which we know are always
+local; and that's useful for special cases like the PyFrames, on which
+we would use the "force for writing" hint before running the
+interpreter.  In both cases the result is: no STM code is needed any
+more.
+
+When a transaction commits, we do a "minor collection"-like process: we
+move all surviving objects from the nursery to the global area, either
+as new objects, or as overwrites of their previous version.  So there is
+one "minor collection" at the end of every transaction.  Unlike the
+minor collections in other GCs, this one occurs at a well-defined time,
+with no stack roots to scan.
+
+Later we'll need to consider what occurs if a nursery grows too big
+while the transaction is still not finished.  Probably somehow run a
+collection of the nursery itself, not touching the global area.
+
+Of course we also need to do from time to time a major collection.  We
+will need at some point some concurrency here, to be able to run the
+major collection in a random thread t but detecting changes done by the
+other threads overwriting objects during their own minor collections.
+
+
+GC flags
+--------
+
+Still open to consideration, but the basic GC flags could be:
+    
+  * GC_GLOBAL      if the object is in the global area
+
+  * GC_WAS_COPIED  on a global object: it has at least one local copy
+                   (then we need to look it up in some local dictionary)
+                   on a local object: it comes from a global object
