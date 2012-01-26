@@ -121,6 +121,10 @@ their local copies.  This is done by temporarily locking the global
 objects with a special value in their "version" field that will cause
 concurrent reads to spin-loop.
 
+This is also where we need the list of global objects that we've read.
+We need to check that each of these global objects' versions have not
+been modified in the meantime.
+
 
 Annotator support
 -----------------
