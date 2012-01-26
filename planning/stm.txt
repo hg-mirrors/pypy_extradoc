@@ -20,7 +20,7 @@ record the version of the object that we read.  When we need write
 access to a global object, we need to make a whole copy of it into our
 nursery.
 
-The RPython program should have at least one hint: "force for writing",
+The RPython program should have at least one hint: "force local copy",
 which is like writing to an object in the sense that it forces a local
 copy.
 
@@ -28,16 +28,16 @@ We need annotator support to track which variables contain objects that
 are known to be local.  It lets us avoid the run-time check.  That's
 useful for all freshly malloc'ed objects, which we know are always
 local; and that's useful for special cases like the PyFrames, on which
-we would use the "force for writing" hint before running the
+we would use the "force local copy" hint before running the
 interpreter.  In both cases the result is: no STM code is needed any
 more.
 
-When a transaction commits, we do a "minor collection"-like process: we
-move all surviving objects from the nursery to the global area, either
-as new objects, or as overwrites of their previous version.  So there is
-one "minor collection" at the end of every transaction.  Unlike the
-minor collections in other GCs, this one occurs at a well-defined time,
-with no stack roots to scan.
+When a transaction commits, we do a "minor collection"-like process,
+called an "end-of-transaction collection": we move all surviving objects
+from the nursery to the global area, either as new objects, or as
+overwrites of their previous version.  Unlike the minor collections in
+other GCs, this one occurs at a well-defined time, with no stack roots
+to scan.
 
 Later we'll need to consider what occurs if a nursery grows too big
 while the transaction is still not finished.  Probably somehow run a
@@ -46,7 +46,8 @@ collection of the nursery itself, not touching the global area.
 Of course we also need to do from time to time a major collection.  We
 will need at some point some concurrency here, to be able to run the
 major collection in a random thread t but detecting changes done by the
-other threads overwriting objects during their own minor collections.
+other threads overwriting objects during their own end-of-transaction
+collections.
 
 
 GC flags
@@ -59,3 +60,87 @@ Still open to consideration, but the basic GC flags could be:
   * GC_WAS_COPIED  on a global object: it has at least one local copy
                    (then we need to look it up in some local dictionary)
                    on a local object: it comes from a global object
+
+  * and one complete word (for now?) for the version number, see below
+
+(Optimization: objects declared immutable don't need a version number.)
+
+
+stm_read
+--------
+
+The STM read operation is potentially a complex operation.  (That's why
+it's useful to remove it as much as possible.)
+
+stm_read(obj, offset) -> field value
+
+- If obj is not GC_GLOBAL, then read directly and be done.
+
+- Otherwise, if GC_WAS_COPIED, and if we find 'localobj' in this
+  thread's local dictionary, then read directly from 'localobj' and
+  be done.  (Ideally we should also use 'localobj' instead of 'obj'
+  in future references to this object, but unclear how.)
+
+- Otherwise, we need to do a global read.  This is a real STM read.
+  Done (on x86 [1]) by reading the version number, then the actual field,
+  then *again* the version number.  If the version number didn't change
+  and if it is not more recent than the transaction start, then the read
+  is accepted; otherwise not (we might retry or abort the transaction,
+  depending on cases).  And if the read is accepted then we need to
+  remember in a local list that we've read that object.
+
+
+stm_write
+---------
+
+- If obj is GC_GLOBAL, we need to find or make a local copy
+
+- Then we just perform the write.
+
+This means that stm_write could be implemented with a write barrier that
+returns potentially a copy of the object, and which is followed by a
+regular write to that copy.
+
+Note that "making a local copy" implies the same rules as stm_read: read
+the version number, copy all fields, then read *again* the version
+number [1].  If it didn't change, then we know that we got at least a
+consistent copy (i.e. nobody changed the object in the middle of us
+reading it).  If it is too recent, then we might have to abort.
+
+
+End-of-transaction collections
+------------------------------
+
+Start from the "roots" being all local copies of global objects.  (These
+are the only roots: if there are none, then it means we didn't write
+anything in any global object, so there is no new object that can
+survive.)  From the roots, scan and move all fresh new objects to the
+global area.  Add the GC_GLOBAL flag to them, of course.  Then we need,
+atomically (in the STM sense), to overwrite the old global objects with
+their local copies.  This is done by temporarily locking the global
+objects with a special value in their "version" field that will cause
+concurrent reads to spin-loop.
+
+
+Annotator support
+-----------------
+
+To get good performance, we should as much as possible use the
+'localobj' version of every object instead of the 'obj' one.  At least
+after a write barrier we should replace the local variable 'obj' with
+'localobj', and someone (the annotator? or later?) should propagate the
+fact that it is now a localobj that doesn't need special stm support
+any longer.  Similarly, all mallocs return a localobj.
+
+The "force local copy" hint should be used on PyFrame before the main
+interpreter loop, so that we can then be sure that all accesses to
+'frame' are to a local obj.  Ideally, we could even track which fields
+of a localobj are themselves localobjs.  This would be useful for
+'PyFrame.fastlocals_w': it should also be known to always be a localobj.
+
+
+notes
+-----
+
+[1] this relies on a property guaranteed so far by the x86, but not,
+    say, by PowerPCs.  (XXX find a reference again)
