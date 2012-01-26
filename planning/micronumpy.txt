@@ -36,3 +36,7 @@ OPTIMIZATIONS
   in order to improve though
 
 - iterators should possibly not require reinstantiating them.
+
+- things like take/item/fancy indexing can use some knowledge about the density
+  of data and either evaluate interesting points (without forcing) or
+  do what they do now.
