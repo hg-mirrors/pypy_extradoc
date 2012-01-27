@@ -68,7 +68,9 @@ Still open to consideration, but the basic GC flags could be:
 GC_WAS_COPIED should rather be some counter, counting how many threads
 have a local copy; something like 2 or 3 bits, where the maximum value
 means "overflowed" and is sticky (maybe until some global
-synchronization point, if we have one).
+synchronization point, if we have one).  Or, we can be more advanced and
+use 4-5 bits, where in addition we use some "thread hash" value if there
+is only one copy.
 
 
 stm_read
