@@ -65,6 +65,11 @@ Still open to consideration, but the basic GC flags could be:
 
 (Optimization: objects declared immutable don't need a version number.)
 
+GC_WAS_COPIED should rather be some counter, counting how many threads
+have a local copy; something like 2 or 3 bits, where the maximum value
+means "overflowed" and is sticky (maybe until some global
+synchronization point, if we have one).
+
 
 stm_read
 --------
