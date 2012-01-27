@@ -150,6 +150,120 @@ of a localobj are themselves localobjs.  This would be useful for
 'PyFrame.fastlocals_w': it should also be known to always be a localobj.
 
 
+Local collections
+-----------------
+
+If the nursery fills up too much during a transaction, it needs to be
+locally collected.  This is supposed to be a generally rare occurrance.
+Unlike end-of-transaction collections, we need to have the stack roots
+of the current transaction.  Because such collections are more rare than
+in previous GCs, we could use for performance a completely different
+approach: conservatively scan the stack, finding everything that looks
+like a pointer to an object in the nursery; mark these objects as roots;
+and do a local collection from there.  We need either a non-moving GC or
+at least to pin the potential roots.  Pinning is better in the sense
+that it should ideally pin a small number of objects, and all other
+objects can move away; this would free most of the nursery again.
+Afterwards we can still use a bump-pointer allocation technique, to
+allocate within each area between the pinned objects.  The objects are
+pinned just for one local collection, which means that number of such
+pinned objects should remain roughly constant as time passes.
+
+The local collection is also a good time to compress the local list of
+all global reads done --- "compress" in the sense of removing
+duplicates.
+
+
+Global collections
+------------------
+
+We will sometimes need to do a "major" collection, called global
+collection here.  The issue with it is that there might be live
+references to global objects in the local objects of any thread.  The
+problem becomes even harder as some threads may be currently blocked in
+some system call.  As an intermediate solution that should work well
+enough, we could try to acquire a lock for every thread, a kind of LIL
+(local interpreter lock).  Every thread releases its LIL around
+potentially-blocking system calls.  At the end of a transaction and
+maybe once per local collection, we also do the equivalent of a
+release-and-require-the-LIL.
+
+The major collection could be orchestrated by either the thread that
+noticed one should start, or by its own thread.  We first acquire all
+the LILs, and for every LIL, we ask the corresponding thread to do a
+local marking, starting from their own stacks.  Out of this, we obtain a
+list of global objects.
+
+Then we can resume running the threads while at the same time doing a
+mark-n-sweep collection of the global objects.  There is never any
+pointer from a global object to a local object, but some global objects
+are duplicated in one or several local nurseries.  To simplify, these
+duplicates should be considered as additional roots for local marking,
+and the original objects should be additional roots for global marking.
+At some point we might figure out a way to allow duplicated objects to
+be freed too.
+
+The global objects are read-only, at least if there is no commit.  If we
+don't want to block the other threads we need support for detecting
+commit-time concurrent writes.  Alternatively, we can ask the threads to
+do all together a parallel global marking; this would have a
+stop-the-world effect, but require no concurrency detection mechanism.
+
+Note: standard terminology:
+
+* Concurrency: there is one thread that does something GC-related,
+  like scan the heap, and at the same time another thread changes
+  some object from the heap.
+
+* Parallelism: there are multiple threads all going something GC-related,
+  like all scan the heap together.
+
+
+When not running transactively
+------------------------------
+
+The above describes the mode during which there is a main thread blocked
+in transaction.run().  The other mode is mostly that of "start-up",
+before we call transaction.run().  Of course no STM is needed in that
+mode, but it's still running the same STM-enabled interpreter.  We need
+to figure out how to tweak the above concepts for that mode.
+
+We can probably abuse the notion of nursery above, by running with one
+nursery (corresponding to the only thread running, the main thread).  We
+would need to do collections that are some intermediate between "local
+collections" and "end-of-transaction collections".  Likely, a scheme
+that might work would be similar to local collections (with some pinned
+objects) but where surviving non-pinned objects are moved to become
+global objects.
+
+This needs a bit more thinking: the issue is that when transaction.run()
+is called, we can try to do such a collection, but what about the pinned
+objects?
+
+Some intermediate solution would be to let this mode be rather slow:
+have only global objects, and have the stm_write barrier of 'obj' return
+'obj'.  Do only global collections.  Allocation would allocate
+immediately a global object, mostly without being able to benefit from
+bump-pointer allocation.
+
+
+Pointer equality
+----------------
+
+Another (traditionally messy) issue is that by having several copies of
+the same object, we need to take care of all pointer comparisons too.
+This is all llops of the form ``ptr_eq(x, y)`` or ``ptr_ne(x, y)``.
+
+If we know statically that both copies are local copies, then we can
+just compare the pointers.  Otherwise we need to check their GC_GLOBAL
+and GC_WAS_COPIED flag, and potentially if they both have GC_WAS_COPIED
+but only one of them as GC_GLOBAL, we need to check in local dictionary
+if they map to each other.  And we need to take care of the cases of
+NULL pointers.
+
+
+
+
 notes
 -----
 
