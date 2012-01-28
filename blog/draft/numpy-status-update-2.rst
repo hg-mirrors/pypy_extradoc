@@ -9,7 +9,7 @@ that a lot of people use:
 
 * more ufuncs
 
-* most ufuncs now accept axis parameter (except ``all`` and ``any``)
+* most ufuncs now accept the ``axis`` parameter (except ``all`` and ``any``)
 
 * fixed string representation of arrays, now it's identical to numpy (uses
   pretty much the same code)
