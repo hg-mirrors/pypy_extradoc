@@ -1,15 +1,15 @@
 Hello.
 
-This is just a quick status update on the NumPy in PyPy project that as of very
-recently became my day job. I probably should thank once again to Getco,
+This is just a quick status update on the NumPy in PyPy project that very
+recently became my day job. I should give my thanks once again to Getco,
 Nate Lawson and other contributors who donated above $40000 towards the goal.
 
-Recently we (Alex Gaynor, Matti Picus and me) implemented few interesting things
+Recently we (Alex Gaynor, Matti Picus and me) implemented a few interesting things
 that a lot of people use:
 
 * more ufuncs
 
-* most ufuncs now accept axis parameter (except all and any)
+* most ufuncs now accept axis parameter (except ``all`` and ``any``)
 
 * fixed string representation of arrays, now it's identical to numpy (uses
   pretty much the same code)
@@ -31,11 +31,11 @@ are completely unsupported) or that functions work **at all**. We also
 reserve the right to incorporate jokes in that website, so don't treat it
 that seriously overall :-)
 
-We hope to provide you with more frequent updates on the progress and in
+We hope to provide you with more frequent updates on the progress, and in the
 meantime I would like to encourage people to donate towards the step 2, which
-is making it **really** fast.
+is about making numpypy **really** fast.
 
 Cheers,
-fijal & the PyPy tem
+fijal & the PyPy team
 
 .. `nightly report`: http://buildbot.pypy.org/numpy-status/latest.html
