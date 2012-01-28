@@ -31,6 +31,8 @@ are completely unsupported) or that functions work **at all**. We also
 reserve the right to incorporate jokes in that website, so don't treat it
 that seriously overall :-)
 
+We hope to provide you with more frequent updates on the progress.
+
 Cheers,
 fijal & the PyPy team
 
