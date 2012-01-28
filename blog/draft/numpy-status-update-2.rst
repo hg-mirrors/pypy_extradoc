@@ -20,7 +20,7 @@ that a lot of people use:
 
 * indexing arrays by boolean arrays of the same size
 
-* bugfixes
+* and various bugfixes.
 
 We would also like to introduce the `nightly report`_ of numpy status. This
 is an automated tool that does package introspection. While it gives some
@@ -31,7 +31,8 @@ are completely unsupported) or that functions work **at all**. We also
 reserve the right to incorporate jokes in that website, so don't treat it
 that seriously overall :-)
 
-We hope to provide you with more frequent updates on the progress.
+Thanks, and stay tuned.  We hope to post here regular updates on the
+progress.
 
 Cheers,
 fijal & the PyPy team
