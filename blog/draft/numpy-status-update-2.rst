@@ -37,4 +37,4 @@ progress.
 Cheers,
 fijal & the PyPy team
 
-.. `nightly report`: http://buildbot.pypy.org/numpy-status/latest.html
+.. _`nightly report`: http://buildbot.pypy.org/numpy-status/latest.html
