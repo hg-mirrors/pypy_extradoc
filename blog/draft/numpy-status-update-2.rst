@@ -1,9 +1,8 @@
 Hello.
 
 This is just a quick status update on the NumPy in PyPy project that as of very
-recently became my day job. I probably should thank once again to Getco and
-Nate Lawson who donated $35000 towards this goal and individual contributors
-who donated above $5000.
+recently became my day job. I probably should thank once again to Getco,
+Nate Lawson and other contributors who donated above $40000.
 
 Recently we (Alex Gaynor, Matti Picus and me) implemented few interesting things
 that a lot of people use:
