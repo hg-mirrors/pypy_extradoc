@@ -31,10 +31,6 @@ are completely unsupported) or that functions work **at all**. We also
 reserve the right to incorporate jokes in that website, so don't treat it
 that seriously overall :-)
 
-We hope to provide you with more frequent updates on the progress, and in the
-meantime I would like to encourage people to donate towards the step 2, which
-is about making numpypy **really** fast.
-
 Cheers,
 fijal & the PyPy team
 
