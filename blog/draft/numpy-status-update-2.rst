@@ -28,7 +28,9 @@ is an automated tool that does package introspection. While it gives some
 sort of idea how much of numpy is implemented, it's not by far the authority.
 Your tests should be the authority. It won't report whether functions
 support all kinds of parameters (for example masked arrays and ``out`` parameter
-are completely unsupported) or that functions work **at all**.
+are completely unsupported) or that functions work **at all**. We also
+reserve the right to incorporate jokes in that website, so don't treat it
+that seriously overall :-)
 
 We hope to provide you with more frequent updates on the progress and in
 meantime I would like to encourage people to donate towards the step 2, which
@@ -37,3 +39,4 @@ is making it **really** fast.
 Cheers,
 fijal & the PyPy tem
 
+.. `nightly report`: http://buildbot.pypy.org/numpy-status/latest.html
