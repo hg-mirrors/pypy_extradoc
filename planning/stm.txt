@@ -191,8 +191,8 @@ release-and-require-the-LIL.
 The major collection could be orchestrated by either the thread that
 noticed one should start, or by its own thread.  We first acquire all
 the LILs, and for every LIL, we ask the corresponding thread to do a
-local marking, starting from their own stacks.  Out of this, we obtain a
-list of global objects.
+local marking, starting from their own stacks and scanning their local
+nurseries.  Out of this, we obtain a list of global objects.
 
 Then we can resume running the threads while at the same time doing a
 mark-n-sweep collection of the global objects.  There is never any
@@ -215,8 +215,8 @@ Note: standard terminology:
   like scan the heap, and at the same time another thread changes
   some object from the heap.
 
-* Parallelism: there are multiple threads all going something GC-related,
-  like all scan the heap together.
+* Parallelism: there are multiple threads all doing something GC-related,
+  like all scanning the heap together.
 
 
 When not running transactively
@@ -257,9 +257,9 @@ This is all llops of the form ``ptr_eq(x, y)`` or ``ptr_ne(x, y)``.
 If we know statically that both copies are local copies, then we can
 just compare the pointers.  Otherwise we need to check their GC_GLOBAL
 and GC_WAS_COPIED flag, and potentially if they both have GC_WAS_COPIED
-but only one of them as GC_GLOBAL, we need to check in local dictionary
-if they map to each other.  And we need to take care of the cases of
-NULL pointers.
+but only one of them has GC_GLOBAL, we need to check in the local
+dictionary if they map to each other.  And we need to take care of the
+cases of NULL pointers.
 
 
 
