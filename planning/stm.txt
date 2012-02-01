@@ -2,6 +2,9 @@
 STM planning
 ============
 
+Comments in << >> describe the next thing to work on.
+
+
 Overview
 --------
 
@@ -72,6 +75,9 @@ synchronization point, if we have one).  Or, we can be more advanced and
 use 4-5 bits, where in addition we use some "thread hash" value if there
 is only one copy.
 
+<< NOW: think of a minimal GC model with these properties.  We probably
+need GC_GLOBAL, a single bit of GC_WAS_COPIED, and the version number. >>
+
 
 stm_read
 --------
@@ -96,6 +102,10 @@ stm_read(obj, offset) -> field value
   depending on cases).  And if the read is accepted then we need to
   remember in a local list that we've read that object.
 
+<< NOW: implement the thread's local dictionary in C, as say a search
+tree.  Should be easy enough if we don't try to be as efficient as
+possible.  The rest of the logic here is straightforward. >>
+
 
 stm_write
 ---------
@@ -113,6 +123,8 @@ the version number, copy all fields, then read *again* the version
 number [1].  If it didn't change, then we know that we got at least a
 consistent copy (i.e. nobody changed the object in the middle of us
 reading it).  If it is too recent, then we might have to abort.
+
+<< NOW: straightforward >>
 
 
 End-of-transaction collections
@@ -132,6 +144,9 @@ This is also where we need the list of global objects that we've read.
 We need to check that each of these global objects' versions have not
 been modified in the meantime.
 
+<< NOW: should be easy, but with unclear interactions between the C
+code and the GC. >>
+
 
 Annotator support
 -----------------
@@ -148,6 +163,8 @@ interpreter loop, so that we can then be sure that all accesses to
 'frame' are to a local obj.  Ideally, we could even track which fields
 of a localobj are themselves localobjs.  This would be useful for
 'PyFrame.fastlocals_w': it should also be known to always be a localobj.
+
+<< do later >>
 
 
 Local collections
@@ -172,6 +189,9 @@ pinned objects should remain roughly constant as time passes.
 The local collection is also a good time to compress the local list of
 all global reads done --- "compress" in the sense of removing
 duplicates.
+
+<< do later; memory usage grows unboundedly during one transaction for
+now. >>
 
 
 Global collections
@@ -218,6 +238,10 @@ Note: standard terminology:
 * Parallelism: there are multiple threads all doing something GC-related,
   like all scanning the heap together.
 
+<< at first the global area keeps growing unboundedly.  The next step
+will be to add the LIL but run the global collection by keeping all
+other threads blocked. >>
+
 
 When not running transactively
 ------------------------------
@@ -240,11 +264,11 @@ This needs a bit more thinking: the issue is that when transaction.run()
 is called, we can try to do such a collection, but what about the pinned
 objects?
 
-Some intermediate solution would be to let this mode be rather slow:
+<< NOW: let this mode be rather slow.  To implement this mode, we would
 have only global objects, and have the stm_write barrier of 'obj' return
-'obj'.  Do only global collections.  Allocation would allocate
-immediately a global object, mostly without being able to benefit from
-bump-pointer allocation.
+'obj'.  Do only global collections (one we have them; at first, don't
+collect at all).  Allocation would allocate immediately a global object,
+without being able to benefit from bump-pointer allocation. >>
 
 
 Pointer equality
@@ -260,6 +284,8 @@ and GC_WAS_COPIED flag, and potentially if they both have GC_WAS_COPIED
 but only one of them has GC_GLOBAL, we need to check in the local
 dictionary if they map to each other.  And we need to take care of the
 cases of NULL pointers.
+
+<< NOW: straightforward, if we're careful not to forget cases >>
 
 
 
