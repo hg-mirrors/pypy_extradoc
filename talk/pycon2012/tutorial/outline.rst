@@ -24,7 +24,8 @@ How to get the most out of PyPy
     * resops
     * optimizations
 * A case study
+  * Examples, examples, examples
   * Open source application (TBD)
-  * Tracebin or jitviewer
+  * Jitviewer
 * Putting it to work
   * Workshop style
