@@ -31,11 +31,6 @@ def main():
         print time.time() - t0
         usage, kb = read_smaps()
         print usage, kb * 1024 / count, "per instance"
-        gc.collect()
-        usage, kb = read_smaps()
-        print "after collect", usage, kb * 1024 / count, "per instance"
-        #import pdb
-        #pdb.set_trace()
         time.sleep(1)
 
 if __name__ == '__main__':
