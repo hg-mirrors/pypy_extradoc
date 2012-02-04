@@ -9,6 +9,7 @@ How to get the most out of PyPy
 * Why you would not use PyPy (yet)
   * embedded
   * some extensions don't work (lxml)
+  * but there are ways around it!
 * How PyPy Works
   * Bytecode VM
   * GC
