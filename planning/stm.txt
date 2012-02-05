@@ -126,6 +126,9 @@ reading it).  If it is too recent, then we might have to abort.
 
 << NOW: straightforward >>
 
+TODO: how do we handle MemoryErrors when making a local copy??
+Maybe force the transaction to abort, and then re-raise MemoryError
+
 
 End-of-transaction collections
 ------------------------------
@@ -264,11 +267,19 @@ This needs a bit more thinking: the issue is that when transaction.run()
 is called, we can try to do such a collection, but what about the pinned
 objects?
 
-<< NOW: let this mode be rather slow.  To implement this mode, we would
-have only global objects, and have the stm_write barrier of 'obj' return
-'obj'.  Do only global collections (one we have them; at first, don't
-collect at all).  Allocation would allocate immediately a global object,
-without being able to benefit from bump-pointer allocation. >>
+<< NOW: let this mode be rather slow.  Two solutions are considered:
+
+    1. we would have only global objects, and have the stm_write barrier
+    of 'obj' return 'obj'.  Do only global collections (once we have
+    them; at first, don't collect at all).  Allocation would allocate
+    immediately a global object, without being able to benefit from
+    bump-pointer allocation.
+
+    2. allocate in a nursery, never collected for now; but just do an
+    end-of-transaction collection when transaction.run() is first
+    called.
+
+>>
 
 
 Pointer equality
