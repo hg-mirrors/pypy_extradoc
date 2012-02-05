@@ -1,5 +1,5 @@
 
-import time, os, re, gc
+import time, os, re
 
 class A(object):
     def __init__(self, a, b, c):
