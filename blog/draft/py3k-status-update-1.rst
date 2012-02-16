@@ -1,15 +1,15 @@
 Hello,
 
-thank to all the people who donated_ to the `py3k proposal`_, we managed to
+Thank to all the people who donated_ to the `py3k proposal`_, we managed to
 collect enough money to start to work on the first step.  This is a quick
 summary of what I did since I began working on this.
 
 First of all, many thanks to Amaury Forgeot d'Arc, who started the `py3k
 branch`_ months ago, and already implemented lots of features including
 e.g. switching to "unicode everywhere" and the int/long unification, making my
-job considerably easier :-),
+job considerably easier :-)
 
-I started to work on the branch at the last `Leysin sprint`_ toghether with
+I started to work on the branch at the last `Leysin sprint`_ together with
 Romain Guillebert, where we worked on various syntactical changes such as
 extended tuple unpacking and keyword-only arguments.  Working on such features
 is a good way to learn about a lot of the layers which the PyPy Python
