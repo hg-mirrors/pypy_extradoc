@@ -5,8 +5,11 @@ What is this talk about?
 ------------------------
 
 * what is pypy and why
+
 * numeric landscape in python
+
 * what we achieved in pypy
+
 * where we're going
 
 What is PyPy?
@@ -52,7 +55,38 @@ Why would you care (2)
 Numerics in Python
 ------------------
 
-XXX numeric expressions, plots etc.
+* ``numpy`` - for array operations
+
+* ``scipy``, ``scikits`` - various algorithms, also exposing C/fortran
+  libraries
+
+* ``matplotlib`` - pretty pictures
+
+* ``ipython``
+
+There is an entire ecosystem!
+-----------------------------
+
+* Which I don't even know very well
+
+* ``PyCUDA``
+
+* ``pandas``
+
+* ``mayavi``
+
+What's important?
+-----------------
+
+* There is an entire ecosystem built by people
+
+* It's available for free, no shady licensing
+
+* It's being expanded
+
+* It's growing
+
+* It'll keep up with hardware advancments
 
 Problems with numerics in python
 --------------------------------
@@ -92,12 +126,21 @@ Status
 
 * Assembler generation backend needs works
 
-* No vectorization yet
+* Vectorization in progress
 
 Status benchmarks
 -----------------
+
+* laplace solution
+
+* solutions:
+
+  +---+
+  |   |
+  +---+
 
 This is just the beginning...
 -----------------------------
 
 * PyPy is an easy platform to experiment with
+

@@ -42,3 +42,6 @@ OPTIMIZATIONS
 - things like take/item/fancy indexing can use some knowledge about the density
   of data and either evaluate interesting points (without forcing) or
   do what they do now.
+
+- counting by element_size instead of by 1 and then multiply sounds
+  like a much faster option sometimes
