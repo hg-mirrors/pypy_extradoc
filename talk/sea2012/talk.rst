@@ -113,6 +113,8 @@ Our approach
 Examples
 --------
 
+XXX say that the variables are e.g. 1-dim numpy arrays
+
 * ``a + a`` would generate different code than ``a + b``
 
 * ``a + b * c`` is as fast as a loop
