@@ -37,27 +37,27 @@ PyPy status right now
 * XXX some benchmarks
 
 Why should you care?
--------------------
+--------------------
 
 * *If I write this stuff in C/fortran/assembler it'll be faster anyway*
 
 * maybe, but ...
 
-Why would you care (2)
-----------------------
+Why should you care? (2)
+------------------------
 
 * Experimentation is important
 
 * Implementing something faster, in **human time**, leaves more time for optimizations and improvements
 
-* For novel algorithms, being clearly expressed in code makes them easier to evaluate (Python is cleaner than C often)
+* For novel algorithms, clearer implementation makes them easier to evaluate (Python often is cleaner than C)
 
 |pause|
 
 * Sometimes makes it **possible** in the first place
 
-Why would you care even more
-----------------------------
+Why would you care even more?
+-----------------------------
 
 * Growing community
 
@@ -65,8 +65,8 @@ Why would you care even more
 
 * There are many smart people out there addressing hard problems
 
-Example why would you care
---------------------------
+Example of why would you care
+-----------------------------
 
 * You spend a year writing optimized algorithms for a GPU
 
@@ -78,11 +78,11 @@ Example why would you care
 
 * Alternative - **express** your algorithms
 
-* Leave low-level details for people who have nothing better to do
+* Leave low-level details to people who have nothing better to do
 
 |pause|
 
-* .. like me (I don't know enough physics to do the other part)
+* ... like me (I don't know enough Physics to do the other part)
 
 Numerics in Python
 ------------------
@@ -197,7 +197,7 @@ Progress plan
 
 |pause|
 
-* However, leave knobs and buttons for advanced users
+* However, retain knobs and buttons for advanced users
 
 * Don't get penalized too much for not using them
 
