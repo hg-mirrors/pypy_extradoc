@@ -8,9 +8,9 @@ What is this talk about?
 
 * What is PyPy and why?
 
-* Numeric landscape in python
+* Numeric landscape in Python
 
-* What we achieved in PyPy?
+* What we achieved in PyPy
 
 * Where we're going?
 
@@ -36,7 +36,7 @@ PyPy status right now
 
 * XXX some benchmarks
 
-Why would you care?
+Why should you care?
 -------------------
 
 * *If I write this stuff in C/fortran/assembler it'll be faster anyway*
