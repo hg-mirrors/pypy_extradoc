@@ -18,5 +18,7 @@ performance analysis and optimization on it. If you could give us a list of a
 few open source application you'd like to see us take a look at, and we'll
 choose the most popular one.
 
+Please write back to us at alex.gaynor@gmail.com and fijall@gmail.com .
+
 Thanks,
 Alex Gaynor, Maciej Fijalkowski, Armin Rigo
