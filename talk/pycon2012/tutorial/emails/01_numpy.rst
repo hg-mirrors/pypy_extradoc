@@ -13,5 +13,10 @@ performance. However, it does have a pretty different performance profile from
 CPython's NumPy. If you're interested in hearing about this in our tutorial,
 please let us know.
 
+We also plan on going through an open source application and demonstrating some
+performance analysis and optimization on it. If you could give us a list of a
+few open source application you'd like to see us take a look at, and we'll
+choose the most popular one.
+
 Thanks,
 Alex Gaynor, Maciej Fijalkoski, Armin Rigo
