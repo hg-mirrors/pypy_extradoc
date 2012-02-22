@@ -23,6 +23,8 @@ What is PyPy?
 
 * An open source project with a lot of volunteer effort, released under the MIT license
 
+* Agile development, 13000 unit tests, continuous integration, sprints, distributed team
+
 * I'll talk today about the first part (mostly)
 
 PyPy status right now
@@ -34,7 +36,7 @@ PyPy status right now
 
 * Example - real time video processing
 
-* XXX some benchmarks
+* 2-300x faster on Python code
 
 Why should you care?
 --------------------
@@ -140,8 +142,6 @@ Our approach
 
 * Build a tree of operations
 
-XXX a tree picture
-
 * Compile assembler specialized for aliasing and operations
 
 * Execute the specialized assembler
@@ -158,7 +158,19 @@ Examples
 Performance comparison
 ----------------------
 
-XXX
++---------------------+-------+------+-----+-----------+
+|                     | NumPy | PyPy | GCC | Pathscale |
++---------------------+-------+------+-----+-----------+
+| ``a+b``             |
++---------------------+-------+------+-----+-----------+
+| ``a+(b+c)``         |
++---------------------+-------+------+-----+-----------+
+| ``(a+b)+((c+d)+e)`` |
++---------------------+-------+------+-----+-----------+
+
+|pause|
+
+* Pathscale is insane, but we'll get there ;-)
 
 Status
 ------
@@ -171,11 +183,6 @@ Status
 
 * Vectorization in progress
 
-Status benchmarks - trivial stuff
----------------------------------
-
-XXX
-
 Status benchmarks - slightly more complex
 -----------------------------------------
 
@@ -183,10 +190,9 @@ Status benchmarks - slightly more complex
 
 * solutions:
 
-  XXX laplace numbers
-  +---+
-  |   |
-  +---+
+  +-------+------+-----+-----------+
+  | Numpy | PyPy | GCC | Pathscale |
+  +-------+------+-----+-----------+
 
 Progress plan
 -------------

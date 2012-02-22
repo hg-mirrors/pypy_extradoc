@@ -19,4 +19,4 @@ few open source application you'd like to see us take a look at, and we'll
 choose the most popular one.
 
 Thanks,
-Alex Gaynor, Maciej Fijalkoski, Armin Rigo
+Alex Gaynor, Maciej Fijalkowski, Armin Rigo
