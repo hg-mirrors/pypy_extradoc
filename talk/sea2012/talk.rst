@@ -21,7 +21,7 @@ What is PyPy?
 
 * A framework for writing efficient dynamic language implementations
 
-* An open source project with a lot of volunteer effort, released under the BSD license
+* An open source project with a lot of volunteer effort, released under the MIT license
 
 * I'll talk today about the first part (mostly)
 
