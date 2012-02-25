@@ -1,3 +1,44 @@
+First rule of optimization?
+===========================
+
+|pause|
+
+If it's not correct, it doesn't matter.
+
+Second rule of optimization?
+============================
+
+|pause|
+
+If it's not faster, you're wasting ime.
+
+Third rule of optimization?
+===========================
+
+|pause|
+
+Measure twice, cut once.
+
+(C)Python performance tricks
+============================
+
+|pause|
+
+* ``map()`` instead of list comprehensions
+
+* ``def f(int=int):``, make globals local
+
+* ``append = my_list.append``, grab bound methods outside loop
+
+* Avoiding function calls
+
+Forget these
+============
+
+* PyPy has totally different performance characterists
+
+* Which we're going to learn about now
+
 Why PyPy?
 =========
 
@@ -41,7 +82,7 @@ CPython's sweetspot
 
 * moving computations to C, example::
 
-   map(operator.... ) # XXX some obscure example
+   map(operator.attrgetter("a"), my_list)
 
 PyPy's sweetpot
 ===============
