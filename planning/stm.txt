@@ -75,8 +75,8 @@ synchronization point, if we have one).  Or, we can be more advanced and
 use 4-5 bits, where in addition we use some "thread hash" value if there
 is only one copy.
 
-<< NOW: think of a minimal GC model with these properties.  We probably
-need GC_GLOBAL, a single bit of GC_WAS_COPIED, and the version number. >>
+<< NOW: implemented a minimal GC model with these properties.  We have
+GC_GLOBAL, a single bit of GC_WAS_COPIED, and the version number. >>
 
 
 stm_read
@@ -102,9 +102,8 @@ stm_read(obj, offset) -> field value
   depending on cases).  And if the read is accepted then we need to
   remember in a local list that we've read that object.
 
-<< NOW: implement the thread's local dictionary in C, as say a search
-tree.  Should be easy enough if we don't try to be as efficient as
-possible.  The rest of the logic here is straightforward. >>
+<< NOW: the thread's local dictionary is in C, as a search tree.
+The rest of the logic here is straightforward. >>
 
 
 stm_write
@@ -124,7 +123,7 @@ number [1].  If it didn't change, then we know that we got at least a
 consistent copy (i.e. nobody changed the object in the middle of us
 reading it).  If it is too recent, then we might have to abort.
 
-<< NOW: straightforward >>
+<< NOW: done, straightforward >>
 
 TODO: how do we handle MemoryErrors when making a local copy??
 Maybe force the transaction to abort, and then re-raise MemoryError
@@ -147,8 +146,7 @@ This is also where we need the list of global objects that we've read.
 We need to check that each of these global objects' versions have not
 been modified in the meantime.
 
-<< NOW: should be easy, but with unclear interactions between the C
-code and the GC. >>
+<< NOW: done, kind of easy >>
 
 
 Annotator support
@@ -167,7 +165,10 @@ interpreter loop, so that we can then be sure that all accesses to
 of a localobj are themselves localobjs.  This would be useful for
 'PyFrame.fastlocals_w': it should also be known to always be a localobj.
 
-<< do later >>
+<< NOW: done in the basic form by translator/stm/transform.py.
+Runs late (just before C databasing).  Should work well enough to
+remove the maximum number of write barriers, but still missing
+PyFrame.fastlocals_w. >>
 
 
 Local collections
@@ -243,7 +244,9 @@ Note: standard terminology:
 
 << at first the global area keeps growing unboundedly.  The next step
 will be to add the LIL but run the global collection by keeping all
-other threads blocked. >>
+other threads blocked.  NOW: think about, at least, doing "minor
+collections" on the global area *before* we even start running
+transactions. >>
 
 
 When not running transactively
@@ -267,19 +270,10 @@ This needs a bit more thinking: the issue is that when transaction.run()
 is called, we can try to do such a collection, but what about the pinned
 objects?
 
-<< NOW: let this mode be rather slow.  Two solutions are considered:
-
-    1. we would have only global objects, and have the stm_write barrier
-    of 'obj' return 'obj'.  Do only global collections (once we have
-    them; at first, don't collect at all).  Allocation would allocate
-    immediately a global object, without being able to benefit from
-    bump-pointer allocation.
-
-    2. allocate in a nursery, never collected for now; but just do an
-    end-of-transaction collection when transaction.run() is first
-    called.
-
->>
+<< NOW: the global area is just the "nursery" for the main thread.
+stm_writebarrier of 'obj' return 'obj' in the main thread.  All
+allocations get us directly a global object, but allocated from
+the "nursery" of the main thread, with bump-pointer allocation. >>
 
 
 Pointer equality
@@ -296,8 +290,11 @@ but only one of them has GC_GLOBAL, we need to check in the local
 dictionary if they map to each other.  And we need to take care of the
 cases of NULL pointers.
 
-<< NOW: straightforward, if we're careful not to forget cases >>
-
+<< NOW: done, without needing the local dictionary:
+stm_normalize_global(obj) returns globalobj if obj is a local,
+WAS_COPIED object.  Then a pointer comparison 'x == y' becomes
+stm_normalize_global(x) == stm_normalize_global(y).  Moreover
+the call to stm_normalize_global() can be omitted for constants. >>
 
 
 
