@@ -1,4 +1,5 @@
-Hello,
+Py3k status update
+------------------
 
 Thank to all the people who donated_ to the `py3k proposal`_, we managed to
 collect enough money to start to work on the first step.  This is a quick
@@ -45,6 +46,7 @@ Antonio
 
 .. _donated: http://morepypy.blogspot.com/2012/01/py3k-and-numpy-first-stage-thanks-to.html
 .. _`py3k proposal`: http://pypy.org/py3donate.html
+.. _`py3k branch`: https://bitbucket.org/pypy/pypy/src/py3k
 .. _`Leysin sprint`: http://morepypy.blogspot.com/2011/12/leysin-winter-sprint.html
 .. _`py3k tests nightly`: http://buildbot.pypy.org/summary?branch=py3k
 .. _`lexical exception handlers`: http://bugs.python.org/issue3021
