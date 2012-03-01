@@ -17,7 +17,7 @@ present in Python 2 and are gone in Python 3.
 Some of them were easy and mechnical: for example, I removed all the function
 attributes such as ``func_code`` and ``func_closure``, which has been renamed
 to ``__code__`` and ``__closure__``, and then I had to find and fix all the
-places which still expeted the old ones.
+places which still expected the old ones.
 
 Some were trickier: I removed support for the ``cmp`` function and the
 ``__cmp__`` special method, but this also meant that I had to fix a few types
