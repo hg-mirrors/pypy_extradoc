@@ -10,7 +10,11 @@ Second rule of optimization?
 
 |pause|
 
-If it's not faster, you're wasting ime.
+If it's not faster, you're wasting time.
+
+|pause|
+
+But if you iterate fast, you can afford wasting time
 
 Third rule of optimization?
 ===========================
@@ -32,12 +36,16 @@ Measure twice, cut once.
 
 * Avoiding function calls
 
+* Don't write Python
+
 Forget these
 ============
 
 * PyPy has totally different performance characterists
 
 * Which we're going to learn about now
+
+* You cannot speak about operations in isolation (more later)
 
 Why PyPy?
 =========
@@ -89,7 +97,7 @@ PyPy's sweetpot
 
 * **simple** python
 
-* if you can't understand it, JIT won't either
+* if I can't understand it, JIT won't either
 
 How PyPy runs your program, involved parts
 ==========================================
@@ -111,7 +119,7 @@ Bytecode interpreter
 
 * .... goes on and on
 
-* XXX example 1
+* example
 
 Tracing JIT
 ===========
@@ -119,11 +127,11 @@ Tracing JIT
 * once the loop gets hot, it's starting tracing (1039 runs, or 1619 function
   calls)
 
-* generating operations following how the interpreter would execute them
+* generating operations following how the interpreter executes them
 
 * optimizing them
 
-* compiling to assembler (x86 only for now)
+* compiling to assembler (x86, ppc or arm)
 
 PyPy's specific features
 ========================
@@ -134,30 +142,66 @@ PyPy's specific features
 
 * Decent tools for inspecting the generated code
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Performance characteristics - runtime
+=====================================
 
+* Runtime the same or a bit slower as CPython
 
-* Sweetspot?
+* Examples of runtime:
 
-  * CPython's sweetspot: stuff written in C
+  * ``list.sort``
 
-  * PyPy's sweetspot: lots of stuff written in Python
+  * ``long + long``
 
-* http://speed.pypy.org
+  * ``set & set``
 
-* How do you hit the sweetspot?
+  * ``unicode.join``
 
-  * Be in this room for the next 3 hours.
+  * ...
 
-Memory
-======
+Performance characteristics - JIT
+=================================
 
-* PyPy memory usage is difficult to estimate.
-* Very program dependent.
-* Learn to predict!
+* Important notion - don't consider operations in separation
 
-Sandbox
-=======
+* Always working as a loop or as a function
 
-* We're not going to talk about it here.
-* Run untrusted code.
+* Heuristics to what we believe is common python
+
+* Often much faster than CPython once warm
+
+Heuristics
+==========
+
+* What to specialize on (assuming stuff is constant)
+
+* Data structures
+
+* Relative cost of operations
+
+Heuristic example - dicts vs objects
+====================================
+
+* Dicts - an unknown set of keys, potentially large
+
+* Objects - a relatively stable, constant set of keys
+  (but not enforced)
+
+* Performance example
+
+Specialized lists
+=================
+
+* XXX Example of how much speedup you get out of not mixing
+
+Itertools abuse
+===============
+
+XXX
+
+Obscure stuff
+=============
+
+* Frame access is slow
+
+* List comprehension vs generator expression
