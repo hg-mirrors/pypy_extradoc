@@ -2,9 +2,9 @@ Py3k status update #2
 ---------------------
 
 This is the second status update about my work on the `py3k branch`_, which I
-can do thank to all the people who donated_ to the `py3k proposal`_.
+can work on thanks to all of the people who donated_ to the `py3k proposal`_.
 
-Since my previous `status update`_, things improved a lot: first of all, I
+Since my previous `status update`_, things have improved a lot: first of all, I
 fixed the syntax of many more tests, which were failing on the branch because
 they used constructs which are no longer valid in Python 3, such as ``u''``
 strings, the ``print`` statement or the old ``except Exception, e`` syntax.  I
