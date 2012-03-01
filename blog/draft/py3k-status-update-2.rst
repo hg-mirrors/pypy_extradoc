@@ -33,7 +33,7 @@ Speaking of old special methods, ``__hex__`` and ``__oct__`` are gone as well
 But the most important breakthrough was the removal of the ``_file`` module,
 containing the implementation of the ``file`` type in Python 2, which is now
 gone since in Python 3 files are handled by the ``_io`` module.  Killing the
-module was not straightforward, becase some of the importing logic was tightly
+module was not straightforward, because some of the importing logic was tightly
 tied to the internal implementation of files, so it needed some refactoring.
 Finally, I had to fix the ``marshal`` module to correctly detect text files
 vs. byte files.
