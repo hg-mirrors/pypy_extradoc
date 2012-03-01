@@ -39,10 +39,10 @@ Finally, I had to fix the ``marshal`` module to correctly detect text files
 vs. byte files.
 
 Among these things, I fixed tons of smaller issues here and there. As a
-result, there are much less failing tests than few weeks ago.  Obviously the
+result, there are many fewer failing tests than a few weeks ago.  Obviously the
 number itself does not mean much, because sometimes fixing a single test takes
-hours, and some other times by changing one line you fix tens of tests. But at
-the end, seeing it dropping from 999 to 650_ is always nice :-).
+hours, and some other times by changing one line one fixes tens of tests. But at
+the end, seeing it dropping from 999 to 650_ always is nice and rewarding :-).
 
 The road for having a pypy3k is still long, but everything is going fine so
 far. Stay tuned for more updates!
