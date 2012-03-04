@@ -205,3 +205,30 @@ Obscure stuff
 * Frame access is slow
 
 * List comprehension vs generator expression
+
+JitViewer
+=========
+
+* http://bitbucket.org/pypy/jitviewer
+
+* ``mkvirtualenv -p <path to pypy>``
+
+* ``python setup.py develop``
+
+The overview
+============
+
+* Usually three pieces per loop
+
+* Prologue and two loop iterations (loop invariants in the first bit)
+
+* They contain guards
+
+* Guards can be compiled to more code (bridges) that jump back to the loop
+  or somewhere else
+
+* Functions are inlined
+
+* Sometimes completely twisted flow
+
+XXX examples, including two nested loops
