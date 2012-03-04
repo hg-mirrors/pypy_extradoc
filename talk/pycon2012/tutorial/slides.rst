@@ -192,7 +192,7 @@ Heuristic example - dicts vs objects
 Specialized lists
 =================
 
-* XXX Example of how much speedup you get out of not mixing
+* xxx
 
 Itertools abuse
 ===============
