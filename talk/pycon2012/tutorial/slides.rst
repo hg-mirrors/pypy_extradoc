@@ -1,3 +1,15 @@
+Optimizing for PyPy
+===================
+
+* Hi!
+
+Who are we?
+==========
+
+* Armin Rigo
+* Maciej Fijalkowski
+* Alex Gaynor
+
 First rule of optimization?
 ===========================
 
