@@ -168,11 +168,11 @@ Performance characteristics - runtime
 Performance characteristics - JIT
 =================================
 
-* important notion - don't consider operations in separation
+* important - JIT never considers operations in isolation
 
-* always working as a loop or as a function
+* JIT always works on a loop or a function
 
-* heuristics to what we believe is common python
+* JIT heuristically optimized for what we believe is common Python
 
 * often much faster than CPython once warm
 
