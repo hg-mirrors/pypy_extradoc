@@ -192,12 +192,23 @@ Heuristic example - dicts vs objects
 Specialized lists
 =================
 
-* xxx
+* lists are specialized for type - ``int``, ``float``, ``str``, ``unicode`` and
+  ``range``.
+
+* appending a new type to an existing list makes you iterate over the entire
+  list and rewrite everything.
 
 Itertools abuse
 ===============
 
-XXX
+* some examples
+
+* simple is good
+
+* python is vast
+
+* if we've never seen a use of some piece of stdlib, chances are it'll be
+  suboptimal on pypy
 
 Obscure stuff
 =============
@@ -205,6 +216,10 @@ Obscure stuff
 * Frame access is slow
 
 * List comprehension vs generator expression
+
+* Profiling & tracing hooks
+
+* A bit in the state of flux
 
 JitViewer
 =========
@@ -230,5 +245,3 @@ The overview
 * Functions are inlined
 
 * Sometimes completely twisted flow
-
-XXX examples, including two nested loops
