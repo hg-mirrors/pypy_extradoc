@@ -1,27 +1,33 @@
+.. include:: beamerdefs.txt
+
+=================================
+How to get most out of your PyPy?
+=================================
+
 First rule of optimization?
 ===========================
 
 |pause|
 
-If it's not correct, it doesn't matter.
+* if it's not correct, it doesn't matter
 
 Second rule of optimization?
 ============================
 
 |pause|
 
-If it's not faster, you're wasting time.
+* if it's not faster, you're wasting time
 
 |pause|
 
-But if you iterate fast, you can afford wasting time
+* but if you iterate fast, you can afford wasting time
 
 Third rule of optimization?
 ===========================
 
 |pause|
 
-Measure twice, cut once.
+* measure twice, cut once
 
 (C)Python performance tricks
 ============================
@@ -34,18 +40,18 @@ Measure twice, cut once.
 
 * ``append = my_list.append``, grab bound methods outside loop
 
-* Avoiding function calls
+* avoiding function calls
 
-* Don't write Python
+* don't write Python
 
 Forget these
 ============
 
 * PyPy has totally different performance characterists
 
-* Which we're going to learn about now
+* which we're going to learn about now
 
-* You cannot speak about operations in isolation (more later)
+* you cannot speak about operations in isolation (more later)
 
 Why PyPy?
 =========
@@ -138,16 +144,16 @@ PyPy's specific features
 
 * JIT complete by design, as long as the interpreter is correct
 
-* Only **one** language description, in a high level language
+* only **one** language description, in a high level language
 
-* Decent tools for inspecting the generated code
+* decent tools for inspecting the generated code
 
 Performance characteristics - runtime
 =====================================
 
-* Runtime the same or a bit slower as CPython
+* runtime the same or a bit slower as CPython
 
-* Examples of runtime:
+* examples of runtime:
 
   * ``list.sort``
 
@@ -162,32 +168,32 @@ Performance characteristics - runtime
 Performance characteristics - JIT
 =================================
 
-* Important notion - don't consider operations in separation
+* important notion - don't consider operations in separation
 
-* Always working as a loop or as a function
+* always working as a loop or as a function
 
-* Heuristics to what we believe is common python
+* heuristics to what we believe is common python
 
-* Often much faster than CPython once warm
+* often much faster than CPython once warm
 
 Heuristics
 ==========
 
-* What to specialize on (assuming stuff is constant)
+* what to specialize on (assuming stuff is constant)
 
-* Data structures
+* data structures
 
-* Relative cost of operations
+* relative cost of operations
 
 Heuristic example - dicts vs objects
 ====================================
 
-* Dicts - an unknown set of keys, potentially large
+* dicts - an unknown set of keys, potentially large
 
-* Objects - a relatively stable, constant set of keys
+* objects - a relatively stable, constant set of keys
   (but not enforced)
 
-* Performance example
+* performance example
 
 Specialized lists
 =================
@@ -213,13 +219,13 @@ Itertools abuse
 Obscure stuff
 =============
 
-* Frame access is slow
+* frame access is slow
 
-* List comprehension vs generator expression
+* list comprehension vs generator expression
 
-* Profiling & tracing hooks
+* profiling & tracing hooks
 
-* A bit in the state of flux
+* a bit in the state of flux
 
 JitViewer
 =========
@@ -233,15 +239,15 @@ JitViewer
 The overview
 ============
 
-* Usually three pieces per loop
+* usually three pieces per loop
 
-* Prologue and two loop iterations (loop invariants in the first bit)
+* prologue and two loop iterations (loop invariants in the first bit)
 
-* They contain guards
+* they contain guards
 
-* Guards can be compiled to more code (bridges) that jump back to the loop
+* guards can be compiled to more code (bridges) that jump back to the loop
   or somewhere else
 
-* Functions are inlined
+* functions are inlined
 
-* Sometimes completely twisted flow
+* sometimes completely twisted flow
