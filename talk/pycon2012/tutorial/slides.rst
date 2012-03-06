@@ -251,3 +251,33 @@ The overview
 * functions are inlined
 
 * sometimes completely twisted flow
+
+The PyPy Cake
+=============
+
+.. raw:: latex
+
+   \begin{columns}[c]
+   \column{0.6\textwidth}
+
+* Your Python
+* PyPy interpreter (RPython)
+* High-level flow graphs
+* Low-level flow graphs
+
+  * JIT
+
+    * knows about exceptions and GC
+
+  * C represenation
+
+    * reduces flow graphs to remove
+      exceptions and GC
+
+.. raw:: latex
+
+   \column{0.4\textwidth}
+   \includegraphics[width=\textwidth]{images/cake}
+   \end{columns}
+
+.. This comment is here to make the LaTeX work.
