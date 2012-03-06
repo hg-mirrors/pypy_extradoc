@@ -260,7 +260,7 @@ The PyPy Cake
    \begin{columns}[c]
    \column{0.6\textwidth}
 
-* Your Python
+* Your Python code
 * PyPy interpreter (RPython)
 * High-level flow graphs
 * Low-level flow graphs
@@ -269,7 +269,7 @@ The PyPy Cake
 
     * knows about exceptions and GC
 
-  * C represenation
+  * C representation
 
     * reduces flow graphs to remove
       exceptions and GC
