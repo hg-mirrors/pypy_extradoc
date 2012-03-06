@@ -8,3 +8,6 @@ slides.pdf: slides.rst author.latex title.latex stylesheet.latex
 
 view: slides.pdf
 	evince slides.pdf &
+
+clean:
+	rm -f slides.pdf slides.latex
