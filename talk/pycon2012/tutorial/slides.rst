@@ -87,7 +87,7 @@ Performance
 Performance sweetspots
 ======================
 
-* every VM has it's sweetspot
+* every VM has its sweetspot
 
 * we try hard to make it wider and wider
 
@@ -130,14 +130,14 @@ Bytecode interpreter
 Tracing JIT
 ===========
 
-* once the loop gets hot, it's starting tracing (1039 runs, or 1619 function
+* once the loop gets hot, it starts tracing (1039 runs, or 1619 function
   calls)
 
-* generating operations following how the interpreter executes them
+* generates operations following how the interpreter executes them
 
-* optimizing them
+* optimizes chunks of operations
 
-* compiling to assembler (x86, ppc or arm)
+* compiles to assembler (x86, ppc or arm)
 
 PyPy's specific features
 ========================
@@ -147,6 +147,36 @@ PyPy's specific features
 * only **one** language description, in a high level language
 
 * decent tools for inspecting the generated code
+
+The PyPy cake
+=============
+
+.. raw:: latex
+
+   \begin{columns}[c]
+   \column{0.6\textwidth}
+
+* Your Python code
+* PyPy interpreter (RPython)
+* High-level flow graphs
+* Low-level flow graphs
+
+  * JIT
+
+    * knows about exceptions and GC
+
+  * C representation
+
+    * reduces flow graphs to remove
+      exceptions and GC
+
+.. raw:: latex
+
+   \column{0.4\textwidth}
+   \includegraphics[width=\textwidth]{images/cake}
+   \end{columns}
+
+.. This comment is here to make the LaTeX work.
 
 Performance characteristics - runtime
 =====================================
@@ -199,13 +229,13 @@ Specialized lists
 =================
 
 * lists are specialized for type - ``int``, ``float``, ``str``, ``unicode`` and
-  ``range``.
+  ``range()``.
 
 * appending a new type to an existing list makes you iterate over the entire
   list and rewrite everything.
 
-Itertools abuse
-===============
+Simpler is Faster
+=================
 
 * some examples
 
@@ -216,8 +246,10 @@ Itertools abuse
 * if we've never seen a use of some piece of stdlib, chances are it'll be
   suboptimal on pypy
 
-Obscure stuff
-=============
+* no really, simple is good
+
+Things we could improve
+=======================
 
 * frame access is slow
 
@@ -225,12 +257,12 @@ Obscure stuff
 
 * profiling & tracing hooks
 
-* a bit in the state of flux
+* all works but could be optimized more
 
 JitViewer
 =========
 
-* http://bitbucket.org/pypy/jitviewer
+* ``bitbucket.org/pypy/jitviewer``
 
 * ``mkvirtualenv -p <path to pypy>``
 
@@ -251,33 +283,3 @@ The overview
 * functions are inlined
 
 * sometimes completely twisted flow
-
-The PyPy Cake
-=============
-
-.. raw:: latex
-
-   \begin{columns}[c]
-   \column{0.6\textwidth}
-
-* Your Python code
-* PyPy interpreter (RPython)
-* High-level flow graphs
-* Low-level flow graphs
-
-  * JIT
-
-    * knows about exceptions and GC
-
-  * C representation
-
-    * reduces flow graphs to remove
-      exceptions and GC
-
-.. raw:: latex
-
-   \column{0.4\textwidth}
-   \includegraphics[width=\textwidth]{images/cake}
-   \end{columns}
-
-.. This comment is here to make the LaTeX work.
