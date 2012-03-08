@@ -74,6 +74,9 @@ Things we can do mostly by editing optimizeopt/:
 - optimize arraycopy also in the cases where one of the arrays is a virtual and
   short. This is seen a lot in translate.py
 
+- calling string equality does not automatically promote the argument to
+  a constant.
+
 
 PYTHON EXAMPLES
 ---------------
