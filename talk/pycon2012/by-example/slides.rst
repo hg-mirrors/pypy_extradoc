@@ -16,20 +16,36 @@ Fast
 
 * http://speed.pypy.org/
 
+* However, not a silver bullet
+
+* Complain!
+
 Memory
 ======
 
-* Very program dependen.
+* Very program dependent.
 
 * Measure!
 
-Edge detection
+* Complain!
+
+edge detection
 ==============
 
 * ...
 
 tracebin
 ========
+
+* ...
+
+numpy
+=====
+
+* ...
+
+transactional memory
+====================
 
 * ...
 
