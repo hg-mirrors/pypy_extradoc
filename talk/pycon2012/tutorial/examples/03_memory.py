@@ -1,12 +1,6 @@
 
 import time, os, re
 
-class A(object):
-    def __init__(self, a, b, c):
-        self.a = a
-        self.b = b
-        self.c = c
-
 def read_smaps():
     with open("/proc/%d/smaps" % os.getpid()) as f:
         mark = False
@@ -17,6 +11,12 @@ def read_smaps():
                 return m.group(0), int(m.group(1))
             if 'heap' in line:
                 mark = True
+
+class A(object):
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
 
 def main():
     l = []

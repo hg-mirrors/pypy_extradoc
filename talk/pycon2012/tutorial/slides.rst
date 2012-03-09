@@ -1,39 +1,33 @@
-Optimizing for PyPy
-===================
+.. include:: beamerdefs.txt
 
-* Hi!
-
-Who are we?
-==========
-
-* Armin Rigo
-* Maciej Fijalkowski
-* Alex Gaynor
+=================================
+How to get most out of your PyPy?
+=================================
 
 First rule of optimization?
 ===========================
 
 |pause|
 
-If it's not correct, it doesn't matter.
+* if it's not correct, it doesn't matter
 
 Second rule of optimization?
 ============================
 
 |pause|
 
-If it's not faster, you're wasting time.
+* if it's not faster, you're wasting time
 
 |pause|
 
-But if you iterate fast, you can afford wasting time
+* but if you iterate fast, you can afford wasting time
 
 Third rule of optimization?
 ===========================
 
 |pause|
 
-Measure twice, cut once.
+* measure twice, cut once
 
 (C)Python performance tricks
 ============================
@@ -46,18 +40,18 @@ Measure twice, cut once.
 
 * ``append = my_list.append``, grab bound methods outside loop
 
-* Avoiding function calls
+* avoiding function calls
 
-* Don't write Python
+* don't write Python
 
 Forget these
 ============
 
 * PyPy has totally different performance characterists
 
-* Which we're going to learn about now
+* which we're going to learn about now
 
-* You cannot speak about operations in isolation (more later)
+* you cannot speak about operations in isolation (more later)
 
 Why PyPy?
 =========
@@ -93,7 +87,7 @@ Performance
 Performance sweetspots
 ======================
 
-* every VM has it's sweetspot
+* every VM has its sweetspot
 
 * we try hard to make it wider and wider
 
@@ -136,30 +130,60 @@ Bytecode interpreter
 Tracing JIT
 ===========
 
-* once the loop gets hot, it's starting tracing (1039 runs, or 1619 function
+* once the loop gets hot, it starts tracing (1039 runs, or 1619 function
   calls)
 
-* generating operations following how the interpreter executes them
+* generates operations following how the interpreter executes them
 
-* optimizing them
+* optimizes chunks of operations
 
-* compiling to assembler (x86, ppc or arm)
+* compiles to assembler (x86, ppc or arm)
 
 PyPy's specific features
 ========================
 
 * JIT complete by design, as long as the interpreter is correct
 
-* Only **one** language description, in a high level language
+* only **one** language description, in a high level language
 
-* Decent tools for inspecting the generated code
+* decent tools for inspecting the generated code
+
+The PyPy cake
+=============
+
+.. raw:: latex
+
+   \begin{columns}[c]
+   \column{0.6\textwidth}
+
+* Your Python code
+* PyPy interpreter (RPython)
+* High-level flow graphs
+* Low-level flow graphs
+
+  * JIT
+
+    * knows about exceptions and GC
+
+  * C representation
+
+    * reduces flow graphs to remove
+      exceptions and GC
+
+.. raw:: latex
+
+   \column{0.4\textwidth}
+   \includegraphics[width=\textwidth]{images/cake}
+   \end{columns}
+
+.. This comment is here to make the LaTeX work.
 
 Performance characteristics - runtime
 =====================================
 
-* Runtime the same or a bit slower as CPython
+* runtime the same or a bit slower as CPython
 
-* Examples of runtime:
+* examples of runtime:
 
   * ``list.sort``
 
@@ -174,46 +198,88 @@ Performance characteristics - runtime
 Performance characteristics - JIT
 =================================
 
-* Important notion - don't consider operations in separation
+* important - JIT never considers operations in isolation
 
-* Always working as a loop or as a function
+* JIT always works on a loop or a function
 
-* Heuristics to what we believe is common python
+* JIT heuristically optimized for what we believe is common Python
 
-* Often much faster than CPython once warm
+* often much faster than CPython once warm
 
 Heuristics
 ==========
 
-* What to specialize on (assuming stuff is constant)
+* what to specialize on (assuming stuff is constant)
 
-* Data structures
+* data structures
 
-* Relative cost of operations
+* relative cost of operations
 
 Heuristic example - dicts vs objects
 ====================================
 
-* Dicts - an unknown set of keys, potentially large
+* dicts - an unknown set of keys, potentially large
 
-* Objects - a relatively stable, constant set of keys
+* objects - a relatively stable, constant set of keys
   (but not enforced)
 
-* Performance example
+* performance example
 
 Specialized lists
 =================
 
-* XXX Example of how much speedup you get out of not mixing
+* lists are specialized for type - ``int``, ``float``, ``str``, ``unicode`` and
+  ``range()``.
 
-Itertools abuse
-===============
+* appending a new type to an existing list makes you iterate over the entire
+  list and rewrite everything.
 
-XXX
+Simpler is Faster
+=================
 
-Obscure stuff
-=============
+* some examples
 
-* Frame access is slow
+* simple is good
 
-* List comprehension vs generator expression
+* python is vast
+
+* if we've never seen a use of some piece of stdlib, chances are it'll be
+  suboptimal on pypy
+
+* no really, simple is good
+
+Things we could improve
+=======================
+
+* frame access is slow
+
+* list comprehension vs generator expression
+
+* profiling & tracing hooks
+
+* all works but could be optimized more
+
+JitViewer
+=========
+
+* ``bitbucket.org/pypy/jitviewer``
+
+* ``mkvirtualenv -p <path to pypy>``
+
+* ``python setup.py develop``
+
+The overview
+============
+
+* usually three pieces per loop
+
+* prologue and two loop iterations (loop invariants in the first bit)
+
+* they contain guards
+
+* guards can be compiled to more code (bridges) that jump back to the loop
+  or somewhere else
+
+* functions are inlined
+
+* sometimes completely twisted flow
