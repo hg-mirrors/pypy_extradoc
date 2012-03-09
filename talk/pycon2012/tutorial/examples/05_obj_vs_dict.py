@@ -9,7 +9,7 @@ def obj_good():
     a = A(1, 2, 3)
     s = 0
     for i in range(SIZE):
-        s += a.a + a.b + a.c
+        s += getattr(a, 'a') + a.b + a.c
     return s
 
 def obj_bad():
