@@ -1,0 +1,60 @@
+
+
+Transactional Memory
+--------------------
+
+
+
+Software Transactional Memory: STM
+Hardware Transactional Memory: HTM
+
+
+
+             |
+thread 1     |XXXXXXXXXXXXXXXXXXXXXXXXXXXX...
+             |
+             +------------------------------> time
+
+
+
+             |
+thread 1     |[XX]         [X]           [X]
+thread 2     |    [XX]            [XX]  
+thread 3     |        [XXX]   [XX]    [X]
+             +------------------------------> time
+
+
+             |
+thread 1     |[XX][X][X]
+thread 2     |[XX][XX]  
+thread 3     |[XXX][XX][X]
+             +------------------------------> time
+
+
+
+             |
+thread 1     |[XX][X-oups-[X][X]
+thread 2     |[XX][XX]
+thread 3     |[XX-oups-[XXX][XX][X]
+             +------------------------------> time
+
+
+
+             |
+thread 1     |[XXXXXXXXXX] [XXXXXXXXXXXXXX] [...
+             |
+             +------------------------------> time
+
+
+
+             |
+thread 1     |[XXXXXXXXXX] [...
+thread 2     |[XXXXXXXXXXXXXXXXX]
+             +------------------------------> time
+
+
+
+             |
+thread 1     |[XXXXXXXXXX] [...
+thread 2     |[XXX-oups-[XXXXXXXXXXXXXXXXX]
+             +------------------------------> time

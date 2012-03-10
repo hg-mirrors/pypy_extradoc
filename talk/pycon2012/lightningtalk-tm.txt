@@ -1,60 +1,288 @@
 
 
-Transactional Memory
---------------------
 
 
 
-Software Transactional Memory: STM
-Hardware Transactional Memory: HTM
+    Garbage Collection
+    ------------------
+
+
+    PascalCon 1982
 
 
 
-             |
-thread 1     |XXXXXXXXXXXXXXXXXXXXXXXXXXXX...
-             |
-             +------------------------------> time
 
 
 
-             |
-thread 1     |[XX]         [X]           [X]
-thread 2     |    [XX]            [XX]  
-thread 3     |        [XXX]   [XX]    [X]
-             +------------------------------> time
 
 
-             |
-thread 1     |[XX][X][X]
-thread 2     |[XX][XX]  
-thread 3     |[XXX][XX][X]
-             +------------------------------> time
+    you call malloc()
+
+    you don't need to call free()
 
 
 
-             |
-thread 1     |[XX][X-oups-[X][X]
-thread 2     |[XX][XX]
-thread 3     |[XX-oups-[XXX][XX][X]
-             +------------------------------> time
 
 
 
-             |
-thread 1     |[XXXXXXXXXX] [XXXXXXXXXXXXXX] [...
-             |
-             +------------------------------> time
 
 
 
-             |
-thread 1     |[XXXXXXXXXX] [...
-thread 2     |[XXXXXXXXXXXXXXXXX]
-             +------------------------------> time
+
+
+    costly, so likely just for a
+    fraction of the malloc()s
 
 
 
-             |
-thread 1     |[XXXXXXXXXX] [...
-thread 2     |[XXX-oups-[XXXXXXXXXXXXXXXXX]
-             +------------------------------> time
+
+
+
+
+
+
+    open issues:
+
+    integration is hard:
+
+    pointers between GC-managed
+    and explicitly-managed memory
+
+
+
+
+
+
+
+
+
+    "solution": put everything
+    in the GC-managed memory
+
+
+
+
+
+
+
+
+
+
+
+
+    theoretical answer:
+    horrible for performance
+    (memory and speed)
+
+
+
+
+
+
+
+
+
+
+
+    for the foreseeable future:
+    just a solution of convenience
+
+    not for real programmers
+
+
+
+
+
+
+
+
+    real programmers can live with
+    the mess of explicit memory
+    management
+
+
+
+
+
+
+
+    ...30 years later:
+    
+    PyCon 2012
+    ----------
+
+
+
+
+
+
+
+
+
+
+    Garbage Collection is automatic
+    and everywhere
+
+
+    (but was hard work to get right)
+
+
+
+
+
+
+
+
+
+
+    we don't talk about Garbage Collection
+
+
+
+
+
+
+
+
+
+
+
+
+
+    instead we talk about how to use
+    multiple cores
+
+
+
+
+
+
+
+
+
+
+
+
+    mess with locks, reentrant locks,
+    semaphores, events, ...
+
+
+
+
+
+
+
+
+
+    in Python we have the GIL
+
+    but *also* the threading module
+
+
+
+
+
+
+
+
+
+
+
+
+
+    i.e. also, if we want, the mess
+
+
+
+
+
+
+
+    Transactional Memory
+    --------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+    promises to give multicore usage
+
+
+
+
+
+
+
+
+    performance issues
+
+
+         and
+
+
+    hard integration issues:
+
+    co-operation between transactional
+    and non-transactional code, I/O, etc
+
+
+
+
+
+
+
+
+    "solution": run everything in
+    Transactional Memory
+
+
+
+
+
+
+
+
+    your app answers to "events"
+    (web requests, anything)
+
+    we can run these events
+    mostly in parallel
+
+    we care for sync issues under the hood
+
+
+
+
+
+
+    "solution"
+
+
+    hard work, but likely worth
+    removing the quotes :-)
+
+
+
+
+
+
+
+
+
+
+    STM
+
+    http://pypy.org/
+
+
+
+
+
