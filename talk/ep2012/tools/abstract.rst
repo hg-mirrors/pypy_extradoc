@@ -14,6 +14,9 @@ message from profilers.
 To make matters even more complicated, in JITted VMs, like PyPy, mapping
 between assembler and high level language, like python, is very unclear and
 not well known. Writing "good" vs "bad" python (from the JIT perspective),
-can make a 20x performance difference. I would like to show current profilers,
-their use cases and shortcomings as well as make the case that we need much
-better tools to deal with the current situation.
+can make a 20x performance difference.
+
+This talk will cover current profilers available for Pyhon and PyPy,
+as well as other tools that can be used to asses performance. I'll also
+present in which cases using current tools does not give necessary information
+and what kind of tools can address this problem in the future.
