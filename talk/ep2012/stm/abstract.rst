@@ -1,9 +1,10 @@
 
-PyPy: status and GIL-less future
-================================
+PyPy: current status and GIL-less future
+=========================================
 
-In the first part of the talk we will present the current status and
-speed of PyPy, the Python interpreter written in Python.
+In the first part of the talk we will present what the current status of PyPy,
+with a particular focus on what happened in the last year.  We will give a
+brief overview of the current speed and the on-going development efforts.
 
 The second part of the talk is about one particular feature whose
 development is in progress in PyPy: Automatic Mutual Exclusion.
