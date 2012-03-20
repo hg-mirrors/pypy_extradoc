@@ -2,7 +2,7 @@
 PyPy: current status and GIL-less future
 =========================================
 
-In the first part of the talk we will present what the current status of PyPy,
+In the first part of the talk we will present the current status of PyPy,
 with a particular focus on what happened in the last year.  We will give a
 brief overview of the current speed and the on-going development efforts.
 
