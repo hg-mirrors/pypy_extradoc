@@ -17,7 +17,7 @@ What is PyPy?
 
 * **a framework for writing dynamic language VMs**
 
-* an agile project sponsored by EU and others
+* an agile project sponsored by the EU and others
 
 What is a VM?
 -------------
@@ -42,11 +42,11 @@ What does a VM look like?
 Where does PyPy come in?
 ------------------------
 
-* Tools for writing these program quickly, and efficiently.
+* Tools for writing these programs quickly, and efficiently.
 
   * Helpers for things like parsing
 
-  * Free JIT, and garbage collector
+  * Free JIT, and garbage collectors
 
 * Mostly you write a totally normal VM in python, and it becomes magically fast
 
