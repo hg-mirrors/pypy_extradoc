@@ -2,7 +2,10 @@
 STM planning
 ============
 
-Comments in << >> describe the next thing to work on.
+|
+| Bars on the left describe the next thing to work on.
+| On the other hand, "TODO" means "to do later".
+|
 
 
 Overview
@@ -23,34 +26,43 @@ record the version of the object that we read.  When we need write
 access to a global object, we need to make a whole copy of it into our
 nursery.
 
-The RPython program should have at least one hint: "force local copy",
+| The "global area" should be implemented by reusing gc/minimarkpage.py.
+
+The RPython program can use this hint: 'x = hint(x, stm_write=True)',
 which is like writing to an object in the sense that it forces a local
 copy.
 
-We need annotator support to track which variables contain objects that
-are known to be local.  It lets us avoid the run-time check.  That's
-useful for all freshly malloc'ed objects, which we know are always
-local; and that's useful for special cases like the PyFrames, on which
-we would use the "force local copy" hint before running the
-interpreter.  In both cases the result is: no STM code is needed any
-more.
+In translator.stm.transform, we track which variables contain objects
+that are known to be local.  It lets us avoid the run-time check.
+That's useful for all freshly malloc'ed objects, which we know are
+always local; and that's useful for special cases like the PyFrames, on
+which we used the "stm_write=True" hint before running the interpreter.
+In both cases the result is: no STM code is needed any more.
 
 When a transaction commits, we do a "minor collection"-like process,
 called an "end-of-transaction collection": we move all surviving objects
-from the nursery to the global area, either as new objects, or as
-overwrites of their previous version.  Unlike the minor collections in
-other GCs, this one occurs at a well-defined time, with no stack roots
-to scan.
+from the nursery to the global area, either as new objects (first step
+done by stmgc.py), or as overwrites of their previous version (second
+step done by et.c).  Unlike the minor collections in other GCs, this one
+occurs at a well-defined time, with no stack roots to scan.
 
-Later we'll need to consider what occurs if a nursery grows too big
-while the transaction is still not finished.  Probably somehow run a
-collection of the nursery itself, not touching the global area.
-
-Of course we also need to do from time to time a major collection.  We
-will need at some point some concurrency here, to be able to run the
-major collection in a random thread t but detecting changes done by the
-other threads overwriting objects during their own end-of-transaction
-collections.
+| We also need to consider what occurs if a nursery grows too big while
+| the transaction is still not finished.  In this case we need to run a
+| similar collection of the nursery, but with stack roots to scan.  We
+| call this a local collection.
+|
+| This can also occur before or after we call transaction.run(), when
+| there is only the main thread running.  In this mode, we run the main
+| thread with a nursery too.  It can fill up, needing a local collection.
+| When transaction.run() is called, we also do a local collection to
+| ensure that the nursery of the main thread is empty while the
+| transactions execute.
+|
+| Of course we also need to do from time to time a major collection.  We
+| will need at some point some concurrency here, to be able to run the
+| major collection in a random thread t but detecting changes done by the
+| other threads overwriting objects during their own end-of-transaction
+| collections.  See below.
 
 
 GC flags
@@ -68,15 +80,12 @@ Still open to consideration, but the basic GC flags could be:
 
 (Optimization: objects declared immutable don't need a version number.)
 
-GC_WAS_COPIED should rather be some counter, counting how many threads
+TODO: GC_WAS_COPIED should rather be some counter, counting how many threads
 have a local copy; something like 2 or 3 bits, where the maximum value
 means "overflowed" and is sticky (maybe until some global
 synchronization point, if we have one).  Or, we can be more advanced and
 use 4-5 bits, where in addition we use some "thread hash" value if there
 is only one copy.
-
-<< NOW: implemented a minimal GC model with these properties.  We have
-GC_GLOBAL, a single bit of GC_WAS_COPIED, and the version number. >>
 
 
 stm_read
@@ -102,8 +111,8 @@ stm_read(obj, offset) -> field value
   depending on cases).  And if the read is accepted then we need to
   remember in a local list that we've read that object.
 
-<< NOW: the thread's local dictionary is in C, as a search tree.
-The rest of the logic here is straightforward. >>
+For now the thread's local dictionary is in C, as a widely-branching
+search tree.
 
 
 stm_write
@@ -123,10 +132,9 @@ number [1].  If it didn't change, then we know that we got at least a
 consistent copy (i.e. nobody changed the object in the middle of us
 reading it).  If it is too recent, then we might have to abort.
 
-<< NOW: done, straightforward >>
-
 TODO: how do we handle MemoryErrors when making a local copy??
 Maybe force the transaction to abort, and then re-raise MemoryError
+--- for now it's just a fatal error.
 
 
 End-of-transaction collections
@@ -146,60 +154,72 @@ This is also where we need the list of global objects that we've read.
 We need to check that each of these global objects' versions have not
 been modified in the meantime.
 
-<< NOW: done, kind of easy >>
 
-
-Annotator support
------------------
+Static analysis support
+-----------------------
 
 To get good performance, we should as much as possible use the
 'localobj' version of every object instead of the 'obj' one.  At least
 after a write barrier we should replace the local variable 'obj' with
-'localobj', and someone (the annotator? or later?) should propagate the
+'localobj', and translator.stm.transform propagates the
 fact that it is now a localobj that doesn't need special stm support
 any longer.  Similarly, all mallocs return a localobj.
 
-The "force local copy" hint should be used on PyFrame before the main
+The "stm_write=True" hint is used on PyFrame before the main
 interpreter loop, so that we can then be sure that all accesses to
-'frame' are to a local obj.  Ideally, we could even track which fields
+'frame' are to a local obj.
+
+TODO: Ideally, we could even track which fields
 of a localobj are themselves localobjs.  This would be useful for
 'PyFrame.fastlocals_w': it should also be known to always be a localobj.
-
-<< NOW: done in the basic form by translator/stm/transform.py.
-Runs late (just before C databasing).  Should work well enough to
-remove the maximum number of write barriers, but still missing
-PyFrame.fastlocals_w. >>
 
 
 Local collections
 -----------------
 
-If the nursery fills up too much during a transaction, it needs to be
-locally collected.  This is supposed to be a generally rare occurrance.
+|
+| This needs to be done.
+|
+
+If a nursery fills up too much during a transaction, it needs to be
+locally collected.  This is supposed to be a generally rare occurrance,
+with the exception of long-running transactions --- including the main
+thread before transaction.run().
+
+Surviving local objects are moved to the global area.  However, the
+GC_GLOBAL flag is still not set on them, because they are still not
+visible from more than one thread.  For now we have to put all such
+objects in a list: the list of old-but-local objects.  (Some of these
+objects can still have the GC_WAS_COPIED flag and so be duplicates of
+other really global objects.  The dict maintained by et.c must be
+updated when we move these objects.)
+
 Unlike end-of-transaction collections, we need to have the stack roots
-of the current transaction.  Because such collections are more rare than
-in previous GCs, we could use for performance a completely different
-approach: conservatively scan the stack, finding everything that looks
-like a pointer to an object in the nursery; mark these objects as roots;
-and do a local collection from there.  We need either a non-moving GC or
-at least to pin the potential roots.  Pinning is better in the sense
-that it should ideally pin a small number of objects, and all other
-objects can move away; this would free most of the nursery again.
-Afterwards we can still use a bump-pointer allocation technique, to
-allocate within each area between the pinned objects.  The objects are
-pinned just for one local collection, which means that number of such
-pinned objects should remain roughly constant as time passes.
+of the current transaction.  For now we just use
+"gcrootfinder=shadowstack" with thread-local variables.  At the end of
+the local collection, we do a sweep: all objects that were previously
+listed as old-but-local but don't survive the present collection are
+marked as free.
 
-The local collection is also a good time to compress the local list of
-all global reads done --- "compress" in the sense of removing
-duplicates.
+TODO: Try to have a generational behavior here.  Could probably be done
+by (carefully) promoting part of the surviving objects to GC_GLOBAL.
 
-<< do later; memory usage grows unboundedly during one transaction for
-now. >>
+If implemented like minimarkpage.py, the global area has for each size a
+chained list of pages that are (at least partially) free.  We make the
+heads of the chained lists thread-locals; so each thread reserves one
+complete page at a time, reducing cross-thread synchronizations.
+
+TODO: The local collection would also be a good time to compress the
+local list of all global reads done --- "compress" in the sense of
+removing duplicates.
 
 
 Global collections
 ------------------
+
+|
+| This needs to be done.
+|
 
 We will sometimes need to do a "major" collection, called global
 collection here.  The issue with it is that there might be live
@@ -208,30 +228,29 @@ problem becomes even harder as some threads may be currently blocked in
 some system call.  As an intermediate solution that should work well
 enough, we could try to acquire a lock for every thread, a kind of LIL
 (local interpreter lock).  Every thread releases its LIL around
-potentially-blocking system calls.  At the end of a transaction and
-maybe once per local collection, we also do the equivalent of a
-release-and-require-the-LIL.
+potentially-blocking system calls.  At the end of a transaction and once
+per local collection, we also do the equivalent of a
+release-and-require-the-LIL.  The point is that when a LIL is released,
+another thread can acquire it temporarily and read the shadowstack of
+that thread.
 
-The major collection could be orchestrated by either the thread that
-noticed one should start, or by its own thread.  We first acquire all
-the LILs, and for every LIL, we ask the corresponding thread to do a
-local marking, starting from their own stacks and scanning their local
-nurseries.  Out of this, we obtain a list of global objects.
+The major collection is orchestrated by whichever thread noticed one
+should start; let's call this thread tg.  So tg first acquires all the
+LILs.  (A way to force another thread to "soon" release its LIL is to
+artifically mark its nursery as exhausted.)  For each thread t, tg
+performs a local collection for t.  This empties all the nurseries and
+gives tg an up-to-date point of view on the liveness of the objects: the
+various lists of old-but-local objects for all the t's.  tg can use
+these --- plus external roots like prebuilt objects --- as the roots of
+a second-level, global mark-and-sweep.
 
-Then we can resume running the threads while at the same time doing a
-mark-n-sweep collection of the global objects.  There is never any
-pointer from a global object to a local object, but some global objects
-are duplicated in one or several local nurseries.  To simplify, these
-duplicates should be considered as additional roots for local marking,
-and the original objects should be additional roots for global marking.
-At some point we might figure out a way to allow duplicated objects to
-be freed too.
+For now we release the LILs only when the major collection is finished.
 
-The global objects are read-only, at least if there is no commit.  If we
-don't want to block the other threads we need support for detecting
-commit-time concurrent writes.  Alternatively, we can ask the threads to
-do all together a parallel global marking; this would have a
-stop-the-world effect, but require no concurrency detection mechanism.
+TODO: either release the LILs earlier, say after we processed the lists
+of old-but-local objects but before we went on marking and sweeping ---
+but we need support for detecting concurrent writes done by concurrent
+commits; or, ask all threads currently waiting on the LIL to help with
+doing the global mark-and-sweep in parallel.
 
 Note: standard terminology:
 
@@ -242,12 +261,6 @@ Note: standard terminology:
 * Parallelism: there are multiple threads all doing something GC-related,
   like all scanning the heap together.
 
-<< at first the global area keeps growing unboundedly.  The next step
-will be to add the LIL but run the global collection by keeping all
-other threads blocked.  NOW: think about, at least, doing "minor
-collections" on the global area *before* we even start running
-transactions. >>
-
 
 When not running transactively
 ------------------------------
@@ -255,25 +268,13 @@ When not running transactively
 The above describes the mode during which there is a main thread blocked
 in transaction.run().  The other mode is mostly that of "start-up",
 before we call transaction.run().  Of course no STM is needed in that
-mode, but it's still running the same STM-enabled interpreter.  We need
-to figure out how to tweak the above concepts for that mode.
+mode, but it's still running the same STM-enabled interpreter.
 
-We can probably abuse the notion of nursery above, by running with one
-nursery (corresponding to the only thread running, the main thread).  We
-would need to do collections that are some intermediate between "local
-collections" and "end-of-transaction collections".  Likely, a scheme
-that might work would be similar to local collections (with some pinned
-objects) but where surviving non-pinned objects are moved to become
-global objects.
-
-This needs a bit more thinking: the issue is that when transaction.run()
-is called, we can try to do such a collection, but what about the pinned
-objects?
-
-<< NOW: the global area is just the "nursery" for the main thread.
-stm_writebarrier of 'obj' return 'obj' in the main thread.  All
-allocations get us directly a global object, but allocated from
-the "nursery" of the main thread, with bump-pointer allocation. >>
+| In this mode, we just have one nursery and the global area.  When
+| transaction.run() is called, we do a local collection to empty it, then
+| make sure to flag all surviving objects as GC_GLOBAL in preparation for
+| starting actual transactions.  Then we can reuse the nursery itself for
+| one of the threads.
 
 
 Pointer equality
@@ -284,18 +285,11 @@ the same object, we need to take care of all pointer comparisons too.
 This is all llops of the form ``ptr_eq(x, y)`` or ``ptr_ne(x, y)``.
 
 If we know statically that both copies are local copies, then we can
-just compare the pointers.  Otherwise we need to check their GC_GLOBAL
-and GC_WAS_COPIED flag, and potentially if they both have GC_WAS_COPIED
-but only one of them has GC_GLOBAL, we need to check in the local
-dictionary if they map to each other.  And we need to take care of the
-cases of NULL pointers.
-
-<< NOW: done, without needing the local dictionary:
-stm_normalize_global(obj) returns globalobj if obj is a local,
-WAS_COPIED object.  Then a pointer comparison 'x == y' becomes
-stm_normalize_global(x) == stm_normalize_global(y).  Moreover
-the call to stm_normalize_global() can be omitted for constants. >>
-
+just compare the pointers.  Otherwise, we compare
+``stm_normalize_global(x)`` with ``stm_normalize_global(y)``, where
+``stm_normalize_global(obj)`` returns ``globalobj`` if ``obj`` is a
+local, GC_WAS_COPIED object.  Moreover the call to
+``stm_normalize_global()`` can be omitted for constants.
 
 
 notes
