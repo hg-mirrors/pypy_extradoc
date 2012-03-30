@@ -292,6 +292,12 @@ local, GC_WAS_COPIED object.  Moreover the call to
 ``stm_normalize_global()`` can be omitted for constants.
 
 
+JIT support
+-----------
+
+TODO
+
+
 notes
 -----
 
