@@ -24,6 +24,9 @@ Open.  Here are some goals:
 - stm: progress on Transactional Memory; try out the ``transaction``
   module on real code.
 
+- jit optimizations: there are a number of optimizations we can still
+  try out or refactor.
+
 - any other PyPy-related topic is fine too.
 
 
