@@ -3,7 +3,8 @@ Leipzig PyPy sprint June 22 - 27, 2012
 
 The next PyPy sprint will be held in the Python Academy of Leipzig,
 Germany, from the 22nd to the 27th of June 2012.  This is a fully public
-sprint, everyone is welcome to join us.
+sprint, everyone is welcome to join us.  All days are full sprint days,
+so it is recommended to arrive the 21st and leave the 28th.
 
 Topics and goals
 ----------------
