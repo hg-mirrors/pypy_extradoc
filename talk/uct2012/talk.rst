@@ -6,7 +6,7 @@ Who am I?
 
 * PyPy developer since 2006
 
-XXX
+* Worked on many areas, including the GC, the JIT, etc.
 
 What is PyPy?
 -------------

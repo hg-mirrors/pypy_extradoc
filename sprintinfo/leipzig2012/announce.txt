@@ -27,6 +27,10 @@ Open.  Here are some goals:
 - jit optimizations: there are a number of optimizations we can still
   try out or refactor.
 
+- work on various, more efficient data structures for Python language.
+  A good example would be lazy string slicing/concatenation or more efficient
+  objects.
+
 - any other PyPy-related topic is fine too.
 
 
