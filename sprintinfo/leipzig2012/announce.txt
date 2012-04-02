@@ -1,0 +1,47 @@
+Leipzig PyPy sprint June 22 - 27, 2012
+======================================
+
+The next PyPy sprint will be held in the Python Academy of Leipzig,
+Germany, from the 22nd to the 27th of June 2012.  This is a fully public
+sprint, everyone is welcome to join us.
+
+Topics and goals
+----------------
+
+Open. (to be defined more precisely)
+
+Location
+--------
+
+Python Academy Leipzig, Germany.
+http://www.python-academy.com/center/find.html
+Thanks to Mike Müller for inviting us.
+
+The room holds 8 - 12 people depending how much space each individual
+needs.  Drinks, snacks and a simple lunch, e.g. pizza or other fast food
+is provided.  Dinner would be extra.
+
+Some accommodations:
+http://www.python-academy.com/center/accommodation.html
+Pretty much all hotels and hostels in the city center
+are fine too. The tram needs only 16 minutes from the
+central station to the Academy location.
+
+Grants
+------
+
+For students, we have the possibility to support some costs via PyPy
+funds.  Additionally, we can support you applying for grants from the
+PSF and other sources.
+
+Registration
+------------
+
+If you'd like to come, please *sign up* either by announcing yourself on
+`pypy-dev`_, or by directly adding yourself to the `list of people`_.
+(We need to have a head count for the organization.)  If you are new to
+the project please drop a note about your interests and post any
+questions.
+
+.. _`pypy-dev`: http://mail.python.org/mailman/listinfo/pypy-dev
+.. _`list of poeple`: https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/leipzig2012/people.txt
