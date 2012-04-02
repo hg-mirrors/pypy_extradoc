@@ -8,7 +8,10 @@ sprint, everyone is welcome to join us.
 Topics and goals
 ----------------
 
-Open. (to be defined more precisely)
+Open.  Here are some goals:
+
+- numpy: progress towards completing the ``numpypy`` module
+- stm: try out the ``transaction`` module on real code
 
 Location
 --------
