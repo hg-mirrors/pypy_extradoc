@@ -9,5 +9,6 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =====================
 Armin Rigo           ?              ?
+Christian Tismer     ?              ?
 ==================== ============== =====================
 
