@@ -40,8 +40,7 @@ as the syntactic differences, ``int`` vs ``long``, ``range()`` vs
 Benjamin finished implementing Python 3 syntax. Most of it was small cleanups
 and tweaks to be compatible with CPython such as making ``True`` and ``False``
 keywords and preventing ``. . .`` from being parsed as ``Ellipsis``. Larger
-features syntax additions included keyword only arguments and function
-annotations.
+syntax additions included keyword only arguments and function annotations.
 
 Finally, we did some RPython fixes, so that it is possible again to translate
 PyPy in the py3k branch. However, the resuling binary is a strange beast which
