@@ -37,6 +37,12 @@ as the syntactic differences, ``int`` vs ``long``, ``range()`` vs
 ``list(range())`` etc. As a result, the number of failing tests dropped_ from
 650 to 235: we are beginning to see the light at the end of the tunnel :-)
 
+Benjamin finished implementing Python 3 syntax. Most of it was small cleanups
+and tweaks to be compatible with CPython such as making ``True`` and ``False``
+keywords and preventing ``. . .`` from being parsed as ``Ellipsis``. Larger
+features syntax additions included keyword only arguments and function
+annotations.
+
 Finally, we did some RPython fixes, so that it is possible again to translate
 PyPy in the py3k branch. However, the resuling binary is a strange beast which
 mixes python 2 and python 3 semantics, so it is unusable for anything but
@@ -49,10 +55,8 @@ particular, a lot of people joined the PyPy sprint at Pycon and worked on the
 branch, as you can clearly see in this activity graph. I would like to thank
 all who helped!
 
-XXX: benjamin, could you write a quick summary of what you did?
-
 cheers,
-Antonio
+Antonio and Benjamin
 
 .. _donated: http://morepypy.blogspot.com/2012/01/py3k-and-numpy-first-stage-thanks-to.html
 .. _`py3k proposal`: http://pypy.org/py3donate.html
