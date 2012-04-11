@@ -10,7 +10,8 @@ From the PyPy perspective, a lot at PyCon was about PyPy. Listing things:
   PyPy and at least partly failing. He however did not fail to explain
   bits and pieces about PyPy's architecture. `Video`_ is available.
 
-* We gave tons of talks, including the `tutorial`_ and `why pypy by example`_.
+* We gave tons of talks, including the `tutorial`_, `why pypy by example`_
+  and `pypy's JIT architecturew`_
 
 * We had a giant influx of new commiters, easily doubling the amount of pull
   requests ever created for PyPy. The main topics for newcomers were numpy and
@@ -19,9 +20,16 @@ From the PyPy perspective, a lot at PyCon was about PyPy. Listing things:
 * Guido argued in his keynote that Python is not too slow. In the meantime,
   we're trying to `prove him correct`_ :-)
 
-* XXX stuff stuff
+We would like to thank everyone who talked to us, shared ideas and especially
+those who participated in sprints - we're always happy to welcome newcomers!
 
-.. _`Video`: xxx
-.. _`tutorial`: xxx
-.. _`why pypy by example`: xxx
+I'm sure there is tons of things I forgot, but thank you all!
+
+Cheers,
+fijal
+
+.. _`Video`: http://pyvideo.org/video/659/keynote-david-beazley
+.. _`tutorial`: http://pyvideo.org/video/612/how-to-get-the-most-out-of-your-pypy
+.. _`why pypy by example`: http://pyvideo.org/video/661/why-pypy-by-example
+.. _`pypy's JIT architecturew`: http://pyvideo.org/video/662/how-the-pypy-jit-works
 .. _`prove him correct`: http://mrjoes.github.com/2011/12/15/sockjs-bench.html
