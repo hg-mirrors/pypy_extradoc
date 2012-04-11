@@ -1,22 +1,22 @@
 Py3k status update #3
 ---------------------
 
-This is the third status update about my work on the `py3k branch`_, which I
+This is the third status update about our work on the `py3k branch`_, which we
 can work on thanks to all of the people who donated_ to the `py3k proposal`_.
 
 A lot of work has been done during the last month: as usual, the list of
-changes is too big to be reported in a detalied way, so this is just a summary
+changes is too big to be reported in a detailed way, so this is just a summary
 of what happened.
 
 One of the most active areas was killing old and deprecated features. In
 particular, we killed support for the ``__cmp__`` special method and its
-counsins, the ``cmp`` builtin function and keyword argument for
-``list.sort()`` and ``sorted()``.  Killing is easy, but then you have to fix
-all the places which breaks because of this, including all the types which
-relied on ``__cmp__`` to be comparable,, fixing all the tests which tried to
-order objects which are no longer ordeable now, or implementing new behavior
-like forbidding calling ``hash()`` on objects which implement ``__eq__`` but
-not ``__hash__``.
+counsins, the ``cmp`` builtin function and keyword argument for ``list.sort()``
+and ``sorted()``.  Killing is easy, but then you have to fix all the places
+which breaks because of this, including all the types which relied on
+``__cmp__`` to be comparable and all the tests which tried to order objects
+which are no longer ordeable. New behavior, like forbidding calling ``hash()``
+on objects which implement ``__eq__`` but not ``__hash__``, also has to be
+implemented.
 
 Among the other features, we killed lots of now-gone functions in the
 ``operator`` module, the builtins ``apply()``, ``reduce()`` and ``buffer``,
