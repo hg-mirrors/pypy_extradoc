@@ -24,7 +24,7 @@ From the PyPy perspective, a lot at PyCon was about PyPy. Listing things:
 We would like to thank everyone who talked to us, shared ideas and especially
 those who participated in sprints - we're always happy to welcome newcomers!
 
-I'm sure there is tons of things I forgot, but thank you all!
+I'm sure there are tons of things I forgot, but thank you all!
 
 Cheers,
 fijal
