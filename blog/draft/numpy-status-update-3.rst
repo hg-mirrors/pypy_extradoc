@@ -11,7 +11,7 @@ main points of entry for hacking on PyPy. Apologies to all the people whose
 patches I don't review in timely manner, but seriously, you do **a lot** of
 work.
 
-The list of things is definitely not exhaustive, and I might be forgetting
+This list of changes is definitely not exhaustive, and I might be forgetting
 important contributions. In a loose order:
 
 * Matti Picus made ``out`` parameter work for a lot of (but not all)
@@ -19,7 +19,7 @@ important contributions. In a loose order:
 
 * We merged record dtypes support. The only missing dtypes left are complex
   (important), datetime (less important) and object (which will probably
-  never be implemented).
+  never be implemented because XXXXXXX).
 
 * Taavi Burns and others implemented lots of details, including lots of ufuncs.
   On the completely unscientific measure of "implemented functions" on
@@ -37,7 +37,15 @@ important contributions. In a loose order:
 
   +
 
-Next step would be to just continue implementing missing features. Future
-is hard to predict, but we're not far off!
+Next step would be to just continue implementing missing features such as
+
+* specialised arrays i.e. masked arrays and matrixes
+
+* core modules such as ``fft``, ``linalg``, ``random``.  
+
+* numpy's testing framework
+
+The future is hard to predict, but we're not far off!
 
 .. _`pycon`: http://us.pycon.org
+.. _`numpypy status page`: http://buildbot.pypy.org/numpy-status/latest.html
