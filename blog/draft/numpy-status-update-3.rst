@@ -6,15 +6,15 @@ Hello.
 A lot of things happened in March, like `pycon`_. I was also busy doing other
 things (pictured), so apologies for the late numpy status update.
 
-However, a lot of things have happened and numpy continues to be on of the
-main points of entry for hacking on PyPy. Apologies to all the people who's
+However, a lot of things have happened and numpy continues to be one of the
+main points of entry for hacking on PyPy. Apologies to all the people whose
 patches I don't review in timely manner, but seriously, you do **a lot** of
 work.
 
 The list of things is definitely not exhaustive, and I might be forgetting
 important contributions. In a loose order:
 
-* Matti Picus made ``out`` parameter working for a lot (but not all)
+* Matti Picus made ``out`` parameter work for a lot of (but not all)
   functions.
 
 * We merged record dtypes support. The only missing dtypes left are complex
