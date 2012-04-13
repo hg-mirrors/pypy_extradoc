@@ -8,8 +8,35 @@ STM planning
 |
 
 
-Overview
---------
+Python Interface
+----------------
+
+Planned interface refactoring: integrate the states of "running
+transactionally" and "not running transactionally".
+
+Running normally the program is done in one big top-level transaction.
+The "transaction" module should be provisionally renamed to "ame".  At
+any point (including in sub-transactions) we can create an instance of
+'ame.RandomOrder()', and call methods on it:
+
+  - 'add(callable, *args, **kwds)'
+  - 'run()'
+
+When run() is called the current transaction is suspended and all
+added transactions are run (including the ones added by them).  These
+transactions commit into the current transaction.  When run() returns,
+the parent transaction continues running.  If at any point any
+transaction becomes inevitable, its parent transaction does the same,
+and so on.
+
+This should give a model that composes more naturally than the current
+one.  Also, it opens the door to other 'ame' objects; e.g. an
+'ame.Sequential()' would run the subtransactions in the same order as
+they have been added.
+
+
+Overview of the GC
+------------------
 
 A saner approach (and likely better results that now): integrate with
 the GC.  Here is the basic plan.
