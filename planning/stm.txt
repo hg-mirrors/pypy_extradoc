@@ -18,6 +18,7 @@ Planned interface refactorings:
   If called inside another transaction, it will suspend it until the
   result is available, i.e. until the first transaction commits.  Can
   be used even if the result is not used, just to ensure some ordering.
+  XXX but can that be emulated in transaction.py???
 
 * (later, maybe) allow nested transactions: either by calling
   transaction.run() inside transactions too, or with actual objects
