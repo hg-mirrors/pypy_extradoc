@@ -35,7 +35,22 @@ important contributions. In a loose order:
   float single-dimension numpy arrays. However, results are encouraging,
   given that our assembler generator is far from ideal:
 
-  +
+  +---------------+----------+----------+------+----------------+------------+
+  |               | Numpy    | PyPy SSE | PyPy | GCC non-looped | GCC looped |
+  +---------------+----------+----------+------+----------------+------------+
+  | ``a+b``       | 0.6s     | 0.3s     | 0.4s | 0.3s           | 0.25s      |
+  +---------------+----------+----------+------+----------------+------------+
+  | ``a+b+c``     | 1.9s     | 0.35s    | 0.5s | 0.7s           | 0.32s      |
+  +---------------+----------+----------+------+----------------+------------+
+  | ``a+b+c+d+e`` | 3.2s     | 0.36s    | 0.8s | 1.7s           | 0.51s      |
+  +---------------+----------+----------+------+----------------+------------+
+
+  The `benchmark repo`_ is available. GCC was run with ``-O3``, no further
+  options specified. PyPy was run with default options, the SSE branch is under
+  ``backend-vector-ops``, but **it's not working completely** yet.
+
+  One might argue that C and Python is not the same code - indeed it is not.
+  It just shows some possible approach to writing numeric code.
 
 Next step would be to just continue implementing missing features such as
 
@@ -49,3 +64,4 @@ The future is hard to predict, but we're not far off!
 
 .. _`pycon`: http://us.pycon.org
 .. _`numpypy status page`: http://buildbot.pypy.org/numpy-status/latest.html
+.. _`benchmark repo`: https://bitbucket.org/fijal/hack2/src/fa3119d8ade6/bench/numeric
