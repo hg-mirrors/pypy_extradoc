@@ -8,8 +8,25 @@ STM planning
 |
 
 
-Overview
---------
+Python Interface
+----------------
+
+Planned interface refactorings:
+
+* inspired by "concurrent.futures" from Python 3.2: have
+  transaction.add() return a Future instance with a method result().
+  If called inside another transaction, it will suspend it until the
+  result is available, i.e. until the first transaction commits.  Can
+  be used even if the result is not used, just to ensure some ordering.
+  XXX but can that be emulated in transaction.py???
+
+* (later, maybe) allow nested transactions: either by calling
+  transaction.run() inside transactions too, or with actual objects
+  that store collections of transactions.
+
+
+Overview of the GC
+------------------
 
 A saner approach (and likely better results that now): integrate with
 the GC.  Here is the basic plan.
