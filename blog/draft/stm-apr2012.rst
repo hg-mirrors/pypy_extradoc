@@ -20,7 +20,9 @@ It runs e.g. the `modified version of richards`_.
 .. _`stm-gc`: https://bitbucket.org/pypy/pypy/src/stm-gc
 .. _`modified version of richards`: https://bitbucket.org/pypy/pypy/raw/stm-gc/pypy/translator/stm/test/richards.py
 
-It exposes the same interface as the transaction_ module, except it
+It exposes the same interface as the pure Python transaction_ module
+(except of course that it's not using the naive implementation linked
+above, but its own).  A difference is that it
 doesn't support epoll right now, so it cannot be used to play with `a
 branch of Twisted`_; but that's coming soon.  For now you can use it to
 get multi-core usage on purely computational programs, like PyPy's own
