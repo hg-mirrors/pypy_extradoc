@@ -26,8 +26,9 @@ above, but its own).  A difference is that it
 doesn't support epoll right now, so it cannot be used to play with `a
 branch of Twisted`_; but that's coming soon.  For now you can use it to
 get multi-core usage on purely computational programs, like PyPy's own
-``translate.py``, for which I did a tweak `in rpython/rtyper.py`_ (lines
-273-281 are all that I needed to add).
+``translate.py`` --- for that I did a tweak `in rpython/rtyper.py`_ (lines
+273-281 are all that I needed to add), but there are a few more places
+in the whole ``translate.py`` that could be similarly enhanced.
 
 .. _transaction: https://bitbucket.org/pypy/pypy/raw/stm-gc/lib_pypy/transaction.py
 .. _`a branch of Twisted`: svn://svn.twistedmatrix.com/svn/Twisted/branches/stm-5526
