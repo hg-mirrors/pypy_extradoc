@@ -40,7 +40,7 @@ JIT so far, but it seems to scale; at least, it does scale on my
 
 And...
 
-...a bit thank you to everyone who contributed some money to support
+...a big thank you to everyone who contributed some money to support
 this!  As you see on the PyPy_ site, we got more than 6700$ so far in
 only 5 or 6 weeks.  Thanks to that, my contract started last Monday, and
 I am now paid a small salary via the `Software Freedom Conservancy`_
