@@ -63,11 +63,13 @@ beginning when shared data structures are still being built.
 
 On a few smaller, more regular examples like richards_, I did measure
 the performance.  It is not great, even taking into account that it has
-no JIT so far; but it is well within the 2-to-5-times slower goal, and
-it does seem to scale.  At least, it scales roughly as expected on my
-2-real-cores, 4-hyperthreaded-cores laptop (which means that using two
-cores is not quite twice as fast as using only one, and using all four
-cores is again not twice faster but only 20-30%).
+no JIT so far.  Running pypy-stm with one thread is roughly 5 times
+slower than running a regular PyPy with no JIT (it used to be better in
+previous versions, but they didn't have any GC; nevertheless, I need to
+investigate).  However, it does seem to scale.  At least, it scales
+roughly as expected on my 2-real-cores, 4-hyperthreaded-cores laptop
+(i.e. for N between 1 and 4, the N-threaded pypy-stm performs similarly
+to N independent pypy-stm's running one thread each).
 
 And finally...
 
