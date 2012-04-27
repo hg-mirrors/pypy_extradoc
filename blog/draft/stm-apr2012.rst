@@ -11,9 +11,11 @@ calling ``__del__`` so far.)
 If you want to play with it, you can download `this binary`_ (you need to
 put it in a place with the paths ``lib-python`` and ``lib_pypy``, for
 example from a regular `nightly tarball`_ or from a full checkout).  It
-is for Linux 32-bit; I didn't do fixes for other platforms for now.
-It was compiled from the `stm-gc`_ branch on the 25th of April.
+is for Linux x86 32-bit.
+This version was compiled from the `stm-gc`_ branch on the 25th of April.
 It runs e.g. the `modified version of richards`_.
+This branch could also be translated for Linux x86-64,
+but I didn't do fixes for other platforms for now.
 
 .. _`this binary`: http://wyvern.cs.uni-duesseldorf.de/~arigo/pypy-stm-22fccf3c9b5e.tar.bz2
 .. _`nightly tarball`: http://buildbot.pypy.org/nightly/trunk/
