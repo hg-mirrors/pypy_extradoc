@@ -17,7 +17,7 @@ to later in this post.
 
 I have now reached the point where the basics seem to work.  There is no
 integration with the JIT so far; moreover the integration with the
-Garbage Collection subsystem is not finished right now, but at least
+Garbage Collection subsystem is not finished right now, but at least it is
 "not crashing in my simple tests and not leaking memory too quickly".
 (It means that it is never calling ``__del__`` so far, although it
 releases memory; and when entering transactional mode or when going to
