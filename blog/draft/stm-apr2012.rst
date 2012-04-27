@@ -10,7 +10,8 @@ calling ``__del__`` so far.)
 
 If you want to play with it, you can download `this binary`_ (you need to
 put it in a place with the paths ``lib-python`` and ``lib_pypy``, for
-example from a regular `nightly tarball`_ or from a full checkout).  It
+example inside the main directory from a regular `nightly tarball`_
+or from a full checkout).  It
 is for Linux x86 32-bit.
 This version was compiled from the `stm-gc`_ branch on the 25th of April.
 It runs e.g. the `modified version of richards`_.
