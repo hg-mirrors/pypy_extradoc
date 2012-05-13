@@ -141,6 +141,14 @@ Languages, Performance, Experimentation
 
 \section{Introduction}
 
+A dynamically typed language needs to do a lot of type
+checking and unwrapping. For tight computationally intensive loops a
+significant amount of the execution time might be spend on such tasks
+instead of the actual calculations. Moreover, the type checking and
+unwrapping is often loop invariant and performance could be increased
+by moving those operations out of the loop. We propose to design a
+loop-aware tracing JIT to perform such optimization at run time.
+
 One of the advantages that tracing JIT compilers have above traditional
 method-based
 JITs is that their optimizers are much easier to write. Because a tracing JIT
