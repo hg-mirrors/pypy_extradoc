@@ -67,7 +67,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         fn = sys.argv[1]
     else:
-        fn = 'test.avi -vf scale=640:480 -benchmark'
+        fn = 'test.avi -benchmark' #+ ' -vf scale=640:480'
 
     sys.setcheckinterval(2**30)
     try:
