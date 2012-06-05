@@ -6,10 +6,10 @@ column are known to be coming but there are no details
 available yet from them.
 
 ==================== ============== =====================
-    Name              Arrive/Depart     Accomodation 
+    Name              Arrive/Depart     Accommodation 
 ==================== ============== =====================
 Armin Rigo           ?              ?
 Christian Tismer     ?              ?
 Sven Hager           ?              ?
+Mike MŸller          22. / 26.6.    local
 ==================== ============== =====================
-
