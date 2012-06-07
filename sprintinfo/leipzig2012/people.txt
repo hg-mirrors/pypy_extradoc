@@ -8,7 +8,8 @@ available yet from them.
 ==================== ============== =====================
     Name              Arrive/Depart     Accommodation 
 ==================== ============== =====================
-Armin Rigo           ?              ?
+Armin Rigo           22-27          Hotel xxx
+Maciek Fijalkovski   22-26          Hotel xxx (the same)
 Christian Tismer     ?              ?
 Sven Hager           ?              ?
 Mike MŸller          22. / 26.6.    local
