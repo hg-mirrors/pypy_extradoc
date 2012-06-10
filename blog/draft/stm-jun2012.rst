@@ -24,11 +24,10 @@ resolved the problem of the GIL.  (The first one was Greg Stein's Python
 1.4, re-explored here_; the second one is Jython_; the third one is
 IronPython_.)  Unlike the previous three, it is also the first one to
 offer full GIL semantics to the programmer, and additionally
-``thread.atomic`` (see below).  (As a side note, the specifications of
-Intel's TSX_ are public, so there is of course at least one team that
-tries to get the same result with future Hardware Transactional Memory.
-I am not allowed to go into any more details, which makes little sense
-if you ask me, but there you go.)
+``thread.atomic`` (see below).  I should also add that we're likely to
+see in the next year a 5th such interpreter, too, based on Hardware
+Transactional Memory (same approach as with STM, but using e.g.
+`Intel's HTM`_).
 
 The binary I linked to above supports all built-in modules from PyPy,
 apart from ``signal``, still being worked on (which can be a bit
@@ -66,4 +65,4 @@ Armin.
 .. _here: http://dabeaz.blogspot.ch/2011/08/inside-look-at-gil-removal-patch-of.html
 .. _Jython: http://jython.org/
 .. _IronPython: http://ironpython.net/
-.. _TSX: http://software.intel.com/en-us/blogs/2012/02/07/transactional-synchronization-in-haswell/
+.. _`Intel's HTM`: http://software.intel.com/en-us/blogs/2012/02/07/transactional-synchronization-in-haswell/
