@@ -11,7 +11,7 @@ available yet from them.
 Armin Rigo           22-27          Hotel xxx
 Maciek Fijalkovski   22-26          Hotel xxx (the same)
 Christian Tismer     ?              ?
-Sven Hager           ?              ?
+Sven Hager           22-26          Hotel
 Mike MŸller          22. / 26.6.    local
 Jasper Schulz        ?              at friends
 ==================== ============== =====================
