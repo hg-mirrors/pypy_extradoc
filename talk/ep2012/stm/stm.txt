@@ -1,0 +1,113 @@
+
+
+Problem
+-------
+
+  Python is slow-ish, by some factor N
+
+  (Python / other lang) ~= N ~= const
+
+  CPU speed used to grow exponentially, but no longer
+
+  one program written in Python runs on one core only
+
+  which means that one program written in Python will in the future run
+  exponentially slower, when compared with "other lang"
+
+  does not matter for all programs... or does it?  think about it this way:
+
+    1. my script runs anyway in 0.1 seconds.
+
+       Yes, but what if you were running it on 2002 hardware?  it would take
+       3 seconds.  On 1982 hardware?  One hour.  So if the CPU speed growth
+       stop had occurred in 1982 already, then your script would still take
+       one hour today to run in Python.  (Or half an hour thanks to the
+       continuing hard work of a dedicated core team...)
+
+    2. I can use other solutions involving launching multiple processes
+       and exchanging data between them.
+
+       Yes, which is fine.  For some problems it is the "correct"
+       solution (separation for security, etc.).  But for some other
+       problems it doesn't apply or at least not easily.  Imagine a
+       Python without GC.  You can of course handle manually allocating
+       and freeing objects, like in C++.  But you're missing a vast
+       simplification that you get for free in Python.
+
+
+This presentation is not about removing the GIL
+-----------------------------------------------
+
+pypy-stm is a Python without the GIL, the fourth in this category:
+
+ - Python 1.4 patch by Greg Stein in 1996
+ - Jython
+ - IronPython
+
+Demo pypy-stm
+
+No JIT integration so far, about 4x slower than a JIT-less PyPy
+
+Will talk later about "STM".
+
+Some hardware support (HTM) coming in 2013 (Intel's Haswell CPU),
+which promizes to make it easy to do the same with CPython
+
+So removing the GIL is suddenly around the corner
+
+
+The catch
+---------
+
+You have to use threads
+
+
+Threads
+-------
+
+Threads are messy to use correctly
+
+Similar to doing explicit memory management: I would like my program to
+figure it automatically, not have to worry about it every single line of
+code.
+
+Debugging a race condition is a nightmare, totally non-reproductible.
+
+
+This presentation is really about this new feature
+--------------------------------------------------
+
+Demo: pypy-stm using the "transaction" module
+
+Demo how to insert usage of it in pypy/rpython/rtyper.py
+
+
+What you get
+------------
+
+A fool-proof API that gives multicore usages *without using threads*
+
+Implemented in pypy-stm --- slowly, but who cares? :-)  when you have
+an unlimited supply of cores...  (ok, I agree we care anyway.)
+
+How?  See below.
+
+
+What about CPython?
+-------------------
+
+HTM coming in Intel's Haswell CPU is not going to be enough at all for
+this.  It'll eventually get there, but in how many years?  and how many
+more years before we can assume that every CPU out there has it?
+
+In the meantime there seem to be no move from the CPython core
+developers to try to implement STM.  It would be a major undertaking.
+
+So the future looks to me like: (CPython / other lang) will go down
+exponentially until the point, in 10-20 years, where HTM is good
+enough for CPython.  A "dark age" of CPython...
+
+
+Transactional Memory
+--------------------
+
