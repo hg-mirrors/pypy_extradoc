@@ -56,6 +56,8 @@ Current status
   moved from 'alpha' to 'beta': it runs e.g. a big part of
   **PyOpenSSL** and **lxml**
 
+* py3k in progress (but 2.7 support never going away)
+
 PyPy organization
 -----------------
 
