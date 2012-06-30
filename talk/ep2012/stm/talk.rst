@@ -144,14 +144,20 @@ XXX write me
 NumPy
 -----
 
-XXX
+* progress going slowly
 
+* multi dimensional arrays, broadcasting, fancy indexing
+
+* all dtypes, except complex, strings and objects
+
+* tons of functions missing
+
+* you can help!
 
 Calling C
 ---------
 
-XXX xkcd 927 (google: xkcd standards)
-
+.. image:: standards.png
 
 Calling C landscape
 -------------------
