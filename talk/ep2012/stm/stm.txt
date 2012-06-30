@@ -187,19 +187,19 @@ Intermediate level
 
 thread.atomic: a new context manager (to use in a "with" statement)
 
-means "keep everything in the following block of code in one transaction"
-
-forces longer transactions
-
 with the GIL:
+"keep the GIL during this block, instead of releasing it randomly"
 
   --[XXXXXXXXXXX]---------------[XXXXXXXX]------->
   ---------------[XXXXXXXXXXXXX]----------------->
 
 with STM:
+"keep everything in this block in *one* transaction"
 
   --[XXXXXXXXXXX][XXXXXXXX]------->
   --[XXXXXXXXXXXXX]--------------->
+
+forces longer transactions
 
 
 High-level
