@@ -39,6 +39,11 @@ Problem
 This presentation is not about removing the GIL
 -----------------------------------------------
 
+GIL: Global Interpreter Lock
+
+  --[XX]-----[XX]----[XX]------->
+  ------[XXX]----[XX]----[XX]--->
+
 pypy-stm is a Python without the GIL, the fourth in this category:
 
  - Python 1.4 patch by Greg Stein in 1996
@@ -49,7 +54,17 @@ Demo pypy-stm
 
 No JIT integration so far, about 4x slower than a JIT-less PyPy
 
-Will talk later about "STM".
+"STM" = Software Transactional Memory: similar to databases: every core
+runs "transactions" that are committed to main memory at the end:
+
+  --[XX][XX][XX]---->
+  --[XXX][XX][XX]--->
+
+Occasionally, some transactions fail if they happen to conflict with
+transactions committed by other cores:
+
+  --[XX][XX][XX]--------->
+  --[XXX][XX**[XX][XX]--->
 
 Some hardware support (HTM) coming in 2013 (Intel's Haswell CPU),
 which promizes to make it easy to do the same with CPython
@@ -91,7 +106,27 @@ A fool-proof API that gives multicore usages *without using threads*
 Implemented in pypy-stm --- slowly, but who cares? :-)  when you have
 an unlimited supply of cores...  (ok, I agree we care anyway.)
 
-How?  See below.
+How?
+----
+
+Same as above, but with longer, controlled transactions.
+
+If we ask the `transaction` module to run f(1), f(2) and f(3), it starts
+N threads and run each of f(1), f(2) and f(3) in its own transaction.
+
+We would get this with the GIL (pointlessly using two cores):
+
+  --[run f(1)]----------[run f(3)]---->
+  ------------[run f(2)]-------------->
+
+But with STM with get:
+
+  --[run f(1)][run f(3)]---->
+  --[run f(2)]-------------->
+
+With STM we get what *appears* to be same effect as with the GIL,
+while *actually* running on multiple cores concurrently, as long
+as the transactions don't conflict with each other.
 
 
 What about CPython?
@@ -123,6 +158,8 @@ Summary
 
 * Can be implemented in software (STM), but is slow (and unlikely on CPython)
 
+* Will be soon available in a JITting pypy-stm
+
 * In the next few years, hardware support (HTM) will show up
 
 * Either programmed with threads, or with much easier models based on longer
@@ -130,100 +167,3 @@ Summary
 
 * But capacity limitations of HTM make it unlikely to support really long
   transactions before many more years
-
-
-Technical part
---------------
-
-Low-level
----------
-
-Transactional Memory: a concept from databases.  A "transaction"
-is done with these steps:
-
-- start the transaction
-- do some number of reads and writes
-- try to commit the transaction
-
-Multiple sources can independently perform transactions on the same
-database.  The reads and writes see and update the database as it was at
-the start of the transaction.  The final commit fails if the reads or
-writes are about data that has been changed in the meantime (by another
-transaction committing).
-
-Transactional Memory is the same, but the "transaction" is done by
-one core, and the reads and writes are about the (shared) main memory.
-
-
-Running multiple threads with the GIL:
-
-  --[XX]-----[XX]----[XX]------->
-  ------[XXX]----[XX]----[XX]--->
-
-So the idea is to have each "[XX]" block run in a transaction, where all
-cores can try to perform their own transaction on the shared main
-memory:
-
-  --[XX][XX][XX]---->
-  --[XXX][XX][XX]--->
-
-But some transactions may fail if they happen to conflict with
-transactions committed by other cores:
-
-  --[XX][XX][XX]--------->
-  --[XXX][XX**[XX][XX]--->
-
-Unlike databases, in Transactional Memory we handle failure-to-commit
-transparently: the work done so far is thrown away, but we restart the
-same transaction automatically, transparently for user.
-
-(In pypy-stm, this is implemented by a setjmp/longjmp going back to the
-point that started the transaction, forgetting all uncommitted changes
-done so far.)
-
-
-Intermediate level
-------------------
-
-thread.atomic: a new context manager (to use in a "with" statement)
-
-with the GIL:
-"keep the GIL during this block, instead of releasing it randomly"
-
-  --[XXXXXXXXXXX]---------------[XXXXXXXX]------->
-  ---------------[XXXXXXXXXXXXX]----------------->
-
-with STM:
-"keep everything in this block in *one* transaction"
-
-  --[XXXXXXXXXXX][XXXXXXXX]------->
-  --[XXXXXXXXXXXXX]--------------->
-
-forces longer transactions
-
-
-High-level
-----------
-
-Pure Python libraries like the `transaction` module, which use threads
-internally and the `thread.atomic` context manager
-
-Idea: create multiple threads, but in each thread call the user functions
-in a `thread.atomic` block
-
-So if we ask the `transaction` module to run f(1), f(2) and f(3), we get
-with the GIL:
-
-  --[run f(1)]----------[run f(3)]---->
-  ------------[run f(2)]-------------->
-
-and with STM:
-
-  --[run f(1)][run f(3)]---->
-  --[run f(2)]-------------->
-
-Note that there is no point in the case of the GIL, as the total time
-is exactly the same as just calling f(1), f(2) and f(3) in one thread.
-
-But with STM, we get what *appears* to be same effect, while *actually*
-running on multiple cores concurrently.
