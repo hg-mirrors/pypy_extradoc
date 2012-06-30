@@ -5,7 +5,7 @@ Problem
 
   Python is slow-ish, by some factor N
 
-  (Python / other lang) ~= N ~= const
+  (Python / other lang) ~= N ~= constant over time
 
   CPU speed used to grow exponentially, but no longer
 
@@ -28,11 +28,12 @@ Problem
        and exchanging data between them.
 
        Yes, which is fine.  For some problems it is the "correct"
-       solution (separation for security, etc.).  But for some other
-       problems it doesn't apply or at least not easily.  Imagine a
-       Python without GC.  You can of course handle manually allocating
-       and freeing objects, like in C++.  But you're missing a vast
-       simplification that you get for free in Python.
+       solution (highly independent computations, separation for
+       security, etc.).  But for some other problems it doesn't apply or
+       at least not easily.  Imagine a Python without GC.  You can of
+       course handle manually allocating and freeing objects, like in
+       C++.  But you're missing a vast simplification that you get for
+       free in Python.
 
 
 This presentation is not about removing the GIL
@@ -101,13 +102,128 @@ this.  It'll eventually get there, but in how many years?  and how many
 more years before we can assume that every CPU out there has it?
 
 In the meantime there seem to be no move from the CPython core
-developers to try to implement STM.  It would be a major undertaking.
+developers to try to implement STM.  It would also be a major undertaking.
 
-So the future looks to me like: (CPython / other lang) will go down
-exponentially until the point, in 10-20 years, where HTM is good
-enough for CPython.  A "dark age" of CPython...
+So the future looks to me like this:
+
+* option 1: (CPython / other lang) will go down exponentially until the
+  point, in 10-20 years, where HTM is good enough for CPython.  A "dark
+  age" of CPython, speed-wise...
+
+* option 2: to use HTM anyway, everyone will have to write (and debug)
+  their Python programs using threads.  That's a "dark age" of the
+  high-level Python language...
 
 
-Transactional Memory
---------------------
+Summary
+-------
 
+* "Transactional Memory" is the first technique that seems to work
+  for multi-core Python programs
+
+* Can be implemented in software (STM), but is slow (and unlikely on CPython)
+
+* In the next few years, hardware support (HTM) will show up
+
+* Either programmed with threads, or with much easier models based on longer
+  transactions
+
+* But capacity limitations of HTM make it unlikely to support really long
+  transactions before many more years
+
+
+Technical part
+--------------
+
+Low-level
+---------
+
+Transactional Memory: a concept from databases.  A "transaction"
+is done with these steps:
+
+- start the transaction
+- do some number of reads and writes
+- try to commit the transaction
+
+Multiple sources can independently perform transactions on the same
+database.  The reads and writes see and update the database as it was at
+the start of the transaction.  The final commit fails if the reads or
+writes are about data that has been changed in the meantime (by another
+transaction committing).
+
+Transactional Memory is the same, but the "transaction" is done by
+one core, and the reads and writes are about the (shared) main memory.
+
+
+Running multiple threads with the GIL:
+
+  --[XX]-----[XX]----[XX]------->
+  ------[XXX]----[XX]----[XX]--->
+
+So the idea is to have each "[XX]" block run in a transaction, where all
+cores can try to perform their own transaction on the shared main
+memory:
+
+  --[XX][XX][XX]---->
+  --[XXX][XX][XX]--->
+
+But some transactions may fail if they happen to conflict with
+transactions committed by other cores:
+
+  --[XX][XX][XX]--------->
+  --[XXX][XX**[XX][XX]--->
+
+Unlike databases, in Transactional Memory we handle failure-to-commit
+transparently: the work done so far is thrown away, but we restart the
+same transaction automatically, transparently for user.
+
+(In pypy-stm, this is implemented by a setjmp/longjmp going back to the
+point that started the transaction, forgetting all uncommitted changes
+done so far.)
+
+
+Intermediate level
+------------------
+
+thread.atomic: a new context manager (to use in a "with" statement)
+
+means "keep everything in the following block of code in one transaction"
+
+forces longer transactions
+
+with the GIL:
+
+  --[XXXXXXXXXXX]---------------[XXXXXXXX]------->
+  ---------------[XXXXXXXXXXXXX]----------------->
+
+with STM:
+
+  --[XXXXXXXXXXX][XXXXXXXX]------->
+  --[XXXXXXXXXXXXX]--------------->
+
+
+High-level
+----------
+
+Pure Python libraries like the `transaction` module, which use threads
+internally and the `thread.atomic` context manager
+
+Idea: create multiple threads, but in each thread call the user functions
+in a `thread.atomic` block
+
+So if we ask the `transaction` module to run f(1), f(2) and f(3), we get
+with the GIL:
+
+  --[run f(1)]----------[run f(3)]---->
+  ------------[run f(2)]-------------->
+
+and with STM:
+
+  --[run f(1)][run f(3)]---->
+  --[run f(2)]-------------->
+
+Note that there is no point in the case of the GIL, as the total time
+is exactly the same as just calling f(1), f(2) and f(3) in one thread.
+
+But with STM, we get what *appears* to be same effect, while *actually*
+running on multiple cores concurrently.
