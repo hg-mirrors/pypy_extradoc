@@ -30,61 +30,100 @@ interpreter of PyPy."""
 Software archeology
 -------------------
 
-* PyPy has been around since 2003
+* Around since 2003
 
-* first production ready (as advertised) release in December 2010 (1.4)
+* (adverstised as) production ready since December 2010
 
-* funded from various sources, including EU FP6 programme
+  - release 1.4
+
+* Funding
+
+  - EU FP6 programme
+
+  - EU FP7 programme
+
+  - donations
+
+  - ...
 
 Current status
 --------------
 
-* release 1.9, **1.7x** faster than 1.5 (a year ago),
-  **2.2x** faster than 1.4, **5.5x** faster than CPython
+* PyPy 1.9
 
-* more importantly, the range of programs PyPy can speed up has improved
-  greatly
+  - **1.7x** faster than 1.5 (a year ago)
 
-* implements 2.7.2 Python
+  - **2.2x** faster than 1.4
+
+  - **5.5x** faster than CPython
+
+* much more "PyPy-friendly" programs
+
+* Implements Python 2.7.2
 
 * packaging: Debian, Ubuntu, Fedora, Homebrew, Gentoo, ArchLinux, ...
   (thanks to all the packagers)
 
-* windows (but still 32bit binary only)
+* Windows (32bit only)
 
-* cpython C extension compatibility module (cpyext)
-  moved from 'alpha' to 'beta': it runs e.g. a big part of
-  **PyOpenSSL** and **lxml**
+* cpyext
 
-* py3k in progress (but 2.7 support never going away)
+  - C extension compatibility module
+
+  - from "alpha" to "beta"
+
+  - runs (big part of) **PyOpenSSL** and **lxml**
+
+* py3k in progress
+
+  - see later
+
+  - 2.7 support never going away
 
 PyPy organization
 -----------------
 
-* we joined the Software Freedom Conservancy
-  (Bradley successfully fighting U.S. bureaucracy) and
-  are happy about it
+* Part of Software Freedom Conservancy
 
-* funding: new model, more than 100'000$ in donations,
-  both from a large number of individuals and a few large companies
-  and the Python Software Foundation
+  - Bradley successfully fighting U.S. bureaucracy
+
+  - we are happy about it
+
+
+* Funding model
+
+  - py3k, numpy, STM
+
+  - more than 100'000$ in donations
+
+  - from individuals, large companies and the PSF
+
+  - **thank to all**
+
 
 Let's talk about Python
 -----------------------
 
-* rapid prototyping, run your web server in 3 seconds, run
-  your script in 0.1s
+* Rapid prototyping
 
-* Python is very successful as a glue language - integrating
-  with C is "easy"
+  - run your web server in 3 seconds
+
+  - run your script in 0.1s
+
+* Glue language
+
+   - integrating with C is "easy"
 
 Let's talk about PyPy
 ---------------------
 
-* JIT warmup times are significant, making rapid prototyping
-  harder
+* JIT warmup time
 
-* we yet need to have a good way to call C from PyPy
+  - significant
+
+  - rapid prototyping is harder
+
+* no good way to call C from PyPy (yet)
 
 JIT warmup times
 ----------------
@@ -96,6 +135,17 @@ JIT warmup times
 * come and talk to us
 
 XXX ask antonio if he can cover this on a jit talk
+
+Py3k status
+-----------
+
+XXX write me
+
+NumPy
+-----
+
+XXX
+
 
 Calling C
 ---------
@@ -121,10 +171,6 @@ CFFI slide
 
 * XXX a bit of example code
 
-NumPy
------
-
-XXX
 
 STM
 ---
