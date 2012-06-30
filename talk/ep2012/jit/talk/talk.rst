@@ -71,3 +71,53 @@ Compilers
 |pause|
 
 * PyPy: JIT, Dynamic, Tracing
+
+
+Assumptions
+-----------
+
+* Pareto Principle (80-20 rule)
+
+  - the 20% of the program accounts for the 80% of the runtime
+
+  - **hot-spots**
+
+* Fast Path principle
+
+  - optimize only what is necessary
+
+  - fall back for uncommon cases
+
+|pause|
+
+* Most of runtime spent in **loops**
+
+* Always the same code paths (likely)
+
+
+Tracing JIT
+-----------
+
+* Interpret the program as usual
+
+* Detect **hot** loops
+
+* Tracing phase
+
+  - **linear** trace
+
+* Compiling
+
+* Execute
+
+  - guards to ensure correctness
+
+* Profit :-)
+
+
+Tracing JIT phases
+-------------------
+
+.. animage:: diagrams/tracing-phases-p*.pdf
+   :align: center
+   :scale: 100%
