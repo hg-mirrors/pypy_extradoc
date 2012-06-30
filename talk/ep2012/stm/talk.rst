@@ -137,13 +137,28 @@ Let's talk about PyPy
 JIT warmup times
 ----------------
 
-* it's complicated
+* JIT-ted code: very fast
 
-* we did not spend much time on that topic
+* Everything else: slow
 
-* come and talk to us
+* JIT-ting one piece at a time
 
-XXX ask antonio if he can cover this on a jit talk
+* "takes a while"
+
+* **Cannot** cache JIT-ted code between runs
+
+|pause|
+
+* We did not spend much time on this
+
+* Come and talk to us
+
+* **PyPy JIT Under the hood**
+
+  - July 4 2012
+
+.. XXX what do we want to say in "come and talk to us"?
+
 
 Py3k status
 -----------
