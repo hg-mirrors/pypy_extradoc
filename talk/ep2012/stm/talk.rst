@@ -1,3 +1,4 @@
+.. include:: beamerdefs.txt
 
 ============================================
 PyPy: current status and the GIL-less future
