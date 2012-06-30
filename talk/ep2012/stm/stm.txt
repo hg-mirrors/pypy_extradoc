@@ -106,6 +106,7 @@ A fool-proof API that gives multicore usages *without using threads*
 Implemented in pypy-stm --- slowly, but who cares? :-)  when you have
 an unlimited supply of cores...  (ok, I agree we care anyway.)
 
+
 How?
 ----
 
@@ -127,6 +128,21 @@ But with STM with get:
 With STM we get what *appears* to be same effect as with the GIL,
 while *actually* running on multiple cores concurrently, as long
 as the transactions don't conflict with each other.
+
+
+The opposite catch
+------------------
+
+"Fool-proof" in the sense of always giving correct results, but you
+may need tweaks to avoid systematic conflicts
+
+E.g. don't update a global counter from every single transaction!
+That's a systematic conflict.
+
+Not the final best answer, but at least approaching the problem from the
+"safe" side: "it always gives correct results, but usually you need to
+work to reduce conflicts".  As opposed to using threads: "it is always
+fast, but usually you need to work to remove synchronization bugs".
 
 
 What about CPython?
