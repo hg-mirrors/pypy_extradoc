@@ -163,7 +163,75 @@ JIT warmup times
 Py3k status
 -----------
 
-XXX write me
+* ``py3k`` branch in mercurial
+
+  - RPython toolchain vs Python interpreter
+
+  - developed in parallel
+
+  - not going to be merged
+
+* Focus on correctness
+
+* No JIT for now
+
+  - we just did no try :-)
+
+* Dropped some interpreter optimizations for now
+
+
+
+|pause|
+
+* Major features already implemented
+
+  - string vs unicode
+
+  - int/long unification
+
+  - syntactic changes (``print()``, ``except``, etc.)
+
+* Tons of small issues left
+
+* What's new:
+
+    - print function
+
+    - view and iterators instead of lists
+
+    - function annotations
+
+    - keyword only arguments
+
+    - ``nonlocal``
+
+    - extended iterable unpacking
+
+    - dictionary comprehensions
+
+    - set, oct, binary, bytes literals
+
+    - ``raise ... from ...``
+
+    - new metaclass syntax
+
+    - Ellipsis: ``...``
+
+    - lexical exception handling, ``__traceback__``, ``__cause__``, ...
+
+    ...
+
+    - ``__pycache__``
+
+.. in january: 1621 failing own tests
+   now 83
+
+
+* Removed syntax:
+
+  - tuple parameter unpacking, backticks, ``<>``, ``exec``, ``L`` and ``u``, ...
+
+
 
 NumPy
 -----
