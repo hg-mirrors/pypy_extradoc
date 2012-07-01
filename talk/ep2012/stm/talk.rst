@@ -7,11 +7,17 @@ PyPy: current status and the GIL-less future
 PyPy at EuroPython
 ------------------
 
+|scriptsize|
+
 ::
 
   fijal@helmut:~/src/extradoc/talk$ cd ep20
-  ep2004-pypy/ ep2006/      ep2008/      ep2010/      ep2012/      
-  ep2005/      ep2007/      ep2009/      ep2011/ 
+
+  ep2004-pypy/ ep2006/      ep2008/      ep2010/      ep2012/
+
+  ep2005/      ep2007/      ep2009/      ep2011/
+
+|end_scriptsize|
 
 |pause|
 
@@ -21,12 +27,18 @@ PyPy at EuroPython
 Software archeology
 -------------------
 
-"""A foreword of warning about the JIT of PyPy as of March 2007: single
-functions doing integer arithmetic get great speed-ups; about anything
-else will be a bit slower with the JIT than without.  We are working
-on this - you can even expect quick progress, because it is mostly a
-matter of adding a few careful hints in the source code of the Python
-interpreter of PyPy."""
+|small|
+
+   "single functions doing integer arithmetic get great speed-ups; about
+   anything else will be a bit slower with the JIT than without.  We are
+   working on this - you can even expect quick progress, because it is mostly
+   a matter of adding a few careful hints in the source code of the Python
+   interpreter of PyPy."
+
+                                (status of the JIT of PyPy as of March 2007)
+
+                                
+|end_small|
 
 Software archeology
 -------------------
@@ -47,39 +59,35 @@ Software archeology
 
   - ...
 
-Current status
---------------
+PyPy 1.9: current status
+------------------------
 
-* PyPy 1.9
+* Faster
 
-  - **1.7x** faster than 1.5 (a year ago)
+  - **1.7x** than 1.5 (a year ago)
 
-  - **2.2x** faster than 1.4
+  - **2.2x** than 1.4
 
-  - **5.5x** faster than CPython
-
-* much more "PyPy-friendly" programs
+  - **5.5x** than CPython
 
 * Implements Python 2.7.2
 
-* packaging: Debian, Ubuntu, Fedora, Homebrew, Gentoo, ArchLinux, ...
-  (thanks to all the packagers)
+  - py3k in progress (see later)
 
-* Windows (32bit only)
+* Many more "PyPy-friendly" programs
 
-* cpyext
+* Packaging
 
-  - C extension compatibility module
+  - |scriptsize| Debian, Ubuntu, Fedora, Homebrew, Gentoo, ArchLinux, ... |end_scriptsize|
+
+  - |scriptsize| Windows (32bit only), OS X |end_scriptsize|
+
+* C extension compatibility
 
   - from "alpha" to "beta"
 
   - runs (big part of) **PyOpenSSL** and **lxml**
 
-* py3k in progress
-
-  - see later
-
-  - 2.7 support never going away
 
 PyPy organization
 -----------------
@@ -113,7 +121,7 @@ Let's talk about Python
 
 * Glue language
 
-   - integrating with C is "easy"
+  - integrating with C is "easy"
 
 Let's talk about PyPy
 ---------------------
@@ -129,13 +137,28 @@ Let's talk about PyPy
 JIT warmup times
 ----------------
 
-* it's complicated
+* JIT-ted code: very fast
 
-* we did not spend much time on that topic
+* Everything else: slow
 
-* come and talk to us
+* JIT-ting one piece at a time
 
-XXX ask antonio if he can cover this on a jit talk
+* "takes a while"
+
+* **Cannot** cache JIT-ted code between runs
+
+|pause|
+
+* We did not spend much time on this
+
+* Come and talk to us
+
+* **PyPy JIT Under the hood**
+
+  - July 4 2012
+
+.. XXX what do we want to say in "come and talk to us"?
+
 
 Py3k status
 -----------
@@ -159,6 +182,8 @@ Calling C
 ---------
 
 .. image:: standards.png
+   :scale: 60%
+   :align: center
 
 Calling C landscape
 -------------------
@@ -173,20 +198,26 @@ Calling C landscape
 
 * CFFI (our new thing)
 
-CFFI slide
+CFFI
 ----------
 
-some example code::
+|scriptsize|
+|example<| Example |>|
 
-  >>> from cffi import FFI
-  >>> ffi = FFI()
-  >>> ffi.cdef("""
-  ...     int printf(const char *format, ...);
-  ... """)
-  >>> C = ffi.dlopen(None)
-  >>> arg = ffi.new("char[]", "world")
-  >>> C.printf("hi there, %s!\n", arg)
-  hi there, world!
+  .. sourcecode:: pycon
+
+   >>> from cffi import FFI
+   >>> ffi = FFI()
+   >>> ffi.cdef("""
+   ...     int printf(const char *format, ...);
+   ... """)
+   >>> C = ffi.dlopen(None)
+   >>> arg = ffi.new("char[]", "world")
+   >>> C.printf("hi there, %s!\n", arg)
+   hi there, world!
+
+|end_example|
+|end_scriptsize|
 
 STM
 ---

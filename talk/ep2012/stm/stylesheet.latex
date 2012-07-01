@@ -1,4 +1,5 @@
 \usetheme{Boadilla}
+\usecolortheme{whale}
 \setbeamercovered{transparent}
 \setbeamertemplate{navigation symbols}{}
 
