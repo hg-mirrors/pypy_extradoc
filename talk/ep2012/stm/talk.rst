@@ -45,7 +45,7 @@ Software archeology
 
 * Around since 2003
 
-* (adverstised as) production ready since December 2010
+* (advertised as) production ready since December 2010
 
   - release 1.4
 
@@ -53,7 +53,7 @@ Software archeology
 
   - EU FP6 programme
 
-  - EU FP7 programme
+  - Eurostars programme
 
   - donations
 
@@ -287,7 +287,190 @@ CFFI
 |end_example|
 |end_scriptsize|
 
+CFFI
+----
+
+* Many more examples
+
+* Including macro calls and most subtleties of C
+
+
+STM
+---------------------------
+
+* Software Transactional Memory
+
+* "Remove the GIL"
+
+
+Problem
+-------
+
+* One Python program == one core
+
+* Even with threads
+
+Does it matter?
+---------------
+
+* "My script runs anyway in 0.1 seconds"
+
+|pause|
+
+* Python getting exponentially slower?
+
+Does it matter?
+---------------
+
+* "I can have several processes exchanging data"
+
+|pause|
+
+* A special-case solution only
+
+
+pypy-stm
+--------
+
+* A Python without the GIL
+
+* not the first one:
+
+  - Python 1.4 patch (Greg Stein, 1996)
+
+  - Jython
+
+  - IronPython
+
+* Demo
+
 STM
 ---
 
-XXX
+*Transactions,* similar to database transactions
+
+.. figure with the GIL
+
+.. figure with STM
+
+Conflicts
+---------
+
+Occasional conflict:
+
+.. figure
+
+HTM
+---
+
+* Hardware support: Intel Haswell, 2013
+
+* "CPython-htm"?
+
+* Removing the GIL: suddenly around the corner
+
+The catch
+---------
+
+|pause|
+
+You have to use threads
+
+Threads
+-------
+
+* Messy
+
+* Hard to debug, non-reproductible
+
+* Parallel with Explicit Memory Management:
+
+  - messy, hard to debug rare leaks or corruptions
+
+  - automatic GC solves it
+
+  - (like in Python)
+
+This talk is really about...
+----------------------------
+
+* Multicore usage *without using threads*
+
+* Demo with the "transaction" module
+
+How?
+----
+
+* Longer, controlled transactions
+
+.. figure with the GIL
+
+.. figure with STM
+
+Results
+-------
+
+* Same results in both cases
+
+* i.e. can pretend it is one-core
+
+The opposite catch
+------------------
+
+* Always gives correct results...
+
+* But maybe too many conflicts
+
+  - up to: systematic conflicts
+
+|pause|
+
+* This still approaches the issue from "the right side"
+
+About CPython
+-------------
+
+* Long transactions: HTM too limited
+
+* At least for the next 10-15 years
+
+* On CPython we are stuck with threads
+
+  - for the next 10-15 years
+
+Summary
+-------
+
+* STM fine with PyPy, but HTM required for CPython
+
+* HTM too limited for long transactions
+
+* Long transactions give a better programming model
+
+* For years to come, only in PyPy
+
+  - Unless major effort from CPython devs
+
+Conclusion
+----------
+
+* The GIL will be removed soon
+
+* But for the foreseeable future, Python programmers stuck with using threads
+
+Conclusion
+----------
+
+* ...while other langs get the better programming model
+
+  - My own point of view only
+
+  |pause|
+
+  - Or maybe everybody will switch to PyPy
+
+
+Thank you
+---------
+
+http://pypy.org/
