@@ -37,7 +37,7 @@ Why a rant?
 
 * making tools is hard
 
-* I don't think any of the existing solutions is the ultimate
+* I don't think any of the existing solutions is as good as it can be
 
 * I'll even rant about my own tools
 
@@ -87,3 +87,8 @@ Is this possible?
 =================
 
 * I don't actually know, but I'll keep trying
+
+Q&A
+===
+
+* I'm actually listening for advices
