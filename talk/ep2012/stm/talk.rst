@@ -482,4 +482,8 @@ Conclusion
 Thank you
 ---------
 
-http://pypy.org/
+* http://pypy.org/
+
+* You can hire Antonio
+
+* Questions?
