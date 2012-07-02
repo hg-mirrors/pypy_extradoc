@@ -215,3 +215,11 @@ Tracing Example (2)
 |end_example|
 |end_columns|
 |end_scriptsize|
+
+
+Tracing example (3)
+-------------------
+
+.. animage:: diagrams/trace-p*.pdf
+   :align: center
+   :scale: 80%
