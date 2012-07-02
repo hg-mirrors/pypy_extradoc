@@ -349,16 +349,30 @@ STM
 
 *Transactions,* similar to database transactions
 
-.. figure with the GIL
+* GIL
 
-.. figure with STM
+.. image:: GIL.png
+   :scale: 70%
+   :align: center
+
+* STM
+
+.. image:: STM.png
+   :scale: 70%
+   :align: center
 
 Conflicts
 ---------
 
 Occasional conflict:
 
-.. figure
+.. raw:: latex
+
+   \vspace{1cm}
+
+.. image:: STM-conflict.png
+   :scale: 70%
+   :align: center
 
 HTM
 ---
@@ -403,9 +417,17 @@ How?
 
 * Longer, controlled transactions
 
-.. figure with the GIL
+* GIL
 
-.. figure with STM
+.. image:: bigGIL.png
+   :scale: 70%
+   :align: center
+
+* STM
+
+.. image:: bigSTM.png
+   :scale: 70%
+   :align: center
 
 Results
 -------
