@@ -223,3 +223,36 @@ Tracing example (3)
 .. animage:: diagrams/trace-p*.pdf
    :align: center
    :scale: 80%
+
+
+Trace trees (1)
+---------------
+
+|scriptsize|
+|example<| |small| tracetree.java |end_small| |>|
+
+.. sourcecode:: java
+
+    public static void trace_trees() {
+      int a = 0;
+      int i = 0;
+      int N = 100;
+
+      while(i < N) {
+        if (i%2 == 0)
+            a++;
+        else
+            a*=2;
+        i++;
+      }
+    }
+
+|end_example|
+|end_scriptsize|
+
+Trace trees (2)
+---------------
+
+.. animage:: diagrams/tracetree-p*.pdf
+   :align: center
+   :scale: 34%
