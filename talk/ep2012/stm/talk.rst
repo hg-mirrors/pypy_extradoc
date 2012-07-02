@@ -212,6 +212,8 @@ Py3k status
 Py3k: what's left?
 -------------------
 
+* First 90% done, remaining 90% not done
+
 * Tons of small issues
 
 * Extension modules / stdlib
