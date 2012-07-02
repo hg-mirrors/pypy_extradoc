@@ -160,8 +160,8 @@ JIT warmup times
 .. XXX what do we want to say in "come and talk to us"?
 
 
-Py3k status
------------
+Py3k
+----
 
 * ``py3k`` branch in mercurial
 
@@ -179,57 +179,56 @@ Py3k status
 
 * Dropped some interpreter optimizations for now
 
+Py3k status
+-----------
+
+* Directly from the "What's new in Python 3.x":
+
+  - string vs unicode, int/long unification
+
+  - syntactic changes (``print()``, ``except``, ...)
+
+  - set, oct, binary, bytes literals
+
+  - view and iterators instead of lists
+
+  - function annotations, keyword only arguments
+
+  - ``nonlocal``
+
+  - extended iterable unpacking
+
+  - dictionary comprehensions
+
+  -  ``raise ... from ...``, lexical exception handling
+
+  - ``__pycache__``
+
+* Most features are already there
+
+  - major exception: unicode identifiers
 
 
-|pause|
+Py3k: what's left?
+-------------------
 
-* Major features already implemented
+* Tons of small issues
 
-  - string vs unicode
+* Extension modules / stdlib
 
-  - int/long unification
+* In January:
 
-  - syntactic changes (``print()``, ``except``, etc.)
+  - PyPy "own" tests: 1621 failures
 
-* Tons of small issues left
+  - CPython tests: N/A (did not compile)
 
-* What's new:
+* Now:
 
-    - print function
+  - PyPy "own" tests: 83 failures
 
-    - view and iterators instead of lists
+  - CPython tests: "lots"
 
-    - function annotations
-
-    - keyword only arguments
-
-    - ``nonlocal``
-
-    - extended iterable unpacking
-
-    - dictionary comprehensions
-
-    - set, oct, binary, bytes literals
-
-    - ``raise ... from ...``
-
-    - new metaclass syntax
-
-    - Ellipsis: ``...``
-
-    - lexical exception handling, ``__traceback__``, ``__cause__``, ...
-
-    ...
-
-    - ``__pycache__``
-
-.. in january: 1621 failing own tests
-   now 83
-
-
-* Removed syntax:
-
-  - tuple parameter unpacking, backticks, ``<>``, ``exec``, ``L`` and ``u``, ...
+* Most are shallow failures
 
 
 
