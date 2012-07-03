@@ -256,3 +256,16 @@ Trace trees (2)
 .. animage:: diagrams/tracetree-p*.pdf
    :align: center
    :scale: 34%
+
+
+Part 2
+------
+
+**The PyPy JIT generator**
+
+General architecture
+---------------------
+
+.. animage:: diagrams/architecture-p*.pdf
+   :align: center
+   :scale: 24%
