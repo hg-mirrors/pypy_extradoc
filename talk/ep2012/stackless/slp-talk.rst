@@ -4,6 +4,34 @@
 The Story of Stackless Python
 ============================================
 
+What is Stackless?
+-------------------
+
+* *Stackless is a Python version that does not use the C stack*
+
+|pause|
+
+  - really? naah
+  
+|pause|
+
+* Stackless is a Python version that does not keep state on the C stack
+
+  - the stack *is* used but
+  
+  - cleared between function calls
+
+|pause|
+  
+* Remark:
+
+  - theoretically. In practice...
+  
+  - ... it is reasonable 80 % of the time
+  
+  - we come back to this!
+
+
 What is Stackless about?
 -------------------------
 
@@ -15,7 +43,7 @@ What is Stackless about?
 
 |pause|
 
-* adds a single module
+* adds a single builtin module
 
 |pause|
 
@@ -34,7 +62,7 @@ What is Stackless about?
 * is like an extension
 
   - but, sadly, not really
-  
+  - stackless **must** be builtin  
   - **but:** there is a solution...
 
 
@@ -64,6 +92,7 @@ Now, what is it really about?
 * *but see the PyPy STM* approach
 
   - this will apply to tasklets as well
+
 
 Cooperative Multitasking ...
 -------------------------------
@@ -101,8 +130,8 @@ Cooperative Multitasking ...
 |end_scriptsize|
 
 
-Cooperative Multitasking ...
--------------------------------
+... Cooperative Multitasking ...
+---------------------------------
 
 |scriptsize|
 |example<| |>|
@@ -157,16 +186,17 @@ Why not just the *greenlet* ?
 
 * greenlets are a subset of stackless
 
-  - there is no scheduler
+  - can partially emulate stackless
   
-  - can emulate stackless
+  - there is no builtin scheduler
+  
+  - technology quite close to Stackless 2.0
   
 |pause|
 
-* greenlets are about 5-10x slower to switch
-
+* greenlets are about 10x slower to switch context because
   using only hard-switching
-  
+    
 |pause|
 
 * but the main difference is ...
@@ -226,6 +256,23 @@ Pickling Program State
 |end_scriptsize|
 
 
+Greenlet vs. Stackless
+-----------------------
+
+* Greenlet is a pure extension module
+
+  - performance is good enough
+
+* Stackless can pickle program state
+
+  - stays a replacement of Python
+
+* Greenlet never can, as an extension
+
+* **easy installation** lets people select greenlet over stackless
+
+  - see the *eventlet*
+
 Software archeology
 -------------------
 
@@ -259,11 +306,19 @@ Software archeology
       
   * these 80 % can be *pickled*
 
+
+Status of Stackless Python
+---------------------------
+
+* mature
+
+* Python 2 and Python 3
+
 Thank you
 ---------
 
-* http://pypy.org/
+* http://www.stackless.com/
 
-* You can hire Antonio
+* You can hire me as a consultant
 
 * Questions?
