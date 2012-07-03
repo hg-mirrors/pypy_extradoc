@@ -7,17 +7,15 @@ PyPy: current status and the GIL-less future
 PyPy at EuroPython
 ------------------
 
-|scriptsize|
-
 ::
 
-  fijal@helmut:~/src/extradoc/talk$ cd ep20
+  fijal:~/extradoc/talk$ cd ep20
 
-  ep2004-pypy/ ep2006/      ep2008/      ep2010/      ep2012/
+  ep2004-pypy/ ep2006/      ep2008/      ep2010/
 
   ep2005/      ep2007/      ep2009/      ep2011/
 
-|end_scriptsize|
+  ep2012/
 
 |pause|
 
@@ -72,8 +70,6 @@ PyPy 1.9: current status
 
 * Implements Python 2.7.2
 
-  - py3k in progress (see later)
-
 * Many more "PyPy-friendly" programs
 
 * Packaging
@@ -83,8 +79,6 @@ PyPy 1.9: current status
   - |scriptsize| Windows (32bit only), OS X |end_scriptsize|
 
 * C extension compatibility
-
-  - from "alpha" to "beta"
 
   - runs (big part of) **PyOpenSSL** and **lxml**
 
@@ -151,13 +145,9 @@ JIT warmup times
 
 * We did not spend much time on this
 
-* Come and talk to us
-
 * **PyPy JIT Under the hood**
 
   - July 4 2012
-
-.. XXX what do we want to say in "come and talk to us"?
 
 
 Py3k
@@ -165,19 +155,13 @@ Py3k
 
 * ``py3k`` branch in mercurial
 
-  - RPython toolchain vs Python interpreter
-
   - developed in parallel
-
-  - not going to be merged
 
 * Focus on correctness
 
-* No JIT for now
-
-  - we just did no try :-)
-
 * Dropped some interpreter optimizations for now
+
+* Work in progress
 
 Py3k status
 -----------
@@ -211,6 +195,8 @@ Py3k status
 
 Py3k: what's left?
 -------------------
+
+* First 90% done, remaining 90% not done
 
 * Tons of small issues
 
@@ -293,6 +279,8 @@ CFFI
 
 * Including macro calls and most subtleties of C
 
+* http://cffi.readthedocs.org
+
 
 STM
 ---------------------------
@@ -346,7 +334,7 @@ pypy-stm
 STM
 ---
 
-*Transactions,* similar to database transactions
+**Transactions,** similar to database transactions
 
 * GIL
 
@@ -367,7 +355,7 @@ Occasional conflict:
 
 .. raw:: latex
 
-   \vspace{1cm}
+   \vspace{1cm} \vphantom{x}
 
 .. image:: STM-conflict.png
    :scale: 70%
@@ -407,7 +395,7 @@ Threads
 This talk is really about...
 ----------------------------
 
-* Multicore usage *without using threads*
+* Multicore usage **without using threads**
 
 * Demo with the "transaction" module
 
@@ -494,4 +482,8 @@ Conclusion
 Thank you
 ---------
 
-http://pypy.org/
+* http://pypy.org/
+
+* You can hire Antonio
+
+* Questions?

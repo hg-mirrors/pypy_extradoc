@@ -88,7 +88,7 @@ Is this possible?
 
 * I don't actually know, but I'll keep trying
 
-Q&A
-===
+Questions?
+==========
 
 * I'm actually listening for advices
