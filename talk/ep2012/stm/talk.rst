@@ -484,6 +484,8 @@ Thank you
 
 * http://pypy.org/
 
-* You can hire Antonio
+* You can hire Antonio (http://antocuni.eu)
 
 * Questions?
+
+* PyPy help desk on Thursday morning
