@@ -1,3 +1,11 @@
 syntax: glob
 *.py[co]
 *~
+talk/ep2012/stackless/slp-talk.aux
+talk/ep2012/stackless/slp-talk.latex
+talk/ep2012/stackless/slp-talk.log
+talk/ep2012/stackless/slp-talk.nav
+talk/ep2012/stackless/slp-talk.out
+talk/ep2012/stackless/slp-talk.snm
+talk/ep2012/stackless/slp-talk.toc
+talk/ep2012/stackless/slp-talk.vrb
