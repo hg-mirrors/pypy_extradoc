@@ -196,7 +196,16 @@ Why not just the *greenlet* ?
 
 * greenlets are about 10x slower to switch context because
   using only hard-switching
+  
+  - but that's ok in most cases
     
+|pause|
+
+* greenlets are kind-of perfect
+
+  - near zero maintenace
+  - minimal interface
+
 |pause|
 
 * but the main difference is ...
@@ -263,18 +272,28 @@ Greenlet vs. Stackless
 
   - performance is good enough
 
+|pause|
+
 * Stackless can pickle program state
 
   - stays a replacement of Python
 
+|pause|
+
 * Greenlet never can, as an extension
 
-* **easy installation** lets people select greenlet over stackless
+|pause|
+
+* *easy installation* lets people select greenlet over stackless
 
   - see for example the *eventlet* project
   
-  - but there is a simple work-around
+  - *but there is a simple work-around, we'll come to it*
 
+|pause|
+
+* *they both have their application domains*
+  and they will persist.
 
 Why Stackless makes a Difference
 ---------------------------------
@@ -398,6 +417,36 @@ The New Direction for Stackless
 
   Anselm Kruis       *(applause)*
 
+
+Consequences of the Pseudo-Package
+-----------------------------------
+
+The technical effect is almost nothing.
+
+The psycological impact is probably huge:
+
+|pause|
+
+* stackless is easy to install and uninstall
+
+|pause|
+
+* people can simply try if it fits their needs
+
+|pause|
+
+* the never ending discussion
+
+  - "Why is Stackless not included in the Python core?"
+
+|pause|
+
+* **has ended**
+
+  - hey Guido :-)
+  - what a relief, for you and me
+  
+
 Status of Stackless PyPy
 ---------------------------
 
@@ -425,12 +474,19 @@ Applications using Stackless Python
   http://www.eveonline.com/
   
   - based their games on Stackless since 1998
-  
+
+* science + computing ag, Anselm Kruis
+
+  https://ep2012.europython.eu/conference/p/anselm-kruis
+
 * The Nagare Web Framework
 
   http://www.nagare.org/
   
   - works because of Stackless Pickling
+
+* today's majority: persistence
+
 
 Thank you
 ---------
