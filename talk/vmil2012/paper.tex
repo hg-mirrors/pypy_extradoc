@@ -104,16 +104,44 @@ Languages, Performance, Experimentation
 
 The contributions of this paper are:
 \begin{itemize}
- \item 
+ \item
 \end{itemize}
 
-The paper is structured as follows: 
+The paper is structured as follows:
 
 \section{Background}
 \label{sec:Background}
 
 \subsection{RPython and the PyPy Project}
 \label{sub:pypy}
+
+
+The RPython language and the PyPy Project were started in 2002 with the goal of
+creating a python interpreter written in a High level language, allowing easy
+language experimentation and extension. PyPy is now a fully compatible
+alternative implementation of the Python language, xxx mention speed. The
+Implementation takes advantage of the language features provided by RPython
+such as the provided tracing just-in-time compiler described below.
+
+RPython, the language and the toolset originally developed to implement the
+Python interpreter have developed into a general environment for experimenting
+and developing fast and maintainable dynamic language implementations. xxx Mention
+the different language impls.
+
+RPython is built of two components, the language and the translation toolchain
+used to transform RPython programs to executable units.  The RPython language
+is a statically typed object oriented high level language. The language provides
+several features such as automatic memory management (aka. Garbage Collection)
+and just-in-time compilation. When writing an interpreter using RPython the
+programmer only has to write the interpreter for the language she is
+implementing.  The second RPython component, the translation toolchain, is used
+to transform the program to a low level representations suited to be compiled
+and run on one of the different supported target platforms/architectures such
+as C, .NET and Java. During the transformation process
+different low level aspects suited for the target environment are automatically
+added to program such as (if needed) a garbage collector and with some hints
+provided by the author a just-in-time compiler.
+
 
 
 \subsection{PyPy's Meta-Tracing JIT Compilers}
@@ -134,7 +162,7 @@ The paper is structured as follows:
 
 * High level handling of resumedata
    * trade-off fast tracing v/s memory usage
-   * creation in the frontendÂ 
+   * creation in the frontendÂ
    * optimization
    * compression
    * interaction with optimization
