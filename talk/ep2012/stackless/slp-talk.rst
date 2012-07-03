@@ -9,7 +9,7 @@ What is Stackless?
 
 * *Stackless is a Python version that does not use the C stack*
 
-|pause|
+  |pause|
 
   - really? naah
   
@@ -27,7 +27,7 @@ What is Stackless?
 
   - theoretically. In practice...
   
-  - ... it is reasonable 80 % of the time
+  - ... it is reasonable 90 % of the time
   
   - we come back to this!
 
@@ -215,7 +215,7 @@ Pickling Program State
 -----------------------
 
 |scriptsize|
-|example<| Example (p. 1 of 2) |>|
+|example<| Persistence (p. 1 of 2) |>|
 
   .. sourcecode:: python
 
@@ -233,6 +233,9 @@ Pickling Program State
         print 'leave level %s%d' % (level*'  ', level)
 
 |end_example|
+
+# *remember to show it interactively*
+
 |end_scriptsize|
 
 
@@ -241,7 +244,7 @@ Pickling Program State
 
 |scriptsize|
 
-|example<| Example (p. 2 of 2) |>|
+|example<| Persistence (p. 2 of 2) |>|
 
   .. sourcecode:: python
 
@@ -259,24 +262,82 @@ Pickling Program State
             t = stackless.tasklet(demo)(9)
         stackless.run()
 
-    # remember to show it interactively
 
 |end_example|
+
+# *remember to show it interactively*
+
 |end_scriptsize|
 
+
+Script Output 1
+-----------------
+
+|example<| |>|
+|scriptsize|
+
+  .. sourcecode:: pycon
+
+    $ ~/src/stackless/python.exe demo/pickledtasklet.py
+    enter level   1
+    enter level     2
+    enter level       3
+    enter level         4
+    enter level           5
+    enter level             6
+    enter level               7
+    enter level                 8
+    enter level                   9
+    hi
+    leave level                   9
+    leave level                 8
+    leave level               7
+    leave level             6
+    leave level           5
+    leave level         4
+    leave level       3
+    leave level     2
+    leave level   1
+
+|end_scriptsize|
+|end_example|
+
+
+Script Output 2
+-----------------
+
+|example<| |>|
+|scriptsize|
+
+  .. sourcecode:: pycon
+
+    $ ~/src/stackless/python.exe demo/pickledtasklet.py tasklet.pickle 
+    leave level                   9
+    leave level                 8
+    leave level               7
+    leave level             6
+    leave level           5
+    leave level         4
+    leave level       3
+    leave level     2
+    leave level   1
+
+|end_scriptsize|
+|end_example|
+    
 
 Greenlet vs. Stackless
 -----------------------
 
 * Greenlet is a pure extension module
 
-  - performance is good enough
+  - but performance is good enough
 
 |pause|
 
 * Stackless can pickle program state
 
-  - stays a replacement of Python
+  - but stays a replacement of Python
 
 |pause|
 
@@ -292,8 +353,9 @@ Greenlet vs. Stackless
 
 |pause|
 
-* *they both have their application domains*
-  and they will persist.
+* *they both have their application domains
+  and they will persist.*
+
 
 Why Stackless makes a Difference
 ---------------------------------
@@ -302,7 +364,7 @@ Why Stackless makes a Difference
 
   - the feature where I put most effort into
   
-|pause|
+  |pause|
 
   - can be emulated: (in decreasing speed order)
   
@@ -314,7 +376,7 @@ Why Stackless makes a Difference
 
 |pause|
 
-* Pickling program state  ==
+* Pickling program state ! ==
 
 |pause|
 
@@ -353,6 +415,8 @@ Software archeology
   
     - *please let me skip old design errors :-)*
 
+|pause|
+
 * Complete redesign in 2002
 
   - version 2
@@ -360,7 +424,9 @@ Software archeology
     - using only hard-switching
     
     - birth of tasklets and channels
-    
+
+|pause|
+
 * Concept merge in 2004
 
   - version 3
@@ -371,8 +437,9 @@ Software archeology
       
     - hard-switching if foreign code is on the stack
       
-  * these 80 % can be *pickled*
+  - these 80 % can be *pickled*  (90?)
 
+* This stayed as version 3.1
 
 Status of Stackless Python
 ---------------------------
@@ -410,13 +477,38 @@ The New Direction for Stackless
   - but the user perception will be perfect
   
 * *trying stackless made easy!*
-  
-|pause|
+
+
+New Direction (cont'd)
+-----------------------
 
 * first prototype yesterday from
 
   Anselm Kruis       *(applause)*
 
+  - works on Windows
+
+  |pause|
+
+  - OS X
+
+    - I'll do that one
+
+  |pause|
+  
+  - Linux
+
+    - soon as well
+
+|pause|
+
+* being very careful to stay compatible
+
+  - python 2.7.3 installs stackless for 2.7.3
+  - python 3.2.3 installs stackless for 3.2.3
+  
+  - python 2.7.2 : *please upgrade*
+    - or maybe have an over-ride option?
 
 Consequences of the Pseudo-Package
 -----------------------------------
@@ -443,6 +535,7 @@ The psycological impact is probably huge:
 
 * **has ended**
 
+  - "Why should we?"
   - hey Guido :-)
   - what a relief, for you and me
   
