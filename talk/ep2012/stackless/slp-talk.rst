@@ -271,7 +271,55 @@ Greenlet vs. Stackless
 
 * **easy installation** lets people select greenlet over stackless
 
-  - see the *eventlet*
+  - see for example the *eventlet* project
+  
+  - but there is a simple work-around
+
+
+Why Stackless makes a Difference
+---------------------------------
+
+* Microthreads ?
+
+  - the feature where I put most effort into
+  
+|pause|
+
+  - can be emulated: (in decreasing speed order)
+  
+    - generators (incomplete, "half-sided")
+  
+    - greenlet
+    
+    - threads (even ;-)
+
+|pause|
+
+* Pickling program state  ==
+
+|pause|
+
+* **persistence**
+
+
+Persistence, Cloud Computing
+-----------------------------
+
+* freeze your running program
+
+* let it continue anywhere else
+
+  - on a different computer
+  
+  - on a different operating system (!)
+  
+  - in a cloud
+  
+* migrate your running program
+
+* save snapshots, have checkpoints
+
+  - without doing any extra-work
 
 Software archeology
 -------------------
@@ -312,12 +360,85 @@ Status of Stackless Python
 
 * mature
 
-* Python 2 and Python 3
+* Python 2 and Python 3, all versions
+
+* maintained by
+
+  - Richard Tew
+  - Kristjan Valur Jonsson
+  - me  (a bit)
+
+
+The New Direction for Stackless
+-------------------------------
+
+* ``pip install stackless-python``
+
+  - will install ``slpython``
+  - or even ``python``     (opinions?)
+
+|pause|
+
+* drop-in replacement of CPython
+  *(psssst)*
+
+|pause|
+
+* ``pip uninstall stackless-python``
+
+  - Stackless is a bit cheating, as it replaces the python binary
+  
+  - but the user perception will be perfect
+  
+* *trying stackless made easy!*
+  
+|pause|
+
+* first prototype yesterday from
+
+  Anselm Kruis       *(applause)*
+
+Status of Stackless PyPy
+---------------------------
+
+* was completely implemented before the Jit
+
+  - together with
+    greenlets
+    coroutines
+    
+  - not Jit compatible
+    
+* was "too complete" with a 30% performance hit
+
+* new approach is almost ready
+
+  - with full Jit support
+  - but needs some fixing
+  - this *will* be efficient
+
+Applications using Stackless Python
+------------------------------------
+
+* The Eve Online MMORPG
+
+  http://www.eveonline.com/
+  
+  - based their games on Stackless since 1998
+  
+* The Nagare Web Framework
+
+  http://www.nagare.org/
+  
+  - works because of Stackless Pickling
 
 Thank you
 ---------
 
-* http://www.stackless.com/
+* the new Stackless Website
+  http://www.stackless.com/
+
+  - a **great** donation from Alain Pourier, *Nagare*
 
 * You can hire me as a consultant
 
