@@ -239,6 +239,54 @@ Why not just the *greenlet* ?
 * but the main difference is ...
 
 
+Excurs: Hard-Switching
+-----------------------
+
+Sorry ;-)
+
+Switching program state "the hard way":
+
+Without notice of the interpreter
+
+* the machine stack gets hijacked
+
+  - Brute-Force: replace the stack with another one
+  
+  - like threads
+  
+* stackless, greenlets
+
+  - stack slicing
+  
+  - semantically same effect
+  
+* switching works fine
+
+* pickling does not work, opaque data on the stack
+
+  - this is more sophisticated in PyPy, another story...
+
+
+Excurs: Soft-Switching
+-----------------------
+
+Switching program state "the soft way":
+
+With knowledge of the interpreter
+
+* most efficient implementation in Stackless 3.1
+
+* demands the most effort of the developers
+
+* no opaque data on the stack, pickling does work
+
+  - again, this is more sophisticated in PyPy
+
+|pause|
+
+* now we are at the main difference, as you guessed ...
+
+
 Pickling Program State
 -----------------------
 
@@ -429,6 +477,7 @@ Persistence, Cloud Computing
 * save snapshots, have checkpoints
 
   - without doing any extra-work
+
 
 Software archeology
 -------------------
