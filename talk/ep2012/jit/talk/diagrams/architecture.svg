@@ -138,10 +138,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35355339"
-     inkscape:cx="1143.7277"
+     inkscape:cx="1138.0708"
      inkscape:cy="300.08853"
      inkscape:document-units="px"
-     inkscape:current-layer="layer6"
+     inkscape:current-layer="g4325"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="748"
@@ -353,7 +353,7 @@
        id="g5358"
        transform="translate(7.9254937,0)">
       <g
-         transform="translate(956.78125,-250.07878)"
+         transform="translate(956.78125,-444.07872)"
          id="g4105">
         <g
            transform="translate(2.8571441,301.42856)"
@@ -406,7 +406,7 @@
       </g>
       <g
          id="g4105-0"
-         transform="translate(958.20983,-420.24935)">
+         transform="translate(958.20983,-261.44707)">
         <g
            transform="translate(2.8571441,301.42856)"
            id="g3908-6-7">
@@ -453,44 +453,52 @@
                id="flowPara4067-6" /></flowRoot>        </g>
       </g>
       <g
-         transform="matrix(1.0073841,0,0,1,716.36172,92.764785)"
+         transform="matrix(1.0073841,0,0,1,716.36172,92.764781)"
          id="g4325">
         <text
            sodipodi:linespacing="125%"
            id="text3084-33-1"
-           y="396.14929"
+           y="346.14929"
            x="341.50195"
            style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Monospace;-inkscape-font-specification:Monospace"
            xml:space="preserve"><tspan
              id="tspan3088-9-0"
-             y="396.14929"
+             y="346.14929"
              x="341.50195"
              sodipodi:role="line">...</tspan><tspan
-             y="426.14929"
+             y="376.14929"
+             x="341.50195"
+             sodipodi:role="line"
+             id="tspan6723">promote_class(p0)</tspan><tspan
+             y="406.14929"
              x="341.50195"
              sodipodi:role="line"
              id="tspan4077-62">i0 = getfield_gc(p0, 'intval')</tspan><tspan
-             y="456.14929"
+             y="436.14929"
+             x="341.50195"
+             sodipodi:role="line"
+             id="tspan6727">promote_class(p1)</tspan><tspan
+             y="466.14929"
              x="341.50195"
              sodipodi:role="line"
              id="tspan4075-3">i1 = getfield_gc(p1, 'intval')</tspan><tspan
-             y="486.14929"
+             y="496.14929"
              x="341.50195"
              sodipodi:role="line"
-             id="tspan4059-7">i2 = int_add(00, i1)</tspan><tspan
-             y="516.14929"
+             id="tspan4059-7">i2 = int_add(i0, i1)</tspan><tspan
+             y="526.14929"
              x="341.50195"
              sodipodi:role="line"
              id="tspan4242">if (overflowed) goto ...</tspan><tspan
-             y="546.14929"
+             y="556.14929"
              x="341.50195"
              sodipodi:role="line"
              id="tspan4246">p2 = new_with_vtable('W_IntObject')</tspan><tspan
-             y="576.14929"
+             y="586.14929"
              x="341.50195"
              sodipodi:role="line"
              id="tspan4248">setfield_gc(p2, i2, 'intval')</tspan><tspan
-             y="606.14929"
+             y="616.14929"
              x="341.50195"
              sodipodi:role="line"
              id="tspan4304">....</tspan></text>
@@ -499,7 +507,7 @@
            id="g4105-2">
           <g
              id="g3908-6-5"
-             transform="translate(2.8571441,301.42856)">
+             transform="matrix(1,0,0,1.1954725,2.8571441,206.67858)">
             <rect
                y="257.17258"
                x="-155.76105"
@@ -675,7 +683,7 @@
          sodipodi:role="line"
          x="29.307829"
          y="928.88922"
-         id="tspan3088-3-5-2-9">JITTED CODE</tspan></text>
+         id="tspan3088-3-5-2-9">ASSEMBLER</tspan></text>
     <rect
        style="fill:none;stroke:#00ff00;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:9, 3;stroke-dashoffset:0"
        id="rect3138-7-6-7-6"

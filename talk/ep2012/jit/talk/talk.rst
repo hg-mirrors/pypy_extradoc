@@ -269,3 +269,125 @@ General architecture
 .. animage:: diagrams/architecture-p*.pdf
    :align: center
    :scale: 24%
+
+
+PyPy trace example
+-------------------
+
+.. animage:: diagrams/pypytrace-p*.pdf
+   :align: center
+   :scale: 40%
+
+
+PyPy optimizer
+---------------
+
+- intbounds
+
+- constant folding / pure operations
+
+- virtuals
+
+- string optimizations
+
+- heap (multiple get/setfield, etc)
+
+- ffi
+
+- unroll
+
+
+Intbound optimization
+----------------------
+
+|scriptsize|
+|column1|
+|example<| |small| unoptimized |end_small| |>|
+
+.. sourcecode:: java
+
+
+
+jjjjjjj
+  class IncrOrDecr {
+    ...
+    public DoSomething(I)I
+      ILOAD 1
+      IFGE LABEL_0
+      ILOAD 1
+      ICONST_1
+      ISUB
+      IRETURN
+     LABEL_0
+      ILOAD 1
+      ICONST_1
+      IADD
+      IRETURN
+  }
+
+|end_example|
+
+|pause|
+
+|column2|
+|example<| |small| Java bytecode |end_small| |>|
+
+.. sourcecode:: java
+
+  class tracing {
+    ...
+    public static main(
+       [Ljava/lang/String;)V
+      ...
+     LABEL_0
+      ILOAD 2
+      ILOAD 1
+      IF_ICMPGE LABEL_1
+      ALOAD 3
+      ILOAD 2
+      INVOKEINTERFACE 
+        Operation.DoSomething (I)I
+      ISTORE 2
+      GOTO LABEL_0
+     LABEL_1
+      ...
+  }
+
+|end_example|
+|end_columns|
+|end_scriptsize|
+
+
+
+Guards
+-------
+
+- guard_true
+
+- guard_false
+
+- guard_class
+
+- guard_no_overflow
+
+- **guard_value**
+
+Promotion
+---------
+
+- guard_value
+
+- specialize code
+
+- make sure not to **overspecialize**
+
+- example: space.type()
+
+Misc
+----
+
+- immutable_fields
+
+- out of line guards
+
+
