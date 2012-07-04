@@ -15,7 +15,9 @@ About this talk
 
 * The PyPy JIT generator
 
-* JIT-friendly programs
+* Just In Time talk
+
+  last-modified: July, 4th, 12:06
 
 
 Part 0: What is PyPy?
@@ -563,13 +565,13 @@ Promotion
 
 - make sure not to **overspecialize**
 
-- example: space.type()
+- example: type of objects
 
-Misc
-----
+- example: function code objects, ...
 
-- immutable_fields
+Conclusion
+-----------
 
-- out of line guards
+- PyPy is cool :-)
 
-
+- Any question?
