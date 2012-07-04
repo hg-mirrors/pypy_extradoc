@@ -1,0 +1,209 @@
+\documentclass{sigplanconf}
+
+\usepackage{ifthen}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{wrapfig}
+\usepackage{ulem}
+\usepackage{xspace}
+\usepackage{relsize}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+
+\usepackage{listings}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.81]{beramono}
+
+
+\definecolor{commentgray}{rgb}{0.3,0.3,0.3}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  language=Python,
+  keywordstyle=\bfseries,
+  stringstyle=\color{blue},
+  commentstyle=\color{commentgray}\textit,
+  fancyvrb=true,
+  showstringspaces=false,
+  %keywords={def,while,if,elif,return,class,get,set,new,guard_class}
+  numberstyle = \tiny,
+  numbersep = -20pt,
+}
+
+\newboolean{showcomments}
+\setboolean{showcomments}{false}
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$Id: main.tex 19055 2008-06-05 11:20:31Z cfbolz $-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\cfbolz[1]{\nb{CFB}{#1}}
+\newcommand\toon[1]{\nb{TOON}{#1}}
+\newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\arigo[1]{\nb{AR}{#1}}
+\newcommand\fijal[1]{\nb{FIJAL}{#1}}
+\newcommand\pedronis[1]{\nb{PEDRONIS}{#1}}
+\newcommand{\commentout}[1]{}
+
+\newcommand{\noop}{}
+
+
+\newcommand\ie{i.e.,\xspace}
+\newcommand\eg{e.g.,\xspace}
+
+\normalem
+
+\let\oldcite=\cite
+
+\renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
+
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+
+\begin{document}
+
+\title{Efficiently Handling Guards in the low level design of RPython's tracing JIT}
+
+\authorinfo{Carl Friedrich Bolz$^a$ \and David Schneider$^{a}$}
+           {$^a$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
+           }
+           {XXX emails}
+
+\conferenceinfo{VMIL'11}{}
+\CopyrightYear{2012}
+\crdata{}
+
+\maketitle
+
+\category{D.3.4}{Programming Languages}{Processors}[code generation,
+incremental compilers, interpreters, run-time environments]
+
+\terms
+Languages, Performance, Experimentation
+
+\keywords{XXX}
+
+\begin{abstract}
+
+\end{abstract}
+
+
+%___________________________________________________________________________
+\section{Introduction}
+
+
+The contributions of this paper are:
+\begin{itemize}
+ \item
+\end{itemize}
+
+The paper is structured as follows:
+
+\section{Background}
+\label{sec:Background}
+
+\subsection{RPython and the PyPy Project}
+\label{sub:pypy}
+
+
+The RPython language and the PyPy Project were started in 2002 with the goal of
+creating a python interpreter written in a High level language, allowing easy
+language experimentation and extension. PyPy is now a fully compatible
+alternative implementation of the Python language, xxx mention speed. The
+Implementation takes advantage of the language features provided by RPython
+such as the provided tracing just-in-time compiler described below.
+
+RPython, the language and the toolset originally developed to implement the
+Python interpreter have developed into a general environment for experimenting
+and developing fast and maintainable dynamic language implementations. xxx Mention
+the different language impls.
+
+RPython is built of two components, the language and the translation toolchain
+used to transform RPython programs to executable units.  The RPython language
+is a statically typed object oriented high level language. The language provides
+several features such as automatic memory management (aka. Garbage Collection)
+and just-in-time compilation. When writing an interpreter using RPython the
+programmer only has to write the interpreter for the language she is
+implementing.  The second RPython component, the translation toolchain, is used
+to transform the program to a low level representations suited to be compiled
+and run on one of the different supported target platforms/architectures such
+as C, .NET and Java. During the transformation process
+different low level aspects suited for the target environment are automatically
+added to program such as (if needed) a garbage collector and with some hints
+provided by the author a just-in-time compiler.
+
+
+
+\subsection{PyPy's Meta-Tracing JIT Compilers}
+\label{sub:tracing}
+
+ * Tracing JITs
+ * JIT Compiler
+   * describe the tracing jit stuff in pypy
+   * reference tracing the meta level paper for a high level description of what the JIT does
+   * JIT Architecture
+   * Explain the aspects of tracing and optimization
+
+%___________________________________________________________________________
+
+
+\section{Resume Data}
+\label{sec:Resume Data}
+
+* High level handling of resumedata
+   * trade-off fast tracing v/s memory usage
+   * creation in the frontendÂ
+   * optimization
+   * compression
+   * interaction with optimization
+   * tracing and attaching bridges and throwing away resume data
+   * compiling bridges
+
+% section Resume Data (end)
+
+\section{Guards in the Backend}
+\label{sec:Guards in the Backend}
+
+* Low level handling of guards
+   * Fast guard checks v/s memory usage
+   * memory efficient encoding of low level resume data
+   * fast checks for guard conditions
+   * slow bail out
+
+% section Guards in the Backend (end)
+
+%___________________________________________________________________________
+
+
+\section{Evaluation}
+\label{sec:evaluation}
+
+* Evaluation
+   * Measure guard memory consumption and machine code size
+   * Extrapolate memory consumption for guard other guard encodings
+      * compare to naive variant
+   * Measure how many guards survive optimization
+   * Measure the of guards and how many of these ever fail
+
+\section{Related Work}
+
+
+\section{Conclusion}
+
+
+\section*{Acknowledgements}
+
+\bibliographystyle{abbrv}
+\bibliography{paper}
+
+\end{document}
