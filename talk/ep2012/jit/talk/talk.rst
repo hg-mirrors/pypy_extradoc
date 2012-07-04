@@ -297,67 +297,249 @@ PyPy optimizer
 - unroll
 
 
-Intbound optimization
-----------------------
+Intbound optimization (1)
+-------------------------
+
+|example<| |small| intbound.py |end_small| |>|
+
+.. sourcecode:: python
+
+    def fn():
+        i = 0
+        while i < 5000:
+            i += 2
+        return i
+
+|end_example|
+
+Intbound optimization (2)
+--------------------------
 
 |scriptsize|
 |column1|
 |example<| |small| unoptimized |end_small| |>|
 
-.. sourcecode:: java
+.. sourcecode:: python
 
-
-
-jjjjjjj
-  class IncrOrDecr {
     ...
-    public DoSomething(I)I
-      ILOAD 1
-      IFGE LABEL_0
-      ILOAD 1
-      ICONST_1
-      ISUB
-      IRETURN
-     LABEL_0
-      ILOAD 1
-      ICONST_1
-      IADD
-      IRETURN
-  }
+    i17 = int_lt(i15, 5000)
+    guard_true(i17)
+    i19 = int_add_ovf(i15, 2)
+    guard_no_overflow()
+    ...
 
 |end_example|
 
 |pause|
 
 |column2|
-|example<| |small| Java bytecode |end_small| |>|
+|example<| |small| optimized |end_small| |>|
 
-.. sourcecode:: java
+.. sourcecode:: python
 
-  class tracing {
     ...
-    public static main(
-       [Ljava/lang/String;)V
-      ...
-     LABEL_0
-      ILOAD 2
-      ILOAD 1
-      IF_ICMPGE LABEL_1
-      ALOAD 3
-      ILOAD 2
-      INVOKEINTERFACE 
-        Operation.DoSomething (I)I
-      ISTORE 2
-      GOTO LABEL_0
-     LABEL_1
-      ...
-  }
+    i17 = int_lt(i15, 5000)
+    guard_true(i17)
+    i19 = int_add(i15, 2)
+    ...
 
 |end_example|
 |end_columns|
 |end_scriptsize|
 
+|pause|
 
+* It works **often**
+
+* array bound checking
+
+* intbound info propagates all over the trace
+
+
+Virtuals (1)
+-------------
+
+|example<| |small| virtuals.py |end_small| |>|
+
+.. sourcecode:: python
+
+    def fn():
+        i = 0
+        while i < 5000:
+            i += 2
+        return i
+
+|end_example|
+
+
+Virtuals (2)
+------------
+
+|scriptsize|
+|column1|
+|example<| |small| unoptimized |end_small| |>|
+
+.. sourcecode:: python
+
+    ...
+    guard_class(p0, W_IntObject)
+    i1 = getfield_pure(p0, 'intval')
+    i2 = int_add(i1, 2)
+    p3 = new(W_IntObject)
+    setfield_gc(p3, i2, 'intval')
+    ...
+
+|end_example|
+
+|pause|
+
+|column2|
+|example<| |small| optimized |end_small| |>|
+
+.. sourcecode:: python
+
+    ...
+    i2 = int_add(i1, 2)
+    ...
+
+|end_example|
+|end_columns|
+|end_scriptsize|
+
+|pause|
+
+* The most important optimization (TM)
+
+* It works both inside the trace and across the loop
+
+* It works for tons of cases
+
+  - e.g. function frames
+
+
+Constant folding (1)
+---------------------
+
+|example<| |small| constfold.py |end_small| |>|
+
+.. sourcecode:: python
+
+    def fn():
+        i = 0
+        while i < 5000:
+            i += 2
+        return i
+
+|end_example|
+
+
+Constant folding (2)
+--------------------
+
+|scriptsize|
+|column1|
+|example<| |small| unoptimized |end_small| |>|
+
+.. sourcecode:: python
+
+    ...
+    i1 = getfield_pure(p0, 'intval')
+    i2 = getfield_pure(<W_Int(2)>, 
+                       'intval')
+    i3 = int_add(i1, i2)
+    ...
+
+|end_example|
+
+|pause|
+
+|column2|
+|example<| |small| optimized |end_small| |>|
+
+.. sourcecode:: python
+
+    ...
+    i1 = getfield_pure(p0, 'intval')
+    i3 = int_add(i1, 2)
+    ...
+
+|end_example|
+|end_columns|
+|end_scriptsize|
+
+|pause|
+
+* It "finishes the job"
+
+* Works well together with other optimizations (e.g. virtuals)
+
+* It also does "normal, boring, static" constant-folding
+
+
+Out of line guards (1)
+-----------------------
+
+|example<| |small| outoflineguards.py |end_small| |>|
+
+.. sourcecode:: python
+
+    N = 2
+    def fn():
+        i = 0
+        while i < 5000:
+            i += N
+        return i
+
+|end_example|
+
+
+Out of line guards (2)
+----------------------
+
+|scriptsize|
+|column1|
+|example<| |small| unoptimized |end_small| |>|
+
+.. sourcecode:: python
+
+    ...
+    quasiimmut_field(<Cell>, 'val')
+    guard_not_invalidated()
+    p0 = getfield_gc(<Cell>, 'val')
+    ...
+    i2 = getfield_pure(p0, 'intval')
+    i3 = int_add(i1, i2)
+
+|end_example|
+
+|pause|
+
+|column2|
+|example<| |small| optimized |end_small| |>|
+
+.. sourcecode:: python
+
+    ...
+    guard_not_invalidated()
+    ...
+    i3 = int_add(i1, 2)
+    ...
+
+|end_example|
+|end_columns|
+|end_scriptsize|
+
+|pause|
+
+* Python is too dynamic, but we don't care :-)
+
+* No overhead in assembler code
+
+* Used a bit "everywhere"
+
+* Credits to Mark Shannon
+
+  - for the name :-)
 
 Guards
 -------
