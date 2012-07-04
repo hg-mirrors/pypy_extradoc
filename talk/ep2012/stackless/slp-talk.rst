@@ -4,6 +4,34 @@
 The Story of Stackless Python
 ============================================
 
+
+About This Talk
+----------------
+
+* first talk after a long break
+
+  - *rst2beamer* for the first time
+
+guest speaker:
+
+* Herve Coatanhay about Nagare
+
+  - PowerPoint (Mac)
+
+|pause|
+
+Meanwhile I used
+
+* Powerpoint (PC)
+
+* Keynote (Mac)
+
+* Google Docs
+
+|pause|
+
+poll: What is your favorite slide tool?
+
 What is Stackless?
 -------------------
 
@@ -62,7 +90,9 @@ What is Stackless about?
 * is like an extension
 
   - but, sadly, not really
+  
   - stackless **must** be builtin  
+  
   - **but:** there is a solution...
 
 
@@ -114,7 +144,6 @@ Cooperative Multitasking ...
     ...     print "Receiving tasklet started"
     ...     print channel.receive()
     ...     print "Receiving tasklet finished"
-    ...
 
 |pause|
 
@@ -124,7 +153,6 @@ Cooperative Multitasking ...
     ...     print "Sending tasklet started"
     ...     channel.send("send from sending_tasklet")
     ...     print "sending tasklet finished"
-    ...
 
 |end_example|
 |end_scriptsize|
@@ -140,7 +168,6 @@ Cooperative Multitasking ...
 
     >>> def another_tasklet():
     ...     print "Just another tasklet in the scheduler"
-    ...
 
 |pause|
 
@@ -204,6 +231,7 @@ Why not just the *greenlet* ?
 * greenlets are kind-of perfect
 
   - near zero maintenace
+  
   - minimal interface
 
 |pause|
@@ -535,8 +563,12 @@ The psycological impact is probably huge:
 
 * **has ended**
 
-  - "Why should we?"
+  - "Why should we, after all?"
+
+  |pause|
+
   - hey Guido :-)
+
   - what a relief, for you and me
   
 
