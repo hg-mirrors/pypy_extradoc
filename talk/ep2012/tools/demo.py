@@ -11,6 +11,26 @@ def simple():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def bridge():
     s = 0
     for i in range(100000):
@@ -18,6 +38,18 @@ def bridge():
             s += 1
         else:
             s += 2
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -38,11 +70,30 @@ def bridge_overflow():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 def nested_loops():
     s = 0
     for i in range(10000):
         for j in range(100000):
             s += 1
+
+
+
+
+
+
 
 
 
@@ -68,6 +119,16 @@ def inlined_call():
 
 
 
+
+
+
+
+
+
+
+
+
+
 def inner2(a):
     for i in range(3):
         a += 1
@@ -77,6 +138,15 @@ def inlined_call_loop():
     s = 0
     for i in range(100000):
         s += inner2(i)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -94,6 +164,30 @@ def object_maps():
     s = 0
     for i in range(1000000):
         s += l[i % 100].x
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
