@@ -4,6 +4,20 @@
 PyPy JIT under the hood
 ================================
 
+About me
+---------
+
+- PyPy core dev
+
+- PyPy py3k tech leader
+
+- ``pdb++``, ``fancycompleter``, ...
+
+- Consultant, trainer
+
+- http://antocuni.eu
+
+
 About this talk
 ----------------
 
