@@ -36,7 +36,7 @@
 }
 
 \newboolean{showcomments}
-\setboolean{showcomments}{false}
+\setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
   {\newcommand{\nb}[2]{
     \fbox{\bfseries\sffamily\scriptsize#1}
@@ -54,6 +54,7 @@
 \newcommand\arigo[1]{\nb{AR}{#1}}
 \newcommand\fijal[1]{\nb{FIJAL}{#1}}
 \newcommand\pedronis[1]{\nb{PEDRONIS}{#1}}
+\newcommand\bivab[1]{\nb{DAVID}{#1}}
 \newcommand{\commentout}[1]{}
 
 \newcommand{\noop}{}
