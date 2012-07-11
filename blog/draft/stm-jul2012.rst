@@ -143,3 +143,26 @@ I will leave the conclusions open, as it basically depends on a language
 design issue and so not my strong point.  But if I can point out one
 thing, it is that the ``python-dev`` list should discuss this issue
 sooner rather than later.
+
+
+Write your own STM for C
+------------------------
+
+Actually, if neither of the two solutions presented above (GCC 4.7, HTM)
+seem fit, maybe a third one would be to write our own C compiler patch
+(as either extra work on GCC 4.7, or an extra pass to LLVM, for
+example).
+
+We would have to deal with the fact that we get low-level information,
+and somehow need to preserve interesting high-level bits through the
+LLVM compiler up to the point at which our pass runs: for example,
+whether the field we read is immutable or not.
+
+The advantage of this approach over the current GCC 4.7 is that we
+control the whole process.  We can do the transformations that we want,
+including the support for I/O.  We can also have custom code to handle
+the reference counters: e.g. not consider it a conflict if multiple
+transactions have changed the same reference counter, but just solve it
+automatically at commit time.
+
+While this still looks like a lot of work, it might probably be doable.
