@@ -64,9 +64,10 @@ example, a program might contain a loop over all keys of a dictionary,
 performing some "mostly-independent" work on each value.  By using the
 technique described here, putting each piece of work in one "block"
 running in one thread of a pool, we get exactly the same effect: the
-pieces of work still appear to run in some global serialized order, but
-the order is random (as it is anyway when iterating over the keys of a
-dictionary).
+pieces of work still appear to run in some global serialized order, in
+some random order (as it is anyway when iterating over the keys of a
+dictionary).  (There are even techniques building on top of AME that can
+be used to force the order of the blocks, if needed.)
 
 
 PyPy and STM
@@ -79,8 +80,8 @@ number of bytecodes (in which case we have merely a GIL-less Python); or
 we have blocks that are specified explicitly by the programmer using
 ``with thread.atomic:``.  The latter gives typically long-running
 blocks.  It allows us to build the higher-level solution sought after:
-we will run most of our Python code in multiple threads but always
-within a ``thread.atomic``.
+it will run most of our Python code in multiple threads but always
+within a ``thread.atomic`` block, e.g. using a pool of threads.
 
 This gives the nice illusion of a global serialized order, and thus
 gives us a well-behaving model of our program's behavior.  The drawback
@@ -89,10 +90,15 @@ many "conflicts" in the Transactional Memory sense.  A conflict causes
 the execution of one block of code to be aborted and restarted.
 Although the process is transparent, if it occurs more than
 occasionally, then it has a negative impact on performance.  We will
-need better tools to deal with them.  The point here is that at all
-stages our program is *correct*, while it may not be as efficient as it
-could be.  This is the opposite of regular multithreading, where
-programs are efficient but not as correct as they could be...
+need better tools to deal with them.  The point here is that at any
+stage of this "improvement" process our program is *correct*, while it
+may not be yet as efficient as it could be.  This is the opposite of
+regular multithreading, where programs are efficient but not as correct
+as they could be.  (And as you only have resources to do the easy 80% of
+the work and not the remaining hard 20%, you get a program that has 80%
+of the theoretical maximum of performance and it's fine; as opposed to
+regular multithreading, where you are left with the most obscure 20% of
+the original bugs.)
 
 
 CPython and HTM
@@ -114,9 +120,9 @@ too big for anyone to handle, we are left with three other options:
 The issue with the first two solutions is the same one: they are meant
 to support small-scale transactions, but not long-running ones.  For
 example, I have no clue how to give GCC rules about performing I/O in a
-transaction; and moreover looking at the STM library that is available
-so far to be linked with the compiled program, it assumes short
-transactions only.
+transaction --- this seems not supported at all; and moreover looking at
+the STM library that is available so far to be linked with the compiled
+program, it assumes short transactions only.
 
 Intel's HTM solution is both more flexible and more strictly limited.
 In one word, the transaction boundaries are given by a pair of special
@@ -140,21 +146,21 @@ abort.
 
 So what does it mean?  A Python interpreter overflows the L1 cache of
 the CPU very quickly: just creating new Python function frames takes a
-lot of memory (the order of magnitude is smaller than 100 frames).  This
-means that as long as the HTM support is limited to L1 caches, it is not
-going to be enough to run an "AME Python" with any sort of
-medium-to-long transaction (running for 0.01 second or longer).  It can
-run a "GIL-less Python", though: just running a few dozen bytecodes at a
-time should fit in the L1 cache, for most bytecodes.
+lot of memory (on the order of magnitude of 1/100 of the whole L1
+cache).  This means that as long as the HTM support is limited to L1
+caches, it is not going to be enough to run an "AME Python" with any
+sort of medium-to-long transaction (running for 0.01 second or longer).
+It can run a "GIL-less Python", though: just running a few dozen
+bytecodes at a time should fit in the L1 cache, for most bytecodes.
 
 
 Write your own STM for C
 ------------------------
 
 Let's discuss now the third option: if neither GCC 4.7 nor HTM are
-sufficient for CPython, then this third choice would be to write our own
-C compiler patch (as either extra work on GCC 4.7, or an extra pass to
-LLVM, for example).
+sufficient for an "AME CPython", then this third choice would be to
+write our own C compiler patch (as either extra work on GCC 4.7, or an
+extra pass to LLVM, for example).
 
 We would have to deal with the fact that we get low-level information,
 and somehow need to preserve interesting high-level bits through the
@@ -165,8 +171,8 @@ need to be recorded, whereas reads of mutable data must be protected
 against other threads modifying them.)  We can also have custom code to
 handle the reference counters: e.g. not consider it a conflict if
 multiple transactions have changed the same reference counter, but just
-resolve it automatically at commit time.  We can also choose what to do
-with I/O.
+resolve it automatically at commit time.  We are also free to handle I/O
+in the way we want.
 
 More generally, the advantage of this approach over the current GCC 4.7
 is that we control the whole process.  While this still looks like a lot
@@ -176,10 +182,11 @@ of work, it looks doable.
 Conclusion?
 -----------
 
-I would assume that a programming model specific to PyPy has little
-chances to catch on, as long as PyPy is not the main Python interpreter
-(which looks unlikely to occur anytime soon).  Thus as long as only PyPy
-has STM, I would assume that using it would not become the main model of
-multicore usage in Python.  However, I can conclude with a more positive
-note than during EuroPython: there appears to be a reasonable way
-forward to have an STM version of CPython too.
+I would assume that a programming model specific to PyPy and not
+applicable to CPython has little chances to catch on, as long as PyPy is
+not the main Python interpreter (which looks unlikely to occur anytime
+soon).  Thus as long as only PyPy has STM, it looks like it will not
+become the main model of multicore usage in Python.  However, I can
+conclude with a more positive note than during EuroPython: there appears
+to be a more-or-less reasonable way forward to have an STM version of
+CPython too.
