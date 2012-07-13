@@ -1,5 +1,5 @@
-STM/AME future in CPython and PyPy
-==================================
+Multicore programming in Python
+===============================
 
 Hi all,
 
@@ -98,10 +98,10 @@ programs are efficient but not as correct as they could be...
 CPython and HTM
 ---------------
 
-Couldn't we do the same for CPython?  The problem here is that we would
-need to change literally all places of the CPython C sources in order to
-implement STM.  Assuming that this is far too big for anyone to handle,
-we are left with three other options:
+Couldn't we do the same for CPython?  The problem here is that, at
+first, it seems we would need to change literally all places of the
+CPython C sources in order to implement STM.  Assuming that this is far
+too big for anyone to handle, we are left with three other options:
 
 - We could use GCC 4.7, which supports some form of STM.
 
@@ -139,13 +139,13 @@ store its read and written data in the 32-64KB of the L1 cache will
 abort.
 
 So what does it mean?  A Python interpreter overflows the L1 cache of
-the CPU very quickly: just creating new frames takes a lot of memory
-(the order of magnitude is smaller than 100 Python function calls).
-This means that as long as the HTM support is limited to L1 caches, it
-is not going to be enough to run an "AME Python" with any sort of
-medium-to-long transaction.  It can run a "GIL-less Python", though:
-just running a few dozen bytecodes at a time should fit in the L1 cache,
-for most bytecodes.
+the CPU very quickly: just creating new Python function frames takes a
+lot of memory (the order of magnitude is smaller than 100 frames).  This
+means that as long as the HTM support is limited to L1 caches, it is not
+going to be enough to run an "AME Python" with any sort of
+medium-to-long transaction (running for 0.01 second or longer).  It can
+run a "GIL-less Python", though: just running a few dozen bytecodes at a
+time should fit in the L1 cache, for most bytecodes.
 
 
 Write your own STM for C
@@ -177,9 +177,9 @@ Conclusion?
 -----------
 
 I would assume that a programming model specific to PyPy has little
-changes to catch on, as long as PyPy is not the main Python interpreter
-(which looks unlikely to occur anytime soon).  As long as only PyPy has
-STM, I would assume that it will not become the main model of multicore
-usage.  However, I can conclude with a more positive note than during
-EuroPython: there appears to be a reasonable way forward to have an STM
-version of CPython too.
+chances to catch on, as long as PyPy is not the main Python interpreter
+(which looks unlikely to occur anytime soon).  Thus as long as only PyPy
+has STM, I would assume that using it would not become the main model of
+multicore usage in Python.  However, I can conclude with a more positive
+note than during EuroPython: there appears to be a reasonable way
+forward to have an STM version of CPython too.
