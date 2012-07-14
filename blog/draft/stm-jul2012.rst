@@ -58,7 +58,7 @@ the illusion that the blocks have been run in some global serialized
 order.
 
 This doesn't magically solve all possible issues, but it helps a lot: it
-is far easier to reason in term of a random ordering of large blocks
+is far easier to reason in terms of a random ordering of large blocks
 than in terms of a random ordering of individual instructions.  For
 example, a program might contain a loop over all keys of a dictionary,
 performing some "mostly-independent" work on each value.  By using the
@@ -66,8 +66,8 @@ technique described here, putting each piece of work in one "block"
 running in one thread of a pool, we get exactly the same effect: the
 pieces of work still appear to run in some global serialized order, in
 some random order (as it is anyway when iterating over the keys of a
-dictionary).  (There are even techniques building on top of AME that can
-be used to force the order of the blocks, if needed.)
+dictionary).  There are even techniques building on top of AME that can
+be used to force the order of the blocks, if needed.
 
 
 PyPy and STM
@@ -90,15 +90,17 @@ many "conflicts" in the Transactional Memory sense.  A conflict causes
 the execution of one block of code to be aborted and restarted.
 Although the process is transparent, if it occurs more than
 occasionally, then it has a negative impact on performance.  We will
-need better tools to deal with them.  The point here is that at any
-stage of this "improvement" process our program is *correct*, while it
-may not be yet as efficient as it could be.  This is the opposite of
-regular multithreading, where programs are efficient but not as correct
-as they could be.  (And as you only have resources to do the easy 80% of
-the work and not the remaining hard 20%, you get a program that has 80%
-of the theoretical maximum of performance and it's fine; as opposed to
-regular multithreading, where you are left with the most obscure 20% of
-the original bugs.)
+need better tools to deal with them.
+
+The point here is that at any stage of this "improvement" process our
+program is *correct*, while it may not be yet as efficient as it could
+be.  This is the opposite of regular multithreading, where programs are
+efficient but not as correct as they could be.  In other words, as we
+all know, we only have resources to do the easy 80% of the work and not
+the remaining hard 20%.  So in this model you get a program that has 80%
+of the theoretical maximum of performance and it's fine.  In the regular
+multithreading model we would instead only manage to remove 80% of the
+bugs, and we are left with obscure rare crashes.
 
 
 CPython and HTM
@@ -184,7 +186,7 @@ Conclusion?
 
 I would assume that a programming model specific to PyPy and not
 applicable to CPython has little chances to catch on, as long as PyPy is
-not the main Python interpreter (which looks unlikely to occur anytime
+not the main Python interpreter (which looks unlikely to change anytime
 soon).  Thus as long as only PyPy has STM, it looks like it will not
 become the main model of multicore usage in Python.  However, I can
 conclude with a more positive note than during EuroPython: there appears
