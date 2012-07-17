@@ -126,7 +126,7 @@ The paper is structured as follows:
 
 
 The RPython language and the PyPy Project were started in 2002 with the goal of
-creating a python interpreter written in a High level language, allowing easy
+creating a Python interpreter written in a high level language, allowing easy
 language experimentation and extension. PyPy is now a fully compatible
 alternative implementation of the Python language\bivab{mention speed}. The
 Implementation takes advantage of the language features provided by RPython
@@ -170,11 +170,29 @@ provided by the author a just-in-time compiler.
 \label{sec:Resume Data}
 
 * High level handling of resumedata
-   * trade-off fast tracing v/s memory usage
-   * creation in the frontend
-   * optimization
-   * compression
-   * interaction with optimization
+
+- traces follow the execution path during tracing, other path not compiled at first
+- points of possible divergence from that path are guards
+- since path can later diverge, at the guards it must be possible to re-build interpreter state in the form of interpreter stack frames
+- tracing does inlining, therefore a guard must contain information to build a whole stack of frames
+- optimization rewrites traces, including removal of guards
+
+- frames consist of a PC and local variables
+- rebuild frame by taking local SSA variables in the trace and mapping them to variables in the frame
+
+two forces:
+- there are lots of guards, therefore the information must be stored in a compact way in the end
+- tracing must be fast
+
+compression approaches:
+- use fact that outer frames don't change in the part of the trace that is in the inner frame
+- compact bit-representation for constants/ssa vars
+
+interaction with optimization
+- guard coalescing
+- virtuals
+
+
    * tracing and attaching bridges and throwing away resume data
    * compiling bridges
 
