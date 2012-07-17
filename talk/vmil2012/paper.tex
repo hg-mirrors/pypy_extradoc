@@ -171,7 +171,7 @@ provided by the author a just-in-time compiler.
 
 * High level handling of resumedata
    * trade-off fast tracing v/s memory usage
-   * creation in the frontendÂ
+   * creation in the frontend
    * optimization
    * compression
    * interaction with optimization
@@ -184,7 +184,7 @@ provided by the author a just-in-time compiler.
 \label{sec:Guards in the Backend}
 
 Code generation consists of two passes over the lists of instructions, a
-backwards pass to calculate live ranges of IR-level variables and a forward one
+backwards pass to calculate live ranges of IR-level variables \cfbolz{doesn't the backward pass also remove dead instructions?} and a forward one
 to emit the instructions. During the forward pass IR-level variables are
 assigned to registers and stack locations by the register allocator according to
 the requirements of the to be emitted instructions. Eviction/spilling is
