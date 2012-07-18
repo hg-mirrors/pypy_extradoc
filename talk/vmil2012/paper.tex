@@ -203,16 +203,17 @@ interaction with optimization
 \label{sec:Guards in the Backend}
 
 Code generation consists of two passes over the lists of instructions, a
-backwards pass to calculate live ranges of IR-level variables \cfbolz{doesn't the backward pass also remove dead instructions?} and a forward one
+backwards pass to calculate live ranges of IR-level variables and a forward one
 to emit the instructions. During the forward pass IR-level variables are
-assigned to registers and stack locations by the register allocator according to
-the requirements of the to be emitted instructions. Eviction/spilling is
+assigned to registers and stack locations by the register allocator according
+to the requirements of the to be emitted instructions. Eviction/spilling is
 performed based on the live range information collected in the first pass. Each
 IR instruction is transformed into one or more machine level instructions that
-implement the required semantics.  Guards instructions are transformed into
-fast checks at the machine code level that verify the corresponding condition.
-In cases the value being checked by the guard is not used anywhere else the
-guard and the operation producing the value can merged, reducing even more the
+implement the required semantics, operations withouth side effects whose result
+is not used are not emitted. Guards instructions are transformed into fast
+checks at the machine code level that verify the corresponding condition.  In
+cases the value being checked by the guard is not used anywhere else the guard
+and the operation producing the value can merged, reducing even more the
 overhead of the guard.
 
 Each guard in the IR has attached to it a list of the IR-variables required to
