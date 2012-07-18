@@ -196,7 +196,7 @@ interaction with optimization
 
    * tracing and attaching bridges and throwing away resume data
    * compiling bridges
-
+\bivab{mention that the failargs also go into the bridge}
 % section Resume Data (end)
 
 \section{Guards in the Backend}
@@ -214,7 +214,7 @@ is not used are not emitted. Guards instructions are transformed into fast
 checks at the machine code level that verify the corresponding condition.  In
 cases the value being checked by the guard is not used anywhere else the guard
 and the operation producing the value can merged, reducing even more the
-overhead of the guard.
+overhead of the guard. \bivab{example for this}
 
 Each guard in the IR has attached to it a list of the IR-variables required to
 rebuild the execution state in case the trace is left through the side-exit
@@ -248,6 +248,29 @@ the execution takes one of the side exits due to a guard failure. At the same
 time the data stored in the backend needed to rebuild the state should be be
 as compact as possible to reduce the memory overhead produced by the large
 number of guards\bivab{back this}.
+
+As explained in previous sections, when a specific guard has failed often enogh
+a new trace, refered to as bridge, starting from this guard is recorded and
+compile. The goal for the execution of bridges, that become a part of the
+common path is to favor the performance while staying on the compiled trace.
+This means we want wo avoid switching back and forth to the frontend when a
+guard corresponding to the bridge fails before we can execute the brigde.
+Instead we want to have as little as possible overhead when switching from the
+loop path to the bridge.
+
+The process of compiling a bridge is very similar to compiling a loop,
+instructions and guards are processed in the same way as described above. The
+main difference is the setup phase, when compiling a trace we start with a
+clean slate, whilst the compilation of a bridge starts with state as it was
+when compiling the guard. To restore the state needed compile the bridge we use
+the encoded representation created for the guard to rebuild the bindings from
+IR-variables to stack locations and registers used in the register allocator.
+
+Once the bridge has been compiled the trampoline method stub is redirected to
+the code of the bridge. In future if the guard fails again it jumps to the
+trampoline and then jumps to the code compiled for the bridge, having alsmos no
+overhead compared to the execution of the original trace, behaving mainly as
+two paths in a conditional block.
 
 %* Low level handling of guards
 %   * Fast guard checks v/s memory usage
