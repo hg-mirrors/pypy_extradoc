@@ -251,26 +251,28 @@ number of guards\bivab{back this}.
 
 As explained in previous sections, when a specific guard has failed often enogh
 a new trace, refered to as bridge, starting from this guard is recorded and
-compile. The goal for the execution of bridges, that become a part of the
-common path is to favor the performance while staying on the compiled trace.
-This means we want wo avoid switching back and forth to the frontend when a
-guard corresponding to the bridge fails before we can execute the brigde.
-Instead we want to have as little as possible overhead when switching from the
-loop path to the bridge.
+compiled. When compiling bridges the goal is that future failures of the guards
+that led to the compilation of the bridge should execute the bridge without
+additional overhead, in particular it the failure of the guard should not lead
+to leaving the compiled code prior to execution the code of the bridge.
 
 The process of compiling a bridge is very similar to compiling a loop,
 instructions and guards are processed in the same way as described above. The
-main difference is the setup phase, when compiling a trace we start with a
-clean slate, whilst the compilation of a bridge starts with state as it was
-when compiling the guard. To restore the state needed compile the bridge we use
-the encoded representation created for the guard to rebuild the bindings from
-IR-variables to stack locations and registers used in the register allocator.
+main difference is the setup phase, when compiling a trace we start with a lean
+slate. The compilation of a bridge is starts from a state (register and stack
+bindings) that corresponds to the state during the compilation of the original
+guard. To restore the state needed compile the bridge we use the encoded
+representation created for the guard to rebuild the bindings from IR-variables
+to stack locations and registers used in the register allocator.  With this
+reconstruction all bindings are restored to the state as they were in the
+original loop up to the guard.
 
 Once the bridge has been compiled the trampoline method stub is redirected to
-the code of the bridge. In future if the guard fails again it jumps to the
-trampoline and then jumps to the code compiled for the bridge, having alsmos no
-overhead compared to the execution of the original trace, behaving mainly as
-two paths in a conditional block.
+the code of the bridge. In future if the guard fails again it jumps to the code
+compiled for the bridge instead of bailing out. Once the guard has been
+compiled and attached to the loop the guard becomes just a point where
+control-flow can split. The loop after the guard and the bridge are just
+condional paths.
 
 %* Low level handling of guards
 %   * Fast guard checks v/s memory usage
