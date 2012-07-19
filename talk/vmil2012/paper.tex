@@ -169,20 +169,122 @@ provided by the author a just-in-time compiler.
 \section{Resume Data}
 \label{sec:Resume Data}
 
+Since tracing linearizes control flow by following one concrete execution,
+not the full control flow of a program is observed.
+The possible points of deviation from the trace are guard operations
+that check whether the same assumptions as during tracing still hold.
+In later executions of the trace the guards can fail.
+If that happens, execution needs to continue in the interpreter.
+This means it is necessary to attach enough information to a guard
+to construct the interpreter state when that guard fails.
+This information is called the \emph{resume data}.
+
+To do this reconstruction, it is necessary to take the values
+of the SSA variables of the trace
+and build interpreter stack frames.
+Tracing aggressively inlines functions.
+Therefore the reconstructed state of the interpreter
+can consist of several interpreter frames.
+
+If a guard fails often enough, a trace is started from it
+to create a trace tree.
+When that happens another use case of resume data
+is to construct the tracer state.
+
+There are several forces guiding the design of resume data handling.
+Guards are a very common operations in the traces.
+However, a large percentage of all operations
+are optimized away before code generation.
+Since there are a lot of guards
+the resume data needs to be stored in a very compact way.
+On the other hand, tracing should be as fast as possible,
+so the construction of resume data must not take too much time.
+
+\subsection{Capturing of Resume Data During Tracing}
+\label{sub:capturing}
+
+Every time a guard is recorded during tracing
+the tracer attaches preliminary resume data to it.
+The data is preliminary in that it is not particularly compact yet.
+The preliminary resume data takes the form of a stack of symbolic frames.
+The stack contains only those interpreter frames seen by the tracer.
+The frames are symbolic in that the local variables in the frames
+do not contain values.
+Instead, every local variables contains the SSA variable of the trace
+where the value would later come from, or a constant.
+
+\subsection{Compression of Resume Data}
+\label{sub:compression}
+
+The core idea of storing resume data as compactly as possible
+is to share parts of the data structure between subsequent guards.
+This is often useful because the density of guards in traces is so high,
+that quite often not much changes between them.
+Since resume data is a linked list of symbolic frames
+often only the information in the top frame changes from one guard to the next.
+The other frames can often be just reused.
+The reason for this is that during tracing only the variables
+of the currently executing frames can change.
+Therefore if two guards are generated from code in the same function
+the resume data of the rest of the stack can be reused.
+
+\subsection{Interaction With Optimization}
+\label{sub:optimization}
+
+Guards interact with optimizations in various ways.
+Most importantly optimizations try to remove as many operations
+and therefore guards as possible.
+This is done with many classical compiler optimizations.
+In particular guards can be remove by subexpression elimination.
+If the same guard is encountered a second time in the trace,
+the second one can be removed.
+This also works if a later guard is weaker implied by a earlier guard.
+
+One of the techniques in the optimizer specific to tracing for removing guards
+is guard strengthening~\cite{bebenita_spur:_2010}.
+The idea of guard strengthening is that if a later guard is stronger
+than an earlier guard it makes sense to move the stronger guard
+to the point of the earlier, weaker guard and to remove the weaker guard.
+Moving a guard to an earlier point is always valid,
+it just means that the guard fails earlier during the trace execution
+(the other direction is clearly not valid).
+
+The other important point of interaction between resume data and the optimizer
+is RPython's allocation removal optimization~\cite{bolz_allocation_2011}.
+This optimization discovers allocations in the trace that create objects
+that do not survive long.
+An example is the instance of \lstinline{Even} in the example\cfbolz{reference figure}.
+Allocation removal makes resume data more complex.
+Since allocations are removed from the trace it becomes necessary
+to reconstruct the objects that were not allocated so far when a guard fails.
+Therefore the resume data needs to store enough information
+to make this reconstruction possible.
+
+Adding this additional information is done as follows.
+So far, every variable in the symbolic frames
+contains a constant or an SSA variable.
+After allocation removal the variables in the symbolic frames can also contain
+``virtual'' objects.
+These are objects that were not allocated so far,
+because the optimizer removed their allocation.
+The virtual objects in the symbolic frames describe exactly
+how the heap objects that have to be allocated on guard failure look like.
+To this end, the content of the every field of the virtual object is described
+in the same way that the local variables of symbolic frames are described.
+The fields of the virtual objects can therefore be SSA variables, constants
+or other virtual objects.
+
+During the storing of resume data virtual objects are also shared
+between subsequent guards as much as possible.
+The same observation as about frames applies:
+Quite often a virtual object does not change from one guard to the next.
+Then the data structure is shared.
+
+% subsection Interaction With Optimization (end)
+
 * High level handling of resumedata
 
-- traces follow the execution path during tracing, other path not compiled at first
-- points of possible divergence from that path are guards
-- since path can later diverge, at the guards it must be possible to re-build interpreter state in the form of interpreter stack frames
-- tracing does inlining, therefore a guard must contain information to build a whole stack of frames
-- optimization rewrites traces, including removal of guards
-
 - frames consist of a PC and local variables
-- rebuild frame by taking local SSA variables in the trace and mapping them to variables in the frame
-
-two forces:
-- there are lots of guards, therefore the information must be stored in a compact way in the end
-- tracing must be fast
 
 compression approaches:
 - use fact that outer frames don't change in the part of the trace that is in the inner frame
