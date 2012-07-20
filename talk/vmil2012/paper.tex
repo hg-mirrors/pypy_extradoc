@@ -313,38 +313,40 @@ Then the data structure is shared.
 \section{Guards in the Backend}
 \label{sec:Guards in the Backend}
 
-Code generation consists of two passes over the lists of instructions, a
-backwards pass to calculate live ranges of IR-level variables and a forward one
-to emit the instructions. During the forward pass IR-level variables are
-assigned to registers and stack locations by the register allocator according
-to the requirements of the to be emitted instructions. Eviction/spilling is
-performed based on the live range information collected in the first pass. Each
-IR instruction is transformed into one or more machine level instructions that
-implement the required semantics, operations withouth side effects whose result
-is not used are not emitted. Guards instructions are transformed into fast
-checks at the machine code level that verify the corresponding condition.  In
-cases the value being checked by the guard is not used anywhere else the guard
-and the operation producing the value can merged, reducing even more the
-overhead of the guard. \bivab{example for this}
+After optimization the resulting trace is handed to the backend to be compiled
+to machine code. The compilation phase consists of two passes over the lists of
+instructions, a backwards pass to calculate live ranges of IR-level variables
+and a forward one to emit the instructions. During the forward pass IR-level
+variables are assigned to registers and stack locations by the register
+allocator according to the requirements of the to be emitted instructions.
+Eviction/spilling is performed based on the live range information collected in
+the first pass. Each IR instruction is transformed into one or more machine
+level instructions that implement the required semantics, operations withouth
+side effects whose result is not used are not emitted. Guards instructions are
+transformed into fast checks at the machine code level that verify the
+corresponding condition.  In cases the value being checked by the guard is not
+used anywhere else the guard and the operation producing the value can merged,
+reducing even more the overhead of the guard. \bivab{example for this}
 
 Each guard in the IR has attached to it a list of the IR-variables required to
 rebuild the execution state in case the trace is left through the side-exit
 corresponding to the guard. When a guard is compiled, additionally to the
-condition check two things are generated/compiled. First a special
-data structure is created that encodes the information provided by the register
-allocator about where the values corresponding to each IR-variable required by
-the guard will be stored when execution reaches the code emitted for the
-corresponding guard. \bivab{go into more detail here?!} This encoding needs to
-be as compact as possible to maintain an acceptable memory profile.
+condition check two things are generated/compiled. First a special data
+structure called \emph{low-level resume data} is created that encodes the
+information provided by the register allocator about where the values
+corresponding to each IR-variable required by the guard will be stored when
+execution reaches the code emitted for the corresponding guard. \bivab{go into
+more detail here?!} This encoding needs to be as compact as possible to
+maintain an acceptable memory profile.
 
-\bivab{example goes here}
+\bivab{example for low-level resume data goes here}
 
-Second a trampoline method stub is generated. Guards are usually implemented as
-a conditional jump to this stub, jumping to in case the guard condition check
-does not hold and a side-exit should be taken. This stub loads the pointer to
-the encoding of the locations mentioned above, preserves the execution state
-(stack and registers) and then jumps to generic bail-out handler that is used
-to leave the compiled trace if case of a guard failure.
+Second a piece of code is generated for each guard that acts as a trampoline.
+Guards are implemented as a conditional jump to this trampoline. In case the
+condition checked in the guard fails execution and a side-exit should be taken
+execution jumps the the trampoline. In the trampoline the pointer to the
+\emph{low-level resume data} is loaded and jumps to generic bail-out handler
+that is used to leave the compiled trace if case of a guard failure.
 
 Using the encoded location information the bail-out handler reads from the
 saved execution state the values that the IR-variables had  at the time of the
