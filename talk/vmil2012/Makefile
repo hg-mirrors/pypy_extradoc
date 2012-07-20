@@ -1,5 +1,5 @@
 
-jit-guards.pdf: paper.tex paper.bib figures/log.tex
+jit-guards.pdf: paper.tex paper.bib figures/log.tex figures/example.tex
 	pdflatex paper
 	bibtex paper
 	pdflatex paper

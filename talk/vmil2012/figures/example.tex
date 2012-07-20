@@ -1,0 +1,29 @@
+\begin{verbatim}
+class Base(object):
+    def __init__(self, n):
+        self.value = n
+    @staticmethod
+    def build(n):
+        if n & 1 == 0:
+            return Even(n)
+        else:
+            return Odd(n)
+
+class Odd(Base):
+    def f(self):
+        return Even(self.value * 3 + 1)
+
+class Even(Base):
+    def f(self):
+        n = self.value >> 2
+        if n == 1:
+            return None
+        return self.build(n)
+
+while j < 100:
+    j += 1
+    myjitdriver.jit_merge_point(j=j, a=a)
+    if a is None:
+        break
+    a = a.f()
+\end{verbatim}
