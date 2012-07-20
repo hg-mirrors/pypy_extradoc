@@ -336,7 +336,11 @@ side effects whose result is not used are not emitted. Guards instructions are
 transformed into fast checks at the machine code level that verify the
 corresponding condition.  In cases the value being checked by the guard is not
 used anywhere else the guard and the operation producing the value can merged,
-reducing even more the overhead of the guard.
+reducing even more the overhead of the guard. Figure \ref{fig:trace-compiled}
+shows how an \texttt{int\_eq} operation followed by a guard that checks the
+result of the operation are compiled to pseudo-assembler if the operation and
+the guard are compiled separeated or if they are merged.
+
 \bivab{Figure needs better formatting}
 \begin{figure}[ht]
   \noindent
