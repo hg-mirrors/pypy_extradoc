@@ -256,7 +256,7 @@ Guards interact with optimizations in various ways.
 Most importantly optimizations try to remove as many operations
 and therefore guards as possible.
 This is done with many classical compiler optimizations.
-In particular guards can be remove by subexpression elimination.
+In particular guards can be removed by subexpression elimination.
 If the same guard is encountered a second time in the trace,
 the second one can be removed.
 This also works if a later guard is weaker implied by a earlier guard.
@@ -290,7 +290,7 @@ These are objects that were not allocated so far,
 because the optimizer removed their allocation.
 The virtual objects in the symbolic frames describe exactly
 how the heap objects that have to be allocated on guard failure look like.
-To this end, the content of the every field of the virtual object is described
+To this end, the content of every field of the virtual object is described
 in the same way that the local variables of symbolic frames are described.
 The fields of the virtual objects can therefore be SSA variables, constants
 or other virtual objects.
