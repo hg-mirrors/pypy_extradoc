@@ -336,7 +336,39 @@ side effects whose result is not used are not emitted. Guards instructions are
 transformed into fast checks at the machine code level that verify the
 corresponding condition.  In cases the value being checked by the guard is not
 used anywhere else the guard and the operation producing the value can merged,
-reducing even more the overhead of the guard. \bivab{example for this}
+reducing even more the overhead of the guard.
+\bivab{Figure needs better formatting}
+\begin{figure}[ht]
+  \noindent
+  \centering
+  \begin{minipage}{1\columnwidth}
+    \begin{lstlisting}
+    i8 = int_eq(i6, 1)
+    guard_false(i8) [i6, i1, i0]
+    \end{lstlisting}
+  \end{minipage}
+  \begin{minipage}{.40\columnwidth}
+    \begin{lstlisting}
+CMP r6, #1
+MOVEQ r8, #1
+MOVNE r8, #0
+CMP r8, #0
+BEQ <bailout>
+    \end{lstlisting}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{.40\columnwidth}
+    \begin{lstlisting}
+CMP r6, #1
+BNE <bailout>
+...
+...
+...
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Separated and merged compilation of operations and guards}
+  \label{fig:trace-compiled}
+\end{figure}
 
 Each guard in the IR has attached to it a list of the IR-variables required to
 rebuild the execution state in case the trace is left through the side-exit
