@@ -20,10 +20,12 @@ class Even(Base):
             return None
         return self.build(n)
 
-while j < 100:
-    j += 1
-    myjitdriver.jit_merge_point(j=j, a=a)
-    if a is None:
-        break
-    a = a.f()
+def check_reduces(a):
+    j = 1
+    while j < 100:
+        j += 1
+        if a is None:
+            return True
+        a = a.f()
+    return False
 \end{lstlisting}
