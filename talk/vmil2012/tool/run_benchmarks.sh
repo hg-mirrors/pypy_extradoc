@@ -32,5 +32,5 @@ while read line
 do
     logname="${base}/logs/logbench.$(basename "${pypy}").${line}"
     export PYPYLOG="jit:$logname"
-    bash -c "./runner.py --fast --changed=\"${pypy}\" --args=\"${pypy_opts}\" --benchmarks=${line}"
+    bash -c "./runner.py --changed=\"${pypy}\" --args=\"${pypy_opts}\" --benchmarks=${line}"
 done < $bench_list
