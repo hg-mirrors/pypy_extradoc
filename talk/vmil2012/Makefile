@@ -19,7 +19,8 @@ endif
 	pygmentize -l python -o $@ $<
 
 figures/benchmarks_table.tex: tool/build_tables.py logs/summary.csv tool/table_template.tex
-	python tool/build_tables.py logs/summary.csv tool/table_template.tex figures/benchmarks_table.tex
+	tool/setup.sh
+	paper_env/bin/python tool/build_tables.py logs/summary.csv tool/table_template.tex figures/benchmarks_table.tex
 
 logs/summary.csv: logs/logbench* tool/difflogs.py
 	python tool/difflogs.py --diffall logs
