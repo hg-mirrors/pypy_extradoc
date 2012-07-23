@@ -27,7 +27,7 @@ def main(csvfile, template, texfile):
         ops_bo = sum(int(bench['%s before' % s]) for s in keys)
         ops_ao = sum(int(bench['%s after' % s]) for s in keys)
         res = [
-                bench['bench'],
+                bench['bench'].replace('_', '\\_'),
                 ops_bo,
                 "%.2f (%s)" % (int(bench['guard before']) / ops_bo * 100, bench['guard before']),
                 ops_ao,
