@@ -22,7 +22,7 @@ figures/benchmarks_table.tex: tool/build_tables.py logs/summary.csv tool/table_t
 	python tool/build_tables.py logs/summary.csv tool/table_template.tex figures/benchmarks_table.tex
 
 logs/summary.csv: logs/logbench* tool/difflogs.py
+	python tool/difflogs.py --diffall logs
 
 logs::
 	tool/run_benchmarks.sh
-	python tool/difflogs.py --diffall logs
