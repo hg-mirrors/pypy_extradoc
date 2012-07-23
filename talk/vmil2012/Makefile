@@ -20,3 +20,6 @@ endif
 
 figures/benchmarks_table.tex: tool/build_tables.py logs/summary.csv tool/table_template.tex
 	python tool/build_tables.py logs/summary.csv tool/table_template.tex figures/benchmarks_table.tex
+
+logs/summary.csv: tool/difflogs.py
+	python tool/difflogs.py --diffall logs
