@@ -75,7 +75,7 @@
 
 \title{Efficiently Handling Guards in the low level design of RPython's tracing JIT}
 
-\authorinfo{Carl Friedrich Bolz$^a$ \and David Schneider$^{a}$}
+\authorinfo{David Schneider$^{a}$ \and Carl Friedrich Bolz$^a$}
            {$^a$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
            }
            {XXX emails}
@@ -108,8 +108,8 @@ intermediate and low-level representation of the JIT instructions and how these
 are implemented.
 
 Although there are several publications about tracing jut-in-time compilers, to
-our knowledge, there are none that describe the use and implementaiton of
-guards in this context. With the following contributions we aim to sched some
+our knowledge, there are none that describe the use and implementation of
+guards in this context. With the following contributions we aim to shed some
 light (to much?) on this topic.
 The contributions of this paper are:
 \begin{itemize}
@@ -340,7 +340,7 @@ used anywhere else the guard and the operation producing the value can merged,
 reducing even more the overhead of the guard. Figure \ref{fig:trace-compiled}
 shows how an \texttt{int\_eq} operation followed by a guard that checks the
 result of the operation are compiled to pseudo-assembler if the operation and
-the guard are compiled separeated or if they are merged.
+the guard are compiled separated or if they are merged.
 
 \bivab{Figure needs better formatting}
 \begin{figure}[ht]
@@ -391,9 +391,9 @@ maintain an acceptable memory profile.
 Second a piece of code is generated for each guard that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline. In case the
 condition checked in the guard fails execution and a side-exit should be taken
-execution jumps the the trampoline. In the trampoline the pointer to the
+execution jumps to the trampoline. In the trampoline the pointer to the
 \emph{low-level resume data} is loaded and jumps to generic bail-out handler
-that is used to leave the compiled trace if case of a guard failure.
+that is used to leave the compiled trace in case of a guard failure.
 
 Using the encoded location information the bail-out handler reads from the
 saved execution state the values that the IR-variables had  at the time of the
@@ -403,25 +403,25 @@ which guard failed so the frontend can read the information passed and restore
 the state corresponding to the point in the program.
 
 As in previous sections the underlying idea for the design of guards is to have
-a fast on trace profile and a potentially slow one in the bail-out case where
+a fast on-trace profile and a potentially slow one in the bail-out case where
 the execution takes one of the side exits due to a guard failure. At the same
 time the data stored in the backend needed to rebuild the state should be be
 as compact as possible to reduce the memory overhead produced by the large
 number of guards\bivab{back this}.
 
-As explained in previous sections, when a specific guard has failed often enogh
-a new trace, refered to as bridge, starting from this guard is recorded and
+As explained in previous sections, when a specific guard has failed often enough
+a new trace, referred to as a \emph{bridge}, starting from this guard is recorded and
 compiled. When compiling bridges the goal is that future failures of the guards
 that led to the compilation of the bridge should execute the bridge without
-additional overhead, in particular it the failure of the guard should not lead
+additional overhead, in particular the failure of the guard should not lead
 to leaving the compiled code prior to execution the code of the bridge.
 
-The process of compiling a bridge is very similar to compiling a loop,
-instructions and guards are processed in the same way as described above. The
-main difference is the setup phase, when compiling a trace we start with a lean
-slate. The compilation of a bridge is starts from a state (register and stack
+The process of compiling a bridge is very similar to compiling a loop.
+Instructions and guards are processed in the same way as described above. The
+main difference is the setup phase. When compiling a trace we start with a clean
+slate. The compilation of a bridge is started from a state (register and stack
 bindings) that corresponds to the state during the compilation of the original
-guard. To restore the state needed compile the bridge we use the encoded
+guard. To restore the state needed to compile the bridge we use the encoded
 representation created for the guard to rebuild the bindings from IR-variables
 to stack locations and registers used in the register allocator.  With this
 reconstruction all bindings are restored to the state as they were in the
@@ -432,7 +432,7 @@ the code of the bridge. In future if the guard fails again it jumps to the code
 compiled for the bridge instead of bailing out. Once the guard has been
 compiled and attached to the loop the guard becomes just a point where
 control-flow can split. The loop after the guard and the bridge are just
-condional paths.
+conditional paths. \cfbolz{maybe add the unpatched and patched assembler of the trampoline as well?}
 
 %* Low level handling of guards
 %   * Fast guard checks v/s memory usage
