@@ -40,7 +40,7 @@ def main(csvfile, template, texfile):
                 "%.2f" % ((1 - guards_ao/guards_bo) * 100,),
               ]
         table.append(res)
-    output = render_table(template, head, table)
+    output = render_table(template, head, sorted(table))
     # Write the output to a file
     with open(texfile, 'w') as out_f:
         out_f.write(output)
