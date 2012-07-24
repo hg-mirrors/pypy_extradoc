@@ -15,10 +15,12 @@ def main(csvfile, template, texfile):
         lines = [l for l in reader]
 
     head = ['Benchmark',
-            'number of operations before optimization',
-            '\\% guards before optimization',
-            'number of operations after optimization',
-            '\\% guards after optimization',]
+            'ops b/o',
+            '\\% guards b/o',
+            'ops a/o',
+            '\\% guards a/o',
+            'opt. rate',
+            'guard opt. rate',]
 
     table = []
     # collect data
@@ -26,12 +28,16 @@ def main(csvfile, template, texfile):
         keys = 'numeric guard set get rest new'.split()
         ops_bo = sum(int(bench['%s before' % s]) for s in keys)
         ops_ao = sum(int(bench['%s after' % s]) for s in keys)
+        guards_bo = int(bench['guard before'])
+        guards_ao = int(bench['guard after'])
         res = [
                 bench['bench'].replace('_', '\\_'),
                 ops_bo,
-                "%.2f (%s)" % (int(bench['guard before']) / ops_bo * 100, bench['guard before']),
+                "%.2f (%s)" % (guards_bo / ops_bo * 100, bench['guard before']),
                 ops_ao,
-                "%.2f (%s)" % (int(bench['guard after']) / ops_ao * 100, bench['guard after']),
+                "%.2f (%s)" % (guards_ao / ops_ao * 100, bench['guard after']),
+                "%.2f" % ((1 - ops_ao/ops_bo) * 100,),
+                "%.2f" % ((1 - guards_ao/guards_bo) * 100,),
               ]
         table.append(res)
     output = render_table(template, head, table)
