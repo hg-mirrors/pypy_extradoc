@@ -308,7 +308,12 @@ The same observation as about frames applies:
 Quite often a virtual object does not change from one guard to the next.
 Then the data structure is shared.
 
-\cfbolz{store sinking}
+Similarly, stores into the heap are delayed as long as possible.
+This can make it necessary to perform these delayed stores
+when leaving the trace via a guard.
+Therefore the resume data needs to contain a description
+of the delayed stores to be able to perform them when the guard fails.
+So far no special compression is done with this information.
 
 % subsection Interaction With Optimization (end)
 
