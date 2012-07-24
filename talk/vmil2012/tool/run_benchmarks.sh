@@ -4,9 +4,32 @@ base="$(dirname "${DIR}")"
 bench_list="${base}/logs/benchs.txt"
 benchmarks="${base}/pypy-benchmarks"
 REV="ff7b35837d0f"
-pypy=$(which pypy)
+pypy_co="${base}/pypy"
+PYPYREV='release-1.9'
+pypy="${pypy_co}/pypy-c"
 pypy_opts=",--jit enable_opts=intbounds:rewrite:virtualize:string:pure:heap:ffi"
 baseline=$(which true)
+logopts='jit-backend-dump,jit-backend-guard-size,jit-log-opt,jit-log-noopt'
+# checkout and build a pypy-c version
+if [ ! -d "${pypy_co}" ]; then
+  echo "Cloning pypy repository to ${pypy_co}"
+  hg clone https://bivab@bitbucket.org/pypy/pypy "${pypy_co}"
+fi
+#
+cd "${pypy_co}"
+echo "updating pypy to fixed revision ${PYPYREV}"
+hg update "${PYPYREV}"
+echo "Patching pypy"
+patch -p1 -N < "$base/tool/ll_resume_data_count.patch"
+#
+echo "Checking for an existing pypy-c"
+if [ ! -x "${pypy-c}" ]
+then
+  pypy/bin/rpython -Ojit pypy/translator/goal/targetpypystandalone.py
+else
+    echo "found!"
+fi
+
 
 # setup a checkout of the pypy benchmarks and update to a fixed revision
 if [ ! -d "${benchmarks}" ]; then
@@ -16,7 +39,7 @@ if [ ! -d "${benchmarks}" ]; then
   echo "updating benchmarks to fixed revision ${REV}"
   hg update "${REV}"
   echo "Patching benchmarks to pass PYPYLOG to benchmarks"
-  patch -p1 < "$base/tool/env.patch" 
+  patch -p1 < "$base/tool/env.patch"
 else
   cd "${benchmarks}"
   echo "Clone of pypy/benchmarks already present, reverting changes in the checkout"
@@ -24,13 +47,13 @@ else
   echo "updating benchmarks to fixed revision ${REV}"
   hg update "${REV}"
   echo "Patching benchmarks to pass PYPYLOG to benchmarks"
-  patch -p1 < "$base/tool/env.patch" 
+  patch -p1 < "$base/tool/env.patch"
 fi
 
 # run each benchmark defined on $bench_list
 while read line
 do
     logname="${base}/logs/logbench.$(basename "${pypy}").${line}"
-    export PYPYLOG="jit:$logname"
+    export PYPYLOG="${logopts}:$logname"
     bash -c "./runner.py --changed=\"${pypy}\" --args=\"${pypy_opts}\" --benchmarks=${line}"
 done < $bench_list
