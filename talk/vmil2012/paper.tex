@@ -107,7 +107,7 @@ of tracing just-in-time compilers. What instructions are used in the
 intermediate and low-level representation of the JIT instructions and how these
 are implemented.
 
-Although there are several publications about tracing jut-in-time compilers, to
+Although there are several publications about tracing just-in-time compilers, to
 our knowledge, there are none that describe the use and implementation of
 guards in this context. With the following contributions we aim to shed some
 light (to much?) on this topic.
@@ -458,6 +458,15 @@ conditional paths. \cfbolz{maybe add the unpatched and patched assembler of the 
    * Measure the of guards and how many of these ever fail
 
 \section{Related Work}
+
+SPUR~\cite{bebenita_spur:_2010} is a tracing JIT compiler
+for a C\# virtual machine.
+It handles guards by always generating code for every one of them
+that transfers control back to the unoptimized code.
+Since the transfer code needs to reconstruct the stack frames
+of the unoptimized code,
+the transfer code is quite large.
+
 
 
 \section{Conclusion}
