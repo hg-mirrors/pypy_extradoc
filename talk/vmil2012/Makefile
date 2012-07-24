@@ -22,8 +22,11 @@ figures/benchmarks_table.tex: tool/build_tables.py logs/summary.csv tool/table_t
 	tool/setup.sh
 	paper_env/bin/python tool/build_tables.py logs/summary.csv tool/table_template.tex figures/benchmarks_table.tex
 
+logs/logbench*:;
+
 logs/summary.csv: logs/logbench* tool/difflogs.py
-	python tool/difflogs.py --diffall logs
+	@if ls logs/logbench* &> /dev/null; then python tool/difflogs.py --diffall logs; fi
 
 logs::
 	tool/run_benchmarks.sh
+
