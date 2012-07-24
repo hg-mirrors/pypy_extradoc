@@ -466,6 +466,16 @@ conditional paths. \cfbolz{maybe add the unpatched and patched assembler of the 
 
 \section{Related Work}
 
+Deutsch et. al.~\cite{XXX} describe the use of stack descriptions
+to make it possible to do source-level debugging of JIT-compiled code.
+Self uses deoptimization to reach the same goal~\cite{XXX}.
+When a function is to be debugged, the optimized code version is left
+and one compiled without inlining and other optimizations is entered.
+Self uses scope descriptors to describe the frames
+that need to be re-created when leaving the optimized code.
+The scope descriptors are between 0.45 and 0.76 times
+the size of the generated machine code.
+
 SPUR~\cite{bebenita_spur:_2010} is a tracing JIT compiler
 for a C\# virtual machine.
 It handles guards by always generating code for every one of them
