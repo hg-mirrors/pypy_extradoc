@@ -23,8 +23,8 @@ def build_ops_count_table(csvfile, texfile, template):
             '\\% guards b/o',
             'ops a/o',
             '\\% guards a/o',
-            'opt. rate',
-            'guard opt. rate']
+            'opt. rate in \\%',
+            'guard opt. rate in \\%']
 
     table = []
     # collect data
@@ -37,11 +37,9 @@ def build_ops_count_table(csvfile, texfile, template):
         res = [
                 bench['bench'].replace('_', '\\_'),
                 ops_bo,
-                "%.2f (%s)" % (guards_bo / ops_bo * 100,
-                                 bench['guard before']),
+                "%.2f" % (guards_bo / ops_bo * 100,),
                 ops_ao,
-                "%.2f (%s)" % (guards_ao / ops_ao * 100,
-                                  bench['guard after']),
+                "%.2f" % (guards_ao / ops_ao * 100,),
                 "%.2f" % ((1 - ops_ao / ops_bo) * 100,),
                 "%.2f" % ((1 - guards_ao / guards_bo) * 100,),
               ]
@@ -55,14 +53,18 @@ def build_backend_count_table(csvfile, texfile, template):
 
     head = ['Benchmark',
             'Machine code size (kB)',
-            'll resume data (kB)']
+            'll resume data (kB)',
+            '\\% of machine code size']
 
     table = []
     # collect data
     for bench in lines:
         bench['bench'] = bench['bench'].replace('_', '\\_')
         keys = ['bench', 'asm size', 'guard map size']
-        table.append([bench[k] for k in keys])
+        gmsize = int(bench['guard map size'])
+        asmsize = int(bench['asm size'])
+        rel = "%.2f" % (gmsize / asmsize * 100,)
+        table.append([bench[k] for k in keys] + [rel])
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
