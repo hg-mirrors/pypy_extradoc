@@ -455,8 +455,16 @@ conditional paths. \cfbolz{maybe add the unpatched and patched assembler of the 
 \section{Evaluation}
 \label{sec:evaluation}
 
-\include{figures/benchmarks_table}
-\include{figures/backend_table}
+\begin{figure*}
+    \include{figures/benchmarks_table}
+    \caption{Benchmark Results}
+    \label{fig:ops_count}
+\end{figure*}
+\begin{figure*}
+    \include{figures/backend_table}
+    \caption{Total size of generated machine code and guard data}
+    \label{fig:backend_data}
+\end{figure*}
 
 * Evaluation
    * Measure guard memory consumption and machine code size
