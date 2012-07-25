@@ -15,8 +15,6 @@ def main(argv):
     seen_numbering = set()
     # all in words
     results = defaultdict(float)
-    size_estimate_virtuals = 0
-    naive_consts = 0
     with file(infile) as f:
         for line in f:
             if line.startswith("Log storage"):
