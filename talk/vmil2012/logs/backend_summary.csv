@@ -2,11 +2,11 @@ exe,bench,asm size,guard map size
 pypy-c,chaos,154,24
 pypy-c,crypto_pyaes,167,24
 pypy-c,django,220,47
-pypy-c,go,4802,874
-pypy-c,pyflate-fast,719,150
-pypy-c,raytrace-simple,486,75
+pypy-c,go,4826,890
+pypy-c,pyflate-fast,717,150
+pypy-c,raytrace-simple,485,74
 pypy-c,richards,153,17
-pypy-c,spambayes,2502,337
+pypy-c,spambayes,2498,335
 pypy-c,sympy_expand,918,211
 pypy-c,telco,506,77
-pypy-c,twisted_names,1604,211
+pypy-c,twisted_names,1607,210
