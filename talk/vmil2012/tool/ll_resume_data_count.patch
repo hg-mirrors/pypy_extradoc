@@ -1,0 +1,37 @@
+diff -r eec77c3e87d6 pypy/jit/backend/x86/assembler.py
+--- a/pypy/jit/backend/x86/assembler.py	Tue Jul 24 11:06:31 2012 +0200
++++ b/pypy/jit/backend/x86/assembler.py	Tue Jul 24 14:29:36 2012 +0200
+@@ -1849,6 +1849,7 @@
+     CODE_INPUTARG   = 8 | DESCR_SPECIAL
+ 
+     def write_failure_recovery_description(self, mc, failargs, locs):
++        char_count = 0
+         for i in range(len(failargs)):
+             arg = failargs[i]
+             if arg is not None:
+@@ -1865,6 +1866,7 @@
+                     pos = loc.position
+                     if pos < 0:
+                         mc.writechar(chr(self.CODE_INPUTARG))
++                        char_count += 1
+                         pos = ~pos
+                     n = self.CODE_FROMSTACK//4 + pos
+                 else:
+@@ -1873,11 +1875,17 @@
+                 n = kind + 4*n
+                 while n > 0x7F:
+                     mc.writechar(chr((n & 0x7F) | 0x80))
++                    char_count += 1
+                     n >>= 7
+             else:
+                 n = self.CODE_HOLE
+             mc.writechar(chr(n))
++            char_count += 1
+         mc.writechar(chr(self.CODE_STOP))
++        char_count += 1
++        debug_start('jit-backend-guard-size')
++        debug_print("chars %s" % char_count)
++        debug_stop('jit-backend-guard-size')
+         # assert that the fail_boxes lists are big enough
+         assert len(failargs) <= self.fail_boxes_int.SIZE
+ 
