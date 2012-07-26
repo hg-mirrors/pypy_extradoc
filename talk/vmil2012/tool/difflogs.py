@@ -16,19 +16,27 @@ from pypy.jit.metainterp.history import ConstInt
 from pypy.rpython.lltypesystem import llmemory, lltype
 
 categories = {
-    'setfield_gc': 'set',
-    'setarrayitem_gc': 'set',
-    'strsetitem': 'set',
-    'getfield_gc': 'get',
-    'getfield_gc_pure': 'get',
     'getarrayitem_gc': 'get',
     'getarrayitem_gc_pure': 'get',
-    'strgetitem': 'get',
+    'getarrayitem_raw': 'get',
+    'getfield_gc': 'get',
+    'getfield_gc_pure': 'get',
+    'getfield_raw': 'get',
+    'getinteriorfield_gc': 'get',
     'new': 'new',
     'new_array': 'new',
-    'newstr': 'new',
     'new_with_vtable': 'new',
+    'newstr': 'new',
+    'newunicode': 'new',
+    'setarrayitem_gc': 'set',
+    'setarrayitem_raw': 'set',
+    'setfield_gc': 'set',
+    'setfield_raw': 'set',
+    'setinteriorfield_gc': 'set',
+    'strgetitem': 'get',
+    'strsetitem': 'set',
 }
+rest_op_bucket = set()
 
 all_categories = 'new get set guard numeric rest'.split()
 
@@ -58,12 +66,17 @@ def summarize(loop, adding_insns={}):    # for debugging
             else:
                 assert categories.get(opname, "rest") == "get"
                 continue
-        if opname.startswith("int_") or opname.startswith("float_"):
+        if(opname.startswith("int_")
+                or opname.startswith("float_")
+                or opname.startswith('uint_')):
             opname = "numeric"
         elif opname.startswith("guard_"):
             opname = "guard"
         else:
-            opname = categories.get(opname, 'rest')
+            _opname = categories.get(opname, 'rest')
+            if _opname == 'rest':
+                rest_op_bucket.add(opname)
+            opname = _opname
         insns[opname] = insns.get(opname, 0) + 1
     assert seen_label
     return insns
@@ -178,3 +191,8 @@ if __name__ == '__main__':
         sys.exit(2)
     else:
         main(args[0], options)
+    if len(rest_op_bucket):
+        print "=" * 80
+        print "Elements considered as rest"
+        for x in sorted(rest_op_bucket):
+            print x
