@@ -16,6 +16,35 @@ def getlines(csvfile):
 
 
 def build_ops_count_table(csvfiles, texfile, template):
+    assert len(csvfiles) == 1
+    lines = getlines(csvfiles[0])
+    keys = 'numeric set get rest new guard '.split()
+    table = []
+    head = ['Benchmark']
+    head += ['%s b' % k for k in keys]
+    head += ['%s a' % k for k in keys]
+
+    for bench in lines:
+        ops = {'before': sum(int(bench['%s before' % s]) for s in keys),
+                'after': sum(int(bench['%s after' % s]) for s in keys)}
+
+        res = [bench['bench'].replace('_', '\\_'),]
+        for t in ('before', 'after'):
+            values = []
+            for key in keys:
+                o = int(bench['%s %s' % (key, t)])
+                values.append(o / ops[t] * 100)
+
+            assert 100.0 - sum(values) < 0.0001
+            res.extend(['%.2f ' % v for v in values])
+        table.append(res)
+    output = render_table(template, head, sorted(table))
+    write_table(output, texfile)
+
+
+
+def build_benchmarks_table(csvfiles, texfile, template):
+    assert len(csvfiles) == 2
     lines = getlines(csvfiles[0])
     bridge_lines = getlines(csvfiles[1])
     bridgedata = {}
@@ -33,12 +62,16 @@ def build_ops_count_table(csvfiles, texfile, template):
 
     table = []
     # collect data
+    keys = 'numeric guard set get rest new'.split()
     for bench in lines:
-        keys = 'numeric guard set get rest new'.split()
         ops_bo = sum(int(bench['%s before' % s]) for s in keys)
         ops_ao = sum(int(bench['%s after' % s]) for s in keys)
         guards_bo = int(bench['guard before'])
         guards_ao = int(bench['guard after'])
+        # the guard count collected from jit-summary counts more guards than
+        # actually emitted, so the number collected from parsing the logfiles
+        # will probably be lower
+        assert guards_ao <= bridgedata[bench['bench']]['guards']
         res = [
                 bench['bench'].replace('_', '\\_'),
                 ops_bo,
@@ -91,9 +124,11 @@ def render_table(ttempl, head, table):
 
 tables = {
         'benchmarks_table.tex':
-            (['summary.csv', 'bridge_summary.csv'], build_ops_count_table),
+            (['summary.csv', 'bridge_summary.csv'], build_benchmarks_table),
         'backend_table.tex':
-            (['backend_summary.csv'], build_backend_count_table)
+            (['backend_summary.csv'], build_backend_count_table),
+        'ops_count_table.tex':
+            (['summary.csv'], build_ops_count_table),
         }
 
 
