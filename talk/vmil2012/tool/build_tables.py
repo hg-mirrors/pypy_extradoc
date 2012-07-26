@@ -15,8 +15,12 @@ def getlines(csvfile):
         return [l for l in reader]
 
 
-def build_ops_count_table(csvfile, texfile, template):
-    lines = getlines(csvfile)
+def build_ops_count_table(csvfiles, texfile, template):
+    lines = getlines(csvfiles[0])
+    bridge_lines = getlines(csvfiles[1])
+    bridgedata = {}
+    for l in bridge_lines:
+        bridgedata[l['bench']] = l
 
     head = ['Benchmark',
             'ops b/o',
@@ -24,7 +28,8 @@ def build_ops_count_table(csvfile, texfile, template):
             'ops a/o',
             '\\% guards a/o',
             'opt. rate in \\%',
-            'guard opt. rate in \\%']
+            'guard opt. rate in \\%',
+            'bridges']
 
     table = []
     # collect data
@@ -42,14 +47,15 @@ def build_ops_count_table(csvfile, texfile, template):
                 "%.2f" % (guards_ao / ops_ao * 100,),
                 "%.2f" % ((1 - ops_ao / ops_bo) * 100,),
                 "%.2f" % ((1 - guards_ao / guards_bo) * 100,),
+                bridgedata[bench['bench']]['bridges'],
               ]
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
 
-def build_backend_count_table(csvfile, texfile, template):
-    lines = getlines(csvfile)
+def build_backend_count_table(csvfiles, texfile, template):
+    lines = getlines(csvfiles[0])
 
     head = ['Benchmark',
             'Machine code size (kB)',
@@ -85,9 +91,9 @@ def render_table(ttempl, head, table):
 
 tables = {
         'benchmarks_table.tex':
-            ('summary.csv', build_ops_count_table),
+            (['summary.csv', 'bridge_summary.csv'], build_ops_count_table),
         'backend_table.tex':
-            ('backend_summary.csv', build_backend_count_table)
+            (['backend_summary.csv'], build_backend_count_table)
         }
 
 
@@ -96,10 +102,10 @@ def main(table):
     if tablename not in tables:
         raise AssertionError('unsupported table')
     data, builder = tables[tablename]
-    csvfile = os.path.join('logs', data)
+    csvfiles = [os.path.join('logs', d) for d in data]
     texfile = os.path.join('figures', tablename)
     template = os.path.join('tool', 'table_template.tex')
-    builder(csvfile, texfile, template)
+    builder(csvfiles, texfile, template)
 
 
 if __name__ == '__main__':

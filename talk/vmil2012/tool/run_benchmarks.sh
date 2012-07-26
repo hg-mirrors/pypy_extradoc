@@ -9,7 +9,7 @@ PYPYREV='release-1.9'
 pypy="${pypy_co}/pypy-c"
 pypy_opts=",--jit enable_opts=intbounds:rewrite:virtualize:string:pure:heap:ffi"
 baseline=$(which true)
-logopts='jit-backend-dump,jit-backend-guard-size,jit-log-opt,jit-log-noopt'
+logopts='jit-backend-dump,jit-backend-guard-size,jit-log-opt,jit-log-noopt,jit-summary'
 # checkout and build a pypy-c version
 if [ ! -d "${pypy_co}" ]; then
   echo "Cloning pypy repository to ${pypy_co}"

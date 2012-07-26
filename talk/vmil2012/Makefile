@@ -18,7 +18,7 @@ endif
 %.tex: %.py
 	pygmentize -l python -o $@ $<
 
-figures/%_table.tex: tool/build_tables.py logs/backend_summary.csv logs/summary.csv tool/table_template.tex
+figures/%_table.tex: tool/build_tables.py logs/backend_summary.csv logs/summary.csv tool/table_template.tex logs/bridge_summary.csv
 	tool/setup.sh
 	paper_env/bin/python tool/build_tables.py $@
 
@@ -29,6 +29,10 @@ logs/summary.csv: logs/logbench* tool/difflogs.py
 
 logs/backend_summary.csv: logs/logbench* tool/backenddata.py
 	@if ls logs/logbench* &> /dev/null; then python tool/backenddata.py logs; fi
+
+logs/bridge_summary.csv: logs/logbench* tool/bridgedata.py
+	@if ls logs/logbench* &> /dev/null; then python tool/bridgedata.py logs; fi
+
 
 logs::
 	tool/run_benchmarks.sh
