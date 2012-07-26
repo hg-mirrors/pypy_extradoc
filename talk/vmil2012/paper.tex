@@ -13,6 +13,7 @@
 \usepackage{amsfonts}
 \usepackage[utf8]{inputenc}
 \usepackage{setspace}
+\usepackage[colorinlistoftodos]{todonotes}
 
 \usepackage{listings}
 
@@ -102,6 +103,7 @@ Languages, Performance, Experimentation
 %___________________________________________________________________________
 \section{Introduction}
 
+\todo{add page numbers (draft) for review}
 In this paper we describe and analyze how deoptimization works in the context
 of tracing just-in-time compilers. What instructions are used in the
 intermediate and low-level representation of the JIT instructions and how these
@@ -112,6 +114,9 @@ our knowledge, there are none that describe the use and implementation of
 guards in this context. With the following contributions we aim to shed some
 light (to much?) on this topic.
 The contributions of this paper are:
+\todo{more motivation}
+\todo{extend}
+\todo{contributions, description of PyPy's guard architecture, analysis on benchmarks}
 \begin{itemize}
  \item
 \end{itemize}
@@ -129,7 +134,7 @@ The RPython language and the PyPy Project were started in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
 language experimentation and extension. PyPy is now a fully compatible
 alternative implementation of the Python language\bivab{mention speed}. The
-Implementation takes advantage of the language features provided by RPython
+implementation takes advantage of the language features provided by RPython
 such as the provided tracing just-in-time compiler described below.
 
 RPython, the language and the toolset originally developed to implement the
@@ -157,6 +162,7 @@ provided by the author a just-in-time compiler.
 \label{sub:tracing}
 
  * Tracing JITs
+ * Mention SSA
  * JIT Compiler
    * describe the tracing jit stuff in pypy
    * reference tracing the meta level paper for a high level description of what the JIT does
@@ -177,19 +183,17 @@ provided by the author a just-in-time compiler.
 Since tracing linearizes control flow by following one concrete execution,
 not the full control flow of a program is observed.
 The possible points of deviation from the trace are guard operations
-that check whether the same assumptions as during tracing still hold.
+that check whether the same assumptions observed during tracing still hold during execution.
 In later executions of the trace the guards can fail.
 If that happens, execution needs to continue in the interpreter.
 This means it is necessary to attach enough information to a guard
-to construct the interpreter state when that guard fails.
+to reconstruct the interpreter state when that guard fails.
 This information is called the \emph{resume data}.
 
-To do this reconstruction, it is necessary to take the values
-of the SSA variables of the trace
-and build interpreter stack frames.
-Tracing aggressively inlines functions.
-Therefore the reconstructed state of the interpreter
-can consist of several interpreter frames.
+To do this reconstruction, it is necessary to take the values of the SSA
+variables of the trace and build interpreter stack frames.  Tracing
+aggressively inlines functions, therefore the reconstructed state of the
+interpreter can consist of several interpreter frames.
 
 If a guard fails often enough, a trace is started from it
 to create a trace tree.
@@ -252,7 +256,7 @@ The possible source of information are:
     \item For virtuals,
         the payload is an index into a list of virtuals, see next section.
 \end{itemize}
-
+\todo{figure showing linked resume-data}
 
 \subsection{Interaction With Optimization}
 \label{sub:optimization}
@@ -316,12 +320,18 @@ of the delayed stores to be able to perform them when the guard fails.
 So far no special compression is done with this information.
 
 % subsection Interaction With Optimization (end)
-
+\subsection{Compiling Side-Exits and Trace Stitching} % (fold)
+\label{sub:Compiling side-exits and trace stitching}
    * tracing and attaching bridges and throwing away resume data
+   * restoring the state of the tracer
+     * keeping virtuals
    * compiling bridges
-\bivab{mention that the failargs also go into the bridge}
+\todo{maybe mention that the failargs also go into the bridge}
+
+% subsection Compiling side-exits and trace stitching (end)
 % section Resume Data (end)
 
+\todo{set line numbers to the line numbers of the rpython example}
 \begin{figure}
     \input{figures/log.tex}
     \caption{Optimized trace}
@@ -439,8 +449,7 @@ the code of the bridge. In future if the guard fails again it jumps to the code
 compiled for the bridge instead of bailing out. Once the guard has been
 compiled and attached to the loop the guard becomes just a point where
 control-flow can split. The loop after the guard and the bridge are just
-conditional paths. \cfbolz{maybe add the unpatched and patched assembler of the trampoline as well?}
-
+conditional paths. \todo{add figure of trace with trampoline and patched guard to a bridge}
 %* Low level handling of guards
 %   * Fast guard checks v/s memory usage
 %   * memory efficient encoding of low level resume data
@@ -457,17 +466,19 @@ conditional paths. \cfbolz{maybe add the unpatched and patched assembler of the 
 
 The following analysis is based on a selection of benchmarks taken from the set
 of benchmarks used to measure the performance of PyPy as can be seen
-on\footnote{http://speed.pypy.org/}. The selection is based on the following
-criteria \bivab{??}. The benchmarks were taken from the PyPy benchmarks
+on.\footnote{http://speed.pypy.org/} The benchmarks were taken from the PyPy benchmarks
 repository using revision
-\texttt{ff7b35837d0f}\footnote{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}.
+\texttt{ff7b35837d0f}.\footnote{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}
 The benchmarks were run on a version of PyPy based on the
 tag~\texttt{release-1.9} and patched to collect additional data about the
 guards in the machine code
-backends\footnote{https://bitbucket.org/pypy/pypy/src/release-1.9}. All
-benchmark data was collected on a MacBook Pro 64 bit running Max OS
-10.7.4 \bivab{do we need more data for this kind of benchmarks} with the loop
-unrolling optimization disabled\bivab{rationale?}.
+backends.\footnote{https://bitbucket.org/pypy/pypy/src/release-1.9} All
+benchmark data was collected on a MacBook Pro 64 bit running Max OS 10.7.4 with
+the loop unrolling optimization disabled.\footnote{Since loop unrolling
+duplicates the body of loops it would no longer be possible to meaningfully
+compare the number of operations before and after optimization. Loop unrolling
+is most effective for numeric kernels, so the benchmarks presented here are not
+affected much by its absence.}
 
 Figure~\ref{fig:ops_count} shows the total number of operations that are
 recorded during tracing for each of the benchmarks on what percentage of these
@@ -483,8 +494,11 @@ operations was removed during the optimizations phase.
     \label{fig:ops_count}
 \end{figure*}
 
-\bivab{should we rather count the trampolines as part of the guard data instead
-of counting it as part of the instructions}
+\todo{resume data size estimates on 64bit}
+\todo{figure about failure counts of guards (histogram?)}
+\todo{integrate high level resume data size into Figure \ref{fig:backend_data}}
+\todo{count number of guards with bridges for \ref{fig:ops_count}}
+\todo{add resume data sizes without sharing}
 
 Figure~\ref{fig:backend_data} shows
 the total memory consumption of the code and of the data generated by the machine code
@@ -528,7 +542,8 @@ the transfer code is quite large.
 and also mention \bivab{Dynamo's fragment linking~\cite{Bala:2000wv}} in
 relation to the low-level guard handling.
 
-LuaJIT, ...
+\todo{look into tracing papers for information about guards and deoptimization}
+LuaJIT \todo{link to mailing list discussion}
 
 % subsection Guards in Other Tracing JITs (end)
 
@@ -575,10 +590,10 @@ The paper does not describe any attempts to store this information compactly.
 
 \section{Conclusion}
 
+\todo{conclusion}
 
 \section*{Acknowledgements}
-
 \bibliographystyle{abbrv}
 \bibliography{zotero,paper}
-
+\listoftodos
 \end{document}
