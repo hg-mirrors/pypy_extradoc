@@ -28,8 +28,6 @@ categories = {
     'new_array': 'new',
     'newstr': 'new',
     'new_with_vtable': 'new',
-    'guard_class': 'guard',
-    'guard_nonnull_class': 'guard',
 }
 
 all_categories = 'new get set guard numeric rest'.split()
@@ -62,6 +60,8 @@ def summarize(loop, adding_insns={}):    # for debugging
                 continue
         if opname.startswith("int_") or opname.startswith("float_"):
             opname = "numeric"
+        elif opname.startswith("guard_"):
+            opname = "guard"
         else:
             opname = categories.get(opname, 'rest')
         insns[opname] = insns.get(opname, 0) + 1
