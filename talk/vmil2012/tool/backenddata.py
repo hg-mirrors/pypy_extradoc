@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division
 """
 Parse and summarize the traces produced by pypy-c-jit when PYPYLOG is set.
 only works for logs when unrolling is disabled

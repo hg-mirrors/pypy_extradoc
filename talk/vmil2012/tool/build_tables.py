@@ -100,10 +100,14 @@ def build_backend_count_table(csvfiles, texfile, template):
     for bench in lines:
         bench['bench'] = bench['bench'].replace('_', '\\_')
         keys = ['bench', 'asm size', 'guard map size']
-        gmsize = int(bench['guard map size'])
-        asmsize = int(bench['asm size'])
+        gmsize = float(bench['guard map size'])
+        asmsize = float(bench['asm size'])
         rel = "%.2f" % (gmsize / asmsize * 100,)
-        table.append([bench[k] for k in keys] + [rel])
+        table.append([
+            bench['bench'],
+            "%.2f" % (gmsize,),
+            "%.2f" % (asmsize,),
+            rel])
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
