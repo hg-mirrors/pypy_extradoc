@@ -4,6 +4,7 @@ import sys
 from collections import defaultdict
 
 from backenddata import collect_logfiles
+from pypy.tool import logparser
 
 word_to_kib = 1024 / 8. # 64 bit
 numberings_per_word = 2/8. # two bytes
@@ -20,8 +21,11 @@ def compute_numbers(infile):
     seen_numbering = set()
     # all in words
     results = defaultdict(float)
-    with file(infile) as f:
-        for line in f:
+    log = logparser.parse_log_file(infile)
+    rdata = logparser.extract_category(log, 'jit-resume')
+    results["num_guards"] = len(rdata)
+    for log in rdata:
+        for line in log.splitlines():
             if line.startswith("Log storage"):
                 results['num_storages'] += 1
                 continue
@@ -108,12 +112,12 @@ def main(argv):
     files = collect_logfiles(path)
     with file("logs/resume_summary.csv", "w") as f:
         csv_writer = csv.writer(f)
-        row = ["exe", "bench", "total resume data size", "naive resume data size"]
+        row = ["exe", "bench", "number of guards", "total resume data size", "naive resume data size"]
         csv_writer.writerow(row)
 
         for exe, bench, infile in files:
             results = compute_numbers(os.path.join(dirname, infile))
-            row = [exe, bench, results['total'], results['naive_total']]
+            row = [exe, bench, results["num_guards"], results['total'], results['naive_total']]
             csv_writer.writerow(row)
 
             print "=============================="
