@@ -1,5 +1,9 @@
+import csv
+import os
 import sys
 from collections import defaultdict
+
+from backenddata import collect_logfiles
 
 word_to_kib = 1024 / 8. # 64 bit
 numberings_per_word = 2/8. # two bytes
@@ -88,18 +92,42 @@ def compute_numbers(infile):
 
 
 def main(argv):
-    infile = argv[1]
-    results = compute_numbers(infile)
-    print "storages:", results['num_storages']
-    print "snapshots: %sKiB vs %sKiB" % (results["kib_snapshots"], results["naive_kib_snapshots"])
-    print "numberings: %sKiB vs %sKiB" % (results["kib_numbering"], results["naive_kib_numbering"])
-    print "optimal: %s" % (results['optimal_numbering'] / word_to_kib)
-    print "consts:  %sKiB vs %sKiB" % (results["kib_consts"], results["naive_kib_consts"])
-    print "virtuals:  %sKiB vs %sKiB" % (results["kib_virtuals"], results["naive_kib_virtuals"])
-    print "number virtuals: %i vs %i" % (results['num_virtuals'], results['naive_num_virtuals'])
-    print "setfields: %sKiB" % (results["kib_setfields"], )
-    print "--"
-    print "total:  %sKiB vs %sKiB" % (results["total"], results["naive_total"])
+    import optparse
+    parser = optparse.OptionParser(usage="%prog logdir_or_file")
+
+    options, args = parser.parse_args()
+    if len(args) != 1:
+        parser.print_help()
+        sys.exit(2)
+        return
+    path = args[0]
+    if os.path.isdir(path):
+        dirname = path
+    else:
+        dirname = os.path.dirname(path)
+    files = collect_logfiles(path)
+    with file("logs/resume_summary.csv", "w") as f:
+        csv_writer = csv.writer(f)
+        row = ["exe", "bench", "total resume data size", "naive resume data size"]
+        csv_writer.writerow(row)
+
+        for exe, bench, infile in files:
+            results = compute_numbers(os.path.join(dirname, infile))
+            row = [exe, bench, results['total'], results['naive_total']]
+            csv_writer.writerow(row)
+
+            print "=============================="
+            print bench
+            print "storages:", results['num_storages']
+            print "snapshots: %sKiB vs %sKiB" % (results["kib_snapshots"], results["naive_kib_snapshots"])
+            print "numberings: %sKiB vs %sKiB" % (results["kib_numbering"], results["naive_kib_numbering"])
+            print "optimal: %s" % (results['optimal_numbering'] / word_to_kib)
+            print "consts:  %sKiB vs %sKiB" % (results["kib_consts"], results["naive_kib_consts"])
+            print "virtuals:  %sKiB vs %sKiB" % (results["kib_virtuals"], results["naive_kib_virtuals"])
+            print "number virtuals: %i vs %i" % (results['num_virtuals'], results['naive_num_virtuals'])
+            print "setfields: %sKiB" % (results["kib_setfields"], )
+            print "--"
+            print "total:  %sKiB vs %sKiB" % (results["total"], results["naive_total"])
 
 
 if __name__ == '__main__':
