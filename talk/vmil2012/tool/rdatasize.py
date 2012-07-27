@@ -4,14 +4,14 @@ from collections import defaultdict
 word_to_kib = 1024 / 8. # 64 bit
 numberings_per_word = 2/8. # two bytes
 
+
 def cond_incr(d, key, obj, seen, incr=1):
     if obj not in seen:
         seen.add(obj)
         d[key] += incr
     d["naive_" + key] += incr
 
-def main(argv):
-    infile = argv[1]
+def compute_numbers(infile):
     seen = set()
     seen_numbering = set()
     # all in words
@@ -63,26 +63,43 @@ def main(argv):
                 results[target] += factor
                 results[naive_target] += naive_factor
 
-    kib_snapshots = results['num_snapshots'] * 4. / word_to_kib # gc, jitcode, pc, prev
-    naive_kib_snapshots = results['naive_num_snapshots'] * 4. / word_to_kib
-    kib_numbering = results['size_estimate_numbering'] / word_to_kib
-    naive_kib_numbering = results['naive_size_estimate_numbering'] / word_to_kib
-    kib_consts = results['num_consts'] * 4 / word_to_kib
-    naive_kib_consts = results['naive_num_consts'] * 4 / word_to_kib
-    kib_virtuals = results['size_virtuals'] / word_to_kib
-    naive_kib_virtuals = results['naive_size_virtuals'] / word_to_kib
-    kib_setfields = results['size_setfields'] / word_to_kib
+    results["kib_snapshots"] = results['num_snapshots'] * 4. / word_to_kib # gc, jitcode, pc, prev
+    results["naive_kib_snapshots"] = results['naive_num_snapshots'] * 4. / word_to_kib
+    results["kib_numbering"] = results['size_estimate_numbering'] / word_to_kib
+    results["naive_kib_numbering"] = results['naive_size_estimate_numbering'] / word_to_kib
+    results["kib_consts"] = results['num_consts'] * 4 / word_to_kib
+    results["naive_kib_consts"] = results['naive_num_consts'] * 4 / word_to_kib
+    results["kib_virtuals"] = results['size_virtuals'] / word_to_kib
+    results["naive_kib_virtuals"] = results['naive_size_virtuals'] / word_to_kib
+    results["kib_setfields"] = results['size_setfields'] / word_to_kib
+    results["total"] = (
+        results[      "kib_snapshots"] +
+        results[      "kib_numbering"] +
+        results[      "kib_consts"] +
+        results[      "kib_virtuals"] +
+        results[      "kib_setfields"])
+    results["naive_total"] = (
+        results["naive_kib_snapshots"] +
+        results["naive_kib_numbering"] +
+        results["naive_kib_consts"] +
+        results["naive_kib_virtuals"] +
+        results["naive_kib_setfields"])
+    return results
+
+
+def main(argv):
+    infile = argv[1]
+    results = compute_numbers(infile)
     print "storages:", results['num_storages']
-    print "snapshots: %sKiB vs %sKiB" % (kib_snapshots, naive_kib_snapshots)
-    print "numberings: %sKiB vs %sKiB" % (kib_numbering, naive_kib_numbering)
+    print "snapshots: %sKiB vs %sKiB" % (results["kib_snapshots"], results["naive_kib_snapshots"])
+    print "numberings: %sKiB vs %sKiB" % (results["kib_numbering"], results["naive_kib_numbering"])
     print "optimal: %s" % (results['optimal_numbering'] / word_to_kib)
-    print "consts:  %sKiB vs %sKiB" % (kib_consts, naive_kib_consts)
-    print "virtuals:  %sKiB vs %sKiB" % (kib_virtuals, naive_kib_virtuals)
+    print "consts:  %sKiB vs %sKiB" % (results["kib_consts"], results["naive_kib_consts"])
+    print "virtuals:  %sKiB vs %sKiB" % (results["kib_virtuals"], results["naive_kib_virtuals"])
     print "number virtuals: %i vs %i" % (results['num_virtuals'], results['naive_num_virtuals'])
-    print "setfields: %sKiB" % (kib_setfields, )
+    print "setfields: %sKiB" % (results["kib_setfields"], )
     print "--"
-    print "total:  %sKiB vs %sKiB" % (      kib_snapshots +       kib_numbering +       kib_consts +       kib_virtuals + kib_setfields,
-                                      naive_kib_snapshots + naive_kib_numbering + naive_kib_consts + naive_kib_virtuals + kib_setfields)
+    print "total:  %sKiB vs %sKiB" % (results["total"], results["naive_total"])
 
 
 if __name__ == '__main__':
