@@ -122,6 +122,13 @@ guards in this context. With the following contributions we aim to shed some
 light (to much?) on this topic.
 The contributions of this paper are:
 \todo{more motivation}
+Based on the informal observation that guards are among the most common
+operations in the traces produced by PyPy's tracing JIT and that guards are
+operations that are associated with an overhead to maintain information about
+state to be able to rebuild it, our goal is to present concrete numbers for the
+frecuency and the overhead produced by guards, explain how they are implemented
+in the diferent levels of PyPy's tracing JIT and explain the rationale behind
+the desing decisions based on the numbers.
 \todo{extend}
 \todo{contributions, description of PyPy's guard architecture, analysis on benchmarks}
 \begin{itemize}
