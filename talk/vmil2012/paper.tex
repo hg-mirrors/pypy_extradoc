@@ -517,9 +517,7 @@ operations was removed during the optimizations phase.
     \label{fig:benchmarks}
 \end{figure*}
 
-\todo{resume data size estimates on 64bit}
 \todo{figure about failure counts of guards (histogram?)}
-\todo{integrate high level resume data size into Figure \ref{fig:backend_data}}
 \todo{add resume data sizes without sharing}
 \todo{add a footnote about why guards have a threshold of 100}
 
@@ -553,6 +551,9 @@ total amount of code and data that is generated from the optimized traces.
 \subsection{Guards in Other Tracing JITs}
 \label{sub:Guards in Other Tracing JITs}
 
+Guards as described are a concept associated with tracing just-in-time
+compilers to represent possible divergent control flow paths.
+
 SPUR~\cite{bebenita_spur:_2010} is a tracing JIT compiler
 for a C\# virtual machine.
 It handles guards by always generating code for every one of them
@@ -561,13 +562,42 @@ Since the transfer code needs to reconstruct the stack frames
 of the unoptimized code,
 the transfer code is quite large.
 
-\bivab{mention Gal et al.~\cite{Gal:2009ux} trace stitching}
-and also mention \bivab{Dynamo's fragment linking~\cite{Bala:2000wv}} in
-relation to the low-level guard handling.
+Mike Pall, the author of LuaJIT describes in a post to the lua-users mailing
+list different technologies and techniques used in the implementation of
+LuaJIT~\cite{Pall:2009}.\todo{decide if LuaJIT is a footnote or a reference and
+fix website citation} Pall explains that guards in LuaJIT use a datastucture
+called snapshots, similar to PyPy's resume data, to store the information about
+how to rebuild the state from a side-exit using the information in the snapshot
+and the machine execution state. Pall also acknowledges that snapshot for
+guards are associated with a large memory footprint. The solution used in
+LuaJIT is to store sparse snapshots, avoiding the creation of snapshots for
+every guard to reduce memory pressure. Snapshots are only created for guards
+after updates to the global state, after control flow points from the original
+program and for guards that are likely to fail. As an outlook Pall mentions the
+plans to switch to compressed snapshots to further reduce redundancy.
 
-\todo{look into tracing papers for information about guards and deoptimization}
-LuaJIT \todo{link to mailing list discussion}
-http://lua-users.org/lists/lua-l/2009-11/msg00089.html
+Linking side exits to pieces of later compiled machine code was described first
+in the context of Dynamo~\cite{Bala:2000wv} under the name of Fragment Linking.
+Once a new hot trace is emitted into the fragment cache it is linked to side
+exit that led to the compilation. Fragment Linking avoids the performance
+penalty involved in leaving the compiled and it to remove the compensation
+code used when restoring the machine state on a side exit.
+
+In~\cite{Gal:2006} Gal et. al describe that in the HotpathVM they experimented
+with having one generic compensation code block, like the RPython JIT, that
+uses a register variable mapping to restore the interpreter state. Later this
+was replaced by generting compensation code for each guard which produced a
+lower overhead in their benchmarks. HotpathVM also records secondary traces
+starting from failing guards that are connected directly to the original trace.
+Secondary traces are compiled by first restoring the register allocator state to
+the state at the side exit. The information is retrieved from a mapping stored
+in the guard that maps machine level registers and stack to Java level stack
+and variables.
+
+Gal et. al~\cite{Gal:2009ux} write about how TraceMonkey uses trace stitching
+to avoid th overhead of returning to the trace monitor and calling another
+trace when taking a side exit. In their approach it is required to write live
+values to an activation record before entering the new trace.
 
 % subsection Guards in Other Tracing JITs (end)
 
