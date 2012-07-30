@@ -89,24 +89,31 @@ def build_benchmarks_table(csvfiles, texfile, template):
 
 def build_backend_count_table(csvfiles, texfile, template):
     lines = getlines(csvfiles[0])
+    resume_lines = getlines(csvfiles[1])
+    resumedata = {}
+    for l in resume_lines:
+        resumedata[l['bench']] = l
 
     head = ['Benchmark',
             'Machine code size (kB)',
+            'hl resume data (kB)',
             'll resume data (kB)',
-            '\\% of machine code size']
+            'machine code resume data relation in \\%']
 
     table = []
     # collect data
     for bench in lines:
+        name = bench['bench']
         bench['bench'] = bench['bench'].replace('_', '\\_')
-        keys = ['bench', 'asm size', 'guard map size']
         gmsize = float(bench['guard map size'])
         asmsize = float(bench['asm size'])
-        rel = "%.2f" % (gmsize / asmsize * 100,)
+        rdsize = float(resumedata[name]['total resume data size'])
+        rel = "%.2f" % (asmsize / (gmsize + rdsize) * 100,)
         table.append([
             bench['bench'],
-            "%.2f" % (gmsize,),
             "%.2f" % (asmsize,),
+            "%.2f" % (rdsize,),
+            "%.2f" % (gmsize,),
             rel])
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
@@ -130,7 +137,7 @@ tables = {
         'benchmarks_table.tex':
             (['summary.csv', 'bridge_summary.csv'], build_benchmarks_table),
         'backend_table.tex':
-            (['backend_summary.csv'], build_backend_count_table),
+            (['backend_summary.csv', 'resume_summary.csv'], build_backend_count_table),
         'ops_count_table.tex':
             (['summary.csv'], build_ops_count_table),
         }
