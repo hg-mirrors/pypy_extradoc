@@ -586,7 +586,7 @@ code used when restoring the machine state on a side exit.
 In~\cite{Gal:2006} Gal et. al describe that in the HotpathVM they experimented
 with having one generic compensation code block, like the RPython JIT, that
 uses a register variable mapping to restore the interpreter state. Later this
-was replaced by generting compensation code for each guard which produced a
+was replaced by generating compensation code for each guard which produced a
 lower overhead in their benchmarks. HotpathVM also records secondary traces
 starting from failing guards that are connected directly to the original trace.
 Secondary traces are compiled by first restoring the register allocator state to
