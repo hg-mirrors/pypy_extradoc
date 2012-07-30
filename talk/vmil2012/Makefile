@@ -37,3 +37,7 @@ logs/bridge_summary.csv: logs/logbench* tool/bridgedata.py
 logs::
 	tool/run_benchmarks.sh
 
+clean:
+	rm -f *.aux *.bbl *.blg *.log *.tdo
+	rm -f *.pdf
+	rm -f figures/*table.tex figures/*table.aux
