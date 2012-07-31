@@ -447,8 +447,8 @@ the execution takes one of the side exits due to a guard failure. At the same
 time the data stored in the backend needed to rebuild the state needs to be as
 compact as possible to reduce the memory overhead produced by the large number
 of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
-compressed encoding currently has about 25\% of the size of of the generated
-instructions on x86.
+compressed encoding currently has about 15\% to 25\% of the size of of the
+generated instructions on x86.
 
 As explained in previous sections, when a specific guard has failed often enough
 a new trace, referred to as a \emph{bridge}, starting from this guard is recorded and
