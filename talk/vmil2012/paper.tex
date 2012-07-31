@@ -426,7 +426,7 @@ execution reaches the code emitted for the corresponding guard. \bivab{go into
 more detail here?!} This encoding needs to be as compact as possible to
 maintain an acceptable memory profile.
 
-\bivab{example for low-level resume data goes here}
+\todo{example for low-level resume data showing how the current encoding works?}
 
 Second a piece of code is generated for each guard that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline. In case the
@@ -445,9 +445,11 @@ the state corresponding to the point in the program.
 As in previous sections the underlying idea for the design of guards is to have
 a fast on-trace profile and a potentially slow one in the bail-out case where
 the execution takes one of the side exits due to a guard failure. At the same
-time the data stored in the backend needed to rebuild the state should be be
-as compact as possible to reduce the memory overhead produced by the large
-number of guards\bivab{back this}.
+time the data stored in the backend needed to rebuild the state needs to be as
+compact as possible to reduce the memory overhead produced by the large number
+of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
+compressed encoding currently has about 25\% of the size of of the generated
+instructions on x86.
 
 As explained in previous sections, when a specific guard has failed often enough
 a new trace, referred to as a \emph{bridge}, starting from this guard is recorded and
@@ -467,12 +469,23 @@ to stack locations and registers used in the register allocator.  With this
 reconstruction all bindings are restored to the state as they were in the
 original loop up to the guard.
 
-Once the bridge has been compiled the trampoline method stub is redirected to
-the code of the bridge. In future if the guard fails again it jumps to the code
-compiled for the bridge instead of bailing out. Once the guard has been
-compiled and attached to the loop the guard becomes just a point where
-control-flow can split. The loop after the guard and the bridge are just
-conditional paths. \todo{add figure of trace with trampoline and patched guard to a bridge}
+Once the bridge has been compiled the guard that led to compiling the birdge is
+patched to redirect control flow to the bridge in case the check fails. In
+future if the guard fails again it jumps to the code compiled for the bridge
+instead of bailing out. Once the guard has been compiled and attached to the
+loop the guard becomes just a point where control-flow can split. The loop
+after the guard and the bridge are just conditional paths.
+Figure~\ref{fig:trampoline} shows a digram of a compiled loop with two guards,
+Guard \#1 jumps to the trampoline, loads the \texttt{low level resume data} and
+then calls the compensation code, whereas Guard \#2 has already been patched
+and directly jumps to the corresponding bridge. The bridge also contains two
+guards that work based on the same principles.
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{figures/loop_bridge.pdf}
+\caption{Trace control flow in case of guard failures with and without bridges}
+\label{fig:trampoline}
+\end{figure}
 %* Low level handling of guards
 %   * Fast guard checks v/s memory usage
 %   * memory efficient encoding of low level resume data
