@@ -109,12 +109,12 @@ of tracing just-in-time compilers. What instructions are used in the
 intermediate and low-level representation of the JIT instructions and how these
 are implemented.
 
-\begin{figure*}
-    \include{figures/ops_count_table}
-    \caption{Relative numbers of operations in the traces generated for
-    different benchmarks}
-    \label{fig:ops_count}
-\end{figure*}
+%\begin{figure*}
+%    \include{figures/ops_count_table}
+%    \caption{Relative numbers of operations in the traces generated for
+%    different benchmarks}
+%    \label{fig:ops_count}
+%\end{figure*}
 Although there are several publications about tracing just-in-time compilers, to
 our knowledge, there are none that describe the use and implementation of
 guards in this context. With the following contributions we aim to shed some
@@ -141,6 +141,11 @@ The contributions of this paper are
 In this paper we want to substantiate the aforementioned and describe based on
 them the reasoning behind and the implementation of guards in PyPy's tracing
 just-in-time compiler.
+\begin{figure}
+    \include{figures/guard_table}
+    \caption{Percentage of guards before and after optimization for different benchmarks}
+    \label{fig:guard_percent}
+\end{figure}
 \begin{itemize}
   \item An analysis of guards in the context of PyPy's tracing JIT to
   substantiate the aforementioned observation, based on a set of benchmarks.

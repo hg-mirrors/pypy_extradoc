@@ -41,6 +41,25 @@ def build_ops_count_table(csvfiles, texfile, template):
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
+def build_guard_table(csvfiles, texfile, template):
+    assert len(csvfiles) == 1
+    lines = getlines(csvfiles[0])
+    table = []
+    head = ['Benchmark', 'guards b/o in \%', 'guards a/o in \%']
+
+    keys = 'numeric set get rest new guard '.split()
+    for bench in lines:
+        ops = {'before': sum(int(bench['%s before' % s]) for s in keys),
+                'after': sum(int(bench['%s after' % s]) for s in keys)}
+
+        res = [bench['bench'].replace('_', '\\_'),]
+        for t in ('before', 'after'):
+            o = int(bench['guard %s' % t])
+            res.append('%.2f ' % (o / ops[t] * 100))
+        table.append(res)
+    output = render_table(template, head, sorted(table))
+    write_table(output, texfile)
+
 
 
 def build_benchmarks_table(csvfiles, texfile, template):
@@ -140,6 +159,8 @@ tables = {
             (['backend_summary.csv', 'resume_summary.csv'], build_backend_count_table),
         'ops_count_table.tex':
             (['summary.csv'], build_ops_count_table),
+        'guard_table.tex':
+            (['summary.csv'], build_guard_table),
         }
 
 
