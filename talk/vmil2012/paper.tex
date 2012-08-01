@@ -137,13 +137,35 @@ several kinds of metadata created and stored at different levels of the JIT to
 be able to rebuild the interpreter or tracer state from a guard failure making
 the optimization \bivab{some good word} of guards an important aspect of the
 low-level design of a tracing just-in-time compiler.
-\todo{extend}
-\todo{contributions, description of PyPy's guard architecture, analysis on benchmarks}
+The contributions of this paper are
+In this paper we want to substantiate the aforementioned and describe based on
+them the reasoning behind and the implementation of guards in PyPy's tracing
+just-in-time compiler.
 \begin{itemize}
- \item
+  \item An analysis of guards in the context of PyPy's tracing JIT to
+  substantiate the aforementioned observation, based on a set of benchmarks.
+  \item We provide a detailed measurements about the frequency and the
+  overhead associated with guards.
+  \item We provide a description about how guards are implemented in the high\-
+  and low-level parts of the JIT and describe the rationale behind the design.
 \end{itemize}
 
-The paper is structured as follows:
+The set of central concepts upon which this work is based is described in
+Section~\ref{sec:Background}, such as the PyPy project, the RPython language
+and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
+Data} we proceed to describe for PyPy's tracing JIT the details of guards in
+the frontend\bivab{better term for this?} related to recording and storing the
+information required to restore the interpreter state in case of a guard
+failure, once the frontend has traced and optimized a loop it invokes the
+backend to compile the operations to machine code, Section \ref{sec:Guards in
+the Backend} describes the low-level aspects of how guards are implemented in
+the JIT-backend. The frequency of guards and the overhead associated with the
+implementation described in this paper is discussed in
+Section~\ref{sec:evaluation}. Section~\ref{sec:Related Work} presents an
+overview about how guards are treated in the context of other just-in-time
+compilers. Finally Section~\ref{sec:Conclusion} summarizes our conclusions and
+gives an outlook on further research topics.
+
 
 \section{Background}
 \label{sec:Background}
@@ -199,7 +221,7 @@ provided by the author a just-in-time compiler.
     \label{fig:trace-log}
 \end{figure}
 
-\section{Resume Data}
+\section{Guards in the Frontend} %{Resume Data}
 \label{sec:Resume Data}
 
 Since tracing linearizes control flow by following one concrete execution,
@@ -559,6 +581,7 @@ total amount of code and data that is generated from the optimized traces.
    * Measure the of guards and how many of these ever fail
 
 \section{Related Work}
+\label{sec:Related Work}
 
 \subsection{Guards in Other Tracing JITs}
 \label{sub:Guards in Other Tracing JITs}
@@ -651,10 +674,11 @@ The paper does not describe any attempts to store this information compactly.
 
 
 % subsection Deoptimization in Method-Based JITs (end)
-
+% section Related Work (end)
 
 
 \section{Conclusion}
+\label{sec:Conclusion}
 
 \todo{conclusion}
 
