@@ -111,7 +111,6 @@ ultricies ac tempor dui sagittis. In.
 %___________________________________________________________________________
 \section{Introduction}
 
-
 In this paper we describe and analyze how deoptimization works in the context
 of tracing just-in-time compilers. What instructions are used in the
 intermediate and low-level representation of the JIT instructions and how these
@@ -123,37 +122,42 @@ are implemented.
 %    different benchmarks}
 %    \label{fig:ops_count}
 %\end{figure*}
-Although there are several publications about tracing just-in-time compilers, to
-our knowledge, there are none that describe the use and implementation of
-guards in this context. With the following contributions we aim to shed some
-light (to much?) on this topic.
-The contributions of this paper are:
-\todo{more motivation}
+Although there are several publications about tracing just-in-time compilers,
+to our knowledge, there are none that describe deoptimization and the use and
+implementation of guards in this context.
+
 Based on the informal observation that guards are among the most common
 operations in the traces produced by PyPy's tracing JIT and that guards are
 operations that are associated with an overhead to maintain information about
-state to be able to rebuild it, our goal is to present concrete numbers for the
-frequency and the overhead produced by guards, explain how they are implemented
-in the different levels of PyPy's tracing JIT and explain the rationale behind
-the design decisions based on the numbers.
-As can be seen on Figure~\ref{fig:ops_count} guards account for 14.42\% to
-22.32\% of the operations before and for 15.2\% to 20.12\% of after the
-optimization pass over the traced and compiled paths of the benchmarks.
-Figure~\ref{fig:benchmarks} shows the absolute number of operations for each
-benchmark, for every guard that stays alive after optimization there are
-several kinds of metadata created and stored at different levels of the JIT to
-be able to rebuild the interpreter or tracer state from a guard failure making
-the optimization \bivab{some good word} of guards an important aspect of the
-low-level design of a tracing just-in-time compiler.
-The contributions of this paper are
-In this paper we want to substantiate the aforementioned and describe based on
-them the reasoning behind and the implementation of guards in PyPy's tracing
-just-in-time compiler.
-\begin{figure}
-    \include{figures/guard_table}
-    \caption{Percentage of guards before and after optimization for different benchmarks}
-    \label{fig:guard_percent}
-\end{figure}
+state to be able to rebuild the execution state in case of deoptimization, our
+goal is to present concrete numbers for the frequency and the overhead produced
+by guards, explain how they are implemented in the different levels of PyPy's
+tracing JIT and explain the rationale behind the design decisions based on the
+numbers.
+
+The operations executed by an interpreter are recorded by the tracing JIT in
+case they are frequently executed, this process is described in more detail in
+Section~\ref{sec:Resume Data}, during the recording phase special operations,
+\texttt{guards}, are inserted into the recorded trace at all points where
+control flow could diverge. As can be seen on Figure~\ref{fig:guard_percent}
+guards account for 14.42\% to 22.32\% of the operations before and for 15.2\%
+to 20.12\% of the operations after the optimization pass over the traced and
+compiled parts of the benchmarks, making guards one of the most common
+operations. Many of these guards fail rarely on not all during execution. Given
+that associated with each guard information is stored, that is required to
+rebuild the execution state in case control flow diverges from the recorded
+path at a guard it is important to store the information associated with the
+guards in a manner that tries to keep the overhead for storing the information
+low while avoiding to put a burden on the execution of the recorded trace,
+making the optimization of guards an important aspect of
+the low-level design of a tracing just-in-time compiler.
+
+%Section~\ref{sec:Evaluation} presents Figures about the absolute number of
+%operations for each benchmark, and the overhead produced by the information
+%stored at the different levels for the guards
+In this paper we want to substantiate the aforementioned observations and
+describe based on them the reasoning behind and the implementation of guards in
+PyPy's tracing just-in-time compiler, the contributions of this paper are:
 \begin{itemize}
   \item An analysis of guards in the context of PyPy's tracing JIT to
   substantiate the aforementioned observation, based on a set of benchmarks.
@@ -162,6 +166,11 @@ just-in-time compiler.
   \item We provide a description about how guards are implemented in the high\-
   and low-level parts of the JIT and describe the rationale behind the design.
 \end{itemize}
+\begin{figure}
+    \include{figures/guard_table}
+    \caption{Percentage of guards before and after optimization for different benchmarks}
+    \label{fig:guard_percent}
+\end{figure}
 
 The set of central concepts upon which this work is based is described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
