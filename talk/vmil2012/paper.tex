@@ -401,23 +401,24 @@ So far no special compression is done with this information.
 \section{Guards in the Backend}
 \label{sec:Guards in the Backend}
 
-After optimization the resulting trace is handed to the backend to be compiled
-to machine code. The compilation phase consists of two passes over the lists of
-instructions, a backwards pass to calculate live ranges of IR-level variables
-and a forward one to emit the instructions. During the forward pass IR-level
-variables are assigned to registers and stack locations by the register
-allocator according to the requirements of the to be emitted instructions.
-Eviction/spilling is performed based on the live range information collected in
-the first pass. Each IR instruction is transformed into one or more machine
-level instructions that implement the required semantics, operations withouth
-side effects whose result is not used are not emitted. Guards instructions are
-transformed into fast checks at the machine code level that verify the
-corresponding condition.  In cases the value being checked by the guard is not
-used anywhere else the guard and the operation producing the value can merged,
-reducing even more the overhead of the guard. Figure \ref{fig:trace-compiled}
-shows how an \texttt{int\_eq} operation followed by a guard that checks the
-result of the operation are compiled to pseudo-assembler if the operation and
-the guard are compiled separated or if they are merged.
+After optimization the resulting trace is handed to the over platform specific
+backend to be compiled to machine code. The compilation phase consists of two
+passes over the lists of instructions, a backwards pass to calculate live
+ranges of IR-level variables and a forward one to emit the instructions. During
+the forward pass IR-level variables are assigned to registers and stack
+locations by the register allocator according to the requirements of the to be
+emitted instructions.  Eviction/spilling is performed based on the live range
+information collected in the first pass. Each IR instruction is transformed
+into one or more machine level instructions that implement the required
+semantics, operations withouth side effects whose result is not used are not
+emitted. Guards instructions are transformed into fast checks at the machine
+code level that verify the corresponding condition.  In cases the value being
+checked by the guard is not used anywhere else the guard and the operation
+producing the value can merged, reducing even more the overhead of the guard.
+Figure \ref{fig:trace-compiled} shows how an \texttt{int\_eq} operation
+followed by a guard that checks the result of the operation are compiled to
+pseudo-assembler if the operation and the guard are compiled separated or if
+they are merged.
 
 \bivab{Figure needs better formatting}
 \begin{figure}[ht]
@@ -537,15 +538,16 @@ guards that work based on the same principles.
 \section{Evaluation}
 \label{sec:evaluation}
 
-The following analysis is based on a selection of benchmarks taken from the set
-of benchmarks used to measure the performance of PyPy as can be seen
-on.\footnote{http://speed.pypy.org/} The benchmarks were taken from the PyPy benchmarks
-repository using revision
+The results presented in this section are based on numbers gathered by running
+a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
+measure the performance of PyPy and are composed of a series of
+micro-benchmarks and larger programs.\footnote{http://speed.pypy.org/} The
+benchmarks were taken from the PyPy benchmarks repository using revision
 \texttt{ff7b35837d0f}.\footnote{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}
 The benchmarks were run on a version of PyPy based on the
-tag~\texttt{release-1.9} and patched to collect additional data about the
+tag~\texttt{0b77afaafdd0} and patched to collect additional data about the
 guards in the machine code
-backends.\footnote{https://bitbucket.org/pypy/pypy/src/release-1.9} All
+backends.\footnote{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0} All
 benchmark data was collected on a MacBook Pro 64 bit running Max OS 10.8 with
 the loop unrolling optimization disabled.\footnote{Since loop unrolling
 duplicates the body of loops it would no longer be possible to meaningfully
@@ -554,12 +556,25 @@ is most effective for numeric kernels, so the benchmarks presented here are not
 affected much by its absence.}
 
 Figure~\ref{fig:benchmarks} shows the total number of operations that are
-recorded during tracing for each of the benchmarks on what percentage of these
-are guards. Figure~\ref{fig:benchmarks} also shows the number of operations left
-after performing the different trace optimizations done by the trace optimizer,
-such as xxx. The last columns show the overall optimization rate and the
-optimization rate specific for guard operations, showing what percentage of the
-operations was removed during the optimizations phase.
+recorded during tracing for each of the benchmarks and what percentage of these
+are guards. Figure~\ref{fig:benchmarks} also shows the number of operations
+left after performing the different trace optimizations done by the trace
+optimizer, such as xxx. The last columns show the overall optimization rate and
+the optimization rate specific for guard operations, showing what percentage of
+the operations were removed during the optimizations phase.
+Figure~\ref{fig:benchmarks} shows that as can also be seen on
+Figure~\ref{fig:guard_percent} the optimization rate for guards is on par with
+the average optimization rate for all operations in a trace. After optimization
+the amount of guards left in the trace still represents about 15.18\% to
+20.22\% of the operation, a bit less than before the optimization where guards
+represented between 15.85\% and 22.48\% of the operations. After performing the
+optimizations the most common operations are those that are difficult or
+impossible to optimize, such as JIT internal operations and different types of
+calls. These account for 14.53\% to 18.84\% of the operations before and for
+28.69\% to 46.60\% of the operations after optimization. These numbers show
+that about one fifth of the operations, making guards one of the most common
+operations, that are compiled are guards and have associated with them the
+high- and low-level datastructes that are reconstruct the state.
 
 \begin{figure*}
     \include{figures/benchmarks_table}
@@ -571,12 +586,27 @@ operations was removed during the optimizations phase.
 \todo{add resume data sizes without sharing}
 \todo{add a footnote about why guards have a threshold of 100}
 
-Figure~\ref{fig:backend_data} shows
-the total memory consumption of the code and of the data generated by the machine code
-backend for the different benchmarks mentioned above. Meaning the operations
-left after optimization take the space shown in Figure~\ref{fig:backend_data}
-after being compiled. Also the additional data stored for the guards to be used
-in case of a bailout and attaching a bridge.
+The overhead that is incurred by the JIT to manage the \texttt{resume data},
+the \texttt{low-level resume data} and the generated machine code is shown in
+Figure~\ref{fig:backend_data}. It shows the total memory consumption of the
+code and of the data generated by the machine code backend for the different
+benchmarks mentioned above. The size of the machine code is composed of the
+size of the compiled operations, the trampolines generated for the guards and a
+set of support functions that are generated when the JIT starts and are shared
+by all compiled traces. The size of the \texttt{low-level resume data} is the
+size of the registers and stack to IR-level variable mappings and finally the
+size of the \texttt{resume data} is an approximation of the size of the
+compressed high-level resume data. While the \texttt{low-level resume data} has
+a size of about 15\% to 20\% of the generated instructions the \texttt{resume
+data} is even in the compressed form larger than the generated machine code.
+
+Tracing JITs compilers only compile a subset of the executed program so the
+amount of generated machine code will be smaller than for function based JITs.
+At the same time there is a several times larger overhead for keeping the
+resume information for the guards. The generated machine code accounts for
+20.21\% to 37.97\% of the size required for storing the different kinds of
+resume data.
+
 \begin{figure*}
     \include{figures/backend_table}
     \caption{Total size of generated machine code and guard data}
