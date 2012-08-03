@@ -1,0 +1,27 @@
+\begin{lstlisting}[mathescape, numbers=right]
+[$j_1$, $a_1$]
+label($j_1$, $a_1$, descr=label0))
+$j_2$ = int_add($j_1$, 1)
+guard_nonnull_class($a_1$, Even)
+$i_1$ = getfield_gc($a_1$, descr='value')
+$i_2$ = int_rshift($i_1$, 2)
+$b_1$ = int_eq($i_2$, 1)
+guard_false($b_1$)
+$i_3$ = int_and($i_2$, 1)
+$i_4$= int_is_zero($i_3$)
+guard_true($i_4$)
+$b_2$ = int_lt($j_2$, 100)
+guard_true($b_2$)
+
+label($j_2$, $i_2$, descr=label1)
+$j_3$ = int_add($j_2$, 1)
+$i_5$ = int_rshift($i_2$, 2)
+$b_3$ = int_eq($i_5$, 1)
+guard_false($b_3$)
+$i_6$ = int_and($i_5$, 1)
+$b_4$ = int_is_zero($i_6$)
+guard_true($b_4$)
+$b_5$ = int_lt($j_3$, 100)
+guard_true($b_5$)
+jump($j_3$, $i_5$, descr=label1)
+\end{lstlisting}

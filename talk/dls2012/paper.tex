@@ -124,6 +124,8 @@
 One of the nice properties of a tracing JIT is that many of its optimization
 are simple requiring one forward pass only. This is not true for loop-invariant code
 motion which is a very important optimization for code with tight kernels.
+Especially for dynamic languages that typically performs quite a lot of loop invariant
+type checking, boxed value unwrapping and virtual method lookups.
 In this paper we present a scheme for making simple optimizations loop-aware by
 using a simple pre-processing step on the trace and not changing the
 optimizations themselves. The scheme can give performance improvements of a
@@ -141,13 +143,15 @@ Languages, Performance, Experimentation
 
 \section{Introduction}
 
-A dynamically typed language needs to do a lot of type
-checking and unwrapping. For tight computationally intensive loops a
+A dynamic language typically needs to do quite a lot of type
+checking, wrapping/unwrapping of boxed values, and virtual method dispatching. 
+For tight computationally intensive loops a
 significant amount of the execution time might be spend on such tasks
-instead of the actual calculations. Moreover, the type checking and
-unwrapping is often loop invariant and performance could be increased
-by moving those operations out of the loop. We propose to design a
-loop-aware tracing JIT to perform such optimization at run time.
+instead of the actual computations. Moreover, the type checking,
+unwrapping and method lookups are often loop invariant and performance could be increased
+by moving those operations out of the loop. We propose a simple scheme
+to make a tracing JIT loop-aware by allowing it's existing optimizations to
+perform loop invariant code motion. 
 
 One of the advantages that tracing JIT compilers have above traditional
 method-based
@@ -533,7 +537,7 @@ In the example that means:
 
 Each operation in the trace is copied in order.
 To copy an operation $v=\text{op}\left(A_1, A_2, \cdots, A_{|A|}\right)$
-a new variable, $\hat v$ is introduced. The copied operation will
+a new variable, $\hat v$, is introduced. The copied operation will
 return $\hat v$ using
 \begin{equation}
   \hat v = \text{op}\left(m\left(A_1\right), m\left(A_2\right), 
@@ -696,12 +700,12 @@ which variables from the preamble are reused in the peeled loop.
 By constructing a vector, $H$,  of such variables, the input and jump
 arguments can be updated using
 \begin{equation}
-  \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H}\right)
+  \hat J = \left(J_1, J_2, \cdots, J_{|J|}, H_1, H_2, \cdots, H_{|H|}\right)
   \label{eq:heap-inputargs}
 \end{equation}
 and
 \begin{equation}
-  \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H})\right)
+  \hat K = \left(K_1, K_2, \cdots, K_{|J|}, m(H_1), m(H_2), \cdots, m(H_{|H|})\right)
   .
   \label{eq:heap-jumpargs}
 \end{equation}
@@ -772,7 +776,7 @@ operation are constructed as the concatenation all the $\tilde J^{\left(k\right)
   .
 \end{equation}
 The arguments of the \lstinline{jump} operation of the peeled loop,
-$K$, is constructed by inlining $\hat J$,
+$K$, is constructed from $\hat J$ using the map $m$,
 \begin{equation}
   \hat K = \left(m\left(\hat J_1\right), m\left(\hat J_1\right), 
                  \cdots, m\left(\hat J_{|\hat J|}\right)\right)

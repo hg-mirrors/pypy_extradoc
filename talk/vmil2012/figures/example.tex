@@ -1,0 +1,31 @@
+\begin{lstlisting}[language=Python, numbers=right]
+class Base(object):
+    def __init__(self, n):
+        self.value = n
+    @staticmethod
+    def build(n):
+        if n & 1 == 0:
+            return Even(n)
+        else:
+            return Odd(n)
+
+class Odd(Base):
+    def f(self):
+        return Even(self.value * 3 + 1)
+
+class Even(Base):
+    def f(self):
+        n = self.value >> 2
+        if n == 1:
+            return None
+        return self.build(n)
+
+def check_reduces(a):
+    j = 1
+    while j < 100:
+        j += 1
+        if a is None:
+            return True
+        a = a.f()
+    return False
+\end{lstlisting}

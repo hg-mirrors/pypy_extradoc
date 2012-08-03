@@ -2,7 +2,7 @@
 
 \title[PyPy JIT under the hood]{PyPy JIT under the hood}
 \author[antocuni, arigo]
-{Antonio Cuni \\ Arming Rigo}
+{Antonio Cuni \\ Armin Rigo (guest star)}
 
 \institute{EuroPython 2012}
 \date{July 4 2012}
