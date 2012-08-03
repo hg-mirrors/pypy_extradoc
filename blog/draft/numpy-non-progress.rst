@@ -18,3 +18,5 @@ Thanks again for all the donations, I hope to get back to this topic soon!
 
 Cheers,
 fijal
+
+.. _`doing other stuff`: http://morepypy.blogspot.com/2012/07/hello-everyone.html
