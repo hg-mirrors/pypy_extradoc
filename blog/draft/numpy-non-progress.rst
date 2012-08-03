@@ -11,8 +11,7 @@ and a part was long-awaited holiday.
 The thing that's maybe worth mentioning is that it does not mean the donations
 disappeared in the mist. PyPy developers are being paid to work on NumPyPy on
 an hourly basis - that means if I decide to take holidays or work on something
-else, the money is simply staying in the account and waiting for someone to do
-the job.
+else, the money is simply staying in the account until later.
 
 Thanks again for all the donations, I hope to get back to this topic soon!
 
