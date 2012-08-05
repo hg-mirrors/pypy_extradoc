@@ -142,18 +142,21 @@ to other CPUs.  This is "easily" achieved by keeping them inside this
 CPU's local cache; rolling back is then just a matter of discarding a
 part of this cache without committing it to memory.  From this point of
 view, there is a lot to bet that we are actually talking about the
-regular per-core Level 1 cache --- so any transaction that cannot fully
-store its read and written data in the 32-64KB of the L1 cache will
-abort.
+regular per-core Level 1 and Level 2 caches --- so any transaction that
+cannot fully store its read and written data in the 64+256KB of the L1+L2
+caches will abort.
 
 So what does it mean?  A Python interpreter overflows the L1 cache of
 the CPU very quickly: just creating new Python function frames takes a
 lot of memory (on the order of magnitude of 1/100 of the whole L1
-cache).  This means that as long as the HTM support is limited to L1
-caches, it is not going to be enough to run an "AME Python" with any
-sort of medium-to-long transaction (running for 0.01 second or longer).
-It can run a "GIL-less Python", though: just running a few dozen
-bytecodes at a time should fit in the L1 cache, for most bytecodes.
+cache).  Adding a 256KB L2 cache into the picture helps, particularly
+because it is highly associative and thus avoids fake conflicts much
+better.  However, as long as the HTM support is limited to L1+L2 caches,
+it is not going to be enough to run an "AME Python" with any sort of
+medium-to-long transaction (running for 0.01 second or longer).  It can
+run a "GIL-less Python", though: just running a few hunderd or even
+thousand bytecodes at a time should fit in the L1+L2 caches, for most
+bytecodes.
 
 
 Write your own STM for C
@@ -189,6 +192,6 @@ applicable to CPython has little chances to catch on, as long as PyPy is
 not the main Python interpreter (which looks unlikely to change anytime
 soon).  Thus as long as only PyPy has STM, it looks like it will not
 become the main model of multicore usage in Python.  However, I can
-conclude with a more positive note than during EuroPython: there appears
-to be a more-or-less reasonable way forward to have an STM version of
-CPython too.
+conclude with a more positive note than during the EuroPython
+conference: there appears to be a more-or-less reasonable way forward to
+have an STM version of CPython too.
