@@ -141,10 +141,12 @@ a transaction wants to do to the main memory, and keeping them invisible
 to other CPUs.  This is "easily" achieved by keeping them inside this
 CPU's local cache; rolling back is then just a matter of discarding a
 part of this cache without committing it to memory.  From this point of
-view, there is a lot to bet that we are actually talking about the
+view, `there is a lot to bet`__ that we are actually talking about the
 regular per-core Level 1 and Level 2 caches --- so any transaction that
 cannot fully store its read and written data in the 64+256KB of the L1+L2
 caches will abort.
+
+.. __: http://arstechnica.com/business/2012/02/transactional-memory-going-mainstream-with-intel-haswell/
 
 So what does it mean?  A Python interpreter overflows the L1 cache of
 the CPU very quickly: just creating new Python function frames takes a
