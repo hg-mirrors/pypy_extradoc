@@ -493,11 +493,11 @@ loop peeling.
 
 Loop peeling is achieved by appending an copy of the traced iteration at
 the end of itself. See Figure~\ref{fig:overview} for an illustration.
-The first part (called \emph{preamble}) finishes with a jump the the second part
+The first part (called \emph{preamble}) finishes with a jump to the second part
 (called the \emph{peeled loop}). The second part finishes with a jump to itself. This way
 the preamble will be executed only once while the peeled loop will
 be used for every further iteration. New variable names have to be
-introduced in the entire copied trace in order to maintian the SSA-property.
+introduced in the entire copied trace in order to maintain the SSA-property.
 Note that the peeled loop is not necessary the \emph{first} iteration of the
 loop execution, it is general enough to correspond to any iteration of the loop.
 However, the peeled loop can then be optimized using the assumption that a
@@ -931,9 +931,9 @@ Variations & - & - & $\pm 0.03$ & $\pm 0.01$ & $\pm 0.01$ \\
 \end{center}
 \label{fig:benchmarks}
 \caption{Benchmark Results in Seconds. Arrays of length $10^5$ and
-  $10^6$ and matrixes of size $1000\times 1000$ and $1000000 \times
+  $10^6$ and matrices of size $1000\times 1000$ and $1000000 \times
   3$ are used. The one used in each benchmark is indicated in
-  the leftmost column. For the matrixes, only the number of rows are
+  the leftmost column. For the matrices, only the number of rows are
   specified.} 
 \end{figure}
 
@@ -1031,7 +1031,7 @@ the benchmarks, and/or examining the actual implementation of LuaJIT.
 }
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
-have developped the described technique independently. There are no papers about
+have developed the described technique independently. There are no papers about
 LuaJIT but the author of it writes on a mailing list: ``The LOOP pass does
 synthetic unrolling of the recorded IR, combining copy-substitution with
 redundancy elimination to achieve code hoisting. The unrolled and
