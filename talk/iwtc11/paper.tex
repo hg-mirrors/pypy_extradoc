@@ -82,6 +82,7 @@
 \newcommand\reva[1]{\nb{Reviewer 1}{#1}}
 \newcommand\revb[1]{\nb{Reviewer 2}{#1}}
 \newcommand\revc[1]{\nb{Reviewer 3}{#1}}
+\newcommand\revd[1]{\nb{Reviewer 4}{#1}}
 \newcommand{\commentout}[1]{}
 \newcommand{\ignore}[1]{} % {{\tt \small ignore(#1)}}
 
@@ -140,6 +141,11 @@ Languages, Performance, Experimentation
 \keywords{Tracing JIT, Optimization, Loop-Invariant Code Motion}
 
 \section{Introduction}
+
+\reva{
+You often use the word simple. While it might make sense to use it,
+it exact meaning in that context remains unclear.
+}
 
 One of the advantages that tracing JIT compilers have above traditional
 method-based
@@ -207,6 +213,11 @@ sufficient to view PyPy's tracing JIT as a JIT for RPython.
 
 \section{Motivation}
 \label{sec:Motivation}
+
+\revc{
+Don't break code listings across pages, as at the start of section 3.  It makes
+them very hard to follow.
+}
 
 To motivate the approach we propose here, let's look at a trivial (unrealistic)
 trace which corresponds to an infinite loop:
@@ -303,6 +314,15 @@ are reused in further iterations.
 
 \section{Running Example}
 \label{sub:example}
+
+\reva{
+I think the motivation section is great, in particular for readers
+who are less familiar with compiler/JIT optimizations. However,
+section 4 starts with "yet another example" - at least this was my
+impression when reading it. I understand the differences and
+everything, but still, you might consider to improve the transition
+between sections 3 and 4.
+}
 
 For the purpose of this paper, we are going to use a tiny interpreter for a dynamic language with
  a very simple object
@@ -437,6 +457,14 @@ first \lstinline{guard_class} instruction will fail and execution will continue
 using the interpreter.
 
 \section{Making Trace Optimizations Loop Aware}
+
+\revc{
+In general, the paper is over-long on generalities and too short on details.
+For example, the description of the basic technique at the beginning of section
+5 is the third time the idea is explained at basically the same level of detail
+(the others are in section 2 and section 4).  In contrast, the optimizations
+applied rely on a simple type analysis, but this is only briefly alluded to.
+}
 
 Before a trace is passed to the backend compiling it into machine code
 it is optimized to achieve better performance.
@@ -803,7 +831,61 @@ only. That is it will become type-specialized to the types of the
 variables \lstinline{step} and \lstinline{y}, and the overhead of
 using boxed values is removed.
 
+\revc{
+This paper presents an elegant, if simple, technique, and demonstrates that
+it's effective in small cases.  The worked example is particularly helpful, and
+would be better if it were worked more thoroughly.  Some of the omitted steps
+are not entirely obvious, and the paper would be improved by making the
+clearer.  In particular, the final program presented on the bottom of page 5,
+first column, still has memory access, boxing, and type checks, which the paper
+then claims can be removed.  There's enough space to show this.
+}
+
 \section{Benchmarks}
+
+
+\revb{
+A nit: Section 7 says that loop peeling never makes runtime
+performance worse, but generating more code can potentially slow
+performance. I assume that non-numeric benchmarks show no slowdown in
+practice, and that might be worth noting.
+}
+
+\revb{
+Section 7 also mentions performance improvements for a Prolog
+interpreter. Consider adding a brief explanation of the benefit, since
+that example stands out as a non-numeric (I assume) performance
+improvement.
+}
+
+\revc{
+Providing source code for the benchmarks measured are needed for others to
+reproduce and build on your results.  I believe this should be the minimum
+standard for publishing measurements such as these.
+}
+
+\revc{
+I would have liked to have benchmark results for some larger applications.
+When is this optimization effective on a large scale, if ever?
+}
+
+\revd{
+It isn't clear from the paper, but a reader might conclude that the bulk of the
+time savings are from removing boxing/unboxing operations.
+}
+
+\revd{
+The benchmark results appear quite impressive -- especially the comparison with
+GCC -- but without additional information, I have no idea what is being
+compared.  Are these results from the same sizes of integers and/or floating
+point results?
+}
+
+\revd{
+This paper is relatively short, and could be significantly improved with a
+couple of pages of additional information about the details of the benchmarks
+-- both on the Python and on the C side.
+}
 
 The loop peeling optimization was implemented in the PyPy
 framework in about 450 lines of RPython code. That means that the JIT-compilers generated for all
@@ -899,8 +981,8 @@ indexing with out of bounds checks. For the C implementations it is
 implemented as a C++ class. The other benchmarks are implemented in
 plain C. 
 
-Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM in
-32bit mode.
+Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM
+using Ubuntu Linux 11.4 in 32bit mode.
 The machine was otherwise unoccupied. We use the following software
 for benchmarks:
 
@@ -942,10 +1024,27 @@ this paper.
 \section{Related Work}
 \label{sec:related}
 
+\reva{
+First sentence of the related work section is kind of
+unfortunate. It is unclear what the reference at the end of the
+sentence is good for. To support the meaning of the entire sentence?
+Or is it just a reference to the standard loop invariant code motion
+techniques? The contribution of your paper seems much smaller than
+in the former case compared to the latter one. While I have not
+checked the content of the book, I believe the latter is the correct
+interpretation. You should remove this opportunity for
+misinterpretation.}
+
 The effect of combining a one pass optimization with loop peeling gives
 completely standard loop invariant code motion optimizations
 \cite{muchnick_advanced_1997}. We do not claim any novelty in the effect, but
 think that our implementation scheme is a very simple one.
+
+\revc{
+The discussion of LuaJIT is unsatisfying.  It's not clear to me from that one
+quote that Mike is doing the same thing.  It might be worth including LuaJIT in
+the benchmarks, and/or examining the actual implementation of LuaJIT.
+}
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
 have developped the described technique independently. There are no papers about
