@@ -460,11 +460,11 @@ condition check two things are generated/compiled. First a special data
 structure called \emph{low-level resume data} is created that encodes the
 information provided by the register allocator about where the values
 corresponding to each IR-variable required by the guard will be stored when
-execution reaches the code emitted for the corresponding guard. \bivab{go into
-more detail here?!} This encoding needs to be as compact as possible to
-maintain an acceptable memory profile.
-
-\todo{example for low-level resume data showing how the current encoding works?}
+execution reaches the code emitted for the corresponding guard. This data
+structure stores the data in a compressed manner using an encoding the uses
+8bits to store 7bits of information. This encoding is efficient to create and
+provides a compact representation of the needed information. This encoding
+needs to be as compact as possible to maintain an acceptable memory profile.
 
 Second a piece of code is generated for each guard that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline. In case the
