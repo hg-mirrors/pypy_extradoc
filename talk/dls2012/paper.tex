@@ -863,13 +863,6 @@ performance. I assume that non-numeric benchmarks show no slowdown in
 practice, and that might be worth noting.
 }
 
-\revb{
-Section 7 also mentions performance improvements for a Prolog
-interpreter. Consider adding a brief explanation of the benefit, since
-that example stands out as a non-numeric (I assume) performance
-improvement.
-}
-
 \revc{
 Providing source code for the benchmarks measured are needed for others to
 reproduce and build on your results.  I believe this should be the minimum
@@ -1027,11 +1020,12 @@ comparable with native-compiled C code. We attribute the performance gap to C co
 the relative immaturity of PyPy's JIT assembler backend as well as missing
 optimizations, like instruction scheduling.
 
-Other interesting interpreters that are helped greatly by this
-optimization are for
-example our Prolog interpreter written in RPython, as well as numerical
-kernel used for array manipulation. The exact extent is out of scope for
-this paper.
+Other interesting interpreters that are helped greatly by this optimization are
+for example our Prolog interpreter written in RPython
+\cite{carl_friedrich_bolz_towards_2010}. Prolog programs often contain tight
+loops that perform list processing. Furthermore we experimented with a language
+for writing numerical kernel used for array manipulation. The exact extent is
+out of scope for this paper.
 
 \section{Related Work}
 \label{sec:related}
