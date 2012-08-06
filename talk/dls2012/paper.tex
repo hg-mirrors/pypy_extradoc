@@ -154,23 +154,18 @@ by moving those operations out of the loop. We propose a simple scheme
 to make a tracing JIT loop-aware by allowing it's existing optimizations to
 perform loop invariant code motion. 
 
-\reva{
-You often use the word simple. While it might make sense to use it,
-it exact meaning in that context remains unclear.
-}
-
 One of the advantages that tracing JIT compilers have above traditional
 method-based
 JITs is that their optimizers are much easier to write. Because a tracing JIT
 produces only linear pieces of code without control flow joins, many
-optimization passes on traces can have a very simple structure. They often
-consist of one forward pass replacing operations by simpler ones or even
+optimization passes on traces can have a very simple structure: They often
+consist of one forward pass replacing operations by faster ones or even
 discarding them as they walk along it. This makes
 optimization of traces very similar to symbolic execution. Also, many
 difficult problems in traditional optimizers become tractable if the optimizer
 does not need to deal with control flow merges.
 
-One disadvantage of this simplicity is that such simple forward-passing
+One disadvantage of this simplicity is that such forward-passing
 optimizers ignore the only bit of control flow they have available, which is
 the fact that most traces actually represent loops. Making use of this
 information is necessary to perform optimizations that take the whole loop into
@@ -179,7 +174,7 @@ motion or optimizations that improve across several iterations of the loop.
 Having to deal with this property of traces complicates the optimization passes,
 as a more global view of a trace needs to be considered when optimizing.
 
-In this paper we want to address this problem by proposing a simple scheme that
+In this paper we want to address this problem by proposing a scheme that
 makes it possible to turn optimizations using one forward pass into
 optimizations that can do loop invariant code motion and similar loop-aware
 improvements. Using this scheme one does not need to change the underlying
@@ -250,7 +245,7 @@ new value of $i_0$ is $i_0$, making it a loop-invariant.
 
 Because $i_0$ is loop-invariant, the addition could be moved out of the loop.
 However, we want to get this effect using our existing optimization passes
-without changing them too much. Simple optimizations with one forward pass
+without changing them too much. Optimizations with one forward pass
 cannot directly get this effect: They just look at the trace without taking
 into account that the trace executes many times in a row. Therefore to achieve
 loop-invariant code motion, we peel one iteration off the loop before running
@@ -307,10 +302,10 @@ the peeled-off iteration. Thus the addition is only executed in the first
 iteration, while the result is reused in all further iterations.
 
 This scheme is quite powerful and generalizes to other optimizations than just
-common subexpression elimination. It allows simple linear optimization passes to
+common subexpression elimination. It allows linear optimization passes to
 perform loop-aware optimizations, such as loop-invariant code motion without
 changing them at all. All that is needed is to peel off one iteration, then
-apply simple one-pass optimizations and make sure that the necessary extra
+apply one-pass optimizations and make sure that the necessary extra
 arguments are inserted into the label of the loop itself and the jumps
 afterwards.
 
@@ -337,7 +332,7 @@ between sections 3 and 4.
 }
 
 For the purpose of this paper, we are going to use a tiny interpreter for a dynamic language with
- a very simple object
+ a very small object
 model, that just supports an integer and a float type (this example has been taken from a previous paper \cite{bolz_allocation_2011}). The objects support only
 one operation, \lstinline{add}, which adds two objects (promoting ints to floats in a
 mixed addition). The implementation of \lstinline{add} uses classical Smalltalk-like
@@ -399,7 +394,7 @@ putting pressure on the garbage collector. Using double dispatching to
 implement the numeric tower needs two method calls per arithmetic operation,
 which is costly due to the method dispatch.
 
-Let us now consider a simple ``interpreter'' function \lstinline{f} that uses the
+Let us now consider an ``interpreter'' function \lstinline{f} that uses the
 object model (see the bottom of Figure~\ref{fig:objmodel}).
 Simply running this function is slow, because there are lots of virtual method
 calls inside the loop, two for each
@@ -663,8 +658,8 @@ If a pure operation appears more than once in the trace with the same input
 arguments, it only needs be executed the first time and then the result
 can be reused for all other appearances. PyPy's optimizers can also remove
 repeated heap reads if the intermediate operations cannot have changed their
-value\footnote{We perform a simple type-based alias analysis to know which
-writes can affect which reads. In addition writes on newly allocated objects
+value\footnote{We perform a type-based alias analysis to know which
+writes can affect which reads \cite{XXX}. In addition writes on newly allocated objects
 can never change the value of old existing ones.}.
 
 When that is combined with loop peeling, the single execution of the operation
@@ -981,7 +976,7 @@ runtimes are compared in Figure~\ref{fig:benchmarks}. The benchmarks are
 The sobel and conv3x3 benchmarks are implemented
 on top of a custom two-dimensional array class.
 It is
-a simple straight forward implementation providing 2 dimensionall
+a straightforward implementation providing 2 dimensional
 indexing with out of bounds checks. For the C implementations it is
 implemented as a C++ class. The other benchmarks are implemented in
 plain C. 
