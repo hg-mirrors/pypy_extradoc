@@ -194,7 +194,7 @@ a lot simpler than directly implementing loop-aware optimizations.
 % jump(i2, i3)
 % none of the operations is loop-invariant, but loop peeling will still remove the second addition
 
-\section{Background: PyPy}
+\section{Background: RPython and PyPy}
 \label{sec:PyPy}
 
 The work described in this paper was done in the context of the PyPy
@@ -209,12 +209,12 @@ Many low-level aspects of the final VM are not contained within the interpreter
 implementation but are inserted during translation to C. Examples for this are a
 garbage collector and also a tracing JIT compiler~\cite{bolz_tracing_2009}.
 
-PyPy's tracing JIT compiler traces on the level of RPython programs. Thus it
+RPython's tracing JIT compiler traces on the level of RPython programs. Thus it
 actually traces the execution of an interpreter written in RPython, not of the
 program itself. This makes the details of the object model of the implemented
 language transparent and optimizable by the tracing JIT. In the context of this
-paper, this aspect of PyPy's tracing JIT can be ignored. Instead, it is
-sufficient to view PyPy's tracing JIT as a JIT for RPython.
+paper, this aspect of RPython's tracing JIT can be ignored. Instead, it is
+sufficient to view RPython's tracing JIT as a JIT for RPython.
 
 
 % section PyPy (end)
@@ -239,7 +239,7 @@ jump($L_0$, $i_0$)
 
 The first line is a label $L_0$ with argument $i_0$. Every label has a list of
 arguments. The \lstinline{print} operation just prints its argument (it is not
-an operation that PyPy's tracing JIT really supports, we just use it for this
+an operation that RPython's tracing JIT really supports, we just use it for this
 example). The \lstinline{jump} operation jumps back to the beginning of the
 trace, listing the new values of the arguments of the trace. In this case, the
 new value of $i_0$ is $i_0$, making it a loop-invariant.
@@ -651,7 +651,7 @@ the guards of the previous iteration.
 
 If a pure operation appears more than once in the trace with the same input
 arguments, it only needs be executed the first time and then the result
-can be reused for all other appearances. PyPy's optimizers can also remove
+can be reused for all other appearances. RPython's optimizers can also remove
 repeated heap reads if the intermediate operations cannot have changed their
 value.\footnote{We perform a type-based alias analysis to know which
 writes can affect which reads~\cite{XXX}. In addition writes on newly allocated objects
@@ -733,7 +733,7 @@ K$.
 \subsection{Allocation Removals}
 \label{sub:allocation}
 
-PyPy's allocation removal optimization~\cite{bolz_allocation_2011} makes it
+RPython's allocation removal optimization~\cite{bolz_allocation_2011} makes it
 possible to identify objects that are allocated within the loop but never
 escape it. That is, no outside
 object ever gets a reference to them. This
@@ -884,7 +884,7 @@ couple of pages of additional information about the details of the benchmarks
 
 The loop peeling optimization was implemented in the PyPy
 framework in about 450 lines of RPython code. That means that the JIT-compilers generated for all
-interpreters implemented within PyPy now can take advantage of
+interpreters implemented with RPython now can take advantage of
 it. Benchmarks have been executed for a few different interpreters and
 we see improvements in several cases. The ideal loop for this optimization
 is short and contains numerical calculations with no failing guards and no
@@ -939,7 +939,7 @@ Variations & - & - & $\pm 0.03$ & $\pm 0.01$ & $\pm 0.01$ \\
 \end{figure}
 
 \subsection{Python}
-The Python interpreter of the PyPy framework is a complete Python
+The Python interpreter of the RPython framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python and in C and their
 runtimes are compared in Figure~\ref{fig:benchmarks}. The benchmarks are
@@ -1007,7 +1007,7 @@ advantages and optimizations we discussed in previous
 work~\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
 speedup of loop peeling is 70\%, which makes benchmark times
 comparable with native-compiled C code. We attribute the performance gap to C code to
-the relative immaturity of PyPy's JIT assembler backend as well as missing
+the relative immaturity of RPython's JIT assembler backend as well as missing
 optimizations, like instruction scheduling.
 
 Other interesting interpreters that are helped greatly by this optimization are
