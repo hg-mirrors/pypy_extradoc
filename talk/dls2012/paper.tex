@@ -226,6 +226,7 @@ sufficient to view RPython's tracing JIT as a JIT for RPython.
 Don't break code listings across pages, as at the start of section 3.  It makes
 them very hard to follow.
 }
+\cfbolz{let's do that only at the very end, just before submitting}
 
 To motivate the approach we propose here, let's look at a trivial (unrealistic)
 trace which corresponds to an infinite loop:
@@ -842,6 +843,9 @@ clearer.  In particular, the final program presented on the bottom of page 5,
 first column, still has memory access, boxing, and type checks, which the paper
 then claims can be removed.  There's enough space to show this.
 }
+\cfbolz{
+we have space now, can someone add the final optimized version of the loop?
+}
 
 \section{Benchmarks}
 
@@ -858,11 +862,17 @@ Providing source code for the benchmarks measured are needed for others to
 reproduce and build on your results.  I believe this should be the minimum
 standard for publishing measurements such as these.
 }
+\cfbolz{
+let's link to the bitbucket source code view. how about we move the benchmarks
+to the dls directory as well? or their own repository, we've been using them as
+demos
+}
 
 \revc{
 I would have liked to have benchmark results for some larger applications.
 When is this optimization effective on a large scale, if ever?
 }
+\cfbolz{I don't actually know. Does anybody?}
 
 \revd{
 It isn't clear from the paper, but a reader might conclude that the bulk of the
@@ -1031,6 +1041,8 @@ The discussion of LuaJIT is unsatisfying.  It's not clear to me from that one
 quote that Mike is doing the same thing.  It might be worth including LuaJIT in
 the benchmarks, and/or examining the actual implementation of LuaJIT.
 }
+\cfbolz{maybe we can look in the new LuaJIT wiki.
+how annoying would it be to rerun the benchmarks, if I can find somebody to write them?}
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
 have developed the described technique independently. There are no papers about
