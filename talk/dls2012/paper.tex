@@ -322,20 +322,14 @@ are reused in further iterations.
 \section{Running Example}
 \label{sub:example}
 
-\reva{
-I think the motivation section is great, in particular for readers
-who are less familiar with compiler/JIT optimizations. However,
-section 4 starts with "yet another example" - at least this was my
-impression when reading it. I understand the differences and
-everything, but still, you might consider to improve the transition
-between sections 3 and 4.
-}
-
-For the purpose of this paper, we are going to use a tiny interpreter for a dynamic language with
+The last section gave a motivating but unrealistically small example.
+This section will define a slightly larger example that the rest of the paper
+uses to demonstrate the effect of optimizations.
+For this we are going to use a tiny interpreter for a dynamic language with
  a very small object
 model, that just supports an integer and a float type (this example has been taken from a previous paper \cite{bolz_allocation_2011}). The objects support only
 one operation, \lstinline{add}, which adds two objects (promoting ints to floats in a
-mixed addition). The implementation of \lstinline{add} uses classical Smalltalk-like
+mixed addition). The implementation of \lstinline{add} uses classical
 double-dispatching.
 %These classes could be part of the implementation of a very
 %simple interpreter written in RPython.
