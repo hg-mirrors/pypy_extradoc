@@ -555,26 +555,20 @@ compare the number of operations before and after optimization. Loop unrolling
 is most effective for numeric kernels, so the benchmarks presented here are not
 affected much by its absence.}
 
-Figure~\ref{fig:benchmarks} shows the total number of operations that are
+\todo{a description about what each selected benchmark does}
+
+From the mentioned benchmarks we collected different datasets to evaluate the
+Frequency, the overhead and overall behaviour of guards.
+Figure~\ref{fig:benchmarks} summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
-are guards. Figure~\ref{fig:benchmarks} also shows the number of operations
-left after performing the different trace optimizations done by the trace
-optimizer, such as xxx. The last columns show the overall optimization rate and
-the optimization rate specific for guard operations, showing what percentage of
-the operations were removed during the optimizations phase.
-Figure~\ref{fig:benchmarks} shows that as can also be seen on
-Figure~\ref{fig:guard_percent} the optimization rate for guards is on par with
-the average optimization rate for all operations in a trace. After optimization
-the amount of guards left in the trace still represents about 15.18\% to
-20.22\% of the operation, a bit less than before the optimization where guards
-represented between 15.85\% and 22.48\% of the operations. After performing the
-optimizations the most common operations are those that are difficult or
-impossible to optimize, such as JIT internal operations and different types of
-calls. These account for 14.53\% to 18.84\% of the operations before and for
-28.69\% to 46.60\% of the operations after optimization. These numbers show
-that about one fifth of the operations, making guards one of the most common
-operations, that are compiled are guards and have associated with them the
-high- and low-level datastructes that are reconstruct the state.
+operations are guards. The number of operations was counted on the unoptimized
+and optimized traces. Showing that the overall optimization rate is between
+65.80\% and 86.23\% of all operations and that the optimization rate for guards
+is similar to the general one, as could be assumed based on
+Figure~\ref{fig:guard_percent}. These numbers show that guards are a rather
+common operation in the traces, which is a reason the put effort into
+optimizing them.
+\todo{some pie charts about operation distribution}
 
 \begin{figure*}
     \include{figures/benchmarks_table}
