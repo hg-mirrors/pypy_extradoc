@@ -198,16 +198,16 @@ a lot simpler than directly implementing loop-aware optimizations.
 \label{sec:PyPy}
 
 The work described in this paper was done in the context of the PyPy
-project\footnote{\texttt{http://pypy.org}}. PyPy is a framework for implementing
-dynamic languages efficiently \cite{armin_rigo_pypys_2006}. When implementing a
-language with PyPy, one writes an interpreter for the language in RPython
-\cite{davide_ancona_rpython:_2007}. RPython (``Restricted Python``) is a subset
+project.\footnote{\texttt{http://pypy.org}} PyPy is a framework for implementing
+dynamic languages efficiently~\cite{armin_rigo_pypys_2006}. When implementing a
+language with PyPy, one writes an interpreter for the language in RPython~\cite{davide_ancona_rpython:_2007}.
+RPython (``Restricted Python``) is a subset
 of Python chosen in such a way that it can be efficiently translated to a
 C-based VM by performing type inference.
 
 Many low-level aspects of the final VM are not contained within the interpreter
 implementation but are inserted during translation to C. Examples for this are a
-garbage collector and also a tracing JIT compiler \cite{bolz_tracing_2009}.
+garbage collector and also a tracing JIT compiler~\cite{bolz_tracing_2009}.
 
 PyPy's tracing JIT compiler traces on the level of RPython programs. Thus it
 actually traces the execution of an interpreter written in RPython, not of the
@@ -328,7 +328,7 @@ This section will define a slightly larger example that the rest of the paper
 uses to demonstrate the effect of optimizations.
 For this we are going to use a tiny interpreter for a dynamic language with
  a very small object
-model, that just supports an integer and a float type (this example has been taken from a previous paper \cite{bolz_allocation_2011}). The objects support only
+model, that just supports an integer and a float type (this example has been taken from a previous paper~\cite{bolz_allocation_2011}). The objects support only
 one operation, \lstinline{add}, which adds two objects (promoting ints to floats in a
 mixed addition). The implementation of \lstinline{add} uses classical
 double-dispatching.
@@ -653,9 +653,9 @@ If a pure operation appears more than once in the trace with the same input
 arguments, it only needs be executed the first time and then the result
 can be reused for all other appearances. PyPy's optimizers can also remove
 repeated heap reads if the intermediate operations cannot have changed their
-value\footnote{We perform a type-based alias analysis to know which
-writes can affect which reads \cite{XXX}. In addition writes on newly allocated objects
-can never change the value of old existing ones.}.
+value.\footnote{We perform a type-based alias analysis to know which
+writes can affect which reads~\cite{XXX}. In addition writes on newly allocated objects
+can never change the value of old existing ones.}
 
 When that is combined with loop peeling, the single execution of the operation
 is placed in the preamble. That is, loop invariant pure operations and heap
@@ -733,7 +733,7 @@ K$.
 \subsection{Allocation Removals}
 \label{sub:allocation}
 
-PyPy's allocation removal optimization \cite{bolz_allocation_2011} makes it
+PyPy's allocation removal optimization~\cite{bolz_allocation_2011} makes it
 possible to identify objects that are allocated within the loop but never
 escape it. That is, no outside
 object ever gets a reference to them. This
@@ -763,7 +763,7 @@ arguments.
 
 In the general case, each allocation-removed object in the jump arguments is exploded into a
 vector of variables containing the values of all registered
-attributes\footnote{This is sometimes called \emph{scalar replacement}.}.
+attributes.\footnote{This is sometimes called \emph{scalar replacement}.}
 If some of the attributes are themselves references to
 allocation-removed objects they are recursively exploded
 to make the vector contain only concrete variables. Some care has
@@ -1003,16 +1003,17 @@ very well reproducible.
 
 We can observe that PyPy (even without loop peeling) is orders of magnitude
 faster than either CPython or Psyco. This is due to the JIT compilation
-advantages and optimizations we discussed in previous work
-\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
+advantages and optimizations we discussed in previous
+work~\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
 speedup of loop peeling is 70\%, which makes benchmark times
 comparable with native-compiled C code. We attribute the performance gap to C code to
 the relative immaturity of PyPy's JIT assembler backend as well as missing
 optimizations, like instruction scheduling.
 
 Other interesting interpreters that are helped greatly by this optimization are
-for example our Prolog interpreter written in RPython
-\cite{carl_friedrich_bolz_towards_2010}. Prolog programs often contain tight
+for example our Prolog interpreter written in
+RPython~\cite{carl_friedrich_bolz_towards_2010}. Prolog programs often contain
+tight
 loops that perform list processing. Furthermore we experimented with a Python library
 for writing numerical kernels doing array manipulation. The exact extent is
 out of scope for this paper.
@@ -1038,11 +1039,11 @@ synthetic unrolling of the recorded IR, combining copy-substitution with
 redundancy elimination to achieve code hoisting. The unrolled and
 copy-substituted instructions are simply fed back into the compiler pipeline,
 which allows reuse of all optimizations for redundancy elimination. Loop
-recurrences are detected on-the-fly and a minimized set of PHIs is generated.''
-\cite{pall_luajit_2009}
+recurrences are detected on-the-fly and a minimized set of PHIs is
+generated.''~\cite{pall_luajit_2009}
 
-Both the Hotpath VM \cite{gal_hotpathvm:_2006} and SPUR
-\cite{bebenita_spur:_2010} implements loop-invariant code motion
+Both the Hotpath VM~\cite{gal_hotpathvm:_2006} and
+SPUR~\cite{bebenita_spur:_2010} implements loop-invariant code motion
 directly, by explicitly marking as loop-invariant all variables that stay the
 same along all looping paths and then moving all pure computation that depends
 only on these variables out of the loop. SPUR can also hoist loads out of the
@@ -1050,7 +1051,7 @@ loop if nothing in the loop can ever write to the memory location. It can also
 move allocations out of the loop, but does not replace the object by its attributes.
 This saves only the allocation, not the access to the object attributes.
 
-The type specialization described by Gal \etal \cite{gal_trace-based_2009} can
+The type specialization described by Gal \etal~\cite{gal_trace-based_2009} can
 be seen as doing a similar optimization (again by manually implementing it)
 than the one described in Section~\ref{sub:allocation}: The effect of both is
 that type checks are fully done before a loop is even entered.
