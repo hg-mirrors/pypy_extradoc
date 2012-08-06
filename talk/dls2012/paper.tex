@@ -1030,21 +1030,10 @@ out of scope for this paper.
 \section{Related Work}
 \label{sec:related}
 
-\reva{
-First sentence of the related work section is kind of
-unfortunate. It is unclear what the reference at the end of the
-sentence is good for. To support the meaning of the entire sentence?
-Or is it just a reference to the standard loop invariant code motion
-techniques? The contribution of your paper seems much smaller than
-in the former case compared to the latter one. While I have not
-checked the content of the book, I believe the latter is the correct
-interpretation. You should remove this opportunity for
-misinterpretation.}
-
-The effect of combining a one pass optimization with loop peeling gives
-completely standard loop invariant code motion optimizations
-\cite{muchnick_advanced_1997}. We do not claim any novelty in the effect, but
-think that our implementation scheme is a very simple one.
+Loop invariant code motion optimizations are completely
+standard~\cite{muchnick_advanced_1997}. Therefore, the effects that our
+optimization achieves is not in any way new. However, we think that achieving
+it as described in this paper is simpler than explicit algorithms.
 
 \revc{
 The discussion of LuaJIT is unsatisfying.  It's not clear to me from that one
