@@ -37,6 +37,17 @@
   numbersep = -20pt,
 }
 
+\hypersetup{%
+  plainpages=false,%
+  %hyperfootnotes=false,%
+  colorlinks=true,%
+  urlcolor=black,%
+  citecolor=black,%
+  linkcolor=black,%
+  pdftitle={Efficiently Handling Guards in the Low Level Design of RPython's Tracing JIT},%
+  pdfauthor={David Schneider},
+}
+
 \newboolean{showcomments}
 \setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
@@ -75,7 +86,7 @@
 
 \begin{document}
 
-\title{Efficiently Handling Guards in the Low Level Design of RPython's tracing JIT}
+\title{Efficiently Handling Guards in the Low Level Design of RPython's Tracing JIT}
 
 \authorinfo{David Schneider$^{a}$ \and Carl Friedrich Bolz$^a$}
            {$^a$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
@@ -544,13 +555,13 @@ guards that work based on the same principles.
 The results presented in this section are based on numbers gathered by running
 a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
 measure the performance of PyPy and are composed of a series of
-micro-benchmarks and larger programs.\footnote{http://speed.pypy.org/} The
+micro-benchmarks and larger programs.\footnote{\url{http://speed.pypy.org/}} The
 benchmarks were taken from the PyPy benchmarks repository using revision
-\texttt{ff7b35837d0f}.\footnote{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}
+\texttt{ff7b35837d0f}.\footnote{\url{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}}
 The benchmarks were run on a version of PyPy based on the
 tag~\texttt{0b77afaafdd0} and patched to collect additional data about the
 guards in the machine code
-backends.\footnote{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0} All
+backends.\footnote{\url{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0}} All
 benchmark data was collected on a MacBook Pro 64 bit running Max OS 10.8 with
 the loop unrolling optimization disabled.\footnote{Since loop unrolling
 duplicates the body of loops it would no longer be possible to meaningfully
