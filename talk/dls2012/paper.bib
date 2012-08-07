@@ -347,3 +347,22 @@ host {VM.}},
 	author = {Sullivan, Gregory T. and Bruening, Derek L. and Baron, Iris and Garnett, Timothy and Amarasinghe, Saman},
 	year = {2003}
 }
+
+@inproceedings{kotzmann_escape_2005,
+	address = {New York, {NY}, {USA}},
+	series = {{VEE} '05},
+	title = {Escape analysis in the context of dynamic compilation and deoptimization},
+	isbn = {1-59593-047-7},
+	location = {Chicago, {IL}, {USA}},
+	doi = {10.1145/1064979.1064996},
+	abstract = {In object-oriented programming languages, an object is said to escape the method or thread in which it was created if it can also be accessed by other methods or threads. Knowing which objects do not escape allows a compiler to perform aggressive {optimizations.This} paper presents a new intraprocedural and interprocedural algorithm for escape analysis in the context of dynamic compilation where the compiler has to cope with dynamic class loading and deoptimization. It was implemented for Sun Microsystems' Java {HotSpot™} client compiler and operates on an intermediate representation in {SSA} form. We introduce equi-escape sets for the efficient propagation of escape information between related objects. The analysis is used for scalar replacement of fields and synchronization removal, as well as for stack allocation of objects and fixed-sized arrays. The results of the interprocedural analysis support the compiler in inlining decisions and allow actual parameters to be allocated on the caller {stack.Under} certain circumstances, the Java {HotSpot™} {VM} is forced to stop executing a method's machine code and transfer control to the interpreter. This is called deoptimization. Since the interpreter does not know about the scalar replacement and synchronization removal performed by the compiler, the deoptimization framework was extended to reallocate and relock objects on demand.},
+	booktitle = {Proceedings of the 1st {ACM/USENIX} international conference on Virtual execution environments},
+	publisher = {{ACM}},
+	author = {Kotzmann, Thomas and Mössenböck, Hanspeter},
+	year = {2005},
+	note = {{ACM} {ID:} 1064996},
+	keywords = {algorithms, allocation/deallocation strategies, deoptimization},
+	pages = {111–120}
+},
+
+
