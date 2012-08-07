@@ -122,11 +122,11 @@ to our knowledge, there are none that describe deoptimization and the use and
 implementation of guards in this context.
 
 Based on the informal observation that guards are among the most common
-operations in the traces produced by PyPy's tracing JIT and that guards are
+operations in the traces produced by RPython's tracing JIT and that guards are
 operations that are associated with an overhead to maintain information about
 the execution state to be able to rebuild it in case of deoptimization, our
 goal is to present concrete numbers for the frequency and the overhead related
-to guards, explain how they are implemented in the different levels of PyPy's
+to guards, explain how they are implemented in the different levels of RPython's
 tracing JIT and explain the rationale behind the design decisions based on the
 numbers provided here.
 
@@ -155,9 +155,9 @@ aspect of the low-level design of a tracing just-in-time compiler.
 %stored at the different levels for the guards
 In this paper we want to substantiate the aforementioned observations and
 describe based on them the reasoning behind and the implementation of guards in
-PyPy's tracing just-in-time compiler, the contributions of this paper are:
+RPython's tracing just-in-time compiler, the contributions of this paper are:
 \begin{itemize}
-  \item An analysis of guards in the context of PyPy's tracing JIT to
+  \item An analysis of guards in the context of RPython's tracing JIT to
   substantiate the aforementioned observation, based on a set of benchmarks.
   \item We provide a detailed measurements about the frequency and the
   overhead associated with guards.
@@ -173,7 +173,7 @@ PyPy's tracing just-in-time compiler, the contributions of this paper are:
 The set of central concepts upon which this work is based is described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
 and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
-Data} we proceed to describe for PyPy's tracing JIT the details of guards in
+Data} we proceed to describe for RPython's tracing JIT the details of guards in
 the frontend\bivab{better term for this?} related to recording and storing the
 information required to restore the interpreter state in case of a guard
 failure, once the frontend has traced and optimized a loop it invokes the
@@ -665,7 +665,7 @@ Mike Pall, the author of LuaJIT describes in a post to the lua-users mailing
 list different technologies and techniques used in the implementation of
 LuaJIT~\cite{Pall:2009}.\todo{decide if LuaJIT is a footnote or a reference and
 fix website citation} Pall explains that guards in LuaJIT use a datastucture
-called snapshots, similar to PyPy's resume data, to store the information about
+called snapshots, similar to RPython's resume data, to store the information about
 how to rebuild the state from a side-exit using the information in the snapshot
 and the machine execution state. Pall also acknowledges that snapshot for
 guards are associated with a large memory footprint. The solution used in
