@@ -735,6 +735,8 @@ When deoptimizing code, these objects are reallocated
 and their fields filled with the values
 described by the deoptimization information.
 The paper does not describe any attempts to store this information compactly.
+This may not be needed in their approach, because method-based JITs have a lot
+fewer deoptimization points than tracing JITs.
 
 
 % subsection Deoptimization in Method-Based JITs (end)
