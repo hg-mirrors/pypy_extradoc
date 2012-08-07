@@ -296,6 +296,9 @@ If a guard fails often enough, a trace is started from it
 to create a trace tree.
 When that happens another use case of resume data
 is to construct the tracer state.
+After the bridge has been recorded and compiled it is attached to the guard.
+If the guard fails later, the bridge is executed. Therefore the resume data of
+that guard is no longer needed.
 
 There are several forces guiding the design of resume data handling.
 Guards are a very common operations in the traces.
@@ -416,16 +419,6 @@ Therefore the resume data needs to contain a description
 of the delayed stores to be able to perform them when the guard fails.
 So far no special compression is done with this information.
 
-% subsection Interaction With Optimization (end)
-\subsection{Compiling Side-Exits and Trace Stitching} % (fold)
-\label{sub:Compiling side-exits and trace stitching}
-   * tracing and attaching bridges and throwing away resume data
-   * restoring the state of the tracer
-     * keeping virtuals
-   * compiling bridges
-\todo{maybe mention that the failargs also go into the bridge}
-
-% subsection Compiling side-exits and trace stitching (end)
 % section Resume Data (end)
 
 \begin{figure}
@@ -560,12 +553,6 @@ guards that work based on the same principles.
 \caption{Trace control flow in case of guard failures with and without bridges}
 \label{fig:trampoline}
 \end{figure}
-%* Low level handling of guards
-%   * Fast guard checks v/s memory usage
-%   * memory efficient encoding of low level resume data
-%   * fast checks for guard conditions
-%   * slow bail out
-%
 % section Guards in the Backend (end)
 
 %___________________________________________________________________________
