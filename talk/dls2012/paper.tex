@@ -501,10 +501,12 @@ The first part (called \emph{preamble}) finishes with a jump to the second part
 the preamble will be executed only once while the peeled loop will
 be used for every further iteration. New variable names have to be
 introduced in the entire copied trace in order to maintain the SSA-property.
-Note that the peeled loop is not necessary the \emph{first} iteration of the
-loop execution, it is general enough to correspond to any iteration of the loop.
+
+When peeling the loop, no assumptions are made that the preamble is
+the \emph{first} iteration when later executing the loop. The preamble stays
+general enough to correspond to any iteration of the loop.
 However, the peeled loop can then be optimized using the assumption that a
-previous iteration has happened.
+previous iteration (the preamble) has been executed already.
 
 %XXX (samuele): the point about the first iteration is hard to understand
 
