@@ -623,8 +623,9 @@ guard removal together with loop peeling. The guards from
 the preamble might make the guards of the peeled loop
 redundant and thus removed. Therefore one effect of combining redundant
 guard removal with loop peeling is that loop-invariant guards are moved out of the
-loop. The peeled loop of the example reduces to
+loop. The peeled loop of the example reduces to the trace in Figure~\ref{fig:guard-trace}.
 
+\begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_1$($p_{0}$, $p_{5}$):
 # inside f: y = y.add(step)
@@ -638,6 +639,9 @@ $L_1$($p_{0}$, $p_{5}$):
             set($p_{9}$, intval, $i_{8}$)
 jump($L_1$, $p_{0}$, $p_{9}$)
 \end{lstlisting}
+\caption{Peeled loop after redundant guard removal}
+\label{fig:guard-trace}
+\end{figure}
 
 The guard on $p_5$ on line 17 of Figure~\ref{fig:peeled-trace} can be
 removed since $p_5$ is allocated on line 10 with a known class. The
@@ -673,8 +677,10 @@ replace $i_7$ with $i_3$. Afterwards the trace is no longer in the correct
 form, because the argument $i_3$ is not passed along the loop arguments.
 Therefore $i_3$ needs to be added to the loop arguments.
 
-Doing this, the trace from Figure~\ref{fig:peeled-trace} will be optimized to:
+Doing this, the trace from Figure~\ref{fig:peeled-trace} will be optimized to
+the trace in Figure~\ref{fig:cse-trace}.
 
+\begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
@@ -703,6 +709,9 @@ guard_class($p_{5}$, BoxedInteger)
             set($p_{9}$, intval, $i_{8}$)
 jump($L_1$, $p_{0}$, $p_{9}$, $i_3$)
 \end{lstlisting}
+\caption{Trace after common subexpression elimination}
+\label{fig:cse-trace}
+\end{figure}
 
 After loop peeling and redundant operation removal the peeled loop
 will typically no longer be in SSA form but operate on variables that are the result
@@ -734,7 +743,7 @@ and
 In the optimized trace $J$ is replaced by $\hat J$ and $K$ by $\hat
 K$.
 
-\subsection{Allocation Removals}
+\subsection{Allocation Removal}
 \label{sub:allocation}
 
 RPython's allocation removal optimization~\cite{bolz_allocation_2011} makes it
@@ -805,8 +814,10 @@ $K$, is constructed from $\hat J$ using the map $m$,
   .
 \end{equation}
 In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
-K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized into
+K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized to
+the trace in Figure~\ref{fig:virtual-trace}.
 
+\begin{figure}
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($p_{0}$, $p_{1}$):
 # inside f: y = y.add(step)
@@ -830,6 +841,9 @@ $L_1$($p_{0}$, $i_{4}$):
             # inside BoxedInteger.__init__
 jump($L_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
+\caption{Trace after allocation removal}
+\label{fig:virtual-trace}
+\end{figure}
 
 If all the optimizations presented above are applied, the resulting loop looks
 as in Figure~\ref{fig:opt-trace}.
