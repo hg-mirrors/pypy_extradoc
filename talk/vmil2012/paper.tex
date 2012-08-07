@@ -123,28 +123,31 @@ implementation of guards in this context.
 Based on the informal observation that guards are among the most common
 operations in the traces produced by PyPy's tracing JIT and that guards are
 operations that are associated with an overhead to maintain information about
-state to be able to rebuild the execution state in case of deoptimization, our
-goal is to present concrete numbers for the frequency and the overhead produced
-by guards, explain how they are implemented in the different levels of PyPy's
+the execution state to be able to rebuild it in case of deoptimization, our
+goal is to present concrete numbers for the frequency and the overhead related
+to guards, explain how they are implemented in the different levels of PyPy's
 tracing JIT and explain the rationale behind the design decisions based on the
-numbers.
+numbers provided here.
 
 The operations executed by an interpreter are recorded by the tracing JIT in
 case they are frequently executed, this process is described in more detail in
 Section~\ref{sec:Resume Data}, during the recording phase special operations,
-\texttt{guards}, are inserted into the recorded trace at all points where
-control flow could diverge. As can be seen on Figure~\ref{fig:guard_percent}
-guards account for 14.42\% to 22.32\% of the operations before and for 15.2\%
-to 20.12\% of the operations after the optimization pass over the traced and
-compiled parts of the benchmarks, making guards one of the most common
-operations. Many of these guards fail rarely on not all during execution. Given
-that associated with each guard information is stored, that is required to
-rebuild the execution state in case control flow diverges from the recorded
-path at a guard it is important to store the information associated with the
-guards in a manner that tries to keep the overhead for storing the information
-low while avoiding to put a burden on the execution of the recorded trace,
-making the optimization of guards an important aspect of
-the low-level design of a tracing just-in-time compiler.
+referred to as \texttt{guards}, are inserted into the recorded trace at all
+points where the control flow could diverge. As can be seen in
+Figure~\ref{fig:guard_percent} guards account for 14.42\% to 22.32\% of the
+operations before and for 15.2\% to 20.12\% of the operations after the
+optimization pass over the traced and later compiled parts of the benchmarks,
+making guards one of the most common types of operations. Many of these guards
+fail rarely or not all during execution. There are several aspects to consider
+in the design and optimization of guards, the first aspect is that due to the
+large number of guards the memory overhead related to storing the information
+needed for deoptimization should be kept low. A second aspect is that
+successfully checking guards, i.e. not leaving the compiled trace,  - which is
+the common case - should be a cheap operation to execute favouring the on-trace
+execution speed in contrast to the deoptimization case where the state has to
+be rebuilt using the stored information. These constraints and trade-offs are
+what make the design and optimization of guards an important and non-trivial
+aspect of the low-level design of a tracing just-in-time compiler.
 
 %Section~\ref{sec:Evaluation} presents Figures about the absolute number of
 %operations for each benchmark, and the overhead produced by the information
