@@ -221,7 +221,7 @@ provided by the author a just-in-time compiler.
 
 
 
-\subsection{PyPy's Meta-Tracing JIT Compilers}
+\subsection{RPython's Meta-Tracing JIT Compilers}
 \label{sub:tracing}
 
  * Tracing JITs
@@ -509,7 +509,7 @@ to stack locations and registers used in the register allocator.  With this
 reconstruction all bindings are restored to the state as they were in the
 original loop up to the guard.
 
-Once the bridge has been compiled the guard that led to compiling the birdge is
+Once the bridge has been compiled the guard that led to compiling the bridge is
 patched to redirect control flow to the bridge in case the check fails. In
 future if the guard fails again it jumps to the code compiled for the bridge
 instead of bailing out. Once the guard has been compiled and attached to the
