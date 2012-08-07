@@ -652,7 +652,7 @@ the guards of the previous iteration.
 \subsection{Common Subexpression Elimination and Heap Optimizations}
 
 If a pure operation appears more than once in the trace with the same input
-arguments, it only needs be executed the first time and then the result
+arguments, it only needs to be executed the first time and then the result
 can be reused for all other appearances. RPython's optimizers can also remove
 repeated heap reads if the intermediate operations cannot have changed their
 value.\footnote{We perform a type-based alias analysis to know which
@@ -668,10 +668,10 @@ Figure~\ref{fig:peeled-trace}. The result of this operation can be
 deduced to be $i_3$ from the \lstinline{get} operation on line
 8. The optimization will thus remove line 22 from the trace and
 replace $i_7$ with $i_3$. Afterwards the trace is no longer in the correct
-form, because the argument $i_3$ is not passed along the loop arguments. It
-thus needs to be added there.
+form, because the argument $i_3$ is not passed along the loop arguments.
+Therefore $i_3$ needs to be added to the loop arguments.
 
-The trace from Figure~\ref{fig:peeled-trace} will therefore be optimized to:
+Doing this, the trace from Figure~\ref{fig:peeled-trace} will be optimized to:
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($p_{0}$, $p_{1}$):
@@ -743,7 +743,7 @@ is performed by processing the operations in order and
 optimistically removing every \lstinline{new} operation. Later on if
 it is discovered that a reference to the object escapes the loop, the
 \lstinline{new} operation is inserted at this point. All operations
-(\lstinline{get}, \lstinline{set} and \lstinline{guard}) on the removed objects
+(\lstinline{get}, \lstinline{set} and \lstinline{guard_class}) on the removed objects
 are also removed and the optimizer needs to keep track of the value of all used
 attributes of the object.
 
@@ -765,7 +765,7 @@ arguments.
 
 In the general case, each allocation-removed object in the jump arguments is exploded into a
 vector of variables containing the values of all registered
-attributes.\footnote{This is sometimes called \emph{scalar replacement}.}
+attributes.\footnote{This is sometimes called \emph{scalar replacement}~\cite{kotzmann_escape_2005}.}
 If some of the attributes are themselves references to
 allocation-removed objects they are recursively exploded
 to make the vector contain only concrete variables. Some care has
@@ -1088,7 +1088,8 @@ calculations.
 
 The current approach still has some limitations which we plan to address in the
 future. In particular loop peeling works poorly in combination with trace
-trees or trace stitching. The side exits attached guards that fail often
+trees~\cite{andreas_gal_incremental_2006} or trace stitching~\cite{gal_trace-based_2009}.
+The side exits attached guards that fail often
 currently have to jump to the preamble which makes loops with several equally
 common paths less efficient than they could be.
 
