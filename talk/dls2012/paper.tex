@@ -123,10 +123,10 @@
 \maketitle
 
 \begin{abstract}
-One of the nice properties of a tracing JIT is that many of its optimization
+One of the nice properties of a tracing JIT is that many of its optimizations
 are simple requiring one forward pass only. This is not true for loop-invariant code
 motion which is a very important optimization for code with tight kernels.
-Especially for dynamic languages that typically performs quite a lot of loop invariant
+Especially for dynamic languages that typically perform quite a lot of loop invariant
 type checking, boxed value unwrapping and virtual method lookups.
 In this paper we present a scheme for making simple optimizations loop-aware by
 using a simple pre-processing step on the trace and not changing the
@@ -148,7 +148,7 @@ Languages, Performance, Experimentation
 A dynamic language typically needs to do quite a lot of type
 checking, wrapping/unwrapping of boxed values, and virtual method dispatching. 
 For tight computationally intensive loops a
-significant amount of the execution time might be spend on such tasks
+significant amount of the execution time might be spent on such tasks
 instead of the actual computations. Moreover, the type checking,
 unwrapping and method lookups are often loop invariant and performance could be increased
 by moving those operations out of the loop. We propose a simple scheme
@@ -311,9 +311,10 @@ apply one-pass optimizations and make sure that the necessary extra
 arguments are inserted into the label of the loop itself and the jumps
 afterwards.
 
-This is the key insight of the proposed implementation scheme: Giving an
-optimization two iterations together at the same time gives the optimization
-enough context to remove operations from the peeled loop, because it detects
+This is the key insight of the proposed implementation scheme: If an
+optimization is given two iterations together at the same time, the
+optimization has enough context to remove operations from the peeled loop,
+because it detects
 that the operation was performed in the preamble already. Thus at runtime these
 moved operations are only executed once when entering the loop and the results
 are reused in further iterations.
@@ -473,12 +474,12 @@ Before a trace is passed to the backend compiling it into machine code
 it is optimized to achieve better performance.
 One goal of that is to move 
 operations out of the loop making them executed only once
-and not every iteration. This we propose to achieve by loop peeling. It
+and not every iteration. We propose to achieve this by loop peeling. It
 leaves the loop body intact, but prefixes it with one iteration of the
 loop. This operation by itself will not achieve anything. But if it is
 combined with other optimizations it can increase the effectiveness of
-those optimizations. For many optimization of interest only a few
-additional details has to be considered when they are combined with loop peeling. These are
+those optimizations. For many optimizations of interest only a few
+additional details have to be considered when they are combined with loop peeling. These are
 described below by explaining the loop peeling optimization
 followed by a set of other optimizations and how they interact with
 loop peeling.
@@ -615,7 +616,7 @@ jump($L_1$, $p_{0}$, $p_{9}$)
 
 \subsection{Redundant Guard Removal}
 
-No special concerns needs to be taken when implementing redundant
+No special concern needs to be taken when implementing redundant
 guard removal together with loop peeling. The guards from
 the preamble might make the guards of the peeled loop
 redundant and thus removed. Therefore one effect of combining redundant
