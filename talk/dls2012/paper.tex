@@ -831,24 +831,36 @@ $L_1$($p_{0}$, $i_{4}$):
 jump($L_1$, $p_{0}$, $i_8$)
 \end{lstlisting}
 
-If all the optimizations presented above are applied, the resulting
-optimized peeled loop will consist of a single integer addition
+If all the optimizations presented above are applied, the resulting loop looks
+as in Figure~\ref{fig:opt-trace}.
+The resulting optimized peeled loop consists of a single integer addition
 only. That is it will become type-specialized to the types of the
 variables \lstinline{step} and \lstinline{y}, and the overhead of
 using boxed values is removed.
 
-\revc{
-This paper presents an elegant, if simple, technique, and demonstrates that
-it's effective in small cases.  The worked example is particularly helpful, and
-would be better if it were worked more thoroughly.  Some of the omitted steps
-are not entirely obvious, and the paper would be improved by making the
-clearer.  In particular, the final program presented on the bottom of page 5,
-first column, still has memory access, boxing, and type checks, which the paper
-then claims can be removed.  There's enough space to show this.
-}
-\cfbolz{
-we have space now, can someone add the final optimized version of the loop?
-}
+
+\begin{figure}
+\begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+$L_0$($p_{0}$, $p_{1}$):
+# inside f: y = y.add(step)
+guard_class($p_{1}$, BoxedInteger)
+    # inside BoxedInteger.add
+    $i_{2}$ = get($p_{1}$, intval)
+    guard_class($p_{0}$, BoxedInteger)
+        # inside BoxedInteger.add__int
+        $i_{3}$ = get($p_{0}$, intval)
+        $i_{4}$ = $i_{2}+i_{3}$
+            # inside BoxedInteger.__init__
+jump($L_1$, $p_{0}$, $i_{4}$)
+
+$L_1$($p_{0}$, $i_{3}$, $i_{4}$):
+    $i_{8}$ = $i_{4}+i_{3}$
+jump($L_1$, $p_{0}$, $i_{3}$, $i_8$)
+\end{lstlisting}
+\caption{The fully optimized loop of the Example Interpreter}
+\label{fig:opt-trace}
+\end{figure}
+
 
 \section{Benchmarks}
 
