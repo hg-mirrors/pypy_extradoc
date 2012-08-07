@@ -682,7 +682,7 @@ exit that led to the compilation. Fragment Linking avoids the performance
 penalty involved in leaving the compiled and it to remove the compensation
 code used when restoring the machine state on a side exit.
 
-In~\cite{Gal:2006} Gal et. al describe that in the HotpathVM they experimented
+Gal et. al~\cite{Gal:2006} describe that in the HotpathVM they experimented
 with having one generic compensation code block, like the RPython JIT, that
 uses a register variable mapping to restore the interpreter state. Later this
 was replaced by generating compensation code for each guard which produced a
@@ -693,9 +693,9 @@ the state at the side exit. The information is retrieved from a mapping stored
 in the guard that maps machine level registers and stack to Java level stack
 and variables.
 
-Gal et. al~\cite{Gal:2009ux} write about how TraceMonkey uses trace stitching
-to avoid th overhead of returning to the trace monitor and calling another
-trace when taking a side exit. In their approach it is required to write live
+TraceMonkey, a tracing JIT for JavaScript, uses trace stitching
+to avoid the overhead of returning to the trace monitor and calling another
+trace when taking a side exit~\cite{Gal:2009ux}. In this approach it is required to write live
 values to an activation record before entering the new trace.
 
 % subsection Guards in Other Tracing JITs (end)
