@@ -23,6 +23,7 @@ hg pull -u
 hg update "${PYPYREV}"
 echo "Patching pypy"
 patch -p1 -N < "$base/tool/ll_resume_data_count.patch"
+patch -p1 -N < "$base/tool/failure_count.patch"
 #
 echo "Checking for an existing pypy-c"
 if [ ! -x "${pypy-c}" ]
