@@ -233,16 +233,37 @@ provided by the author a just-in-time compiler.
 
 
 
-\subsection{RPython's Meta-Tracing JIT Compilers}
+\subsection{RPython's Tracing JIT Compilers}
 \label{sub:tracing}
+Tracing JITs are a technique of just-in-time compilers that generate code by
+observing the execution of a program. VMs using tracing JITs are typically
+mixed mode execution environments containing also an interpreter. The
+interpreter profiles the executed program and selects frequently executed code
+paths to be compiled to machine code. After profiling identified an interesting
+path, tracing is started, recording all operations that are executed on this
+path. Like in most compilers tracing JITs use an intermediate representation
+to store the recorded operations, which is typically in SSA form\todo{some ssa
+reference}. Since tracing follows actual execution the code that is recorded
+represents only one possible path through the control flow graph. Points of
+divergence from the recorded path are marked with special operations called
+\emph{guards}, these operations ensure that assumptions valid during the
+tracing phase are still valid when the code has been compiled and is executed.
+After a trace has been recorded it is optimized and then compiled to platform
+specific machine code.
 
- * Tracing JITs
- * Mention SSA
- * JIT Compiler
-   * describe the tracing jit stuff in pypy
-   * reference tracing the meta level paper for a high level description of what the JIT does
-   * JIT Architecture
-   * Explain the aspects of tracing and optimization
+When the check of a guard fails, the execution of the machine code must be
+stopped and the control is returned to the interpreter, after the interpreter's
+state has been restored. If a particular guard fails often a new trace is
+recorded starting from the guard. We will refer to this kind of trace as a
+\emph{bridge}. Once a bridge has been traced it is attached to the
+corresponding guard by patching the machine code. The next time the guard fails
+the bridge will be executed instead of leaving the machine code.
+
+RPython provides a tracing JIT that can be reused for a number of language
+implementations. This is possible, because it traces the execution of the
+language interpreter instead of tracing the user program directly. This
+approach is called \emph{meta-tracing}. For the purpose of this paper the fact
+that RPython's tracing JIT is a meta-tracing JIT can be ignored.
 
 %___________________________________________________________________________
 
