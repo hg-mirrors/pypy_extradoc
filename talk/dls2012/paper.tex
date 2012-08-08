@@ -1033,12 +1033,12 @@ by convolving ${I}$ with
   {K} = \left(
   \begin{array}{ccc}
     -1 & 0 & 1 \\
-    -2 & 0 & 1 \\
+    -2 & 0 & 2 \\
     -1 & 0 & 1 \\
   \end{array}
   \right) ,
 \end{equation}
-and a Sobel y-derivative $D_y$ is formed convolving with $K^\top$. The gradient magnitude is 
+and a Sobel y-derivative $D_y$ is formed convolving $I$ with $K^\top$. The gradient magnitude is 
 then formed for each pixel independently by $\sqrt{D_x^2 + D_y^2}$. The two convolutions and the pixelwise
 magnitude calculation are combined in the implementation of this benchmark and calculated in a single pass over
 the input image. This single pass consists of two nested loops with a somewhat larger amount of calculations 
