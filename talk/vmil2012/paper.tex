@@ -329,9 +329,9 @@ Since resume data is a linked list of symbolic frames
 often only the information in the top frame changes from one guard to the next.
 The other frames can often be just reused.
 The reason for this is that during tracing only the variables
-of the currently executing frames can change.
+of the currently executing frame can change.
 Therefore if two guards are generated from code in the same function
-the resume data of the rest of the stack can be reused.
+the resume data of the rest of the frame stack can be reused.
 
 In addition to sharing as much as possible between subsequent guards
 a compact representation of the local variables of symbolic frames is used.
@@ -364,7 +364,8 @@ This is done with many classical compiler optimizations.
 In particular guards can be removed by subexpression elimination.
 If the same guard is encountered a second time in the trace,
 the second one can be removed.
-This also works if a later guard is weaker implied by a earlier guard.
+This also works if a later guard is weaker
+and therefore implied by a earlier guard.
 
 One of the techniques in the optimizer specific to tracing for removing guards
 is guard strengthening~\cite{bebenita_spur:_2010}.
@@ -394,7 +395,7 @@ After allocation removal the variables in the symbolic frames can also contain
 These are objects that were not allocated so far,
 because the optimizer removed their allocation.
 The virtual objects in the symbolic frames describe exactly
-how the heap objects that have to be allocated on guard failure look like.
+how the heap objects look like which have to be allocated on guard failure.
 To this end, the content of every field of the virtual object is described
 in the same way that the local variables of symbolic frames are described.
 The fields of the virtual objects can therefore be SSA variables, constants
@@ -408,12 +409,16 @@ The same observation as about frames applies:
 Quite often a virtual object does not change from one guard to the next.
 Then the data structure is shared.
 
-Similarly, stores into the heap are delayed as long as possible.
+A related optimization is the handling of heap stores by the optimizer.
+The optimizer tries to delay stores into the heap as long as possible.
+This is done because often heap stores become unnecessary
+due to another store to the same memory location later in the trace.
 This can make it necessary to perform these delayed stores
 when leaving the trace via a guard.
 Therefore the resume data needs to contain a description
 of the delayed stores to be able to perform them when the guard fails.
-So far no special compression is done with this information.
+So far no special compression is done with this information,
+compared to the other source of information delayed heap stores are quite rare.
 
 % section Resume Data (end)
 
