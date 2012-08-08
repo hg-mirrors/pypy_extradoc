@@ -70,8 +70,8 @@ dictionary).  There are even techniques building on top of AME that can
 be used to force the order of the blocks, if needed.
 
 
-PyPy and STM
-------------
+PyPy and STM/AME
+----------------
 
 Talking more precisely about PyPy: the current prototype ``pypy-stm`` is
 doing precisely this.  The length of the "blocks" above is selected in
@@ -108,8 +108,9 @@ CPython and HTM
 
 Couldn't we do the same for CPython?  The problem here is that, at
 first, it seems we would need to change literally all places of the
-CPython C sources in order to implement STM.  Assuming that this is far
-too big for anyone to handle, we are left with three other options:
+CPython C sources in order to implement STM.  Here are our options:
+
+- We could review and change code everywhere in CPython.
 
 - We could use GCC 4.7, which supports some form of STM.
 
@@ -119,8 +120,13 @@ too big for anyone to handle, we are left with three other options:
 - We could write our own C code transformation (e.g. within a compiler
   like LLVM).
 
-The issue with the first two solutions is the same one: they are meant
-to support small-scale transactions, but not long-running ones.  For
+The first solution is a "thanks but no thanks".  If anything, it will
+give another fork of CPython that is never going to be merged, that will
+painfully struggle to keep not more than 3-4 versions behind, and that
+will eventually die.
+
+The issue with the next two solutions is the same one: both of these are
+solutions that  small-scale transactions, but not long-running ones.  For
 example, I have no clue how to give GCC rules about performing I/O in a
 transaction --- this seems not supported at all; and moreover looking at
 the STM library that is available so far to be linked with the compiled
@@ -164,8 +170,8 @@ bytecodes.
 Write your own STM for C
 ------------------------
 
-Let's discuss now the third option: if neither GCC 4.7 nor HTM are
-sufficient for an "AME CPython", then this third choice would be to
+Let's discuss now the last option: if neither GCC 4.7 nor HTM are
+sufficient for an "AME CPython", then we might want to
 write our own C compiler patch (as either extra work on GCC 4.7, or an
 extra pass to LLVM, for example).
 
@@ -183,7 +189,9 @@ in the way we want.
 
 More generally, the advantage of this approach over the current GCC 4.7
 is that we control the whole process.  While this still looks like a lot
-of work, it looks doable.
+of work, it looks doable.  It would be possible to come up with a
+minimal patch of CPython that can be accepted into core without too much
+troubles, and keep all the cleverness inside the compiler extension.
 
 
 Conclusion?
@@ -192,8 +200,8 @@ Conclusion?
 I would assume that a programming model specific to PyPy and not
 applicable to CPython has little chances to catch on, as long as PyPy is
 not the main Python interpreter (which looks unlikely to change anytime
-soon).  Thus as long as only PyPy has STM, it looks like it will not
+soon).  Thus as long as only PyPy has AME, it looks like it will not
 become the main model of multicore usage in Python.  However, I can
 conclude with a more positive note than during the EuroPython
 conference: there appears to be a more-or-less reasonable way forward to
-have an STM version of CPython too.
+have an AME version of CPython too.
