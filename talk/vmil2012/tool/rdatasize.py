@@ -1,6 +1,7 @@
 import csv
 import os
 import sys
+import tempfile
 from collections import defaultdict
 
 from backenddata import collect_logfiles
@@ -8,6 +9,14 @@ from pypy.tool import logparser
 
 word_to_kib = 1024 / 8. # 64 bit
 numberings_per_word = 2/8. # two bytes
+
+def compute_compressed_length(data):
+    import subprocess
+    cmd = "xz -9 --stdout -"
+    process = subprocess.Popen(cmd, stdin=subprocess.PIPE,
+                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+    compressed, _ = process.communicate(data)
+    return len(compressed) / 1024.
 
 
 def cond_incr(d, key, obj, seen, incr=1):
@@ -24,6 +33,11 @@ def compute_numbers(infile):
     log = logparser.parse_log_file(infile)
     rdata = logparser.extract_category(log, 'jit-resume')
     results["num_guards"] = len(rdata)
+    # compute compressed size
+    all_data = "\n".join(rdata)
+    results["strlength"] = len(all_data)
+    results["compressedlength"] = compute_compressed_length(all_data)
+    # compute resume data size estimates
     for log in rdata:
         for line in log.splitlines():
             if line.startswith("Log storage"):
@@ -117,7 +131,7 @@ def main(argv):
 
         for exe, bench, infile in files:
             results = compute_numbers(os.path.join(dirname, infile))
-            row = [exe, bench, results["num_guards"], results['total'], results['naive_total']]
+            row = [exe, bench, results["num_guards"], results['total'], results['naive_total'], results['compressedlength']]
             csv_writer.writerow(row)
 
             print "=============================="
@@ -131,7 +145,7 @@ def main(argv):
             print "number virtuals: %i vs %i" % (results['num_virtuals'], results['naive_num_virtuals'])
             print "setfields: %sKiB" % (results["kib_setfields"], )
             print "--"
-            print "total:  %sKiB vs %sKiB" % (results["total"], results["naive_total"])
+            print "total:  %sKiB vs %sKiB vs %sKiB" % (results["total"], results["naive_total"], results['compressedlength'])
 
 
 if __name__ == '__main__':
