@@ -1007,7 +1007,7 @@ ${\bf k} = \left(k_1, k_2, k_3, k_4, k_5\right)$. The enumeration of the element
 hardcoded into the implementation making the benchmark consist of a single loop too.
 \item {\bf conv3x3}: two-dimensional convolution with kernel of fixed
   size $3 \times 3$ using a custom class to represent two-dimensional
-  arrays. It is implemented as a two nested loops that iterates over the elements of the 
+  arrays. It is implemented as two nested loops that iterates over the elements of the 
 $n\times n$ output matrix ${\bf B} = \left(b_{i,j}\right)$ and calculates each element from the input matrix
 ${\bf A} = \left(a_{i,j}\right)$ and a kernel ${\bf K} = \left(k_{i,j}\right)$ using $b_{i,j} = $
 \begin{equation}
@@ -1027,7 +1027,7 @@ The memory for storing the matrices are again allocated outside the benchmark an
   of the optimizations.
 \item {\bf sobel}: a low-level video processing algorithm used to
   locate edges in an image. It calculates the gradient magnitude
-  using sobel derivatives. A Sobel x-derivative $D_x$ of a $n \times n$ image ${I}$ is formed
+  using sobel derivatives. A Sobel x-derivative, $D_x$, of a $n \times n$ image, ${I}$, is formed
 by convolving ${I}$ with
 \begin{equation}
   {K} = \left(
@@ -1038,7 +1038,7 @@ by convolving ${I}$ with
   \end{array}
   \right) ,
 \end{equation}
-and a Sobel y-derivative $D_y$ is formed convolving $I$ with $K^\top$. The gradient magnitude is 
+and a Sobel y-derivative, $D_y$, is formed convolving $I$ with $K^\top$. The gradient magnitude is 
 then formed for each pixel independently by $\sqrt{D_x^2 + D_y^2}$. The two convolutions and the pixelwise
 magnitude calculation are combined in the implementation of this benchmark and calculated in a single pass over
 the input image. This single pass consists of two nested loops with a somewhat larger amount of calculations 
