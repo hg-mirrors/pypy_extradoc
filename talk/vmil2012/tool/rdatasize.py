@@ -126,7 +126,8 @@ def main(argv):
     files = collect_logfiles(path)
     with file("logs/resume_summary.csv", "w") as f:
         csv_writer = csv.writer(f)
-        row = ["exe", "bench", "number of guards", "total resume data size", "naive resume data size"]
+        row = ["exe", "bench", "number of guards", "total resume data size",
+                "naive resume data size", "compressed resume data size"]
         csv_writer.writerow(row)
 
         for exe, bench, infile in files:
