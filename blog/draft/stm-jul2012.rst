@@ -8,7 +8,7 @@ Rigo's) on the future of multicore programming.  It is a summary of the
 keynote presentation at EuroPython.  As I learned by talking with people
 afterwards, I am not a good enough speaker to manage to convey a deeper
 message in a 20-minutes talk.  I will try instead to convey it in a
-150-lines post...
+200-lines post...
 
 This is fundamentally about three points, which can be summarized as
 follow:
