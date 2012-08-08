@@ -88,12 +88,12 @@ def build_benchmarks_table(csvfiles, texfile, template):
 
     head = ['Benchmark',
             'ops b/o',
-            '\\% guards b/o',
+            'guards b/o',
             'ops a/o',
-            '\\% guards a/o',
-            'opt. rate in \\%',
-            'guard opt. rate in \\%',
-            'bridges']
+            'guards a/o',
+            'opt. rate',
+            'guard opt. rate',
+            ]
 
     table = []
     # collect data
@@ -110,12 +110,11 @@ def build_benchmarks_table(csvfiles, texfile, template):
         res = [
                 bench['bench'].replace('_', '\\_'),
                 ops_bo,
-                "%.2f" % (guards_bo / ops_bo * 100,),
+                "%.2f \\%%" % (guards_bo / ops_bo * 100,),
                 ops_ao,
-                "%.2f" % (guards_ao / ops_ao * 100,),
-                "%.2f" % ((1 - ops_ao / ops_bo) * 100,),
-                "%.2f" % ((1 - guards_ao / guards_bo) * 100,),
-                bridgedata[bench['bench']]['bridges'],
+                "%.2f \\%%" % (guards_ao / ops_ao * 100,),
+                "%.2f \\%%" % ((1 - ops_ao / ops_bo) * 100,),
+                "%.2f \\%%" % ((1 - guards_ao / guards_bo) * 100,),
               ]
         table.append(res)
     output = render_table(template, head, sorted(table))
