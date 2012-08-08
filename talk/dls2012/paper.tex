@@ -63,7 +63,7 @@
 
 
 \newboolean{showcomments}
-\setboolean{showcomments}{false}
+\setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
   {\newcommand{\nb}[2]{
     \fbox{\bfseries\sffamily\scriptsize#1}
@@ -80,6 +80,7 @@
 \newcommand\fijal[1]{\nb{FIJAL}{#1}}
 \newcommand\david[1]{\nb{DAVID}{#1}}
 \newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\hakan[1]{\nb{HAKAN}{#1}}
 \newcommand\reva[1]{\nb{Reviewer 1}{#1}}
 \newcommand\revb[1]{\nb{Reviewer 2}{#1}}
 \newcommand\revc[1]{\nb{Reviewer 3}{#1}}
@@ -1109,6 +1110,7 @@ the benchmarks, and/or examining the actual implementation of LuaJIT.
 }
 \cfbolz{maybe we can look in the new LuaJIT wiki.
 how annoying would it be to rerun the benchmarks, if I can find somebody to write them?}
+\hakan{there is iwtc11/benchmarks/runall.sh which is supposed to run them all}
 
 Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
 have developed the described technique independently. There are no papers about
