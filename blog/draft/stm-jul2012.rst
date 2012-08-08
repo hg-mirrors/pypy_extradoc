@@ -4,14 +4,14 @@ Multicore programming in Python
 Hi all,
 
 This is a short "position paper" kind of post about my view (Armin
-Rigo's) on the future of multicore programming.  It is a summary of the
+Rigo's) on the future of multicore programming in high-level languages.
+It is a summary of the
 keynote presentation at EuroPython.  As I learned by talking with people
 afterwards, I am not a good enough speaker to manage to convey a deeper
 message in a 20-minutes talk.  I will try instead to convey it in a
-200-lines post...
+250-lines post...
 
-This is fundamentally about three points, which can be summarized as
-follow:
+This is about three points:
 
 1. We often hear about people wanting a version of Python running without
    the Global Interpreter Lock (GIL): a "GIL-less Python".  But what we
@@ -20,8 +20,9 @@ follow:
    threads and locks.  One way is Automatic Mutual Exclusion (AME), which
    would give us an "AME Python".
 
-2. A good enough Software Transactional Memory (STM) system can do that.
-   This is what we are building into PyPy: an "AME PyPy".
+2. A good enough Software Transactional Memory (STM) system can be used
+   as an internal tool to do that.
+   This is what we are building into an "AME PyPy".
 
 3. The picture is darker for CPython, though there is a way too.  The
    problem is that when we say STM, we think about either GCC 4.7's STM
@@ -49,51 +50,96 @@ successful multithreaded applications.
 We need to solve this issue with a higher-level solution.  Such
 solutions exist theoretically, and Automatic Mutual Exclusion (AME) is
 one of them.  The idea of AME is that we divide the execution of each
-thread into a number of "blocks".  Each block is well-delimited and
-typically large.  Each block runs atomically, as if it acquired a GIL
-for its whole duration.  The trick is that internally we use
-Transactional Memory, which is a a technique that lets the interpreter
-run the blocks from each thread in parallel, while giving the programmer
+thread into a number of "atomic blocks".  Each block is well-delimited
+and typically large.  Each block runs atomically, as if it acquired a
+GIL for its whole duration.  The trick is that internally we use
+Transactional Memory, which is a technique that lets the system run the
+atomic blocks from each thread in parallel, while giving the programmer
 the illusion that the blocks have been run in some global serialized
 order.
 
 This doesn't magically solve all possible issues, but it helps a lot: it
-is far easier to reason in terms of a random ordering of large blocks
-than in terms of a random ordering of individual instructions.  For
-example, a program might contain a loop over all keys of a dictionary,
-performing some "mostly-independent" work on each value.  By using the
-technique described here, putting each piece of work in one "block"
-running in one thread of a pool, we get exactly the same effect: the
-pieces of work still appear to run in some global serialized order, in
-some random order (as it is anyway when iterating over the keys of a
-dictionary).  There are even techniques building on top of AME that can
-be used to force the order of the blocks, if needed.
+is far easier to reason in terms of a random ordering of large atomic
+blocks than in terms of a random ordering of lines of code --- not to
+mention the mess that multithreaded C is, where even a random ordering
+of instructions is not a sufficient model any more.
+
+How do such atomic blocks look like?  For example, a program might
+contain a loop over all keys of a dictionary, performing some
+"mostly-independent" work on each value.  This is a typical example:
+each atomic block is one iteration through the loop.  By using the
+technique described here, we can run the iterations in parallel
+(e.g. using a thread pool) but using AME to ensure that they appear to
+run serially.
+
+In Python, we don't care about the order in which the loop iterations
+are done, because we are anyway iterating over the keys of a dictionary.
+So we get exactly the same effect as before: the iterations still run in
+some random order, but --- and that's the important point --- in a
+global serialized order.  In other words, we introduced parallelism, but
+only under the hood: from the programmer's point of view, his program
+still appears to run completely serially.  Parallelisation as a
+theoretically invisible optimization...  more about the "theoretically"
+in the next paragraph.
+
+Note that randomness of order is not fundamental: they are techniques
+building on top of AME that can be used to force the order of the
+atomic blocks, if needed.
 
 
 PyPy and STM/AME
 ----------------
 
 Talking more precisely about PyPy: the current prototype ``pypy-stm`` is
-doing precisely this.  The length of the "blocks" above is selected in
-one of two ways: either we have blocks corresponding to some small
-number of bytecodes (in which case we have merely a GIL-less Python); or
-we have blocks that are specified explicitly by the programmer using
-``with thread.atomic:``.  The latter gives typically long-running
-blocks.  It allows us to build the higher-level solution sought after:
-it will run most of our Python code in multiple threads but always
-within a ``thread.atomic`` block, e.g. using a pool of threads.
+doing precisely this.  In ``pypy-stm``, the length of the atomic blocks is
+selected in one of two ways: either explicitly or automatically.
+
+The automatic selection gives blocks corresponding to some small number
+of bytecodes, in which case we have merely a GIL-less Python: multiple
+threads will appear to run serially, but with the execution randomly
+switching from one thread to another at bytecode boundaries, just like
+in CPython.
+
+The explicit selection is closer to what was described in the previous
+section: someone --- the programmer or the author of some library that
+the programmer uses --- will explicitly put ``with thread.atomic:`` in
+the source, which delimitates an atomic block.  For example, we can use
+it to build a library that can be used to iterate over the keys of a
+dictionary: instead of iterating over the dictionary directly, we would
+use some custom utility which gives the elements "in parallel".  It
+would give them by using internally a pool of threads, but enclosing
+every single answer into such a ``with thread.atomic`` block.
 
 This gives the nice illusion of a global serialized order, and thus
-gives us a well-behaving model of our program's behavior.  The drawback
-is that we will usually have to detect and locate places that cause too
-many "conflicts" in the Transactional Memory sense.  A conflict causes
-the execution of one block of code to be aborted and restarted.
-Although the process is transparent, if it occurs more than
-occasionally, then it has a negative impact on performance.  We will
-need better tools to deal with them.
+gives us a well-behaving model of the program's behavior.  Let me
+restate this: the *only* semantical difference between ``pypy-stm`` and
+a regular PyPy or CPython is that it has ``thread.atomic``, which is a
+context manager that gives the illusion of forcing the GIL to not be
+released during the execution of the corresponding block of code.  Apart
+from this addition, they are apparently identical.
 
-The point here is that at any stage of this "improvement" process our
-program is *correct*, while it may not be yet as efficient as it could
+Of course they are only semantically identical if we ignore performance:
+``pypy-stm`` uses multiple threads and can potentially benefit from that
+on multicore machines.  The drawback is: when does it benefit, and how
+much?  The answer to this question is not always immediate.
+
+We will usually have to detect and locate places that cause too many
+"conflicts" in the Transactional Memory sense.  A conflict occurs when
+two atomic blocks write to the same location, or when ``A`` reads it,
+``B`` writes it, but ``B`` finishes first and commits.  A conflict
+causes the execution of one atomic block to be aborted and restarted,
+due to another block committing.  Although the process is transparent,
+if it occurs more than occasionally, then it has a negative impact on
+performance.
+
+There is no out-of-the-box perfect solution for solving all conflicts.
+What we will need is more tools to detect them and deal with them, data
+structures that are made aware of the risks of "internal" conflicts when
+externally there shouldn't be one, and so on.  There is some work ahead.
+
+The point here is that from the point of view of the final programmer,
+he gets conflicts that he should resolve --- but at any point, his
+program is *correct*, even if it may not be yet as efficient as it could
 be.  This is the opposite of regular multithreading, where programs are
 efficient but not as correct as they could be.  In other words, as we
 all know, we only have resources to do the easy 80% of the work and not
@@ -106,41 +152,47 @@ bugs, and we are left with obscure rare crashes.
 CPython and HTM
 ---------------
 
-Couldn't we do the same for CPython?  The problem here is that, at
-first, it seems we would need to change literally all places of the
-CPython C sources in order to implement STM.  Here are our options:
+Couldn't we do the same for CPython?  The problem here is that
+``pypy-stm`` is implemented as a transformation step during translation,
+which is not directly possible in CPython.  Here are our options:
 
-- We could review and change code everywhere in CPython.
+- We could review and change the C code everywhere in CPython.
 
-- We could use GCC 4.7, which supports some form of STM.
+- We use GCC 4.7, which supports some form of STM.
 
 - We wait until Intel's next generation of CPUs comes out ("Haswell")
   and use HTM.
 
-- We could write our own C code transformation (e.g. within a compiler
-  like LLVM).
+- We write our own C code transformation within a compiler (e.g. LLVM).
 
-The first solution is a "thanks but no thanks".  If anything, it will
-give another fork of CPython that is never going to be merged, that will
-painfully struggle to keep not more than 3-4 versions behind, and that
-will eventually die.
+I will personally file the first solution in the "thanks but no thanks"
+category.  If anything, it will give us another fork of CPython that
+will painfully struggle to keep not more than 3-4 versions behind, and
+then eventually die.  It is very unlikely to be ever merged into the
+CPython trunk, because it would need changes *everywhere*.  Not to
+mention that these changes would be very experimental: tomorrow we might
+figure out that different changes would have been better.
 
-The issue with the next two solutions is the same one: both of these are
-solutions that  small-scale transactions, but not long-running ones.  For
-example, I have no clue how to give GCC rules about performing I/O in a
-transaction --- this seems not supported at all; and moreover looking at
-the STM library that is available so far to be linked with the compiled
-program, it assumes short transactions only.
+Let us turn instead to the next two solutions.  Both of these solutions
+are geared toward small-scale transactions, but not long-running ones.
+For example, I have no clue how to give GCC rules about performing I/O
+in a transaction --- this seems not supported at all; and moreover
+looking at the STM library that is available so far to be linked with
+the compiled program, it assumes short transactions only.  By contrast,
+when I say "long transaction" I mean transactions that can run for 0.1
+seconds or more.  To give you an idea, in 0.1 seconds a PyPy program
+allocates and frees on the order of ~50MB of memory.
 
-Intel's HTM solution is both more flexible and more strictly limited.
-In one word, the transaction boundaries are given by a pair of special
-CPU instructions that make the CPU enter or leave "transactional" mode.
-If the transaction aborts, the CPU cancels any change, rolls back to the
-"enter" instruction and causes this instruction to return an error code
-instead of re-entering transactional mode (a bit like a ``fork()``).
-The software then detects the error code; typically, if only a few
-transactions end up being too long, it is fine to fall back to a
-GIL-like solution just to do these transactions.
+Intel's Hardware Transactional Memory solution is both more flexible and
+comes with a stricter limit.  In one word, the transaction boundaries
+are given by a pair of special CPU instructions that make the CPU enter
+or leave "transactional" mode.  If the transaction aborts, the CPU
+cancels any change, rolls back to the "enter" instruction and causes
+this instruction to return an error code instead of re-entering
+transactional mode (a bit like a ``fork()``).  The software then detects
+the error code.  Typically, if transactions are rarely cancelled, it is
+fine to fall back to a GIL-like solution just to redo these cancelled
+transactions.
 
 About the implementation: this is done by recording all the changes that
 a transaction wants to do to the main memory, and keeping them invisible
@@ -158,13 +210,19 @@ So what does it mean?  A Python interpreter overflows the L1 cache of
 the CPU very quickly: just creating new Python function frames takes a
 lot of memory (on the order of magnitude of 1/100 of the whole L1
 cache).  Adding a 256KB L2 cache into the picture helps, particularly
-because it is highly associative and thus avoids fake conflicts much
-better.  However, as long as the HTM support is limited to L1+L2 caches,
+because it is highly associative and thus avoids a lot of fake conflicts.
+However, as long as the HTM support is limited to L1+L2 caches,
 it is not going to be enough to run an "AME Python" with any sort of
-medium-to-long transaction (running for 0.01 second or longer).  It can
+medium-to-long transaction.  It can
 run a "GIL-less Python", though: just running a few hunderd or even
 thousand bytecodes at a time should fit in the L1+L2 caches, for most
 bytecodes.
+
+I would vaguely guess that it will take on the order of 10 years until
+CPU cache sizes grow enough for a CPU in HTM mode to actually be able to
+run 0.1-second transactions.  (Of course in 10 years' time a lot of other
+things may occur too, including the whole Transactional Memory model
+showing limits.)
 
 
 Write your own STM for C
@@ -187,15 +245,17 @@ multiple transactions have changed the same reference counter, but just
 resolve it automatically at commit time.  We are also free to handle I/O
 in the way we want.
 
-More generally, the advantage of this approach over the current GCC 4.7
-is that we control the whole process.  While this still looks like a lot
-of work, it looks doable.  It would be possible to come up with a
-minimal patch of CPython that can be accepted into core without too much
-troubles, and keep all the cleverness inside the compiler extension.
+More generally, the advantage of this approach over both the current GCC
+4.7 and over HTM is that we control the whole process.  While this still
+looks like a lot of work, it looks doable.  It would be possible to come
+up with a minimal patch of CPython that can be accepted into core
+without too much troubles (e.g. to mark immutable fields and tweak the
+refcounting macros), and keep all the cleverness inside the compiler
+extension.
 
 
-Conclusion?
------------
+Conclusion
+----------
 
 I would assume that a programming model specific to PyPy and not
 applicable to CPython has little chances to catch on, as long as PyPy is
@@ -205,3 +265,8 @@ become the main model of multicore usage in Python.  However, I can
 conclude with a more positive note than during the EuroPython
 conference: there appears to be a more-or-less reasonable way forward to
 have an AME version of CPython too.
+
+In the meantime, ``pypy-stm`` is around the corner, and together with
+tools developed on top of it, it might become really useful and used.  I
+hope that it will eventually trigger motivation for CPython to follow
+suit.
