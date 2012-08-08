@@ -11,25 +11,7 @@ from pypy.jit.metainterp.history import ConstInt
 from pypy.jit.tool.oparser import parse
 from pypy.rpython.lltypesystem import llmemory, lltype
 from pypy.tool import logparser
-
-
-def collect_logfiles(path):
-    if not os.path.isdir(path):
-        logs = [os.path.basename(path)]
-    else:
-        logs = os.listdir(path)
-    all = []
-    for log in logs:
-        parts = log.split(".")
-        if len(parts) != 3:
-            continue
-        l, exe, bench = parts
-        if l != "logbench":
-            continue
-        all.append((exe, bench, log))
-    all.sort()
-    return all
-
+from backenddata import collect_logfiles
 
 def collect_data(dirname, logs):
     for exe, name, log in logs:

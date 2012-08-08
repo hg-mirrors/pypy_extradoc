@@ -33,6 +33,8 @@ logs/backend_summary.csv: logs/logbench* tool/backenddata.py
 logs/bridge_summary.csv: logs/logbench* tool/bridgedata.py
 	@if ls logs/logbench* &> /dev/null; then python tool/bridgedata.py logs; fi
 
+logs/guard_summary.json: logs/logbench* tool/guarddata.py
+	@if ls logs/logbench* &> /dev/null; then python tool/guarddata.py logs; fi
 
 logs::
 	tool/run_benchmarks.sh
