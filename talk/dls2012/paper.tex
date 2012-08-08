@@ -63,7 +63,7 @@
 
 
 \newboolean{showcomments}
-\setboolean{showcomments}{true}
+\setboolean{showcomments}{false}
 \ifthenelse{\boolean{showcomments}}
   {\newcommand{\nb}[2]{
     \fbox{\bfseries\sffamily\scriptsize#1}
@@ -230,6 +230,7 @@ them very hard to follow.
 
 To motivate the approach we propose here, let's look at a trivial (unrealistic)
 trace which corresponds to an infinite loop:
+
 
 \begin{lstlisting}[mathescape,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
 $L_0$($i_{0}$):
@@ -983,17 +984,26 @@ version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python and in C and their
 runtimes are compared in Figure~\ref{fig:benchmarks}. The benchmarks are
 \begin{itemize}
-\item {\bf sqrt}: approximates the square root of $y$ as $x_\infty$
-  with $x_0=y/2$ and $x_k = \left( x_{k-1} + y/x_{k-1} \right) /
-  2$. There are three different versions of this benchmark where $x_k$
+\item {\bf sqrt}: approximates the square root of $y$. The approximation is 
+initiated to $x_0=y/2$ and the benchmark consists of a single loop updating this
+approximation using $x_i = \left( x_{i-1} + y/x_{i-1} \right) / 2$ for $1\leq i < 10^8$. 
+Only the latest calculated value $x_i$ is kept alive as a local variable within the loop.
+There are three different versions of this benchmark where $x_i$
   is represented with different type of objects: int's, float's and
   Fix16's. The latter, Fix16, is a custom class that implements
   fixpoint arithmetic with 16 bits precision. In Python there is only
   a single implementation of the benchmark that gets specialized
   depending on the class of it's input argument, $y$, while in C,
   there are three different implementations.
-\item {\bf conv3}: one-dimensional convolution with fixed kernel-size $3$.
-\item {\bf conv5}: one-dimensional convolution with fixed kernel-size $5$.
+\item {\bf conv3}: one-dimensional convolution with fixed kernel-size $3$. A single loop
+is used to calculate a vector ${\bf b} = \left(b_1, \cdots, b_n\right)$ from a vector
+${\bf a} = \left(a_1, \cdots, a_n\right)$ and a kernel ${\bf k} = \left(k_1, k_2, k_3\right)$ using 
+$b_i = k_3 a_i + k_2 a_{i+1} + k_1 a_{i+2}$ for $1 \leq i \leq n$. Both the output vector, $\bf b$, 
+and the input vectors, $\bf a$ and $\bf k$, are allocated prior to running the benchmark. It is executed 
+with $n=10^5$ and $n=10^6$.
+\item {\bf conv5}: one-dimensional convolution with fixed kernel-size $5$. Similar to conv3, but with 
+${\bf k} = \left(k_1, k_2, k_3, k_4, k_5\right)$. The enumeration of the elements in $\bf k$ is still 
+hardcoded into the implementation making the benchmark consist of a single loop too.
 \item {\bf conv3x3}: two-dimensional convolution with kernel of fixed
   size $3 \times 3$ using a custom class to represent two-dimensional
   arrays.
