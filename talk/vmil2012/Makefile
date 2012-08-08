@@ -1,5 +1,5 @@
 
-jit-guards.pdf: paper.tex paper.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/loop_bridge.pdf figures/guard_table.tex
+jit-guards.pdf: paper.tex paper.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/loop_bridge.pdf figures/guard_table.tex figures/resume_data_table.tex
 	pdflatex paper
 	bibtex paper
 	pdflatex paper

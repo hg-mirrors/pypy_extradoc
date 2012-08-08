@@ -15,6 +15,22 @@ def getlines(csvfile):
         return [l for l in reader]
 
 
+def build_resume_data_table(csvfiles, texfile, template):
+    assert len(csvfiles) == 1
+    lines = getlines(csvfiles[0])
+    table = []
+    head = ['Benchmark', 'compressed', 'naive', 'xz compressed']
+
+    for bench in lines:
+        res = [bench['bench'].replace('_', '\\_'),
+                "%.2f" % float(bench['total resume data size']),
+                "%.2f" % float(bench['naive resume data size']),
+                "%.2f" % float(bench['compressed resume data size']),
+        ]
+        table.append(res)
+    output = render_table(template, head, sorted(table))
+    write_table(output, texfile)
+
 def build_ops_count_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
     lines = getlines(csvfiles[0])
@@ -161,6 +177,8 @@ tables = {
             (['summary.csv'], build_ops_count_table),
         'guard_table.tex':
             (['summary.csv'], build_guard_table),
+        'resume_data_table.tex':
+            (['resume_summary.csv'], build_resume_data_table),
         }
 
 
