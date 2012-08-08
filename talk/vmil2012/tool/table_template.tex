@@ -1,6 +1,6 @@
 \begin{center}
 {\smaller
-    \begin{tabular}{ {%for c in head %} |l| {% endfor %} }
+    \begin{tabular}{ |l{% for c in head %} {% if not loop.first %} |r {% endif %} {% endfor %} }
     \hline
     {% for col in head %}
         \textbf{ {{col}} }
