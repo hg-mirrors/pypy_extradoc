@@ -237,9 +237,10 @@ mixed mode execution environments containing also an interpreter. The
 interpreter profiles the executed program and selects frequently executed code
 paths to be compiled to machine code. After profiling identified an interesting
 path, tracing is started, recording all operations that are executed on this
-path. Like in most compilers tracing JITs use an intermediate representation
-to store the recorded operations, which is typically in SSA form\todo{some ssa
-reference}. Since tracing follows actual execution the code that is recorded
+path. Like in most compilers tracing JITs use an intermediate representation to
+store the recorded operations, which is typically in SSA
+form~\cite{cytron_efficiently_1991}. Since tracing follows actual execution the
+code that is recorded
 represents only one possible path through the control flow graph. Points of
 divergence from the recorded path are marked with special operations called
 \emph{guards}, these operations ensure that assumptions valid during the
