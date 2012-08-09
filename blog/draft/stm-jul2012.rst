@@ -75,7 +75,8 @@ run serially.
 In Python, we don't care about the order in which the loop iterations
 are done, because we are anyway iterating over the keys of a dictionary.
 So we get exactly the same effect as before: the iterations still run in
-some random order, but --- and that's the important point --- in a
+some random order, but --- and that's the important point --- they
+appear to run in a
 global serialized order.  In other words, we introduced parallelism, but
 only under the hood: from the programmer's point of view, his program
 still appears to run completely serially.  Parallelisation as a
@@ -96,7 +97,7 @@ selected in one of two ways: either explicitly or automatically.
 
 The automatic selection gives blocks corresponding to some small number
 of bytecodes, in which case we have merely a GIL-less Python: multiple
-threads will appear to run serially, but with the execution randomly
+threads will appear to run serially, with the execution randomly
 switching from one thread to another at bytecode boundaries, just like
 in CPython.
 
@@ -108,11 +109,13 @@ it to build a library that can be used to iterate over the keys of a
 dictionary: instead of iterating over the dictionary directly, we would
 use some custom utility which gives the elements "in parallel".  It
 would give them by using internally a pool of threads, but enclosing
-every single answer into such a ``with thread.atomic`` block.
+every handling of an element into such a ``with thread.atomic`` block.
 
 This gives the nice illusion of a global serialized order, and thus
-gives us a well-behaving model of the program's behavior.  Let me
-restate this: the *only* semantical difference between ``pypy-stm`` and
+gives us a well-behaving model of the program's behavior.
+
+Restating this differently,
+the *only* semantical difference between ``pypy-stm`` and
 a regular PyPy or CPython is that it has ``thread.atomic``, which is a
 context manager that gives the illusion of forcing the GIL to not be
 released during the execution of the corresponding block of code.  Apart
@@ -121,9 +124,8 @@ from this addition, they are apparently identical.
 Of course they are only semantically identical if we ignore performance:
 ``pypy-stm`` uses multiple threads and can potentially benefit from that
 on multicore machines.  The drawback is: when does it benefit, and how
-much?  The answer to this question is not always immediate.
-
-We will usually have to detect and locate places that cause too many
+much?  The answer to this question is not immediate.  The programmer
+will usually have to detect and locate places that cause too many
 "conflicts" in the Transactional Memory sense.  A conflict occurs when
 two atomic blocks write to the same location, or when ``A`` reads it,
 ``B`` writes it, but ``B`` finishes first and commits.  A conflict
@@ -138,12 +140,12 @@ structures that are made aware of the risks of "internal" conflicts when
 externally there shouldn't be one, and so on.  There is some work ahead.
 
 The point here is that from the point of view of the final programmer,
-he gets conflicts that he should resolve --- but at any point, his
+we gets conflicts that we should resolve --- but at any point, our
 program is *correct*, even if it may not be yet as efficient as it could
 be.  This is the opposite of regular multithreading, where programs are
 efficient but not as correct as they could be.  In other words, as we
 all know, we only have resources to do the easy 80% of the work and not
-the remaining hard 20%.  So in this model you get a program that has 80%
+the remaining hard 20%.  So in this model we get a program that has 80%
 of the theoretical maximum of performance and it's fine.  In the regular
 multithreading model we would instead only manage to remove 80% of the
 bugs, and we are left with obscure rare crashes.
@@ -171,7 +173,8 @@ will painfully struggle to keep not more than 3-4 versions behind, and
 then eventually die.  It is very unlikely to be ever merged into the
 CPython trunk, because it would need changes *everywhere*.  Not to
 mention that these changes would be very experimental: tomorrow we might
-figure out that different changes would have been better.
+figure out that different changes would have been better, and have to
+start from scratch again.
 
 Let us turn instead to the next two solutions.  Both of these solutions
 are geared toward small-scale transactions, but not long-running ones.
@@ -214,7 +217,7 @@ because it is highly associative and thus avoids a lot of fake conflicts.
 However, as long as the HTM support is limited to L1+L2 caches,
 it is not going to be enough to run an "AME Python" with any sort of
 medium-to-long transaction.  It can
-run a "GIL-less Python", though: just running a few hunderd or even
+run a "GIL-less Python", though: just running a few hundred or even
 thousand bytecodes at a time should fit in the L1+L2 caches, for most
 bytecodes.
 
@@ -222,7 +225,7 @@ I would vaguely guess that it will take on the order of 10 years until
 CPU cache sizes grow enough for a CPU in HTM mode to actually be able to
 run 0.1-second transactions.  (Of course in 10 years' time a lot of other
 things may occur too, including the whole Transactional Memory model
-showing limits.)
+being displaced by something else.)
 
 
 Write your own STM for C
@@ -263,10 +266,10 @@ not the main Python interpreter (which looks unlikely to change anytime
 soon).  Thus as long as only PyPy has AME, it looks like it will not
 become the main model of multicore usage in Python.  However, I can
 conclude with a more positive note than during the EuroPython
-conference: there appears to be a more-or-less reasonable way forward to
-have an AME version of CPython too.
+conference: it is a lot of work, but there is a more-or-less reasonable
+way forward to have an AME version of CPython too.
 
 In the meantime, ``pypy-stm`` is around the corner, and together with
 tools developed on top of it, it might become really useful and used.  I
-hope that it will eventually trigger motivation for CPython to follow
-suit.
+hope that in the next few years this work will trigger enough motivation
+for CPython to follow the ideas.
