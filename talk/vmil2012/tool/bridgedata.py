@@ -20,6 +20,7 @@ def collect_data(dirname, logs):
         summary = logparser.extract_category(logfile, 'jit-summary')
         if len(summary) == 0:
             yield (exe, name, log, 'n/a', 'n/a')
+            continue
         summary = summary[0].splitlines()
         for line in summary:
             if line.startswith('Total # of bridges'):
