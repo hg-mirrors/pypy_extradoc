@@ -1,5 +1,5 @@
 
-jit-guards.pdf: paper.tex paper.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/loop_bridge.pdf figures/guard_table.tex figures/resume_data_table.tex
+jit-guards.pdf: paper.tex paper.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/loop_bridge.pdf figures/guard_table.tex figures/resume_data_table.tex figures/failing_guards_table.tex
 	pdflatex paper
 	bibtex paper
 	pdflatex paper
@@ -18,7 +18,7 @@ endif
 %.tex: %.py
 	pygmentize -l python -o $@ $<
 
-figures/%_table.tex: tool/build_tables.py logs/backend_summary.csv logs/summary.csv tool/table_template.tex logs/bridge_summary.csv logs/resume_summary.csv
+figures/%_table.tex: tool/build_tables.py logs/backend_summary.csv logs/summary.csv tool/table_template.tex logs/bridge_summary.csv logs/resume_summary.csv logs/guard_summary.json
 	tool/setup.sh
 	paper_env/bin/python tool/build_tables.py $@
 

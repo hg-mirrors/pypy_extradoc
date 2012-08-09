@@ -1,9 +1,10 @@
 from __future__ import division
 import csv
 import django
-from django.template import Template, Context
+import json
 import os
 import sys
+from django.template import Template, Context
 
 # This line is required for Django configuration
 django.conf.settings.configure()
@@ -13,6 +14,33 @@ def getlines(csvfile):
     with open(csvfile, 'rb') as f:
         reader = csv.DictReader(f, delimiter=',')
         return [l for l in reader]
+
+
+def build_failing_guards_table(files, texfile, template):
+    BRIDGE_THRESHOLD = 200
+    assert len(files) == 2
+    with open(files[1]) as f:
+        failures = json.load(f)
+    for l in getlines(files[0]):
+        failures[l['bench']]['nguards'] = float(l['number of guards'])
+
+    table = []
+    head = ['Benchmark',
+            'failing guards',
+            'over %d failures' % BRIDGE_THRESHOLD]
+
+    for bench, info in failures.iteritems():
+        total = failures[bench]['nguards']
+        total_failures = len(info['results'])
+        bridges = len([k for k,v in info['results'].iteritems() \
+                                            if v > BRIDGE_THRESHOLD])
+        res = [bench.replace('_', '\\_'),
+                "%.2f \\%%" % (100 * total_failures/total),
+                "%.2f \\%%" % (100 * bridges/total),
+        ]
+        table.append(res)
+    output = render_table(template, head, sorted(table))
+    write_table(output, texfile)
 
 
 def build_resume_data_table(csvfiles, texfile, template):
@@ -82,6 +110,7 @@ def build_benchmarks_table(csvfiles, texfile, template):
     assert len(csvfiles) == 2
     lines = getlines(csvfiles[0])
     bridge_lines = getlines(csvfiles[1])
+    # keep this around for the assertion bellow
     bridgedata = {}
     for l in bridge_lines:
         bridgedata[l['bench']] = l
@@ -178,6 +207,8 @@ tables = {
             (['summary.csv'], build_guard_table),
         'resume_data_table.tex':
             (['resume_summary.csv'], build_resume_data_table),
+        'failing_guards_table.tex':
+            (['resume_summary.csv', 'guard_summary.json'], build_failing_guards_table),
         }
 
 
