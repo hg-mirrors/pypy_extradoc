@@ -157,11 +157,11 @@ def build_backend_count_table(csvfiles, texfile, template):
     for l in resume_lines:
         resumedata[l['bench']] = l
 
-    head = ['Benchmark',
-            'Machine code size (kB)',
-            'hl resume data (kB)',
-            'll resume data (kB)',
-            'machine code resume data relation in \\%']
+    head = [r'Benchmark',
+            r'Code',
+            r'resume data',
+            r'll data',
+            r'relation']
 
     table = []
     # collect data
@@ -171,12 +171,12 @@ def build_backend_count_table(csvfiles, texfile, template):
         gmsize = float(bench['guard map size'])
         asmsize = float(bench['asm size'])
         rdsize = float(resumedata[name]['total resume data size'])
-        rel = "%.2f" % (asmsize / (gmsize + rdsize) * 100,)
+        rel = r"%.1f {\scriptsize \%%}" % (asmsize / (gmsize + rdsize) * 100,)
         table.append([
-            bench['bench'],
-            "%.2f" % (asmsize,),
-            "%.2f" % (rdsize,),
-            "%.2f" % (gmsize,),
+            r"%s" % bench['bench'],
+            r"%.1f {\scriptsize kB}" % (asmsize,),
+            r"%.1f {\scriptsize kB}" % (rdsize,),
+            r"%.1f {\scriptsize kB}" % (gmsize,),
             rel])
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
