@@ -608,7 +608,16 @@ We used the following benchmarks:
 \end{description}
 
 From the mentioned benchmarks we collected different datasets to evaluate the
-Frequency, the overhead and overall behaviour of guards.
+Frequency, the overhead and overall behaviour of guards, the results are
+summarized in the remainder of this section.
+
+\subsection{Frequency of Guards}
+\label{sub:guard_frequency}
+\begin{figure*}
+    \include{figures/benchmarks_table}
+    \caption{Benchmark Results}
+    \label{fig:benchmarks}
+\end{figure*}
 Figure~\ref{fig:benchmarks} summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
 operations are guards. The number of operations was counted on the unoptimized
@@ -618,28 +627,13 @@ is similar to the general one, as could be assumed based on
 Figure~\ref{fig:guard_percent}. These numbers show that guards are a rather
 common operation in the traces, which is a reason the put effort into
 optimizing them.
-\todo{some pie charts about operation distribution}
-
-\begin{figure*}
-    \include{figures/benchmarks_table}
-    \caption{Benchmark Results}
-    \label{fig:benchmarks}
-\end{figure*}
-
+\subsection{Overhead of Guards}
+\label{sub:guard_overhead}
 \begin{figure}
     \include{figures/resume_data_table}
     \caption{Resume Data sizes in KiB}
     \label{fig:resume_data_sizes}
 \end{figure}
-
-\begin{figure}
-    \include{figures/failing_guards_table}
-    \caption{Failing guards}
-    \label{fig:failing_guards}
-\end{figure}
-
-
-\todo{add a footnote about why guards have a threshold of 200}
 
 The overhead that is incurred by the JIT to manage the \texttt{resume data},
 the \texttt{low-level resume data} as well as the generated machine code is
@@ -667,11 +661,6 @@ code will be smaller than in other juts-in-time compilation approaches. Still
 the overhead associated to guards to resume execution from a side exit appears
 to be high.\bivab{put into relation to other JITs, compilers in general}
 
-\begin{figure*}
-    \include{figures/backend_table}
-    \caption{Total size of generated machine code and guard data}
-    \label{fig:backend_data}
-\end{figure*}
 
 Both figures do not take into account garbage collection. Pieces of machine
 code can be globally invalidated or just become cold again. In both cases the
@@ -680,6 +669,23 @@ show the total amount of operations that are evaluated by the JIT and the
 total amount of code and data that is generated from the optimized traces.
 
 \todo{compare to naive variant of resume data}
+
+\begin{figure}
+    \include{figures/backend_table}
+    \caption{Total size of generated machine code and guard data}
+    \label{fig:backend_data}
+\end{figure}
+
+\subsection{Guard Failures}
+\label{sub:guard_failure}
+\begin{figure}
+    \include{figures/failing_guards_table}
+    \caption{Failing guards}
+    \label{fig:failing_guards}
+\end{figure}
+
+
+\todo{add a footnote about why guards have a threshold of 200}
 
 \section{Related Work}
 \label{sec:Related Work}
