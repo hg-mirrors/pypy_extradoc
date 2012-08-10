@@ -708,11 +708,30 @@ large amount of guards present in the traces.
 
 \subsection{Guard Failures}
 \label{sub:guard_failure}
+The last point in this discussion is the frequency of guard failures.
+Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
+relative amounts of guards that ever fail and of guards that fail more than 200
+times. For guards that fail more than 200 times, as described before, a trace
+is recorded that starts from the guard, patching the guard so that later
+failures execute the new trace instead of taking the side-exit. Hence the
+numbers presented for guards that fail more than 200 times represent the 200
+failures up to the compilation of the bridge and all executions of the then
+attached bridge.
+
 \begin{figure}
     \include{figures/failing_guards_table}
     \caption{Failing guards}
     \label{fig:failing_guards}
 \end{figure}
+
+From Figure~\ref{fig:failing_guards} we can see that only a very small amount
+of all the guards in the optimized traces ever fail. This amount varies between
+2.4\% and 5.7\% of all guards. As can be expected, even less guards fail often
+enough that a bride is compiled for them, only 1.2\% to 3.6\% of all guards
+fail more than 200 times. Also of all failing guards a few fail extremely often
+and most fail rarely. The results emphasizes that as most of the guards never
+fail it is important to make sure that the successful execution of a guard does
+not have unnecessary overhead.
 
 
 \todo{add a footnote about why guards have a threshold of 200}
