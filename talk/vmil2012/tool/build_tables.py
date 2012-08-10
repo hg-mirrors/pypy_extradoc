@@ -35,8 +35,8 @@ def build_failing_guards_table(files, texfile, template):
         bridges = len([k for k,v in info['results'].iteritems() \
                                             if v > BRIDGE_THRESHOLD])
         res = [bench.replace('_', '\\_'),
-                "%.2f \\%%" % (100 * total_failures/total),
-                "%.2f \\%%" % (100 * bridges/total),
+                "%.1f \\%%" % (100 * total_failures/total),
+                "%.1f \\%%" % (100 * bridges/total),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
@@ -80,7 +80,7 @@ def build_ops_count_table(csvfiles, texfile, template):
                 values.append(o / ops[t] * 100)
 
             assert 100.0 - sum(values) < 0.0001
-            res.extend(['%.2f ' % v for v in values])
+            res.extend(['%.1f \\%%' % v for v in values])
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
@@ -89,7 +89,7 @@ def build_guard_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
     lines = getlines(csvfiles[0])
     table = []
-    head = ['Benchmark', 'guards b/o in \%', 'guards a/o in \%']
+    head = ['Benchmark', 'guards b/o', 'guards a/o']
 
     keys = 'numeric set get rest new guard '.split()
     for bench in lines:
@@ -99,7 +99,7 @@ def build_guard_table(csvfiles, texfile, template):
         res = [bench['bench'].replace('_', '\\_'),]
         for t in ('before', 'after'):
             o = int(bench['guard %s' % t])
-            res.append('%.2f ' % (o / ops[t] * 100))
+            res.append('%.1f \\%%' % (o / ops[t] * 100))
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
@@ -139,11 +139,11 @@ def build_benchmarks_table(csvfiles, texfile, template):
         res = [
                 bench['bench'].replace('_', '\\_'),
                 ops_bo,
-                "%.2f \\%%" % (guards_bo / ops_bo * 100,),
+                "%.1f \\%%" % (guards_bo / ops_bo * 100,),
                 ops_ao,
-                "%.2f \\%%" % (guards_ao / ops_ao * 100,),
-                "%.2f \\%%" % ((1 - ops_ao / ops_bo) * 100,),
-                "%.2f \\%%" % ((1 - guards_ao / guards_bo) * 100,),
+                "%.1f \\%%" % (guards_ao / ops_ao * 100,),
+                "%.1f \\%%" % ((1 - ops_ao / ops_bo) * 100,),
+                "%.1f \\%%" % ((1 - guards_ao / guards_bo) * 100,),
               ]
         table.append(res)
     output = render_table(template, head, sorted(table))
