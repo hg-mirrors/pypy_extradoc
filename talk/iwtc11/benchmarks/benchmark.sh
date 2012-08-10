@@ -16,6 +16,8 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$* -lstdc++" convolution/conv3x3.cc 1000 1000
     ./runner.py -n 5 -c "$* -lstdc++" convolution/dilate3x3.cc 1000 1000
     ./runner.py -n 5 -c "$* -lstdc++" image/sobel.cc 1000 1000
+    ./runner.py -n 5 -c "$*" scimark/run_SOR.c 100 32768
+    ./runner.py -n 5 -c "$*" scimark/run_SOR.c 1000 256
     rm a.out
 else
     if [ "$1" == "python2.7" ]; then
@@ -45,4 +47,6 @@ else
     #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage range
     #$* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded
     #$* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded uint8
+    $* ./runner.py $EXTRA_OPTS scimark.py SOR 100 32768
+    $* ./runner.py $EXTRA_OPTS scimark.py SOR 1000 256
 fi
