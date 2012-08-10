@@ -609,7 +609,7 @@ We used the following benchmarks:
 \end{description}
 
 From the mentioned benchmarks we collected different datasets to evaluate the
-Frequency, the overhead and overall behaviour of guards, the results are
+frequency, the overhead and overall behaviour of guards, the results are
 summarized in the remainder of this section. We want to point out three
 aspects of guards in particular
 \begin{itemize}
@@ -618,7 +618,7 @@ aspects of guards in particular
   \item Guard failures are local and rare.
 \end{itemize}
 
-All figures in this section do not take garbage collection into account. Pieces
+All figures in this section do not take garbage collection of machine code into account. Pieces
 of machine code can be globally invalidated or just become cold again. In both
 cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
@@ -642,10 +642,10 @@ optimization rate of guards, which is between 65.8\% and 86.2\% of the
 operations, are very similar, as could be assumed based on
 Figure~\ref{fig:guard_percent}. This indicates that the optimizer can remove
 most of the guards, but after the optimization pass guards still account for
-15.2\% to 20.2\% of the operations being compiled and later executed, the
-frequency of this operation makes it important to store the associated
+15.2\% to 20.2\% of the operations being compiled and later executed.
+The frequency of guard operations makes it important to store the associated
 information efficiently and also to make sure that guard checks are executed
-fast.
+quickly.
 
 \subsection{Overhead of Guards}
 \label{sub:guard_overhead}
@@ -667,7 +667,9 @@ are shared by all compiled traces. The size of the \texttt{low-level resume
 data} is the size of the compressed mapping from registers and stack to
 IR-level variables and finally the size of the \texttt{resume data} is an
 approximation of the size of the compressed high-level resume data as described
-in Section~\ref{sec:Resume Data}\todo{explain why it is an approximation}.
+in Section~\ref{sec:Resume Data}.\footnote{
+The size of the resume data is not measured at runtime, but reconstructed from
+log files.}
 
 For the different benchmarks the \texttt{low-level resume data} has a size of
 about 15\% to 20\% of the amount of memory compared to the size of the
@@ -688,16 +690,16 @@ compared to the illustrates why it is important to compress this information.
 \end{figure}
 
 Why the efficient storing of the \texttt{resume data} is a central concern in the design
-of guards is illustrated by Figure~\ref{fig:backend_data}, this Figure shows
+of guards is illustrated by Figure~\ref{fig:backend_data}. This figure shows
 the size of the compressed \texttt{resume data}, the approximated size of
-storing the \texttt{resume data} without compression and the size of
-compressing the data to calculate the size of the resume data using the
+storing the \texttt{resume data} without compression and
+an approximation of the best possible compression of the resume data by
+compressing the data using the
 \texttt{xz} compression tool, which is a ``general-purpose data compression
-software with high compression ratio'' used to approximate the best possible
-compression for the \texttt{resume data}.\footnote{\url{http://tukaani.org/xz/}}.
+software with high compression ratio''.\footnote{\url{http://tukaani.org/xz/}}
 
 The results show that the current approach of compression and data sharing only
-requires 18.3\% to 31.1\% of the space compared to the naive approach. This
+requires 18.3\% to 31.1\% of the space compared to a naive approach. This
 shows that large parts of the resume data are redundant and can be stored more
 efficiently through using the techniques described above. On the other hand
 comparing the results to the xz compression which only requires between 17.1\%
@@ -711,8 +713,12 @@ large amount of guards present in the traces.
 The last point in this discussion is the frequency of guard failures.
 Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
 relative amounts of guards that ever fail and of guards that fail more than 200
-times. For guards that fail more than 200 times, as described before, a trace
-is recorded that starts from the guard, patching the guard so that later
+times.\footnote{
+    The threshold of 200 is rather high. It was picked experimentally to give
+    good results for long-running programs.
+}
+As described before, for guards that fail more than 200 times, a trace
+is recorded that starts from the guard. Afterwards the guard is patched so that later
 failures execute the new trace instead of taking the side-exit. Hence the
 numbers presented for guards that fail more than 200 times represent the 200
 failures up to the compilation of the bridge and all executions of the then
@@ -733,8 +739,6 @@ and most fail rarely. The results emphasizes that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
 
-
-\todo{add a footnote about why guards have a threshold of 200}
 
 \section{Related Work}
 \label{sec:Related Work}
