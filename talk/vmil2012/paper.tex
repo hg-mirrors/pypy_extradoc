@@ -769,7 +769,9 @@ of snapshots for every guard to reduce memory pressure. Snapshots are only
 created for guards after updates to the global state, after control flow points
 from the original program and for guards that are likely to fail. As an outlook
 Pall mentions the plans to switch to compressed snapshots to further reduce
-redundancy.
+redundancy. The approach of not creating snapshots at all for every guard is
+orthogonal to the resume data compression presented in this paper and could be
+reused within RPython to improve the memory usage further.
 
 Linking side exits to pieces of later compiled machine code was described first
 in the context of Dynamo~\cite{Bala:2000wv} under the name of Fragment Linking.
