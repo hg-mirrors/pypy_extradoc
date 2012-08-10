@@ -1,0 +1,36 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2006/cfp.html
+DEADLINE: 15th September 2006 (friday)
+
+Name: Armin Rigo
+
+Public Name: Armin Rigo
+
+Other Names: arigo on irc.freenode.org 
+
+Primary E-Mail address: arigo@tunes.org
+
+Phone number(s): -
+
+Statement: publishing contact info is fine with me.
+
+Public home page, weblog and other speaker-related websites: 
+    
+    http://codespeak.net/pypy
+
+Short Info: 
+
+    Armin Rigo, developer of PyPy, Heinrich-Heine Universität Düsseldorf
+
+Bio: 
+
+    Armin was born in 1976 in Lausanne, Switzerland.  He is officially a
+    researcher at the University of Düsseldorf and works from various
+    places around Europe.  He studied and Ph.D.ed in Mathematics.  At
+    that time, he was the author of QuArK, a Quake map editor.
+    Afterwards, he worked on various programs and hacks that are more
+    specifically oriented towards programming languages, mostly Python.
+
+Postal address: Armin Rigo, App 22, c/o Hallén/Creighton,
+                Linnégatan 55, 413 08 Göteborg, Sweden
+
+Expected day of arrival and departure: 27th-30th December. 

@@ -1,0 +1,226 @@
+
+Amsterdam Sprint 14-21 Dec. 2003
+--------------------------------
+
+Here is a mail-report from Holger Krekel sent to pypy-dev. 
+ 
+Hello PyPy,
+
+the Amsterdam sprint has just finished and here is a report and some
+surrounding and outlook information. As usual please comment/add/correct
+me - especially the sprinters.  I also wouldn't mind some discussion of
+what and how we could do things better at the next sprint.  First of
+all, big thanks to *Etienne Posthumus* who patiently helped organizing
+this sprint even though he had to deal with various other problems at
+the same time. 
+
+Before i start with details i recommend reading through the new
+Architecture document at
+
+    http://codespeak.net/pypy/index.cgi?doc/architecture.html
+
+in case you don't know what i am talking about regarding the Amsterdam
+sprint results :-)
+
+Originally, we intended to go rather directly for translation and thus
+for a first release of PyPy.  But before the sprint we decided to
+go differently about the sprint not only because Michael Hudson and
+Christian Tismer had to cancel their participation but we also wanted to
+give a smooth introduction for the new developers attending the sprint. 
+Therefore we didn't press very hard at translation and type inference 
+and major suprises were awaiting us anyway ... 
+
+
+fixing lots and lots of bugs, adding more builtins and more introspection
+-------------------------------------------------------------------------
+
+On this front mainly Alex Martelli, Patrick Maupin, Laura Creighton and 
+Jacob Hallen added and fixed a lot of builtins and modules and made it
+possible to run - among other modules - the pystone benchmark: on most machines
+we have more than one pystone with PyPy already :-)  While trying to
+get 'long' objects working Armin and Samuele realized that the StdObjSpace 
+multimethod mechanism now desparately needs refactoring.  Thus the current
+"long" support is just another hack (TM) which nevertheless allows to execute
+more of CPython's regression tests. 
+
+In a releated effort, Samuele and yours truly made introspection of
+frames, functions and code objects compatible to CPython so that the
+"dis.dis(dis.dis)" goal finally works i.e can be run through
+PyPy/StdObjSpace. This is done by the so called pypy\_ protocol which
+an object space uses to delegate operations on core execution objects
+(functions, frames, code ...) back to the interpreter. 
+
+redefining our standard type system at application level
+--------------------------------------------------------
+
+Originally we thought that we could more or less easily redefine the python
+type objects at application level and let them access interpreter level
+objects and implementations via some hook. This turned out to be a
+bootstrapping nightmare (e.g. in order to instantiate classes you need
+type objects already but actually we want our first classes to define
+exactly those).  While each particular problem could be worked around 
+somehow Armin and Samuele realized they were opening a big can of worms ...
+and couldn't close it in due time. 
+
+The good news is that after lots of discussions and tossing ideas around
+we managed to develop a new approach (see the end of the report) which
+raised our hopes we can finally define the types at application level 
+and thus get rid of the ugly and hard to understand interpreter level
+implementation. 
+
+Improving tracing and debugging of PyPy
+---------------------------------------
+
+With PyPy you often get long tracebacks and other problems which make
+it hard to debug sometimes.  Richard Emslie, Tomek Meka and me implemented 
+a new Object Space called "TraceObjSpace" which can wrap the Trivial and 
+Standard Object Space and will trace all objectspace operations as well as 
+frame creation into a long list of events.  Richard then in a nightly hotel
+session wrote "tool/traceinteractive.py" which will nicely reveal
+what is going on if you execute python statements: which frames are created
+which bytecodes are executed and what object space operations are involved. 
+Just execute traceinteractive.py (with python 2.3) and type some random function 
+definition and see PyPy's internals at work ...  It only works with python 2.3
+because we had to rewrite python's dis-module module to allow programmatic access
+to dissassembling byte codes. And this module has considerably changed 
+from python 2.2 to 2.3 (thanks, Michael :-) 
+
+"finishing" the Annotation refactoring
+--------------------------------------
+
+That should be easy, right?  Actually Guido van Rossum and Armin had
+started doing type inference/annotation in Belgium just before
+EuroPython and we have since refactored it already at the Berlin sprint
+and in between the sprints several times.  But it turned out that
+Annotations as we did them are *utterly broken* in that we try to do a
+too general system (we had been talking about general inference engines
+and such) thus making "merging" of two annotations very hard to do in
+a meaningful way. But after beeing completly crushed on one afternoon, Samuele
+and Armin came up with a new *simpler* approach that ... worked and 
+promises to not have the same flaws.  It got integrated into the 
+translator already and appears to work nicely. 
+
+I think this is the fourth refactoring of just "three files" and, of course, we
+already have the 'XXX' virus spreading again :-) 
+
+refactoring/rewriting the test framework
+----------------------------------------
+
+PyPy has an ever increasing test-suite which requires a lot of flexibility 
+that the standard unittest.py module just doesn't provide.  Currently, we have 
+in tool/test.py and interpreter/unittest_w.py a collection of more or less
+weird hacks to make our (now over 500) tests run either at interpreter level 
+or at application level which means they are actually interpreted by PyPy. 
+Tests from both levels can moreover be run with different object spaces. 
+Thus Stefan Schwarzer and me came up with a rewrite of unittest.py which
+is currently in 'newtest.py'.  During my train ride back to germany i 
+experimentally used our new approach which let our tests run 
+around 30% faster (!) as a side effect.  More about this in separate mails
+as this is - as almost every other area of PyPy - refactoring-in-progress. 
+
+Documentation afternoon
+-----------------------
+
+We (apart from Richard who had a good excuse :-) also managed on Friday
+to devote a full afternoon to documentation.  There is now an emerging
+"architecture" document, a "howtopypy" (getting started) and a "goals"
+document here:
+
+    http://codespeak.net/pypy/index.cgi?doc
+
+Moreover, we deleted misleading or redundant wiki-pages. In case you miss
+one of them you can still access them through the web by following 
+"Info on this page" and "revision history".  
+
+We also had a small lecture from Theo de Ridder who dived into 
+our flowgraph and came up with some traditional descriptions from 
+compiler theory to describe what we are doing. He also inspired us with
+some other nice ideas and we certainly hope he revisits the projects
+and continues to try to use it for his own purposes. 
+
+There of course is no question that we still need more higher 
+level documentation. Please don't use the wiki for serious 
+documentation but make ReST-files in the doc-subtree. I guess 
+that we will make the "documentation afternoon" a permanent 
+event on our sprints. 
+
+Towards more applevel code ...
+------------------------------
+
+As mentioned before the approach of defining the python types at
+application level didn't work out as easy as hoped for.  But luckily, we
+had - again in some pub - the rescuing idea: a general mechanism that
+lets us trigger "exec/eval" of arbitrary interpreter level code given
+as a string.  Of course this by itself is far too dynamic to be
+translatable but remember: we can perform *arbitrarily dynamic* pythonic
+tricks while still *initializing* object spaces and the interpreter.  
+Translation will start with executing the initialized interpreter/objspace
+through another interpreter/flowobjspace instance. 
+
+Some hacking on the last day showed that this new approach makes the
+definition of "builtin" modules a lot more pythonic: modules are not
+complicated class instances anymore but really look like a normal module
+with some "interpreter level escapes".  It appears now that in combination
+with some other considerations we will finally get to "types.py" defining
+the python types thus getting rid of the cumbersome 10-12 type.py files
+in objspace/std.  There are still some XXX's to fight, though.  
+
+Participants 
+------------
+
+    Patrick Maupin 
+
+    Richard Emslie
+
+    Stefan Schwarzer
+
+    Theo de Ridder
+
+    Alex Martelli
+
+    Laura Creighton
+
+    Jacob Hallen
+
+    Tomek Meka
+
+    Armin Rigo
+
+    Guenter Jantzen
+
+    Samuele Pedronis
+
+    Holger Krekel
+
+and Etienne Posthumus who made our Amsterdam Sprint possible. 
+
+outlook, what comes next? 
+-------------------------
+
+On the Amsterdam sprint maybe more than ever we realized how strongly 
+refactoring is the key development activity in PyPy. Watch those "XXX" :-)
+Some would argue that we should instead think more about what we are doing 
+but then you wouldn't call that extreme programming, would you? 
+
+However, we haven't fixed a site and date for the next sprint, yet. We would 
+like to do it sometime February in Suitzerland on some nice mountain but there hasn't
+emerged a nice facility, yet.  Later in the year we might be able to do a
+sprint in Dublin and of course one right before EuroPython in Sweden.
+Btw, if someone want to offer helping to organize a sprint feel free 
+to contact us. 
+
+Also there was some talk on IRC that we might do a "virtual sprint" so
+that our non-european developers can more easily participate. This would
+probably mean doing screen-sessions and using some Voice-over-IP
+technology ... we'll see what will eventually evolve.  After all, we
+might also soon get information from the EU regarding our recent
+proposal which should make sprint planning easier in the long run.
+We'll see.
+
+For now i wish everyone some nice last days of the year which has 
+been a fun one regarding our ongoing pypy adventure ...
+
+cheers,
+
+    holger (who hopes he hasn't forgotten someone or something ...)
+

@@ -1,0 +1,27 @@
+{\noop
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+class VersionTag(object):
+    pass
+
+class Class(object):
+    def __init__(self, name):
+        self.name = name
+        self.methods = {}
+        self.version = VersionTag()
+
+    def find_method(self, name):
+        promote(self)
+        version = self.version
+        promote(version)
+        return self._find_method(name, version)
+
+    @elidable
+    def _find_method(self, name, version):
+        assert version is self.version
+        return self.methods.get(name, None)
+
+    def write_method(self, name, value):
+        self.methods[name] = value
+        self.version = VersionTag()
+\end{lstlisting}
+}

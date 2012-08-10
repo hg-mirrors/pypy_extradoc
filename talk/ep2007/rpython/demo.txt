@@ -1,0 +1,39 @@
+# CarbonPython live demo
+
+$ cat func.py
+from carbonpython import export
+import time
+
+@export(int)
+def fn(N):
+    t1 = time.clock()
+    z = 0
+    for index in xrange(N):
+        x = 2.34+index
+        y = 3.45+index
+        z = (x*x)+(y*y)+index
+    t2 = time.clock()
+    print t2-t1, 'seconds'
+    return z
+
+$ carbonpython.py func.py mylib.dll
+...
+
+$ ipy
+IronPython 1.0 (1.0) on .NET 2.0.50727.42
+Copyright (c) Microsoft Corporation. All rights reserved.
+>>> import clr
+>>> clr.AddReferenceToFile('mylib.dll')
+>>>
+>>> import func
+>>> import mylib
+>>>
+>>> N = 10**7
+>>> print func.fn(N)
+7.770177 seconds
+2.000000858e+014
+>>> print mylib.fn(N)
+0.25608 seconds
+2.000000858e+014
+>>> 7.770177 / 0.25608
+30.3427717901

@@ -1,0 +1,59 @@
+Escape analysis in PyPy's JIT
+=============================
+
+XXX
+
+- should probably start by describing the setting more: ie linear traces from
+  the tracing  interpreter, either a loop or a bridge
+- traces can have guards that leave the trace (so that the state reconstruction
+  explanation has context)
+- introduce the running example interpreter and probably show some traces
+  before optimizations
+
+
+One of the major problems of Python's performance is costs of allocating
+objects. Even though PyPy's garbage collector is pretty good, especially
+for short lived objects, the costs of allocations are still relatively
+high to e.g. arithmetics. In this post we describe `escape analysis`_
+performed by PyPy's JIT to avoid allocating objects that does not escape from
+the JIT context.
+
+Let's start from the simplest example. Imagine you have a sequence of
+operations in pseudocode, roughly like this:
+
+s = malloc(S)
+s.x = 3
+s.y = 5
+return s.x + s.y
+
+As we can see here, the structure s does not escape the whole block. It's
+allocated and then immediately forgot. In fact we could rewrite the block
+such as:
+
+x = 3
+y = 5
+return x + y
+
+or doing constant folding:
+
+return 8
+
+This is all good and easy, but what happens if there is a possible place to
+exit from the JIT to the interpreter somewhere in the middle?
+
+[i as inputarg]
+s = malloc(S)
+s.x = 3
+s.y = 5
+guard_value(i, 5)
+return s.x + s.y
+
+Here, we would continue running the JIT if i keeps it's value at 5. In case
+this value is different, we need to come back to the interpreter, which may
+do something else with object s. However, if we perform escape analysis, we
+happen to know where we store fields of structure s (x and y), so in case
+of guard failure we can reconstruct s when exiting the JIT.
+
+XXX
+
+.. _`escape analysis`: http://en.wikipedia.org/wiki/Escape_analysis

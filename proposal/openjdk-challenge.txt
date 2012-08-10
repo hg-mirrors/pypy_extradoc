@@ -1,0 +1,251 @@
+Porting the PyPy JIT to JVM and MLVM
+====================================
+
+PyPy and its JIT generator
+--------------------------
+
+PyPy_ is an open source research project that aims to produce a
+flexible and fast implementation of the Python language.
+
+PyPy is divided into two main parts: the Python interpreter, which
+implements the Python language and is written in RPython_, and the
+Translation Toolchain (TT), written in Python, which transforms and
+translates programs written in RPython into the final executables.
+RPython is a subset of Python specifically designed to allow the TT to
+analyze RPython programs and translate them into lower level, very
+efficient executables.
+
+Currently, the TT of PyPy provides three complete backends that
+generate C code, bytecode for CLI/.NET or bytecode for the JVM.  By
+using these backends, we can get Python implementations that run on a
+standard C/Posix environment, on the CLI or on the JVM.
+
+It is important to underline that the job of the TT is not limited to
+translation into an efficient executable, but it actively transforms
+the source interpreter by adding new features and translation aspects,
+such as garbage collection, microthreading (like `Stackless Python`_),
+etc.
+
+The most exciting feature of the TT is the ability to apply partial
+evaluation techniques to automatically turn the interpreter into a JIT
+compiler which generates efficient code dynamically.  The key idea
+behind the PyPy JIT is to systematically delay compilation until we know all the
+information useful for emitting optimized code, thus being potentially
+much more efficient than all the current other alternatives (see the
+"Related Work" section). This is done using a mechanism which can be seen as a
+generalized version of polymorphic inline caches.
+
+Currently, the PyPy JIT works only in conjunction with the C backend.
+Early results are very good. The resulting Python interpreter
+can run numerically intensive computations at roughly the same speed of C,
+as shown by the `technical report`_ on the JIT.
+
+Moreover, there is an experimental JIT backend that emits code for the
+CLI; it is still a work in progress and very incomplete, but it shows
+that it is possible to adapt the PyPy JIT to emit code for object
+oriented virtual machines.
+
+
+Porting the JIT to the JVM
+--------------------------
+
+The goal of this proposal is to extend the PyPy JIT to work in
+conjunction with the JVM backend.  After the work has been completed,
+it will be possible to translate the interpreter into a Python
+implementation that runs on top of the JVM and contains a JIT; the JIT
+will dynamically translate part of Python programs into JVM bytecode,
+which will then be executed by the underlying virtual machine.
+
+
+Porting the JIT to the MLVM
+---------------------------
+
+As stated above, PyPy JIT for JVM would work by dynamically emitting
+and loading JVM bytecode at runtime.  Even if this approach has been
+tried in a couple of projects (see the "Related Work" section), it has
+to been said that the JVM was not originally designed for such
+applications; for example, the process of loading a single method is
+very expensive, since it involves the creation and loading of a
+surrounding class.
+
+The new Da Vinci Machine contains a lot of interesting features that
+could be effectively exploited by the PyPy JIT to produce an even more
+efficient implementation of the Python language, as `John Rose said`_
+after the talk with PyPy people.
+
+Features of the MLVM that could be exploited by PyPy JIT include but
+are not limited to: dynamic invocation, lightweight bytecode loading,
+tail calls, etc.
+
+Implementation-wise, the JIT backends for the plain JVM and for the
+MLVM could share most of the code, with the latter making use of the
+special features when needed.
+
+Moreover, the experience of this project will help the MLVM team to
+understand which features are really useful to implement dynamic
+languages on top of the JVM and which one we still lack.
+
+
+Deliverables
+------------
+
+Due to the its strict dependency on PyPy, it will not possible to
+release the result of the work as a separate and independent project.
+In particular, to reach the goals of the proposal it will be necessary
+to extensively modify parts of PyPy that are already there, as well as
+write completely new code.
+
+If the project goes to completion, the code developed will be
+integrated into the PyPy codebase; if Sun requires us to release the code
+under the SCA (thus sharing the copyright between the original author
+and Sun itself), we will send to Sun a document in unified diff format
+that extensively shows all and sole lines of code on which Sun will
+have the copyright.
+
+PyPy is already licensed under the extremely permissive MIT license,
+so there are no legal copyright barriers preventing us from sharing
+code in such a way.
+
+
+Project completion
+------------------
+
+The PyPy JIT is still under heavy development; potentially, the resulting
+JIT compiler will be able to optimize a large number of Python
+programs, but at the moment it gives the best results only with
+computational intensive functions that use only operations between
+integers.
+
+We expect to get a pypy-jvm executable that can execute a function
+with those characteristics at roughly the same speed as its equivalent
+written in Java, excluding the costs of the JIT compilation itself,
+which have not been optimized yet.
+
+For an example of a function with is highly optimized by the PyPy JIT,
+look at the `function f1`_: when executed by a pypy-c compiled with
+JIT support, it runs roughly at the same speed as its C equivalent
+compiled with `gcc -O0`.
+
+Supporting and thus speeding up more parts of the Python language
+is a separate task and since it requires changes to the
+interpreter, it is out of the scope of this proposal. It is important
+to underline that this work is independent from the backend being used,
+so once the PyPy interpreter is fully optimized for the
+JIT, PyPy for the JVM will automatically take advantage of these improvements
+without needing to change the JIT backend for the JVM.
+
+We also expect to find benchmarks in which the JIT that targets the
+MLVM will perform better than the JIT that targets the plain JVM,
+though it is hard to specify a precise commitment here without knowing
+which features of the MLVM will be possible to use.
+
+
+Relevance to the community
+--------------------------
+
+To have a working JIT for the JVM is an important step towards making PyPy
+the fastest Python for the JVM.  Moreover, due to the innovative
+ideas implemented by PyPy, it is likely that Python could become
+the fastest dynamic language of its class that runs on the top of the JVM.
+
+Finally, PyPy is not limited to Python: it is entirely possible to
+write interpreters for languages other than Python and translate them
+with the TT; as a proof of concept, PyPy already contains
+implementations of Prolog, Smalltalk, JavaScript and Scheme, with
+various degrees of completeness.
+
+Since the JIT generator is independent of the Python languages, it
+will be possible to automatically add a JIT compiler to every language
+written using the PyPy TT; thus, PyPy could become a very attractive
+environment to develop dynamic languages for the JVM.
+
+
+Dependencies on Sun
+-------------------
+
+There are no dependencies on Sun regarding the implementation of a JIT
+compiler that targets the plain JVM.  However, in order to implement a
+JIT compiler that targets the new MLVM, we need the new features we
+want to exploit to be implemented.
+
+Related work
+------------
+
+Dynamic generation of bytecode for object oriented virtual machine is
+a hot topic:
+
+  - `this paper`_ shows how this technique is exploited to write an
+    efficient implementation of EcmaScript which runs on top of the JVM;
+
+  - Jython compiles Python source code to JVM bytecode; however,
+    unlike most compilers, the compilation phase occurs when the JVM
+    has already been started, by generating and loading bytecode on
+    the fly; despite emitting code at runtime, this kind of compiler
+    really works ahead of time (AOT), because the code is fully
+    emitted before the (Python) program starts, and it doesn't exploit
+    additional informations that would be available only at runtime
+    (most importantly informations about the types that each variable can
+    assume);
+
+  - JRuby supports interpretation, AOT compilation and JIT
+    compilation; when the JIT compilation is enabled, JRuby interprets
+    methods until a call threshold is reached, then it compiles the
+    method body to JVM bytecode to be executed from that point on;
+    however, even if the compilation is truly just in time, JRuby
+    doesn't exploit type information that is known only at runtime to
+    produce specialized, efficient versions of the function;
+
+  - in the .NET world, IronPython works more or less as Jython;
+    additionally, it exploits dynamic code generation to implement
+    `Polymorphic Inline Caches`_.
+
+The PyPy JIT is different from all of these, because runtime and compile
+time are continuously intermixed; by waiting until the very last
+possible moment to emit code, the JIT compiler is able to exploit all
+the runtime information, including that which is only available late
+in the process, e.g. the
+exact type of all the variables involved; thus, it can generate many
+specialized, fast versions of each function, which in theory could run
+at the same speed of manually written Java code.
+
+Moreover, the JIT compiler is automatically generated by the TT: we
+believe, based on previous experiences with Psyco_, that manually
+writing a JIT compiler of that kind is hard and error prone,
+especially when the source language is as complex as Python; by
+writing a JIT compiler generator, we get JIT compilers that are
+correct by design for all languages implemented through the TT for
+free.
+
+
+Developers
+----------
+
+Antonio Cuni (anto.cuni@gmail.com) is one of the core developers of
+PyPy; he is the main author of the CLI backend, and the coauthor of
+the JVM backend; recently, he began working on an experimental CLI
+backend for the JIT.  Currently, he is a PhD student at Univeristà
+degli Studi di Genova, doing research in the area of implementation of
+dynamic languages on top of object oriented virtual machines.
+
+Carl Friedrich Bolz (cfbolz@gmx.de) also is a core developer of
+PyPy. He worked on various areas including the garbage collectors,
+optimizations and the Python interpreter. He is currently doing a
+Master's thesis at the Heinrich-Heine-Universität Düsseldorf about
+improving PyPy's JIT compiler generator.
+
+Nicholas Matsakis (nicholas.matsakis@inf.ethz.ch) is also a core developer of
+PyPy.  He was the primary developer of the current JVM backend for PyPy, and
+has participated in several PyPy sprints on various topics.  He is currently
+doing his PhD at ETH Zurich under the tutelage of Professor Thomas Gross.
+
+.. _PyPy: http://codespeak.net/pypy
+.. _RPython: http://codespeak.net/pypy/dist/pypy/doc/coding-guide.html#rpython 
+.. _`Stackless Python`: http://www.stackless.com/
+.. _`technical report`: http://codespeak.net/pypy/extradoc/eu-report/D08.2_JIT_Compiler_Architecture-2007-05-01.pdf
+.. _`John Rose said`: http://blogs.sun.com/jrose/entry/a_day_with_pypy
+.. _Jython: http://www.jython.org
+.. _`function f1`: http://codespeak.net/svn/pypy/dist/demo/jit/f1.py
+.. _`this paper`: http://www.ics.uci.edu/~franz/Site/pubs-pdf/ICS-TR-07-10.pdf
+.. _`Polymorphic Inline Caches`: http://www.cs.ucsb.edu/~urs/oocsb/papers/ecoop91.pdf
+.. _Psyco: http://psyco.sourceforge.net/
+

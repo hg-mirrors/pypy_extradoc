@@ -1,0 +1,5 @@
+\begin{titlepage}
+\begin{figure}[h]
+\includegraphics[width=60px]{../../../logo/pypy_small128.png}
+\end{figure}
+\end{titlepage}

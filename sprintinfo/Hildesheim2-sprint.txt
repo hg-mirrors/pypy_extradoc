@@ -1,0 +1,46 @@
+Hildesheim2 PyPy sprint 
+======================================================
+
+The next internal PyPy sprint is scheduled 25th-31st July 2005 
+at Trillke-Gut, Hildesheim, Germany.  Its focus will be 
+intensely working on getting a self-contained PyPy version. 
+
+Currently scheduled to come:: 
+
+    Armin Rigo 23rd-1st
+    Samuele Pedroni 24th-1st 
+    Christian Tismer 25th-31st (?)
+    Carl Friedrich Bolz 24th-31st (not there on 27th) 
+    Holger Krekel 24th-31st 
+    Richard Emslie 24th-1st 
+
+Anyone, who is somewhat experienced with PyPy already, 
+is invited to come.  For new people it will make more 
+sense to attend the next big public sprint in Heidelberg
+(also Germany) end of August. 
+
+Location & Accomodation  
+------------------------ 
+
+The sprint will be held in the merlinux offices (or in a larger 
+room if more people decide to come). 
+
+Holger tries to organize private accomodation for all participants. 
+However, attendees should be prepared to share a room with
+another participant.  Also the rooms will be located in a
+living group (german WG).  If you want something more separate
+or private, ask holger to look for a hotel closeby. 
+
+Getting there 
+-----------------
+
+Take a train to "Hildesheim Hauptbahnhof" (there are ICE's from 
+Berlin and the south of germany, or trains from Hannover, use 
+http://www.bahn.de to plan).  Then take the bus number 3 
+direction "Hildesheimer Wald" and get out at "Waldquelle". 
+The full address is:: 
+
+    Trillke-Gut 
+    Steinbergstr. 42
+    31139 Hildesheim 
+

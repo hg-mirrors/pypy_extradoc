@@ -1,0 +1,91 @@
+Just some quick (and probably confused) notes about went on at the 
+Hildesheim sprint day 1. Corrections welcome.
+As in Gothenburg we tried to write an evolving file that listed all the 
+tasks:
+
+http://codespeak.net/svn/pypy/extradoc/sprintinfo/hildesheim2-planning.txt
+
+somehow we didn't get very far and decided that we just would all work 
+on rtyper issues. The following people are here: Hogler, Armin, Samuele, 
+Christian, Richard, Carl Friedrich.
+
+Holger and Richard paired and started removing some amount of faking 
+in PyPy. They did this by removing the usage of file as well as 
+stdout/stdin in the PyPy interpreter and resorting to the os primitives 
+instead, which can be more easily translated to C.
+
+Armin and Christian worked on various rtyper issues. They worked on 
+unicode, fixed hashing for numerical types, and worked on marshal.
+
+Samuele and me worked on external functions. We cleaned up some of the 
+hooks that were there before the current external function mechanism and 
+implemented some math and os function for the C backend so that you can 
+now actually use some of the primitive file operations like fdopen, 
+stat, write... without using the CPython API.
+
+Cheers,
+
+Carl Friedrich
+
+Hi folks, 
+
+the end of the world is near ... 
+following up on Carl's day 1 report here are the main results
+of what happened up until now at the hildesheim2 sprint (we are
+in the break day currently which we spent in the city, at
+Wing-Tsun lessons or at family meetings). 
+
+The main results so far are: 
+
+- any faking can be removed now with 
+
+    python2.4 py.py --file --nofakedmodules 
+
+  so on the trunk you should see no 'faking' messages
+  during startup anymore. It will take some time
+  mostly because of the 'file' implementation living
+  at app-level.  Note that we have some problems
+  running on top of Python2.3 at the moment and 
+  also some more problems with PYC file support. 
+
+- Annotation can now complete without 
+  resorting to any SomeObjects anywhere (!!)
+
+- RTyping has only 2 Errors remaining. The next bigger
+  problem is getting the compiler package integrated 
+  and bootstrapped properly. 
+
+- note that we are not working from the snapshot 
+  but the trunk currently.  After the sprint 
+  we probably return to the snapshot approach
+  for translation. 
+
+If you want to see more detailed daily-updated progress 
+reports i suggest to read and follow the commits on 
+
+http://codespeak.net/pypy/index.cgi?extradoc/sprintinfo/hildesheim2-planning.txt 
+Moreover, i shot a few pictures which i put here: 
+
+    http://codespeak.net/~hpk/hildesheim2-sprint-www
+
+and here is a picture of the surrounding place 
+(Trillke-Gut, my living&working base): 
+
+   http://www.trillke.net/images/HomePagePictureSmall.jpg 
+
+cheers, 
+
+    holger
+
+
+P.S.: It appears that we will have to continue our
+      investigations regarding some of the current problems on
+      the astral plane.  Armin and Carl has already spend some
+      time on assembler level yesterday to hunt down the
+      weirdest TCC interactions. But there are other confusing
+      events as well.  um, we watched 'the nine lives of
+      Thomas Katz' yesterday night, btw.  
+      Anyway, we are still taking bets if the first C-generated
+      annotated RTyped PyPy is to produce a segmentation fault
+      in the C-compiler or in the resulting binary.  
+      

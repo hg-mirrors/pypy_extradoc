@@ -1,0 +1,7 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy and The Art of Generating VMs]{PyPy and The Art of Generating Virtual Machines}
+\author[A. Cuni, M. Fijalkowski]{Antonio Cuni \and Maciej Fijalkowski\\Merlinux GmbH}
+
+\institute[PyCon UK 2008]{PyCon UK 2008 - Birmingham}
+\date{September 13 2008}

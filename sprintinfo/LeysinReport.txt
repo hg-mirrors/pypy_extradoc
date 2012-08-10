@@ -1,0 +1,169 @@
+Date: 2005-01-24-2005-01-30, Leysin Switzerland
+
+Participants:
+Adrien Di Mascio, 
+Anders Chrigström, 
+Armin Rigo, 
+Christian Tismer, 
+Holger Krekel,
+Jacek Generowicz, 
+Ludovic Aubry, 
+OlivierDormond, 
+Samuele Pedronis, 
+Laura Creighton
+Jacob Hallén
+Beatrice Düring
+Marcus Denker
+Michael Hudson
+
+Hello,
+
+This is a summary of what was accomplished and worked on during last sprint 
+in Leysin.  Leysin is a village in the Swiss Alps, home to Armin Rigo.  The 
+views of the surrounding mountains were spectacular.  It seemed to inspire us
+to work harder.  Thanks to Armin for organizing it:
+
+* All project participants met and worked together for the first time.
+  We introduced newcomers to the project to the PyPy code base and the
+  development process.  We gave introductions to the basic functioning
+  and the structure of the code base.  py.test our unit testing
+  framework was introduced to those who hadn't seen it before.
+
+* We also got to know our Process Manager, Bea Düring from
+  Changemaker.  Bea will produce her own report.  If you don't know
+  the difference between 'project management', 'people management',
+  and 'process management' then you probably would enjoy learning the
+  differences from Bea.  Bea interviewed the sprint participants to
+  find out about their expectations, dissemination and more general
+  ideas about the PyPy project and where it should go in the future.
+  This Sprint went extremely well, but future ones should go even
+  better, since we are learning how to improve all the time.  Bea is
+  making a report that discusses this more.
+
+* We made plans for new and improved infrastructure. Thank you svn, we
+  can change our repository layout whenever we feel it would be a good
+  idea.  :-)
+
+But as for technical changes to pypy itself:
+
+* The flow object space now uses variable names derived from the
+  original python ones and propagate them as possible. (Armin, Olivier
+  Dormond)
+
+* The typedunwrap branch has been merged back to the trunk. (Armin,
+  Samuele)
+
+  Type specific unwraps (int_w, str_w, ...) should be used everywhere
+  possible. The type generic unwrap should be used only in tests, at
+  bootstrap time and or temporarily in cases where we are borrowing
+  heavily from underlying CPython, because it is annotator unfriendly
+  and is able to unwrap mixed types containers which are not
+  reasonably RPythonic.
+  
+* Updated documentation to describe new type specific unwrap
+  operations. (Michael, Samuele)
+
+* We can now import and run the CPython tests on top of PyPy.  This
+  found lots of small problems, and a few not so small ones.  So we
+  made lots of small fixes, and implemented missing stuff, which was a
+  good way for newcomers to get to know the codebase.  We added or
+  completed functionality to sys module:
+   
+   - _getframe()
+   - set/getrecursionlevel()
+   - exc_clear() ...
+
+  (Adrien Di Mascio, Anders Chrigström, Armin, Christian, Holger,
+   Jacek Generowicz, Ludovic Aubry, Olivier, Samuele, Laura)
+
+* Work on the annotator:
+   - SomeBuiltin.call
+
+   - implemented annotation for some built-ins that were missing
+
+   - SomeSlice support and annotating some ops involving them
+
+   - iter built-in
+
+   - dict methods support for SomeDict
+
+   - preserve instance types when unifying with None
+
+   - dict object dummy value is a W_Root subclass instance, so as not
+     to confuse the annotator
+
+   - taught the annotator how to deduce the type of e in 
+
+     try:
+       ...
+     except SomeException, e:
+       ... <-- here   
+
+   - removal of most ``*args`` call sites used in the multi-method slicing
+     mechanism, like what was done for gateways. The annotator no longer
+     chokes on such call sites.  :-) 
+
+   - wrote a small test case to show the remaining problems with the
+     current setup of BuiltinCode and BuiltinFrame subclasses and the
+     highly polymorphic BuiltinCode.func callable attribute.
+
+  (Adrien, Michael, Samuele, some design discussion with Armin)
+
+* Added shortcuts is_w(.,.) (= space.is_true(space.is_(.,.))),
+  eq_w(.,.)  (= space.is_true(space.eq(.,.))) to base object
+  space. (Adrien)
+
+* Allow arguments to be named in the stdobjspace's type's methods.  As
+  a first example, this enables list.sort(cmp=...). (Armin)
+
+* Generated app-level exceptions module and from there using
+  geninterplevel an interp-level module (in particular this circumvent
+  bootstrap issues). (Christian)
+
+  This implementation approach for built-in modules should be polished
+  and generalized.
+
+* Added python library as of 2.3.4 to our tree as
+  dist/lib-python-2.3.4.  After discussion, it was agreed that this
+  should be left unchanged and modules needing modifications should be
+  copied to pypy/lib (renamed from appspace) and modified there, also
+  new pypy-specific app-level modules should live there. That means
+  that as general rule we should copy and borrow from this specific
+  Python version, in the not too distant future we will switch to
+  Python 2.4.
+
+  Pypy specific modified or new app-level tests should go to
+  pypy/lib/test2. (Holger)
+
+  Work is needed on how those should be run, we would like to be able
+  to run them both on PyPy and on CPython.
+
+* py.test support for unittest and output-comparing tests has been
+  added to dist/lib-python-2.3.4 (this is a special exception to the
+  above rules), as conftest.py and pypy_unittest.py in
+  dist/lib-python-2.3.4/test.  Look at conftest.py for details, there
+  are lists of passing tests there (Anders, Holger)
+
+* Work on our sio based file implementation. (Armin did a major
+  rework)
+
+* Support for __del__ on user-defined classes. For now borrowing
+  functionality from underlying CPython. (Armin)
+
+* Work has been started on an app-level implementation for old-style
+  classes, we have a good chunk of the implementation but it is not
+  that much tested nor integrated for now. (Christian, Samuele)
+
+* Marcus Denker gave a presentation on Squeak, its continuations based
+  web framework Seaside and Croquet. We discussed whether PyPy is a
+  sensible approach to give in the future comprehensive Python support
+  as scripting language to Squeak/Croquet.
+
+* We set tasks for the next few weeks, and now begin to prepare for the
+  next Sprint, before PyCon.
+
+regards.
+Samuele and Laura
+
+
+PS: I (Samuele) did the listing of tech changes, sorry if I missed someone's credits.

@@ -1,0 +1,25 @@
+Hand optimizations
+==================
+
+status:
+
+ - Improvements to the interpreter is an ongoing task. Some microbenchmarks
+   show particularly bad performance in specific areas.
+ - Various optimizations were performed, PyPy seems to be at most two times
+   as slow in the microbenchmarks. Nevertheless, there are a few areas left
+   that could be tackled (like speeding up function calls).
+
+todo: 
+
+ - There are still some hand optimizations of the Python interpreter
+   that are well worth doing, since they can be expected to yield
+   significant performance improvements.
+
+expected outcome:
+
+- The amount of effort required to get what kind of speed-up for
+  what kind of application remains unknown at this point in time.
+
+dependencies:
+
+- None

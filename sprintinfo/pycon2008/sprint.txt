@@ -1,0 +1,41 @@
+Place: Pycon 2008
+
+Dates: 17th March 2008 - 20th March 2008
+
+Project: PyPy (http://codespeak.net/pypy)
+
+Project description: PyPy is a python compiler written in Python. It's also
+a very flexible compiler toolchain which can compile so called RPython
+(restricted Python, a subset of Python without dynamic features) into
+a variety of platforms including C/POSIX, JVM and CLI. PyPy also features
+a set of experimental features, like different GCs or different threading
+models, which makes it a good platform to experiment with the python language.
+
+Sprint leader: Maciej Fijalkowski (fijal@merlinux.de)
+
+Attendees: list will be available at
+http://codespeak.net/pypy/extradoc/sprintinfo/pycon2008/people.txt
+
+Instructions: Suggestions for contributors would be to come to #pypy
+at irc.freenode.net in order to create a codespeak account. In any case,
+repository and all documentation are available on the website.
+
+Some instructions: This sprint is newcomer-friendly sprint. We'll present
+a PyPy tutorial and code-walk on Sunday afternoon. The list of task is as usual
+very long and depending on attendees. It's suggested that people would
+come to an IRC and chat a bit to have a clue what is feasible on a sprint
+and what is not. For example, we can work on:
+
+* JVM backend bindings for Java libraries
+* Extending pypy as necessary for software X to run
+* Adding more modules to pypy
+* Sketching ctypes-based software, killing dependency on C modules
+  written using C/CPython API.
+* Optimizing certain parts of pypy for certain micro-benchmarks.
+* Whatever else....
+
+Software requirements: the details depends on what people would like to
+work on, but in general pygame, libgc and libffi are very very useful (although
+not needed). A PyPy checkout, gcc and such things are a must. For people
+wanting to work on particular backends, appropriately Java, Mono (or .NET),
+spidermonkey are needed.

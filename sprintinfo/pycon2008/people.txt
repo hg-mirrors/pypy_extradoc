@@ -1,0 +1,56 @@
+
+People coming to the Pycon 2008 sprint
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+==================== ============== =======================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Armin Rigo           ?              ?
+Carl Friedrich Bolz  ?              ?
+Antonio Cuni         ?              ?
+Maciej Fijalkowski   ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	       ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Stephan Diehl        ?              ?
+Niko Matsakis        ?              ?
+Alexander Schremmer  ?              ?
+Anders Chrigstroem   ?              ?
+Samuele Pedroni      ?              ?
+Michael Hudson       ?              ?
+Niko Matsakis        ?              ?
+Eric van Riet Paap   ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Holger Krekel        ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+==================== ============== =====================

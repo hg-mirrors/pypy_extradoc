@@ -1,0 +1,199 @@
+pypy-sync 11th May 2006, 05:00 PM - 05:25 (UTC+2)
+=====================================================
+
+attendants: michael, anto, samuele, christian, richard, 
+            eric, arre, armin, holger (mods and minutes) 
+
+* activity reports: everybody posted, see log below. 
+
+* thread cloning approach 
+
+  As discussed earlier it is urgent to have a working 
+  thread cloning approach.  Armin posted his suggestion 
+  to pypy-dev which builds on the Leysin and other 
+  previous works.  He thinks it will take at least 
+  2 weeks solid work and that it involves experimentation 
+  at some levels so it's hard to predict things exactly. 
+  Christian agrees to this approach.  Armin will start on this
+  and he will also try to get early feedback from Aurelien and Nicolas. 
+  Implementation wise Michael and a bit of Holger will try
+  to help. 
+
+  Moreover Christian is to describe and finalise a different
+  approach for the larger topic of "thread pickling" at the
+  early June sprint.  Holger reminds that EU-wise we promised
+  the whole of Work Package 7 to be complete and having a
+  report in June and that we should get clarity about 
+  according plans. 
+  
+* Next PyPy sprint: 2nd-9th june, Duesseldorf 
+
+  It seems that Armin, Michael, Samuele, Holger, Christian, Carl, 
+  Arre, Eric (partly), Anto and possibly others can make it 
+  to the next PyPy sprint from 
+  
+        2nd-9th June 2006
+
+  It is almost set that we are going for Duesseldorf (germany) 
+  as a location.  Michael to prepare an announcement until 
+  saturday with review from Holger (and others).  Carl to 
+  continue to fix a location.  
+  
+  Topics will be the 0.9 release, ext-compiler, stackless and
+  more or less all topics that have been floating lately.
+
+
+IRC logs 
+-------------
+
+May 11 17:00:48 -->	You are now talking on #pypy-sync
+May 11 17:00:48 ---	Topic for #pypy-sync is PyPy - the flexible snake. This channel is used for pair programming and sync meetings.
+May 11 17:00:48 ---	Topic for #pypy-sync set by xorAxAx at Sun Apr 16 21:44:23
+May 11 17:01:58 -->	stakkars (i=gzlikbb@i577B473C.versanet.de) has joined #pypy-sync
+May 11 17:02:25 -->	arigo (n=arigo@c-1f8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+May 11 17:02:31 <hpk>	hi all
+May 11 17:02:44 <arigo>	hi!
+May 11 17:02:45 <arre>	hI!
+May 11 17:02:47 <ericvrp>	hi
+May 11 17:02:54 <pedronis>	hi
+May 11 17:03:03 <antocuni>	hi
+May 11 17:03:06 <mwh>	hi
+May 11 17:03:17 <hpk>	ok, let's get started, i had hoped that Aurelien appears, let's see
+May 11 17:03:18 <hpk>	we have
+May 11 17:03:24 <hpk>	* activities
+May 11 17:03:24 <hpk>	* thread cloning
+May 11 17:03:24 <hpk>	* next sprint
+May 11 17:03:30 <hpk>	activities then: 
+May 11 17:03:37 <ericvrp>	LAST: dictiterator, sequenceiterator, SoC mentor application
+May 11 17:03:37 <ericvrp>	NEXT: more iterator stuff, trying to get llvm profile information
+May 11 17:03:37 <ericvrp>	BLOCKERS: variety of other pypy things I want to have fun with
+May 11 17:03:39 <hpk>	LAST: iceland sprint, tb meetings, planning for 0.9, non-pypy stuff
+May 11 17:03:39 <hpk>	NEXT: some py lib stuff, non-pypy
+May 11 17:03:39 <hpk>	BLOCKERS: -
+May 11 17:03:48 <stakkars>	DONE: work on Stackless topics, scheduling implementation tasks, designing, lots of sprint troubles
+May 11 17:03:48 <stakkars>	NEXT: more work on that
+May 11 17:03:48 <stakkars>	BLOCK: None
+May 11 17:03:50 <arre>	PREV: Recover after Tokyo sprint, translation of rctypes.
+May 11 17:03:50 <arre>	NEXT: More rctypes, maybe some JIT
+May 11 17:03:50 <arre>	BLOCKERS: -
+May 11 17:03:52 <antocuni>	LAST: rstr refactoring, lot of thesis-related work
+May 11 17:03:54 <antocuni>	NEXT: more rstr recatoring
+May 11 17:03:55 <antocuni>	BLOCKERS: none
+May 11 17:04:11 <arigo>	LAST: multimethod table compression (pypy-c now smaller); prepare
+May 11 17:04:11 <arigo>	         thread cloning
+May 11 17:04:11 <arigo>	NEXT: thread cloning
+May 11 17:04:11 <arigo>	BLOCKERS: time
+May 11 17:04:30 <mwh>	LAST: holiday, catching up, new toy, discussion
+May 11 17:04:30 <mwh>	NEXT: thread cloning?
+May 11 17:04:30 <mwh>	BLOCKERS: -
+May 11 17:05:04 <hpk>	ok, pedronis? 
+May 11 17:05:21 <pedronis>	LAST: worked on gc issues and stackless transform with Armin, worked on rctypes stuff with arre, various non-coding stuff
+May 11 17:05:23 <pedronis>	NEXT: will see, we need to work on the OOPSLA paper too
+May 11 17:05:24 <pedronis>	BLOCKERS: too much stuff
+May 11 17:05:43 <hpk>	ok, thanks 
+May 11 17:05:47 <hpk>	then let's talk about thread cloning 
+May 11 17:05:54 <hpk>	i guess everybody is aware of armin's posting to pypy-dev 
+May 11 17:06:12 <stakkars>	yes, and I'd like to sign it
+May 11 17:06:58 <hpk>	you mean that you agree to armin tackling the tasks regarding thread cloning as described? 
+May 11 17:07:34 <stakkars>	it is pretty much what we descussed, yes
+May 11 17:07:38 <hpk>	good
+May 11 17:07:47 <stakkars>	but I've read the logic design paper, and I'm no longer convinced that this is what they need.
+May 11 17:07:47 <hpk>	then there is the still somewhat open part regarding thread pickling
+May 11 17:07:50 -->	stedi67 (n=stedi67@p54BCF4CA.dip.t-dialin.net) has joined #pypy-sync
+May 11 17:07:54 stakkars stedi67 May 11 17:07:57 <hpk>	stedi67: hi stephan 
+May 11 17:08:04 <stedi67>	hi, sorry, I'm a bit late...
+May 11 17:08:15 <hpk>	stedi67: we are in thread cloning, but post your activity lines if you like 
+May 11 17:08:22 stakkars stedi67 May 11 17:08:24 <stakkars>	thread pickling is in the works. I need to talk to Samuele and carry on
+May 11 17:08:33 <hpk>	stakkars: can you commit to some time frame? 
+May 11 17:09:18 <hpk>	arigo: could you grab 'auc' one day and see if the thread cloning approach and it's APIs would really help them? (i think we should make sure) 
+May 11 17:09:32 <arigo>	yes
+May 11 17:09:57 <stedi67>	LAST: set type
+May 11 17:09:57 <stedi67>	NEXT: stackless, greenlet python module (app level)
+May 11 17:09:57 <stedi67>	BLOCKERS: None
+May 11 17:10:09 <hpk>	arigo: or maybe forward the pypy-dev mail with some extra explanation to Aurelien and Nicolas to be sure 
+May 11 17:10:21 <stakkars>	I can't speak for eric but I think the problematic part is on my side
+May 11 17:10:28 <arigo>	hpk: ok
+May 11 17:10:55 stakkars stedi67 May 11 17:11:17 <stakkars>	I would love to get basic things working next week, but it is safer to envision "during the sprint" in June
+May 11 17:11:33 <ericvrp>	stakkars, I'm sure your part is harder but I must admit I'm struggling too because it involves a lot of PyPy that I am unfamiliar with. I would like a piece of Samuele too :) (preferably his brain)
+May 11 17:12:21 <stakkars>	ericvrp: we can talk about this, and I've been through very miuch during my stay, probably I can play a bit of Samuele
+May 11 17:12:47 <stakkars>	(saying that I'm very much available now)
+May 11 17:12:49 <pedronis>	FYI: I'm thinking of takign a vacation the week of the iceland sprint
+May 11 17:13:12 <ericvrp>	stakkars, okay , good to know. Be prepared for a load of questions tomorrow!
+May 11 17:13:13 <stakkars>	good idea. in Iceland? :-D
+May 11 17:13:24 <pedronis>	no, I said vacation
+May 11 17:13:28 <mwh>	:)
+May 11 17:13:33 <arigo>	well, wild landscapes etc.
+May 11 17:14:00 <hpk>	stakkars: but it means that you will work on having it finalized during the DDorf sprint then, right? 
+May 11 17:14:07 <hpk>	thread pickling i mean 
+May 11 17:14:09 <pedronis>	kind of sort more at home likely
+May 11 17:14:22 <arigo>	pedronis: sure, I know (just kidding)
+May 11 17:14:50 <stakkars>	this is the plan, but I don't know how realistic it is
+May 11 17:15:10 -->	rxe (n=rxe@66.151.59.5) has joined #pypy-sync
+May 11 17:15:17 <rxe>	Hi!
+May 11 17:15:25 <arigo>	hi!
+May 11 17:15:32 <hpk>	stakkars: sidenote: we need to determine the status of WP07 and whether you can majorly care for the an EU report finalization in June (which is promised to the EU currently) 
+May 11 17:15:33 <stakkars>	wahaaa
+May 11 17:15:38 <rxe>	Thought I show face for a change! ;-)
+May 11 17:15:42 <hpk>	rxe: hi richard :) 
+May 11 17:15:46 <hpk>	rxe: hehe
+May 11 17:15:52 stakkars stedi67 May 11 17:15:53 <mwh>	hi rxe
+May 11 17:16:03 <ericvrp>	hee richard! welcome
+May 11 17:16:10 <stakkars>	hpk: understood
+May 11 17:16:13 <hpk>	stakkars: it's not impossible to consider shifting it, but it also relates to the overall project situation and we need to get clarity 
+May 11 17:16:17 <arigo>	rxe: any three liners?...
+May 11 17:16:51 <rxe>	BLOCKERS: no time ;-)
+May 11 17:16:53 <hpk>	ok, then for now, i think we have enough clarity mostly 
+May 11 17:17:03 <hpk>	and i'd like to move on to the "next sprint" topic
+May 11 17:17:09 <arigo>	rxe: ah, no, we all posted that already :-)
+May 11 17:17:16 <rxe>	:-)
+May 11 17:17:35 <hpk>	as you read there is the suggestion for 2nd-9th june in DDorf 
+May 11 17:17:42 *	arigo agrees
+May 11 17:18:08 <hpk>	antocuni, ericvrp, arre, rxe, stedi67: i think you are the ones who didn't participate in this suggestion so far 
+May 11 17:18:16 <hpk>	do you know already if you can likely make it? 
+May 11 17:18:32 <antocuni>	I don't know yet
+May 11 17:18:38 <arre>	It will work for me.
+May 11 17:18:39 <rxe>	rxe: very unlikely:-(
+May 11 17:18:46 <antocuni>	but I hope yes
+May 11 17:18:56 <ericvrp>	Maybe for a very short while, (it's ony 1.5 hours from my hometown by train)
+May 11 17:18:56 <hpk>	i also know from Maciej (the JS SOC guy) that he will likely be able to come 
+May 11 17:19:13 <ericvrp>	hpk, that's why I would at least like to meet hime
+May 11 17:19:29 <hpk>	antocuni: i really hope so as well!  if you need support for travel costs or so, mention it to us (e.g. me) or so 
+May 11 17:19:53 <hpk>	ericvrp: yes, you should try to make sure to both appear at the same time if you do 
+May 11 17:20:08 <ericvrp>	what a good idea :)
+May 11 17:20:08 <hpk>	but also, we will have a number of release and some other critical tasks 
+May 11 17:20:11 <stakkars>	obvious
+May 11 17:20:20 <antocuni>	I was wondering how much does it costs by train
+May 11 17:20:23 <hpk>	ericvrp: yes, brilliant idea, isn't it? :)
+May 11 17:20:49 <mwh>	antocuni: it's a pretty long way, i think...
+May 11 17:20:52 <hpk>	antocuni: no clue, but i'd think that catching a plane from malpensa to ddorf should be feasible 
+May 11 17:20:54 *	stakkars grabbing coffee
+May 11 17:21:05 <hpk>	antocuni: unless you are like carl a non-flier 
+May 11 17:21:25 <antocuni>	no, flying is fine for me. It's all about money :-)
+May 11 17:21:27 <hpk>	ok, so i think Carl will check out opportunities 
+May 11 17:21:40 <antocuni>	maybe I can try to get fundings from my university
+May 11 17:21:48 <hpk>	i think we should fix the sprint time and almost-fix the place but maybe only fix our travels when that is really known 
+May 11 17:22:15 <mwh>	the world cup isn't going to make traveling around germany a pain is it?
+May 11 17:22:22 <stakkars>	re
+May 11 17:22:28 <hpk>	world cup, hum 
+May 11 17:22:33 <hpk>	when was that agian? :) 
+May 11 17:22:42 <mwh>	i can't remember
+May 11 17:22:42 <hpk>	it isn't an EU deliverable is it? 
+May 11 17:22:43 <mwh>	:)
+May 11 17:22:51 <mwh>	i think it starts during the sprint
+May 11 17:23:01 <hpk>	ah ok.  i ask lene, she definitely will know this. 
+May 11 17:23:10 <hpk>	(soccer fan, you wouldn't believe it) 
+May 11 17:23:21 <hpk>	anyway, we can close up soon i think 
+May 11 17:23:27 <ericvrp>	I think the WC is end of june
+May 11 17:23:28 <stakkars>	that can become a real blocker :-)
+May 11 17:23:31 <mwh>	first match on the 9th
+May 11 17:23:37 <hpk>	in DDorf? 
+May 11 17:23:40 <mwh>	no
+May 11 17:23:44 <hpk>	puh
+May 11 17:23:46 <hpk>	ok
+May 11 17:23:50 <hpk>	announcement 
+May 11 17:23:53 <hpk>	any takers? 
+May 11 17:24:04 <hpk>	should go out latest saturday i think 
+May 11 17:24:16 <mwh>	i can do it, i guess
+May 11 17:24:21 <hpk>	i can review 
+May 11 17:24:28 <mwh>	cool
+May 11 17:24:53 <hpk>	ok then, i think we are done then.  thanks all for coming!

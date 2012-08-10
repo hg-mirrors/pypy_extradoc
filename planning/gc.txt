@@ -1,0 +1,4 @@
+The gc should support "lightweight destructors" that just do
+a raw_free().  It should also help because we can then account
+the size of the raw memory attached to objects in this way.
+See e.g. http://codespeak.net/pipermail/pypy-dev/2010q4/006648.html

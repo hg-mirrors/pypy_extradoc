@@ -1,0 +1,49 @@
+
+People coming to the PyCon TX sprint 2006
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them. 
+ 
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Michael Hudson       23rd/2nd       Marriot
+Armin Rigo           23rd/2nd       Marriot
+Anders Chrigstroem   23rd/2nd       Marriot
+Beatrice Duering     23rd/1st       Marriot
+Holger Krekel        23rd/3rd       Marriot (likely)
+Samuele Pedroni      23rd/2nd       Marriot
+Jan Balster          23rd/2nd       Marriot (likely)
+Wanja Saatkamp       23rd/3rd       Marriot (likely)
+Christian Tismer     ?              ?                
+Anders Lehmann       ?              ?
+Niklaus Haldimann    23rd/3rd       Marriott
+Brian Dorsey         22nd/2nd       Marriott
+Patrick Maupin       23rd/2nd       Marriott
+==================== ============== =====================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Eric van Riet Paap   ?              ?                
+Carl Friedrich Bolz  ?              ?                
+Gerald Klix          ?              ?                
+Stephan Diehl        ?              ?                
+Jacob Hallen         ?              ?                
+Holger Krekel        ?              ?                
+Richard Emslie       ?              ?                
+Andrew Thompson	     ?              ?                
+Ludovic Aubry        ?              ?          
+Adrien Di Mascio     ?              ?          
+Laura Creighton      ?              ?       
+Lene Wagner          ?              ?
+Johan Hahn           ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Bert Freudenberg     ?              ?
+==================== ============== =====================

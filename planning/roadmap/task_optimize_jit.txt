@@ -1,0 +1,29 @@
+Add optimizations to the JIT
+============================
+
+status:
+
+ - Optimizations for integer operations have been implemented. Benchmarks
+   show speeds at the level of unoptimized C code, translating to a
+   factor 60 faster than CPython.
+
+todo:
+
+ - A base set of optimizations include common operations on floats and
+   strings as well as general call optimization. Fixing bugs in the
+   current JIT implementation is also needed.
+
+expected outcome:
+
+ - Call optimizations should improve the excecution speed of general
+   Python programs to be faster than under CPython.
+
+ - String optimizations should speed up string intensive programs
+   like web frameworks by at least an order of magnitude over CPython.
+
+ - Float operations should run at a speed comparable to unoptimized C
+   code; about 2 orders of magnitude faster than CPython.
+
+dependencies:
+
+ - The JIT refactoring should be done before in order not to do extra work.

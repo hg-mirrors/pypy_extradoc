@@ -1,0 +1,52 @@
+People coming to the Duesseldorf sprint November 2009
+====================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Carl Friedrich Bolz  always there   private
+Antonio Cuni         6/11 - 13/11   Hotel Haus Hillesheim
+Armin Rigo           6/11 - 13/11   Hotel Haus Hillesheim
+Holger Krekel        9/11 - 13/11   ?
+Samuele Pedroni      5/11 - 13/11   Hotel Blaettler
+==================== ============== =====================
+==================== ============== =====================
+
+
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Armin Rigo                                
+Michael Hudson                             
+Anders Chrigstroem                                  
+Maciej Fijalkowski                                   
+Andrew Thompson                      
+Stephan Diehl                                  
+Eric van Riet paap                              
+Niko Matsakis                                    
+Leonardo Santagada                   
+Richard Emslie                                      
+Christian Tismer                                    
+Alexander Schremmer                     
+Jacob Hallen         ?              ?
+Aurelien Campeas     ?              ?
+Alexandre Fayolle    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Bert Freudenberg     ?              ?
+Laura Creighton      ?              ?
+Beatrice Duering     ?              ?
+Johan Hahn           ?              ?
+Holger Krekel        ?              ?
+Anders Chrigstroem   ?              ?
+Samuele Pedroni      ?              ?
+Anders Lehmann       ?              ? 
+Niklaus Haldimann    ?              ?
+==================== ============== =====================

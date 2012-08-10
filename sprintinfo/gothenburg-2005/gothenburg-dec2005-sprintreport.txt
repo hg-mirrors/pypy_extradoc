@@ -1,0 +1,163 @@
+Hi PyPy-dev!
+
+Finally we have found some time to write a sprint report on what is
+day three or day five of the sprint depending on how you count.
+
+The reason for the uncertainty is that on Monday us lifers^Wfulltimers
+gathered for two days of EU-report writing ahead of our review meeting
+in January.  We'll spare you the details, but as most of the technical
+reports are also part of the documention on our website, it's worth
+mentioning that two documents:
+
+     http://codespeak.net/pypy/dist/pypy/doc/low-level-encapsulation.html
+     http://codespeak.net/pypy/dist/pypy/doc/translation-aspects.html
+
+received significant updates in these days.  The former is a more
+friendly read, start with that one.  Consensus opinion is that two
+days of proof-reading and generally attempting to write nice prose is
+even more exhausting than coding.
+
+It was thus with some relief that on Wednesday morning we met to plan
+our programming tasks.  The task that most combined enormity and
+urgency was starting work on the the Just-In-Time compiler.  Samuele,
+Armin, Eric, Carl and Arre all worked on this.  Eric and Arre
+implemented yet another interpreter for a very simple toy language as
+we needed something that would be simpler to apply a JIT to than the
+PyPy behemoth and then moved on to looking at pypy-c's performance.
+
+Carl, Armin and Samuele began writing a partial specializer for
+low-level graphs, which is to say a way to rewrite a graph in the
+knowledge that certain values are constants.  This is related to the
+JIT effort because a JIT will partially specialize the interpreter
+main-loop for a particular code object.  The combination of the two
+sub-tasks will allow us to experiment with ways of applying these
+specialization techniques.
+
+Anders L and Nik repeatedly bashed their heads on the brick wall of
+issues surrounding a working socket module, and are making good
+progress although running a useful program is still a way off.  The
+usual platform dependent horrors are, predictably, horrific.
+
+Michael and the sole sprint newcomer this time, Johan, implemented
+support in the translation toolchain for C's "long long" type which
+involved taking Johan on a whirlwind tour of the annotator, rtyper and
+C backend.  By Thursday lunchtime they had a translated pypy that
+supported returning a long long value to app-level from exactly one
+external function (os.lseek) and declared success.
+
+Richard and Christian worked on exposing the raw stackless facilities
+that have existed for some time in a useful way.  At this point they
+have written a 'tasklet' module that is usable by RPython which is
+probably best considered as an experiment on ways to write a module
+that can expose stackless features to application level.
+
+Adrien and Ludovic worked on increasing the flexibility of our parser
+and compiler, in particular aiming to allow modification of the syntax
+at runtime.  Their first success was to allow syntax to be *removed*
+from PyPy: a valuable tool for making web frameworks harder to write::
+
+    Clearly, the only way to cut down on the number of Web frameworks
+    is to make it much harder to write them. If Guido were really going
+    to help resolve this Web frameworks mess, he'd make Python a much
+    uglier and less powerful language. I can't help but feel that
+    that's the wrong way to go ;).
+
+    (from Titus Brown's Advogato diary of 7 Dec 2005:
+     http://www.advogato.org/person/titus/diary.html?start=134)
+
+But they have also now allowed the definition of rules that can modify
+the syntax tree on the fly.
+
+On Friday morning a task group reshuffle gave Michael a unique
+opportunity to work with Armin on the 'JIT' and Carl and Johan became
+a new '__del__' taskforce.  By the end of the day, '__del__' was
+supported in the genc backend when using the reference counting
+garbage collector.  This also involved changing details at all levels
+of the translation process, so by now Johan has seen a very little bit
+of very large amounts of PyPy...
+
+Arre and Eric (with some crucial hints from Richard) had a
+successful hunt for performance problems: they changed
+about 5 lines of code affecting the way we use the Boehm GC
+which resulted in a remarkable 30-40% speed up in pystone after
+translation.  Now if they can change 10 lines to get an 80%
+improvement we _will_ be impressed :)
+
+That's all for now.  We'll write a report on the last two days, err,
+sometime. :)
+
+Cheers,
+
+Michael & Carl Friedrich
+
+So, the sprint is over, we are on a ferry but we *still* haven't
+escaped the internet...
+
+Christian and Richard spent the last couple of days thinking hard
+about the many possible ways of exposing stackless features to
+application-level and by the end of the sprint had pretty much
+considered them all.  This means they will have no choice but to write
+some code for the mixed module soon :)
+
+Armin and his team of helpers (well, mostly Michael and Samuele to be
+honest) continued to work on JIT-related things, and continued to
+manufacture both working code and extremely strange bugs.  Eventually
+the Test Driven Development style was halted for a quick but useful
+Cafe-cake-and-thinking-hard Driven Development moment (also attended
+by Carl).  By the end of the sprint there was support in the abstract
+interpreter for "virtual structures" and "virtual arrays" which are
+the abstract interpreter's way of handling objects that are usually
+allocated on the memory heap but are sufficiently known ahead of time
+for actual allocation to be unnecessary.  Now that probably didn't
+make much sense, so here's an example:
+
+     def f(x):
+         l = [x]
+         return l[0]
+
+When CPython executes this code it allocates a list, places x into it,
+extracts it again and throws the list away.  When the abstract
+interpeter sees the statement "l = [x]" it just records the
+information that "l is a list containing x" so when it sees "l[0]" it
+already knows what this is -- just "x".  Then as nothing in the
+function ever needed l as a list, it just evaporates.
+
+Anders L and Nik continued on the socket module and managed to write a
+test that contained a simple server and client that could successfully
+talk to each other (after fighting some mysterious problems that
+with processes that refused to die).
+
+Carl continued his work on __del__, implementing support for it in the
+C backend when using the Boehm garbage collector which had the minor
+disadvantage of slowing pypy-c down by a factor of ten, as every
+instance of a user-defined class was registered with the GC as having
+a finalizer.  This is apparently not something that the Boehm GC
+appreciates, so on Sunday Carl and Samuele implemented a different
+strategy.  Now only instances of user-defined classes that actually
+define __del__ (at class definition time, no sneaky cls.__del__ = ...
+nonsense) get registered as needing finalization.  Carl was also
+awarded his first "obscure Python bug" medal for making CPython dump
+core when he tried to test a hacky way to implement weakrefs (now SF
+bug #1377858).
+
+Arre and Eric continued their optimization drive and implemented a
+'fastcall' path for both functions and methods which accelerates the
+common case of calling a Python function or method with the correct,
+fixed number of arguments.  This improved the results of a simple
+function-call benchmark by a factor of about two.  Result!
+
+A notable feature of this sprint is that Armin and Christian were
+implementing things very much like other things they had implemented
+before, painfully, in C -- namely stackless and psyco -- again, but
+this time in Python, and much more enjoyably :) Even more than this,
+they both managed to work their way through designs and ideas that had
+taken months to sort through the first time in days or even hours.
+We'd love to attribute all this to the magical qualities of Python but
+practice probably counts for something too :)
+
+So another sprint ends, and a productive one at that.  As usual, we
+all need to sleep for a week, or at least until pypy-sync on
+Thursday...
+
+Cheers,
+mwh & Carl Friedrich

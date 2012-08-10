@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy: becoming fast]{PyPy: becoming fast}
+\author[antocuni, cfbolz, pedronis]
+{Antonio Cuni \\ Carl Friedrich Bolz\\ Samuele Pedroni}
+
+\institute{EuroPython 2009}
+\date{June 30 2009}

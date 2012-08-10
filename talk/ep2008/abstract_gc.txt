@@ -1,0 +1,47 @@
+Title
+=====
+
+Writing Python code for different GCs
+
+(was: PyPy - garbage collection details.)
+
+Summary
+=======
+
+This talk will pick PyPy's GC as an example and discuss
+how to write Python code that does not rely on the underlying GC
+implementation.
+
+Abstract
+========
+
+Almost all of the newer Python implementation depart from CPython's reference
+counting as a memory management strategy and use more recent garbage
+collection strategies. IronPython and Jython use the GCs of the .NET platform
+and of the JVM respectively, PyPy contains several GCs, among them a moving
+generational garbage collector. All these GCs have in common that they behave
+slightly differently than reference counting in some places. Existing Python
+code often uses patterns that only works well with reference counting.
+
+In this talk we will explain one of the PyPy GCs in detail as an example of
+the sort of GC techniques that are used. Then we will describe common mistakes
+that are made and explain ways how to work around them. Specifically we will
+talk about the different semantics of finalizers and the varying cost of some
+operations on a moving GC (like id).
+
+Proposed Length of talk required
+================================
+
+30 minutes.
+
+Brief Biography
+===============
+
+Maciej Fijalkowski is a core PyPy developer, particularly interested
+in the obscure details of various parts. He is always annoyed with existing code
+relying on reference counting, as well as lack of knowledge about how
+things like finalizers work.
+
+Armin Rigo is the author of the Psyco JIT, as well as the key person behind 
+many of PyPy's advanced details. He is one of the main implementors of PyPy's
+GCs.

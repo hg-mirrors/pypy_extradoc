@@ -1,0 +1,427 @@
+================================================
+pypy-sync release plan meeting 2th February 2007
+================================================
+
+
+Attendees:  Holger, Armin, Samuele, Christian, Maciej, Arre, Michael, Antonio,
+            Guido, Carl Friedrich (moderation, minutes)
+
+
+Regular Topics
+==============
+
+* activity reports (LAST/NEXT/BLOCKERS, everybody posts
+  prepared comma-separated lists of things)
+
+* no resolvable blockers (short of stealing the time machine)
+
+
+Release Goals
+=============
+
+Michael and Carl Friedrich prepared the following list in advance:
+
+* object optimizations
+* pypy.net
+* more working modules
+* some performance
+* maturity
+* good documentation
+* build tool
+* JIT preview
+* security prototype
+* js backend?
+* debian packaging?
+
+Maciek notes that it is unclear how well he will be able to clean up the JS
+backend. Antonio proposes to add more high-level options. Samuele wants to make
+sure that the security prototype is not misunderstood to be some sort of
+sandboxing. According to Armin it is a major effort to clean up all these areas and
+get a good level of documentation.
+
+At this point the meeting we started discussing the state of the JIT and
+the next steps in this area and the general question how to approach development
+during the rest of the EU funding. According to Armin it is expected that the
+JIT starts producing non-horrible code "any day or week now". Since the
+unpredictability of the JIT-work has a good chance to disturb the release works,
+Holger proposed to rest the workings on the JIT, completely focus on making 1.0
+as good as possible and get all the other EU-related results in it. In March it
+would be possible to concentrate on the JIT again.  Samuele is sceptical that we
+will be able to do much development in March due to the necessary wrap-up works
+and report writing. Carl Friedrich and Holger think that it is a bad idea to
+cram too much of that into March and propose to wrap up as much as possible in
+February.
+
+Also discussed was the possibility of not calling the release 1.0 (e.g. 0.99
+1.0rc1 etc.) and the question what expectations the community will have towards
+a 1.0 release. Holger and Carl Friedrich noted that there are a lot of
+interesting features in PyPy even without the JIT working. Then the discussion
+moved to the expectations of the EU reviewers. The reviewers we had at the last
+review meeting were not too interested in the JIT but more in things like
+aspects, constraint and logic programming.  However, the current state 
+of PyPy in these areas is not completely obvious to the people 
+attending the meeting. 
+
+It then was agreed to check the state of the JIT again on
+Monday to see how far it improved over the weekend. It was
+also decided that we would meet again on Wednesday, February
+7th at 11.00 to discuss the release work distribution in
+detail.
+
+Task Planning
+=============
+
+This topic did not happen and is moved to a task planning meeting on Wednesday.
+
+The preliminary task list is:
+
+* work out a timeframe for jit usefulness
+* fix llvm(?)
+* test pypy-cs, run benchmarks.
+  * windows testing!
+* documentation!!!
+  * pypy.net
+  * object optimizations (WP6)
+  * release announcement
+  * improve getting-started
+  * transparent proxies
+  * security prototype
+  * document options
+* make build-tool useable
+* polish js backend?
+
+
+Py-lib trunk -> dist merge
+==========================
+
+Holger noted somewhere in between that there could be small disruptions with the
+merge of py-trunk to py-dist, which should happen after the weekend.
+
+
+Full IRC log::
+
+    [14:11] arigo (n=arigo@c-098b70d5.022-54-67626719.cust.bredbandsbolaget.se) joined #pypy-sync.
+    [14:11] <arigo> hi
+    [14:11] <cfbolz> hi!
+    [14:11] <fijal> hi
+    [14:11] <hpk> mornings and moins
+    [14:11] <arre> Hi!
+    [14:11] <stakkars> mahlzeit
+    [14:11] <guido_w> hehehe
+    [14:11] <pedronis> hi
+    [14:12] <cfbolz> who is actually moderating/writing minutes?
+    [14:12] <fijal> cfbolz: you?
+    [14:12] <cfbolz> hm, ok
+    [14:12] <cfbolz> activity reports, then
+    [14:13] <hpk> LAST: leysin sprint, py lib release and refactorings, EU co-ordination activities
+    [14:13] <hpk> NEXT: py lib release, lots of EU/PyPY issues, preparing trillke-sprint, OLPC Workshop
+    [14:13] <hpk> BLOCKERS: py lib release :)
+    [14:13] <antocuni> LAST: .NET integration, WP12 report
+    [14:13] <antocuni> NEXT: WP12 report, maybe some more .NET integration
+    [14:13] <antocuni> BLOCKERS: none
+    [14:13] <mwh> LAST: debugging ppc codegeneration
+    [14:13] <mwh> NEXT: not sure, some family stuff
+    [14:13] <mwh> BLOCKERS: family
+    [14:13] <mwh> stuff
+    [14:13] nbecker (n=nbecker@pool-68-236-253-70.hag.east.verizon.net) left irc: Read error: 101 (Network is unreachable)
+    [14:13] <guido_w> hehehe
+    [14:13] <arigo> LAST: jit     NEXT:jit    BLOCKERS:time
+    [14:13] <cfbolz> LAST: py-lib, small cleanups
+    [14:13] <cfbolz> NEXT: py-lib/pypy release
+    [14:13] <cfbolz> BLOCKERS: 2 exams and 3 concerts
+    [14:13] <guido_w> LAST: sprint, build tool, py lib release preps
+    [14:13] <guido_w> NEXT: more build tool, more py lib, reports
+    [14:13] <guido_w> BLOCKERS: none afaik
+    [14:14] <arre> LAST: JIT
+    [14:14] <arre> NEXT: JIT
+    [14:14] <arre> BLOCKERS: Need more time
+    [14:14] <fijal> LAST: pylib release/bugfixing
+    [14:14] <fijal> NEXT: pylib, js backend polishing, play1.codespeak.net
+    [14:14] <fijal> BLOCKERS: pylib release
+    [14:14] <hpk> cfbolz: 3 concerts and we only have two releases!
+    [14:14] <guido_w> cfbolz: pff... you always let your hobbies interfere with your work ;)
+    [14:14] <pedronis> LAST: jit, small report work, inlining strategy options
+    [14:14] <pedronis> NEXT: jit, release work
+    [14:14] <pedronis> BLOCKERS: time
+    [14:14] <cfbolz> hpk: :-)
+    [14:14] <cfbolz> stakkars: want to post something?
+    [14:15] <stakkars> ups, None but installation hell. I  migrated to the Mac, was hard for me
+    [14:15] <cfbolz> ok, then first topic
+    [14:15] <cfbolz> Release Goals
+    [14:15] <cfbolz> =============
+    [14:16] <cfbolz> michael and me made a preliminary list:
+    [14:16] <cfbolz> * object optimizations
+    [14:16] <cfbolz> * pypy.net
+    [14:16] <cfbolz> * more working modules
+    [14:16] <cfbolz> * some performance
+    [14:16] <cfbolz> * maturity
+    [14:16] <cfbolz> * good documentation
+    [14:16] <cfbolz> * build tool
+    [14:16] <cfbolz> * JIT preview
+    [14:16] <cfbolz> * security prototype
+    [14:16] <cfbolz> * js backend?
+    [14:16] <cfbolz> * debian packaging?
+    [14:16] <cfbolz> any comments / additions / removals?
+    [14:16] <fijal> what's the scheduled release time?
+    [14:17] <mwh> feb 15th
+    [14:17] <cfbolz> currently February 15th
+    [14:17] <fijal> hum, i'm unsure how much of js backend polishing I can do till that
+    [14:17] <antocuni> probably we should also add more "high level" options
+    [14:17] <cfbolz> ok, so the question mark is rightfully there
+    [14:17] <cfbolz> antocuni: good point
+    [14:17] <fijal> cfbolz: yes
+    [14:18] <hpk> antocuni: yip
+    [14:18] <cfbolz> so we agree on these goals? any other comments?
+    [14:19] <hpk> i think the list is fine
+    [14:19] <antocuni> what's the exact meaning of having pypy.net as a goal?
+    [14:19] <mwh> this is mostly meant to be an extremely condensed set of hints for the release announcement btw
+    [14:19] <cfbolz> antocuni: having it somewhat useable and documented
+    [14:19] <antocuni> ok
+    [14:19] <mwh> what we need to do between now and the release is the next topic :-)
+    [14:19] <hpk> is documentation sufficient from your points of views?
+    [14:19] <cfbolz> for .net?
+    [14:20] <antocuni> for .net not at all
+    [14:20] <cfbolz> hpk: or in general?
+    [14:20] <hpk> particularly for the release items
+    [14:20] <pedronis> well, there's a bit of expectation management about the sec proto, not to give the idea that we have sandboxing or some such
+    [14:20] <cfbolz> pedronis: also a good point
+    [14:20] <hpk> sure
+    [14:20] <cfbolz> maybe we should call it differently?
+    [14:21] <hpk> maybe, but let's not discuss here, i'd say
+    [14:21] <cfbolz> ok
+    [14:21] <cfbolz> so, next topic?
+    [14:21] <arigo> the documentation is nowhere near complete
+    [14:21] <arigo> btw
+    [14:22] <cfbolz> arigo: agreed. that's why it is a goal :-)
+    [14:22] <arigo> but I don't see how we can reach a good level of documentation everywhere without investing a few weeks of effort
+    [14:22] <hpk> ok, but i think that one release focus should be to have good and interesting points into PyPy (including its development)
+    [14:22] <cfbolz> arigo: so what's your suggestion?
+    [14:23] <arigo> I don't have any
+    [14:23] <hpk> (points = entry points)
+    [14:23] <hpk> i think the most pressing question relates to JIT status and plans, and to "how to manage the release"
+    [14:23] exarkun (n=exarkun@intarweb.us) joined #pypy-sync.
+    [14:23] <fijal> exarkun: hi
+    [14:23] <exarkun> hi
+    [14:24] <hpk> arigo, pedronis, arre: do you have a kind of summary of status and "next steps"?
+    [14:24] <arigo> to give here?
+    [14:24] <arigo> I mean, do you want a summary now?
+    [14:24] <hpk> if you can provide it, yes
+    [14:24] <hpk> a high-level one :)
+    [14:25] <arigo> it may suddenly start producing non-completely-incredible code
+    [14:25] <arigo> any day or any week now
+    [14:25] <hpk> cool
+    [14:25] <pedronis> right now is broken on the branch tough
+    [14:25] <arigo> well, technically, yes :-)
+    [14:25] <cfbolz> but we cannot predict when this happens?
+    [14:25] <arigo> doesn't much about the release planning
+    [14:25] <arigo> not really
+    [14:25] <cfbolz> I see
+    [14:26] <cfbolz> so what's the scenario when it seems to not happen
+    [14:26] <cfbolz> ?
+    [14:26] <hpk> hum, i think i'd like to discuss it differently
+    [14:26] <cfbolz> hpk: ?
+    [14:27] <hpk> i think the JIT is technically one of the most interesting and challenging areas, and it's already quite successful
+    [14:27] <hpk> but i also think that for 1.0 we should have a totally different focus now
+    [14:28] <hpk> so that we can be sure that we have a good release covering all (EU-related) results other than producing the full performance that we would like to see with the JIT
+    [14:28] <hpk> and afterwards (particulary in March) we all shift to performance issues (there is also another Work package regarding that, dumdidum)
+    [14:29] Action: hpk takes the freedom to relate to EU issues, because we are almost completely from the EU bunch of people here
+    [14:29] <hpk> what do you think about this view?
+    [14:29] <mwh> i guess i have a few somewhat related points
+    [14:29] <mwh> it would be fantastic propaganda to have even one program that pypyjit runs faster than cpython for the release
+    [14:30] <mwh> otoh, we're going to need arigo and arre and pedronis to do more than just jit between now and then
+    [14:30] <arigo> mwh: I agree completely, I'd say it should be called 0.99 as long as we don't do that
+    [14:30] <mwh> i don't fully see how to square this circle
+    [14:30] <fijal> the problem with such propaganda is that if people start using it premature, they would say "yes, but it's usually slower"
+    [14:31] <pedronis> but march we should wrap up so lots of development doesn't seem possible there
+    [14:31] <arigo> reports reports reports
+    [14:31] <hpk> pedronis: unless we basically wrap up much in february
+    [14:31] <mwh> fijal: yes, we have to manage expectations etc, but still
+    [14:31] <cfbolz> so you want to cram all reports into march?
+    [14:31] <cfbolz> arigo, pedronis: I don't think that that is a good plan
+    [14:32] <hpk> arigo: why 0.99?
+    [14:32] <cfbolz> so the jit can be in 1.0, I guess
+    [14:32] <hpk> arigo: why is 1.1 in march or april with a fully tuned JIT bad?
+    [14:32] <pedronis> because is hard to write a jit report before we have results
+    [14:33] <stakkars> :-)
+    [14:33] <hpk> well, we kept a relatively high JIT focus from July last year up till now, and we have 58 days of EU project remaining
+    [14:34] <antocuni> is it needed to call the next release 1.0?
+    [14:34] <hpk> we may get the same reviewers than last time, and they did not ask a single JIT question
+    [14:34] <antocuni> what about 1.0rc1, or something like that
+    [14:35] <antocuni> I mean, before having 1.0 people can't have much expectations
+    [14:36] <cfbolz> pedronis: well, what are the alternatives, really?
+    [14:37] <cfbolz> anybody still there?
+    [14:37] <hpk> yes, but all thinking/considering things, i guess :)
+    [14:37] Action: hpk as well 
+    [14:37] <hpk> arigo, pedronis: do you think that a 1.0 release that does have a fully tuned JIT is not worthwhile?
+    [14:37] <mwh> yes, still here
+    [14:38] <fijal> still
+    [14:38] <guido_w> hm
+    [14:38] <cfbolz> hpk: I guess it is more that it is hard to do while working on the jit
+    [14:38] <arigo> sorry to introduce the release-number issue again
+    [14:38] <arigo> let's move on to other questions
+    [14:39] <cfbolz> arigo: the question how to approach the release (keep working on the jit or not) remains
+    [14:39] <hpk> well, i think the fact is that if arigo, pedronis, arre keep a strong JIT focus, then the release will be hard to do, consdiering all circumstances
+    [14:40] <pedronis> the problem is that 1.0 is a bit a let down community wise and doesn't match the EU milestone targets either
+    [14:40] <hpk> pedronis: let down community-wise? could you detail that?
+    [14:40] <pedronis> I think people will expect a lot from a PyPy 1.0
+    [14:40] <stakkars> and moving the 1.0 release to after the EU period is not possible?
+    [14:41] <mwh> well we kind of nailed our colours to the mast a bit calling our last release 0.9
+    [14:41] <cfbolz> stakkars: no, it is promised to the eu
+    [14:41] <mwh> but anyway, i agree that the version number is something of a distraction
+    [14:41] <hpk> i really don't see this 1.0 magic and it only relies on the JIT
+    [14:41] <hpk> and i'd like to understand where this comes from
+    [14:42] <cfbolz> it is the speed question, I guess
+    [14:42] <stakkars> I think they could englist('verschmerzen') it in favor of finishing other stuff
+    [14:42] <hpk> a PyPy that has C/llvm/.NET backends, stackless, Prolog/JS/Python frontends, security prototypes, and a preview JIT-compiler generator (world's first for a VHLL) is not 1.0?
+    [14:43] <antocuni> for me it's not only a speed question; the general question is: "why I (as a user) should use pypy instead of cpython"?
+    [14:43] <antocuni> I expect at least one answer to that question for pypy 1.0
+    [14:43] <hpk> (along with generating AJAX applications from python)
+    [14:43] <fijal> there is a lot of answers for this, but we may emphasis that 1.0 is not speed release
+    [14:44] <fijal> or do not advertise jit for 1.0 or such
+    [14:44] <fijal> I see a lot of pluses of using pypy, but speed is not among them
+    [14:44] <hpk> well, it comes quite close to CPython, but we keep the tension :)
+    [14:44] <cfbolz> :-)
+    [14:44] <guido_w> just to keep faassen busy :)
+    [14:45] <stakkars> hehe
+    [14:45] <mwh> (it's not at all relevant to the release, but it's the extending/embedding situation that most holds pypy's adoption back imho)
+    [14:46] <fijal> we don't have any goals in this direction for the release, do we?
+    [14:46] <mwh> no
+    [14:46] <cfbolz> mwh: seems a good guess
+    [14:46] <hpk> in any case, i'd rather get our EU reports and tasks sorted as much as possible in february and then have March (+ X a bit maybe) for speed
+    [14:47] <hpk> doing the reverse appears to me as dangerous and potentially extremely stressful
+    [14:47] <cfbolz> antocuni: there are interesting reasons for pypy: transparent proxies, thunks, stackless, security prototype
+    [14:48] <stakkars> btw., Richard told me that he is writing algorithms using RPython, without the hosting Python. Just as a note, something gers used
+    [14:48] <cfbolz> stakkars: ah, nice
+    [14:48] <stakkars> gets. eek
+    [14:49] <antocuni> cfbolz: yes, I know :-). My point is that we should list the plus of pypy over cpython, not that there are none
+    [14:49] <hpk> arigo, pedronis, arre: would you rather like to discuss a bit more out-of-pypy-sync and we continue early next week? (and maybe you get the breakthrough on the weekend, who knows :)
+    [14:50] <hpk> (i am not stating my opinion to put pressure on you, but from seriously consdiering things and overall issues)
+    [14:50] <arigo> the problem is
+    [14:51] <arigo> there are three categories of features (A, B, C)
+    [14:51] <arigo> A = all these cool features we have
+    [14:51] <arigo> B = jit
+    [14:51] <arigo> C = what the reviewers care about
+    [14:51] <stakkars> pypy-sync is no longer set to 30 mins, right?
+    [14:51] <hpk> stakkars: nope, currently :)
+    [14:51] <arigo> they are mostly distinct
+    [14:51] <hpk> A and C are not
+    [14:52] <arigo> C contains aspects and embedded devices
+    [14:52] <hpk> and least not "mostly distinct", rather "somewhat distinct"
+    [14:52] <arigo> which are not in A at all
+    [14:52] <arigo> and nobody really knows the state of the logic space
+    [14:53] <arigo> and semantic web stuff
+    [14:53] <hpk> right
+    [14:53] <hpk> not quite right, maybe
+    [14:53] <hpk> arigo: i am aware of that
+    [14:53] <arigo> I don't think the reviewers will be too interested in stackless or the jit, TBH
+    [14:53] <cfbolz> so we are doomed anyway? :-)
+    [14:53] <arigo> so, it means that we have to have very good stackless and jit
+    [14:54] <hpk> likely a strong review focus will be on validation, dissemination and community
+    [14:54] <arigo> good enough to show that we reached something generally useful
+    [14:54] <pedronis> hpk: I don't think we can focus on the jit for much more time, 1/1.5 weeks otherwise we are in trouble anyway. Otoh even the amendment five has something called Milestone 3
+    [14:54] <pedronis> and this 1.0 would not covert that
+    [14:54] <pedronis> s/covert/cover
+    [14:54] <hpk> arigo: i don't follow your reasoning, sorry
+    [14:55] <hpk> arigo: reviewer don't have a strong focus on stackless and jit, thus we need to have very good ones?
+    [14:55] <arigo> well, I mean that we cannot write reports that show how toy languages can be jitted
+    [14:55] <arigo> because the reviewers are not too interested in the techniques
+    [14:56] <arigo> instead, we need to jit the whole of pypy and benchmark some real-world applications
+    [14:56] <arigo> this kind of thing
+    [14:56] <hpk> that's a very quick conclusion
+    [14:56] <arigo> true, the truth is that I have no clue at all
+    [14:57] <cfbolz> arigo: this is to cover the fact that we don't have the things they care about?
+    [14:57] <cfbolz> heh
+    [14:57] <hpk> from the WP08 Expected result: "... Verify the expectation of reaching half the speed of C for purely algorithmic code."
+    [14:57] <arigo> cfbolz: it's more like, to have some obviously good result at least in some area
+    [14:57] <cfbolz> I see
+    [14:58] <stakkars> can't follow, too
+    [14:58] <cfbolz> hpk: ah, but that was meant for python code running on pypy-c-jit
+    [14:58] <arigo> it's all guessing the reviewers, but having some measurably good results in some area looks like a plan
+    [14:59] <arigo> (ah, pedronis just tells me that one of the reviewer actually was interested in the jit and discussed it over lunch)
+    [15:00] <cfbolz> arigo: but a strong (even non-jit) release would look like a measurably good result community-wise
+    [15:00] <stakkars> well, we are in time shortage, not the community
+    [15:00] <arigo> (so I've no clue, really, but it still seems to me that a completely new result like "we can take a real interpreter and turn it into a JIT" implies quite some success)
+    [15:00] <hpk> arigo: yes, and maybe also: if we invested now much of our work force on JIT and th reviewers don't care much but dislike the fact that we ignored their focus and recommendations, that might be a more dififcult situation thatn having to admit that the JIT is not fully where we wanted it to be
+    [15:00] <hpk> and it's not even clear that the JIT will not be there for the EU review
+    [15:03] <hpk> arigo: are you of the opinion that our other thirteen WPs results are not sufficiently presenting a sucess in EU-context?
+    [15:04] <pedronis> in the worst case yes
+    [15:05] <pedronis> anyway this is all very meta, what we need is time planning
+    [15:05] <cfbolz> pedronis: indeed
+    [15:07] <pedronis> the questions are how much more time to spend on the jit and when, how many releases we need to cover what we should package for the EU, when to do report writing and wrap up etc
+    [15:07] <hpk> my suggestion stands to finalize as much EU-related things (including a good 1.0 with a JIT-preview) in february
+    [15:07] <pedronis> I agree that spending feb completely on the jit looks like a very bad idea
+    [15:08] <cfbolz> pedronis: so how much time would you think is reasonable?
+    [15:09] <arigo> let's see what happens until monday
+    [15:10] <arigo> maybe we'll have a better idea then
+    [15:10] <cfbolz> hm
+    [15:10] <arigo> I even mean more than "maybe"
+    [15:10] <arigo> we should either start getting somewhere, or not
+    [15:10] <cfbolz> ok
+    [15:10] <cfbolz> so should we plan with you being working on the release from monday on?
+    [15:11] <hpk> arigo: ok, but note that there may be a bit of pylib release related disruptions (although i don't think it's going to be bad)
+    [15:12] <mwh> maybe we can talk about some other things than the jit now? :-)
+    [15:12] <hpk> i suggest to meet tuesday morning and set concrete plans and tasks up until 1.0
+    [15:12] <hpk> arigo,pedronis,arre: would that suit you?
+    [15:12] <mwh> i am totally not available on tuesday
+    [15:13] <fijal> hpk: monday is pylib release?
+    [15:13] <hpk> yes, if my weekend work time will be enough for it
+    [15:13] <cfbolz> hpk: you have to go now?
+    [15:13] <arigo> hpk: nicely symmetrical situation
+    [15:13] <hpk> heh
+    [15:13] <fijal> arigo: :)
+    [15:13] <hpk> arigo: let's see who is there first :)
+    [15:13] <arigo> yes :-)
+    [15:14] <hpk> arigo: but i also have tons of EU stuff until monday, you have an advantage
+    [15:14] <arigo> anyway tuesday afternoon looks like a better idea for us
+    [15:14] <mwh> arigo: i need to borrow you to explain enough about how genc does direct_fieldptr & c so i can do it for llvm
+    [15:14] <mwh> but that can be last next week
+    [15:14] <mwh> last -> late
+    [15:14] <arigo> mwh: ok
+    [15:15] <antocuni> I won't be here on tuesday afternoon (I'll be in the airport)
+    [15:16] <mwh> stakkars: do you have a windows machine at all?
+    [15:16] <hpk> wednesday morning?
+    [15:17] <antocuni> for me it's fine
+    [15:17] <arigo> ok for me
+    [15:17] <mwh> probably fine
+    [15:17] <arre> Works.
+    [15:17] <mwh> feel free to assign me things if i don't make it :-)
+    [15:17] <stakkars> I'm away from Wed. and showing up on the Trillke sprint, again.
+    [15:17] <antocuni> mwh: such as "write all the reports"?
+    [15:17] <pedronis> works for me
+    [15:18] <mwh> antocuni: preferably not that one, no
+    [15:18] <hpk> stakkars: ok, put yourself in people.txt, will you?  (and please don't forget to co-ordinate with lene about EU things further for monday)
+    [15:18] cfbolz_ (n=cfbolz@134.99.112.244) joined #pypy-sync.
+    [15:18] <cfbolz_> hm
+    [15:18] <stakkars> yessir :)
+    [15:18] <cfbolz_> sorry
+    [15:18] cfbolz (n=cfbolz@134.99.112.244) left irc: Read error: 104 (Connection reset by peer)
+    [15:18] <hpk> stakkars: :)
+    [15:19] <hpk> stakkars: i know i might be getting on your nerves, but it really helps to sort this out for our pending EU communication
+    [15:19] <cfbolz_> so what's the plan now? meeting on tuesday?
+    [15:19] <stakkars> I will see Stephan after this meeting and will see if he can do some WP6 work before I'm back, maybe
+    [15:19] <mwh> cfbolz_: weds it seems
+    [15:20] <hpk> cfbolz_: latest suggestion was wednesday morning, where arigo, mwh, antocuni, me could make it
+    [15:20] <hpk> and pedronis
+    [15:20] <cfbolz_> when exactly?
+    [15:20] <cfbolz_> 11?
+    [15:20] <hpk> if i gather correctly
+    [15:20] <mwh> hpk: i can't promise that i can make it
+    [15:20] <mwh> but i'll try
+    [15:21] <cfbolz_> so is 11 fine? that's the only slot I can on wed
+    [15:21] <antocuni> +1
+    [15:21] <arre> Fine by me.
+    [15:21] <hpk> +1
+    [15:21] <pedronis> +1
+    [15:21] <mwh> as good as any other
+    [15:22] <arigo> ok
+    [15:22] <cfbolz_> meeting closed then?
+    [15:22] <hpk> i presume so, and we continue/finalise on wednesday 11am gmt+2
+    [15:22] <cfbolz_> ok. see you all
+    [15:22] <cfbolz_> I will try to write some minutes
+    [15:22] <mwh> bye for now
+    [15:22] <hpk> bye for now!
+    [15:22] <arigo> bye
+    [15:22] <pedronis> see you
+    [15:22] <antocuni> bye
+    [15:23] <fijal> bye
+    [15:23] <stakkars> bye

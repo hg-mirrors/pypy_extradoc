@@ -1,0 +1,25 @@
+\begin{center}
+{\smaller
+    \begin{tabular}{ |l{% for c in head %} {% if not loop.first %} |r {% endif %} {% endfor %} }
+    \hline
+    {% for col in head %}
+        \textbf{ {{col}} }
+        {% if not forloop.last %}
+           &
+        {% endif %}
+    {% endfor %}
+    \\
+    \hline
+    {% for row in table %}
+        {% for cell in row %}
+            {{cell}}
+            {% if not forloop.last %}
+               &
+            {% endif %}
+        {% endfor %}
+        \\
+    {% endfor %}
+    \hline
+    \end{tabular}
+}
+\end{center}

@@ -1,0 +1,308 @@
+=============================================
+pypy-sync developer meeting 20th October
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync
+
+Attendees::
+
+         Samuele Pedroni
+         Armin Rigo
+         Anders Chrigström
+         Christian Tismer
+         Holger Krekel 
+         Eric van Riet Paap
+         Michael Hudson
+         Carl Friedrich Bolz
+         Bert Freudenberg 
+         Adrien di Mascio (late)
+
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+
+Status update and next steps
+-----------------------------
+
+ootypesystem
+++++++++++++
+
+Armin reports that classes/instance support in the rtyper for ootypes seems
+reasonably complete now: class attributes, abstract base methods, function 
+pointers stored on instances seem to work. Missing are all other high level
+types like strings, lists, tuples, dicts, etc. Samuele notes that there might
+still be problems with obscure prebuilt constants. Bert intends to work on
+the squeak backend and Armin tries to help him as far as his work on reports
+permit that. Holger notes that Impara's work should be more focused on
+evaluating the possibilities how to integrate pypy and squeak to which Bert
+agrees.
+
+stackless integration
++++++++++++++++++++++
+
+Armin points at the discussion that took place on PyPy-dev:
+
+http://codespeak.net/pipermail/pypy-dev/2005q4/002519.html
+
+and also notes that some more discussion might be needed. The current state of
+the app-level stackless module is described at:
+
+http://codespeak.net/svn/pypy/extradoc/sprintinfo/paris/stackless-discussion.txt
+
+Christian is working on reducing the overhead of stackless. There was some 
+discussion about the question whether stackless should be mentioned as
+implemented in the current reports already. Holger and Carl Friedrich are
+opposed to this idea since there will be a lot more reports coming.
+Armin and Christian were in favor of writing about it. Some further discussion
+is needed about this.
+
+
+l3interpreter
++++++++++++++
+
+Carl Friedrich describes the current the of the l3interpreter: the
+basic model is in place, for now only some operations with integers work.
+There is some code that can convert low level to l3 graphs but it is far
+from complete. Everybody agreed that nobody will work on the l3interpreter
+until should not be worked on until the reports are finished.
+
+
+compiler
+++++++++
+
+Adrien thinks that compiler seems more or less stable now, although there are
+still some bugs found every now and then. It was agreed upon that nobody will
+work on it for a while.
+
+javascript backend
+++++++++++++++++++
+
+Eric describes the current state of the JS backend: it passes around 50%
+of the LLVM tests. The work on the JS backend is simpler because GC and
+exception handling can be handed down to the underlying JS interpreter.
+Eric will give a lightning talk on OSCON in Amsterdam and ask for feedback
+there.
+
+Next pypy-sync meeting
+-------------------------------
+
+Scheduled for next Thursday,  Oct. 27th 13.00h CET, conducted by Carl Friedrich
+
+
+Closing
+------------------
+
+Carl Friedrich closes the meeting in time.
+
+.. _`IRC-Log`:
+
+Log:
+------------
+Here is the full IRC log:: 
+
+    **** BEGIN LOGGING AT Thu Oct 20 12:27:08 2005
+
+    Oct 20 12:27:08 *	Now talking on #pypy-sync
+    Oct 20 12:51:06 *	hpk (n=holger_k@adsl-218-181-192-81.adsl2.iam.net.ma) has joined #pypy-sync
+    Oct 20 12:51:17 *	pedronis (n=Samuele_@c-3c8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+    Oct 20 12:51:57 *	stakkars (n=tismer@ip-80-226-228-223.vodafone-net.de) has joined #pypy-sync
+    Oct 20 12:58:57 *	mwh (n=mwh@134.99.112.244) has joined #pypy-sync
+    Oct 20 13:00:02 cfbolz	hi all! it 1pm on my clock now, shall we start?
+    Oct 20 13:00:20 stakkars	DONE: more on source ordering, stackless experiments 
+    Oct 20 13:00:21 stakkars	NEXT: finishing this, continue on spackless stuff
+    Oct 20 13:00:21 stakkars	BLOCK: None
+    Oct 20 13:00:43 mwh	last: form filling, recovering from sprint, playing with gcc optimisations
+    Oct 20 13:00:43 mwh	next: reports, not sure what else
+    Oct 20 13:00:43 mwh	blockers: german bureaucracy
+    Oct 20 13:00:48 hpk	LAST: paris sprint, eu issues/background organisation, codespeak issues   NEXT: getting eric on board, some codespeak stuff, marocco   BLOCKERS: mixed connectivity
+    Oct 20 13:01:04 *	arigo (n=arigo@134.99.112.244) has joined #pypy-sync
+    Oct 20 13:01:10 arigo	hi all
+    Oct 20 13:01:10 cfbolz	LAST: sprinting, working on statistics gathering and code coverage
+    Oct 20 13:01:10 cfbolz	NEXT: more statistics, code coverage, reports
+    Oct 20 13:01:10 cfbolz	BLOCKERS: too many tasks :-)
+    Oct 20 13:01:25 pedronis	LAST: sprint; looking into packing 0.6 test results, D04.4; annotation for fixed-size list support 
+    Oct 20 13:01:27 pedronis	NEXT: reports, ...
+    Oct 20 13:01:28 pedronis	BLOCKERS: -
+    Oct 20 13:01:43 arigo	DONE: ootyper (classes/instances roughly complete now); some continuation
+    Oct 20 13:01:43 arigo	experiments; more pypy-c debugging (it still doesn't run py.py)
+    Oct 20 13:01:43 arigo	NEXT: reports D05.1 and D05.4 :-/
+    Oct 20 13:01:43 arigo	BLOCKERS: -
+    Oct 20 13:02:27 cfbolz	erics lines:
+    Oct 20 13:02:31 cfbolz	Last: exception handling in Javascript
+    Oct 20 13:02:31 cfbolz	Next: genjs
+    Oct 20 13:02:31 cfbolz	Blockers: -
+    Oct 20 13:02:44 cfbolz	arre?
+    Oct 20 13:03:25 *	bertf (n=bert@pD951499A.dip0.t-ipconnect.de) has joined #pypy-sync
+    Oct 20 13:03:35 *	ericvrp2 (n=eric@10-81-event-swisscomeurospot.infopact.nl) has joined #pypy-sync
+    Oct 20 13:03:42 cfbolz	hi bert! want to post your acitvity report?
+    Oct 20 13:03:48 cfbolz	hi eric! I just posted your lines
+    Oct 20 13:03:49 stakkars	hi Bert, thanks for the wire
+    Oct 20 13:03:56 ericvrp2	'kay
+    Oct 20 13:04:17 bertf	activities - recovering from sprint
+    Oct 20 13:05:11 cfbolz	there don't seem to be blockers that can be resolved
+    Oct 20 13:05:20 cfbolz	let's proceed to the regular topics
+    Oct 20 13:05:24 cfbolz	Status update and next steps 
+    Oct 20 13:05:28 cfbolz	ootypessytem
+    Oct 20 13:05:51 cfbolz	can somebody give an update about the status there?
+    Oct 20 13:06:29 arigo	yes
+    Oct 20 13:06:40 arigo	the classes/instances support seem reasonably complete now
+    Oct 20 13:07:01 arigo	class attributes, abstract base methods, function pointers stored on instances, etc.
+    Oct 20 13:07:12 arigo	I basically copied rclass.py from lltype one test at a time
+    Oct 20 13:07:29 bertf	nice :)
+    Oct 20 13:07:38 arigo	so what's missing now are all other high-level types: strings, lists, tuples, dicts, etc.
+    Oct 20 13:07:50 arigo	I guess we need to discuss more before we start that
+    Oct 20 13:08:00 pedronis	and I suppose passing more obscure rpbc stuff
+    Oct 20 13:08:07 cfbolz	arigo: indeed. later on #pypy?
+    Oct 20 13:08:11 arigo	sure
+    Oct 20 13:08:30 cfbolz	who is going to work on this the next weeks?
+    Oct 20 13:08:31 arigo	pedronis: yes, though I think half of the obscure stuff will work magically :-)
+    Oct 20 13:08:46 pedronis	yes, there's a chance
+    Oct 20 13:08:48 arre	Sorry for joining late.
+    Oct 20 13:08:53 *	stakkars is on a modem line. following on #pypy will be too expensive,today
+    Oct 20 13:09:26 arigo	from now on, a lot of the hard stuff in rdict.py&co will be easy and pushed to the back-end (i.e. Bert :-)
+    Oct 20 13:09:39 bertf	fine with me ...
+    Oct 20 13:09:43 cfbolz	ok
+    Oct 20 13:10:03 arigo	I can continue to help anyway (reports reports reports)
+    Oct 20 13:10:22 cfbolz	yes
+    Oct 20 13:10:25 cfbolz	next topic?
+    Oct 20 13:10:29 cfbolz	stackless integration
+    Oct 20 13:10:29 cfbolz	---------------------
+    Oct 20 13:10:33 cfbolz	status?
+    Oct 20 13:10:40 arre	cfboltz: Want my lines?
+    Oct 20 13:10:56 cfbolz	arre: ok
+    Oct 20 13:11:08 arre	PREV: preparing data for reports, catching up on work done during sprint
+    Oct 20 13:11:09 arre	NEXT: Help my parents move (No PyPy work)
+    Oct 20 13:11:09 arre	BLOCKERS: None
+    Oct 20 13:11:23 cfbolz	thanks
+    Oct 20 13:11:25 arigo	stackless integration: more discussion needed with Christian
+    Oct 20 13:11:45 *	hpk just sidenotes that the focus of impara should nevertheless probably be on an evaluation/laying out of the approaches of integrating squeak with pypy
+    Oct 20 13:11:47 stakkars	well, the current plan looks fine.
+    Oct 20 13:12:15 stakkars	I'm also looking into ways to reduce the overhead.
+    Oct 20 13:12:30 *	bertf nods
+    Oct 20 13:13:09 *	stakkars can discuss in the evening a bit
+    Oct 20 13:13:19 cfbolz	current plan is the discussion that took on on pypy-dev?
+    Oct 20 13:13:26 arigo	yes
+    Oct 20 13:13:51 cfbolz	ok. christian, are you going to work on that?
+    Oct 20 13:14:17 stakkars	sure. And I'd like to help with reporting (preferredly writing towads stackless stuff but well)
+    Oct 20 13:14:30 cfbolz	great
+    Oct 20 13:14:57 hpk	i think stackless is not the focus on phase 1 reports, but it can be hinted at when talking about flexibility 
+    Oct 20 13:15:05 stakkars	after a break and some home trouble, I'm about to finish code ordering (convergence problem) and sqitch to stackless then
+    Oct 20 13:15:12 *	adim (n=adim@logilab.net2.nerim.net) has joined #pypy-sync
+    Oct 20 13:15:13 arigo	hpk: D05.3 should talk about stackless in some details
+    Oct 20 13:15:17 stakkars	ah - oh
+    Oct 20 13:15:25 adim	Hi everyone (sorry for being late)
+    Oct 20 13:15:36 hpk	(claiming that the architecture provides enoug leeway for stackless as if we hadn't tried it already, so we can be bold :-) 
+    Oct 20 13:15:41 cfbolz	but this needs to be carefully done, since after all there are other stackless reports later
+    Oct 20 13:16:10 cfbolz	so we probably don't want to give it all away already
+    Oct 20 13:16:13 hpk	it should just be more or less bold claims / statements about the architecture for phase 1 IMO 
+    Oct 20 13:16:19 stakkars	reporting about the current achievement would make sense,although I don't know whether Armin wants to do it
+    Oct 20 13:16:51 arigo	maybe we can report about what we got at the end of the sprint
+    Oct 20 13:16:53 hpk	no, i do think that we have to think about correct timing, our reports will always lack behind 
+    Oct 20 13:17:11 stakkars	arigo: that's what I meant
+    Oct 20 13:17:11 hpk	we have 40 reports to go (or some such) 
+    Oct 20 13:17:22 arigo	stakkars: ok
+    Oct 20 13:17:32 hpk	arigo, stakkars : but i disagree 
+    Oct 20 13:17:36 arigo	hpk: I see the point
+    Oct 20 13:18:11 cfbolz	let's defer this to #pypy, I'd say
+    Oct 20 13:18:15 cfbolz	l3interpreter
+    Oct 20 13:18:15 cfbolz	-------------
+    Oct 20 13:18:28 cfbolz	I can say something about the status
+    Oct 20 13:18:43 cfbolz	the basic model is in place, it ignores everything except integers for now
+    Oct 20 13:18:43 hpk	cfbolz: defering without refering to persons seems difficult, but well 
+    Oct 20 13:19:20 cfbolz	hpk: point taken 
+    Oct 20 13:19:59 cfbolz	to l3interpreter there is some code that converts l2 to l3 but it can't do very much yet
+    Oct 20 13:19:59 mwh	what types will the l3interpreter need to know about eventually?
+    Oct 20 13:20:11 hpk	the question is (IMO) if we want to work much on l3interpreter in the next weeks 
+    Oct 20 13:20:21 cfbolz	probably rather not
+    Oct 20 13:20:56 cfbolz	too much work on reports to do
+    Oct 20 13:21:11 mwh	indeed
+    Oct 20 13:21:39 cfbolz	so I'd say I'll try to write a bit about the plans we had at the sprint and put it to sleep afterwards
+    Oct 20 13:22:03 hpk	yip, i think so as well 
+    Oct 20 13:22:15 cfbolz	ok then
+    Oct 20 13:22:16 cfbolz	compiler
+    Oct 20 13:22:16 cfbolz	--------
+    Oct 20 13:22:24 cfbolz	could anybody tell what the status there is?
+    Oct 20 13:22:38 mwh	well, we found another crazy bug last night
+    Oct 20 13:22:53 adim	mwh: ah ?
+    Oct 20 13:22:58 mwh	armin fixed it somewhat
+    Oct 20 13:23:05 hpk	sorry, i have to ask: does everybody else think it's ok to postpone l3interpreter until  - say - december? 
+    Oct 20 13:23:26 mwh	adim: from Lib/compiler, to do with __name mangling
+    Oct 20 13:23:37 arigo	hpk: no, I'd only say until we are done with the bunch of thereports
+    Oct 20 13:23:43 stakkars	yes. in effect this would continue at the next sprint, then.
+    Oct 20 13:23:53 cfbolz	arigo: which will probably nearly be december :-)
+    Oct 20 13:23:58 arigo	ok ok :-)
+    Oct 20 13:24:02 hpk	arigo: ok, this will be aerly december, i am afraid, but we'll see 
+    Oct 20 13:24:09 adim	cfbolz: for the compiler, I would say that we can consider it as finished since failing compliancy tests are note compiler-related bugs
+    Oct 20 13:24:27 adim	but it doesn't guarantee that there's no bug left
+    Oct 20 13:24:43 hpk	surely not
+    Oct 20 13:24:55 cfbolz	so will anybody work on it?
+    Oct 20 13:25:09 pedronis	arigo, hpk: I see, the important thing is that when we restart we have a short discussion on what next, if we manage before december
+    Oct 20 13:25:10 arigo	the bugs are not known yet :-)
+    Oct 20 13:25:13 adim	I don't really think so.
+    Oct 20 13:25:16 mwh	as bugs are found, surely
+    Oct 20 13:25:18 adim	:)
+    Oct 20 13:25:28 cfbolz	ok, makes sense for everybody?
+    Oct 20 13:25:39 hpk	makes sense to consider it finished for now, yes
+    Oct 20 13:25:43 hpk	(to me) 
+    Oct 20 13:25:55 cfbolz	to me as well
+    Oct 20 13:26:15 arigo	yes
+    Oct 20 13:26:21 stakkars	'k
+    Oct 20 13:26:34 mwh	is this some kind of vote? :)
+    Oct 20 13:26:37 cfbolz	yes
+    Oct 20 13:26:39 cfbolz	:-)
+    Oct 20 13:26:41 cfbolz	ok then
+    Oct 20 13:26:42 *	mwh says "aye" too
+    Oct 20 13:26:45 cfbolz	javascript backend 
+    Oct 20 13:26:45 cfbolz	------------------
+    Oct 20 13:26:50 arre	Aye.
+    Oct 20 13:27:03 cfbolz	ericvrp2?
+    Oct 20 13:27:03 ericvrp2	genjs is passing about 50% of the (llvm) unittests.
+    Oct 20 13:27:04 ericvrp2	The resulting javascript code is run with a standlone js interpreter called Spidermonkey.
+    Oct 20 13:27:06 hpk	mwh: we use to answer questions like this from the moderator :like "is everybody ..." :-) 
+    Oct 20 13:27:06 ericvrp2	Actual testing in browsers is being worked on by Guido Wesdorp.
+    Oct 20 13:27:09 ericvrp2	The code looks very similar but simpler that the C/LLVM code.
+    Oct 20 13:27:12 ericvrp2	This is mostly because I can use JS' garbage collection and excption handling.
+    Oct 20 13:27:17 ericvrp2	I am here now at euro OSCON in Amsterdam to give a 5 minute lightning talk about it
+    Oct 20 13:27:18 ericvrp2	and my question to the audience will be to come up with use-cases.
+    Oct 20 13:27:33 cfbolz	:-)
+    Oct 20 13:27:38 hpk	:-)
+    Oct 20 13:27:51 adim	:)
+    Oct 20 13:27:53 *	ericvrp2 blurb
+    Oct 20 13:28:05 hpk	does spidermonkey also provide some dom-simulation or so? 
+    Oct 20 13:28:12 *	hpk notices that time is getting short
+    Oct 20 13:28:20 ericvrp2	I don't think so
+    Oct 20 13:28:22 cfbolz	indeed, less than two min left
+    Oct 20 13:28:36 mwh	anything else?
+    Oct 20 13:28:53 pedronis	should we think to do new a release?
+    Oct 20 13:28:56 mwh	i probably won't sign my contract on this visit to duesseldorf :(
+    Oct 20 13:29:00 cfbolz	:-(
+    Oct 20 13:29:03 hpk	pedronis: next pypy-sync meeting? 
+    Oct 20 13:29:07 cfbolz	indeed
+    Oct 20 13:29:09 hpk	mwh: buah
+    Oct 20 13:29:29 cfbolz	anybody opposed to close the meeting?
+    Oct 20 13:29:36 hpk	nope
+    Oct 20 13:29:58 stakkars	bye
+    Oct 20 13:30:01 ericvrp2	bye
+    Oct 20 13:30:04 adim	bye
+    Oct 20 13:30:05 arigo	bye
+    Oct 20 13:30:17 bertf	bye
+    Oct 20 13:30:27 cfbolz	see you all next week!
+    Oct 20 13:30:42 *	adim (n=adim@logilab.net2.nerim.net) has left #pypy-sync
+    Oct 20 13:30:57 *	mwh (n=mwh@134.99.112.244) has left #pypy-sync
+    Oct 20 13:31:09 *	ericvrp2 has quit ("leaving")
+    Oct 20 13:31:12 *	arre (i=ba81f155@1-1-5-33a.gfa.gbg.bostream.se) has left #pypy-sync
+    Oct 20 13:31:20 hpk	bye
+    Oct 20 13:31:30 *	bertf (n=bert@pD951499A.dip0.t-ipconnect.de) has left #pypy-sync
+    Oct 20 13:32:08 *	arigo (n=arigo@134.99.112.244) has left #pypy-sync
+    **** ENDING LOGGING AT Thu Oct 20 13:33:51 2005
+

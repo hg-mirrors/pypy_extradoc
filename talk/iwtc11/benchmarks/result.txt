@@ -1,0 +1,129 @@
+
+pypy
+sqrt(float):   1.20290899277
+  sqrt(int):   2.41840982437
+sqrt(Fix16):   6.10620713234
+conv3(1e8):    2.5192759037
+conv5(1e8):    2.89429306984
+conv3(1e6):    0.828789949417
+conv5(1e6):    1.01669406891
+conv3(1e5):    0.777491092682
+conv5(1e5):    0.971807956696
+conv3x3(3):    0.653658866882
+conv3x3(1000): 0.748742103577
+dilate3x3(1000): 4.8826611042
+NoBorderImagePadded: 2.31043601036
+NoBorderImagePadded(iter): 0.572638988495
+NoBorderImagePadded(range): 0.494098186493
+NoBorderImage: 2.90333104134
+NoBorderImage(iter): 2.06943392754
+NoBorderImage(range): 1.99161696434
+sobel(NoBorderImagePadded): 0.668392896652
+
+pypy --jit enable_opts=intbounds:rewrite:virtualize:heap:unroll
+sqrt(float):   1.19338798523
+  sqrt(int):   2.42711806297
+sqrt(Fix16):   6.12403416634
+conv3(1e8):    2.06937193871
+conv5(1e8):    2.26879811287
+conv3(1e6):    0.837247848511
+conv5(1e6):    1.02573990822
+conv3(1e5):    0.779927015305
+conv5(1e5):    0.975258827209
+conv3x3(3):    0.663229942322
+conv3x3(1000): 0.763913154602
+dilate3x3(1000): 4.80735611916
+NoBorderImagePadded: 2.33380198479
+NoBorderImagePadded(iter): 0.504709005356
+NoBorderImagePadded(range): 0.503198862076
+NoBorderImage: 2.93766593933
+NoBorderImage(iter): 2.04195189476
+NoBorderImage(range): 2.02779984474
+sobel(NoBorderImagePadded): 0.670017004013
+
+pypy --jit enable_opts=intbounds:rewrite:virtualize:heap
+sqrt(float):   1.69957995415
+  sqrt(int):   3.13235807419
+sqrt(Fix16):   10.325592041
+conv3(1e8):    2.997631073
+conv5(1e8):    3.13820099831
+conv3(1e6):    1.7843170166
+conv5(1e6):    1.94643998146
+conv3(1e5):    1.75876712799
+conv5(1e5):    1.96709895134
+conv3x3(3):    1.09958791733
+conv3x3(1000): 1.02993702888
+dilate3x3(1000): 5.22873902321
+NoBorderImagePadded: 2.45174002647
+NoBorderImagePadded(iter): 1.60747289658
+NoBorderImagePadded(range): 1.55282211304
+NoBorderImage: 2.91020989418
+NoBorderImage(iter): 1.97922706604
+NoBorderImage(range): 2.14161992073
+sobel(NoBorderImagePadded): 1.47591900826
+
+gcc
+sqrt(float):   1.43
+sqrt(int):     1.93
+sqrt(Fix16):   2.04
+conv3(1e8):     2.03
+conv5(1e8):     2.39
+conv3(1e6):     1.66
+conv5(1e6):     2.03
+conv3(1e5):     1.60
+conv5(1e5):     2.02
+conv3x3(3):  1.81
+conv3x3(1000):  1.79
+dilate3x3(1000):  3.26
+sobel_magnitude:  1.37
+
+gcc -O2
+sqrt(float):   1.15
+sqrt(int):     1.86
+sqrt(Fix16):   1.89
+conv3(1e8):     1.22
+conv5(1e8):     1.37
+conv3(1e6):     1.00
+conv5(1e6):     1.04
+conv3(1e5):     0.81
+conv5(1e5):     0.97
+conv3x3(3):  0.25
+conv3x3(1000):  0.23
+dilate3x3(1000):  0.27
+sobel_magnitude:  0.25
+
+gcc -O3 -march=native
+sqrt(float):   1.15
+sqrt(int):     1.82
+sqrt(Fix16):   1.89
+conv3(1e8):     1.12
+conv5(1e8):     1.16
+conv3(1e6):     0.96
+conv5(1e6):     0.97
+conv3(1e5):     0.66
+conv5(1e5):     0.75
+conv3x3(3):  0.23
+conv3x3(1000):  0.21
+dilate3x3(1000):  0.26
+sobel_magnitude:  0.25
+
+python2.7
+sqrt(float):   34.9008591175
+  sqrt(int):   19.6919620037
+sqrt(Fix16):   966.111785889
+conv3(1e8):    69.0758299828
+conv5(1e8):    101.503945827
+conv3(1e6):    62.212736845
+conv5(1e6):    93.5375850201
+conv3(1e5):    61.4343979359
+conv5(1e5):    93.6144771576
+conv3x3(3):    198.12590003
+conv3x3(1000): 193.030704975
+dilate3x3(1000): 192.323596954
+NoBorderImagePadded: 512.473811865
+NoBorderImagePadded(iter): 503.393321991
+NoBorderImagePadded(range): 493.907886028
+NoBorderImage: 501.37309289
+NoBorderImage(iter): 495.473101139
+NoBorderImage(range): 493.572232008
+sobel(NoBorderImagePadded): 433.678281069

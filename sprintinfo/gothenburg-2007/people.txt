@@ -1,0 +1,48 @@
+People coming to the Gothenburg sprint Nov 19-25 2007
+======================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Carl Friedrich Bolz  19-25          Samuele's and Armin's
+Samuele Pedroni      lives there     
+Anders Chrigstrom    lives there
+Jacob Hallen         lives there
+Laura Creighton      lives there
+Christian Tismer     19- after 26   Laura and Jacob's
+Maciej Fijalkowski   19-26          Laura and Jacob's
+Armin Rigo           lives thereish
+Alexander Schremmer  19-26          Laura and Jacob's
+Richard Emslie       19-26          Laura and Jacob's
+Antonio Cuni         19-22          Laura and Jacob's
+==================== ============== =====================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Michael Hudson       ?              ?
+Andrew Thompson      ?              ?
+Stephan Diehl        ?              ?
+Eric van Riet paap   ?              ?
+Niko Matsakis        ?              ?
+Leonardo Santagada   ?              ?
+Aurelien Campeas     ?              ?
+Alexandre Fayolle    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Johan Hahn           ?              ?
+Holger Krekel        ?              ?
+Anders Lehmann       ?              ? 
+Niklaus Haldimann    ?              ?
+==================== ============== =====================

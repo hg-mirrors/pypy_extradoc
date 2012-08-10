@@ -1,0 +1,82 @@
+Tokyo 2006 Sprint Report
+=============================
+
+Parts of the PyPy team visited Tokyo and hosted a sprint between 23-29th of April, 2006.
+We sprinted in the facilities of the National Institute of Advanced Science and 
+Technology, being invited by The Free Software Initiative of Japan. The idea was to 
+promote Python as a programming language and present PyPy for Japanese hackers.
+
+Here is the list of people participating in the sprint:
+
+  * Anders Lehmann 
+  * Nik Haldimann
+  * Samuele Pedronis
+  * Beatrice Düring
+  * Anders Chrigstrom (Arre)
+  * Eric Van Riet Paap
+  * Valentino Volonghi
+  * Sanghyeon Seo
+  * Yutaka Niibe
+  * Yusei Tahara
+  * George Toshida
+  * Koichi Sasada
+
+The announced goals for the sprint were: 
+  - Work on gensqueak (our Squeak backend) or possibly other backends.
+
+  - Implementing Python 2.5 features in PyPy.
+
+  - Progress further on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+  - Writing ctypes implementations of modules to be used by the above
+    tool.
+
+  - Experimenting and improving performance of our garbage collectors.
+
+  - Experiment with PyPy flexibility or other aspects of the implementation.
+
+  - Possibly experiment with writing modules translatable for use both
+    in PyPy and CPython.
+  
+  - Whatever participants want to do with PyPy or particular areas
+    of PyPy (please send suggestions to the mailing list before to allow us to plan 
+    and give feedback) 
+
+After an initial round of checking general interests in the group during the first day we ended 
+up with this list - the content of the sprint is a mix between these goald and interests 
+and of course all topics on these lists were not achieved although we were productive ;-):
+
+  - gensqueak/ootypesystem 
+
+  - Implementing Python 2.5 features in PyPy. 
+
+  - Progress further on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+    - check status
+    - ctypes time and socket (and select ;))
+
+  - rctypes support for LLVM (Eric)
+
+  - convert JS backend to ootypesystem 
+
+  - genjs test failure fixes 
+
+  - raisingops transformation 
+
+  - PyPy debian packaging?
+
+  - Fun with the Common Lisp backend 
+
+  - Possibly experiment with writing modules translatable for use both
+    in PyPy and CPython.
+
+Day 1-3
+-----------
+
+Breakday
+-----------
+
+Day 5-7
+----------

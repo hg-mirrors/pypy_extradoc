@@ -1,0 +1,29 @@
+Pervasive Testing 
+=================
+
+status:
+- automated nightly test runs of pypy tests on 32bit linux machine (wyvern)   
+
+- automated nightly builds on tuatara (PowerPC OSX) for builds and benchmarks 
+
+- nightly run of cpython regression tests on top of several pypy-c's 
+  (running on samuele's linux Desktop machine) 
+
+todo: 
+
+- automated tests on the windows platform 
+  (a dedicated remotely accessible windows machine
+  which regularly runs the tests) 
+- allow for all tests (see status above) to easily run on demand  
+  and also from branches
+- tool for sending testing data to a central place 
+- display test results information centrally
+- integrate with release tools and process 
+
+expected outcome: 
+
+- easy-to-track and to fix test-regressions 
+- improved stability and consistency between platforms
+- improvements to the release process 
+- more community participation and contributions in analysing 
+  and helping with testing problems 

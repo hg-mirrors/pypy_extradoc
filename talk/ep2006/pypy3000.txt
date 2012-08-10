@@ -1,0 +1,48 @@
+---- pypy 3000 ----
+
++++ single language specification written in (R)Python 
+
+++ equally runs on/translates to C, .NET and Java platforms
+
++ and squeak/smalltalk
+
+- and common lisp :)
+
++ includes JIT compiler for C ...
+
+- ... and for javascript/Internet Explorer 
+
++ currently pypy gets faster 4 times each year ...
+
+- clearly means: will be 200 times faster than CPython 3000!
+
++ write and test AJAX apps in python, translate to Javascript 
+
+- or simply have pygame run and translated into browsers 
+
+- select python 2.4, 2.5, 2.6, 3000 ... (syntax) features per module
+
++ transparent distribution of objects/execution across machines 
+
++ data tagging security models 
+
+- sandbox security models 
+
+- transparent persistence 
+
+++ logic variables / prolog like features
+
+++ coroutines / greenlets / tasklets 
+
++ "build your own PyPy"
+
+++ lazy types/computations
+
++ runtime modifiable syntax (or better not? :)
+
+-- FPGA backend (python programs translated to hardware)
+
++ secret goal: run Bub'n'Bros on every possible platform 
+
+++ summer of pypy: if you are a student and want it to happen: contact us! 
+

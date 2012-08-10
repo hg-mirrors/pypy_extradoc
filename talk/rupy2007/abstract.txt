@@ -1,0 +1,16 @@
+Speakers: Armin Rigo, Maciej Fijalkowski
+
+Title: PyPy, the implementation of Python in Python
+
+Abstract: We'd like to present the PyPy project, which is both:
+
+- A very very flexible compiler toolchain, which translates a restricted subset
+of Python to a variety of languages (C, LLVM, CLI, JVM, JavaScript...)
+
+- An implementation of a Python interpreter, with many novel features, including
+Psyco-style specializing JIT, stackless-like coroutines and many others.
+
+The PyPy project has been funded for the last two years by the EU
+
+The PyPy is open source project, for more details about it see http://codespeak.net/pypy
+

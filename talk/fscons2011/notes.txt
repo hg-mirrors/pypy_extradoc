@@ -1,0 +1,105 @@
+
+
+thanks Laura
+
+
+
+$ pypy
+
+differences: irc topics
+prompt
+(multi-line editing)
+
+
+def f(n):
+    i = 0
+    while i < n:
+        i = i + 1
+    return i
+
+
+
+class A(object):
+    def __init__(self, value):
+        self.value = value
+
+def f(n):
+    a = A(0)
+    while a.value < n:
+        a = A(a.value + 1)
+    return a
+
+
+
+hack/3d/test6.py
+
+
+...for maximum effect;
+in truth less impressive
+on usual programs
+(but still)
+
+
+<slides>
+
+gitdm
+  - data mining tool
+  - reads the output of
+    ``git log``
+  - generate kernel dev.
+    statistics
+  - ...3x
+
+MyHDL: VHDL-like lang
+written in Python
+now competitive with
+"real world" VHDL
+and Verilog simulators
+  - 6 to 12 times faster
+
+Random largeish program:
+  - depends on 3rd-party C
+    extensions
+  - may try to install
+    them for pypy
+  - (pypy setup.py install)
+  - may or may not work
+
+ai: jumped 3x last week
+but in general, constant
+slow(?) progress
+
+
+<slides>
+
+partially public. funded:
+ - EU, EU countries
+ - still open source
+   "mindset" at its core
+
+Open Source
+ - not GPL
+ - like CPython
+ - intense discussion of
+   about 15 seconds
+
+
+<slides>
+
+Java or .NET
+ - large pieces of codes
+   no direct control
+ - designed and optimiz.
+   for some class of
+   languages != Python
+
+
+<slides>
+
+CPython 2.7 "deprecated"
+
+PyPy 1.x won't be anytime
+soon
+
+future: support both
+PyPy (2.x) and PyPy3

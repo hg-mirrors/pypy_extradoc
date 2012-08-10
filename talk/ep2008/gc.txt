@@ -1,0 +1,147 @@
+
+Intro
+=====
+
+::
+
+    From arigo to fijal: should we discuss this a bit?  I still don't
+    know exactly what this talk is trying to achieve but I would
+    personally imagine that to give an intro to GC techniques we need
+    pictures with objects as boxes and references as arrows.  Also I
+    think we should go for "CPython" slide, a "Jython / IronPython"
+    slide, possibly a "IronPython on Mono" slide to introduce Boehm, and
+    finally several PyPy slides starting from the simple mark-and-sweep
+    and progressing to moving GCs with some more motivation, finally
+    reaching generational moving GCs.
+
+    I could imagine preparing this talk in a completely different
+    way than with slides with text -- mostly as images.  Some of
+    the text you've written below would go attached to the
+    corresponding images.
+
+    Still I'm not sure how, or if, we can fill 25 minutes.
+    Maybe it's ok to go for a 15-20 minutes talk and give
+    people time for questions and a larger break.
+
+
+* Memory management model
+
+* GC is *not* only the part that takes
+  care of circular references
+
+What is refcounting?
+====================
+
+* Store a field on each object which is a number
+  of references
+
+* Each time you play with it increase refcount
+
+* When refcount goes to 0, delete object
+
+What is a generational moving GC?
+=================================
+
+XXX explain, probably few slides, quick:
+
+* Different generations of objects
+
+* Collection runs from roots to all objects
+
+* Young objects are kept in nursery
+
+* Older ones are moved away
+
+* Write barriers, old objects referencing young ones
+
+Difference in performance
+=========================
+
+* no mutable fields on objects in generational
+ (cache friendly)
+
+* stuff moves around sometimes
+
+* assuming certain usecases (not many old objects referencing
+  young ones)
+
+Allocation cost
+================
+
+* refcounting/C malloc - expensive
+
+* generational gc - cheap
+
+Allocating large amount of objects
+==================================
+
+* CPython - O(n^2) where n is number of objects
+  allocated (XXX this is a temporary problem more than
+  a deep issue, it might be fixed soon in CPython)
+
+* Any reasonable generational GC should do better
+
+Collection costs
+================
+
+* Full collection - costly (always the case with cpython)
+  (XXX wrong, CPython uses 3 generations in its cycle finder)
+
+* Nursery collection - quick
+
+Finalizers
+==========
+
+* Semantic differences
+
+* __del__ called immediately considered to be
+  implementation-dependent
+
+Finalizers - resurrection
+=========================
+
+* what happens if your __del__ puts reference back
+  to itself?
+
+* in CPython it can be called more than once
+
+* in other implementations, only once
+
+Finalizers - cycles with __del__
+================================
+
+* in CPython, they never get collected
+
+* interesting example - a module global with __del__
+  (XXX not sure I follow what you mean here.  Python
+  was designed so that most objects don't have a
+  reference to the module they come from, but just
+  a module name, precisely to avoid cycles)
+
+* in PyPy, cycle gets broken in random order
+
+* no hacks like globals clearing
+
+When to call __del__?
+=====================
+
+* example open('x', 'w').write('stuff')
+
+* on refcounting, flushes file immediately
+
+* on any other gc, it might be deferred for
+  a while
+
+Calling C-level code
+====================
+
+* Problems with moving
+
+* Problems with write barriers
+
+Strange operation costs
+=======================
+
+* id
+
+XXX what else?

@@ -1,0 +1,33 @@
+What can PyPy do for you?
+=========================
+
+Armin Rigo, Eric van Riet Paap, Carl Friedrich Bolz
+
+Contact Information
+-------------------
+
+pypy-dev@codespeak.net (developer mailing list)
+arigo@tunes.org
+eric@vanrietpaap.nl
+cfbolz@gmx.de
+
+Requested Timeslot
+------------------
+
+30 minutes (or longer). 
+
+Abstract
+--------
+
+This talk describes novel features of the PyPy project (a next
+generation Python interpreter) which are made possible by
+its flexible architecture. The talk focuses mostly on example
+usages and less about their implementation.  Specifically we 
+will discuss and showcase the following:
+
+ - lazy evaluation with the thunk object space
+ - lightweight threadlets similar to what stackless python provides
+ - Oz-like dataflow variables with the logic object space
+ - Writing compatible extension modules for PyPy and CPython with the PyPy
+   extension compiler
+ - The Javascript backend and its uses

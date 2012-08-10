@@ -1,0 +1,42 @@
+Sprint Planning
+---------------
+
+Here is a list of things we might want to do at one of the next sprints.  
+Currently it's roughly what is left over from the last sprints. 
+
+- do more tests (eternal goal)
+
+- Fix XXX-marked things  (eternal goal)
+
+- enhance StdObjSpace, define goals and achieve them
+  http://codespeak.net/svn/pypy/trunk/src/goals/
+
+  - support the objects we see falling back to CPython.
+  - more builtins.
+  - more things from sys.
+  - dict object/type 
+    - Hash table based implementation of dictionaries?
+  - list object/type   
+  - write a small tool that checks a type's methods of
+    CPython against PyPy
+    (Jacob, Laura)  done
+
+- go through the wiki and clean up "stale" or old pages
+
+- implement the beginnings of a C code generator. the basic idea 
+  is "abstract interpretation"....
+
+- discuss funding and future organization issues
+
+---------------------------------------------------------------
+
+.. _boolobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000381.html
+.. _cpythonobj: http://codespeak.net/pipermail/pypy-svn/2003-June/000385.html
+.. _instmethod: http://codespeak.net/pipermail/pypy-svn/2003-June/000389.html
+.. _long: http://codespeak.net/pipermail/pypy-svn/2003-June/000410.html
+.. _sliceobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000408.html
+.. _userobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000449.html
+.. _dictobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000515.html
+.. _intobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000443.html
+.. _instmethod: http://codespeak.net/pipermail/pypy-svn/2003-June/000389.html
+.. _iterobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000529.html

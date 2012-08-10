@@ -1,0 +1,8 @@
+PyPy - nowe podejscie do tworzenia interpreterow.
+=================================================
+
+W ciagu 45 minut zamierzam przedstawic podstawowa architekture
+interpretera Pythona PyPy. Dlaczego postanowilismy stworzyc cos
+dramatycznie innego od dotychczasowych interpreterow, sukcesy podejscia
+i wyzwania. Bedzie tez pare slow o magicznym Just In Time compiler i jak
+doprowadzic do tego zeby python stal sie szybkim jezykiem dynamicznym.

@@ -1,0 +1,16 @@
+Armin Rigo is one of the initiators of the PyPy project, motivated by
+previous Python-related experience.  Indeed, he contributed to the
+standard CPython interpreter and developed Psyco, a "just-in-time
+specializer" which can transparently accelerate user code.  He is a
+member of the Python Software Foundation.
+
+After studies at the University of Lausanne (Switzerland), he obtained a
+Ph.D. in Mathematical Logic and Set Theory at the Free University of
+Brussels (Belgium) in 2001.  He was a researcher at the University of
+Southampton (UK) and is now a researcher at the Heinrich-Heine
+University of Duesseldorf (Germany).
+
+His current interests are in dynamic programming languages and their
+implementation techniques.  His previous work includes 3D modelling and
+games and education software.  He is always quickly building some game
+or system tool.

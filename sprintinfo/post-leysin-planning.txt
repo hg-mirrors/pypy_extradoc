@@ -1,0 +1,146 @@
+Summary of Leysin Sprint (and before) 
+=====================================
+
+- introduced newcomers to the project to the PyPy code base 
+  and development process.  We gave introductions to the 
+  basic functioning and the structure of the code base. 
+  For getting everybody into PyPy, we then mainly ran tests 
+  and fixed various bugs and added small things. 
+
+- we ran some of the CPython's regression tests against PyPy 
+  and enhanced the testing tool to be able to directly 
+  support running such tests. 
+
+- merged the typeunwrap-branch back into the trunk 
+  (which allows for type specific unwraps in favour 
+  of deprecated generic unwraps). 
+
+- We started the DFKI dialogue, documented action items 
+  and time plan for the first two weeks of February 
+  (mostly related to coordination and EU communication 
+  issues). We came up with a model for physical persons 
+  resp. sprint attendants to get 100% funding. 
+
+- Bea interviewed almost all of the sprint participants 
+  to find out about their expectations, dissemination 
+  and more general ideas about the PyPy project and 
+  where it should go in the future. Evaluation forms 
+  have been send out to various people. 
+
+- Planning for new and improved infrastructure, including 
+  subversion ("newrepolayout") and issue tracker decisions. 
+
+- We fixed some long standing translator issues and 
+  tried to better understand which problems are remaining. 
+
+- We started to work on old-style classes (implemented 
+  at application level with new-style classes)
+
+- We have a better bootstrap and a rather complete exception
+  hierarchy now (generated from application level to interpreter 
+  level).  This was done with a tool (to be completed) that is 
+  basically capable of translating applevel modules to interplevel 
+  (which are then completly unreadable). 
+ 
+- we reorganized and cleaned up our base python module
+  library  which is now in dist/lib-python-2.3.4 whereas
+  our overrides and modifications are in dist/pypy/lib. 
+
+- The applevel file class was improved but is currently 
+  not used by default (both for slowness and lack of speed). 
+
+- we may have an itertools implementation (Adrien?). 
+
+- Marcus Denker gave a nice talk about Squeak and Croquet 
+  which we discussed (including technical details of 
+  the continuation based Seaside Framework and 
+  possible future cooperation). 
+
+
+Tasks for after the Leysin Sprint
+=================================
+
+- lots of management/coordination tasks are already 
+  summarized by Bea in specific documents in svn/pypy/funding. 
+
+other than that here is a technical brainstorming about
+upcoming issues and tasks: 
+
+- Be on #pypy IRC (on freenode) to continously discuss 
+  the below issues and (re-)assign tasks (and help non-partners 
+  to be able to contribute) 
+
+- (Samuele, Christian) finish old-style classes (and their tests) 
+  and integrate them into PyPy (so that by default bare class 
+  statements mean old-style classes). 
+
+- (Armin, Christian) implement slots and coerce  
+
+- (Christian, ...) prepare a nice gentinterp-tool for generating 
+  interp-level modules out of application level ones. Also allow
+  to build inline interp-level classes from application ones. 
+
+- (Anders, ...) fix pow() and generally complete builtins, reload() etc.pp. 
+
+- (Holger, ...) complete the lib-python2.3.4/test runner to support more 
+  styles of testing (doctests mainly). 
+
+- (Samuele, Christian) provide the "get-rid-of-unused-variables" algorithms
+  directly at the flowgraph level (without requiring the annotator) 
+
+- (Armin, Christian) refactor and make more code reusable from the 
+  various Gen* backends. 
+
+- (Holger) find a way to run the tests (some of which need to be fixed) 
+  from pypy/lib (which overrides ...) 
+
+- (Armin, Holger) find a way to run automated tests on many platforms 
+
+- (Armin, Christian) fix and cleanup pypy/module resp. the mixin of
+  interplevel/applevel code, reduce magic and only good magic ... 
+
+- install an IRC-bot that logs stuff on #pypy (for ultimate
+  control of whats going on) 
+
+- (Samuele, Laura) enumerate all missing or incomplete 
+  builtin types, functions and modules. (preferably 
+  as a web page :-) 
+
+- (Bea will call for a common day, but let's not wait for Bea) 
+  consolidate/improve and add documentation about the current state 
+  of PyPy affairs (especially regarding its technical implementation). 
+  And actually remove outdated documentation. 
+
+- (Holger, pypy-dev) come up with and discuss a release scheme for PyPy 
+
+- (Bea will dispatch) Write a good tutorial. 
+
+- (Samuele, Christian) resolve platform problems (regarding longs 
+  and ints and tests and 32/64 bits ...), including arithmetic 
+  how to do bit-limited arithmetic at interpreter level? 
+
+- (Logilab?) we need a parser/compiler, and we especially want to 
+  cleanly provide a hook to allow custom 
+  compilation/code objects/frame objects/bytecode implementations. 
+
+- (Armin, Samuele) translation: finish "filling the caches", revisit
+  MultiMethods with respect to that and other issues. 
+
+- make GenC() use more of the annotation (currently nada) 
+ 
+- (Samuele) improve and further fix the annotator (never ending task) 
+
+- explore the through-java path 
+
+- (Jacob, holger, ...) generate all kinds of reports about various 
+  aspects of developing 
+
+- (Christian) play a bit with generating app- or interplevel 
+  from C-sources  
+
+- (Bea and Jacob driving) prepare and improve sprints with 
+  respect to giving tutorials, welcoming and integrating newcomers 
+
+- be prepared to make a list of tasks suitable 
+  for sprint attendees (and try to find out before
+  about the according experience levels)

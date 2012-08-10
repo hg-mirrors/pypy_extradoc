@@ -1,0 +1,60 @@
+- intro
+  * argument against writing virtual machines for dynamic languges by hand
+  * use meta-programming and compilation techniques instead
+
+- the C problems [long part]
+  * use CPython and Squeak as examples
+  * scope
+    - dynamic languages with complicated semantics; DSLs
+    - limited implementation ressources: academic, open source
+  * trade-offs
+    - simplicity vs flexibility vs performance
+    - compilers bad encoding of language semantics, interpreters more natural
+  * fixed encoding of low-level details
+    - GC
+    - threading
+  * leads to multiple implementations,
+    makes languages hard to evolve,
+    split efforts
+
+- the JVM/.NET problems [short part]
+  * reasons for wanting OO-VM based implementations:
+    - allows a higher-level implementation; some people argue that a
+      single such implementation would be enough
+    - solves some of the problems of C: VM supplies GC, JIT
+    - better interoperability than C level
+    - requested by the users of the corresponding OO VM
+  * problems:
+    - can be hard to map concepts of the dyn lang to the host OO VM
+    - performance is often not improved, and can be very bad
+    - poor interoperability outside the OO VM
+    - in practice, one OO VM is not enough
+    
+- PyPy arguments [medium part]
+  * architecture
+    - "really" high-level source (e.g. unlike SLang, Scheme48)
+    - compiles to multiple platforms (C-level or OO VMs)
+    - metaprogramming and aspects in the original sense
+  * good points
+    - dyn lang implemented in a high level lang
+    - separates high-level from low-level concerns
+    - a potential single-source-fits-all interpreter which is
+      definitely easy to write
+    - lots of flexibility (both in writing the interpreter,
+      and when translating it to lower-level platforms)
+    - allows breaking of abstractions, if necessary (e.g. tagged integers,
+      mix of RPython and LLPython...)
+    - runs "everywhere", not tied to any standard plaform
+  * further research points
+    - translation toolchain takes quite some efforts to write,
+      but can be reused
+    - translation should easily be able to reuse of existing code (e.g. GCs),
+      which could allow research code to be more quickly and widely used
+    - conceptually simple approach, but many abstraction layers
+    - good base for dynamic compiler generation
+
+- opening the technical discussion 
+  * High-level languages are suitable to implement dynamic languages
+  * Do not write VMs ``by hand''
+  * Let's write more meta-programming translation toolchains
+    - Diversity is good

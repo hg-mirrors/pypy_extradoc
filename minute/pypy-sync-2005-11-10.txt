@@ -1,0 +1,211 @@
+=============================================
+pypy-sync developer meeting 10th November
+=============================================
+
+Time & location: 1pm (30 minutes), GMT+1 at #pypy-sync
+
+Attendees::
+
+         Armin Rigo
+         Eric van Riet Paap
+         Michael Hudson
+         Carl Friedrich Bolz (moderation & minutes)
+         Anders Lehmann
+         Anders Chrigstrom
+         Adrien diMascio
+         Bert Freudenberg
+
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+new snake server
+--------------------------
+
+Armin reported that the snake server will be replaced by something that can be put into a server room. At the moment he is making the new server ready by copying the whole hard drive of the old server over therefore he wants notification if someone changes something in his home dir on the current machine. He will tell when the new server is ready on #pypy. Everybody who wants an account (and does not have one at the moment) should send him an eMail.
+
+gothenburg sprint announcement
+------------------------------
+
+We talked (again) about possible tasks at the gothenburg sprint. The topics
+list we had discussed at a previous meeting seems fairly complete, although
+WP09 and WP10 tasks where missing. Anders L. and Adrien agreed that it would
+make more sense to tackle WP09 tasks at the sprint, maybe something like adding
+logic variables to PyPy. Armin promised to check in a new version of the topics
+today and Carl will contact Bea (who wanted to send out the announcement).
+
+
+.. _`IRC-Log`:
+
+Complete IRC log
+=================
+
+complete log::
+
+    **** BEGIN LOGGING AT Thu Nov 10 13:02:00 2005
+
+    Nov 10 13:02:00 *	Now talking on #pypy-sync
+    Nov 10 13:02:05 cfbolz	sorry
+    Nov 10 13:02:08 cfbolz	shall we start?
+    Nov 10 13:02:15 arigo	hi all, yes
+    Nov 10 13:02:23 arre	Go ahead.
+    Nov 10 13:02:33 cfbolz	ok, let's all post activity reports then!
+    Nov 10 13:02:56 arigo	LAST: somepbc-refactoring branch; progress/review reports (5.1, 5.3, 5.4)
+    Nov 10 13:02:56 arigo	NEXT: somepbc-refactoring branch; 5.1 review with mwh
+    Nov 10 13:02:56 arigo	BLOCKERS: -
+    Nov 10 13:03:04 arre	    PREV: Report work, following the PBC refactoring.
+    Nov 10 13:03:04 arre	    NEXT: Understanding the details of the translation process (preparing for WP 8 work).
+    Nov 10 13:03:04 arre	BLOCKERS: None
+    Nov 10 13:03:23 aleale	PREV: reports and vacation
+    Nov 10 13:03:25 aleale	NEXT: wp 9
+    Nov 10 13:03:27 aleale	Blockers: -
+    Nov 10 13:03:29 ericvrp	Last: browser based genjs testing (py.test --browser) + pbc's (again), Next: genjs, Blockers: -
+    Nov 10 13:03:32 mwh	LAST: reports, somepbc-refactoring
+    Nov 10 13:03:32 mwh	NEXT: same, visit duesseldorf
+    Nov 10 13:03:32 mwh	BLOCKERS: -
+    Nov 10 13:03:39 *	nik is only lurking. no activity here right now ;)
+    Nov 10 13:03:43 adim	last: holiday/report
+    Nov 10 13:03:43 adim	next: start thinking of WP10
+    Nov 10 13:03:43 adim	blockers: none
+    Nov 10 13:03:43 bertf	LAST: none NEXT: none BLOCKERS: non-pypy related
+    Nov 10 13:03:56 cfbolz	LAST: report 5.3, various stuff
+    Nov 10 13:03:56 cfbolz	NEXT: reports, statistics, unrelated
+    Nov 10 13:03:56 cfbolz	BLOCKERS: none
+    Nov 10 13:04:26 mwh	i thought hpk was going to be online by now
+    Nov 10 13:04:29 cfbolz	samuele wrote to pypy-dev: Last I worked on reports (in particular 4.4) and helped with the PBC refactoring branch.
+    Nov 10 13:04:30 mwh	any news from him?
+    Nov 10 13:04:47 cfbolz	mwh: yes, he is totally unable to do anything usefull :-)
+    Nov 10 13:04:56 mwh	i see :)
+    Nov 10 13:05:05 *	adim is now known as ludal
+    Nov 10 13:05:11 ludal	ast: reports
+    Nov 10 13:05:12 ludal	next: none
+    Nov 10 13:05:12 ludal	blockers: none
+    Nov 10 13:05:15 cfbolz	mwh: he sends his greetings, though :-)
+    Nov 10 13:05:20 *	ludal is now known as adim
+    Nov 10 13:05:21 arigo	:-)
+    Nov 10 13:05:34 mwh	:)
+    Nov 10 13:06:04 cfbolz	ok, let's move on to the only topic :-)
+    Nov 10 13:06:09 cfbolz	armin, would you please?
+    Nov 10 13:06:20 cfbolz	New snake server
+    Nov 10 13:06:20 cfbolz	----------------
+    Nov 10 13:06:44 arigo	Dusseldorf people insisted to switch to a server that looks like a server and not a desktop machine
+    Nov 10 13:07:02 cfbolz	I think that is very funny :-)
+    Nov 10 13:07:05 arigo	however, until I thought, it will be a bit faster and more RAMmed than the current snake, which is good
+    Nov 10 13:07:16 arigo	s/until/unlike
+    Nov 10 13:07:33 mwh	uni-processor?
+    Nov 10 13:07:47 arigo	yes, a single hyperthreaded one like now, I think
+    Nov 10 13:07:49 arigo	but I don't know
+    Nov 10 13:07:51 mwh	ok
+    Nov 10 13:08:00 arigo	they messed up and I installed everything on a machine which is not the one they meant for me :-/
+    Nov 10 13:08:06 arigo	so we'll see
+    Nov 10 13:08:08 mwh	argh :(
+    Nov 10 13:08:17 cfbolz	oops
+    Nov 10 13:08:23 mwh	so, timeline?
+    Nov 10 13:08:27 arigo	today-tomorrow
+    Nov 10 13:08:38 arigo	(anyone that wants an account on this server, just ask me)
+    Nov 10 13:09:07 mwh	i take i'll have one already?
+    Nov 10 13:09:22 arigo	sure, everything is copied over
+    Nov 10 13:09:27 mwh	cool
+    Nov 10 13:09:31 arigo	for now you can still use the existing snake,
+    Nov 10 13:09:48 arigo	but tell me if you log in and make changes to your home directories in case I already did the copy
+    Nov 10 13:09:59 arigo	(feel free to do that, rsync is not a problem)
+    Nov 10 13:10:20 arigo	I'll mention on #pypy when the switch is about to be done and when it's finished.
+    Nov 10 13:10:27 cfbolz	very good!
+    Nov 10 13:10:39 ericvrp	arigo: will the passwords also be copied over?
+    Nov 10 13:10:46 arigo	yes, the whole root file system
+    Nov 10 13:10:55 arigo	rsync -a  :-)
+    Nov 10 13:11:09 ericvrp	'kay
+    Nov 10 13:11:15 arigo	(also because I don't feel like keeping SuSE on that machine :-)
+    Nov 10 13:11:44 arigo	all in all it should continue to be a good machine to run and test translations on.
+    Nov 10 13:11:51 arigo	(that's it for me)
+    Nov 10 13:12:12 cfbolz	great
+    Nov 10 13:12:15 cfbolz	any other topics?
+    Nov 10 13:12:24 mwh	gtbg sprint announcement?
+    Nov 10 13:12:30 cfbolz	indeed
+    Nov 10 13:12:39 cfbolz	arigo: did bea answer?
+    Nov 10 13:13:00 arigo	I didn't mail her so far
+    Nov 10 13:13:09 cfbolz	oh, I see
+    Nov 10 13:13:20 arigo	we first need to detail the technical goals a bit more, I guess
+    Nov 10 13:13:43 cfbolz	does it make sense to talk about that now
+    Nov 10 13:13:44 cfbolz	?
+    Nov 10 13:14:26 arigo	http://codespeak.net/svn/pypy/extradoc/sprintinfo/gothenburg-2005/announcement.txt
+    Nov 10 13:14:36 arigo	is this like reasonable / complete ?
+    Nov 10 13:15:11 cfbolz	I guess one question is whether lobilab/dfki guys want to work on their workpackages
+    Nov 10 13:15:29 mwh	reasonable, yes
+    Nov 10 13:15:32 mwh	complete, no idea
+    Nov 10 13:15:45 adim	cfbolz: could be a godd idea I guess
+    Nov 10 13:16:13 arigo	but the details are still to be discussed, I gather?
+    Nov 10 13:16:23 cfbolz	probably yes
+    Nov 10 13:16:37 cfbolz	I guess it should be mentioned in the announcement
+    Nov 10 13:16:55 cfbolz	there might be people interested in semantic web/logic stuff
+    Nov 10 13:17:00 mwh	"* kick off WP09 implementation" ?
+    Nov 10 13:17:07 adim	yes
+    Nov 10 13:17:11 arigo	WP9 specifically?  not WP10?
+    Nov 10 13:17:18 mwh	arigo: i forget :)
+    Nov 10 13:17:21 adim	(detailint what is WP09 and 10)
+    Nov 10 13:17:25 mwh	yes
+    Nov 10 13:17:48 mwh	the wp number -> title mapping isn't something i've ever been able to remember
+    Nov 10 13:17:59 cfbolz	mwh: you get used to it :-)
+    Nov 10 13:18:10 aleale	WP 9 logic programming /Semantic web
+    Nov 10 13:18:27 mwh	cfbolz: apparently not
+    Nov 10 13:18:40 aleale	WP 10 AOP /contracts
+    Nov 10 13:18:49 mwh	aleale: i see
+    Nov 10 13:19:16 arigo	so any more insights about which one you'd like to focus on, or just both?
+    Nov 10 13:19:42 aleale	I am focusing on  WP9
+    Nov 10 13:19:46 adim	maybe more WP09
+    Nov 10 13:20:13 adim	(I should check with Ludovic first, though)
+    Nov 10 13:20:35 cfbolz	could you do that today?
+    Nov 10 13:21:02 adim	cfbolz: don't think he'll come here today
+    Nov 10 13:21:10 adim	but I'll try
+    Nov 10 13:21:17 arigo	WP09 Task 1 talks about porting Logilab's python-logic libraries to PyPy.  Should we mention that in the announcement?
+    Nov 10 13:21:20 adim	just put WP09 on the sprint announcement
+    Nov 10 13:21:51 arigo	or do you want to focus on issues like putting logic variables in the Python language?
+    Nov 10 13:22:13 adim	I guess the latter is probably a better idea for the sprint
+    Nov 10 13:22:24 adim	aleale: your opinion ?
+    Nov 10 13:22:41 arigo	let's use conditionals in the announcement
+    Nov 10 13:22:52 cfbolz	:-)
+    Nov 10 13:22:54 adim	:)
+    Nov 10 13:22:55 aleale	I agree - that is the first step
+    Nov 10 13:23:44 arigo	* (WP09) Experiment with logic programming in Python.  A
+    Nov 10 13:23:44 arigo	  first step might be to try to add logic variables to PyPy.
+    Nov 10 13:23:51 adim	ok for me
+    Nov 10 13:23:54 mwh	sounds good!
+    Nov 10 13:24:12 cfbolz	to me too
+    Nov 10 13:24:28 arigo	ok, I can expand a bit the other topics of the announcement too
+    Nov 10 13:25:10 mwh	and presumably there's going to some copying and pasting from other announcements
+    Nov 10 13:25:18 cfbolz	probably
+    Nov 10 13:25:26 cfbolz	I guess we should check with bea nonetheless
+    Nov 10 13:25:55 cfbolz	arigo: I can do that, if you want
+    Nov 10 13:26:11 arigo	ok, thanks
+    Nov 10 13:26:31 cfbolz	and we should really try to send it out tomorrow...
+    Nov 10 13:26:40 arigo	indeed
+    Nov 10 13:26:55 cfbolz	arigo: would you try to update the topics today?
+    Nov 10 13:27:42 arigo	yes
+    Nov 10 13:27:55 cfbolz	ok. fine if we close the meeting ?
+    Nov 10 13:28:00 adim	fine with me
+    Nov 10 13:28:04 arigo	yes
+    Nov 10 13:28:33 mwh	yes
+    Nov 10 13:28:34 aleale	ok, see you
+    Nov 10 13:28:37 mwh	bye
+    Nov 10 13:28:40 adim	see you
+    Nov 10 13:28:43 cfbolz	see you!
+    Nov 10 13:28:44 *	adim (n=adim@logilab.net2.nerim.net) has left #pypy-sync
+    Nov 10 13:28:47 *	aleale (n=chatzill@83.72.68.168.ip.tele2adsl.dk) has left #pypy-sync
+    Nov 10 13:28:53 *	arre (i=ac@kourier.strakt.com) has left #pypy-sync
+    Nov 10 13:28:54 arigo	bye!
+    Nov 10 13:28:57 *	arigo (n=arigo@c-058b70d5.022-54-67626719.cust.bredbandsbolaget.se) has left #pypy-sync
+    Nov 10 13:29:01 *	bertf has quit ()
+    Nov 10 13:29:04 *	nik (n=chatzill@2.68.203.62.cust.bluewin.ch) has left #pypy-sync
+    Nov 10 13:29:23 ericvrp	bye
+    Nov 10 13:29:25 *	ericvrp (n=ericvrp@ericvrp.demon.nl) has left #pypy-sync
+    **** ENDING LOGGING AT Thu Nov 10 13:30:11 2005
+

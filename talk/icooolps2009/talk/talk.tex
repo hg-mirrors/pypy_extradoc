@@ -1,0 +1,512 @@
+\documentclass[utf8x]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+
+  %\setbeamercovered{transparent}
+}
+
+
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\title[PyPy's Tracing JIT Compiler]{
+    Tracing the Meta-Level: PyPy's Tracing JIT Compiler
+}
+\author[Bolz, Cuni, Fijalkowski, Rigo]
+{
+    \textcolor{green!50!black}{Carl~Friedrich~Bolz}\inst{1} \and
+    Antonio Cuni\inst{2} \and
+    Maciej Fija\l{}kowski\inst{3} \and
+    Armin Rigo
+}
+
+\institute[Düsseldorf]
+{
+    \inst{1}
+    Softwaretechnik und Programmiersprachen\\ Heinrich-Heine-Universit\"at D\"usseldorf
+    \and%
+    \vskip-2mm
+    \inst{2}
+    University of Genova, Italy
+    \and%
+    \vskip-2mm
+    \inst{3}
+    merlinux GmbH
+}
+
+\date{6th of July 2009, ICOOOLPS '09, Genova}
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Outline}
+%  \tableofcontents
+  % You might wish to add the option [pausesections]
+%\end{frame}
+
+\begin{frame}
+    \frametitle{Motivation}
+    \begin{itemize}
+    \item writing good JIT compilers for dynamic programming languages is hard and error-prone
+    \item tracing JIT compilers are a new approach to JITs that are supposed to be easier
+    \item what happens when a tracing JIT is applied ``one level down'', i.e. to an interpreter
+    \item how to solve the occurring problems
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Context: The PyPy Project}
+    \begin{itemize}
+    \item a general environment for implementing dynamic languages
+    \item contains a compiler for a subset of Python (``RPython'')
+    \item interpreters for dynamic languages written in that subset
+    \item various interpreters written with PyPy: Python, Prolog, Smalltalk, Scheme, JavaScript, GameBoy emulator
+    \item can be translated to a variety of target environment: C, JVM, .NET
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tracing JIT Compilers}
+    \begin{itemize}
+    \item idea from Dynamo project: dynamic rewriting of machine code
+    \item later used for a lightweight Java JIT
+    \item seems to also work for dynamic languages (see TraceMonkey)
+    \end{itemize}
+    \pause
+    \begin{block}{Basic Assumption of a Tracing JIT}
+        \begin{itemize}
+        \item programs spend most of their time executing loops
+        \item several iterations of a loop are likely to take similar code paths
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tracing JIT Compilers}
+    \begin{itemize}
+    \item mixed-mode execuction environment
+    \item at first, everything is interpreted
+    \item lightweight profiling to discover hot loops
+    \item code generation only for common paths of hot loops
+    \item when a hot loop is discovered, start to produce a trace
+    \item when a full loop is traced, the trace is converted to machine code
+    \end{itemize}
+\end{frame}
+
+\frame[containsverbatim, plain, shrink=10]{
+  \frametitle{Example}
+  \begin{verbatim}
+def strange_sum(n):
+    result = 0
+    while n >= 0:
+        result = f(result, n)
+        n -= 1
+    return result
+
+def f(a, b):
+    if b % 46 == 41:
+        return a - b
+    else:
+        return a + b
+
+
+
+
+
+
+
+
+
+
+\end{verbatim}
+}
+
+\frame[containsverbatim, plain, shrink=10]{
+  \frametitle{Example}
+  \begin{verbatim}
+def strange_sum(n):
+    result = 0
+    while n >= 0:
+        result = f(result, n)
+        n -= 1
+    return result
+
+def f(a, b):
+    if b % 46 == 41:
+        return a - b
+    else:
+        return a + b
+
+# loop_header(result0, n0)
+# i0 = int_mod(n0, Const(46))
+# i1 = int_eq(i0, Const(41))
+# guard_false(i1)
+# result1 = int_add(result0, n0)
+# n1 = int_sub(n0, Const(1))
+# i2 = int_ge(n1, Const(0))
+# guard_true(i2)
+# jump(result1, n1)
+\end{verbatim}
+}
+
+\begin{frame}
+    \frametitle{(Dis-)Advantages of Tracing JITs}
+    \begin{block}{Good Points of the Approach}
+        \begin{itemize}
+        \item easy and fast machine code generation: needs so support only one path
+        \item (things are more complex, but let's ignore that for now)
+        \item interpreter does a lot of the work
+        \item can be added to an existing interpreter unobtrusively
+        \item automatic inlining
+        \item produces comparatively little machine code
+        \end{itemize}
+    \end{block}
+    \pause
+    \begin{block}{Bad Points of the Approach}
+        \begin{itemize}
+        \item unclear whether assumptions are true often enough
+        \item switching between interpretation and machine code execution takes time
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Applying a Tracing JIT to an Interpreter}
+    \begin{itemize}
+    \item Question: What happens if the program is itself a bytecode interpreter?
+    \item the (most important) hot loop of a bytecode interpreter is the bytecode dispatch loop
+    \item Assumption violated: consecutive iterations of the dispatch loop will usually take very different code paths
+    \item what can we do?
+    \end{itemize}
+    \pause
+    \begin{block}{Terminology}
+        \begin{itemize}
+        \item \emph{tracing interpreter:} the interpreter that originally runs the program and produces traces
+        \item \emph{language interpreter:} the bytecode interpreter run on top
+        \item \emph{user program:} the program run by the language interpreter
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\frame[containsverbatim, plain, shrink=10]{
+  \begin{verbatim}
+def interpret(bytecode, a):
+    regs = [0] * 256
+    pc = 0
+    while True:
+        opcode = ord(bytecode[pc])
+        pc += 1
+        if opcode == JUMP_IF_A:
+            target = ord(bytecode[pc])
+            pc += 1
+            if a:
+                pc = target
+        elif opcode == MOV_R_A:
+            n = ord(bytecode[pc])
+            pc += 1
+            a = regs[n]
+        elif opcode == MOV_A_R:
+            ...
+        elif opcode == ADD_R_TO_A:
+            ...
+        elif opcode == DECR_A:
+            a -= 1
+        elif opcode == RETURN_A:
+            return a
+
+
+
+  \end{verbatim}
+}
+
+\frame[containsverbatim, plain, shrink=10]{
+  \begin{verbatim}
+def interpret(bytecode, a):
+    regs = [0] * 256                    |
+    pc = 0                              |  # Example bytecode
+    while True:                         |  # Square the accumulator:
+        opcode = ord(bytecode[pc])      |
+        pc += 1                         |  MOV_A_R     0  # i = a
+        if opcode == JUMP_IF_A:         |  MOV_A_R     1  # copy of 'a'
+            target = ord(bytecode[pc])  |
+            pc += 1                     |  # 4:
+            if a:                       |  MOV_R_A     0  # i--
+                pc = target             |  DECR_A
+        elif opcode == MOV_R_A:         |  MOV_A_R     0
+            n = ord(bytecode[pc])       |
+            pc += 1                     |  MOV_R_A     2  # res += a
+            a = regs[n]                 |  ADD_R_TO_A  1
+        elif opcode == MOV_A_R:         |  MOV_A_R     2
+            ...                         |
+        elif opcode == ADD_R_TO_A:      |  MOV_R_A     0  # if i!=0:
+            ...                         |  JUMP_IF_A   4  #    goto 4
+        elif opcode == DECR_A:          |
+            a -= 1                      |  MOV_R_A     2  # return res
+        elif opcode == RETURN_A:        |  RETURN_A                     
+            return a                    |
+
+
+
+  \end{verbatim}
+}
+
+\frame[containsverbatim, plain, shrink=10]{
+    \frametitle{Trace}
+    ~\\
+    Resulting trace when tracing bytecode \texttt{DECR\_A}:
+    \begin{verbatim}
+
+loop_start(a0, regs0, bytecode0, pc0)
+opcode0 = strgetitem(bytecode0, pc0)
+pc1 = int_add(pc0, Const(1))
+guard_value(opcode0, Const(7))
+a1 = int_sub(a0, Const(1))
+jump(a1, regs0, bytecode0, pc1)
+\end{verbatim}
+}
+
+\begin{frame}
+    \frametitle{Idea for a Solution}
+    \begin{itemize}
+    \item goal: try to trace the loops \emph{in the user program,}
+          and not just one iteration of the bytecode dispatch loop
+    \item tracing interpreter needs information about the language interpreter
+    \item provided by adding \emph{three hints} to the language interpreter
+    \end{itemize}
+    \pause
+    \begin{block}{Hints Give Information About:}
+    \begin{itemize}
+    \item which variables make up the program counter of the language interpreter (together those are called \emph{position key})
+    \item where the bytecode dispatch loop is
+    \item which bytecodes can correspond to backward jumps
+    \end{itemize}
+    \end{block}
+\end{frame}
+
+\frame[containsverbatim, plain, shrink=10]{
+    \frametitle{Interpreter with Hints}
+\begin{verbatim}
+tlrjitdriver = JitDriver(['pc', 'bytecode'])
+
+def interpret(bytecode, a):
+    regs = [0] * 256
+    pc = 0
+    while True:
+        tlrjitdriver.start_dispatch_loop()
+        opcode = ord(bytecode[pc])
+        pc += 1
+        if opcode == JUMP_IF_A:
+            target = ord(bytecode[pc])
+            pc += 1
+            if a:
+                pc = target
+                if target < pc:
+                    tlrjitdriver.backward_jump()
+        elif opcode == MOV_A_R:
+            ... # rest unmodified
+\end{verbatim}
+}
+
+\begin{frame}
+    \frametitle{Modifying Tracing}
+    \begin{itemize}
+    \item goal: try to trace the loops \emph{in the user program,}
+          and not just one iteration of the bytecode dispatch loop
+    \item tracing interpreter stops tracing only when:
+        \begin{itemize}
+        \item it sees a backward jump in the language interpreter
+        \item the position key of the language interpreter matches an ealier value
+        \end{itemize}
+    \item in this way, full user loops are traced
+    \end{itemize}
+\end{frame}
+\frame[containsverbatim, plain, shrink=20]{
+    \frametitle{Result When Tracing \texttt{SQUARE}}
+\begin{verbatim}
+loop_start(a0, regs0, bytecode0, pc0)
+# MOV_R_A 0
+opcode0 = strgetitem(bytecode0, pc0)
+pc1 = int_add(pc0, Const(1))
+guard_value(opcode0, Const(2))
+n1 = strgetitem(bytecode0, pc1)
+pc2 = int_add(pc1, Const(1))
+a1 = list_getitem(regs0, n1)
+# DECR_A
+# MOV_A_R 0
+# MOV_R_A 2
+# ADD_R_TO_A 1
+# MOV_A_R 2
+# MOV_R_A 0
+...
+# JUMP_IF_A 4
+opcode6 = strgetitem(bytecode0, pc13)
+pc14 = int_add(pc13, Const(1))
+guard_value(opcode6, Const(3))
+target0 = strgetitem(bytecode0, pc14)
+pc15 = int_add(pc14, Const(1))
+i1 = int_is_true(a5)
+guard_true(i1)
+jump(a5, regs0, bytecode0, target0)
+\end{verbatim}
+}
+
+\begin{frame}
+    \frametitle{What Have We Won?}
+    \begin{itemize}
+    \item trace corresponds to one loop of the user program
+    \item however, most operations are concerned with manipulating bytecode and program counter
+    \item bytecode and program counter are part of the position key
+    \item thus they are constant at the beginning of the loop
+    \item therefore they can and should be constant-folded
+    \end{itemize}
+\end{frame}
+
+\frame[containsverbatim, plain, shrink=20]{
+    \frametitle{Result When Tracing \texttt{SQUARE} With Constant-Folding}
+\begin{verbatim}
+loop_start(a0, regs0)
+# MOV_R_A 0
+a1 = list_getitem(regs0, Const(0))
+# DECR_A
+a2 = int_sub(a1, Const(1))
+# MOV_A_R 0    
+list_setitem(regs0, Const(0), a2)
+# MOV_R_A 2
+list_getitem(regs0, Const(2))
+# ADD_R_TO_A  1
+i0 = list_getitem(regs0, Const(1))
+a4 = int_add(a3, i0)
+# MOV_A_R 2
+list_setitem(regs0, Const(2), a4)
+# MOV_R_A 0
+a5 = list_getitem(regs0, Const(0))
+# JUMP_IF_A 4
+i1 = int_is_true(a5)
+guard_true(i1)
+jump(a5, regs0)
+\end{verbatim}
+}
+
+\begin{frame}
+    \frametitle{Results}
+    \begin{itemize}
+    \item almost only computations related to the user program remain
+    \item list of registers is only vestige of language interpreter
+    \end{itemize}
+    \pause
+    \begin{block}{Timing Results Computing Square of 10'000'000}
+    \begin{tabular}{|l|l|r|r|}
+\hline
+& &Time (ms) &speedup\\
+\hline
+1 &No JIT &442.7 $\pm$ 3.4 &1.00\\
+2 &JIT, Normal Trace Compilation &1518.7 $\pm$ 7.2 &0.29\\
+3 &JIT, Unrolling of Interp. Loop &737.6 $\pm$ 7.9 &0.60\\
+4 &JIT, Full Optimizations &156.2 $\pm$ 3.8 &2.83\\
+\hline
+\end{tabular}
+\end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Scaling to Large Interpreters?}
+    \begin{itemize}
+    \item we can apply this approach to PyPy's Python interpreter (70 KLOC)
+    \item speed-ups promising (see next slide)
+    \item no Python-specific bugs!
+    \end{itemize}
+\end{frame}
+
+\frame[containsverbatim, plain, shrink=10]{
+    \frametitle{Timings for Python Interpreter}
+\begin{verbatim}
+def f(a):
+    t = (1, 2, 3)
+    i = 0
+    while i < a:
+        t = (t[1], t[2], t[0])
+        i += t[0]
+    return i
+\end{verbatim}
+\begin{block}{Timings of \texttt{f(10000000)}}
+\begin{tabular}{|l|l|r|r|}
+\hline
+& &Time (ms) &speedup\\
+\hline
+1 &PyPy compiled to C, no JIT &1793 $\pm$ 11 &1.00\\
+2 &PyPy comp'd to C, with JIT &483 $\pm$ 6 &3.71\\
+3 &CPython 2.6 &1869 $\pm$ 11 & 0.96\\
+4 &CPython 2.6 + Psyco 1.6 & 511 $\pm$ 7 &3.51\\\hline
+\end{tabular}
+\end{block}
+}
+
+
+\begin{frame}
+    \frametitle{Conclusions}
+    \begin{itemize}
+    \item some small changes to a tracing JIT makes it possible to effectively apply it to bytecode interpreters
+    \item result is similar to a tracing JIT for that language
+    \item bears resemblance to partial evaluation, arrived at by different means
+    \item maybe enough to write exactly one tracing JIT?
+    \end{itemize}
+    \pause
+    \begin{block}{Outlook}
+        \begin{itemize}
+        \item better optimizations of the traces
+        \item escape analysis
+        \item optimize frame objects
+        \item speed up tracing itself
+        \item apply to other interpreters and larger programs
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Thank you! Questions?}
+    \begin{itemize}
+    \item some small changes to a tracing JIT makes it possible to effectively apply it to bytecode interpreters
+    \item result is similar to a tracing JIT for that language
+    \item bears resemblance to partial evaluation, arrived at by different means
+    \item maybe enough to write exactly one tracing JIT?
+    \end{itemize}
+    \begin{block}{Outlook}
+        \begin{itemize}
+        \item better optimizations of the traces
+        \item escape analysis
+        \item optimize frame objects
+        \item speed up tracing itself
+        \item apply to other interpreters and larger programs
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\end{document}

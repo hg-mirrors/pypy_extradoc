@@ -1,0 +1,25 @@
+People coming to the Gothenburg sprint April 25 - May 1 2011
+============================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== ===================== ==================
+    Name              Arrive/Depart     Accomodation       Food
+==================== ============== ===================== ==================
+Jacob Hallen         lives there			  no peppers
+Laura Creighton      lives there			  
+Anders Hammarquist   lives there
+Carl Friedrich Bolz  24-1   	     J+L's house	  Vegan
+Lukas Diekmann       24-2   	     J+L's house
+David Schneider      26-01            SGS Veckobostader
+Antonio Cuni         26-30          Hotel Poseidon        his own diet :)
+Armin Rigo           23-02            SGS Veckobostader
+Hakan Ardo	     24-27	      ???
+Romain Guillebert    23-03           ???               
+Dario Bertini	     23-02	     ???		 no alcohol, cheese
+                                                         sliced meat
+
+Kristján Valur Jónsson 27-1	
+==================== ============== ===================== ==================

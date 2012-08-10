@@ -1,0 +1,102 @@
+========================================================
+Düsseldorf PyPy sprint 5-13th October, 2008
+========================================================
+
+The PyPy team is heading for a new sprint meetup, this time 
+aiming at a 1.1 release and to work on integrating PyPy better 
+with small devices.   We are also open to other sprint topics!
+
+The sprint is going to take place at the Computer Science
+department of Heinrich-Heine Universität Düsseldorf (Germany).  
+
+Infos in a nutshell: 
+
+arrival day: Sunday, 5th October 
+
+departure day: Monday, 13th October 
+
+sprint days: 6-12th october with breaks 
+
+Location: Seminar room of the computer science department, situated 
+in the building 25.12 of the university campus, second
+floor. For travel instructions see 
+http://stups.cs.uni-duesseldorf.de/anreise/esbahn.php
+
+------------------------------
+Accomodation
+------------------------------
+
+We may be able to fit some people into private flats 
+and otherwise there are several hotels, one recommended 
+one is the http://www.hotel-hillesheim.de/ where we are
+investigating regarding a cheaper group rate. 
+Please register ASAP if you want to benefit. 
+
+There are also some hotels that are used by visitors to the university and are
+quite close to the uni. None of us have been at them, so we have no experience
+of how good they are.
+
+1. Hotel Blättler
+http://www.hotel-blaettler.com/
+
+2. Hotel Mooren
+http://www.hotel-haus-mooren.de/
+
+3. Hotel Europa
+can't seem to find a website
+
+4. Schloss Mickeln
+This one is the guest house of the university in a very beautiful castle.
+Supposed to be extremely nice, but also expensive.
+http://www.uni-duesseldorf.de/home/gaeste/schlossmickeln
+
+
+-----------------------
+Funding your travel 
+-----------------------
+
+We have a limited budget for funding travels.  If you want to
+participate but need travel funding please register and send
+a note to the pypy-sprint mailing list.  We'll see what we can
+do to help.
+
+------------
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More
+organisational information will be sent to that list.
+
+Please register by adding yourself on the following list (via svn):
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/october-2008/people.txt
+
+or announceyourself on the pypy-sprint mailing list if you do not 
+yet have check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+---------------------------------------
+Preparation (if you feel it is needed):
+---------------------------------------
+
+* read the `getting-started`_ pages on http://codespeak.net/pypy
+
+* for inspiration, overview and technical status you are welcome to
+  read `the technical reports available and other relevant documentation`_
+
+* please direct any technical and/or development oriented questions to
+  pypy-dev at codespeak.net and any sprint organizing/logistical
+  questions to pypy-sprint at codespeak.net
+
+We are looking forward to meet you at the Düsseldorf PyPy sprint!
+
+The PyPy team 
+
+.. See also ..
+
+.. _getting-started: http://codespeak.net/pypy/dist/pypy/doc/getting-started.html
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`the technical reports available and other relevant documentation`: http://codespeak.net/pypy/dist/pypy/doc/index.html
+.. _`EuroPython schedule`: http://europython.org/timetable

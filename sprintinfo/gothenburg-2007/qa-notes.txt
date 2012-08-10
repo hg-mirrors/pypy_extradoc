@@ -1,0 +1,59 @@
+discussion notes about QA issues (cf, pedronis, hpk) 
+
+stability & testing 
+
+status: 
+
+- automated nightly test runs of pypy tests on 32bit linux machine
+  (wyvern)   
+
+- automated nightly builds on tuatara (PowerPC OSX) for builds 
+  and benchmarks 
+
+- nightly run of cpython regression tests on top of several pypy-c's 
+  (running on samuele's linux Desktop machine) 
+
+
+missing: 
+
+- automated windows tests 
+  - a dedicated remotely accessible windows machine 
+    (cfbolz investigates at HHU) 
+  - setting up nightly runs 
+
+- aggregation of information from all these automated runs
+  goal: present summary of all results from automated runs at one place 
+  consider existing tools 
+
+
+releases 
+
+goal: 
+    - what does "making a release" mean?
+ 
+    - in addition to tests, run pypy with some real applications
+
+    - have pervasive testing (see above) on demand  (and not only
+      nightly) and on branches 
+
+    - write small-to-medium automatically tested example applications
+      for the special features of PyPy (thunk, taint, stackless, greenlets, tp, 
+      sandboxing?, ropes)
+
+    - how to publish new features/enhancements/cool stuff? 
+      - through Blog Posts
+      - maybe dist which snapshots a usable state of that feature 
+
+documentation 
+- goal: try to sort out current pypy/doc mess and bring it to more
+  maintainable state 
+
+- write "books" with many subsections about topics, e.g. 
+  "The complete guide to the Python Standard Interpreter" 
+  "Building and Programming with RPython" 
+  "Architecture and Implementation" 
+
+  in any case, the idea is to keep the number of such "books" around 3, 
+  first think about sections, then migrate existing docs to it 
+
+

@@ -1,0 +1,68 @@
+.. include:: <s5defs.txt>
+
+=================================================
+PyPy Translation - Architecture
+=================================================
+
+:Date: 4th July  2006
+:Location: Geneva, CERN
+
+PyPy/Translation architecture
+============================= 
+
+- bytecode interpreter 
+- Abstract Interpretation (Flow Object Space)
+- Type Inference (Annotation)
+- Specialising to lltypesystem / ootypesystem 
+- C and LLVM Backends to lltypesystem 
+
+PyPy/Translation overview
+=========================
+
+- diagram & demo
+
+Abstract Interpretation
+========================
+
+- bytecode interpreter dispatches to Flow Object Space
+- Flow Object Space implements abstract operations
+- produces flow graphs as a side effect
+- starts from "live" byte code NOT source code
+
+Type Inference 
+===============
+
+- performs forward propagating type inference
+- is used to infer the types in flow graphs
+- needs types of the entry point function's arguments
+- assumes that the used types are static
+- goes from very special to more general values
+
+RTyping
+===========================
+
+- annotated flow graphs are specialized for language families
+- choose runtime representations: express these with
+  low-level type systems
+- lltypesystem (for C like languages): C, LLVM
+- ootypesystem (for OO languages): .NET CLI, Smalltal, (Java/Javascript...)
+- result is specialized flow graphs
+- these contain operations at target level
+
+Translation Aspects
+====================
+
+- implementation decisions (GC, threading, CC) at translation time 
+- most other language implementations do a "fixed" decision 
+- translation aspects are weaved into the produced code
+- independent from language semantics (python interpreter)
+
+
+A Special Aspect: Just-in-time Compilation
+===========================================
+
+- transform interpreters into compilers
+  (and just-in-time compilers)
+- work in progress
+- diagram & demo
+

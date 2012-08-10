@@ -1,0 +1,151 @@
+II Open Source World Conference Malaga 2006
+===============================================
+
+Time: 15-17th February 2006
+Place: Malaga, Trade Fairs and Congress Centre Malaga
+url: http://www.opensourceworldconference.com/malaga06/en/modules/wiwimod/index.php?page=Sobre+M%E1laga
+Arranging conference: Juan Reig, ++34670644131
+Final programme: see extradoc/planning/malaga_exhibition_feb2006/
+Programme IIOSWC 2006 - FINAL.pdf
+
+PyPy will:
+
+1. Participate in the exhibition, hosted by the European Commission, DG 
+Information Society and Media - PyPy and tOSSad as OSS projects funded by
+the Commission.
+
+EC will only present their DG activities (no slide show or presentations) - just
+distributing advertising material. tOSSad will bring poster and brochures. 
+PyPy will bring mobile roll-up poster, printed PyPy Fact Sheets and a project 
+presentation.
+
+EC contacts: 3 people participating Anne-Marie Sassen,Jesus Villasante, 
+Valerie Stagno, (Graziana Lonero?)
+tOSSad contacts: 1-3 people participating, Bulent Ozel (Kaan Erkan?)
+PyPy: Jacob Hallén, Alastair Burt
+
+(the names mentioned for EC and tOSSad where people involved in emails during the 
+preparation of the exhibition - no confirmation with the actual names was sent out. PyPy
+presented our persons with names).
+
+2. Workshop PyPy 16th Febr 12-13 Jacob Hallén (english)
+
+Alastair talked to the organizer Juan Reig, and agreed to Alastair doing the 
+talk in spanish. Deadline for presentations submissions was 10th Febr.
+They have not changed name for speaker or language in the last version of the 
+programme.
+
+--------------------------------------------
+Information from the organizers:
+--------------------------------------------
+Email: 2006-02-09
+
+The Organization of the II Open Source World Conference would 
+like to provide you with updated information on the general 
+situation of the Conference and we enclose the final Programme.  
+
+We would like to communicate that a change in the schedule of the 
+Programme of the conference has taken place, being transferred 
+the official opening session and the Key note speech to 12:00 
+in the morning of the 15th of February, due to a series of reasons: 
+to take advantage of the opportunity to have like lecturer of the 
+opening session Michail Bletsas, from the Massachusetts Institute 
+of Technology (MIT), Chief Connectivity Officer in charge of 
+the Project 100$ Laptop and "One laptop per child", that it is 
+being designed on the base of an open source operating system; 
+we have also had to extend the number of sessions due to the 
+important increase of speakers and the extension of the plenary 
+session on patents, licences and IPR, motivated by the number of 
+participants anticipated in the debate.
+
+The Conference maintains a very high scientific and technical 
+level and the diversity of speakers and participants that 
+always we have tried and that without a doubt will enrich the 
+results of this event. Around 200 speakers will participate 
+along the next days in the sessions in Malaga. In relation to 
+the attendance we have confirmed over 4500 participants with 
+which we consider a presence throughout the three days around 
+6000 attendees.
+
+Shortly we will send you the instructions on how to get to the 
+Trade Fair and Conference Centre of Malaga and once there where 
+to pick your personalized accreditation.
+
+In addition, inform you that tomorrow, the 10th is the last 
+day to receive your presentation in case you haven’t sent it 
+yet. If for any circumstance you can not do it, please get in 
+contact with the Technical Secretariat at the Trade Centre asap.
+
+Please keep in mind the change in the schedule! I want to 
+encourage you take advantage of the opportunity of being able 
+to listen to the key responsible of an exciting worldwide project 
+for everybody.
+ 
+Best regards,
+JUAN REIG
+Conference Chairman
+II Open Source World Conference
+MALAGA 15-17 FEBRUARY 2006
++34670644131-FAX +34670641066
+chairman@opensourceworldconference.com
+www.opensourceworldconference.com
+
+Email: 2006-02-11
+
+Dear Speaker
+
+For your comfort we will try to deliver your accreditation in the room of 
+your Hotel. If you arrive directly to the Congress Centre, you can pick-up 
+your accreditation at the Technical Secretariat, which will be located 
+between both main auditoriums next to the central patio. We remain you 
+that it is not necessary to go through the accreditation counters of the 
+entrance hall. Please verify in the reception of the hotel the schedule of 
+buses that leave towards the Congress Centre. 
+
+We make available for all the attendees, free access points to high speed 
+Internet located within the Exhibition between the stands. In case you prefer to connect with some own portable device with wireless connectivity, you will have also the possibility since all the facility WIFI connected 
+for free access to the participants. In that case, you will only have to select 
+the option of configuration of DHCP. However, if you have any problem on 
+connectivity the technical personnel will be able to assist you.
+
+We want also to indicate that there will be a room for speakers located in 
+the first floor, Room nº 10, where it will be possible to update your presentation 
+or to use some of the computers available for you. 
+
+Before your session we recommended you to contact with the chair of your 
+session directly or through the Technical Secretariat.  Please indicate to 
+him/her how you want to de introduced and enumerate very briefly the 
+two or three key points of your presentation.
+
+We also remind you some previous information concerning your presentation 
+already sent to you:
+
+    * We recommend a 15 minutes oral presentation to allow some 
+	discussion and Q&A time at the end of the session. To protect 
+	the rights of your other colleague speakers and the rights of the 
+	attendees to listen to all the presentation included on the programme,
+	it would not be possible for any speaker to go beyond 20 minutes. The 
+	chair has received instructions to be very strict on the timing due to the 
+	above reasons. We ask for your kind cooperation on this issue.
+	
+    * The presentation format should be OpenOffice or PDF. Except exceptional 
+	cases, only organization computers or laptops with preloaded presentations 
+	will be used for the presentation at the conference rooms. In case that 
+	you need to modify or update your presentation there will be available working 
+	rooms at the Technical Secretariat or speaker’s room. There will be 
+	also a technical team specialized in Open Source to support you in 
+	case you have additional request at the Trade Fair and Conference 
+	Centre at Malaga. If for exceptional reasons you need to use your 
+	own laptop, please let us know at the Technical Secretariat to make 
+	sure that everything goes smoothly.
+
+We wish you a pleasant trip and look forward to welcome you in 
+Malaga personally. 
+
+Juan Reig
+
+Conference Chairman
+
++34670644131
+chairman@opensourceworldconference.com
+www.opensourceworldconference.com

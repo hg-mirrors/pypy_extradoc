@@ -1,0 +1,26 @@
+Leysin Sprint Planning
+======================
+
+release tasks:
+ - sprint blog post (Carl Friedrich)
+
+ - fix stack size test
+
+ - fix building on OS X (Chris, Samuele) Now fails on SSL
+
+ - fix tuatara benchmarks MAYBE DONE
+
+ - JIT
+
+ - implement os.popenX using subprocess (Iko, Samuele)
+
+ - port fixes that work to the release branch
+
+ - ootype JIT (Armin, Anto)
+
+
+meetings:
+ - Europython sprints (http://wiki.europython.eu/Sprints) 
+    - there will be definitely a sprint before europython
+    - afterwards is not clear yet, because some people are going to ECOOP
+ - separate compilation?

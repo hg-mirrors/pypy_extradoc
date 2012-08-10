@@ -1,0 +1,12 @@
+Where do we go from here?
+=========================
+
+Focus on reaching production quality in a single field:
+
+- Viable alternative to CPython
+
+- Massive parallelism
+
+- High security environments
+
+- JVM

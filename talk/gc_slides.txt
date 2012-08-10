@@ -1,0 +1,169 @@
+=============================================
+Garbage Collection in PyPy -- Summer of Code
+=============================================
+
+Thanks to Google for sponsoring this work!
+
+Goals
+-----
+
+ * following PyPy's main scheme: implementing Garbage Collection in Python!
+ * flexibility, simplicity
+ * bla
+ * bla
+ * bla
+
+
+=========
+Addresses
+=========
+
+ * Addresses (pypy.rpython.memory.lladdress.address) provide a general method
+   to access blobs of memory
+
+ * Example usage::
+
+    addr = raw_malloc(16)
+    addr.signed[0] = 1
+    assert addr.signed[0] == 1
+    addr.signed[1] = 42
+    assert (addr + 4).signed[0] == 42
+    raw_free(addr)
+
+ * running on Python, they are simulated with extra checks::
+
+    addr.signed[0]  -->  Crash
+
+===========================
+Explicitely managed classes
+===========================
+
+ * To have a higher level way to explicitely manage memory, you can declare a
+   class to be explicitely freed::
+
+    class A(object):
+        _malloc_flavor_ = 'raw'
+        def __init__(self, b):
+            self.b = b
+    a = A(1)
+    assert a.b == 1
+    free_non_gc_object(a)
+
+ * running on Python there free_non_gc_object does things to remind you of the
+   fact that the instance was freed::
+
+    a.b  -->  Crash
+
+
+==================
+Garbage Collection
+==================
+
+ * Garbage Collection is a way to automatically free objects that can be no
+   longer accessed by the user program (mutator)
+ * This is generally done by starting from the *roots*:
+    * the are the objects the program can access at the moment
+    * basically all the pointers in the stack plus Constants
+ * From the roots on the GC recursively follows all the embedded pointers
+ * every object that can be reached by this method is life
+ * every object that can not be reached is considered garbage and can be
+   deleted (after such annoying things like finalization)
+
+=======
+Example
+=======
+
+.. raw:: html
+
+       <br>
+       <br>
+       <br>
+
+
+.. image:: liveness.png
+
+.. raw:: html
+
+       <br>
+       <br>
+       <br>
+
+
+
+
+========================
+Memory Layout of the GCs
+========================
+
+ * The GC needs information about the objects it collects to find the
+   contained pointers
+ * This information is stored in front of the object::
+
+                        +---<- program sees only this
+                        |
+    +---------+---------+----------------------------+
+    | gc info | type id | object data                |
+    | signed  | signed  | whatever ...               |
+    +---------+---------+----------------------------+
+
+ * the GC decides what it stores there -- even nothing
+ * most GCs need the typeid, it provides access to the information a GC needs
+   to know about a type
+
+
+====================
+Type query functions
+====================
+
+ * ``is_varsize(typeid) --> bool``
+ * ``offsets_to_gc_pointers(typeid)`` --> list of offsets
+ * ``fixed_size(typeid)`` --> size
+ * ``varsize_item_sizes(typeid)`` --> size
+ * ``varsize_offset_to_variable_part(typeid)`` --> offset
+ * ``varsize_offset_to_length(typeid)`` --> offset
+ * ``varsize_offsets_to_gcpointers_in_var_part(typeid)`` --> list of offsets
+ * the GC uses these functions to get details about object layout
+ * the typeids are retrieved from the memory in front of the object
+ 
+.. raw:: html
+
+   <br>
+   <br>
+   <br>
+   <br>
+
+
+==========
+GC methods
+==========
+
+ * ``malloc(self, typeid, length=0)`` --> address
+ * ``collect(self) --> None``
+ * ``size_gc_header(self, typeid)`` --> size
+ * ``init_gc_object(self, addr, typeid) --> None``
+ * ``init_gc_object_immortal(self, addr, typeid) --> None``
+ * ``write_barrier(self, addr, addr_to, addr_struct) --> None``
+
+.. raw:: html
+
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+
+
+==============================
+Tying the GC into the LLInterp
+==============================
+
+ * for now using a GC works only using the LLInterpreter, since you can't
+   reliably find roots in C
+ * some operations are implemented by calling methods of the GC:
+    * ``setfield, setarrayitem --> write_barrier``
+    * ``malloc, malloc_varsize --> malloc``
+ * there has to be a way to call ``collect`` from user level, some fishing
+   needed
+ * ``init_gc_object_immortal`` is called by the code that converts
+   the constants in a graph to a format the GC can use
