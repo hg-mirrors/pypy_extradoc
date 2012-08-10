@@ -841,8 +841,42 @@ fewer deoptimization points than tracing JITs.
 
 \section{Conclusion}
 \label{sec:Conclusion}
+In this paper we have concentrated on guards, an operation typically found in
+tracing just-in-time compilers and used to denote points of possible control
+flow bifurcation in recorded traces.
+We described how, based on the observation that guards are a frequent operation
+in traces and that they do not fail often, guards have been implemented in the
+high and low level components of RPython's tracing JIT compiler.
 
-\todo{conclusion}
+Finally we have presented experimental data collected using the standard PyPy
+benchmark set to evaluate previous observations and assumptions. Our
+experiments showed that, as previously assumed, guards are a very common
+operation in traces. At the same time guards are associated with a high
+overhead, because for all compiled guards high- and low information needs to be
+stored to restore the execution state in case of a bail-out. The measurements
+showed that the compression techniques used in PyPy effectively reduce the
+overhead of guards, while it still produces a significant overhead. The results
+also showed that guard failure is a local event, meaning that there are few
+guards that fail at all, and ever fewer that fail very often, validating the
+concept of reducing the overhead of successful guard checks while incurring an
+additional overhead, besides leaving the optimized code, in the case of a
+bailout having to decode the compressed state representation, which on the
+other hand reduces the memory footprint storing data that is seldom used in a
+compact manner.
+
+\subsection{Future Work}
+% subsection Future Work (end)
+An aspect that requires further investigation is to experimentally validate
+different of the trade-off decisions that went into the design of guard in
+RPython's tracing JIT. Based on the observation that most guards do not fail
+very often or at all while there are many guard and a few fail very often it
+would be worth exploring if a more aggressive compression scheme for guards
+would be worth the memory saving in contrast to the increased decoding
+overhead. Based on the same observation we would like to explore the concept of
+LuaJIT's sparse snapshots and its applicability to PyPy. Taking the idea of
+data-driven optimization to investigate possible areas of optimization as was
+done here in retrospective to validate a design seems a promising approach in
+the context of tracing JITs.
 
 \section*{Acknowledgements}
 \section*{Appendix}
