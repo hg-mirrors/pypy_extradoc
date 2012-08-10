@@ -26,8 +26,8 @@ def build_failing_guards_table(files, texfile, template):
 
     table = []
     head = ['Benchmark',
-            'failing guards',
-            'over %d failures' % BRIDGE_THRESHOLD]
+            'Failing guards',
+            'Over %d failures' % BRIDGE_THRESHOLD]
 
     for bench, info in failures.iteritems():
         total = failures[bench]['nguards']
@@ -47,16 +47,16 @@ def build_resume_data_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
     lines = getlines(csvfiles[0])
     table = []
-    head = ['Benchmark', 'compressed', 'naive', 'xz compressed']
+    head = ['Benchmark', 'Compressed', 'Naive', 'xz compressed']
 
     for bench in lines:
         total = float(bench['total resume data size'])
         naive = float(bench['naive resume data size'])
         xz = float(bench['compressed resume data size'])
         res = [bench['bench'].replace('_', '\\_'),
-                "%.2f (%.1f\\%%)" %  (total, (100*total/naive)),
-                "%.2f (%.1f\\%%)" % (naive, 100*naive/total),
-                "%.2f (%.1f\\%%)" % (xz, 100*xz/total),
+                "%.2f {\scriptsize KiB}" %  (total,),# (100*total/naive)),
+                "%.2f {\scriptsize KiB}" % (naive),#, 100*naive/total),
+                "%.2f {\scriptsize KiB}" % (xz),#, 100*xz/total),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
@@ -92,7 +92,7 @@ def build_guard_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
     lines = getlines(csvfiles[0])
     table = []
-    head = ['Benchmark', 'guards b/o', 'guards a/o']
+    head = ['Benchmark', 'Guards before', 'Guards after']
 
     keys = 'numeric set get rest new guard '.split()
     for bench in lines:
@@ -119,12 +119,12 @@ def build_benchmarks_table(csvfiles, texfile, template):
         bridgedata[l['bench']] = l
 
     head = ['Benchmark',
-            'ops b/o',
-            'guards b/o',
-            'ops a/o',
-            'guards a/o',
-            'opt. rate',
-            'guard opt. rate',
+            'Ops. before',
+            'Guards before',
+            'Ops. after',
+            'Guards after',
+            'Opt. rate',
+            'Guard opt. rate',
             ]
 
     table = []
@@ -162,9 +162,9 @@ def build_backend_count_table(csvfiles, texfile, template):
 
     head = [r'Benchmark',
             r'Code',
-            r'resume data',
+            r'Resume data',
             r'll data',
-            r'relation']
+            r'Relation']
 
     table = []
     # collect data
