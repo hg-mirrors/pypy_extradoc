@@ -174,9 +174,9 @@ def build_backend_count_table(csvfiles, texfile, template):
         rel = r"%.1f {\scriptsize \%%}" % (asmsize / (gmsize + rdsize) * 100,)
         table.append([
             r"%s" % bench['bench'],
-            r"%.1f {\scriptsize kB}" % (asmsize,),
-            r"%.1f {\scriptsize kB}" % (rdsize,),
-            r"%.1f {\scriptsize kB}" % (gmsize,),
+            r"%.1f {\scriptsize KiB}" % (asmsize,),
+            r"%.1f {\scriptsize KiB}" % (rdsize,),
+            r"%.1f {\scriptsize KiB}" % (gmsize,),
             rel])
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
