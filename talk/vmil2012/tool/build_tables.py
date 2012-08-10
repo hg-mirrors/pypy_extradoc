@@ -50,10 +50,13 @@ def build_resume_data_table(csvfiles, texfile, template):
     head = ['Benchmark', 'compressed', 'naive', 'xz compressed']
 
     for bench in lines:
+        total = float(bench['total resume data size'])
+        naive = float(bench['naive resume data size'])
+        xz = float(bench['compressed resume data size'])
         res = [bench['bench'].replace('_', '\\_'),
-                "%.2f" % float(bench['total resume data size']),
-                "%.2f" % float(bench['naive resume data size']),
-                "%.2f" % float(bench['compressed resume data size']),
+                "%.2f (%.1f\\%%)" %  (total, (100*total/naive)),
+                "%.2f (%.1f\\%%)" % (naive, 100*naive/total),
+                "%.2f (%.1f\\%%)" % (xz, 100*xz/total),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
