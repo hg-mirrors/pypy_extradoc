@@ -617,7 +617,7 @@ aspects of guards in particular
   \item Guard failures are local and rare.
 \end{itemize}
 
-All figures in this section do not take into account garbage collection. Pieces
+All figures in this section do not take garbage collection into account. Pieces
 of machine code can be globally invalidated or just become cold again. In both
 cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
@@ -680,13 +680,30 @@ code will be smaller than in other juts-in-time compilation approaches.  This
 creates a larger discrepancy between the size of the \texttt{resume data} when
 compared to the illustrates why it is important to compress this information.
 
-\todo{compare to naive variant of resume data}
-
 \begin{figure}
     \include{figures/backend_table}
     \caption{Total size of generated machine code and guard data}
     \label{fig:backend_data}
 \end{figure}
+
+Why the efficient storing of the \texttt{resume data} is a central concern in the design
+of guards is illustrated by Figure~\ref{fig:backend_data}, this Figure shows
+the size of the compressed \texttt{resume data}, the approximated size of
+storing the \texttt{resume data} without compression and the size of
+compressing the data to calculate the size of the resume data using the
+\texttt{xz} compression tool, which is a ``general-purpose data compression
+software with high compression ratio'' used to approximate the best possible
+compression for the \texttt{resume data}.\footnote{\url{http://tukaani.org/xz/}}.
+
+The results show that the current approach of compression and data sharing only
+requires 18.3\% to 31.1\% of the space compared to the naive approach. This
+shows that large parts of the resume data are redundant and can be stored more
+efficiently through using the techniques described above. On the other hand
+comparing the results to the xz compression which only requires between 17.1\%
+and 21.1\% of the space required by our compression shows that the compression
+is not optimal but a trade-off between the required space and the time needed
+to build a good compressed representation of the compressed resume data for the
+large amount of guards present in the traces.
 
 \subsection{Guard Failures}
 \label{sub:guard_failure}
@@ -719,15 +736,16 @@ the transfer code is quite large.
 Mike Pall, the author of LuaJIT describes in a post to the lua-users mailing
 list different technologies and techniques used in the implementation of
 LuaJIT~\cite{Pall:2009}. Pall explains that guards in LuaJIT use a datastucture
-called snapshots, similar to RPython's resume data, to store the information about
-how to rebuild the state from a side-exit using the information in the snapshot
-and the machine execution state. Pall also acknowledges that snapshot for
-guards are associated with a large memory footprint. The solution used in
-LuaJIT is to store sparse snapshots, avoiding the creation of snapshots for
-every guard to reduce memory pressure. Snapshots are only created for guards
-after updates to the global state, after control flow points from the original
-program and for guards that are likely to fail. As an outlook Pall mentions the
-plans to switch to compressed snapshots to further reduce redundancy.
+called snapshots, similar to RPython's resume data, to store the information
+about how to rebuild the state from a side-exit using the information in the
+snapshot and the machine execution state. According to Pall~\cite{Pall:2009}
+snapshots for guards in LuaJIT are associated with a large memory footprint.
+The solution used in there is to store sparse snapshots, avoiding the creation
+of snapshots for every guard to reduce memory pressure. Snapshots are only
+created for guards after updates to the global state, after control flow points
+from the original program and for guards that are likely to fail. As an outlook
+Pall mentions the plans to switch to compressed snapshots to further reduce
+redundancy.
 
 Linking side exits to pieces of later compiled machine code was described first
 in the context of Dynamo~\cite{Bala:2000wv} under the name of Fragment Linking.
