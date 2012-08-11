@@ -274,7 +274,9 @@ It uses an \lstinline{Even} and an \lstinline{Odd} class to box the numbers, to
 make the example more interesting. If the loop in \lstinline{check_reduces} is
 traced when \lstinline{a} is a multiple of four, the unoptimized
 trace looks like in Figure~\ref{fig:unopt-trace}. The line numbers in the trace
-correspond to the line numbers in Figure~\ref{fig:trace-log}.
+correspond to the line numbers in Figure~\ref{fig:trace-log}. The resulting
+trace repeatedly halves the current value and checks whether it is equal to
+one, or odd. In either of these cases the trace is left via a guard failure.
 
 \begin{figure}
     \input{figures/unopt-log.tex}
@@ -431,11 +433,17 @@ of the delayed stores to be able to perform them when the guard fails.
 So far no special compression is done with this information,
 compared to the other source of information delayed heap stores are quite rare.
 
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{figures/resume_data.pdf}
-\caption{The resume data for Figure~\ref{fig:trace-log}}
-\label{fig:resume-data}
-\end{figure}
+Figure~\ref{fig:trace-log} shows the optimized version of the trace in
+Figure~\ref{fig:fig:unopt-trace}. Allocation removal has removed the
+\lstinline{new} operation and other operations handling the boxes. The
+operations handle unboxed numbers now.
+
+Figure~\ref{fig:resume-data} sketches the symbolic frames of the first two
+guards in the trace. The frames for \lstinline{check_reduces} and
+\lstinline{Even.step} as well as the description of the allocation-removed
+virtual instance of \lstinline{Even} are shared between the two guards.
+
+\todo{fix labels in diagram}
 
 % section Resume Data (end)
 
@@ -447,6 +455,13 @@ compared to the other source of information delayed heap stores are quite rare.
 % section Resume Data (end)
 \section{Guards in the Backend}
 \label{sec:Guards in the Backend}
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{figures/resume_data.pdf}
+\caption{The resume data for Figure~\ref{fig:trace-log}}
+\label{fig:resume-data}
+\end{figure}
+
 
 After optimization the resulting trace is handed to the over platform specific
 backend to be compiled to machine code. The compilation phase consists of two
