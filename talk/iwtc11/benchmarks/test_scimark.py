@@ -33,7 +33,7 @@ def test_SOR():
 def test_random():
     rnd_C = C.new_Random_seed(7)
     rnd_py = Random(7)
-    for i in range(100):
+    for i in range(100000):
         assert C.Random_nextDouble(rnd_C) == rnd_py.nextDouble()
  
 
