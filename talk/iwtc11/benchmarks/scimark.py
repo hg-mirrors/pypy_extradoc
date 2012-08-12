@@ -60,6 +60,25 @@ class Random(object):
             return self.dm1 * float(k);
 
 
+class ArrayList(Array2D):
+    def __init__(self, w, h, data=None):
+        self.width = w
+        self.height = h
+        self.data = [array('d', [0]) * w for y in xrange(h)]
+        if data is not None:
+            self.setup(data)
+
+    def __getitem__(self, idx):
+        if isinstance(idx, tuple):
+            return self.data[idx[1]][idx[0]]
+        else:
+            return self.data[idx]
+
+    def __setitem__(self, idx, val):
+        if isinstance(idx, tuple):
+            self.data[idx[1]][idx[0]] = val
+        else:
+            self.data[idx] = val
 
 def SOR_execute(omega, G, num_iterations):
     for p in xrange(num_iterations):
@@ -68,8 +87,8 @@ def SOR_execute(omega, G, num_iterations):
                 G[x, y] = omega * 0.25 * (G[x, y-1] + G[x, y+1] + G[x-1, y] + G[x+1, y]) + \
                           (1.0 - omega) * G[x, y]
 def SOR(args):
-    n, cycles = map(int, args)
-    a = Array2D(n, n)
+    n, cycles, Array = map(eval, args)
+    a = Array(n, n)
     SOR_execute(1.25, a, cycles)
     return "SOR(%d, %d)" % (n, cycles)
 

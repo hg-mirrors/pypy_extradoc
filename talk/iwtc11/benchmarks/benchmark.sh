@@ -50,8 +50,10 @@ else
     #$* ./runner.py $EXTRA_OPTS image/noborder.py main NoBorderImage range
     #$* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded
     #$* ./runner.py $EXTRA_OPTS image/sobel.py main NoBorderImagePadded uint8
-    $* ./runner.py $EXTRA_OPTS scimark.py SOR 100 32768
-    $* ./runner.py $EXTRA_OPTS scimark.py SOR 1000 256
+    $* ./runner.py $EXTRA_OPTS scimark.py SOR 100 32768 Array2D
+    $* ./runner.py $EXTRA_OPTS scimark.py SOR 1000 256 Array2D
+    $* ./runner.py $EXTRA_OPTS scimark.py SOR 100 32768 ArrayList
+    $* ./runner.py $EXTRA_OPTS scimark.py SOR 1000 256 ArrayList
     $* ./runner.py $EXTRA_OPTS scimark.py SparseMatMult 1000 5000 262144
     $* ./runner.py $EXTRA_OPTS scimark.py SparseMatMult 100000 1000000 1024
     $* ./runner.py $EXTRA_OPTS scimark.py MonteCarlo 268435456
