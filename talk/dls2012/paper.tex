@@ -129,9 +129,12 @@ are simple requiring one forward pass only. This is not true for loop-invariant 
 motion which is a very important optimization for code with tight kernels.
 Especially for dynamic languages that typically perform quite a lot of loop invariant
 type checking, boxed value unwrapping and virtual method lookups.
-In this paper we present a scheme for making simple optimizations loop-aware by
+In this paper we explain a scheme invented within the context of the LuaJIT project
+for making simple optimizations loop-aware by
 using a simple pre-processing step on the trace and not changing the
-optimizations themselves. The scheme can give performance improvements of a
+optimizations themselves.
+We have implemented the scheme in PyPy's tracing JIT compiler,
+where it can give performance improvements of a
 factor over two for PyPy's Python JIT executing simple numerical kernels
 bringing the performance close to that of compiled C code.
 \end{abstract}
@@ -152,7 +155,7 @@ For tight computationally intensive loops a
 significant amount of the execution time might be spent on such tasks
 instead of the actual computations. Moreover, the type checking,
 unwrapping and method lookups are often loop invariant and performance could be increased
-by moving those operations out of the loop. We propose a simple scheme
+by moving those operations out of the loop. We explain a simple scheme
 to make a tracing JIT loop-aware by allowing it's existing optimizations to
 perform loop invariant code motion. 
 
@@ -176,11 +179,16 @@ motion or optimizations that improve across several iterations of the loop.
 Having to deal with this property of traces complicates the optimization passes,
 as a more global view of a trace needs to be considered when optimizing.
 
-In this paper we want to address this problem by proposing a scheme that
-makes it possible to turn optimizations using one forward pass into
-optimizations that can do loop invariant code motion and similar loop-aware
-improvements. Using this scheme one does not need to change the underlying
-optimization much to get these advantages.
+Mike Pall pioneered a solution to address this problem in the context of a
+dynamic language using a tracing JIT compiler. He published his algorithm and
+its rationale in 2009~\cite{pall_luajit_2009} and implemented it in LuaJIT
+2.0\footnote{\url{http://luajit.org/}}, an open source JIT compiler for the Lua
+language. His approach allows to reuse all forward pass
+optimizations to achieve loop invariant code motion and other loop-related
+optimizations, which greatly simplifies the implementation. Using this scheme
+one does not need to change the underlying optimization much to get these
+advantages. We have implemented the same approach in PyPy's tracing JIT
+compiler the results of which we present here.
 
 The resulting optimizations one gets using this scheme are in no way novel, most
 of them are well-known loop optimizations. However, the way to implement them is
@@ -248,9 +256,9 @@ trace, listing the new values of the arguments of the trace. In this case, the
 new value of $i_0$ is $i_0$, making it a loop-invariant.
 
 Because $i_0$ is loop-invariant, the addition could be moved out of the loop.
-However, we want to get this effect using our existing optimization passes
+However, it is desirable to get this effect using our existing optimization passes
 without changing them too much. Optimizations with one forward pass
-cannot directly get this effect: They just look at the trace without taking
+cannot directly achieve this effect: They just look at the trace without taking
 into account that the trace executes many times in a row. Therefore to achieve
 loop-invariant code motion, we peel one iteration off the loop before running
 the optimizations. This peeling gives the following trace:
@@ -313,7 +321,7 @@ apply one-pass optimizations and make sure that the necessary extra
 arguments are inserted into the label of the loop itself and the jumps
 afterwards.
 
-This is the key insight of the proposed implementation scheme: If an
+This is the key insight of the implementation scheme: If an
 optimization is given two iterations together at the same time, the
 optimization has enough context to remove operations from the peeled loop,
 because it detects
@@ -476,7 +484,7 @@ Before a trace is passed to the backend compiling it into machine code
 it is optimized to achieve better performance.
 One goal of that is to move 
 operations out of the loop making them executed only once
-and not every iteration. We propose to achieve this by loop peeling. It
+and not every iteration. This can be achieved by loop peeling. It
 leaves the loop body intact, but prefixes it with one iteration of the
 loop. This operation by itself will not achieve anything. But if it is
 combined with other optimizations it can increase the effectiveness of
@@ -612,7 +620,7 @@ guard_class($p_{5}$, BoxedInteger)
             set($p_{9}$, intval, $i_{8}$)
 jump($L_1$, $p_{0}$, $p_{9}$)
 \end{lstlisting}
-\caption{A peeled trace of the Example Interpreter}
+\caption{A peeled trace of the example interpreter}
 \label{fig:peeled-trace}
 \end{figure}
 
@@ -911,13 +919,6 @@ time savings are from removing boxing/unboxing operations.
 }
 
 \revd{
-The benchmark results appear quite impressive -- especially the comparison with
-GCC -- but without additional information, I have no idea what is being
-compared.  Are these results from the same sizes of integers and/or floating
-point results?
-}
-
-\revd{
 This paper is relatively short, and could be significantly improved with a
 couple of pages of additional information about the details of the benchmarks
 -- both on the Python and on the C side.
@@ -1051,7 +1052,8 @@ It is
 a straightforward implementation providing 2 dimensional
 indexing with out of bounds checks. For the C implementations it is
 implemented as a C++ class. The other benchmarks are implemented in
-plain C. 
+plain C. All the benchmarks except sqrt operate on C double-precision floating
+point numbers, both in the Python and the C code.
 
 Benchmarks were run on Intel i7 M620 @2.67GHz with 4M cache and 8G of RAM
 using Ubuntu Linux 11.4 in 32bit mode.
@@ -1065,7 +1067,7 @@ for benchmarks:
 \item GCC 4.4.5 shipped with Ubuntu 11.4
 \end{itemize}
 
-We run GCC both with -O2 optimization and -O3 -march=native, disabling the
+We run GCC with -O3 -march=native, disabling the
 automatic loop vectorization. In all cases, SSE2 instructions were used for
 floating point operations, except Psyco which uses x87 FPU instructions.
 We also run PyPy with loop peeling optimization and without (but otherwise
@@ -1084,7 +1086,7 @@ advantages and optimizations we discussed in previous
 work~\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
 speedup of loop peeling is 70\%, which makes benchmark times
 comparable with native-compiled C code. We attribute the performance gap to C code to
-the relative immaturity of RPython's JIT assembler backend as well as missing
+the relative immaturity of RPython's JIT machine code backend as well as missing
 optimizations, like instruction scheduling.
 
 Other interesting interpreters that are helped greatly by this optimization are
@@ -1098,29 +1100,27 @@ out of scope for this paper.
 \section{Related Work}
 \label{sec:related}
 
-Loop invariant code motion optimizations are completely
-standard~\cite{muchnick_advanced_1997}. Therefore, the effects that our
-optimization achieves are not in any way new. However, we think that achieving
-them in the way described in this paper is simpler than writing explicit algorithms.
+Loop invariant code motion optimizations are a well-known approach to optimize
+loops~\cite{muchnick_advanced_1997}. Therefore, the effects that the
+optimizations described here achieve are not in any way new. However, we think
+that achieving them in the way described in this paper is simpler than writing
+explicit algorithms.
+\cfbolz{more explicit listing of prior work goes here}
 
-\revc{
-The discussion of LuaJIT is unsatisfying.  It's not clear to me from that one
-quote that Mike is doing the same thing.  It might be worth including LuaJIT in
-the benchmarks, and/or examining the actual implementation of LuaJIT.
-}
-\cfbolz{maybe we can look in the new LuaJIT wiki.
-how annoying would it be to rerun the benchmarks, if I can find somebody to write them?}
-\hakan{there is iwtc11/benchmarks/runall.sh which is supposed to run them all}
+As described in the introduction,
+Mike Pall pioneered the approach described in this paper.
+He showed that, unlike traditional loop-invariant code motion
+(LICM), this approach is effective, even in the presence of many
+guards and global control dependencies, which are caused by the
+semantics of dynamic languages.
 
-Mike Pall, the author of LuaJIT\footnote{\texttt{http://luajit.org/}} seems to
-have developed the described technique independently. There are no papers about
-LuaJIT but the author of it writes on a mailing list: ``The LOOP pass does
-synthetic unrolling of the recorded IR, combining copy-substitution with
-redundancy elimination to achieve code hoisting. The unrolled and
-copy-substituted instructions are simply fed back into the compiler pipeline,
-which allows reuse of all optimizations for redundancy elimination. Loop
-recurrences are detected on-the-fly and a minimized set of PHIs is
-generated.''~\cite{pall_luajit_2009}
+He writes on the Lua-users mailing list:
+``The LOOP pass does synthetic unrolling of the recorded IR, combining
+copy-substitution with redundancy elimination to achieve code hoisting. The
+unrolled and copy-substituted instructions are simply fed back into the
+compiler pipeline, which allows reuse of all optimizations for redundancy
+elimination. Loop recurrences are detected on-the-fly and a minimized set of
+PHIs is generated.''~\cite{pall_luajit_2009}
 
 Both the Hotpath VM~\cite{gal_hotpathvm:_2006} and
 SPUR~\cite{bebenita_spur:_2010} implements loop-invariant code motion
@@ -1142,9 +1142,9 @@ that type checks are fully done before a loop is even entered.
 \section{Conclusions}
 
 In this paper we have studied loop invariant code motion during trace
-compilation. We claim that loop peeling is a very convenient solution
-here since it fits well with other trace optimizations and does not require
-large changes to them. This approach improves the effect of standard
+compilation. We claim that the loop peeling approach of LuaJIT is a very convenient solution
+since it fits well with other trace optimizations and does not require
+large changes to them. The approach improves the effect of standard
 optimizations such as redundant guard removal, common subexpression elimination
 and allocation removal. The most prominent effect is that they all become loop
 invariant code motion optimizations.
@@ -1167,7 +1167,9 @@ common paths less efficient than they could be.
 
 \acks
 We would like to thank Samuele Pedroni, Sven Hager and the anonymous reviewers
-for helpful comments on drafts of this paper.
+for helpful comments on drafts of this paper. We owe deep gratitude to Mike Pall
+for making his impressive work on LuaJIT available and for detailed help on a
+draft of the paper.
 
 % We recommend abbrvnat bibliography style.
 
