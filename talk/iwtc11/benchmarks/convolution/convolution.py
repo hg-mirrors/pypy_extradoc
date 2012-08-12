@@ -32,10 +32,12 @@ def conv5(args):
     return 'conv5(array(1e%d))' % log10(100000000/n)
 
 class Array2D(object):
-    def __init__(self, w, h):
+    def __init__(self, w, h, data=None):
         self.width = w
         self.height = h
         self.data = array('d', [0]) * (w*h)
+        if data is not None:
+            self.setup(data)
 
     def _idx(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -56,6 +58,11 @@ class Array2D(object):
             for x in xrange(self.width):
                 self[x, y] = data[y][x]
         return self
+
+    def indexes(self):
+        for y in xrange(self.height):
+            for x in xrange(self.width):
+                yield x, y
 
 class NumpyArray(Array2D):
     def __init__(self, w, h):
