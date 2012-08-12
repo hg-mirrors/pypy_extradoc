@@ -170,6 +170,7 @@
 
             cycles *= 2;
         }
+        printf("SparseMatMult: N=%d, nz=%d, cycles=%d\n", N, nz, cycles);
         /* approx Mflops */
         result = SparseCompRow_num_flops(N, nz, cycles) / 
                         Stopwatch_read(Q) * 1.0e-6;

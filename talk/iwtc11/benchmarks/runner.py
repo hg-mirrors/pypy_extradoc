@@ -29,7 +29,7 @@ def main():
     except ImportError:
         pass
     else:
-        pypyjit.set_param(trace_limit=200000)
+        pypyjit.set_param(trace_limit=200000, threshold=1039)
     if args[0].endswith('.py'):
         mod = py.path.local(args[0]).pyimport()
         sys.stderr.write("warming up")
