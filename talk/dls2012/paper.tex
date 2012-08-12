@@ -182,7 +182,7 @@ as a more global view of a trace needs to be considered when optimizing.
 Mike Pall pioneered a solution to address this problem in the context of a
 dynamic language using a tracing JIT compiler. He published his algorithm and
 its rationale in 2009~\cite{pall_luajit_2009} and implemented it in LuaJIT
-2.0\footnote{\url{http://luajit.org/}}, an open source JIT compiler for the Lua
+2.0\footnote{\texttt{http://luajit.org/}}, an open source JIT compiler for the Lua
 language. His approach allows to reuse all forward pass
 optimizations to achieve loop invariant code motion and other loop-related
 optimizations, which greatly simplifies the implementation. Using this scheme
