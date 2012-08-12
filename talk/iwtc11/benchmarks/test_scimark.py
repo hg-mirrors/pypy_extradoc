@@ -1,4 +1,4 @@
-from scimark import SOR_execute, Array2D
+from scimark import SOR_execute, Array2D, Random
 from cffi import FFI
 import os
 
@@ -6,7 +6,9 @@ ffi = FFI()
 ffi.cdef("""
     typedef struct {...;} Random_struct, *Random;
     Random new_Random_seed(int seed);
+    double Random_nextDouble(Random R);
     double **RandomMatrix(int M, int N, Random R);
+
     void SOR_execute(int M, int N,double omega, double **G, int num_iterations);
     """)
 C = ffi.verify("""
@@ -27,4 +29,11 @@ def test_SOR():
     SOR_execute(1.25, b, 42)
     for x, y in b.indexes():
         assert a[y][x] == b[x, y]
+
+def test_random():
+    rnd_C = C.new_Random_seed(7)
+    rnd_py = Random(7)
+    for i in range(100):
+        assert C.Random_nextDouble(rnd_C) == rnd_py.nextDouble()
+ 
 
