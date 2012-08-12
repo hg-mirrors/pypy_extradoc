@@ -104,4 +104,18 @@ def SparseMatMult(args):
     SparseCompRow_matmult(N, y, val, row, col, x, cycles);
     return "SparseMatMult(%d, %d, %d)" % (N, nz, cycles)
 
+def MonteCarlo_integrate(Num_samples):
+    rnd = Random(113)
+    under_curve = 0
+    for count in xrange(Num_samples):
+        x = rnd.nextDouble()
+        y = rnd.nextDouble()
+        if x*x + y*y <= 1.0:
+            under_curve += 1
+    return float(under_curve) / Num_samples * 4.0
+
+def MonteCarlo(args):
+    n = int(args[0])
+    MonteCarlo_integrate(n)
+    return 'MonteCarlo(%d)' % n
 

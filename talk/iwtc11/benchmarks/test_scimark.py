@@ -1,4 +1,4 @@
-from scimark import SOR_execute, Array2D, Random
+from scimark import SOR_execute, Array2D, Random, MonteCarlo_integrate
 from cffi import FFI
 import os
 
@@ -10,15 +10,17 @@ ffi.cdef("""
     double **RandomMatrix(int M, int N, Random R);
 
     void SOR_execute(int M, int N,double omega, double **G, int num_iterations);
+    double MonteCarlo_integrate(int Num_samples);    
     """)
 C = ffi.verify("""
     #include <SOR.h>
     #include <Random.h>
+    #include <MonteCarlo.h>
     """, 
     extra_compile_args=['-I' + os.path.join(os.getcwd(), 'scimark')],
     extra_link_args=['-fPIC'],
     extra_objects=[os.path.join(os.getcwd(), 'scimark', f) 
-                   for f in ['SOR.c', 'Random.c']])
+                   for f in ['SOR.c', 'Random.c', 'MonteCarlo.c']])
 
 def test_SOR():
     width, height = 5, 7
@@ -35,5 +37,9 @@ def test_random():
     rnd_py = Random(7)
     for i in range(100000):
         assert C.Random_nextDouble(rnd_C) == rnd_py.nextDouble()
- 
+
+def test_montecarlo():
+    for n in [100, 200, 500, 1000]:
+        assert C.MonteCarlo_integrate(n) == MonteCarlo_integrate(n)
+
 

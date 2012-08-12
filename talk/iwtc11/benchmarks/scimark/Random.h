@@ -1,3 +1,6 @@
+#ifndef __RANDOM_H__
+#define __RANDOM_H__
+
 typedef struct
 {
   int m[17];                        
@@ -16,3 +19,5 @@ double Random_nextDouble(Random R);
 void Random_delete(Random R);
 double *RandomVector(int N, Random R);
 double **RandomMatrix(int M, int N, Random R);
+
+#endif

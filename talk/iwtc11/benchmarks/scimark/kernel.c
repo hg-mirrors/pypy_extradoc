@@ -89,6 +89,7 @@
 
             cycles *= 2;
         }
+        printf("MonteCarlo: cycles=%d\n", cycles);
         /* approx Mflops */
         result = MonteCarlo_num_flops(cycles) / Stopwatch_read(Q) * 1.0e-6;
         Stopwatch_delete(Q);
