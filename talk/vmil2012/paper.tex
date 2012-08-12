@@ -44,7 +44,7 @@
   urlcolor=black,%
   citecolor=black,%
   linkcolor=black,%
-  pdftitle={Efficiently Handling Guards in the Low Level Design of RPython's Tracing JIT},%
+  pdftitle={The Efficient Handling of Guards in the Design of RPython's Tracing JIT},%
   pdfauthor={David Schneider},
 }
 
@@ -86,7 +86,7 @@
 
 \begin{document}
 
-\title{Efficiently Handling Guards in the Low Level Design of RPython's Tracing JIT}
+\title{The Efficient Handling of Guards in the Design of RPython's Tracing JIT}
 
 \authorinfo{David Schneider$^{a}$ \and Carl Friedrich Bolz$^a$}
            {$^a$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
@@ -121,24 +121,32 @@ measure various properties of guards.
 %___________________________________________________________________________
 \section{Introduction}
 
+\todo{the introduction needs some work}
+\cfbolz{the first two two paragraphs talk about deoptimization, then it
+switches to guards. I would say we should only talk about guards in the
+beginning}
 In this paper we describe and analyze how deoptimization works in the context
 of tracing just-in-time compilers. What instructions are used in the
 intermediate and low-level representation of the JIT instructions and how these
 are implemented.
 
+\cfbolz{I would kill this paragraph}
 Although there are several publications about tracing just-in-time compilers,
 to our knowledge, there are none that describe deoptimization and the use and
 implementation of guards in this context.
 
+The goal of this paper is to understand the design constraints when
+implementing guards. Guards have a runtime cost, they take time to execute. On
+the other hand, guards are possible deoptimization points. They need to store
+enough information to rebuild the interpreter state.
 Based on the informal observation that guards are among the most common
-operations in the traces produced by RPython's tracing JIT and that guards are
-operations that are associated with an overhead to maintain information about
-the execution state to be able to rebuild it in case of deoptimization, our
+operations in the traces produced by RPython's tracing JIT, our
 goal is to present concrete numbers for the frequency and the overhead related
 to guards, explain how they are implemented in the different levels of RPython's
 tracing JIT and explain the rationale behind the design decisions based on the
 numbers provided here.
 
+\cfbolz{this paragraph now suddenly \emph{introduces} guards, despite having talked about them already}
 The operations executed by an interpreter are recorded by the tracing JIT in
 case they are frequently executed, this process is described in more detail in
 Section~\ref{sec:Resume Data}, during the recording phase special operations,
@@ -152,8 +160,8 @@ fail rarely or not all during execution. There are several aspects to consider
 in the design and optimization of guards, the first aspect is that due to the
 large number of guards the memory overhead related to storing the information
 needed for deoptimization should be kept low. A second aspect is that
-successfully checking guards, i.e. not leaving the compiled trace,  - which is
-the common case - should be a cheap operation to execute favouring the on-trace
+successfully checking guards, i.e. not leaving the compiled trace, – which is
+the common case – should be a cheap operation to execute favouring the on-trace
 execution speed in contrast to the deoptimization case where the state has to
 be rebuilt using the stored information. These constraints and trade-offs are
 what make the design and optimization of guards an important and non-trivial
@@ -164,15 +172,16 @@ aspect of the low-level design of a tracing just-in-time compiler.
 %stored at the different levels for the guards
 In this paper we want to substantiate the aforementioned observations and
 describe based on them the reasoning behind and the implementation of guards in
-RPython's tracing just-in-time compiler, the contributions of this paper are:
+RPython's tracing just-in-time compiler. the contributions of this paper are:
 \begin{itemize}
   \item An analysis of guards in the context of RPython's tracing JIT to
-  substantiate the aforementioned observation, based on a set of benchmarks.
-  \item We provide a detailed measurements about the frequency and the
-  overhead associated with guards.
-  \item We provide a description about how guards are implemented in the high\-
+  substantiate the aforementioned observation, based on a set of benchmarks,
+  \item detailed measurements about the frequency and the
+  overhead associated with guards, and
+  \item a description about how guards are implemented in the high\-
   and low-level parts of the JIT and describe the rationale behind the design.
 \end{itemize}
+
 \begin{figure}
     \include{figures/guard_table}
     \caption{Percentage of guards before and after optimization for different benchmarks}
@@ -203,7 +212,7 @@ gives an outlook on further research topics.
 \label{sub:pypy}
 
 
-The RPython language and the PyPy Project were started in 2002 with the goal of
+The RPython language and the PyPy project were started in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
 language experimentation and extension. PyPy is now a fully compatible
 alternative implementation of the Python language\bivab{mention speed}. The
@@ -218,7 +227,7 @@ and developing fast and maintainable dynamic language implementations.
 RPython is built of two components, the language and the translation toolchain
 used to transform RPython programs to executable units.  The RPython language
 is a statically typed object oriented high level language. The language provides
-several features such as automatic memory management (aka. Garbage Collection)
+several features such as automatic memory management
 and just-in-time compilation. When writing an interpreter using RPython the
 programmer only has to write the interpreter for the language she is
 implementing.  The second RPython component, the translation toolchain, is used
@@ -235,9 +244,13 @@ Tracing JITs are a technique of just-in-time compilers that generate code by
 observing the execution of a program. VMs using tracing JITs are typically
 mixed mode execution environments containing also an interpreter. The
 interpreter profiles the executed program and selects frequently executed code
-paths to be compiled to machine code. After profiling identified an interesting
+paths to be compiled to machine code. Many tracing JIT compilers focus on
+selecting hot loops.
+
+After profiling identified an interesting
 path, tracing is started, recording all operations that are executed on this
-path. Like in most compilers tracing JITs use an intermediate representation to
+path. This includes inlining functional calls.
+Like most compilers, tracing JITs use an intermediate representation to
 store the recorded operations, which is typically in SSA
 form~\cite{cytron_efficiently_1991}. Since tracing follows actual execution the
 code that is recorded
@@ -245,6 +258,9 @@ represents only one possible path through the control flow graph. Points of
 divergence from the recorded path are marked with special operations called
 \emph{guards}, these operations ensure that assumptions valid during the
 tracing phase are still valid when the code has been compiled and is executed.
+In the case of dynamic languages, guards are also used to encode type checks
+that come from optimistic type specialization by recording the types of
+variables seen during tracing.
 After a trace has been recorded it is optimized and then compiled to platform
 specific machine code.
 
@@ -290,7 +306,10 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 Since tracing linearizes control flow by following one concrete execution,
 not the full control flow of a program is observed.
 The possible points of deviation from the trace are guard operations
-that check whether the same assumptions observed during tracing still hold during execution.
+that check whether the same assumptions observed during tracing
+still hold during execution.
+Similarly, in the case of dynamic languages guards can also encode type
+assumptions.
 In later executions of the trace the guards can fail.
 If that happens, execution needs to continue in the interpreter.
 This means it is necessary to attach enough information to a guard
@@ -335,13 +354,20 @@ where the value would later come from, or a constant.
 \subsection{Compression of Resume Data}
 \label{sub:compression}
 
+After tracing has been finished the trace is optimized.
+During optimization a large percentage of operations can be removed.
+In the process the resume data is transformed into its final, compressed form.
+The rationale for not compressing the resume data during tracing
+is that a lot of guards will be optimized away.
+For them, the compression effort would be lost.
+
 The core idea of storing resume data as compactly as possible
 is to share parts of the data structure between subsequent guards.
 This is often useful because the density of guards in traces is so high,
 that quite often not much changes between them.
 Since resume data is a linked list of symbolic frames
 often only the information in the top frame changes from one guard to the next.
-The other frames can often be just reused.
+The other symbolic frames can often just be reused.
 The reason for this is that during tracing only the variables
 of the currently executing frame can change.
 Therefore if two guards are generated from code in the same function
@@ -393,7 +419,7 @@ The other important point of interaction between resume data and the optimizer
 is RPython's allocation removal optimization~\cite{bolz_allocation_2011}.
 This optimization discovers allocations in the trace that create objects
 that do not survive long.
-An example is the instance of \lstinline{Even} in the example\cfbolz{reference figure}.
+An example is the instance of \lstinline{Even} in Figure~\ref{fig:unopt-trace}.
 Allocation removal makes resume data more complex.
 Since allocations are removed from the trace it becomes necessary
 to reconstruct the objects that were not allocated so far when a guard fails.
@@ -435,7 +461,7 @@ compared to the other source of information delayed heap stores are quite rare.
 
 Figure~\ref{fig:trace-log} shows the optimized version of the trace in
 Figure~\ref{fig:fig:unopt-trace}. Allocation removal has removed the
-\lstinline{new} operation and other operations handling the boxes. The
+\lstinline{new} operation and other operations handling the instance. The
 operations handle unboxed numbers now.
 
 Figure~\ref{fig:resume-data} sketches the symbolic frames of the first two
@@ -466,7 +492,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 After optimization the resulting trace is handed to the over platform specific
 backend to be compiled to machine code. The compilation phase consists of two
 passes over the lists of instructions, a backwards pass to calculate live
-ranges of IR-level variables and a forward one to emit the instructions. During
+ranges of IR-level variables and a forward pass to emit the instructions. During
 the forward pass IR-level variables are assigned to registers and stack
 locations by the register allocator according to the requirements of the to be
 emitted instructions.  Eviction/spilling is performed based on the live range
@@ -476,7 +502,7 @@ semantics, operations without side effects whose result is not used are not
 emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
-producing the value can merged, reducing even more the overhead of the guard.
+producing the value can often merged, reducing even more the overhead of the guard.
 Figure \ref{fig:trace-compiled} shows how an \texttt{int\_eq} operation
 followed by a guard that checks the result of the operation are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
@@ -523,10 +549,10 @@ structure called \emph{low-level resume data} is created that encodes the
 information provided by the register allocator about where the values
 corresponding to each IR-variable required by the guard will be stored when
 execution reaches the code emitted for the corresponding guard. This data
-structure stores the data in a compressed manner using an encoding the uses
+structure stores the data in a compressed manner using an encoding that uses
 8bits to store 7bits of information. This encoding is efficient to create and
-provides a compact representation of the needed information. This encoding
-needs to be as compact as possible to maintain an acceptable memory profile.
+provides a compact representation of the needed information,
+to maintain an acceptable memory profile.
 
 Second a piece of code is generated for each guard that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline. In case the
@@ -555,7 +581,7 @@ As explained in previous sections, when a specific guard has failed often enough
 a new trace, referred to as a \emph{bridge}, starting from this guard is recorded and
 compiled. When compiling bridges the goal is that future failures of the guards
 that led to the compilation of the bridge should execute the bridge without
-additional overhead, in particular the failure of the guard should not lead
+additional overhead. In particular the failure of the guard should not lead
 to leaving the compiled code prior to execution the code of the bridge.
 
 The process of compiling a bridge is very similar to compiling a loop.
@@ -567,7 +593,8 @@ guard. To restore the state needed to compile the bridge we use the encoded
 representation created for the guard to rebuild the bindings from IR-variables
 to stack locations and registers used in the register allocator.  With this
 reconstruction all bindings are restored to the state as they were in the
-original loop up to the guard.
+original loop up to the guard. This means that no register/stack reshuffling is
+needed before executing a bridge.
 
 Once the bridge has been compiled the guard that led to compiling the bridge is
 patched to redirect control flow to the bridge in case the check fails. In
@@ -594,6 +621,7 @@ guards that work based on the same principles.
 \section{Evaluation}
 \label{sec:evaluation}
 \todo{improve the table formatting}
+\todo{give a reference to the benchmark scripts to make things repeatable}
 
 The results presented in this section are based on numbers gathered by running
 a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
@@ -701,7 +729,7 @@ For the different benchmarks the \texttt{low-level resume data} has a size of
 about 15\% to 20\% of the amount of memory compared to the size of the
 generated machine code. On the other hand the generated machine code has only a
 size ranging from 20.5\% to 37.98\% of the size of the high and low-level
-\texttt{resume data} combined and being compressed as described before.
+resume data combined and being compressed as described before.
 
 Tracing JIT compilers only compile the subset of the code executed in a program
 that is traced in a hot loop, for this reason the amount of generated machine
@@ -859,7 +887,7 @@ When deoptimizing code, these objects are reallocated
 and their fields filled with the values
 described by the deoptimization information.
 The paper does not describe any attempts to store this information compactly.
-This may not be needed in their approach, because method-based JITs have a lot
+This may not be needed in their approach, because method-based JITs have
 fewer deoptimization points than tracing JITs.
 
 
