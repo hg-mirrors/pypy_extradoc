@@ -10,7 +10,7 @@ int main(int ac, char **av) {
     int cycles = atoi(av[2]);
     double **G = malloc(sizeof(double*)*N);
     int i;
-    for (i=0; i<N; i++) G[i] = malloc(sizeof(double)*N);
+    for (i=0; i<N; i++) G[i] = calloc(sizeof(double), N);
     SOR_execute(N, N, 1.25, G, cycles);
     fprintf(stderr, "SOR(%d, %d):  ", N, cycles);
     return 0;

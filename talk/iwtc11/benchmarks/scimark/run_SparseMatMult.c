@@ -10,8 +10,8 @@ int main(int ac, char **av) {
     int nz = atoi(av[2]);
     int cycles = atoi(av[3]);
     
-        double *x = (double*) malloc(sizeof(double)*N); //RandomVector(N, R);
-        double *y = (double*) malloc(sizeof(double)*N);
+        double *x = (double*) calloc(sizeof(double), N); //RandomVector(N, R);
+        double *y = (double*) calloc(sizeof(double), N);
 
         double result = 0.0;
 
@@ -19,9 +19,9 @@ int main(int ac, char **av) {
         int anz = nr *N;    /* _actual_ number of nonzeros         */
 
             
-        double *val = (double *) malloc(sizeof(double)*anz); //RandomVector(anz, R);
-        int *col = (int*) malloc(sizeof(int)*nz);
-        int *row = (int*) malloc(sizeof(int)*(N+1));
+        double *val = (double *) calloc(sizeof(double), anz); //RandomVector(anz, R);
+        int *col = (int*) calloc(sizeof(int), nz);
+        int *row = (int*) calloc(sizeof(int), N+1);
         int r=0;
 
         row[0] = 0; 
