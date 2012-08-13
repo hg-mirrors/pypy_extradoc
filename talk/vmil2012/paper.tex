@@ -217,14 +217,16 @@ gives an outlook on further research topics.
 The RPython language and the PyPy project were started in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
 language experimentation and extension. PyPy is now a fully compatible
-alternative implementation of the Python language\bivab{mention speed}. The
+alternative implementation of the Python language, that is on average about 5 times faster than the reference implementation. The
 implementation takes advantage of the language features provided by RPython
 such as the provided tracing just-in-time compiler described below.
 
 RPython, the language and the toolset originally developed to implement the
 Python interpreter have developed into a general environment for experimenting
-and developing fast and maintainable dynamic language implementations.
-\bivab{Mention the different language impls}
+and developing fast and maintainable dynamic language implementations. There
+are, besides the Python interpreter, implementations of Prolog, Javascript, R,
+Smalltalk among other that are written in RPython at different levels of
+completeness.
 
 RPython is constructed from two components:
 \begin{itemize}
@@ -242,12 +244,12 @@ and run on one of the different supported target platforms/architectures such
 as C, .NET and Java. During the transformation process
 different low level aspects suited for the target environment are automatically
 added to the program such as (if needed) a garbage collector
-and a just-in-time compiler based on hints provided by the author.
+and based on hints provided by the author a just-in-time compiler.
 
 \subsection{RPython's Tracing JIT Compilers}
 \label{sub:tracing}
 Tracing is a technique of just-in-time compilers that generate code by
-observing the execution of a program. VMs using tracing JITs typically are
+observing the execution of a program. VMs using tracing JITs are typically
 mixed-mode execution environments that also contain an interpreter. The
 interpreter profiles the executing program and selects frequently executed code
 paths to be compiled to machine code. Many tracing JIT compilers focus on
@@ -291,7 +293,7 @@ that RPython's tracing JIT is a meta-tracing JIT can be ignored.
 \end{figure}
 
 Figure~\ref{fig:example} shows an example RPython function that checks
-whether a number reduces to 1 with less than 100 steps of the Collatz process.
+whether a number reduces to 1 with less than 100 steps of the Collatz process.\footnote{\url{http://en.wikipedia.org/wiki/Collatz_conjecture}}
 It uses an \lstinline{Even} and an \lstinline{Odd} class to box the numbers, to
 make the example more interesting. If the loop in \lstinline{check_reduces} is
 traced when \lstinline{a} is a multiple of four, the unoptimized
@@ -302,7 +304,7 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 
 \begin{figure}
     \input{figures/unopt-log.tex}
-    \caption{Unoptimized trace. Numbers on the right represent the line numbers in the original program. Lines marked with -1 represent lines added by JIT}
+    \caption{Unoptimized trace, the line numbers in the trace correspond to the line numbers in Figure~\ref{fig:trace-log}.}
     \label{fig:unopt-trace}
 \end{figure}
 
