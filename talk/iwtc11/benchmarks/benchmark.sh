@@ -20,7 +20,9 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$*" scimark/run_SOR.c 1000 256
     ./runner.py -n 5 -c "$*" scimark/run_SparseMatMult.c 1000 5000 262144
     ./runner.py -n 5 -c "$*" scimark/run_SparseMatMult.c 100000 1000000 1024
-    ./runner.py -n 5 -c "$*" scimark/run_MonteCarlo 268435456
+    ./runner.py -n 5 -c "$*" scimark/run_MonteCarlo.c 268435456
+    ./runner.py -n 5 -c "$*" scimark/run_LU.c 100 4096
+    ./runner.py -n 5 -c "$*" scimark/run_LU.c 1000 2
     rm a.out
 else
     if [ "$1" == "python2.7" ]; then
@@ -58,4 +60,5 @@ else
     $* ./runner.py $EXTRA_OPTS scimark.py SparseMatMult 100000 1000000 1024
     $* ./runner.py $EXTRA_OPTS scimark.py MonteCarlo 268435456
     $* ./runner.py $EXTRA_OPTS scimark.py LU 100 4096
+    $* ./runner.py $EXTRA_OPTS scimark.py LU 1000 2
 fi
