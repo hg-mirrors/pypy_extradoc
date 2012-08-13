@@ -64,6 +64,9 @@ class Array2D(object):
             for x in xrange(self.width):
                 yield x, y
 
+    def copy_data_from(self, other):
+        self.data[:] = other.data[:]
+
 class NumpyArray(Array2D):
     def __init__(self, w, h):
         self.width = w

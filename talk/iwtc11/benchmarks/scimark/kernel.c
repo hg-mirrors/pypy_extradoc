@@ -220,6 +220,7 @@
             cycles *= 2;
         }
         /* approx Mflops */
+        printf("LU: N=%d, cycles=%d\n", N, cycles);
         result = LU_num_flops(N) * cycles / Stopwatch_read(Q) * 1.0e-6;
 
         Stopwatch_delete(Q);
