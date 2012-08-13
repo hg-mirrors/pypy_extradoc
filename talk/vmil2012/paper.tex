@@ -513,7 +513,7 @@ code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
 producing the value can often be merged, further reducing the overhead of the guard.
 Figure \ref{fig:trace-compiled} shows how the \texttt{int\_eq} operation
-followed by a \texttt{guard_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
+followed by a \texttt{guard\_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
 
