@@ -135,12 +135,11 @@ In this paper we describe and analyze how guards work, explaining what concepts
 are used in the intermediate and low-level representation of the JIT
 instructions and how these are implemented.
 
-The goal of this paper is to understand the design constraints when
+Our aim is to help understand the design constraints when
 implementing guards. Guards have a runtime cost, they take time to execute. On
 the other hand, guards are possible deoptimization points, meaning the recorded
-and compiled path has to be left returning control to the interpreter. They need to
-store
-enough information to rebuild the interpreter state.
+and compiled path has to be left returning control to the interpreter. They need
+enough associated information to enable rebuilding the interpreter state.
 Based on the informal observation that guards are among the most common
 operations in the traces produced by RPython's tracing JIT, our
 goal is to present concrete numbers for the frequency and the overhead related
