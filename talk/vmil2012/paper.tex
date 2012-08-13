@@ -130,11 +130,6 @@ of tracing just-in-time compilers. What instructions are used in the
 intermediate and low-level representation of the JIT instructions and how these
 are implemented.
 
-\cfbolz{I would kill this paragraph}
-Although there are several publications about tracing just-in-time compilers,
-to our knowledge, there are none that describe deoptimization and the use and
-implementation of guards in this context.
-
 The goal of this paper is to understand the design constraints when
 implementing guards. Guards have a runtime cost, they take time to execute. On
 the other hand, guards are possible deoptimization points. They need to store
@@ -148,12 +143,12 @@ numbers provided here.
 
 \cfbolz{this paragraph now suddenly \emph{introduces} guards, despite having talked about them already}
 The operations executed by an interpreter are recorded by the tracing JIT in
-case they are frequently executed, this process is described in more detail in
-Section~\ref{sec:Resume Data}, during the recording phase special operations,
+case they are frequently executed (this process is described in more detail in
+Section \ref{sec:Resume Data}). During the recording phase special operations,
 referred to as \texttt{guards}, are inserted into the recorded trace at all
 points where the control flow could diverge. As can be seen in
-Figure~\ref{fig:guard_percent} guards account for 14.42\% to 22.32\% of the
-operations before and for 15.2\% to 20.12\% of the operations after the
+Figure~\ref{fig:guard_percent} guards account for about 14\% to 22\% of the
+operations before and for about 15\% to 20\% of the operations after the
 optimization pass over the traced and later compiled parts of the benchmarks,
 making guards one of the most common types of operations. Many of these guards
 fail rarely or not all during execution. There are several aspects to consider
@@ -194,7 +189,7 @@ and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
 Data} we proceed to describe for RPython's tracing JIT the details of guards in
 the frontend\bivab{better term for this?} related to recording and storing the
 information required to restore the interpreter state in case of a guard
-failure, once the frontend has traced and optimized a loop it invokes the
+failure. Once the frontend has traced and optimized a loop it invokes the
 backend to compile the operations to machine code, Section \ref{sec:Guards in
 the Backend} describes the low-level aspects of how guards are implemented in
 the JIT-backend. The frequency of guards and the overhead associated with the
@@ -224,8 +219,12 @@ Python interpreter have developed into a general environment for experimenting
 and developing fast and maintainable dynamic language implementations.
 \bivab{Mention the different language impls}
 
-RPython is built of two components, the language and the translation toolchain
-used to transform RPython programs to executable units.  The RPython language
+RPython is constructed from two components:
+\begin{itemize}
+ \item the language itself
+ \item the translation toolchain used to transform RPython programs to executable units
+\end{itemize}
+The RPython language
 is a statically typed object oriented high level language. The language provides
 several features such as automatic memory management
 and just-in-time compilation. When writing an interpreter using RPython the
@@ -241,16 +240,16 @@ provided by the author a just-in-time compiler.
 \subsection{RPython's Tracing JIT Compilers}
 \label{sub:tracing}
 Tracing JITs are a technique of just-in-time compilers that generate code by
-observing the execution of a program. VMs using tracing JITs are typically
-mixed mode execution environments containing also an interpreter. The
-interpreter profiles the executed program and selects frequently executed code
+observing the execution of a program. VMs using tracing JITs typically are
+mixed-mode execution environments that also contain an interpreter. The
+interpreter profiles the executing program and selects frequently executed code
 paths to be compiled to machine code. Many tracing JIT compilers focus on
 selecting hot loops.
 
-After profiling identified an interesting
+After profiling identifies an interesting
 path, tracing is started, recording all operations that are executed on this
 path. This includes inlining functional calls.
-Like most compilers, tracing JITs use an intermediate representation to
+As in most compilers, tracing JITs use an intermediate representation to
 store the recorded operations, which is typically in SSA
 form~\cite{cytron_efficiently_1991}. Since tracing follows actual execution the
 code that is recorded
@@ -304,7 +303,7 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 \label{sec:Resume Data}
 
 Since tracing linearizes control flow by following one concrete execution,
-not the full control flow of a program is observed.
+the full control flow of a program is not observed.
 The possible points of deviation from the trace are guard operations
 that check whether the same assumptions observed during tracing
 still hold during execution.
@@ -433,8 +432,8 @@ After allocation removal the variables in the symbolic frames can also contain
 ``virtual'' objects.
 These are objects that were not allocated so far,
 because the optimizer removed their allocation.
-The virtual objects in the symbolic frames describe exactly
-how the heap objects look like which have to be allocated on guard failure.
+The structure of the heap objects that have to be allocated on guard failure
+is described by the virtual objects stored in the symbolic frames.
 To this end, the content of every field of the virtual object is described
 in the same way that the local variables of symbolic frames are described.
 The fields of the virtual objects can therefore be SSA variables, constants
@@ -502,7 +501,7 @@ semantics, operations without side effects whose result is not used are not
 emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
-producing the value can often merged, reducing even more the overhead of the guard.
+producing the value can often be merged, further reducing even more the overhead of the guard.
 Figure \ref{fig:trace-compiled} shows how an \texttt{int\_eq} operation
 followed by a guard that checks the result of the operation are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
@@ -542,8 +541,8 @@ BNE <bailout>
 \end{figure}
 
 Each guard in the IR has attached to it a list of the IR-variables required to
-rebuild the execution state in case the trace is left through the side-exit
-corresponding to the guard. When a guard is compiled, additionally to the
+rebuild the execution state in case the trace is left through
+the guard. When a guard is compiled, in addition to the
 condition check two things are generated/compiled. First a special data
 structure called \emph{low-level resume data} is created that encodes the
 information provided by the register allocator about where the values
@@ -556,20 +555,20 @@ to maintain an acceptable memory profile.
 
 Second a piece of code is generated for each guard that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline. In case the
-condition checked in the guard fails execution and a side-exit should be taken
-execution jumps to the trampoline. In the trampoline the pointer to the
-\emph{low-level resume data} is loaded and jumps to generic bail-out handler
+condition checked in the guard fails
+execution jumps to the corresponding trampoline. In the trampoline the pointer to the
+\emph{low-level resume data} is loaded and jumps to generic bailout handler, also known as compensation code,
 that is used to leave the compiled trace in case of a guard failure.
 
-Using the encoded location information the bail-out handler reads from the
+Using the encoded location information the bailout handler reads from the
 saved execution state the values that the IR-variables had  at the time of the
-guard failure and stores them in a location that can be read by the fronted.
+guard failure and stores them in a location that can be read by the frontend.
 After saving the information the control is passed to the frontend signaling
 which guard failed so the frontend can read the information passed and restore
 the state corresponding to the point in the program.
 
 As in previous sections the underlying idea for the design of guards is to have
-a fast on-trace profile and a potentially slow one in the bail-out case where
+a fast on-trace profile and a potentially slow one in the bailout case where
 the execution takes one of the side exits due to a guard failure. At the same
 time the data stored in the backend needed to rebuild the state needs to be as
 compact as possible to reduce the memory overhead produced by the large number
@@ -598,13 +597,13 @@ needed before executing a bridge.
 
 Once the bridge has been compiled the guard that led to compiling the bridge is
 patched to redirect control flow to the bridge in case the check fails. In
-future if the guard fails again it jumps to the code compiled for the bridge
+the future, if the guard fails again it jumps to the code compiled for the bridge
 instead of bailing out. Once the guard has been compiled and attached to the
 loop the guard becomes just a point where control-flow can split. The loop
 after the guard and the bridge are just conditional paths.
-Figure~\ref{fig:trampoline} shows a digram of a compiled loop with two guards,
+Figure~\ref{fig:trampoline} shows a diagram of a compiled loop with two guards,
 Guard \#1 jumps to the trampoline, loads the \texttt{low level resume data} and
-then calls the compensation code, whereas Guard \#2 has already been patched
+then calls the bailout handler, whereas Guard \#2 has already been patched
 and directly jumps to the corresponding bridge. The bridge also contains two
 guards that work based on the same principles.
 \begin{figure}
@@ -735,7 +734,7 @@ Tracing JIT compilers only compile the subset of the code executed in a program
 that is traced in a hot loop, for this reason the amount of generated machine
 code will be smaller than in other juts-in-time compilation approaches.  This
 creates a larger discrepancy between the size of the \texttt{resume data} when
-compared to the illustrates why it is important to compress this information.
+compared to the size of the generated machine code and illustrates why it is important to compress the \texttt{resume data} information.
 
 \begin{figure}
     \include{figures/backend_table}
@@ -773,7 +772,7 @@ times.\footnote{
 }
 As described before, for guards that fail more than 200 times, a trace
 is recorded that starts from the guard. Afterwards the guard is patched so that later
-failures execute the new trace instead of taking the side-exit. Hence the
+failures execute the new trace instead of jumping to the trampoline and returning to the interpreter. Hence the
 numbers presented for guards that fail more than 200 times represent the 200
 failures up to the compilation of the bridge and all executions of the then
 attached bridge.
@@ -786,7 +785,7 @@ attached bridge.
 
 From Figure~\ref{fig:failing_guards} we can see that only a very small amount
 of all the guards in the optimized traces ever fail. This amount varies between
-2.4\% and 5.7\% of all guards. As can be expected, even less guards fail often
+2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
 enough that a bride is compiled for them, only 1.2\% to 3.6\% of all guards
 fail more than 200 times. Also of all failing guards a few fail extremely often
 and most fail rarely. The results emphasizes that as most of the guards never
@@ -815,7 +814,7 @@ Mike Pall, the author of LuaJIT describes in a post to the lua-users mailing
 list different technologies and techniques used in the implementation of
 LuaJIT~\cite{Pall:2009}. Pall explains that guards in LuaJIT use a datastucture
 called snapshots, similar to RPython's resume data, to store the information
-about how to rebuild the state from a side-exit using the information in the
+about how to rebuild the state from a guard failure using the information in the
 snapshot and the machine execution state. According to Pall~\cite{Pall:2009}
 snapshots for guards in LuaJIT are associated with a large memory footprint.
 The solution used in there is to store sparse snapshots, avoiding the creation
@@ -909,7 +908,7 @@ benchmark set to evaluate previous observations and assumptions. Our
 experiments showed that, as previously assumed, guards are a very common
 operation in traces. At the same time guards are associated with a high
 overhead, because for all compiled guards information needs to be
-stored to restore the execution state in case of a bail-out. The measurements
+stored to restore the execution state in case of a bailout. The measurements
 showed that the compression techniques used in PyPy effectively reduce the
 overhead of guards, while it still produces a significant overhead. The results
 also showed that guard failure is a local event: there are few
