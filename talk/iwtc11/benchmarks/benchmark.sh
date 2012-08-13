@@ -57,4 +57,5 @@ else
     $* ./runner.py $EXTRA_OPTS scimark.py SparseMatMult 1000 5000 262144
     $* ./runner.py $EXTRA_OPTS scimark.py SparseMatMult 100000 1000000 1024
     $* ./runner.py $EXTRA_OPTS scimark.py MonteCarlo 268435456
+    $* ./runner.py $EXTRA_OPTS scimark.py LU 100 4096
 fi
