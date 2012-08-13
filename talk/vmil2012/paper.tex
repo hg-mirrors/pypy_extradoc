@@ -121,6 +121,8 @@ measure various properties of guards.
 
 
 %___________________________________________________________________________
+\todo{find a better name for \texttt{low-level resume data}}
+\todo{find better names for JIT front- and backend}
 \section{Introduction}
 
 \todo{the introduction needs some work}
@@ -509,9 +511,9 @@ semantics. Operations without side effects whose result is not used are not
 emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
-producing the value can often be merged, further reducing even more the overhead of the guard.
-Figure \ref{fig:trace-compiled} shows how an \texttt{int\_eq} operation
-followed by a guard that checks the result of the operation are compiled to
+producing the value can often be merged, further reducing the overhead of the guard.
+Figure \ref{fig:trace-compiled} shows how the \texttt{int\_eq} operation
+followed by a \texttt{guard_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
 
@@ -559,14 +561,16 @@ information about where, i.e. which register or stack location, the IR-variables
 This data
 structure stores the values in a succinct manner using an encoding that uses
 8 bits to store 7 bits of information, ignoring leading zeros. This encoding is efficient to create and
-provides a compact representation of the needed information,
+provides a compact representation of the needed information in order
 to maintain an acceptable memory profile.
 
-Second a piece of code is generated for each guard that acts as a trampoline.
+Second for each guard a piece of code is generated that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline in case the
-guard checked fails.
+guard check fails.
 In the trampoline the pointer to the
-\emph{low-level resume data} is loaded and execution jumps to a generic bailout handler, also known as compensation code,
+\emph{low-level resume data} is loaded and after storing the current execution state
+(registers and stack) execution jumps to a generic bailout handler, also known
+as \texttt{compensation code},
 that is used to leave the compiled trace in case of a guard failure.
 
 Using the encoded location information the bailout handler reads from the
@@ -578,7 +582,7 @@ the state corresponding to the point in the program.
 
 As in previous sections the underlying idea for the design of guards is to have
 a fast on-trace profile and a potentially slow one in the bailout case where
-the execution takes one of the side exits due to a guard failure. At the same
+the execution has to return to the interpreter due to a guard failure. At the same
 time the data stored in the backend, required to rebuild the state, should be as
 compact as possible to reduce the memory overhead produced by the large number
 of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
