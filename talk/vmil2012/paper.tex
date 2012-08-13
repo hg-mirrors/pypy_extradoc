@@ -313,7 +313,7 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 
 Since tracing linearizes control flow by following one concrete execution,
 the full control flow of a program is not observed.
-The possible points of deviation from the trace are guard operations
+The possible points of deviation from the trace are denoted by guard operations
 that check whether the same assumptions observed while tracing
 still hold during execution.
 Similarly, in the case of dynamic languages guards can also encode type
@@ -411,7 +411,7 @@ In particular guards can be removed by subexpression elimination.
 If the same guard is encountered a second time in the trace,
 the second one can be removed.
 This also works if a later guard is weaker
-and hence implied by a earlier guard.
+and hence implied by an earlier guard.
 
 One of the techniques in the optimizer specific to tracing for removing guards
 is guard strengthening~\cite{bebenita_spur:_2010}.
@@ -467,7 +467,7 @@ So far no special compression is done with this information,
 compared to the other source of information delayed heap stores are quite rare.
 
 Figure~\ref{fig:trace-log} shows the optimized version of the trace in
-Figure~\ref{fig:fig:unopt-trace}. Allocation removal has removed the
+Figure~\ref{fig:unopt-trace}. Allocation removal has removed the
 \lstinline{new} operation and other operations handling the instance. The
 operations handle unboxed numbers now.
 
