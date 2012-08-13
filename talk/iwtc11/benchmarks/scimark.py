@@ -59,6 +59,10 @@ class Random(object):
         else:
             return self.dm1 * float(k);
 
+    def RandomMatrix(self, a):
+        for x, y in a.indexes():
+            a[x, y] = self.nextDouble()
+        return a
 
 class ArrayList(Array2D):
     def __init__(self, w, h, data=None):
@@ -79,6 +83,10 @@ class ArrayList(Array2D):
             self.data[idx[1]][idx[0]] = val
         else:
             self.data[idx] = val
+
+    def copy_data_from(self, other):
+        for l1, l2 in zip(self.data, other.data):
+            l1[:] = l2
 
 def SOR_execute(omega, G, num_iterations):
     for p in xrange(num_iterations):
@@ -138,3 +146,42 @@ def MonteCarlo(args):
     MonteCarlo_integrate(n)
     return 'MonteCarlo(%d)' % n
 
+def LU_factor(A, pivot):
+    M, N = A.height, A.width
+    minMN = min(M, N)
+    for j in xrange(minMN):
+        jp = j
+        t = abs(A[j][j])
+        for i in xrange(j + 1, M):
+            ab = abs(A[i][j])
+            if ab > t:
+                jp = i
+                t = ab
+        pivot[j] = jp
+        
+        if A[jp][j] == 0:
+            raise Exception("factorization failed because of zero pivot")
+
+        if jp != j:
+            A[j], A[jp] = A[jp], A[j]
+
+        if j < M-1:
+            recp =  1.0 / A[j][j]
+            for k in xrange(j + 1, M):
+                A[k][j] *= recp
+
+        if j < minMN-1:
+            for ii in xrange(j + 1, M):
+                for jj in xrange(j + 1, N):
+                    A[ii][jj] -= A[ii][j] * A[j][jj]
+
+def LU(args):
+    N, cycles = map(int, args)
+    rnd = Random(7)
+    A = rnd.RandomMatrix(ArrayList(N, N))
+    lu = ArrayList(N, N)
+    pivot = array('i', [0]) * N
+    for i in xrange(cycles):
+        lu.copy_data_from(A)
+        LU_factor(lu, pivot)
+    return 'LU(%d, %d)' % (N, cycles)
