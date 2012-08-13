@@ -125,8 +125,8 @@ measure various properties of guards.
 \cfbolz{the first two two paragraphs talk about deoptimization, then it
 switches to guards. I would say we should only talk about guards in the
 beginning}
-In this paper we describe and analyze how deoptimization works in the context
-of tracing just-in-time compilers. What instructions are used in the
+\bivab{Introduce in a sentence what guards are}
+In this paper we describe and analyze how guards, as a concept of tracing just-in-time compilers, work. Explicating what concepts are used in the
 intermediate and low-level representation of the JIT instructions and how these
 are implemented.
 
@@ -138,7 +138,7 @@ Based on the informal observation that guards are among the most common
 operations in the traces produced by RPython's tracing JIT, our
 goal is to present concrete numbers for the frequency and the overhead related
 to guards, explain how they are implemented in the different levels of RPython's
-tracing JIT and explain the rationale behind the design decisions based on the
+tracing JIT and clarify the rationale behind the design decisions based on the
 numbers provided here.
 
 \cfbolz{this paragraph now suddenly \emph{introduces} guards, despite having talked about them already}
@@ -151,7 +151,9 @@ Figure~\ref{fig:guard_percent} guards account for about 14\% to 22\% of the
 operations before and for about 15\% to 20\% of the operations after the
 optimization pass over the traced and later compiled parts of the benchmarks,
 making guards one of the most common types of operations. Many of these guards
-fail rarely or not all during execution. There are several aspects to consider
+fail rarely or not all during execution.
+
+There are several aspects to consider
 in the design and optimization of guards, the first aspect is that due to the
 large number of guards the memory overhead related to storing the information
 needed for deoptimization should be kept low. A second aspect is that
@@ -169,8 +171,9 @@ In this paper we want to substantiate the aforementioned observations and
 describe based on them the reasoning behind and the implementation of guards in
 RPython's tracing just-in-time compiler. the contributions of this paper are:
 \begin{itemize}
-  \item An analysis of guards in the context of RPython's tracing JIT to
-  substantiate the aforementioned observation, based on a set of benchmarks,
+  \item An analysis and benchmark of guards in the context of RPython's tracing Jit.
+  %An analysis of guards in the context of RPython's tracing JIT to
+  %substantiate the aforementioned observation, based on a set of benchmarks,
   \item detailed measurements about the frequency and the
   overhead associated with guards, and
   \item a description about how guards are implemented in the high\-
@@ -234,12 +237,12 @@ to transform the program to a low level representations suited to be compiled
 and run on one of the different supported target platforms/architectures such
 as C, .NET and Java. During the transformation process
 different low level aspects suited for the target environment are automatically
-added to program such as (if needed) a garbage collector and with some hints
-provided by the author a just-in-time compiler.
+added to the program such as (if needed) a garbage collector
+and a just-in-time compiler based on hints provided by the author.
 
 \subsection{RPython's Tracing JIT Compilers}
 \label{sub:tracing}
-Tracing JITs are a technique of just-in-time compilers that generate code by
+Tracing is a technique of just-in-time compilers that generate code by
 observing the execution of a program. VMs using tracing JITs typically are
 mixed-mode execution environments that also contain an interpreter. The
 interpreter profiles the executing program and selects frequently executed code
@@ -247,7 +250,7 @@ paths to be compiled to machine code. Many tracing JIT compilers focus on
 selecting hot loops.
 
 After profiling identifies an interesting
-path, tracing is started, recording all operations that are executed on this
+path, tracing is started thus recording all operations that are executed on this
 path. This includes inlining functional calls.
 As in most compilers, tracing JITs use an intermediate representation to
 store the recorded operations, which is typically in SSA
@@ -295,7 +298,7 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 
 \begin{figure}
     \input{figures/unopt-log.tex}
-    \caption{Unoptimized trace}
+    \caption{Unoptimized trace. Numbers on the right represent the line numbers in the original program. Lines marked with -1 represent lines added by JIT}
     \label{fig:unopt-trace}
 \end{figure}
 
@@ -305,7 +308,7 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 Since tracing linearizes control flow by following one concrete execution,
 the full control flow of a program is not observed.
 The possible points of deviation from the trace are guard operations
-that check whether the same assumptions observed during tracing
+that check whether the same assumptions observed while tracing
 still hold during execution.
 Similarly, in the case of dynamic languages guards can also encode type
 assumptions.
@@ -315,17 +318,17 @@ This means it is necessary to attach enough information to a guard
 to reconstruct the interpreter state when that guard fails.
 This information is called the \emph{resume data}.
 
-To do this reconstruction, it is necessary to take the values of the SSA
+To do this reconstruction it is necessary to take the values of the SSA
 variables of the trace and build interpreter stack frames.  Tracing
 aggressively inlines functions, therefore the reconstructed state of the
 interpreter can consist of several interpreter frames.
 
 If a guard fails often enough, a trace is started from it
-to create a trace tree.
+forming a trace tree.
 When that happens another use case of resume data
 is to construct the tracer state.
 After the bridge has been recorded and compiled it is attached to the guard.
-If the guard fails later, the bridge is executed. Therefore the resume data of
+If the guard fails later the bridge is executed. Therefore the resume data of
 that guard is no longer needed.
 
 There are several forces guiding the design of resume data handling.
@@ -362,10 +365,10 @@ For them, the compression effort would be lost.
 
 The core idea of storing resume data as compactly as possible
 is to share parts of the data structure between subsequent guards.
-This is often useful because the density of guards in traces is so high,
+This is useful because the density of guards in traces is so high,
 that quite often not much changes between them.
 Since resume data is a linked list of symbolic frames
-often only the information in the top frame changes from one guard to the next.
+in many cases only the information in the top frame changes from one guard to the next.
 The other symbolic frames can often just be reused.
 The reason for this is that during tracing only the variables
 of the currently executing frame can change.
@@ -396,14 +399,13 @@ The possible source of information are:
 \label{sub:optimization}
 
 Guards interact with optimizations in various ways.
-Most importantly optimizations try to remove as many operations
-and therefore guards as possible.
-This is done with many classical compiler optimizations.
+Using many classical compiler optimizations the JIT tries to remove as many
+operations, and therefore guards, as possible.
 In particular guards can be removed by subexpression elimination.
 If the same guard is encountered a second time in the trace,
 the second one can be removed.
 This also works if a later guard is weaker
-and therefore implied by a earlier guard.
+and hence implied by a earlier guard.
 
 One of the techniques in the optimizer specific to tracing for removing guards
 is guard strengthening~\cite{bebenita_spur:_2010}.
@@ -422,10 +424,10 @@ An example is the instance of \lstinline{Even} in Figure~\ref{fig:unopt-trace}.
 Allocation removal makes resume data more complex.
 Since allocations are removed from the trace it becomes necessary
 to reconstruct the objects that were not allocated so far when a guard fails.
-Therefore the resume data needs to store enough information
+Consequently the resume data needs to store enough information
 to make this reconstruction possible.
 
-Adding this additional information is done as follows.
+Adding this additional information is done as follows:
 So far, every variable in the symbolic frames
 contains a constant or an SSA variable.
 After allocation removal the variables in the symbolic frames can also contain
@@ -488,16 +490,16 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 \end{figure}
 
 
-After optimization the resulting trace is handed to the over platform specific
+After optimization the resulting trace is handed over to the platform specific
 backend to be compiled to machine code. The compilation phase consists of two
 passes over the lists of instructions, a backwards pass to calculate live
 ranges of IR-level variables and a forward pass to emit the instructions. During
 the forward pass IR-level variables are assigned to registers and stack
-locations by the register allocator according to the requirements of the to be
+locations by the register allocator according to the requirements of the
 emitted instructions.  Eviction/spilling is performed based on the live range
 information collected in the first pass. Each IR instruction is transformed
 into one or more machine level instructions that implement the required
-semantics, operations without side effects whose result is not used are not
+semantics. Operations without side effects whose result is not used are not
 emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
@@ -536,28 +538,29 @@ BNE <bailout>
 ...
     \end{lstlisting}
   \end{minipage}
-  \caption{Separated and merged compilation of operations and guards}
+  \caption{Result of separated (left) and merged (right) compilation of operations and guards (top).}
   \label{fig:trace-compiled}
 \end{figure}
 
-Each guard in the IR has attached to it a list of the IR-variables required to
+Attached to each guard in the IR is a list of the IR-variables required to
 rebuild the execution state in case the trace is left through
 the guard. When a guard is compiled, in addition to the
-condition check two things are generated/compiled. First a special data
-structure called \emph{low-level resume data} is created that encodes the
-information provided by the register allocator about where the values
-corresponding to each IR-variable required by the guard will be stored when
-execution reaches the code emitted for the corresponding guard. This data
-structure stores the data in a compressed manner using an encoding that uses
-8bits to store 7bits of information. This encoding is efficient to create and
+condition check two things are generated/compiled.
+
+First a special data
+structure called \emph{low-level resume data} is created. This data structure encodes the
+information about where, i.e. which register or stack location, the IR-variables required to rebuild the state will be stored when the guard is executed.
+This data
+structure stores the values in a succinct manner using an encoding that uses
+8 bits to store 7 bits of information, ignoring leading zeros. This encoding is efficient to create and
 provides a compact representation of the needed information,
 to maintain an acceptable memory profile.
 
 Second a piece of code is generated for each guard that acts as a trampoline.
-Guards are implemented as a conditional jump to this trampoline. In case the
-condition checked in the guard fails
-execution jumps to the corresponding trampoline. In the trampoline the pointer to the
-\emph{low-level resume data} is loaded and jumps to generic bailout handler, also known as compensation code,
+Guards are implemented as a conditional jump to this trampoline in case the
+guard checked fails.
+In the trampoline the pointer to the
+\emph{low-level resume data} is loaded and execution jumps to a generic bailout handler, also known as compensation code,
 that is used to leave the compiled trace in case of a guard failure.
 
 Using the encoded location information the bailout handler reads from the
@@ -570,7 +573,7 @@ the state corresponding to the point in the program.
 As in previous sections the underlying idea for the design of guards is to have
 a fast on-trace profile and a potentially slow one in the bailout case where
 the execution takes one of the side exits due to a guard failure. At the same
-time the data stored in the backend needed to rebuild the state needs to be as
+time the data stored in the backend, required to rebuild the state, should be as
 compact as possible to reduce the memory overhead produced by the large number
 of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
 compressed encoding currently has about 15\% to 25\% of the size of of the
@@ -578,9 +581,10 @@ generated instructions on x86.
 
 As explained in previous sections, when a specific guard has failed often enough
 a new trace, referred to as a \emph{bridge}, starting from this guard is recorded and
-compiled. When compiling bridges the goal is that future failures of the guards
-that led to the compilation of the bridge should execute the bridge without
-additional overhead. In particular the failure of the guard should not lead
+compiled.
+Since the goal of compiling bridges is to improve execution speed on the
+diverged path (failing guard) they should not introduce additional overhead.
+In particular the failure of the guard should not lead
 to leaving the compiled code prior to execution the code of the bridge.
 
 The process of compiling a bridge is very similar to compiling a loop.
@@ -595,7 +599,7 @@ reconstruction all bindings are restored to the state as they were in the
 original loop up to the guard. This means that no register/stack reshuffling is
 needed before executing a bridge.
 
-Once the bridge has been compiled the guard that led to compiling the bridge is
+Once the bridge has been compiled the corresponding guard is
 patched to redirect control flow to the bridge in case the check fails. In
 the future, if the guard fails again it jumps to the code compiled for the bridge
 instead of bailing out. Once the guard has been compiled and attached to the
@@ -671,7 +675,7 @@ aspects of guards in particular
   \item Guard failures are local and rare.
 \end{itemize}
 
-All figures in this section do not take garbage collection of machine code into account. Pieces
+All measurements presented in this section do not take garbage collection of machine code into account. Pieces
 of machine code can be globally invalidated or just become cold again. In both
 cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
@@ -731,7 +735,7 @@ size ranging from 20.5\% to 37.98\% of the size of the high and low-level
 resume data combined and being compressed as described before.
 
 Tracing JIT compilers only compile the subset of the code executed in a program
-that is traced in a hot loop, for this reason the amount of generated machine
+that occurs in a hot loop, for this reason the amount of generated machine
 code will be smaller than in other juts-in-time compilation approaches.  This
 creates a larger discrepancy between the size of the \texttt{resume data} when
 compared to the size of the generated machine code and illustrates why it is important to compress the \texttt{resume data} information.
@@ -755,7 +759,7 @@ The results show that the current approach of compression and data sharing only
 requires 18.3\% to 31.1\% of the space compared to a naive approach. This
 shows that large parts of the resume data are redundant and can be stored more
 efficiently through using the techniques described above. On the other hand
-comparing the results to the xz compression which only requires between 17.1\%
+comparing the results to the xz compression which only needs between 17.1\%
 and 21.1\% of the space required by our compression shows that the compression
 is not optimal but a trade-off between the required space and the time needed
 to build a good compressed representation of the compressed resume data for the
@@ -765,15 +769,15 @@ large amount of guards present in the traces.
 \label{sub:guard_failure}
 The last point in this discussion is the frequency of guard failures.
 Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
-relative amounts of guards that ever fail and of guards that fail more than 200
-times.\footnote{
-    The threshold of 200 is rather high. It was picked experimentally to give
+relative amounts of guards that ever fail and of guards that fail often enough that a bridge is compiled.
+\footnote{
+    The threshold used is 200 failures. This rather high threshold was picked experimentally to give
     good results for long-running programs.
 }
-As described before, for guards that fail more than 200 times, a trace
-is recorded that starts from the guard. Afterwards the guard is patched so that later
-failures execute the new trace instead of jumping to the trampoline and returning to the interpreter. Hence the
-numbers presented for guards that fail more than 200 times represent the 200
+
+After the guard is patched
+failures execute the new bridge instead of jumping to the trampoline and returning to the interpreter. Hence the
+numbers presented for guards that have a bridge represent the
 failures up to the compilation of the bridge and all executions of the then
 attached bridge.
 
@@ -787,7 +791,7 @@ From Figure~\ref{fig:failing_guards} we can see that only a very small amount
 of all the guards in the optimized traces ever fail. This amount varies between
 2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
 enough that a bride is compiled for them, only 1.2\% to 3.6\% of all guards
-fail more than 200 times. Also of all failing guards a few fail extremely often
+fail often enough that a bridge is compiled. Also of all failing guards a few fail extremely often
 and most fail rarely. The results emphasizes that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
@@ -899,27 +903,27 @@ fewer deoptimization points than tracing JITs.
 In this paper we have concentrated on guards, an operation typically found in
 tracing just-in-time compilers and used to denote points of possible control
 flow divergence in recorded traces.
-We described how, based on the observation that guards are a frequent operation
-in traces and that they do not fail often, guards have been implemented in the
+Based on the observation that guards are a frequent operation in traces and
+that they do not fail often, we described how they have been implemented in the
 high and low level components of RPython's tracing JIT compiler.
 
 Finally we have presented experimental data collected using the standard PyPy
 benchmark set to evaluate previous observations and assumptions. Our
-experiments showed that, as previously assumed, guards are a very common
+experiments confirmed that guards are a very common
 operation in traces. At the same time guards are associated with a high
 overhead, because for all compiled guards information needs to be
 stored to restore the execution state in case of a bailout. The measurements
 showed that the compression techniques used in PyPy effectively reduce the
-overhead of guards, while it still produces a significant overhead. The results
+overhead of guards, but it still produces a significant overhead. The results
 also showed that guard failure is a local event: there are few
 guards that fail at all, and even fewer that fail very often.
 These numbers validate the design decision of reducing the overhead of
 successful guard checks as much as possible while paying a higher price in the
 case of bailout due to having to decode compressed state representation.
-The compressed state representation is reduces the memory footprint of rarely
+The compressed state representation reduces the memory footprint of rarely
 used data.
 
-Based on the observation that most guards do not fail very often or at all it
+Based on the observation that guard failure is rare it
 would be worth exploring if a more aggressive compression scheme for guards
 would be worth the memory saving in contrast to the increased decoding
 overhead. Based on the same observation we would like to explore the concept of
