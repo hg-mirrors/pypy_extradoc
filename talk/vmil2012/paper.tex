@@ -944,7 +944,10 @@ Based on the observation that guard failure is rare it
 would be worth exploring if a more aggressive compression scheme for guards
 would be worth the memory saving in contrast to the increased decoding
 overhead. Based on the same observation we would like to explore the concept of
-LuaJIT's sparse snapshots and its applicability to PyPy.
+LuaJIT's sparse snapshots and its applicability to RPython's JIT.
+There is an ongoing effort to replace the backend map in RPython's JIT with a
+simpler technique that does not require decoding the backend map on each guard
+failure.
 
 \section*{Acknowledgements}
 We would like to thank David Edelsohn and Stephan Zalewski for their helpful
