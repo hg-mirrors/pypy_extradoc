@@ -164,7 +164,8 @@ def build_backend_count_table(csvfiles, texfile, template):
             r'Code',
             r'Resume data',
             r'Backend map',
-            r'Relation']
+            #r'Relation',
+            ]
 
     table = []
     # collect data
@@ -180,7 +181,8 @@ def build_backend_count_table(csvfiles, texfile, template):
             r"%.1f {\scriptsize KiB}" % (asmsize,),
             r"%.1f {\scriptsize KiB}" % (rdsize,),
             r"%.1f {\scriptsize KiB}" % (gmsize,),
-            rel])
+            #rel,
+            ])
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
