@@ -515,12 +515,12 @@ followed by a \texttt{guard\_false} from the trace in Figure~\ref{fig:trace-log}
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
 
-\todo{Figure needs better formatting}
+%\todo{Figure needs better formatting}
 \begin{figure}[ht]
   \noindent
   \centering
   \begin{minipage}{1\columnwidth}
-\begin{lstlisting}[mathescape, numbers=right, escapechar=|, firstnumber=18]
+\begin{lstlisting}[xleftmargin=20pt,xrightmargin=20pt,framexleftmargin=5pt,framexrightmargin=-10pt,mathescape, numbers=right, escapechar=|, firstnumber=18,frame=b]
 $b_3$ = int_eq($i_5$, 1)                    |\setcounter{lstnumber}{17}|
 guard_false($b_3$)                          |\setcounter{lstnumber}{-1}|
 \end{lstlisting}
@@ -544,7 +544,7 @@ BNE <bailout>
 ...
     \end{lstlisting}
   \end{minipage}
-  \caption{Result of separated (left) and merged (right) compilation of operations and guards (top).}
+  \caption{Result of separated (left) and merged (right) compilation of one guard and the following operation (top).}
   \label{fig:trace-compiled}
 \end{figure}
 
