@@ -208,8 +208,8 @@ a lot simpler than directly implementing loop-aware optimizations.
 
 The work described in this paper was done in the context of the PyPy
 project.\footnote{\texttt{http://pypy.org}} PyPy is a framework for implementing
-dynamic languages efficiently~\cite{armin_rigo_pypys_2006}. When implementing a
-language with PyPy, one writes an interpreter for the language in RPython~\cite{davide_ancona_rpython:_2007}.
+dynamic languages efficiently~\cite{rigo_pypys_2006}. When implementing a
+language with PyPy, one writes an interpreter for the language in RPython~\cite{ancona_rpython:_2007}.
 RPython (``Restricted Python``) is a subset
 of Python chosen in such a way that it can be efficiently translated to a
 C-based VM by performing type inference.
@@ -672,8 +672,8 @@ arguments, it only needs to be executed the first time and then the result
 can be reused for all other appearances. RPython's optimizers can also remove
 repeated heap reads if the intermediate operations cannot have changed their
 value.\footnote{We perform a type-based alias analysis to know which
-writes can affect which reads~\cite{XXX}. In addition writes on newly allocated objects
-can never change the value of old existing ones.}
+writes can affect which reads~\cite{diwan_type-based_1998}. In addition writes
+on newly allocated objects can never change the value of old existing ones.}
 
 When that is combined with loop peeling, the single execution of the operation
 is placed in the preamble. That is, loop invariant pure operations and heap
@@ -1091,7 +1091,7 @@ optimizations, like instruction scheduling.
 
 Other interesting interpreters that are helped greatly by this optimization are
 for example our Prolog interpreter written in
-RPython~\cite{carl_friedrich_bolz_towards_2010}. Prolog programs often contain
+RPython~\cite{bolz_towards_2010}. Prolog programs often contain
 tight
 loops that perform list processing. Furthermore we experimented with a Python library
 for writing numerical kernels doing array manipulation. The exact extent is
@@ -1105,7 +1105,18 @@ loops~\cite{muchnick_advanced_1997}. Therefore, the effects that the
 optimizations described here achieve are not in any way new. However, we think
 that achieving them in the way described in this paper is simpler than writing
 explicit algorithms.
-\cfbolz{more explicit listing of prior work goes here}
+
+Loop invariant code motion has been part of early compilers in the 1960s and
+1970s~\cite{allen_catalogue_1971}. The approach for achieving loop invariant
+code motion is typically to perform partial redundancy elimination. The
+approach was first proposed by Morel and Renvoise~\cite{morel_global_1979}. It
+involves solving data flow problems usually involding bidirection data flow
+equations. After improvements~\cite{chow_portable_1984,
+dhamdhere_practical_1991} this approach was followed by the work of Knoop
+et.al.~\cite{knoop_lazy_1992} who cleany separated the problem into a backward
+and forward data flow analysis. Implementing partial redundancy elimination in
+compilers that use SSA form \cite{chow_new_1997} simplified the algorithms
+because no iterative data flow analysis is needed any more.
 
 As described in the introduction,
 Mike Pall pioneered the approach described in this paper.
@@ -1155,7 +1166,7 @@ calculations.
 
 The current approach still has some limitations which we plan to address in the
 future. In particular loop peeling works poorly in combination with trace
-trees~\cite{andreas_gal_incremental_2006} or trace stitching~\cite{gal_trace-based_2009}.
+trees~\cite{gal_incremental_2006} or trace stitching~\cite{gal_trace-based_2009}.
 The side exits attached guards that fail often
 currently have to jump to the preamble which makes loops with several equally
 common paths less efficient than they could be.
