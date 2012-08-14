@@ -1,3 +1,5 @@
+module(..., package.seeall);
+
 local bit = require("bit")
 local lshift, rshift, tobit = bit.lshift, bit.rshift, bit.tobit
 
@@ -103,4 +105,4 @@ function main(args)
     return string.format("%s", arg)
 end
 
-main(arg)
+--main(arg)

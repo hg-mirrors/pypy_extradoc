@@ -25,6 +25,9 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$*" scimark/run_LU.c 1000 2
     rm a.out
 elif [[ "$1" == luajit* ]]; then
+    $* runner.lua sqrt int
+    $* runner.lua sqrt float
+    $* runner.lua sqrt Fix16
     $* runner.lua SOR 100 32768
     $* runner.lua SOR 1000 256
     $* runner.lua SparseMatMult 1000 5000 262144

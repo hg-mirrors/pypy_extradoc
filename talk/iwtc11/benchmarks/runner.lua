@@ -34,6 +34,12 @@ function benchmarks.FFT(n, cycles)
     return string.format('FFT(%d, %d)', n, cycles)
 end
 
+package.path = package.path .. ";sqrt/?.lua"
+require('sqrt')
+function benchmarks.sqrt(a)
+    return string.format('sqrt(%s)', sqrt.main({a}))
+end
+
 
 
 function measure(name, ...)
