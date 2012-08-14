@@ -858,10 +858,14 @@ the state at the side exit. The information is retrieved from a mapping stored
 in the guard that maps machine level registers and stack to Java level stack
 and variables.
 
-TraceMonkey, a tracing JIT for JavaScript, uses trace stitching
-to avoid the overhead of returning to the trace monitor and calling another
-trace when taking a side exit~\cite{Gal:2009ux}. In this approach it is required to write live
-values to an activation record before entering the new trace.
+For TraceMonkey, a tracing JIT for JavaScript, Gal et. al~\cite{Gal:2009ux}
+illustrate how it uses a small off-trace set of instructions that is
+executed in case a guard failure to return a structure describing the reason
+for the exit along with the information needed to restored the interpreter
+state. TraceMonkey uses trace stitching to avoid the overhead of returning to
+the trace monitor and calling another trace when taking a side exit. In this
+approach it is required to write live values to an activation record before
+entering the new trace.
 
 % subsection Guards in Other Tracing JITs (end)
 
