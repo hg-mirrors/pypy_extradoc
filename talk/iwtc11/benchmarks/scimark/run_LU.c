@@ -26,7 +26,7 @@ int main(int ac, char **av) {
         LU_factor(N, N, lu, pivot);
     }
 
-    fprintf(stderr, "LU(%d, %d):    ", N, cycles);
+    fprintf(stderr, "LU(%d,%d):    ", N, cycles);
     return 0;
 }
     

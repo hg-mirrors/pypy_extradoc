@@ -43,7 +43,7 @@ int main(int ac, char **av) {
         }
 
     SparseCompRow_matmult(N, y, val, row, col, x, cycles);
-    fprintf(stderr, "SparseMatMult(%d, %d, %d):  ", N, nz, cycles);
+    fprintf(stderr, "SparseMatMult(%d,%d,%d):  ", N, nz, cycles);
     return 0;
 }
 

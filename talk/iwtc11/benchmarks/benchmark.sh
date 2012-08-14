@@ -24,6 +24,9 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$*" scimark/run_LU.c 100 4096
     ./runner.py -n 5 -c "$*" scimark/run_LU.c 1000 2
     rm a.out
+elif [[ "$1" == luajit* ]]; then
+    $* runner.lua SOR 100 32768
+    $* runner.lua SOR 1000 256
 else
     if [ "$1" == "python2.7" ]; then
         EXTRA_OPTS='-w 0 -n 1'

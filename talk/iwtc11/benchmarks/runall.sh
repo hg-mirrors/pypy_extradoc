@@ -10,3 +10,6 @@
 ./benchmark.sh gcc -O3 -march=native -fno-tree-vectorize
 ./benchmark.sh python2.7
 ./benchmark.sh python2.6 psyco-wrapper.py
+./benchmark.sh luajit-2.0.0-beta10
+./benchmark.sh luajit-2.0.0-beta10 -O-loop
+./benchmakr.sh luajit

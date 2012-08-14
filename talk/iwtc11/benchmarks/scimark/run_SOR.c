@@ -12,6 +12,6 @@ int main(int ac, char **av) {
     int i;
     for (i=0; i<N; i++) G[i] = calloc(sizeof(double), N);
     SOR_execute(N, N, 1.25, G, cycles);
-    fprintf(stderr, "SOR(%d, %d):  ", N, cycles);
+    fprintf(stderr, "SOR(%d,%d):  ", N, cycles);
     return 0;
 }
