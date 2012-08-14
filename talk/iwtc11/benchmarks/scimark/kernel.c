@@ -37,6 +37,7 @@
             cycles *= 2;
 
         }
+        printf("FFT: N=%d, cycles=%d\n", N, cycles);
         /* approx Mflops */
 
         result = FFT_num_flops(N)*cycles/ Stopwatch_read(Q) * 1.0e-6;

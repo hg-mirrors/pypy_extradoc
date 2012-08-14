@@ -37,7 +37,7 @@ local MIN_TIME = 2.0
 local RANDOM_SEED = 101009 -- Must be odd.
 local SIZE_SELECT = "small"
 
-local benchmarks = {
+benchmarks = {
   "FFT", "SOR", "MC", "SPARSE", "LU",
   small = {
     FFT		= { 1024 },
@@ -213,7 +213,7 @@ end
 -- SOR: Jacobi Successive Over-Relaxation.
 ------------------------------------------------------------------------------
 
-function sor_run(mat, m, n, cycles, omega)
+local function sor_run(mat, m, n, cycles, omega)
   local om4, om1 = omega*0.25, 1.0-omega
   m = m - 1
   n = n - 1

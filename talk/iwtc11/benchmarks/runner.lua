@@ -6,10 +6,35 @@ local benchmarks = {}
 
 function benchmarks.SOR(n, cycles)
     n, cycles = tonumber(n), tonumber(cycles)
-    local mat = scimark.random_matrix(n, n)
-    scimark.sor_run(mat, n, n, cycles, 1.25)
+    scimark.benchmarks.SOR(n)(cycles)
     return string.format('SOR(%d, %d)', n, cycles)
 end
+
+function benchmarks.SparseMatMult(n, nz, cycles)
+    n, nz, cycles = tonumber(n), tonumber(nz), tonumber(cycles)
+    scimark.benchmarks.SPARSE(n, nz)(cycles)
+    return string.format('SparseMatMult(%d,%d,%d)', n, nz, cycles)
+end
+
+function benchmarks.MonteCarlo(cycles)
+    cycles = tonumber(cycles)
+    scimark.benchmarks.MC()(cycles)
+    return string.format('MonteCarlo(%d)', cycles)
+end
+
+function benchmarks.LU(n, cycles)
+    n, cycles = tonumber(n), tonumber(cycles)
+    scimark.benchmarks.LU(n)(cycles)
+    return string.format('LU(%d, %d)', n, cycles)
+end
+
+function benchmarks.FFT(n, cycles)
+    n, cycles = tonumber(n), tonumber(cycles)
+    scimark.benchmarks.FFT(n)(cycles)
+    return string.format('FFT(%d, %d)', n, cycles)
+end
+
+
 
 function measure(name, ...)
     scimark.array_init()
