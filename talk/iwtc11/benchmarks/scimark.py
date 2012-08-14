@@ -1,5 +1,6 @@
 from convolution.convolution import Array2D
 from array import array
+import math
 
 class Random(object):
     MDIG = 32
@@ -185,3 +186,85 @@ def LU(args):
         lu.copy_data_from(A)
         LU_factor(lu, pivot)
     return 'LU(%d, %d)' % (N, cycles)
+
+def int_log2(n):
+    k = 1
+    log = 0
+    while k < n:
+        k *= 2
+        log += 1
+    if n != 1 << log:
+        raise Exception("FFT: Data length is not a power of 2: %s" % n)
+    return log
+
+def FFT_num_flops(N):
+    return (5.0 * N - 2) * int_log2(N) + 2 * (N + 1)
+
+def FFT_transform_internal(N, data, direction):
+    n = N / 2
+    bit = 0
+    dual = 1
+    if n == 1:
+        return
+    logn = int_log2(n)
+    if N == 0:
+        return
+    FFT_bitreverse(N, data)
+
+    # apply fft recursion
+    # this loop executed int_log2(N) times
+    bit = 0
+    while bit < logn:
+        w_real = 1.0
+        w_imag = 0.0
+        theta = 2.0 * direction * math.PI / (2.0 * float(dual))
+        s = math.sin(theta)
+        t = math.sin(theta / 2.0)
+        s2 = 2.0 * t * t
+        for b in range(0, n, 2 * dual):
+            i = 2 * b
+            j = 2 * (b + dual)
+            wd_real = data[j]
+            wd_imag = data[j + 1]
+            data[j] = data[i] - wd_real
+            data[j + 1] = data[i + 1] - wd_imag
+            data[i] += wd_real
+            data[i + 1] += wd_imag
+        for a in xrange(1, dual):
+            tmp_real = w_real - s * w_imag - s2 * w_real
+            tmp_imag = w_imag + s * w_real - s2 * w_imag
+            w_real = tmp_real
+            w_imag = tmp_imag
+        for b in range(0, n, 2 * dual):
+            i = 2 * (b + a)
+            j = 2 * (b + a + dual)
+            z1_real = data[j]
+            z1_imag = data[j + 1]
+            wd_real = w_real * z1_real - w_imag * z1_imag
+            wd_imag = w_real * z1_imag + w_imag * z1_real
+            data[j] = data[i] - wd_real
+            data[j + 1] = data[i + 1] - wd_imag
+            data[i] += wd_real
+            data[i + 1] += wd_imag
+        bit += 1
+        dual *= 2
+
+def FFT_bitreverse(N, data):
+    n = N / 2
+    nm1 = n - 1
+    j = 0
+    for i in range(nm1):
+        ii = i << 1
+        jj = j << 1
+        k = n >> 1
+        if i < j:
+            tmp_real = data[ii]
+            tmp_imag = data[ii + 1]
+            data[ii] = data[jj]
+            data[ii + 1] = data[jj + 1]
+            data[jj] = tmp_real
+            data[jj + 1] = tmp_imag
+        while k <= j:
+            j -= k
+            k >>= 1
+        j += k
