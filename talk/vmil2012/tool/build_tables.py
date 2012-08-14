@@ -163,7 +163,7 @@ def build_backend_count_table(csvfiles, texfile, template):
     head = [r'Benchmark',
             r'Code',
             r'Resume data',
-            r'll data',
+            r'Backend map',
             r'Relation']
 
     table = []
