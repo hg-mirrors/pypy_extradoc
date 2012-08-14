@@ -122,7 +122,6 @@ measure various properties of guards.
 
 %___________________________________________________________________________
 \todo{find a better name for \texttt{low-level resume data}}
-\todo{find better names for JIT front- and backend}
 \todo{mention somewhere that it is to be expected that most guards do not fail}
 \section{Introduction}
 
@@ -196,12 +195,12 @@ The set of central concepts upon which this work is based is described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
 and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
 Data} we proceed to describe for RPython's tracing JIT the details of guards in
-the frontend\bivab{better term for this?} related to recording and storing the
+the high-level, target independant, component of the JIT related to recording and storing the
 information required to rebuild the interpreter state in case of a guard
-failure. Once the frontend has traced and optimized a loop it invokes the
-backend to compile the operations to machine code, Section \ref{sec:Guards in
-the Backend} describes the low-level aspects of how guards are implemented in
-the JIT-backend. The frequency of guards and the overhead associated with the
+failure. Once the high-level component has traced and optimized a loop it invokes the
+low-level component to compile the operations to machine code, Section \ref{sec:Guards in
+the Backend} describes the aspects of the implementaion of guards in
+the low-level JIT component. The frequency of guards and the overhead associated with the
 implementation described in this paper is discussed in
 Section~\ref{sec:evaluation}. Section~\ref{sec:Related Work} presents an
 overview about how guards are treated in the context of other just-in-time
@@ -310,7 +309,7 @@ one, or odd. In either of these cases the trace is left via a guard failure.
     \label{fig:unopt-trace}
 \end{figure}
 
-\section{Guards in the Frontend} %{Resume Data}
+\section{Guards in the High-Level JIT Components} %{Resume Data}
 \label{sec:Resume Data}
 
 Since tracing linearizes control flow by following one concrete execution,
@@ -488,7 +487,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
     \label{fig:trace-log}
 \end{figure}
 % section Resume Data (end)
-\section{Guards in the Backend}
+\section{Guards in the Low-Level JIT Component}
 \label{sec:Guards in the Backend}
 
 \begin{figure}
@@ -499,7 +498,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 
 
 After optimization the resulting trace is handed over to the platform specific
-backend to be compiled to machine code. The compilation phase consists of two
+low-level implementation to be compiled to machine code. The compilation phase consists of two
 passes over the lists of instructions, a backwards pass to calculate live
 ranges of IR-level variables and a forward pass to emit the instructions. During
 the forward pass IR-level variables are assigned to registers and stack
@@ -574,16 +573,16 @@ as \texttt{compensation code},
 that is used to leave the compiled trace in case of a guard failure.
 
 Using the encoded location information the bailout handler reads from the
-saved execution state the values that the IR-variables had  at the time of the
-guard failure and stores them in a location that can be read by the frontend.
-After saving the information the control is passed to the frontend signaling
-which guard failed so the frontend can read the information passed and restore
-the state corresponding to the point in the program.
+saved execution state the values that the IR-variables had at the time of the
+guard failure and stores them in a location that can be read by the high-level component.
+After saving the information the control is returned to the high-level component signaling
+which guard failed. The stored low-level information can be read and used to restore
+the execution state corresponding to the guard failure in the interpreter.
 
 As in previous sections the underlying idea for the design of guards is to have
 a fast on-trace profile and a potentially slow one in the bailout case where
 the execution has to return to the interpreter due to a guard failure. At the same
-time the data stored in the backend, required to rebuild the state, should be as
+time the data stored in the low-level component, required to rebuild the state, should be as
 compact as possible to reduce the memory overhead produced by the large number
 of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
 compressed encoding currently has about 15\% to 25\% of the size of of the
@@ -641,10 +640,9 @@ measure the performance of PyPy and are composed of a series of
 micro-benchmarks and larger programs.\footnote{\url{http://speed.pypy.org/}} The
 benchmarks were taken from the PyPy benchmarks repository using revision
 \texttt{ff7b35837d0f}.\footnote{\url{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}}
-The benchmarks were run on a version of PyPy based on the
-tag~\texttt{0b77afaafdd0} and patched to collect additional data about the
-guards in the machine code
-backends.\footnote{\url{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0}} The
+The benchmarks were run on a version of PyPy based on
+revision~\texttt{0b77afaafdd0} and patched to collect additional data about the
+guards in the generated machine code.\footnote{\url{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0}} The
 tools used to run and evaluate the benchmarks including the patches applied to
 the PyPy sourcecode can be found in the repository for this
 paper.\footnote{\url{https://bitbucket.org/pypy/extradoc/src/tip/talk/vmil2012}}
@@ -727,7 +725,7 @@ quickly.
 The overhead that is incurred by the JIT to manage the \texttt{resume data},
 the \texttt{low-level resume data} as well as the generated machine code is
 shown in Figure~\ref{fig:backend_data}. It shows the total memory consumption
-of the code and of the data generated by the machine code backend and an
+of the code and of the data generated by the low-level component and an
 approximation of the size of the \texttt{resume data} structures for the
 different benchmarks mentioned above. The machine code taken into account is
 composed of the compiled operations, the trampolines generated for the guards
