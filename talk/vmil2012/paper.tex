@@ -123,6 +123,7 @@ measure various properties of guards.
 %___________________________________________________________________________
 \todo{find a better name for \texttt{low-level resume data}}
 \todo{find better names for JIT front- and backend}
+\todo{mention somewhere that it is to be expected that most guards do not fail}
 \section{Introduction}
 
 \todo{the introduction needs some work}
@@ -633,7 +634,6 @@ guards that work based on the same principles.
 \section{Evaluation}
 \label{sec:evaluation}
 \todo{improve the table formatting}
-\todo{give a reference to the benchmark scripts to make things repeatable}
 
 The results presented in this section are based on numbers gathered by running
 a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
@@ -644,7 +644,11 @@ benchmarks were taken from the PyPy benchmarks repository using revision
 The benchmarks were run on a version of PyPy based on the
 tag~\texttt{0b77afaafdd0} and patched to collect additional data about the
 guards in the machine code
-backends.\footnote{\url{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0}} All
+backends.\footnote{\url{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0}} The
+tools used to run and evaluate the benchmarks including the patches applied to
+the PyPy sourcecode can be found in the repository for this
+paper.\footnote{\url{https://bitbucket.org/pypy/extradoc/src/tip/talk/vmil2012}}
+All
 benchmark data was collected on a MacBook Pro 64 bit running Max OS 10.8 with
 the loop unrolling optimization disabled.\footnote{Since loop unrolling
 duplicates the body of loops it would no longer be possible to meaningfully
@@ -677,7 +681,7 @@ We used the following benchmarks:
 From the mentioned benchmarks we collected different datasets to evaluate the
 frequency, the overhead and overall behaviour of guards, the results are
 summarized in the remainder of this section. We want to point out three
-aspects of guards in particular
+aspects of guards in particular:
 \begin{itemize}
   \item Guards are very common operations in traces.
   \item There is overhead associated with guards.
@@ -699,15 +703,14 @@ the total amount of code and data that is generated from the optimized traces.
     \label{fig:benchmarks}
 \end{figure*}
 
-Figure~\ref{fig:benchmarks} summarizes the total number of operations that were
+Figure~\ref{fig:benchmarks} extends Figure~\ref{fig:guard_percent} and summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
 operations are guards. The number of operations was counted on the unoptimized
 and optimized traces. The Figure shows that the overall optimization rate for
-operations which is between 69.4\% and 83.89\% of the traced operations and the
+operations, which is between 69.4\% and 83.89\%, of the traced operations and the
 optimization rate of guards, which is between 65.8\% and 86.2\% of the
-operations, are very similar, as could be assumed based on
-Figure~\ref{fig:guard_percent}. This indicates that the optimizer can remove
-most of the guards, but after the optimization pass guards still account for
+operations, are very similar. This indicates that the optimizer can remove
+most of the guards, but after the optimization pass these still account for
 15.2\% to 20.2\% of the operations being compiled and later executed.
 The frequency of guard operations makes it important to store the associated
 information efficiently and also to make sure that guard checks are executed
@@ -756,7 +759,7 @@ compared to the size of the generated machine code and illustrates why it is imp
 \end{figure}
 
 Why the efficient storing of the \texttt{resume data} is a central concern in the design
-of guards is illustrated by Figure~\ref{fig:backend_data}. This figure shows
+of guards is illustrated by Figure~\ref{fig:resume_data_sizes}. This figure shows
 the size of the compressed \texttt{resume data}, the approximated size of
 storing the \texttt{resume data} without compression and
 an approximation of the best possible compression of the resume data by
@@ -767,11 +770,11 @@ software with high compression ratio''.\footnote{\url{http://tukaani.org/xz/}}
 The results show that the current approach of compression and data sharing only
 requires 18.3\% to 31.1\% of the space compared to a naive approach. This
 shows that large parts of the resume data are redundant and can be stored more
-efficiently through using the techniques described above. On the other hand
+efficiently using the techniques described earlier. On the other hand
 comparing the results to the xz compression which only needs between 17.1\%
 and 21.1\% of the space required by our compression shows that the compression
 is not optimal but a trade-off between the required space and the time needed
-to build a good compressed representation of the compressed resume data for the
+to build a good, compressed representation of the resume data for the
 large amount of guards present in the traces.
 
 \subsection{Guard Failures}
@@ -784,9 +787,7 @@ relative amounts of guards that ever fail and of guards that fail often enough t
     good results for long-running programs.
 }
 
-After the guard is patched
-failures execute the new bridge instead of jumping to the trampoline and returning to the interpreter. Hence the
-numbers presented for guards that have a bridge represent the
+The numbers presented for guards that have a bridge represent the
 failures up to the compilation of the bridge and all executions of the then
 attached bridge.
 
@@ -800,7 +801,7 @@ From Figure~\ref{fig:failing_guards} we can see that only a very small amount
 of all the guards in the optimized traces ever fail. This amount varies between
 2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
 enough that a bridge is compiled for them, only 1.2\% to 3.6\% of all guards
-fail often enough that a bridge is compiled. Also of all failing guards a few fail extremely often
+fail often enough that a bridge is compiled. Also, of all failing guards a few fail extremely often
 and most fail rarely. The results emphasize that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
@@ -812,7 +813,7 @@ not have unnecessary overhead.
 \subsection{Guards in Other Tracing JITs}
 \label{sub:Guards in Other Tracing JITs}
 
-Guards as described are a concept associated with tracing just-in-time
+Guards, as described, are a concept associated with tracing just-in-time
 compilers to represent possible divergent control flow paths.
 
 SPUR~\cite{bebenita_spur:_2010} is a tracing JIT compiler
@@ -830,7 +831,7 @@ called snapshots, similar to RPython's resume data, to store the information
 about how to rebuild the state from a guard failure using the information in the
 snapshot and the machine execution state. According to Pall~\cite{Pall:2009}
 snapshots for guards in LuaJIT are associated with a large memory footprint.
-The solution used in there is to store sparse snapshots, avoiding the creation
+The solution used there is to store sparse snapshots, avoiding the creation
 of snapshots for every guard to reduce memory pressure. Snapshots are only
 created for guards after updates to the global state, after control flow points
 from the original program and for guards that are likely to fail. As an outlook
@@ -842,11 +843,12 @@ reused within RPython to improve the memory usage further.
 Linking side exits to pieces of later compiled machine code was described first
 in the context of Dynamo~\cite{Bala:2000wv} under the name of Fragment Linking.
 Once a new hot trace is emitted into the fragment cache it is linked to side
-exit that led to the compilation. Fragment Linking avoids the performance
-penalty involved in leaving the compiled and it to remove the compensation
-code used when restoring the machine state on a side exit.
+exit that led to the compilation of the fragment. Fragment Linking avoids the
+performance penalty involved in leaving the compiled code. Fragment linking
+also allows to remove compensation code associated to the linked fragments that
+would have been required to restored the execution state on the side exit.
 
-Gal et. al~\cite{Gal:2006} describe that in the HotpathVM they experimented
+Gal et. al~\cite{Gal:2006} describe how in the HotpathVM they experimented
 with having one generic compensation code block, like the RPython JIT, that
 uses a register variable mapping to restore the interpreter state. Later this
 was replaced by generating compensation code for each guard which produced a
@@ -909,14 +911,14 @@ fewer deoptimization points than tracing JITs.
 
 \section{Conclusion}
 \label{sec:Conclusion}
-In this paper we have concentrated on guards, an operation typically found in
+In this paper we have concentrated on guards, an operation found in
 tracing just-in-time compilers and used to denote points of possible control
 flow divergence in recorded traces.
 Based on the observation that guards are a frequent operation in traces and
 that they do not fail often, we described how they have been implemented in the
 high and low level components of RPython's tracing JIT compiler.
 
-Finally we have presented experimental data collected using the standard PyPy
+Additionally we have presented experimental data collected using the standard PyPy
 benchmark set to evaluate previous observations and assumptions. Our
 experiments confirmed that guards are a very common
 operation in traces. At the same time guards are associated with a high
@@ -928,7 +930,7 @@ also showed that guard failure is a local event: there are few
 guards that fail at all, and even fewer that fail very often.
 These numbers validate the design decision of reducing the overhead of
 successful guard checks as much as possible while paying a higher price in the
-case of bailout due to having to decode compressed state representation.
+case of bailout due to having to decode a compressed state representation.
 The compressed state representation reduces the memory footprint of rarely
 used data.
 
