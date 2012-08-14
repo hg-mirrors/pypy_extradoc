@@ -122,7 +122,6 @@ measure various properties of guards.
 
 %___________________________________________________________________________
 \todo{find a better name for \texttt{low-level resume data}}
-\todo{find better names for JIT front- and backend}
 \todo{mention somewhere that it is to be expected that most guards do not fail}
 \section{Introduction}
 
@@ -196,12 +195,12 @@ The set of central concepts upon which this work is based is described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
 and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
 Data} we proceed to describe for RPython's tracing JIT the details of guards in
-the frontend\bivab{better term for this?} related to recording and storing the
+the frontend related to recording and storing the
 information required to rebuild the interpreter state in case of a guard
 failure. Once the frontend has traced and optimized a loop it invokes the
 backend to compile the operations to machine code, Section \ref{sec:Guards in
 the Backend} describes the low-level aspects of how guards are implemented in
-the JIT-backend. The frequency of guards and the overhead associated with the
+the machine specific JIT-backend. The frequency of guards and the overhead associated with the
 implementation described in this paper is discussed in
 Section~\ref{sec:evaluation}. Section~\ref{sec:Related Work} presents an
 overview about how guards are treated in the context of other just-in-time
