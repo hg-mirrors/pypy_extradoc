@@ -28,6 +28,14 @@ elif [[ "$1" == luajit* ]]; then
     $* runner.lua sqrt int
     $* runner.lua sqrt float
     $* runner.lua sqrt Fix16
+    $* runner.lua convolution conv3 100
+    $* runner.lua convolution conv5 100
+    $* runner.lua convolution conv3 1000
+    $* runner.lua convolution conv5 1000
+    $* runner.lua convolution conv3x3 1000000 3
+    $* runner.lua convolution conv3x3 1000 1000
+    $* runner.lua convolution dilate3x3 1000 1000
+    $* runner.lua convolution sobel_magnitude 1000 1000
     $* runner.lua SOR 100 32768
     $* runner.lua SOR 1000 256
     $* runner.lua SparseMatMult 1000 5000 262144

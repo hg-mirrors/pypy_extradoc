@@ -40,6 +40,13 @@ function benchmarks.sqrt(a)
     return string.format('sqrt(%s)', sqrt.main({a}))
 end
 
+package.path = package.path .. ";convolution/?.lua"
+require('convolution')
+function benchmarks.convolution(a, b, c)
+    return string.format('convolution(%s)', convolution.main({a, b, c}))
+end
+
+
 
 
 function measure(name, ...)

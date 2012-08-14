@@ -1,3 +1,4 @@
+module(..., package.seeall);
 local ffi = require("ffi")
 
 function array(length, initializer)
@@ -174,5 +175,5 @@ function main(args)
     return string.format("%s", arg)
 end
 
-main(arg)
+--main(arg)
 
