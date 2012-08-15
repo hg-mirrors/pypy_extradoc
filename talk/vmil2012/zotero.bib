@@ -41,6 +41,20 @@
 	pages = {19--28}
 },
 
+@inproceedings{bolz_towards_2010,
+	address = {Hagenberg, Austria},
+	title = {Towards a Jitting {VM} for Prolog execution},
+	isbn = {978-1-4503-0132-9},
+	url = {http://portal.acm.org/citation.cfm?id=1836102},
+	doi = {10.1145/1836089.1836102},
+	abstract = {Most Prolog implementations are implemented in low-level languages such as C and are based on a variation of the {WAM} instruction set, which enhances their performance but makes them hard to write. In addition, many of the more dynamic features of Prolog (like assert), despite their popularity, are not well supported. We present a high-level continuation-based Prolog interpreter based on the {PyPy} project. The {PyPy} project makes it possible to easily and efficiently implement dynamic languages. It provides tools that automatically generate a just-in-time compiler for a given interpreter of the target language, by using partial evaluation techniques. The resulting Prolog implementation is surprisingly efficient: it clearly outperforms existing interpreters of Prolog in high-level languages such as Java. Moreover, on some benchmarks, our system outperforms state-of-the-art {WAM-based} Prolog implementations. Our paper aims to show that declarative languages such as Prolog can indeed benefit from having a just-in-time compiler and that {PyPy} can form the basis for implementing programming languages other than Python.},
+	booktitle = {{PPDP}},
+	publisher = {{ACM}},
+	author = {Bolz, Carl Friedrich and Leuschel, Michael and Schneider, David},
+	year = {2010},
+	keywords = {interpreters, jit, logic programming, partial evaluation}
+},
+
 @inproceedings{bebenita_spur:_2010,
 	address = {{Reno/Tahoe}, Nevada, {USA}},
 	title = {{SPUR:} a trace-based {JIT} compiler for {CIL}},
@@ -162,6 +176,21 @@
 	pages = {32–43}
 },
 
+@inproceedings{ancona_rpython:_2007,
+	address = {Montreal, Quebec, Canada},
+	title = {{RPython:} a step towards reconciling dynamically and statically typed {OO} languages},
+	isbn = {978-1-59593-868-8},
+	shorttitle = {{RPython}},
+	url = {http://portal.acm.org/citation.cfm?id=1297091},
+	doi = {10.1145/1297081.1297091},
+	abstract = {Although the C-based interpreter of Python is reasonably fast, implementations on the {CLI} or the {JVM} platforms offers some advantages in terms of robustness and interoperability. Unfortunately, because the {CLI} and {JVM} are primarily designed to execute statically typed, object-oriented languages, most dynamic language implementations cannot use the native bytecodes for common operations like method calls and exception handling; as a result, they are not able to take full advantage of the power offered by the {CLI} and {JVM.}},
+	booktitle = {{DLS}},
+	publisher = {{ACM}},
+	author = {Ancona, Davide and Ancona, Massimo and Cuni, Antonio and Matsakis, Nicholas D.},
+	year = {2007},
+	keywords = {{JVM}, .net, Python}
+},
+
 @article{cytron_efficiently_1991,
 	title = {Efficiently Computing Static Single Assignment Form and the Control Dependence Graph},
 	volume = {13},
@@ -198,6 +227,21 @@
 	author = {Paleczny, Michael and Vick, Christopher and Click, Cliff},
 	year = {2001},
 	keywords = {toread}
+},
+
+@incollection{bolz_back_2008,
+	title = {Back to the Future in One Week — Implementing a Smalltalk {VM} in {PyPy}},
+	url = {http://dx.doi.org/10.1007/978-3-540-89275-5_7},
+	abstract = {We report on our experiences with the Spy project, including implementation details and benchmark results. Spy is a re-implementation of the Squeak (i.e. Smalltalk-80) {VM} using the {PyPy} toolchain. The {PyPy} project allows code written in {RPython}, a subset of Python, to be translated
+to a multitude of different backends and architectures. During the translation, many aspects of the implementation can be
+independently tuned, such as the garbage collection algorithm or threading implementation. In this way, a whole host of interpreters
+can be derived from one abstract interpreter definition. Spy aims to bring these benefits to Squeak, allowing for greater portability and, eventually, improved performance. The current
+Spy codebase is able to run a small set of benchmarks that demonstrate performance superior to many similar Smalltalk {VMs}, but
+which still run slower than in Squeak itself. Spy was built from scratch over the course of a week during a joint Squeak-{PyPy} Sprint in Bern last autumn.},
+	booktitle = {Self-Sustaining Systems},
+	author = {Bolz, Carl Friedrich and Kuhn, Adrian and Lienhard, Adrian and Matsakis, Nicholas and Nierstrasz, Oscar and Renggli, Lukas and Rigo, Armin and Verwaest, Toon},
+	year = {2008},
+	pages = {123--139}
 },
 
 @article{holzle_third-generation_1994,
