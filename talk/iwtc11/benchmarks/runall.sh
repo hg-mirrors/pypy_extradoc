@@ -13,4 +13,5 @@
 ./benchmark.sh luajit-2.0.0-beta10
 ./benchmark.sh luajit-2.0.0-beta10 -O-loop
 ./benchmark.sh luajit-master
+./benchmark.sh luajit-master -O-loop
 ./benchmark.sh luajit

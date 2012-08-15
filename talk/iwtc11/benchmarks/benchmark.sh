@@ -23,6 +23,8 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$*" scimark/run_MonteCarlo.c 268435456
     ./runner.py -n 5 -c "$*" scimark/run_LU.c 100 4096
     ./runner.py -n 5 -c "$*" scimark/run_LU.c 1000 2
+    ./runner.py -n 5 -c "$* -lm" scimark/run_FFT.c 1024 32768
+    ./runner.py -n 5 -c "$* -lm" scimark/run_FFT.c 1048576 2
     rm a.out
 elif [[ "$1" == luajit* ]]; then
     $* runner.lua sqrt int
@@ -82,4 +84,6 @@ else
     $* ./runner.py $EXTRA_OPTS scimark.py MonteCarlo 268435456
     $* ./runner.py $EXTRA_OPTS scimark.py LU 100 4096
     $* ./runner.py $EXTRA_OPTS scimark.py LU 1000 2
+    $* ./runner.py $EXTRA_OPTS scimark.py FFT 1024 32768
+    $* ./runner.py $EXTRA_OPTS scimark.py FFT 1048576 2
 fi
