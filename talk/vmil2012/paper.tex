@@ -121,7 +121,6 @@ measure various properties of guards.
 
 
 %___________________________________________________________________________
-\todo{mention somewhere that it is to be expected that most guards do not fail}
 \section{Introduction}
 
 \todo{the introduction needs some work}
@@ -715,7 +714,7 @@ The frequency of guard operations makes it important to store the associated
 information efficiently and also to make sure that guard checks are executed
 quickly.
 
-\subsection{Overhead of Guards}
+\subsection{Space Overhead of Guards}
 \label{sub:guard_overhead}
 \begin{figure}
     \include{figures/resume_data_table}
@@ -755,7 +754,7 @@ compared to the size of the generated machine code and illustrates why it is imp
     \include{figures/backend_table}
     \caption{Total size of generated machine code and resume data}
     \label{fig:backend_data}
-\end{figure}
+\end{figure}e.
 
 Why the efficient storing of the resume data is a central concern in the design
 of guards is illustrated by Figure~\ref{fig:resume_data_sizes}. This figure shows
@@ -804,6 +803,14 @@ fail often enough that a bridge is compiled. Also, of all failing guards a few f
 and most fail rarely. The results emphasize that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
+
+This low guard failure rate is expected. Most guards do not come from actual
+control flow divergences in the user program, but from type checks needed for
+type specialization. Various prior work has
+shown~\cite{holkner_evaluating_2009, richards_analysis_2010, callau_how_2011}
+that most programs in dynamic languages only use a limited amount of runtime
+variability. Therefore many guards are needed for making the traces behave
+correctly in all cases but fail rarely.
 
 
 \section{Related Work}
