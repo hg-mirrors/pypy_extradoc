@@ -1072,7 +1072,7 @@ the gird.
 \item {\bf SparseMatMult}$\left(n, z, c\right)$: Matrix multiplication between a $n\times n$ sparse matrix,
 stored in compressed-row format, and a full storage vector, stored in a normal array. The matrix has $z$ non-zero elements and the calculation is repeated $c$ times.
 \item {\bf MonteCarlo}$\left(n\right)$: Monte Carlo integration by generating $n$ points uniformly distributed over the unit square and computing the ratio of those within the unit circle.
-\item {\bf LU}$\left(n, c\right)$: Computes the LU factorization of a $n \times n$ matrix. The rows of the matrix is shuffled which makes the previously used two-dimensional array class unsuitable. Instead a list of arrays is used to represent the matrix. The calculation is repeated $c$ times.
+\item {\bf LU}$\left(n, c\right)$: LU factorization of an $n \times n$ matrix. The rows of the matrix is shuffled which makes the previously used two-dimensional array class unsuitable. Instead a list of arrays is used to represent the matrix. The calculation is repeated $c$ times.
 \item {\bf FFT}$\left(n, c\right)$: Fast Fourier Transform of a vector with $n$ elements, represented as an array, repeated $c$ times.
 \end{itemize}
 
