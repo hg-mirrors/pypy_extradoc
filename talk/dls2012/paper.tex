@@ -1070,6 +1070,10 @@ for benchmarks:
 We run GCC with -O3 -march=native, disabling the
 automatic loop vectorization. In all cases, SSE2 instructions were used for
 floating point operations, except Psyco which uses x87 FPU instructions.
+% Psyco does not use the x87 FPU: all floating-point arithmetic is done with
+% residual calls to C helpers.  These can probably be compiled with SSE2.
+% But compiling CPython (and maybe Psyco) for x87 or SSE2 has probably
+% no measurable effect.
 We also run PyPy with loop peeling optimization and without (but otherwise
 identical).
 
@@ -1113,7 +1117,7 @@ approach was first proposed by Morel and Renvoise~\cite{morel_global_1979}. It
 involves solving data flow problems usually involding bidirection data flow
 equations. After improvements~\cite{chow_portable_1984,
 dhamdhere_practical_1991} this approach was followed by the work of Knoop
-et.al.~\cite{knoop_lazy_1992} who cleany separated the problem into a backward
+et.al.~\cite{knoop_lazy_1992} who cleanly separated the problem into a backward
 and forward data flow analysis. Implementing partial redundancy elimination in
 compilers that use SSA form \cite{chow_new_1997} simplified the algorithms
 because no iterative data flow analysis is needed any more.
