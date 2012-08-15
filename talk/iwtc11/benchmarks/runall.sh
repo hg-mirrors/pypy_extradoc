@@ -12,4 +12,5 @@
 ./benchmark.sh python2.6 psyco-wrapper.py
 ./benchmark.sh luajit-2.0.0-beta10
 ./benchmark.sh luajit-2.0.0-beta10 -O-loop
-./benchmakr.sh luajit
+./benchmark.sh luajit-master
+./benchmark.sh luajit
