@@ -147,7 +147,7 @@ numbers provided here.
 
 The operations executed by an interpreter are recorded by the tracing JIT in
 case they are frequently executed (this process is described in more detail in
-Section \ref{sec:Resume Data}). During the recording phase guards are
+Section~\ref{sec:Resume Data}). During the recording phase guards are
 inserted into the recorded trace at all
 points where the control flow could diverge. As can be seen in
 Figure~\ref{fig:guard_percent} guards account for about 14\% to 22\% of the
@@ -196,7 +196,7 @@ Data} we proceed to describe for RPython's tracing JIT the details of guards in
 the frontend related to recording and storing the
 information required to rebuild the interpreter state in case of a guard
 failure. Once the frontend has traced and optimized a loop it invokes the
-backend to compile the operations to machine code, Section \ref{sec:Guards in
+backend to compile the operations to machine code, Section~\ref{sec:Guards in
 the Backend} describes the low-level aspects of how guards are implemented in
 the machine specific JIT-backend. The frequency of guards and the overhead associated with the
 implementation described in this paper is discussed in
@@ -509,7 +509,7 @@ emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
 producing the value can often be merged, further reducing the overhead of the guard.
-Figure \ref{fig:trace-compiled} shows how the \texttt{int\_eq} operation
+Figure~\ref{fig:trace-compiled} shows how the \texttt{int\_eq} operation
 followed by a \texttt{guard\_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
@@ -614,8 +614,8 @@ instead of bailing out. Once the guard has been compiled and attached to the
 loop the guard becomes just a point where control-flow can split. The loop
 after the guard and the bridge are just conditional paths.
 Figure~\ref{fig:trampoline} shows a diagram of a compiled loop with two guards,
-Guard \#1 jumps to the trampoline, loads the backend map and
-then calls the bailout handler, whereas Guard \#2 has already been patched
+Guard~\#1 jumps to the trampoline, loads the backend map and
+then calls the bailout handler, whereas Guard~\#2 has already been patched
 and directly jumps to the corresponding bridge. The bridge also contains two
 guards that work based on the same principles.
 \begin{figure}
