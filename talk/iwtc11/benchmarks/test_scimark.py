@@ -1,4 +1,5 @@
-from scimark import SOR_execute, Array2D, ArrayList, Random, MonteCarlo_integrate, LU_factor
+from scimark import SOR_execute, Array2D, ArrayList, Random, MonteCarlo_integrate, LU_factor, \
+        FFT_transform, FFT_inverse
 from array import array
 from cffi import FFI
 import os
@@ -9,21 +10,25 @@ ffi.cdef("""
     Random new_Random_seed(int seed);
     double Random_nextDouble(Random R);
     double **RandomMatrix(int M, int N, Random R);
+    double *RandomVector(int N, Random R);
 
     void SOR_execute(int M, int N,double omega, double **G, int num_iterations);
     double MonteCarlo_integrate(int Num_samples);    
     int LU_factor(int M, int N, double **A,  int *pivot);
+    void FFT_transform(int N, double *data);
+    void FFT_inverse(int N, double *data);
     """)
 C = ffi.verify("""
     #include <SOR.h>
     #include <Random.h>
     #include <MonteCarlo.h>
     #include <LU.h>
+    #include <FFT.h>
     """, 
     extra_compile_args=['-I' + os.path.join(os.getcwd(), 'scimark')],
     extra_link_args=['-fPIC'],
     extra_objects=[os.path.join(os.getcwd(), 'scimark', f) 
-                   for f in ['SOR.c', 'Random.c', 'MonteCarlo.c', 'LU.c']])
+                   for f in ['SOR.c', 'Random.c', 'MonteCarlo.c', 'LU.c', 'FFT.c']])
 
 class TestWithArray2D(object):
     Array = Array2D
@@ -81,5 +86,21 @@ def test_random():
 def test_montecarlo():
     for n in [100, 200, 500, 1000]:
         assert C.MonteCarlo_integrate(n) == MonteCarlo_integrate(n)
+
+def test_fft():
+    rnd = C.new_Random_seed(7)
+    for n in [256, 512, 1024]:
+        data_c = C.RandomVector(n, rnd)
+        data_py = array('d', [0.0]) * n
+        for i in range(n):
+            data_py[i] = data_c[i]
+        C.FFT_transform(n, data_c)
+        FFT_transform(n, data_py)
+        for i in xrange(n):
+            assert data_py[i] == data_c[i]
+        C.FFT_inverse(n, data_c)
+        FFT_inverse(n, data_py)
+        for i in xrange(n):
+            assert data_py[i] == data_c[i]
 
 
