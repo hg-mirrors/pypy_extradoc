@@ -691,7 +691,7 @@ All measurements presented in this section do not take garbage collection of res
 of machine code can be globally invalidated or just become cold again. In both
 cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
-the total amount of code and data that is generated from the optimized traces.
+the total amount of code and resume data that is generated.
 
 
 \subsection{Frequency of Guards}
@@ -705,10 +705,10 @@ the total amount of code and data that is generated from the optimized traces.
 Figure~\ref{fig:benchmarks} extends Figure~\ref{fig:guard_percent} and summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
 operations are guards. The number of operations was counted on the unoptimized
-and optimized traces. The Figure shows that the overall optimization rate for
+and optimized traces. The Figure also shows the overall optimization rate for
 operations, which is between 69.4\% and 83.89\%, of the traced operations and the
 optimization rate of guards, which is between 65.8\% and 86.2\% of the
-operations, are very similar. This indicates that the optimizer can remove
+operations. This indicates that the optimizer can remove
 most of the guards, but after the optimization pass these still account for
 15.2\% to 20.2\% of the operations being compiled and later executed.
 The frequency of guard operations makes it important to store the associated
@@ -797,7 +797,7 @@ attached bridge.
 \end{figure}
 
 From Figure~\ref{fig:failing_guards} we can see that only a very small amount
-of all the guards in the optimized traces ever fail. This amount varies between
+of all the guards in the compiled traces ever fail. This amount varies between
 2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
 enough that a bridge is compiled for them, only 1.2\% to 3.6\% of all guards
 fail often enough that a bridge is compiled. Also, of all failing guards a few fail extremely often
@@ -816,7 +816,7 @@ Guards, as described, are a concept associated with tracing just-in-time
 compilers to represent possible divergent control flow paths.
 
 SPUR~\cite{bebenita_spur:_2010} is a tracing JIT compiler
-for a C\# virtual machine.
+for a CIL virtual machine.
 It handles guards by always generating code for every one of them
 that transfers control back to the unoptimized code.
 Since the transfer code needs to reconstruct the stack frames
@@ -834,20 +834,20 @@ The solution used there is to store sparse snapshots, avoiding the creation
 of snapshots for every guard to reduce memory pressure. Snapshots are only
 created for guards after updates to the global state, after control flow points
 from the original program and for guards that are likely to fail. As an outlook
-Pall mentions the plans to switch to compressed snapshots to further reduce
+Pall mentions plans to switch to compressed snapshots to further reduce
 redundancy. The approach of not creating snapshots at all for every guard is
 orthogonal to the resume data compression presented in this paper and could be
 reused within RPython to improve the memory usage further.
 
 Linking side exits to pieces of later compiled machine code was described first
-in the context of Dynamo~\cite{Bala:2000wv} under the name of Fragment Linking.
-Once a new hot trace is emitted into the fragment cache it is linked to side
+in the context of Dynamo~\cite{Bala:2000wv} under the name of fragment linking.
+Once a new hot trace is emitted into the fragment cache it is linked to the side
 exit that led to the compilation of the fragment. Fragment Linking avoids the
 performance penalty involved in leaving the compiled code. Fragment linking
 also allows to remove compensation code associated to the linked fragments that
 would have been required to restored the execution state on the side exit.
 
-Gal et. al~\cite{Gal:2006} describe how in the HotpathVM they experimented
+Gal et. al~\cite{Gal:2006} describe how in the HotpathVM, a JIT for a Java VM, they experimented
 with having one generic compensation code block, like the RPython JIT, that
 uses a register variable mapping to restore the interpreter state. Later this
 was replaced by generating compensation code for each guard which produced a
@@ -922,16 +922,16 @@ tracing just-in-time compilers and used to denote points of possible control
 flow divergence in recorded traces.
 Based on the observation that guards are a frequent operation in traces and
 that they do not fail often, we described how they have been implemented in the
-high and low level components of RPython's tracing JIT compiler.
+high- and low-level components of RPython's tracing JIT compiler.
 
 Additionally we have presented experimental data collected using the standard PyPy
-benchmark set to evaluate previous observations and assumptions. Our
+benchmark set to evaluate previous observations and assumptions about guards. Our
 experiments confirmed that guards are a very common
 operation in traces. At the same time guards are associated with a high
 overhead, because for all compiled guards information needs to be
 stored to restore the execution state in case of a bailout. The measurements
 showed that the compression techniques used in PyPy effectively reduce the
-overhead of guards, but it still produces a significant overhead. The results
+overhead of guards, but they still produce a significant overhead. The results
 also showed that guard failure is a local event: there are few
 guards that fail at all, and even fewer that fail very often.
 These numbers validate the design decision of reducing the overhead of
@@ -950,7 +950,7 @@ simpler technique that does not require decoding the backend map on each guard
 failure.
 
 \section*{Acknowledgements}
-We would like to thank David Edelsohn and Stephan Zalewski for their helpful
+We would like to thank David Edelsohn, Samuele Pedroni and Stephan Zalewski for their helpful
 feedback and valuable comments while writing this paper.
 
 %\section*{Appendix}
