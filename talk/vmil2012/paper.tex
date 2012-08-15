@@ -204,7 +204,8 @@ gives an outlook on further research topics.
 \label{sub:pypy}
 
 
-The RPython language and the PyPy project were started in 2002 with the goal of
+The RPython language and the PyPy project~\cite{rigo_pypys_2006} were started
+in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
 language experimentation and extension. PyPy is now a fully compatible
 alternative interpreter for the Python language.
@@ -279,10 +280,14 @@ corresponding guard by patching the machine code. The next time the guard fails
 the bridge will be executed instead of leaving the machine code.
 
 RPython provides a tracing JIT that can be reused for a number of language
-implementations. This is possible, because it traces the execution of the
+implementations~\cite{bolz_tracing_2009}. This is possible, because it traces
+the execution of the
 language interpreter instead of tracing the user program directly. This
 approach is called \emph{meta-tracing}. For the purpose of this paper the fact
 that RPython's tracing JIT is a meta-tracing JIT can be ignored.
+The only point of interaction is that some of the guards that are inserted into
+the trace stem from an annotation provided by the interpreter
+author~\cite{bolz_runtime_2011}.
 
 \begin{figure}
     \input{figures/example.tex}
