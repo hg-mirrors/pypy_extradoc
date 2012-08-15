@@ -110,7 +110,7 @@ Languages, Performance, Experimentation
 \begin{abstract}
 Tracing just-in-time (JIT) compilers record linear control flow paths,
 inserting operations called guards at points of possible divergence. These
-operations occur frequently generated traces and therefore it is important to
+operations occur frequently in generated traces and therefore it is important to
 design and implement them carefully to find the right trade-off between
 execution speed, deoptimization,
 and memory overhead.  In this paper we describe the design decisions about
@@ -134,7 +134,7 @@ In this paper we describe and analyze how guards work, explaining what concepts
 are used in the intermediate and low-level representation of the JIT
 instructions and how these are implemented.
 
-Our aim is to help understand the design constraints when
+Our aim is to help understand the constraints when
 implementing guards. Guards have a runtime cost, they take time to execute. On
 the other hand, guards are possible deoptimization points, meaning the recorded
 and compiled path has to be left returning control to the interpreter. They need
@@ -157,8 +157,7 @@ optimizing the traces generated for the different benchmarks used in this paper.
 This makes guards one of the most common types of operations. As this paper will show, many of these guards
 fail rarely or not all during execution.
 
-There are several aspects to consider
-in the design and optimization of guards, the first aspect is that due to the
+There are several aspects to be taken into account w.r.t. guards, the first aspect is that due to the
 large number of guards the memory overhead related to storing the information
 needed for deoptimization should be kept low. A second aspect is that
 successfully checking guards, i.e. not leaving the compiled trace, – which is
@@ -166,22 +165,22 @@ the common case – should be a cheap operation to execute favouring the on-trac
 execution speed in contrast to the deoptimization case where the state has to
 be rebuilt using the stored information. These constraints and trade-offs are
 what make the design and optimization of guards an important and non-trivial
-aspect of the low-level design of a tracing just-in-time compiler.
+aspect of the construction of a tracing just-in-time compiler.
 
 %Section~\ref{sec:Evaluation} presents Figures about the absolute number of
 %operations for each benchmark, and the overhead produced by the information
 %stored at the different levels for the guards
 In this paper we want to substantiate the aforementioned observations and
 describe based on them the reasoning behind the implementation of guards in
-RPython's tracing just-in-time compiler. The contributions of this paper are:
+RPython's tracing just-in-time compiler. the contributions of this paper are:
 \begin{itemize}
-  \item An analysis and benchmark of guards in the context of RPython's tracing JIT,
+  \item An analysis and benchmark of guards in the context of RPython's tracing JIT.
   %An analysis of guards in the context of RPython's tracing JIT to
   %substantiate the aforementioned observation, based on a set of benchmarks,
   \item detailed measurements about the frequency and the
   overhead associated with guards, and
   \item a description about how guards are implemented in the high\-
-  and low-level components of the JIT and a description of the rationale behind the design.
+  and low-level components of the JIT and describe the rationale behind the design.
 \end{itemize}
 
 \begin{figure}
@@ -190,11 +189,11 @@ RPython's tracing just-in-time compiler. The contributions of this paper are:
     \label{fig:guard_percent}
 \end{figure}
 
-The set of central concepts upon which this work is based is described in
+The set of central concepts upon which this work is based are described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
 and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
 Data} we proceed to describe for RPython's tracing JIT the details of guards in
-the frontend related to recording and storing the
+the frontend. In this context the frontend is concerned with recording and storing the
 information required to rebuild the interpreter state in case of a guard
 failure. Once the frontend has traced and optimized a loop it invokes the
 backend to compile the operations to machine code, Section \ref{sec:Guards in
@@ -216,17 +215,17 @@ gives an outlook on further research topics.
 
 The RPython language and the PyPy project were started in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
-language experimentation and extension. PyPy is now a fully compatible
+language experimentation and extension.\footnote{\url{http://pypy.org}} PyPy is now a fully compatible
 alternative implementation of the Python language, that is on average about 5 times faster than the reference implementation. The
-implementation takes advantage of the language features provided by RPython
+implementation takes advantage of RPython's language features
 such as the provided tracing just-in-time compiler described below.
 
-RPython, the language and the toolset originally developed to implement the
+RPython, the language and the toolset originally created to implement the
 Python interpreter have developed into a general environment for experimenting
-and developing fast and maintainable dynamic language implementations. There
-are, besides the Python interpreter, implementations of Prolog, Javascript, R,
-Smalltalk among other that are written in RPython at different levels of
-completeness.
+and developing fast and maintainable dynamic language implementations. Besides
+the Python interpreter there are several language implementation at different
+levels of completeness, e.g. for Smalltalk, Prolog, JavaScript and R.
+
 
 RPython is constructed from two components:
 \begin{itemize}
