@@ -65,6 +65,10 @@ class Random(object):
             a[x, y] = self.nextDouble()
         return a
 
+    def RandomVector(self, n):
+        return array('d', [self.nextDouble() for i in xrange(n)])
+    
+
 class ArrayList(Array2D):
     def __init__(self, w, h, data=None):
         self.width = w
@@ -217,7 +221,7 @@ def FFT_transform_internal(N, data, direction):
     while bit < logn:
         w_real = 1.0
         w_imag = 0.0
-        theta = 2.0 * direction * math.PI / (2.0 * float(dual))
+        theta = 2.0 * direction * math.pi / (2.0 * float(dual))
         s = math.sin(theta)
         t = math.sin(theta / 2.0)
         s2 = 2.0 * t * t
@@ -268,3 +272,24 @@ def FFT_bitreverse(N, data):
             j -= k
             k >>= 1
         j += k
+
+def FFT_transform(N, data):
+    FFT_transform_internal(N, data, -1)
+
+def FFT_inverse(N, data):
+    n = N/2
+    norm = 0.0
+    FFT_transform_internal(N, data, +1)
+    norm = 1 / float(n)
+    for i in xrange(N):
+        data[i] *= norm
+
+def FFT(args):
+    N, cycles = map(int, args)
+    twoN = 2*N
+    x = Random(7).RandomVector(twoN)
+    for i in xrange(cycles):
+        FFT_transform(twoN, x)
+        FFT_inverse(twoN, x)
+    return 'FFT(%d, %d)' % (N, cycles)
+
