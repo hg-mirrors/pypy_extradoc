@@ -129,7 +129,7 @@ are simple requiring one forward pass only. This is not true for loop-invariant 
 motion which is a very important optimization for code with tight kernels.
 Especially for dynamic languages that typically perform quite a lot of loop invariant
 type checking, boxed value unwrapping and virtual method lookups.
-In this paper we explain a scheme invented within the context of the LuaJIT project
+In this paper we explain a scheme pioneered within the context of the LuaJIT project
 for making simple optimizations loop-aware by
 using a simple pre-processing step on the trace and not changing the
 optimizations themselves.
@@ -1107,13 +1107,13 @@ that achieving them in the way described in this paper is simpler than writing
 explicit algorithms.
 
 Loop invariant code motion has been part of early compilers in the 1960s and
-1970s~\cite{allen_catalogue_1971}. The approach for achieving loop invariant
-code motion is typically to perform partial redundancy elimination. The
+1970s~\cite{allen_catalogue_1971}. A common approach for achieving loop invariant
+code motion is to perform partial redundancy elimination. The
 approach was first proposed by Morel and Renvoise~\cite{morel_global_1979}. It
-involves solving data flow problems usually involding bidirection data flow
+involves solving data flow problems of bidirectional data flow
 equations. After improvements~\cite{chow_portable_1984,
 dhamdhere_practical_1991} this approach was followed by the work of Knoop
-et.al.~\cite{knoop_lazy_1992} who cleany separated the problem into a backward
+et.al.~\cite{knoop_lazy_1992} who cleanly separated the problem into a backward
 and forward data flow analysis. Implementing partial redundancy elimination in
 compilers that use SSA form \cite{chow_new_1997} simplified the algorithms
 because no iterative data flow analysis is needed any more.
