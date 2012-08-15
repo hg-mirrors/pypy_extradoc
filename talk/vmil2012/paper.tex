@@ -122,6 +122,7 @@ measure various properties of guards.
 
 %___________________________________________________________________________
 \todo{mention somewhere that it is to be expected that most guards do not fail}
+\todo{better formatting for lstinline}
 \section{Introduction}
 
 \todo{the introduction needs some work}
@@ -258,7 +259,7 @@ After profiling identifies an interesting
 path, tracing is started thus recording all operations that are executed on this
 path. This includes inlining functional calls.
 As in most compilers, tracing JITs use an intermediate representation to
-store the recorded operations, which is typically in SSA
+store the recorded operations, typically in SSA
 form~\cite{cytron_efficiently_1991}. Since tracing follows actual execution the
 code that is recorded
 represents only one possible path through the control flow graph. Points of
@@ -273,9 +274,9 @@ specific machine code.
 
 When the check of a guard fails, the execution of the machine code must be
 stopped and the control is returned to the interpreter, after the interpreter's
-state has been restored. If a particular guard fails often a new trace is
-recorded starting from the guard. We will refer to this kind of trace as a
-\emph{bridge}. Once a bridge has been traced it is attached to the
+state has been restored. If a particular guard fails often a new trace
+starting from the guard is recorded. We will refer to this kind of trace as a
+\emph{bridge}. Once a bridge has been traced and compiled it is attached to the
 corresponding guard by patching the machine code. The next time the guard fails
 the bridge will be executed instead of leaving the machine code.
 
@@ -324,21 +325,21 @@ to reconstruct the interpreter state when that guard fails.
 This information is called the \emph{resume data}.
 
 To do this reconstruction it is necessary to take the values of the SSA
-variables of the trace and build interpreter stack frames.  Tracing
+variables in the trace to build interpreter stack frames.  Tracing
 aggressively inlines functions, therefore the reconstructed state of the
 interpreter can consist of several interpreter frames.
 
 If a guard fails often enough, a trace is started from it
-forming a trace tree.
+to create a bridge, forming a trace tree.
 When that happens another use case of resume data
-is to construct the tracer state.
+is to reconstruct the tracer state.
 After the bridge has been recorded and compiled it is attached to the guard.
 If the guard fails later the bridge is executed. Therefore the resume data of
 that guard is no longer needed.
 
 There are several forces guiding the design of resume data handling.
 Guards are a very common operations in the traces.
-However, a large percentage of all operations
+However, as will be shown, a large percentage of all operations
 are optimized away before code generation.
 Since there are a lot of guards
 the resume data needs to be stored in a very compact way.
@@ -355,14 +356,14 @@ The preliminary resume data takes the form of a stack of symbolic frames.
 The stack contains only those interpreter frames seen by the tracer.
 The frames are symbolic in that the local variables in the frames
 do not contain values.
-Instead, every local variables contains the SSA variable of the trace
+Instead, every local variable contains the SSA variable of the trace
 where the value would later come from, or a constant.
 
 \subsection{Compression of Resume Data}
 \label{sub:compression}
 
 After tracing has been finished the trace is optimized.
-During optimization a large percentage of operations can be removed.
+During optimization a large percentage of operations can be removed.\todo{add a reference to the figure showing the optimization rates?}
 In the process the resume data is transformed into its final, compressed form.
 The rationale for not compressing the resume data during tracing
 is that a lot of guards will be optimized away.
@@ -407,7 +408,7 @@ Guards interact with optimizations in various ways.
 Using many classical compiler optimizations the JIT tries to remove as many
 operations, and therefore guards, as possible.
 In particular guards can be removed by subexpression elimination.
-If the same guard is encountered a second time in the trace,
+If the same guard is encountered a second time in a trace,
 the second one can be removed.
 This also works if a later guard is weaker
 and hence implied by an earlier guard.
@@ -432,7 +433,7 @@ to reconstruct the objects that were not allocated so far when a guard fails.
 Consequently the resume data needs to store enough information
 to make this reconstruction possible.
 
-Adding this additional information is done as follows:
+Storing this additional information is done as follows:
 So far, every variable in the symbolic frames
 contains a constant or an SSA variable.
 After allocation removal the variables in the symbolic frames can also contain
@@ -451,8 +452,8 @@ as local variables.
 During the storing of resume data virtual objects are also shared
 between subsequent guards as much as possible.
 The same observation as about frames applies:
-Quite often a virtual object does not change from one guard to the next.
-Then the data structure is shared.
+Quite often a virtual object does not change from one guard to the next,
+allowing the data structure to be shared.
 
 A related optimization is the handling of heap stores by the optimizer.
 The optimizer tries to delay stores into the heap as long as possible.
@@ -495,7 +496,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 \end{figure}
 
 
-After optimization the resulting trace is handed over to the platform specific
+After the recorded trace has been optimized it is handed over to the platform specific
 backend to be compiled to machine code. The compilation phase consists of two
 passes over the lists of instructions, a backwards pass to calculate live
 ranges of IR-level variables and a forward pass to emit the instructions. During
@@ -508,9 +509,9 @@ semantics. Operations without side effects whose result is not used are not
 emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
-producing the value can often be merged, further reducing the overhead of the guard.
-Figure \ref{fig:trace-compiled} shows how the \texttt{int\_eq} operation
-followed by a \texttt{guard\_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
+producing the value can merged, further reducing the overhead of the guard.
+Figure \ref{fig:trace-compiled} shows how the \lstinline{int_eq} operation
+followed by a \lstinline{guard_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
 
@@ -554,11 +555,11 @@ condition check two things are generated/compiled.
 
 First a special data
 structure called \emph{backend map} is created. This data structure encodes the
-mapping from the IR-variables needed by the guard to rebuild the state to the
+mapping from IR-variables needed by the guard to rebuild the state to the
 low-level locations (registers and stack) where the corresponding values will
 be stored when the guard is executed.
 This data
-structure stores the values in a succinct manner using an encoding that uses
+structure stores the values in a succinct manner using an encoding that requires
 8 bits to store 7 bits of information, ignoring leading zeros. This encoding is efficient to create and
 provides a compact representation of the needed information in order
 to maintain an acceptable memory profile.
@@ -570,18 +571,18 @@ In the trampoline the pointer to the
 backend map is loaded and after storing the current execution state
 (registers and stack) execution jumps to a generic bailout handler, also known
 as \emph{compensation code},
-that is used to leave the compiled trace in case of a guard failure.
+that is used to leave the compiled trace.
 
 Using the encoded location information the bailout handler reads from the
-saved execution state the values that the IR-variables had  at the time of the
+stored execution state the values that the IR-variables had at the time of the
 guard failure and stores them in a location that can be read by the frontend.
-After saving the information the control is passed to the frontend signaling
-which guard failed so the frontend can read the information passed and restore
+After saving the information the control is returned to the frontend signaling
+which guard failed so the frontend can read the stored information and rebuild
 the state corresponding to the point in the program.
 
-As in previous sections the underlying idea for the design of guards is to have
-a fast on-trace profile and a potentially slow one in the bailout case where
-the execution has to return to the interpreter due to a guard failure. At the same
+As in previous sections the underlying idea for the low-level design of guards is to have
+a fast on-trace profile and a potentially slow one in case
+the execution has to return to the interpreter. At the same
 time the data stored in the backend, required to rebuild the state, should be as
 compact as possible to reduce the memory overhead produced by the large number
 of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
@@ -600,9 +601,9 @@ Instructions and guards are processed in the same way as described above. The
 main difference is the setup phase. When compiling a trace we start with a clean
 slate. The compilation of a bridge is started from a state (register and stack
 bindings) that corresponds to the state during the compilation of the original
-guard. To restore the state needed to compile the bridge we use the encoded
-representation created for the guard to rebuild the bindings from IR-variables
-to stack locations and registers used in the register allocator.  With this
+guard. To restore the state needed to compile the bridge we use the backend map
+created for the guard to rebuild the bindings from IR-variables
+to stack locations and registers.  With this
 reconstruction all bindings are restored to the state as they were in the
 original loop up to the guard. This means that no register/stack reshuffling is
 needed before executing a bridge.
@@ -639,8 +640,8 @@ measure the performance of PyPy and are composed of a series of
 micro-benchmarks and larger programs.\footnote{\url{http://speed.pypy.org/}} The
 benchmarks were taken from the PyPy benchmarks repository using revision
 \texttt{ff7b35837d0f}.\footnote{\url{https://bitbucket.org/pypy/benchmarks/src/ff7b35837d0f}}
-The benchmarks were run on a version of PyPy based on the
-revision~\texttt{0b77afaafdd0} and patched to collect additional data about the
+The benchmarks were run on a version of PyPy based on
+revision~\texttt{0b77afaafdd0} and patched to collect additional data about
 guards in the machine code
 backends.\footnote{\url{https://bitbucket.org/pypy/pypy/src/0b77afaafdd0}} The
 tools used to run and evaluate the benchmarks including the patches applied to
@@ -686,7 +687,7 @@ aspects of guards in particular:
   \item Guard failures are local and rare.
 \end{itemize}
 
-All measurements presented in this section do not take garbage collection of machine code into account. Pieces
+All measurements presented in this section do not take garbage collection of resume data and machine code into account. Pieces
 of machine code can be globally invalidated or just become cold again. In both
 cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
