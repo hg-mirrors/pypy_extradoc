@@ -955,9 +955,9 @@ sobel(1000,1000) & 104.02 & 0.49 $\pm$ 0.009 & 0.21 $\pm$ 0.004 & 0.60 $\pm$ 0.0
 \hline
 sqrt(float) & 14.99 & 1.37 $\pm$ 0.001 & 0.89 $\pm$ 0.000 & 1.06 $\pm$ 0.013 & 0.83 $\pm$ 0.010 & 0.85 $\pm$ 0.088\\
 \hline
-sqrt(int) & 13.91 & 3.22 $\pm$ 0.033 & 2.65 $\pm$ 0.001 & 1.06 $\pm$ 0.009 & 0.83 $\pm$ 0.014 & 1.25 $\pm$ 0.053\\
+sqrt(int) & 13.91 & 3.22 $\pm$ 0.033 & 2.65 $\pm$ 0.001 & - & - & 1.25 $\pm$ 0.053\\
 \hline
-sqrt(Fix16) & 463.46 & 5.12 $\pm$ 0.005 & 2.96 $\pm$ 0.007 & 12.80 $\pm$ 0.080 & 1.14 $\pm$ 0.009 & 1.34 $\pm$ 0.061\\
+sqrt(Fix16) & 463.46 & 5.12 $\pm$ 0.005 & 2.96 $\pm$ 0.007 & - & - & 1.34 $\pm$ 0.061\\
 \hline
 \end{tabular}
 }
@@ -993,8 +993,7 @@ There are three different versions of this benchmark where $x_i$
   a single implementation of the benchmark that gets specialized
   depending on the class of it's input argument, $y$, while in C,
   there are three different implementations. In Lua there is no support for
-  integers so only two versions are provided: float and Fix16. Here Fix16 is a custom class
-  that implements scaled floating point arithmetic.
+  integers so only the floating point number is provided.
 \item {\bf conv3}$\left(n\right)$: one-dimensional convolution with fixed kernel-size $3$. A single loop
 is used to calculate a vector ${\bf b} = \left(b_1, \cdots, b_{n-2}\right)$ from a vector
 ${\bf a} = \left(a_1, \cdots, a_n\right)$ and a kernel ${\bf k} = \left(k_1, k_2, k_3\right)$ using 
