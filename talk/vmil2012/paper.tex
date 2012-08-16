@@ -143,8 +143,8 @@ enough associated information to enable rebuilding the interpreter state.
 Based on the informal observation that guards are among the most common
 operations in the traces produced by RPython's tracing JIT, our
 goal is to present concrete numbers for the frequency and the overhead related
-to guards, explain how they are implemented in the different levels of this particular
-tracing JIT and clarify the rationale behind the design decisions based on the
+to guards, to explain how they are implemented in the different levels of this particular
+tracing JIT and to clarify the rationale behind the design decisions based on the
 numbers provided here.
 
 The operations executed by an interpreter are recorded by the tracing JIT in
@@ -158,7 +158,7 @@ optimizing the traces generated for the different benchmarks used in this paper.
 This makes guards one of the most common types of operations. As this paper will show, many of these guards
 fail rarely or not all during execution.
 
-There are several aspects to be taken into account w.r.t. guards, the first aspect is that due to the
+There are several aspects to be taken into account w.r.t. guards, the first of them is that due to the
 large number of guards the memory overhead related to storing the information
 needed for deoptimization should be kept low. A second aspect is that
 successfully checking guards, i.e. not leaving the compiled trace, – which is
@@ -175,13 +175,13 @@ In this paper we want to substantiate the aforementioned observations and
 describe based on them the reasoning behind the implementation of guards in
 RPython's tracing just-in-time compiler. the contributions of this paper are:
 \begin{itemize}
-  \item An analysis and benchmark of guards in the context of RPython's tracing JIT.
+  \item an analysis and benchmark of guards in the context of RPython's tracing JIT,
   %An analysis of guards in the context of RPython's tracing JIT to
   %substantiate the aforementioned observation, based on a set of benchmarks,
   \item detailed measurements about the frequency and the
   overhead associated with guards, and
   \item a description about how guards are implemented in the high\-
-  and low-level components of the JIT and describe the rationale behind the design.
+  and low-level components of the JIT and describe the rationale behind the design
 \end{itemize}
 
 \begin{figure}
@@ -363,7 +363,7 @@ where the value would later come from, or a constant.
 \label{sub:compression}
 
 After tracing has been finished the trace is optimized.
-During optimization a large percentage of operations can be removed.\todo{add a reference to the figure showing the optimization rates?}
+During optimization a large percentage of operations can be removed. \todo{add a reference to the figure showing the optimization rates?}
 In the process the resume data is transformed into its final, compressed form.
 The rationale for not compressing the resume data during tracing
 is that a lot of guards will be optimized away.
@@ -388,7 +388,7 @@ Two bits are used as a tag to denote where the value of the variable
 comes from.
 The remaining 14 bits are a payload that depends on the tag bits.
 
-The possible source of information are:
+The possible sources of information are:
 
 \begin{itemize}
     \item For small integer constants
@@ -705,7 +705,7 @@ the total amount of code and resume data that is generated.
 Figure~\ref{fig:benchmarks} extends Figure~\ref{fig:guard_percent} and summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
 operations are guards. The number of operations was counted on the unoptimized
-and optimized traces. The Figure also shows the overall optimization rate for
+and optimized traces. The figure also shows the overall optimization rate for
 operations, which is between 69.4\% and 83.89\%, of the traced operations and the
 optimization rate of guards, which is between 65.8\% and 86.2\% of the
 operations. This indicates that the optimizer can remove
@@ -780,8 +780,7 @@ large amount of guards present in the traces.
 \label{sub:guard_failure}
 The last point in this discussion is the frequency of guard failures.
 Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
-relative amounts of guards that ever fail and of guards that fail often enough that a bridge is compiled.
-\footnote{
+relative amounts of guards that ever fail and of guards that fail often enough that a bridge is compiled.\footnote{
     The threshold used is 200 failures. This rather high threshold was picked experimentally to give
     good results for long-running programs.
 }
@@ -842,7 +841,7 @@ reused within RPython to improve the memory usage further.
 Linking side exits to pieces of later compiled machine code was described first
 in the context of Dynamo~\cite{Bala:2000wv} under the name of fragment linking.
 Once a new hot trace is emitted into the fragment cache it is linked to the side
-exit that led to the compilation of the fragment. Fragment Linking avoids the
+exit that led to the compilation of the fragment. Fragment linking avoids the
 performance penalty involved in leaving the compiled code. Fragment linking
 also allows to remove compensation code associated to the linked fragments that
 would have been required to restored the execution state on the side exit.
