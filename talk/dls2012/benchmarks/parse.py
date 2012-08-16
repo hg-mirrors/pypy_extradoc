@@ -14,6 +14,7 @@ def main(name):
                 interp = line
             else:
                 bench, rest = line.split(':')
+                bench = bench.replace(" ", "")
                 if '+-' in rest:
                     a, d = rest.split('+-')
                     res.setdefault(bench, {})[interp] = float(a), float(d)
