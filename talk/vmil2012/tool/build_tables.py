@@ -38,7 +38,7 @@ def build_failing_guards_table(files, texfile, template):
         res = [bench.replace('_', '\\_'),
                 "%.1f\\%%" % (100 * total_failures/total),
                 "%.1f\\%%" % (100 * bridges/total),
-                "%.3f\\%%"  % (100 * we_are_99_percent(info)),
+                "%.3f\\%%"  % (100 * we_are_50_percent(info)),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
