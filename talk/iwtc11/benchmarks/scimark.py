@@ -239,17 +239,17 @@ def FFT_transform_internal(N, data, direction):
             tmp_imag = w_imag + s * w_real - s2 * w_imag
             w_real = tmp_real
             w_imag = tmp_imag
-        for b in range(0, n, 2 * dual):
-            i = 2 * (b + a)
-            j = 2 * (b + a + dual)
-            z1_real = data[j]
-            z1_imag = data[j + 1]
-            wd_real = w_real * z1_real - w_imag * z1_imag
-            wd_imag = w_real * z1_imag + w_imag * z1_real
-            data[j] = data[i] - wd_real
-            data[j + 1] = data[i + 1] - wd_imag
-            data[i] += wd_real
-            data[i + 1] += wd_imag
+            for b in range(0, n, 2 * dual):
+                i = 2 * (b + a)
+                j = 2 * (b + a + dual)
+                z1_real = data[j]
+                z1_imag = data[j + 1]
+                wd_real = w_real * z1_real - w_imag * z1_imag
+                wd_imag = w_real * z1_imag + w_imag * z1_real
+                data[j] = data[i] - wd_real
+                data[j + 1] = data[i + 1] - wd_imag
+                data[i] += wd_real
+                data[i + 1] += wd_imag
         bit += 1
         dual *= 2
 
