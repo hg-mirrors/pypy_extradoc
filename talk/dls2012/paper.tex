@@ -457,6 +457,8 @@ in Figure~\ref{fig:objmodel}:
     \item \lstinline{set} writes to an attribute of an object.
     \item \lstinline{guard_class} is a precise type check. It typically precedes
     an (inlined) method call and is followed by the trace of the called method.
+    The type that the guard checks for is the one that the variable had during
+    tracing.
 \end{itemize}
 
 Method calls in the trace are preceded by a \lstinline{guard_class}
@@ -476,8 +478,7 @@ using the interpreter.
 In general, the paper is over-long on generalities and too short on details.
 For example, the description of the basic technique at the beginning of section
 5 is the third time the idea is explained at basically the same level of detail
-(the others are in section 2 and section 4).  In contrast, the optimizations
-applied rely on a simple type analysis, but this is only briefly alluded to.
+(the others are in section 2 and section 4).
 }
 
 Before a trace is passed to the backend compiling it into machine code
