@@ -12,12 +12,15 @@ NAME_REPL = {
     'sobel(Array(1000x1000))': 'sobel(1000,1000)',
     'conv3x3(Array2D(1000000x3))': 'conv3x3(1000000,3)',
     'conv3x3(Array2D(1000x1000))': 'conv3x3(1000,1000)',
+    'dilate3x3(1000)': 'dilate3x3(1000,1000)',
+    'conv3x3(1000)': 'conv3x3(1000,1000)',
+    'conv3x3(3)': 'conv3x3(1000000,3)',
 }
 
 def main(name):
     interp = None
     res = {}
-    order = ['python2.7', 'pypy --jit enable_opts=intbounds:rewrite:virtualize:string:earlyforce:pure:heap:ffi', 'pypy', 'gcc -O3 -march=native -fno-tree-vectorize', 'luajit', 'luajit -O-loop']
+    order = ['python2.7', 'pypy --jit enable_opts=intbounds:rewrite:virtualize:string:earlyforce:pure:heap:ffi', 'pypy', 'luajit -O-loop', 'luajit', 'gcc -O3 -march=native -fno-tree-vectorize']
     with open(name) as f:
         for line in f:
             line = line.strip("\n")
@@ -43,7 +46,9 @@ def main(name):
                 sys.stdout.write(" & -")
             else:
                 if isinstance(e, tuple):
-                    sys.stdout.write(' & %.2f +- %.2f' % (e[0], e[1]))
+                    # to get a 95% confidence interval, the std deviation is multiplied with a factor
+                    # see the table at http://en.wikipedia.org/wiki/Standard_deviation#Rules_for_normally_distributed_data
+                    sys.stdout.write(' & %.2f $\pm$ %.3f' % (e[0], e[1] * 1.959964))
                 else:
                     sys.stdout.write(' & %.2f' % e)
         sys.stdout.write('\\\\\n')
