@@ -43,8 +43,7 @@ end
 package.path = package.path .. ";convolution/?.lua"
 require('convolution')
 function benchmarks.convolution(a, b, c)
-    convolution.main({a, b, c})
-    return string.format('%s(%s, %s)', a, b, tostring(c))
+    return convolution.main({a, b, c})
 end
 
 

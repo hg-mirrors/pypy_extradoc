@@ -159,20 +159,19 @@ function main(args)
     arg = args[1]
     num = tonumber(args[2])
     if arg == "conv3" then
-        conv3(num)
+        return conv3(num)
     elseif arg == "conv5" then
-        conv5(num)
+        return conv5(num)
     elseif arg == "conv3x3" then
         num2 = tonumber(args[3])
-        conv3x3(num, num2)
+        return conv3x3(num, num2)
     elseif arg == "dilate3x3" then
         num2 = tonumber(args[3])
-        dilate3x3(num, num2)
+        return dilate3x3(num, num2)
     elseif arg == "sobel_magnitude" then
         num2 = tonumber(args[3])
-        sobel_magnitude(num, num2)
+        return sobel_magnitude(num, num2)
     end
-    return string.format("%s", arg)
 end
 
 --main(arg)
