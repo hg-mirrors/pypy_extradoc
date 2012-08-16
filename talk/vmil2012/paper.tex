@@ -169,7 +169,7 @@ of a tracing just-in-time compiler.
 %stored at the different levels for the guards
 In this paper we want to substantiate the aforementioned observations about guards and
 describe based on them the reasoning behind their implementation in
-RPython's tracing just-in-time compiler. the contributions of this paper are:
+RPython's tracing just-in-time compiler. The contributions of this paper are:
 \begin{itemize}
   \item an analysis and benchmark of guards in the context of RPython's tracing JIT,
   %An analysis of guards in the context of RPython's tracing JIT to
@@ -193,7 +193,7 @@ the machine specific JIT-backend. The frequency of guards and the overhead assoc
 implementation described in this paper is discussed in
 Section~\ref{sec:evaluation}. Section~\ref{sec:Related Work} presents an
 overview about how guards are treated in the context of other just-in-time
-compilers. Finally Section~\ref{sec:Conclusion} summarizes our conclusions and
+compilers. Finally, Section~\ref{sec:Conclusion} summarizes our conclusions and
 gives an outlook on further research topics.
 
 
@@ -219,7 +219,7 @@ RPython, the language and the toolset originally created to implement the
 Python interpreter have developed into a general environment for experimenting
 and developing fast and maintainable dynamic language implementations. Besides
 the Python interpreter there are several experimental language implementation at different
-levels of completeness, e.g. for Prolog~\cite{bolz_towards_2010}, Smalltalk~\cite{bolz_towards_2010}, JavaScript and R.
+levels of completeness, e.g. for Prolog~\cite{bolz_towards_2010}, Smalltalk~\cite{bolz_back_2008}, JavaScript and R.
 
 different levels of completeness.
 
@@ -291,7 +291,7 @@ author~\cite{bolz_runtime_2011}.
 
 \begin{figure}
     \input{figures/example.tex}
-    \caption{Example Program}
+    \caption{Example program}
     \label{fig:example}
 \end{figure}
 
@@ -376,15 +376,15 @@ The core idea of storing resume data as compactly as possible
 is to share parts of the data structure between subsequent guards.
 This is useful because the density of guards in traces is so high,
 that quite often not much changes between them.
-Since resume data is a linked list of symbolic frames
+Since resume data is a linked list of symbolic frames,
 in many cases only the information in the top frame changes from one guard to the next.
-The other symbolic frames can often just be reused.
-The reason for this is that during tracing only the variables
+The other symbolic frames can often be reused.
+The reason for this is that, during tracing only the variables
 of the currently executing frame can change.
 Therefore if two guards are generated from code in the same function
 the resume data of the rest of the frame stack can be reused.
 
-In addition to sharing as much as possible between subsequent guards
+In addition to sharing as much as possible between subsequent guards,
 a compact representation of the local variables of symbolic frames is used.
 Every variable in the symbolic frame is encoded using two bytes.
 Two bits are used as a tag to denote where the value of the variable
@@ -497,7 +497,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 \end{figure}
 
 
-After the recorded trace has been optimized it is handed over to the platform specific
+After the recorded trace has been optimized, it is handed over to the platform specific
 backend to be compiled to machine code. The compilation phase consists of two
 passes over the lists of instructions, a backwards pass to calculate live
 ranges of IR-level variables and a forward pass to emit the instructions. During
@@ -507,7 +507,7 @@ emitted instructions.  Eviction/spilling is performed based on the live range
 information collected in the first pass. Each IR instruction is transformed
 into one or more machine level instructions that implement the required
 semantics. Operations without side effects whose result is not used are not
-emitted. Guards instructions are transformed into fast checks at the machine
+emitted. Guard instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
 producing the value can merged, further reducing the overhead of the guard.
@@ -554,7 +554,7 @@ rebuild the execution state in case the trace is left through
 the guard. When a guard is compiled, in addition to the
 condition check two things are generated/compiled.
 
-First a special data
+First, a special data
 structure called \emph{backend map} is created. This data structure encodes the
 mapping from IR-variables needed by the guard to rebuild the state to the
 low-level locations (registers and stack) where the corresponding values will
@@ -565,10 +565,10 @@ structure stores the values in a succinct manner using an encoding that requires
 provides a compact representation of the needed information in order
 to maintain an acceptable memory profile.
 
-Second for each guard a piece of code is generated that acts as a trampoline.
+Second, for each guard a piece of code is generated that acts as a trampoline.
 Guards are implemented as a conditional jump to this trampoline in case the
 guard check fails.
-In the trampoline the pointer to the
+In the trampoline, the pointer to the
 backend map is loaded and after storing the current execution state
 (registers and stack) execution jumps to a generic bailout handler, also known
 as \emph{compensation code},
@@ -581,12 +581,12 @@ After saving the information the control is returned to the frontend signaling
 which guard failed so the frontend can read the stored information and rebuild
 the state corresponding to the point in the program.
 
-As in previous sections the underlying idea for the low-level design of guards is to have
+As in previous sections, the underlying idea for the low-level design of guards is to have
 a fast on-trace profile and a potentially slow one in case
 the execution has to return to the interpreter. At the same
-time the data stored in the backend, required to rebuild the state, should be as
+time, the data stored in the backend, required to rebuild the state, should be as
 compact as possible to reduce the memory overhead produced by the large number
-of guards, the numbers in Figure~\ref{fig:backend_data} illustrate that the
+of guards. The numbers in Figure~\ref{fig:backend_data} illustrate that the
 compressed encoding currently has about 15\% to 25\% of the size of of the
 generated instructions on x86.
 
@@ -747,7 +747,7 @@ combined and being compressed as described before.
 
 Tracing JIT compilers only compile the subset of the code executed in a program
 that occurs in a hot loop, for this reason the amount of generated machine
-code will be smaller than in other juts-in-time compilation approaches.  This
+code will be smaller than in other just-in-time compilation approaches.  This
 creates a larger discrepancy between the size of the resume data when
 compared to the size of the generated machine code and illustrates why it is important to compress the resume data information.
 
@@ -960,7 +960,7 @@ simpler technique that does not require decoding the backend map on each guard
 failure.
 
 \section*{Acknowledgements}
-We would like to thank David Edelsohn, Samuele Pedroni and Stephan Zalewski for their helpful
+We would like to thank David Edelsohn, Samuele Pedroni, Stephan Zalewski and Sven Hager for their helpful
 feedback and valuable comments while writing this paper.
 We thank the PyPy and RPython community for their continuous support and work:
 Armin Rigo, Antonio Cuni, Maciej Fijałkowski, Samuele Pedroni, and countless
