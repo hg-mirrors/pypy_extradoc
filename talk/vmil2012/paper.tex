@@ -24,9 +24,12 @@
 
 \definecolor{commentgray}{rgb}{0.3,0.3,0.3}
 
+\lstdefinelanguage{none}{
+      keywords={},
+}
 \lstset{
   basicstyle=\ttfamily\footnotesize,
-  language=Python,
+  language=none,
   keywordstyle=\bfseries,
   stringstyle=\color{blue},
   commentstyle=\color{commentgray}\textit,
@@ -82,11 +85,14 @@
 
 \renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
 
+\let\oldlstinline=\lstinline
+\renewcommand\lstinline[1]{\oldlstinline[basicstyle=\ttfamily]{#1}}
+
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 
 \begin{document}
 
-\title{The Efficient Handling of Guards in the Design of RPython's Tracing JIT}
+\title{The Efficient Handling of Guards \\in the Design of RPython's Tracing JIT}
 
 \authorinfo{David Schneider$^{a}$ \and Carl Friedrich Bolz$^a$}
            {$^a$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
@@ -121,7 +127,6 @@ measure various properties of guards.
 
 
 %___________________________________________________________________________
-\todo{better formatting for lstinline}
 \section{Introduction}
 
 Tracing just-in-time (JIT) compilers record and compile commonly executed
@@ -140,30 +145,30 @@ tracing JIT. All design decisions will be motivated by concrete numbers for the
 frequency and the overhead related to guards.
 
 It is important to handle guards well, because they are very common operations
-in the traces produced by tracing JITs. As can be seen in
-Figure~\ref{fig:guard_percent} guards account for about 14\% to 22\% of the
+in the traces produced by tracing JITs. As we will see later (Figure~\ref{fig:benchmarks})
+guards account for about 14\% to 22\% of the
 operations before and for about 15\% to 20\% of the operations after optimizing
 the traces generated for the different benchmarks used in this paper. An
 additional property is that guard failure rates are very uneven. The majority
 of guards never fail at all, whereas those that do usually fail extremely
 often.
 
-Besides being common, guards have various costs attached to them.
+Besides being common, guards have various costs associated with them.
 Guards have a runtime cost, they take time to execute. Therefore it is
 important to make the on-trace execution of guards as efficient as possible. On
 the other hand, guards are possible deoptimization points. The recorded and
 compiled path has to be left if a guard fails, returning control to the
 interpreter. Therefore guards need enough associated information to enable
 rebuilding the interpreter state. The memory overhead of this information
-should be kept low. These constraints and trade-offs are what make the design
+should be kept low. These constraints and trade-offs are what makes the design
 and optimization of guards an important and non-trivial aspect of the construction
 of a tracing just-in-time compiler.
 
 %Section~\ref{sec:Evaluation} presents Figures about the absolute number of
 %operations for each benchmark, and the overhead produced by the information
 %stored at the different levels for the guards
-In this paper we want to substantiate the aforementioned observations and
-describe based on them the reasoning behind the implementation of guards in
+In this paper we want to substantiate the aforementioned observations about guards and
+describe based on them the reasoning behind their implementation in
 RPython's tracing just-in-time compiler. the contributions of this paper are:
 \begin{itemize}
   \item an analysis and benchmark of guards in the context of RPython's tracing JIT,
@@ -174,12 +179,6 @@ RPython's tracing just-in-time compiler. the contributions of this paper are:
   \item a description about how guards are implemented in the high\-
   and low-level components of the JIT and describe the rationale behind the design
 \end{itemize}
-
-\begin{figure}
-    \include{figures/guard_table}
-    \caption{Percentage of guards before and after optimization for different benchmarks}
-    \label{fig:guard_percent}
-\end{figure}
 
 The set of central concepts upon which this work is based are described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
@@ -367,7 +366,7 @@ where the value would later come from, or a constant.
 \label{sub:compression}
 
 After tracing has been finished the trace is optimized.
-During optimization a large percentage of operations can be removed. \todo{add a reference to the figure showing the optimization rates?}
+During optimization a large percentage of operations can be removed (Figure~\ref{fig:benchmarks}).
 In the process the resume data is transformed into its final, compressed form.
 The rationale for not compressing the resume data during tracing
 is that a lot of guards will be optimized away.
@@ -480,8 +479,6 @@ guards in the trace. The frames for \lstinline{check_reduces} and
 \lstinline{Even.step} as well as the description of the allocation-removed
 virtual instance of \lstinline{Even} are shared between the two guards.
 
-\todo{fix labels in diagram}
-
 % section Resume Data (end)
 
 \begin{figure}
@@ -494,7 +491,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 \label{sec:Guards in the Backend}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{figures/resume_data.pdf}
+\includegraphics[width=0.4\textwidth]{figures/resume_data.pdf}
 \caption{The resume data for Figure~\ref{fig:trace-log}}
 \label{fig:resume-data}
 \end{figure}
@@ -636,7 +633,6 @@ guards that work based on the same principles.
 
 \section{Evaluation}
 \label{sec:evaluation}
-\todo{improve the table formatting}
 
 The results presented in this section are based on numbers gathered by running
 a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
@@ -706,7 +702,7 @@ the total amount of code and resume data that is generated.
     \label{fig:benchmarks}
 \end{figure*}
 
-Figure~\ref{fig:benchmarks} extends Figure~\ref{fig:guard_percent} and summarizes the total number of operations that were
+Figure~\ref{fig:benchmarks} summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
 operations are guards. The number of operations was counted on the unoptimized
 and optimized traces. The figure also shows the overall optimization rate for
@@ -759,7 +755,7 @@ compared to the size of the generated machine code and illustrates why it is imp
     \include{figures/backend_table}
     \caption{Total size of generated machine code and resume data}
     \label{fig:backend_data}
-\end{figure}e.
+\end{figure}
 
 Why the efficient storing of the resume data is a central concern in the design
 of guards is illustrated by Figure~\ref{fig:resume_data_sizes}. This figure shows
@@ -795,7 +791,7 @@ attached bridge.
 
 \begin{figure}
     \include{figures/failing_guards_table}
-    \caption{Failing guards relative to the total number of guards}
+    \caption{Failing guards, guards with more than 200 failures and guards responsible for 50\% of the failures relative to the total number of guards}
     \label{fig:failing_guards}
 \end{figure}
 
@@ -804,7 +800,10 @@ of all the guards in the compiled traces ever fail. This amount varies between
 2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
 enough that a bridge is compiled for them, only 1.2\% to 3.6\% of all guards
 fail often enough that a bridge is compiled. Also, of all failing guards a few fail extremely often
-and most fail rarely. The results emphasize that as most of the guards never
+and most fail rarely. Reinforcing this notion the figure shows that, depending on the
+benchmark, between 0.008\% and 0.225\% of the guards are responsible for 50\%
+of the total guards failures.
+These results emphasize that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
 
@@ -963,6 +962,10 @@ failure.
 \section*{Acknowledgements}
 We would like to thank David Edelsohn, Samuele Pedroni and Stephan Zalewski for their helpful
 feedback and valuable comments while writing this paper.
+We thank the PyPy and RPython community for their continuous support and work:
+Armin Rigo, Antonio Cuni, Maciej Fijałkowski, Samuele Pedroni, and countless
+others. Any remaining errors are our own.
+
 
 %\section*{Appendix}
 %\todo{remove this section and the figures}
@@ -980,5 +983,5 @@ feedback and valuable comments while writing this paper.
 %\end{figure*}
 \bibliographystyle{abbrv}
 \bibliography{zotero,paper}
-\listoftodos
+%\listoftodos
 \end{document}

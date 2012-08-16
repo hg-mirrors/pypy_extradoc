@@ -3,7 +3,7 @@
     \begin{tabular}{ |l{% for c in head %} {% if not loop.first %} |r {% endif %} {% endfor %} }
     \hline
     {% for col in head %}
-        \textbf{ {{col}} }
+        \textbf{ {{col|safe}} }
         {% if not forloop.last %}
            &
         {% endif %}

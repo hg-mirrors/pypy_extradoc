@@ -26,22 +26,40 @@ def build_failing_guards_table(files, texfile, template):
 
     table = []
     head = ['Benchmark',
-            'Failing guards',
-            'Over %d failures' % BRIDGE_THRESHOLD]
+            'Failing',
+            '> %d failures' % BRIDGE_THRESHOLD,
+            '50\% of failures']
 
     for bench, info in failures.iteritems():
-        total = failures[bench]['nguards']
+        total = info['nguards']
         total_failures = len(info['results'])
         bridges = len([k for k,v in info['results'].iteritems() \
                                             if v > BRIDGE_THRESHOLD])
         res = [bench.replace('_', '\\_'),
                 "%.1f\\%%" % (100 * total_failures/total),
                 "%.1f\\%%" % (100 * bridges/total),
+                "%.3f\\%%"  % (100 * we_are_50_percent(info)),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
+def we_are_50_percent(info):
+    total_guards = info['nguards']
+    failure_counts = info['results'].values()
+    print failure_counts
+    failure_counts.sort()
+    print failure_counts
+    failure_counts.reverse()
+    print failure_counts
+
+    total_failures = sum(failure_counts)
+    current_sum = 0
+    for i, f in enumerate(failure_counts):
+        current_sum += f
+        if current_sum > total_failures * 0.50:
+            return (i + 1)/total_guards
+    return -1
 
 def build_resume_data_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
