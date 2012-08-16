@@ -4,7 +4,7 @@ import pdb, sys
 def main(name):
     interp = None
     res = {}
-    order = ['python2.7', 'python2.6 psyco-wrapper.py', 'pypy --jit enable_opts=intbounds:rewrite:virtualize:heap', 'pypy', 'gcc -O2', 'gcc -O3 -march=native -fno-tree-vectorize']
+    order = ['python2.7', 'pypy --jit enable_opts=intbounds:rewrite:virtualize:string:earlyforce:pure:heap:ffi', 'pypy', 'gcc -O3 -march=native -fno-tree-vectorize', 'luajit', 'luajit -O-loop']
     with open(name) as f:
         for line in f:
             line = line.strip("\n")
@@ -35,7 +35,9 @@ def main(name):
         print "\hline"
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print "Usage: parse.py <input file>"
     try:
-        main('new_result.txt')
+        main(sys.argv[1])
     except:
         pdb.post_mortem(sys.exc_info()[2])
