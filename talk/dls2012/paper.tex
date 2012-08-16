@@ -1132,23 +1132,19 @@ for benchmarks:
 
 We run GCC with -O3 -march=native, disabling the
 automatic loop vectorization. In all cases, SSE2 instructions were used for
-floating point operations, except Psyco which uses x87 FPU instructions.
-% Psyco does not use the x87 FPU: all floating-point arithmetic is done with
-% residual calls to C helpers.  These can probably be compiled with SSE2.
-% But compiling CPython (and maybe Psyco) for x87 or SSE2 has probably
-% no measurable effect.
-We also run PyPy with loop peeling optimization and without (but otherwise
+floating point operations.
+We also run PyPy and LuaJIT with loop peeling optimization and without (but otherwise
 identical).
 
-For PyPy and Lua 10 iterations were run, prefaced with 3 iterations for warming up.
+For PyPy and LuaJIT 10 iterations were run, prefaced with 3 iterations for warming up.
 Due to benchmarks taking large amounts of time on CPython, only one run
-was performed, prefaced with one warmup run for Psyco.
+was performed.
 For GCC 5 iterations
 were run. In all cases, the standard deviation is very low, making benchmarks
 very well reproducible.
 
 We can observe that PyPy (even without loop peeling) is orders of magnitude
-faster than either CPython or Psyco. This is due to the JIT compilation
+faster than CPython. This is due to the JIT compilation
 advantages and optimizations we discussed in previous
 work~\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
 speedup of loop peeling is 70\%, which makes benchmark times
@@ -1159,6 +1155,11 @@ operations are only moved out of the
 innermost loop. That is an issue when the innermost loop is 
 short and a significant amount of time is spent in the outer loops. This is the case 
 with for example SparseMatMult.
+
+The speedups that LuaJIT gains from the loop optimization pass are similar to
+those PyPy gains. In general, LuaJIT is even closer to C performance, sometimes
+even surpassing it. LuaJIT is generating machine code of higher quality because
+it has a much better register allocator than PyPy, among other things.
 
 Other interesting interpreters that are helped greatly by this optimization are
 for example our Prolog interpreter written in
