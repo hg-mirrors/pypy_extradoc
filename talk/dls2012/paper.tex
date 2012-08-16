@@ -125,7 +125,7 @@
 
 \begin{abstract}
 One of the nice properties of a tracing JIT is that many of its optimizations
-are simple requiring one forward pass only. This is not true for loop-invariant code
+are simple, requiring one forward pass only. This is not true for loop-invariant code
 motion which is a very important optimization for code with tight kernels.
 Especially for dynamic languages that typically perform quite a lot of loop invariant
 type checking, boxed value unwrapping and virtual method lookups.
@@ -823,7 +823,7 @@ $K$, is constructed from $\hat J$ using the map $m$,
                  \cdots, m\left(\hat J_{|\hat J|}\right)\right)
   .
 \end{equation}
-In the optimized trace $I$ is replaced by $\hat I$ and $K$ by $\hat
+In the optimized trace $J$ is replaced by $\hat J$ and $K$ by $\hat
 K$. The trace from Figure~\ref{fig:unopt-trace} will be optimized to
 the trace in Figure~\ref{fig:virtual-trace}.
 
@@ -991,11 +991,13 @@ There are three different versions of this benchmark where $x_i$
   fixpoint arithmetic with 16 bits precision. In Python there is only
   a single implementation of the benchmark that gets specialized
   depending on the class of it's input argument, $y$, while in C,
-  there are three different implementations.
+  there are three different implementations. In Lua there is no support for
+  integers so only two versions are provided: float and Fix16. Here Fix16 is a custom class
+  that implements scaled floating point arithmetic.
 \item {\bf conv3}$\left(n\right)$: one-dimensional convolution with fixed kernel-size $3$. A single loop
-is used to calculate a vector ${\bf b} = \left(b_1, \cdots, b_n\right)$ from a vector
+is used to calculate a vector ${\bf b} = \left(b_1, \cdots, b_{n-2}\right)$ from a vector
 ${\bf a} = \left(a_1, \cdots, a_n\right)$ and a kernel ${\bf k} = \left(k_1, k_2, k_3\right)$ using 
-$b_i = k_3 a_i + k_2 a_{i+1} + k_1 a_{i+2}$ for $1 \leq i \leq n$. Both the output vector, $\bf b$, 
+$b_i = k_3 a_i + k_2 a_{i+1} + k_1 a_{i+2}$ for $1 \leq i \leq n-2$. Both the output vector, $\bf b$, 
 and the input vectors, $\bf a$ and $\bf k$, are allocated prior to running the benchmark. It is executed 
 with $n=10^5$ and $n=10^6$.
 \item {\bf conv5}$\left(n\right)$: one-dimensional convolution with fixed kernel-size $5$. Similar to conv3, but with 
@@ -1014,7 +1016,7 @@ ${\bf A} = \left(a_{i,j}\right)$ and a kernel ${\bf K} = \left(k_{i,j}\right)$ u
     k_{1,3} a_{i+1,j-1} &+& k_{1,2} a_{i+1,j} &+& k_{1,1} a_{i+1,j+1}  \\
   \end{array}
 \end{equation}
-for $1 \leq i \leq m$ and $1 \leq j \leq n$.
+for $2 \leq i \leq m-1$ and $2 \leq j \leq n-1$.
 The memory for storing the matrices are again allocated outside the benchmark and $(n,m)=(1000,1000)$ 
 as well as $(n,m)=(1000000,3)$ was used.
 \item {\bf dilate3x3}$\left(n\right)$: two-dimensional dilation with kernel of fixed
@@ -1051,7 +1053,7 @@ data stored in row-major order.
 For the C implementations it is
 implemented as a C++ class. The other benchmarks are implemented in
 plain C. All the benchmarks except sqrt operate on C double-precision floating
-point numbers, both in the Python and the C code.
+point numbers, both in the Python, C and Lua code.
 
 In addition we also ported the 
 SciMark\footnote{\texttt{http://math.nist.gov/scimark2/}} benchmakts to python, and compared 
@@ -1093,7 +1095,7 @@ floating point operations, except Psyco which uses x87 FPU instructions.
 We also run PyPy with loop peeling optimization and without (but otherwise
 identical).
 
-For PyPy 10 iterations were run, prefaced with 3 iterations for warming up.
+For PyPy and Lua 10 iterations were run, prefaced with 3 iterations for warming up.
 Due to benchmarks taking large amounts of time on CPython, only one run
 was performed, prefaced with one warmup run for Psyco.
 For GCC 5 iterations
@@ -1107,7 +1109,11 @@ work~\cite{bolz_allocation_2011, bolz_runtime_2011}. The geometric mean of the
 speedup of loop peeling is 70\%, which makes benchmark times
 comparable with native-compiled C code. We attribute the performance gap to C code to
 the relative immaturity of RPython's JIT machine code backend as well as missing
-optimizations, like instruction scheduling.
+optimizations, like instruction scheduling. Also, in case of nested loops, 
+operations are only moved out of the 
+innermost loop. That is an issue when the innermost loop is 
+short and a significant amount of time is spent in the outer loops. This is the case 
+with for example SparseMatMult.
 
 Other interesting interpreters that are helped greatly by this optimization are
 for example our Prolog interpreter written in
@@ -1164,7 +1170,7 @@ This saves only the allocation, not the access to the object attributes.
 
 The type specialization described by Gal \etal~\cite{gal_trace-based_2009} can
 be seen as doing a similar optimization (again by manually implementing it)
-than the one described in Section~\ref{sub:allocation}: The effect of both is
+as the one described in Section~\ref{sub:allocation}: The effect of both is
 that type checks are fully done before a loop is even entered.
 
 
