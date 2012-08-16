@@ -44,7 +44,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{setspace}
 \usepackage{listings}
-\usepackage{beramono}
+\usepackage[scaled=0.81]{beramono}
 
 \definecolor{gray}{rgb}{0.3,0.3,0.3}
 
@@ -129,7 +129,7 @@ are simple requiring one forward pass only. This is not true for loop-invariant 
 motion which is a very important optimization for code with tight kernels.
 Especially for dynamic languages that typically perform quite a lot of loop invariant
 type checking, boxed value unwrapping and virtual method lookups.
-In this paper we explain a scheme invented within the context of the LuaJIT project
+In this paper we explain a scheme pioneered within the context of the LuaJIT project
 for making simple optimizations loop-aware by
 using a simple pre-processing step on the trace and not changing the
 optimizations themselves.
@@ -897,17 +897,6 @@ practice, and that might be worth noting.
 }
 
 \revc{
-Providing source code for the benchmarks measured are needed for others to
-reproduce and build on your results.  I believe this should be the minimum
-standard for publishing measurements such as these.
-}
-\cfbolz{
-let's link to the bitbucket source code view. how about we move the benchmarks
-to the dls directory as well? or their own repository, we've been using them as
-demos
-}
-
-\revc{
 I would have liked to have benchmark results for some larger applications.
 When is this optimization effective on a large scale, if ever?
 }
@@ -985,7 +974,12 @@ Variations & - & - & $\pm 0.03$ & $\pm 0.01$ & $\pm 0.01$ \\
 The Python interpreter of the RPython framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python, C and Lua and their
-runtimes are compared in Figure~\ref{fig:benchmarks}. The benchmarks are
+runtimes are compared in Figure~\ref{fig:benchmarks}.\footnote{
+    The benchmarks and the scripts to run them can be found in the repository for this paper:
+    \texttt{https://bitbucket.org/pypy/extradoc/src/ tip/talk/dls2012/benchmarks}
+}
+
+The benchmarks are
 \begin{itemize}
 \item {\bf sqrt}$\left(T\right)$: approximates the square root of $y$. The approximation is 
 initiated to $x_0=y/2$ and the benchmark consists of a single loop updating this
@@ -1133,10 +1127,10 @@ that achieving them in the way described in this paper is simpler than writing
 explicit algorithms.
 
 Loop invariant code motion has been part of early compilers in the 1960s and
-1970s~\cite{allen_catalogue_1971}. The approach for achieving loop invariant
-code motion is typically to perform partial redundancy elimination. The
+1970s~\cite{allen_catalogue_1971}. A common approach for achieving loop invariant
+code motion is to perform partial redundancy elimination. The
 approach was first proposed by Morel and Renvoise~\cite{morel_global_1979}. It
-involves solving data flow problems usually involding bidirection data flow
+involves solving data flow problems of bidirectional data flow
 equations. After improvements~\cite{chow_portable_1984,
 dhamdhere_practical_1991} this approach was followed by the work of Knoop
 et.al.~\cite{knoop_lazy_1992} who cleanly separated the problem into a backward

@@ -121,52 +121,43 @@ measure various properties of guards.
 
 
 %___________________________________________________________________________
-\todo{mention somewhere that it is to be expected that most guards do not fail}
 \todo{better formatting for lstinline}
 \section{Introduction}
 
-\todo{the introduction needs some work}
-\cfbolz{the first two two paragraphs talk about deoptimization, then it
-switches to guards. I would say we should only talk about guards in the
-beginning}
-Tracing just-in-time (JIT) compilers record and compile linear control flow paths of operations executed by an interpreter
-inserting operations called guards at points of possible divergence.
-In this paper we describe and analyze how guards work, explaining what concepts
-are used in the intermediate and low-level representation of the JIT
-instructions and how these are implemented.
+Tracing just-in-time (JIT) compilers record and compile commonly executed
+linear control flow paths consisting of operations executed by an interpreter.
+At points of possible divergence from the traced path operations called guards
+are inserted. Furthermore, type guards are inserted to specialize the trace
+based on the types observed during tracing. In this paper we describe and
+analyze how guards work and explain the concepts used in the intermediate and
+low-level representation of the JIT instructions and how these are implemented.
+This is done in the context of the RPython language and the PyPy project, which
+provides a tracing JIT compiler geared at dynamic language optimization.
 
-Our aim is to help understand the constraints when
-implementing guards. Guards have a runtime cost, they take time to execute. On
-the other hand, guards are possible deoptimization points, meaning the recorded
-and compiled path has to be left returning control to the interpreter. They need
-enough associated information to enable rebuilding the interpreter state.
-Based on the informal observation that guards are among the most common
-operations in the traces produced by RPython's tracing JIT, our
-goal is to present concrete numbers for the frequency and the overhead related
-to guards, to explain how they are implemented in the different levels of this particular
-tracing JIT and to clarify the rationale behind the design decisions based on the
-numbers provided here.
+Our aim is to help understand the constraints when implementing guards
+and to describe the concrete techniques used in the various layers of RPython's
+tracing JIT. All design decisions will be motivated by concrete numbers for the
+frequency and the overhead related to guards.
 
-The operations executed by an interpreter are recorded by the tracing JIT in
-case they are frequently executed (this process is described in more detail in
-Section \ref{sec:Resume Data}). During the recording phase guards are
-inserted into the recorded trace at all
-points where the control flow could diverge. As can be seen in
+It is important to handle guards well, because they are very common operations
+in the traces produced by tracing JITs. As can be seen in
 Figure~\ref{fig:guard_percent} guards account for about 14\% to 22\% of the
-operations before and for about 15\% to 20\% of the operations after
-optimizing the traces generated for the different benchmarks used in this paper.
-This makes guards one of the most common types of operations. As this paper will show, many of these guards
-fail rarely or not all during execution.
+operations before and for about 15\% to 20\% of the operations after optimizing
+the traces generated for the different benchmarks used in this paper. An
+additional property is that guard failure rates are very uneven. The majority
+of guards never fail at all, whereas those that do usually fail extremely
+often.
 
-There are several aspects to be taken into account w.r.t. guards, the first of them is that due to the
-large number of guards the memory overhead related to storing the information
-needed for deoptimization should be kept low. A second aspect is that
-successfully checking guards, i.e. not leaving the compiled trace, – which is
-the common case – should be a cheap operation to execute favouring the on-trace
-execution speed in contrast to the deoptimization case where the state has to
-be rebuilt using the stored information. These constraints and trade-offs are
-what make the design and optimization of guards an important and non-trivial
-aspect of the construction of a tracing just-in-time compiler.
+Besides being common, guards have various costs attached to them.
+Guards have a runtime cost, they take time to execute. Therefore it is
+important to make the on-trace execution of guards as efficient as possible. On
+the other hand, guards are possible deoptimization points. The recorded and
+compiled path has to be left if a guard fails, returning control to the
+interpreter. Therefore guards need enough associated information to enable
+rebuilding the interpreter state. The memory overhead of this information
+should be kept low. These constraints and trade-offs are what make the design
+and optimization of guards an important and non-trivial aspect of the construction
+of a tracing just-in-time compiler.
 
 %Section~\ref{sec:Evaluation} presents Figures about the absolute number of
 %operations for each benchmark, and the overhead produced by the information
@@ -197,7 +188,7 @@ Data} we proceed to describe for RPython's tracing JIT the details of guards in
 the frontend. In this context the frontend is concerned with recording and storing the
 information required to rebuild the interpreter state in case of a guard
 failure. Once the frontend has traced and optimized a loop it invokes the
-backend to compile the operations to machine code, Section \ref{sec:Guards in
+backend to compile the operations to machine code, Section~\ref{sec:Guards in
 the Backend} describes the low-level aspects of how guards are implemented in
 the machine specific JIT-backend. The frequency of guards and the overhead associated with the
 implementation described in this paper is discussed in
@@ -214,37 +205,46 @@ gives an outlook on further research topics.
 \label{sub:pypy}
 
 
-The RPython language and the PyPy project were started in 2002 with the goal of
+The RPython language and the PyPy project~\cite{rigo_pypys_2006} were started
+in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
 language experimentation and extension.\footnote{\url{http://pypy.org}} PyPy is now a fully compatible
-alternative implementation of the Python language, that is on average about 5 times faster than the reference implementation. The
-implementation takes advantage of RPython's language features
+alternative interpreter for the Python language.
+Using RPython's tracing JIT compiler it is on average about 5 times faster than
+CPython, the reference implementation.
+PyPy is an interpreter written in RPython and takes advantage of the language
+features provided by RPython
 such as the provided tracing just-in-time compiler described below.
 
 RPython, the language and the toolset originally created to implement the
 Python interpreter have developed into a general environment for experimenting
 and developing fast and maintainable dynamic language implementations. Besides
-the Python interpreter there are several language implementation at different
-levels of completeness, e.g. for Smalltalk, Prolog, JavaScript and R.
+the Python interpreter there are several experimental language implementation at different
+levels of completeness, e.g. for Prolog~\cite{bolz_towards_2010}, Smalltalk~\cite{bolz_towards_2010}, JavaScript and R.
 
+different levels of completeness.
 
-RPython is constructed from two components:
+RPython can mean one of two things:
 \begin{itemize}
  \item the language itself
  \item the translation toolchain used to transform RPython programs to executable units
 \end{itemize}
 The RPython language
-is a statically typed object oriented high level language. The language provides
+is a statically typed object-oriented high level language. The language provides
 several features such as automatic memory management
 and just-in-time compilation. When writing an interpreter using RPython the
 programmer only has to write the interpreter for the language she is
 implementing.  The second RPython component, the translation toolchain, is used
-to transform the program to a low level representations suited to be compiled
-and run on one of the different supported target platforms/architectures such
-as C, .NET and Java. During the transformation process
+to transform the interpreter into a C program.\footnote{
+    RPython can also be used to translate programs to CLR and Java
+    bytecode~\cite{ancona_rpython:_2007}, but this feature is somewhat
+    experimental.
+}
+During the transformation process
 different low level aspects suited for the target environment are automatically
-added to the program such as (if needed) a garbage collector
-and based on hints provided by the author a just-in-time compiler.
+added to the program such as a garbage collector and a tracing JIT compiler.
+The process of inserting a tracing JIT is not fully automatic but is guided by
+hints from the interpreter author.
 
 \subsection{RPython's Tracing JIT Compilers}
 \label{sub:tracing}
@@ -281,10 +281,14 @@ corresponding guard by patching the machine code. The next time the guard fails
 the bridge will be executed instead of leaving the machine code.
 
 RPython provides a tracing JIT that can be reused for a number of language
-implementations. This is possible, because it traces the execution of the
+implementations~\cite{bolz_tracing_2009}. This is possible, because it traces
+the execution of the
 language interpreter instead of tracing the user program directly. This
 approach is called \emph{meta-tracing}. For the purpose of this paper the fact
 that RPython's tracing JIT is a meta-tracing JIT can be ignored.
+The only point of interaction is that some of the guards that are inserted into
+the trace stem from an annotation provided by the interpreter
+author~\cite{bolz_runtime_2011}.
 
 \begin{figure}
     \input{figures/example.tex}
@@ -510,7 +514,7 @@ emitted. Guards instructions are transformed into fast checks at the machine
 code level that verify the corresponding condition.  In cases the value being
 checked by the guard is not used anywhere else the guard and the operation
 producing the value can merged, further reducing the overhead of the guard.
-Figure \ref{fig:trace-compiled} shows how the \lstinline{int_eq} operation
+Figure~\ref{fig:trace-compiled} shows how the \lstinline{int_eq} operation
 followed by a \lstinline{guard_false} from the trace in Figure~\ref{fig:trace-log} are compiled to
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
@@ -615,8 +619,8 @@ instead of bailing out. Once the guard has been compiled and attached to the
 loop the guard becomes just a point where control-flow can split. The loop
 after the guard and the bridge are just conditional paths.
 Figure~\ref{fig:trampoline} shows a diagram of a compiled loop with two guards,
-Guard \#1 jumps to the trampoline, loads the backend map and
-then calls the bailout handler, whereas Guard \#2 has already been patched
+Guard~\#1 jumps to the trampoline, loads the backend map and
+then calls the bailout handler, whereas Guard~\#2 has already been patched
 and directly jumps to the corresponding bridge. The bridge also contains two
 guards that work based on the same principles.
 \begin{figure}
@@ -715,7 +719,7 @@ The frequency of guard operations makes it important to store the associated
 information efficiently and also to make sure that guard checks are executed
 quickly.
 
-\subsection{Overhead of Guards}
+\subsection{Space Overhead of Guards}
 \label{sub:guard_overhead}
 \begin{figure}
     \include{figures/resume_data_table}
@@ -755,7 +759,7 @@ compared to the size of the generated machine code and illustrates why it is imp
     \include{figures/backend_table}
     \caption{Total size of generated machine code and resume data}
     \label{fig:backend_data}
-\end{figure}
+\end{figure}e.
 
 Why the efficient storing of the resume data is a central concern in the design
 of guards is illustrated by Figure~\ref{fig:resume_data_sizes}. This figure shows
@@ -803,6 +807,14 @@ fail often enough that a bridge is compiled. Also, of all failing guards a few f
 and most fail rarely. The results emphasize that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
+
+This low guard failure rate is expected. Most guards do not come from actual
+control flow divergences in the user program, but from type checks needed for
+type specialization. Various prior work has
+shown~\cite{holkner_evaluating_2009, richards_analysis_2010, callau_how_2011}
+that most programs in dynamic languages only use a limited amount of runtime
+variability. Therefore many guards are needed for making the traces behave
+correctly in all cases but fail rarely.
 
 
 \section{Related Work}

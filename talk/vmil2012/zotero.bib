@@ -27,6 +27,34 @@
 	pages = {39--50}
 },
 
+@inproceedings{holkner_evaluating_2009,
+	address = {Wellington, New Zealand},
+	title = {Evaluating the dynamic behaviour of Python applications},
+	isbn = {978-1-920682-72-9},
+	url = {http://portal.acm.org/citation.cfm?id=1862665},
+	abstract = {The Python programming language is typical among dynamic languages in that programs written in it are not susceptible to static analysis. This makes efficient static program compilation difficult, as well as limiting the amount of early error detection that can be performed. Prior research in this area tends to make assumptions about the nature of programs written in Python, restricting the expressiveness of the language. One may question why programmers are drawn to these languages at all, if only to use them in a static-friendly style. In this paper we present our results after measuring the dynamic behaviour of 24 production-stage open source Python programs. The programs tested included arcade games, {GUI} applications and non-interactive batch programs. We found that while most dynamic activity occurs during program startup, dynamic activity after startup cannot be discounted entirely.},
+	booktitle = {Proceedings of the Thirty-Second Australasian Conference on Computer Science - Volume 91},
+	publisher = {Australian Computer Society, Inc.},
+	author = {Holkner, Alex and Harland, James},
+	year = {2009},
+	keywords = {dynamic languages, python and compilers},
+	pages = {19--28}
+},
+
+@inproceedings{bolz_towards_2010,
+	address = {Hagenberg, Austria},
+	title = {Towards a Jitting {VM} for Prolog execution},
+	isbn = {978-1-4503-0132-9},
+	url = {http://portal.acm.org/citation.cfm?id=1836102},
+	doi = {10.1145/1836089.1836102},
+	abstract = {Most Prolog implementations are implemented in low-level languages such as C and are based on a variation of the {WAM} instruction set, which enhances their performance but makes them hard to write. In addition, many of the more dynamic features of Prolog (like assert), despite their popularity, are not well supported. We present a high-level continuation-based Prolog interpreter based on the {PyPy} project. The {PyPy} project makes it possible to easily and efficiently implement dynamic languages. It provides tools that automatically generate a just-in-time compiler for a given interpreter of the target language, by using partial evaluation techniques. The resulting Prolog implementation is surprisingly efficient: it clearly outperforms existing interpreters of Prolog in high-level languages such as Java. Moreover, on some benchmarks, our system outperforms state-of-the-art {WAM-based} Prolog implementations. Our paper aims to show that declarative languages such as Prolog can indeed benefit from having a just-in-time compiler and that {PyPy} can form the basis for implementing programming languages other than Python.},
+	booktitle = {{PPDP}},
+	publisher = {{ACM}},
+	author = {Bolz, Carl Friedrich and Leuschel, Michael and Schneider, David},
+	year = {2010},
+	keywords = {interpreters, jit, logic programming, partial evaluation}
+},
+
 @inproceedings{bebenita_spur:_2010,
 	address = {{Reno/Tahoe}, Nevada, {USA}},
 	title = {{SPUR:} a trace-based {JIT} compiler for {CIL}},
@@ -40,6 +68,21 @@
 	author = {Bebenita, Michael and Brandner, Florian and Fahndrich, Manuel and Logozzo, Francesco and Schulte, Wolfram and Tillmann, Nikolai and Venter, Herman},
 	year = {2010},
 	keywords = {cil, dynamic compilation, javascript, just-in-time, tracing}
+},
+
+@inproceedings{richards_analysis_2010,
+	address = {Toronto, Ontario, Canada},
+	title = {An analysis of the dynamic behavior of {JavaScript} programs},
+	isbn = {978-1-4503-0019-3},
+	url = {http://portal.acm.org/citation.cfm?id=1806598},
+	doi = {10.1145/1806596.1806598},
+	abstract = {The {JavaScript} programming language is widely used for web programming and, increasingly, for general purpose computing. As such, improving the correctness, security and performance of {JavaScript} applications has been the driving force for research in type systems, static analysis and compiler techniques for this language. Many of these techniques aim to reign in some of the most dynamic features of the language, yet little seems to be known about how programmers actually utilize the language or these features. In this paper we perform an empirical study of the dynamic behavior of a corpus of widely-used {JavaScript} programs, and analyze how and why the dynamic features are used. We report on the degree of dynamism that is exhibited by these {JavaScript} programs and compare that with assumptions commonly made in the literature and accepted industry benchmark suites.},
+	booktitle = {Proceedings of the 2010 {ACM} {SIGPLAN} conference on Programming language design and implementation},
+	publisher = {{ACM}},
+	author = {Richards, Gregor and Lebresne, Sylvain and Burg, Brian and Vitek, Jan},
+	year = {2010},
+	keywords = {dynamic behavior, dynamic metrics, execution tracing, javascript, program analysis},
+	pages = {1--12}
 },
 
 @inproceedings{kotzmann_escape_2005,
@@ -85,6 +128,23 @@
 	pages = {9:1–9:8}
 },
 
+@inproceedings{callau_how_2011,
+	address = {New York, {NY}, {USA}},
+	series = {{MSR} '11},
+	title = {How developers use the dynamic features of programming languages: the case of smalltalk},
+	isbn = {978-1-4503-0574-7},
+	shorttitle = {How developers use the dynamic features of programming languages},
+	url = {http://doi.acm.org/10.1145/1985441.1985448},
+	doi = {10.1145/1985441.1985448},
+	abstract = {The dynamic and reflective features of programming languages are powerful constructs that programmers often mention as extremely useful. However, the ability to modify a program at runtime can be both a boon-in terms of flexibility-, and a curse-in terms of tool support. For instance, usage of these features hampers the design of type systems, the accuracy of static analysis techniques, or the introduction of optimizations by compilers. In this paper, we perform an empirical study of a large Smalltalk codebase- often regarded as the poster-child in terms of availability of these features-, in order to assess how much these features are actually used in practice, whether some are used more than others, and in which kinds of projects. These results are useful to make informed decisions about which features to consider when designing language extensions or tool support.},
+	booktitle = {Proceedings of the 8th Working Conference on Mining Software Repositories},
+	publisher = {{ACM}},
+	author = {Callaú, Oscar and Robbes, Romain and Tanter, Éric and Röthlisberger, David},
+	year = {2011},
+	keywords = {dynamic languages, smalltalk, static analysis},
+	pages = {23–32}
+},
+
 @article{wurthinger_array_2009,
 	title = {Array bounds check elimination in the context of deoptimization},
 	volume = {74},
@@ -114,6 +174,35 @@
 	author = {Hölzle, Urs and Chambers, Craig and Ungar, David},
 	year = {1992},
 	pages = {32–43}
+},
+
+@inproceedings{ancona_rpython:_2007,
+	address = {Montreal, Quebec, Canada},
+	title = {{RPython:} a step towards reconciling dynamically and statically typed {OO} languages},
+	isbn = {978-1-59593-868-8},
+	shorttitle = {{RPython}},
+	url = {http://portal.acm.org/citation.cfm?id=1297091},
+	doi = {10.1145/1297081.1297091},
+	abstract = {Although the C-based interpreter of Python is reasonably fast, implementations on the {CLI} or the {JVM} platforms offers some advantages in terms of robustness and interoperability. Unfortunately, because the {CLI} and {JVM} are primarily designed to execute statically typed, object-oriented languages, most dynamic language implementations cannot use the native bytecodes for common operations like method calls and exception handling; as a result, they are not able to take full advantage of the power offered by the {CLI} and {JVM.}},
+	booktitle = {{DLS}},
+	publisher = {{ACM}},
+	author = {Ancona, Davide and Ancona, Massimo and Cuni, Antonio and Matsakis, Nicholas D.},
+	year = {2007},
+	keywords = {{JVM}, .net, Python}
+},
+
+@inproceedings{rigo_pypys_2006,
+	address = {Portland, Oregon, {USA}},
+	title = {{PyPy's} approach to virtual machine construction},
+	isbn = {1-59593-491-X},
+	url = {http://portal.acm.org/citation.cfm?id=1176753},
+	doi = {10.1145/1176617.1176753},
+	abstract = {The {PyPy} project seeks to prove both on a research and a practical level the feasibility of constructing a virtual machine {(VM)} for a dynamic language in a dynamic language - in this case, Python. The aim is to translate (i.e. compile) the {VM} to arbitrary target environments, ranging in level from {C/Posix} to {Smalltalk/Squeak} via Java and {CLI/.NET}, while still being of reasonable efficiency within these {environments.A} key tool to achieve this goal is the systematic reuse of the Python language as a system programming language at various levels of our architecture and translation process. For each level, we design a corresponding type system and apply a generic type inference engine - for example, the garbage collector is written in a style that manipulates simulated pointer and address objects, and when translated to C these operations become C-level pointer and address instructions.},
+	booktitle = {{DLS}},
+	publisher = {{ACM}},
+	author = {Rigo, Armin and Pedroni, Samuele},
+	year = {2006},
+	keywords = {metacircularity, Python, retargettable code generation, type inference, {VM}}
 },
 
 @article{cytron_efficiently_1991,
@@ -152,6 +241,21 @@
 	author = {Paleczny, Michael and Vick, Christopher and Click, Cliff},
 	year = {2001},
 	keywords = {toread}
+},
+
+@incollection{bolz_back_2008,
+	title = {Back to the Future in One Week — Implementing a Smalltalk {VM} in {PyPy}},
+	url = {http://dx.doi.org/10.1007/978-3-540-89275-5_7},
+	abstract = {We report on our experiences with the Spy project, including implementation details and benchmark results. Spy is a re-implementation of the Squeak (i.e. Smalltalk-80) {VM} using the {PyPy} toolchain. The {PyPy} project allows code written in {RPython}, a subset of Python, to be translated
+to a multitude of different backends and architectures. During the translation, many aspects of the implementation can be
+independently tuned, such as the garbage collection algorithm or threading implementation. In this way, a whole host of interpreters
+can be derived from one abstract interpreter definition. Spy aims to bring these benefits to Squeak, allowing for greater portability and, eventually, improved performance. The current
+Spy codebase is able to run a small set of benchmarks that demonstrate performance superior to many similar Smalltalk {VMs}, but
+which still run slower than in Squeak itself. Spy was built from scratch over the course of a week during a joint Squeak-{PyPy} Sprint in Bern last autumn.},
+	booktitle = {Self-Sustaining Systems},
+	author = {Bolz, Carl Friedrich and Kuhn, Adrian and Lienhard, Adrian and Matsakis, Nicholas and Nierstrasz, Oscar and Renggli, Lukas and Rigo, Armin and Verwaest, Toon},
+	year = {2008},
+	pages = {123--139}
 },
 
 @article{holzle_third-generation_1994,
