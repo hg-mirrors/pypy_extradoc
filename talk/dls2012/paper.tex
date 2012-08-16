@@ -897,21 +897,9 @@ performance. I assume that non-numeric benchmarks show no slowdown in
 practice, and that might be worth noting.
 }
 
-\revc{
-I would have liked to have benchmark results for some larger applications.
-When is this optimization effective on a large scale, if ever?
-}
-\cfbolz{I don't actually know. Does anybody?}
-
 \revd{
 It isn't clear from the paper, but a reader might conclude that the bulk of the
 time savings are from removing boxing/unboxing operations.
-}
-
-\revd{
-This paper is relatively short, and could be significantly improved with a
-couple of pages of additional information about the details of the benchmarks
--- both on the Python and on the C side.
 }
 
 The loop peeling optimization was implemented in the PyPy
@@ -1039,6 +1027,8 @@ runtimes are compared in Figure~\ref{fig:benchmarks}.\footnote{
     The benchmarks and the scripts to run them can be found in the repository for this paper:
     \texttt{https://bitbucket.org/pypy/extradoc/src/ tip/talk/dls2012/benchmarks}
 }
+For benchmarks using larger Python applications the times are unaffected or
+slightly improved by the loop optimization of this paper.
 
 The benchmarks are
 \begin{itemize}
@@ -1117,11 +1107,12 @@ plain C. All the benchmarks except sqrt operate on C double-precision floating
 point numbers, both in the Python, C and Lua code.
 
 In addition we also ported the 
-SciMark\footnote{\texttt{http://math.nist.gov/scimark2/}} benchmakts to python, and compared 
-their runtimes with the already existing Lua and C implementations. 
-This port was performed after the release of the pypy used to run the benchmarks which means that 
-these benchmarks have not influenced the pypy implementation.
-SciMark consists of 
+SciMark\footnote{\texttt{http://math.nist.gov/scimark2/}} benchmarts to Python, and compared
+their runtimes with the already existing
+Lua\footnote{\texttt{http://luajit.org/download/scimark.lua}} and C
+implementations.
+
+SciMark consists of:
 
 \begin{itemize}
 \item {\bf SOR}$\left(n, c\right)$: Jacobi successive over-relaxation on a $n\times n$ grid repreated $c$ times.
