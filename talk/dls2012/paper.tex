@@ -231,12 +231,6 @@ sufficient to view RPython's tracing JIT as a JIT for RPython.
 \section{Motivation}
 \label{sec:Motivation}
 
-\revc{
-Don't break code listings across pages, as at the start of section 3.  It makes
-them very hard to follow.
-}
-\cfbolz{let's do that only at the very end, just before submitting}
-
 To motivate the approach we propose here, let's look at a trivial (unrealistic)
 trace which corresponds to an infinite loop:
 
@@ -473,13 +467,6 @@ first \lstinline{guard_class} instruction will fail and execution will continue
 using the interpreter.
 
 \section{Making Trace Optimizations Loop Aware}
-
-\revc{
-In general, the paper is over-long on generalities and too short on details.
-For example, the description of the basic technique at the beginning of section
-5 is the third time the idea is explained at basically the same level of detail
-(the others are in section 2 and section 4).
-}
 
 Before a trace is passed to the backend compiling it into machine code
 it is optimized to achieve better performance.
