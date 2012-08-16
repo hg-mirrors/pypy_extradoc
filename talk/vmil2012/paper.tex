@@ -24,9 +24,12 @@
 
 \definecolor{commentgray}{rgb}{0.3,0.3,0.3}
 
+\lstdefinelanguage{none}{
+      keywords={},
+}
 \lstset{
   basicstyle=\ttfamily\footnotesize,
-  language=Python,
+  language=none,
   keywordstyle=\bfseries,
   stringstyle=\color{blue},
   commentstyle=\color{commentgray}\textit,
@@ -82,6 +85,9 @@
 
 \renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
 
+\let\oldlstinline=\lstinline
+\renewcommand\lstinline[1]{\oldlstinline[basicstyle=\ttfamily]{#1}}
+
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 
 \begin{document}
@@ -121,7 +127,6 @@ measure various properties of guards.
 
 
 %___________________________________________________________________________
-\todo{better formatting for lstinline}
 \section{Introduction}
 
 Tracing just-in-time (JIT) compilers record and compile commonly executed
