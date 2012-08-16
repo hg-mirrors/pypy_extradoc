@@ -145,8 +145,8 @@ tracing JIT. All design decisions will be motivated by concrete numbers for the
 frequency and the overhead related to guards.
 
 It is important to handle guards well, because they are very common operations
-in the traces produced by tracing JITs. As can be seen in
-Figure~\ref{fig:guard_percent} guards account for about 14\% to 22\% of the
+in the traces produced by tracing JITs. As we will see later (Figure~\ref{fig:benchmarks})
+guards account for about 14\% to 22\% of the
 operations before and for about 15\% to 20\% of the operations after optimizing
 the traces generated for the different benchmarks used in this paper. An
 additional property is that guard failure rates are very uneven. The majority
@@ -179,12 +179,6 @@ RPython's tracing just-in-time compiler. the contributions of this paper are:
   \item a description about how guards are implemented in the high\-
   and low-level components of the JIT and describe the rationale behind the design
 \end{itemize}
-
-\begin{figure}
-    \include{figures/guard_table}
-    \caption{Percentage of guards before and after optimization for different benchmarks}
-    \label{fig:guard_percent}
-\end{figure}
 
 The set of central concepts upon which this work is based are described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
@@ -764,7 +758,7 @@ compared to the size of the generated machine code and illustrates why it is imp
     \include{figures/backend_table}
     \caption{Total size of generated machine code and resume data}
     \label{fig:backend_data}
-\end{figure}e.
+\end{figure}
 
 Why the efficient storing of the resume data is a central concern in the design
 of guards is illustrated by Figure~\ref{fig:resume_data_sizes}. This figure shows
@@ -800,7 +794,7 @@ attached bridge.
 
 \begin{figure}
     \include{figures/failing_guards_table}
-    \caption{Failing guards relative to the total number of guards}
+    \caption{Failing guards, guards with more than 200 failures and guards responsible for 50\% of the failures relative to the total number of guards}
     \label{fig:failing_guards}
 \end{figure}
 
@@ -809,7 +803,10 @@ of all the guards in the compiled traces ever fail. This amount varies between
 2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
 enough that a bridge is compiled for them, only 1.2\% to 3.6\% of all guards
 fail often enough that a bridge is compiled. Also, of all failing guards a few fail extremely often
-and most fail rarely. The results emphasize that as most of the guards never
+and most fail rarely. Reinforcing this notion the figure shows that, depending on the
+benchmark, between 0.008\% and 0.225\% of the guards are responsible for 50\%
+of the total guards failures.
+These results emphasize that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
 
