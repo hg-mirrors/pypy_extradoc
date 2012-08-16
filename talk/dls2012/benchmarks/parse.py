@@ -1,6 +1,19 @@
 
 import pdb, sys
 
+NAME_REPL = {
+    'dilate3x3(Array2D(1000x1000))': 'dilate3x3(1000,1000)',
+    'sobel_magnitude(1000,1000)': 'sobel(1000,1000)',
+    'conv3(array(1e5))': 'conv3(1e5)',
+    'conv3(array(1e6))': 'conv3(1e6)',
+    'conv5(array(1e5))': 'conv5(1e5)',
+    'conv5(array(1e6))': 'conv5(1e6)',
+    'sobel(Array2D(1000x1000))': 'sobel(1000,1000)',
+    'sobel(Array(1000x1000))': 'sobel(1000,1000)',
+    'conv3x3(Array2D(1000000x3))': 'conv3x3(1000000,3)',
+    'conv3x3(Array2D(1000x1000))': 'conv3x3(1000,1000)',
+}
+
 def main(name):
     interp = None
     res = {}
@@ -15,6 +28,7 @@ def main(name):
             else:
                 bench, rest = line.split(':')
                 bench = bench.replace(" ", "")
+                bench = NAME_REPL.get(bench, bench)
                 if '+-' in rest:
                     a, d = rest.split('+-')
                     res.setdefault(bench, {})[interp] = float(a), float(d)
