@@ -889,11 +889,19 @@ jump($L_1$, $p_{0}$, $i_{3}$, $i_8$)
 
 \section{Benchmarks}
 
-The loop peeling optimization was implemented in the PyPy
-framework in about 450 lines of RPython code. That means that the JIT-compilers generated for all
+The loop peeling optimization was implemented in RPython's tracing JIT
+in about 450 lines of RPython code. That means that the JIT-compilers generated for all
 interpreters implemented with RPython now can take advantage of
 it. Benchmarks have been executed for a few different interpreters and
-we see improvements in several cases. The ideal loop for this optimization
+we see improvements in several cases.
+
+An example of an RPython interpreter that is helped greatly by this
+optimization is our Prolog interpreter~\cite{bolz_towards_2010}. Prolog
+programs often contain tight loops that perform for example list processing.
+Furthermore we experimented with a Python library for writing numerical kernels
+doing array manipulation.
+
+The ideal loop for this optimization
 is short and contains numerical calculations with no failing guards and no
 external calls. Larger loops involving many operations on complex objects
 typically benefit less from it. Loop peeling never makes the generated code worse, in
@@ -962,7 +970,6 @@ sqrt(Fix16) & 463.46 & 5.12 $\pm$ 0.005 & 2.96 $\pm$ 0.007 & 12.80 $\pm$ 0.080 &
   specified.} 
 \end{figure*}
 
-\subsection{Python}
 The Python interpreter of the RPython framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python, C and Lua and their
@@ -976,7 +983,7 @@ slightly improved by the loop optimization of this paper.
 The benchmarks are
 \begin{itemize}
 \item {\bf sqrt}$\left(T\right)$: approximates the square root of $y$. The approximation is 
-initiated to $x_0=y/2$ and the benchmark consists of a single loop updating this
+initialized to $x_0=y/2$ and the benchmark consists of a single loop updating this
 approximation using $x_i = \left( x_{i-1} + y/x_{i-1} \right) / 2$ for $1\leq i < 10^8$. 
 Only the latest calculated value $x_i$ is kept alive as a local variable within the loop.
 There are three different versions of this benchmark where $x_i$
@@ -1060,7 +1067,7 @@ SciMark consists of:
 \begin{itemize}
 \item {\bf SOR}$\left(n, c\right)$: Jacobi successive over-relaxation on a $n\times n$ grid repreated $c$ times.
 The same custom two-dimensional array class as described above is used to represent
-the gird.
+the grid.
 \item {\bf SparseMatMult}$\left(n, z, c\right)$: Matrix multiplication between a $n\times n$ sparse matrix,
 stored in compressed-row format, and a full storage vector, stored in a normal array. The matrix has $z$ non-zero elements and the calculation is repeated $c$ times.
 \item {\bf MonteCarlo}$\left(n\right)$: Monte Carlo integration by generating $n$ points uniformly distributed over the unit square and computing the ratio of those within the unit circle.
@@ -1114,14 +1121,6 @@ The speedups that LuaJIT gains from the loop optimization pass are similar to
 those PyPy gains. In general, LuaJIT is even closer to C performance, sometimes
 even surpassing it. LuaJIT is generating machine code of higher quality because
 it has a much better register allocator than PyPy, among other things.
-
-Other interesting interpreters that are helped greatly by this optimization are
-for example our Prolog interpreter written in
-RPython~\cite{bolz_towards_2010}. Prolog programs often contain
-tight
-loops that perform list processing. Furthermore we experimented with a Python library
-for writing numerical kernels doing array manipulation. The exact extent is
-out of scope for this paper.
 
 \section{Related Work}
 \label{sec:related}
