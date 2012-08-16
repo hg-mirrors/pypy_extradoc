@@ -897,17 +897,6 @@ practice, and that might be worth noting.
 }
 
 \revc{
-Providing source code for the benchmarks measured are needed for others to
-reproduce and build on your results.  I believe this should be the minimum
-standard for publishing measurements such as these.
-}
-\cfbolz{
-let's link to the bitbucket source code view. how about we move the benchmarks
-to the dls directory as well? or their own repository, we've been using them as
-demos
-}
-
-\revc{
 I would have liked to have benchmark results for some larger applications.
 When is this optimization effective on a large scale, if ever?
 }
@@ -984,7 +973,12 @@ Variations & - & - & $\pm 0.03$ & $\pm 0.01$ & $\pm 0.01$ \\
 The Python interpreter of the RPython framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python and in C and their
-runtimes are compared in Figure~\ref{fig:benchmarks}. The benchmarks are
+runtimes are compared in Figure~\ref{fig:benchmarks}.\footnote{
+    The benchmarks and the scripts to run them can be found in the repository for this paper:
+    \texttt{https://bitbucket.org/pypy/extradoc/src/ tip/talk/dls2012/benchmarks}
+}
+
+The benchmarks are
 \begin{itemize}
 \item {\bf sqrt}: approximates the square root of $y$. The approximation is 
 initiated to $x_0=y/2$ and the benchmark consists of a single loop updating this
