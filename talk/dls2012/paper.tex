@@ -1009,7 +1009,7 @@ The memory for storing the matrices are again allocated outside the benchmark an
   size $3 \times 3$. This is similar to convolution but instead of
   summing over the terms in Equation~\ref{eq:convsum}, the maximum over those terms is taken. That places a
   external call to a max function within the loop that prevents some
-  of the optimizations.
+  of the optimizations for PyPy.
 \item {\bf sobel}$\left(n\right)$: a low-level video processing algorithm used to
   locate edges in an image. It calculates the gradient magnitude
   using sobel derivatives. A Sobel x-derivative, $D_x$, of a $n \times n$ image, ${I}$, is formed
