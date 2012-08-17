@@ -54,6 +54,9 @@ def main(name):
     resmat = np.zeros((len(res), len(order)))
     benchmarks = res.keys()
     benchmarks.sort()
+    assert benchmarks[-3] == "sqrt(Fix16)"
+    del benchmarks[-3]
+    benchmarks.append("sqrt(Fix16)")
     for i, key in enumerate(benchmarks):
         sys.stdout.write(key)
         for j, ord in enumerate(order):
