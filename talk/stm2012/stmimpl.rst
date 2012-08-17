@@ -22,6 +22,9 @@ the copy becomes global, and the old global object's header is updated
 with a pointer to the new global object.  We thus make a chained list
 of global versions.
 
+It is the job of the GC to collect the older versions when they are
+not referenced any more by any thread.
+
 
 CPUs model
 ----------
@@ -37,7 +40,7 @@ value as modified (self-consistency); but other CPUs might temporarily
 see the old value.
 
 The MFENCE instruction waits until all delayed stores from this CPU have
-been flushed.  (A CPU has no built-in way to wait until *other* CPU's
+been flushed.  (A CPU has no built-in way to wait until *other* CPUs'
 stores are flushed.)
 
 The LOCK CMPXCHG instruction does a MFENCE followed by an atomic
@@ -63,8 +66,8 @@ GC h_tid field.)
 - ``h_possibly_outdated`` is used as an optimization: it means that the
   object is possibly outdated.  It is False for all local objects.  It
   is also False if the object is a global object, is the most recent of
-  its chained list of versions, and is known to have no
-  ``global_to_local`` entry in any transaction.
+  its chained list of versions, and is known to have no modified local
+  version in any transaction.
 
 - ``h_written`` is set on local objects that have been written to.
 
