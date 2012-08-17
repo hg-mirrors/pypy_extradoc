@@ -77,10 +77,9 @@ practice they are just bits inside the GC h_tid field.)
 - ``h_revision`` on global objects depends on whether the object is the
   head of the chained list of revisions or not.  If it is, then
   ``h_revision`` contains the "timestamp" of the revision at which this
-  version of the object was committed.  For non-head revisions,
-  ``h_revision`` is a pointer to a more recent revision.  To distinguish
-  these two cases we set the lowest bit of ``h_revision`` in the latter
-  case.
+  version of the object was committed.  This is an odd number.  For
+  non-head revisions, ``h_revision`` is a pointer to a more recent
+  revision.  A pointer is always an even number.
 
 
 Transaction details
@@ -154,7 +153,7 @@ The read/write barriers are designed with the following goals in mind:
 
 - All barriers ensure that ``global_to_local`` satisfies the following
   property for any local object ``L``: either ``L`` was created by
-  this transaction (``L->h_revision == NULL``) or else satisfies
+  this transaction (``L->h_revision == 0``) or else satisfies
   ``global_to_local[L->h_revision] == L``.
 
 
@@ -180,8 +179,8 @@ Pseudo-code::
 
     def LatestGlobalRevision(G, ...):
         R = G
-        while (v := R->h_revision) & 1:    # "has a more recent revision"
-            R = v & ~ 1
+        while not (v := R->h_revision) & 1:# "is a pointer", i.e.
+            R = v                          #   "has a more recent revision"
         if v > start_time:                 # object too recent?
             Validate(global_cur_time)      # try to move start_time forward
             return LatestGlobalRevision(R) # restart searching from R
@@ -343,9 +342,9 @@ to the latest version::
     def PossiblyUpdateChain(G, R, R_Container, FieldName):
         if R != G:
             # compress the chain
-            while G->h_revision != R | 1:
-                G_next = G->h_revision & ~ 1
-                G->h_revision = R | 1
+            while G->h_revision != R:
+                G_next = G->h_revision
+                G->h_revision = R
                 G = G_next
             # update the original field
             R_Container->FieldName = R
@@ -369,8 +368,8 @@ new current time, ``cur_time``::
 
     def Validate(cur_time):
         for R in list_of_read_objects:
-            if R->h_revision & 1:
-                AbortTransaction()
+            if not (R->h_revision & 1): # "is a pointer", i.e.
+                AbortTransaction()      #   "has a more recent revision"
         start_time = cur_time
 
 Note that if such an object is modified by another commit, then this
@@ -389,24 +388,108 @@ Committing
 
 Committing is a four-steps process:
 
-- We first find all global objects that we have written to,
-  and mark them "locked" by putting in their ``h_revision`` field
-  a special value that will cause parallel CPUs to spin loop in
-  ``LatestGlobalRevision``.  We also prepare the local versions
-  of these objects to become the next head of the chained lists,
-  by fixing the headers.
+1. We first find all global objects that we have written to, and mark
+them "locked" by putting in their ``h_revision`` field a special value
+that will cause parallel CPUs to spin loop in ``LatestGlobalRevision``.
+We also prepare the local versions of these objects to become the next
+head of the chained lists, by fixing the headers.
 
-- We atomically increase the global time (with LOCK CPMXCHG).  This
-  causes a MFENCE too.  (Useful in later ports to non-x86 CPUs: it makes
-  sure that the local objects we are about to expose are fully visible
-  to other CPUs, in their latest and last version.)
+2. We atomically increase the global time (with LOCK CMPXCHG).  This
+causes a MFENCE too: all prepared local objects are visible to all other
+CPUs afterwards.
 
-- We check again that all read objects are still up-to-date, i.e. have
-  not been replaced by a revision more recent than ``start_time``.
-  (This is the last chance to abort a conflicting transaction; if we
-  do, we have to remember to release the locks.)
+3. We check again that all read objects are still up-to-date, i.e. have
+not been replaced by a revision more recent than ``start_time``.  (This
+is the last chance to abort a conflicting transaction; if we do, we have
+to remember to release the locks.)
 
-- Finally, we fix the global objects written to by overriding their
-  ``h_revision``.  We put there a pointer to the previously-local
-  object, ``| 1``.  The previously-local object plays from now on
-  the role of the global head of the chained list.
+4. Finally, we unlock the global objects by overriding their
+``h_revision``.  We put there now a pointer to the corresponding
+previously-local object.  The previously-local object plays from now on
+the role of the global head of the chained list.
+
+In pseudo-code::
+
+    def CommitTransaction():
+        cur_time = global_cur_time
+        AcquireLocks(cur_time)
+        while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
+            cur_time = global_cur_time    # try again
+            AcquireLocksAgain(cur_time)
+        Validate(cur_time)
+        UpdateChainHeads()
+
+Note the general style of usage of CMPXCHG: we first read normally the
+current version of some data (here ``global_cur_time``), do some
+preparations based on this value (here ``AcquireLocks``), and then do
+the expensive CMPXCHG operation.  It checks atomically if the value 
+of the data is still equal to the old value; if yes, it replaces it
+with a new specified value and returns True; otherwise, it simply
+returns False.  In the latter case we just loop again.
+
+Here is ``AcquireLocks``, doing both the locking of the global objects
+and the fixing of the local objects.  This is done together *before* we
+use CMPXCHG, so that after a successful CMPXCHG the other CPUs are
+guaranteed to see the new values --- both the locks and the
+previously-local objects with the proper fixes.
+
+Note that "locking" here only means writing a -1 in the ``h_revision``
+field; it does not involve OS-specific thread locks::
+
+    def AcquireLocks(cur_time):
+        new_revision = cur_time + 1     # make an odd number
+        for (R, L) in global_to_local:
+            L->h_revision = new_revision
+            L->h_global = True
+            L->h_written = False
+            assert L->h_possibly_outdated == False
+            v = R->h_revision
+            if not (v & 1):         # "is a pointer", i.e.
+                AbortTransaction()  #   "has a more recent revision"
+            if v == -1:
+                AbortTransaction()  # already locked by someone else
+            if not CMPXCHG(&R->h_revision, v, -1):
+                AbortTransaction()  # just changed by someone else
+            locks_to_cancel.add(R, v)
+
+We use CMPXCHG to store the lock.  This is required, because we must
+not conflict with another CPU that would try to write the same lock
+in the same field --- in that case, only one CPU can succeed.
+
+The lock's value is more precisely the *unsigned* equivalent of -1, i.e.
+the largest integer.  It is also an odd number.  As we can check, this
+is enough to cause ``LatestGlobalRevision`` to spin loop, calling
+``Validate`` over and over again, until the lock is released (i.e.
+another value is written in ``h_revision``).
+
+``AcquireLocksAgain`` is called instead of ``AcquireLocks`` if the first
+CMPXCHG fails in ``CommitTransaction``.  It just needs to update the
+previously-local object's ``h_revision``, keeping the already-acquired
+locks::
+
+    def AcquireLocksAgain(cur_time):
+        new_revision = cur_time + 1
+        for (R, L) in global_to_local:
+            L->h_revision = new_revision
+
+
+In case ``AbortTransaction`` is called, it must release the locks.  This
+is done by writing back the original timestamps in the ``h_revision``
+fields::
+
+    def AbortTransaction():
+        for R, v in locks_to_cancel:
+            R->h_revision = v
+        # call longjmp(), which is the function from C
+        # going back to the transaction start
+        longjmp()
+
+
+Finally, in case of a successful commit, ``UpdateChainHeads`` also
+releases the locks --- but it does so by writing in ``h_revision`` a
+pointer to the previously-local object, thus increasing the length of
+the chained list by one::
+
+    def UpdateChainHeads():
+        for (R, L) in global_to_local:
+            R->h_version = L
