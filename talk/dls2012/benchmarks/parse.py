@@ -79,18 +79,25 @@ def main(name):
     #plt.subplot(111).set_xscale("log")
     r = plt.plot([1, 1], [0, len(res)+0.5], 'k--')
     legend = ([r[0]], ['gcc -O3'])
+    max_factor = 10
     for i, l  in enumerate(labels):
         if not l:
             continue
         bottoms = x + (len(labels) - 1 - i) * width + 0.3/2
         print bottoms
-        r = plt.barh(bottoms, resmat[:,i]/resmat[:,-1], width,
+        result = resmat[:,i]/resmat[:,-1]
+        for k, entry in enumerate(result):
+            if entry > max_factor:
+                print bottoms[k], 1
+                plt.text(max_factor, bottoms[k], " %.1fx" % entry)
+                result[k] = max_factor
+        r = plt.barh(bottoms, result, width,
                      color=str(1. / (len(labels) - 1) * i))
         legend[0].append(r[0])
         legend[1].append(l)
     plt.yticks(x + 0.5 + width, benchmarks)
-    plt.subplots_adjust(left=0.35, right=0.95, top=0.99, bottom=0.02)
-    plt.legend(*legend)
+    plt.subplots_adjust(left=0.35, right=0.93, top=0.99, bottom=0.02)
+    plt.legend(*legend, loc=4)
     plt.ylim((0, len(res)+0.5))
     #plt.show()
     plt.savefig('result.pdf')
