@@ -223,8 +223,8 @@ RPython can mean one of two things:
  \item the language itself
  \item the translation toolchain used to transform RPython programs to executable units
 \end{itemize}
-The RPython language, is a subset of Python that provides a
-statically typed object-oriented high level language. The subset of Python available in RPython is chosen in a way type inference is possible\cite{ancona_rpython:_2007}.
+The RPython language is a
+statically typed object-oriented high-level subset of Python. The subset is chosen in such a way to make type inference possible\cite{ancona_rpython:_2007}.
 The language provides
 several features such as automatic memory management
 and just-in-time compilation. When writing an interpreter using RPython the
@@ -850,7 +850,7 @@ of snapshots for every guard to reduce memory pressure. Snapshots are only
 created for guards after updates to the global state, after control flow points
 from the original program and for guards that are likely to fail. As an outlook
 Pall mentions plans to switch to compressed snapshots to further reduce
-redundancy.\footnote{This optimization is now implemented in LuaJIT, at the time of writing it has not been fully documented in the LuaJIT Wiki (\url{http://wiki.luajit.org/Optimizations\#1-D-Snapshot-Compression}).}
+redundancy.\footnote{This optimization is now implemented in LuaJIT, at the time of writing it has not been fully documented in the LuaJIT Wiki: \url{http://wiki.luajit.org/Optimizations\#1-D-Snapshot-Compression}}
 The approach of not creating snapshots at all for every guard is
 orthogonal to the resume data compression presented in this paper and could be
 reused within RPython to improve the memory usage further.
