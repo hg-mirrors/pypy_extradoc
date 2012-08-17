@@ -19,6 +19,13 @@ NAME_REPL = {
     'conv3x3(3)': 'conv3x3(1000000,3)',
 }
 
+IGNORE = {
+    "conv3(1e5)",
+    "conv5(1e5)",
+    "conv5(1e6)",
+    "conv3x3(1000000,3)",
+}
+
 def main(name):
     interp = None
     res = {}
@@ -35,6 +42,8 @@ def main(name):
                 bench, rest = line.split(':')
                 bench = bench.replace(" ", "")
                 bench = NAME_REPL.get(bench, bench)
+                if bench in IGNORE:
+                    continue
                 if '+-' in rest:
                     a, d = rest.split('+-')
                     res.setdefault(bench, {})[interp] = float(a), float(d)
