@@ -19,7 +19,11 @@ If a following transaction modifies a global object, the changes are
 done in a local copy.  If this transaction successfully commits, the
 original global object is *not* changed --- it is really immutable.  But
 the copy becomes global, and the old global object's header is updated
-with a pointer to the new global object.
+with a pointer to the new global object.  We thus make a chained list
+of global revisions.
+
+It is the job of the GC to collect the older revisions when they are
+not referenced any more by any thread.
 
 
 CPUs model
@@ -31,12 +35,12 @@ every CPU's load instructions get the current value from the main memory
 be delayed and only show up later in main memory.  The delayed stores
 are always flushed to main memory in program order.
 
-Of course if the same CPU loads a value just stored, it will see the
+Of course if the same CPU loads a value it just stored, it will see the
 value as modified (self-consistency); but other CPUs might temporarily
-still see the old value.
+see the old value.
 
 The MFENCE instruction waits until all delayed stores from this CPU have
-been flushed.  (A CPU has no built-in way to wait until *other* CPU's
+been flushed.  (A CPU has no built-in way to wait until *other* CPUs'
 stores are flushed.)
 
 The LOCK CMPXCHG instruction does a MFENCE followed by an atomic
@@ -49,12 +53,34 @@ Object header
 Every object starts with three fields:
 
 - h_global (boolean)
-- h_nonmodified (boolean)
-- h_version (unsigned integer)
+- h_possibly_outdated (boolean)
+- h_written (boolean)
+- h_revision (unsigned integer)
 
-The h_version is an unsigned "version number".  More about it below.
-The other two fields are flags.  (In practice they are just two bits
-of the GC h_tid field.)
+The h_revision is an unsigned "revision number" that can also
+alternatively contain a pointer.  The other fields are flags.  (In
+practice they are just bits inside the GC h_tid field.)
+
+- ``h_global`` means that the object is a global object.
+
+- ``h_possibly_outdated`` is used as an optimization: it means that the
+  object is possibly outdated.  It is False for all local objects.  It
+  is also False if the object is a global object, is the most recent of
+  its chained list of revisions, and is known to have no modified local
+  version in any transaction.
+
+- ``h_written`` is set on local objects that have been written to.
+
+- ``h_revision`` on local objects points to the global object that they
+  come from, if any; otherwise it is NULL.
+
+- ``h_revision`` on global objects depends on whether the object is the
+  head of the chained list of revisions or not.  If it is, then
+  ``h_revision`` contains the "timestamp" of the revision at which this
+  version of the object was committed.  For non-head revisions,
+  ``h_revision`` is a pointer to a more recent revision.  To distinguish
+  these two cases we set the lowest bit of ``h_revision`` in the latter
+  case.
 
 
 Transaction details
@@ -64,60 +90,99 @@ Every CPU is either running one transaction, or is busy trying to commit
 the transaction it has so far.  The following data is transaction-local:
 
 - start_time
-- global2local
+- global_to_local
+- list_of_read_objects
+- recent_reads_cache
 
 The ``start_time`` is the "time" at which the transaction started.  All
 reads and writes done so far in the transaction appear consistent with
 the state at time ``start_time``.  The "time" is a single global number
 that is atomically incremented whenever a transaction commits.
 
-``global2local`` is a dictionary-like mapping of global objects to their
-corresponding local objects.
+``global_to_local`` is a dictionary-like mapping of global objects to
+their corresponding local objects.
+
+``list_of_read_objects`` is a set of all global objects read from, in
+the revision that was used for reading.  It is actually implemented as a
+list, but the order or repetition of elements in the list is irrelevant.
+
+``recent_reads_cache`` is a fixed-size cache that remembers recent
+additions to the preceeding list, in order to avoid inserting too much
+repeated entries into the list, as well as keep lightweight statistics.
 
 
-Pseudo-code during transactions
+Read/write barriers design
 ---------------------------------------
 
-Variable names:
+The read/write barriers are designed with the following goals in mind:
 
-* ``P`` is a pointer to any object.
+- In the source code (graphs from RPython), variables containing
+  pointers can be annotated as beloning to one of 6 categories:
 
-* ``G`` is a pointer to a *global* object.
+  * ``P`` is a pointer to any object.
 
-* ``R`` is a pointer to an object that was checked for being
-  *read-ready*: reading its fields is ok.
+  * ``G`` is a pointer to a *global* object.
 
-* ``L`` is a pointer to a *local* object.  Reading its fields is
-  always ok, but not necessarily writing.
+  * ``R`` is a pointer to an object that was checked for being
+    *read-ready*: reading its fields is ok.
 
-* ``W`` is a pointer to a local object ready to *write*.
+  * ``O`` is an *old* pointer that used to be read-ready, but in which
+    we may have written to in the meantime
+
+  * ``L`` is a pointer to a *local* object.  We can always read from
+    but not necessarily write to local objects.
+
+  * ``W`` is a pointer to a *writable* local object.
+
+- The goal is to insert calls to the following write barriers so that we
+  only ever read from objects in the ``R``, ``L`` or ``W`` categories,
+  and only ever write to objects in the ``W`` category.
+
+- The read barriers themselves need to ensure that
+  ``list_of_read_objects`` contains exactly the set of global objects
+  that have been read from.  These objects must all be of the most
+  recent revision that is not more recent than ``start_time``.  If an
+  object has got a revision more recent than ``start_time``, then the
+  current transaction is in conflict.  The transaction is aborted as
+  soon as this case is detected.
+
+- The write barriers make sure that all modified objects are local and
+  the ``h_written`` flag is set.
+
+- All barriers ensure that ``global_to_local`` satisfies the following
+  property for any local object ``L``: either ``L`` was created by
+  this transaction (``L->h_revision == NULL``) or else satisfy
+  ``global_to_local[L->h_revision] == L``.
 
 
-``W = Allocate(size)`` allocates a local object, and as the name of
-the variable suggests, returns it ready to write::
+Pseudo-code for read/write barriers
+---------------------------------------
+
+``W = Allocate(size)`` allocates a local object::
 
     def Allocate(size):
         W = malloc(size)
         W->h_global = False
-        W->h_nonmodified = False
-        W->h_version = 0
+        W->h_possibly_outdated = False
+        W->h_written = True
+        W->h_revision = 0
         return W
 
 
-``R = LatestGlobalVersion(G)`` takes a pointer ``G`` to a global object,
-and if necessary follows the chain of newer versions, until it reaches
-the most recent version ``R``.  Then it checks the version number of
+``R = LatestGlobalRevision(G)`` takes a pointer ``G`` to a global object,
+and if necessary follows the chain of newer revisions, until it reaches
+the most recent revision ``R``.  Then it checks the revision number of
 ``R`` to see that it was not created after ``start_time``.
 Pseudo-code::
 
-    def LatestGlobalVersion(G):
+    def LatestGlobalRevision(G, ...):
         R = G
-        while (v := R->h_version) & 1:    # "has a more recent version"
+        while (v := R->h_revision) & 1:    # "has a more recent revision"
             R = v & ~ 1
-        if v > start_time:                # object too recent?
-            validate_fast()               # try to move start_time forward
-            return LatestGlobalVersion(G) # restart searching from G
-        PossiblyUpdateChain(G)
+        if v > start_time:                 # object too recent?
+            ValidateFast()                 # try to move start_time forward
+            return LatestGlobalRevision(G) # restart searching from G
+        PossiblyUpdateChain(G, R, ...)     # see below
         return R
 
 
@@ -125,107 +190,165 @@ Pseudo-code::
 It takes a random pointer ``P`` and returns a possibly different pointer
 ``R`` out of which we can read from the object.  The result ``R``
 remains valid for read access until either the current transaction ends,
-or until a write into the same object is done.
+or until a write into the same object is done.  Pseudo-code::
 
-::
-
-    def DirectReadBarrier(P):
-        if not P->h_global:         # fast-path
+    def DirectReadBarrier(P, ...):
+        if not P->h_global:                    # fast-path
             return P
-        R = LatestGlobalVersion(P)
-        if R in global2local:
-            L = global2local[R]
-            return L
+        if not P->h_possibly_outdated:
+            R = P
         else:
-            AddInReadSet(R)         # see below
-            return R
+            R = LatestGlobalRevision(P, ...)
+            if R->h_possibly_outdated and R in global_to_local:
+                L = ReadGlobalToLocal(R, ...)  # see below
+                return L
+        R = AddInReadSet(R)                    # see below
+        return R
 
 
-``L = Localize(R)`` is an operation that takes a read-ready pointer to
-a global object and returns a corresponding pointer to a local object.
+A simple optimization is possible.  Assume that ``O`` is a pointer
+returned by a previous call to ``DirectReadBarrier`` and the current
+transaction is still running, but we could have written to ``O`` in the
+meantime.  Then we need to repeat only part of the logic, because we
+don't need ``AddInReadSet`` again.  It gives this::
 
-::
+    def RepeatReadBarrier(O, ...):
+        if not O->h_possibly_outdated:       # fast-path
+            return O
+        # LatestGlobalRevision(R) would either return R or abort
+        # the whole transaction, so omitting it is not wrong
+        if O in global_to_local:
+            L = ReadGlobalToLocal(O, ...)    # see below
+            return L
+        R = O
+        return R
+
+
+``L = Localize(R)`` is an operation that takes a read-ready pointer to a
+global object and returns a corresponding pointer to a local object::
 
     def Localize(R):
-        if P in global2local:
-            return global2local[P]
+        if R in global_to_local:
+            return global_to_local[R]
         L = malloc(sizeof R)
-        L->h_nonmodified = True
-        L->h_version = P
+        L->h_global = False
+        L->h_possibly_outdated = False
+        L->h_written = False
+        L->h_revision = R          # back-reference to the original
         L->objectbody... = R->objectbody...
-        global2local[R] = L
+        global_to_local[R] = L
         return L
 
 
-``L = LocalizeReadBarrier(P)`` is a different version of the read
-barrier that works by returning a local object.
-
-::
-
-    def LocalizeReadBarrier(P):
-        if not P->h_global:       # fast-path
-            return P
-        R = LatestGlobalVersion(P)
-        L = Localize(R)
-        return L
-
-
-``W = WriteBarrier(P)`` is the write barrier.
-
-::
+``W = WriteBarrier(P)`` and ``W = WriteBarrierFromReadReady(R)`` are
+two versions of the write barrier::
 
     def WriteBarrier(P):
-        W = LocalizeReadBarrier(P)
-        W->h_nonmodified = False
+        if not P->h_global:       # fast-path
+            return P
+        if P->h_possibly_outdated:
+            R = LatestGlobalRevision(P)
+        else:
+            R = P
+        W = Localize(R)
+        W->h_written = True
+        R->h_possibly_outdated = True
+        return W
+
+    def WriteBarrierFromReadReady(P):
+        if not R->h_global:       # fast-path
+            return R
+        W = Localize(R)
+        W->h_written = True
+        R->h_possibly_outdated = True
         return W
 
 
-``R = AdaptiveReadBarrier(P)`` is the adaptive read barrier.  It can use
-the technique of either ``DirectReadBarrier`` or
-``LocalizeReadBarrier``, based on heuristics for better performance::
+Auto-localization of some objects
+----------------------------------------
 
-    def AdaptiveReadBarrier(P):
-        if not P->h_global:       # fast-path
-            return P
-        R = LatestGlobalVersion(P)
-        if R in global2local:
-            return global2local[R]
-        if R seen often enough in readset:
-            L = Localize(R)       # LocalizeReadBarrier
-            return L
-        else:
-            AddInReadSet(R)       # DirectReadBarrier
+The "fast-path" markers above are quick checks that are supposed to be
+inlined in the caller, so that we only have to pay for a full call to a
+barrier implementation when the fast-path fails.
+
+However, even the fast-path of ``DirectReadBarrier`` fails repeatedly
+when the ``DirectReadBarrier`` is invoked repeatedly on the same set of
+global objects.  This occurs in example of code that repeatedly
+traverses the same data structure, visiting the same objects over and
+over again.
+
+If the objects that make up the data structure were local, then we would
+completely avoid triggering the read barrier's implementation.  So
+occasionally, it is better to *localize* global objects even when they
+are only read from.
+
+The idea of localization is to break the strict rule that, as long as we
+don't write anything, we can only find more global objects starting from
+a global object.  This is relaxed here by occasionally making a local
+copy even though we don't write to the object.
+
+This is done by tweaking ``AddInReadSet``, whose main purpose is to
+record the read object in a set (actually a list)::
+
+    def AddInReadSet(R):
+        if R not in recent_reads_cache:
+            list_of_read_objects.append(R)
+            recent_reads_cache[R] = 1
+            # the cache is fixed-size, so the line above
+            # possibly evinces another older entry
             return R
+        else:
+            count = recent_reads_cache[R]
+            count += 1
+            recent_reads_cache[R] = count
+            if count < THRESHOLD:
+                return R
+            else:
+                L = Localize(R) 
+                return L
 
 
-This adaptive localization of read-only objects is useful for example in
-the following situation: we have a pointer ``P1`` to some parent object,
-out of which we repeatedly try to read the same field ``Field`` and use
-the result ``P`` in some call.  Because the call may possibly have write
-effects to the parent object, we normally need to redo
-``DirectReadBarrier`` on ``P1`` every time.  If instead we do
-``AdaptiveReadBarrier`` then after a few iterations it will localize the
-object and return ``L1``.  On ``L1`` no read barrier is needed any more.
+Note that the localized objects are just copies of the global objects.
+So all the pointers they normally contain are pointers to further global
+objects.  If we have a data structure involving a number of objects,
+when traversing it we are going to fetch global pointers out of
+localized objects, and we still need read barriers to go from the global
+objects to the next local objects.
 
-Moreover, if we also need to read the subobject ``P``, we also need to
-call a read barrier on it every time.  It may return ``L`` after a few
-iterations, but this time we win less, because during the next iteration
-we again read ``P`` out of ``L1``.  The trick is that when we read a
-field out of a local object ``L1``, and it is a pointer on which we
-subsequently do a read barrier, then afterwards we can update the
-original pointer directly in ``L1``.
+To get the most out of the optimization above, we also need to "fix"
+local objects to change their pointers to go directly to further
+local objects.
 
-Similarily, if we start with a global ``R1`` and read a pointer ``P``
-which is updated to its latest global version ``R``, then we can update
-the original pointer in-place.
+So ``L = ReadGlobalToLocal(R, R_Container, FieldName)`` is called with
+optionally ``R_Container`` and ``FieldName`` referencing some
+container's field out of which ``R`` was read::
 
-The only case in which it is not permitted xxx
-
-::
-
-    def DependentUpdate(R1, Field, R):
-        if R1->h_global:     # can't modify R1 unless it is local
-            return
-        R1->Field = R        # possibly update the pointer
+    def ReadGlobalToLocal(R, R_Container, FieldName):
+        L = global_to_local[R]
+        if not R_Container->h_global:
+            L_Container = R_Container
+            L_Container->FieldName = L     # fix in-place
+        return L
 
 
+Finally, a similar optimization can be applied in
+``LatestGlobalRevision``.  After it follows the chain of global
+revisions, it can "compress" that chain in case it contained several
+hops, and also update the original container's field to point directly
+to the latest version::
+
+    def PossiblyUpdateChain(G, R, R_Container, FieldName):
+        if R != G:
+            # compress the chain
+            while G->h_revision != R | 1:
+                G_next = G->h_revision & ~ 1
+                G->h_revision = R | 1
+                G = G_next
+            # update the original field
+            R_Container->FieldName = R
+
+
+Committing
+------------------------------------
+
+xxxx
