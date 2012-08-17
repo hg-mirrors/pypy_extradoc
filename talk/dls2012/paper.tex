@@ -1135,13 +1135,17 @@ it has more optimizations\footnote{See
 \texttt{http://wiki.luajit.org/Optimizations}} and produces much better
 machine code than PyPy.
 
-The slowdown of sqrt(Fix16) compared to sqrt(int) or sqrt(float) show the
+The performance of sqrt(Fix16) compared to the C version gives an indication of the
 overhead of using a custom class with operator overloading for arithmetic. For
-C/C++, this overhead is very low, for CPython the code becomes 30 times slower.
-In LuaJIT, the overhead is a slowdown of 70\%. For PyPy, sqrt(Fix16) is only
-slightly slower than sqrt(int), which is itself three times slower than
-sqrt(float). This is probably due to the additional overflow checking necessary
-for integer arithmetic in Python. The fact that LuaJIT and PyPy do so well on
+CPython the overhead over C is a lot larger than that of sqrt(int).
+In LuaJIT, the overhead is very small. For PyPy, sqrt(Fix16) 2.2 times slower
+than the C version. However, that is not actually due to the overhead of
+operator overloading but due to the additional overflow checking necessary
+for integer arithmetic in Python. The JIT does not manage to prove that the
+integer operations in these benchmarks cannot overflow and therefore cannot
+optimize away the overflow checking. This is also the reason why sqrt(float) is
+so much faster than sqrt(int) for PyPy.
+The fact that LuaJIT and PyPy do so well on
 sqrt(Fix16) shows that the allocation removal/sinking optimizations work well
 in both JITs.
 
