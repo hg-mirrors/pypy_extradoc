@@ -154,7 +154,7 @@ The read/write barriers are designed with the following goals in mind:
 
 - All barriers ensure that ``global_to_local`` satisfies the following
   property for any local object ``L``: either ``L`` was created by
-  this transaction (``L->h_revision == NULL``) or else satisfy
+  this transaction (``L->h_revision == NULL``) or else satisfies
   ``global_to_local[L->h_revision] == L``.
 
 
@@ -183,8 +183,8 @@ Pseudo-code::
         while (v := R->h_revision) & 1:    # "has a more recent revision"
             R = v & ~ 1
         if v > start_time:                 # object too recent?
-            ValidateFast()                 # try to move start_time forward
-            return LatestGlobalRevision(G) # restart searching from G
+            Validate(global_cur_time)      # try to move start_time forward
+            return LatestGlobalRevision(R) # restart searching from R
         PossiblyUpdateChain(G, R, ...)     # see below
         return R
 
@@ -357,6 +357,31 @@ updating the same field to possibly different values, it is undefined
 what exactly occurs: other CPUs can see either the original or any of
 the modified values.  It works because the original and each modified
 value are all interchangeable as far as correctness goes.
+
+
+Validation
+------------------------------------
+
+``Validate(cur_time)`` is called during a transaction to update
+``start_time``, as well as during committing.  It makes sure that none
+of the read objects have been modified between ``start_time`` and the
+new current time, ``cur_time``::
+
+    def Validate(cur_time):
+        for R in list_of_read_objects:
+            if R->h_revision & 1:
+                AbortTransaction()
+        start_time = cur_time
+
+Note that if such an object is modified by another commit, then this
+transaction will eventually fail --- the next time ``Validate`` is
+called, which may be during our own attempt to commit.  But
+``LatestGlobalRevision`` also calls ``Validate`` whenever it sees an
+object more recent than ``start_time``.  It is never possible that new
+object revisions may be added by other CPUs with a time lower than or
+equal to ``start_time``.  So this guarantees consistency: the program
+will never see during the same transaction two different versions of the
+same object.
 
 
 Committing
