@@ -999,6 +999,11 @@ There are three different versions of this benchmark where $x_i$
   depending on the class of it's input argument, $y$, while in C,
   there are three different implementations. In Lua there is no support for
   integers so only the floating point number is provided.
+  
+  XXX fix me: mikepall fijal, cfbolz: Also, sqrt(Fix16) is now a
+  meaningful result, but the text describing the benchmarks hasn't
+  changed.
+  
 \item {\bf conv3}$\left(n\right)$: one-dimensional convolution with fixed kernel-size $3$. A single loop
 is used to calculate a vector ${\bf b} = \left(b_1, \cdots, b_{n-2}\right)$ from a vector
 ${\bf a} = \left(a_1, \cdots, a_n\right)$ and a kernel ${\bf k} = \left(k_1, k_2, k_3\right)$ using 
