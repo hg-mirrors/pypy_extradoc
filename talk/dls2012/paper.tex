@@ -135,9 +135,8 @@ for making basic optimizations loop-aware by
 using a simple pre-processing step on the trace without changing the
 optimizations themselves.
 
-We have implemented the scheme in PyPy's tracing JIT compiler,
-where it can give performance improvements of a
-factor over two for PyPy's Python JIT executing simple numerical kernels
+We have implemented the scheme in RPython's tracing JIT compiler. PyPy's Python
+JIT executing simple numerical kernels can become up to two times faster,
 bringing the performance into the ballpark of static language compilers.
 \end{abstract}
 
@@ -177,7 +176,7 @@ optimizers ignore the only bit of control flow they have available, which is
 the fact that most traces actually represent loops. Making use of this
 information is necessary to perform optimizations that take the whole loop into
 account, such as loop-invariant code
-motion or optimizations that improve across several iterations of the loop.
+motion or optimizations that improve several iterations of the loop.
 Having to deal with this property of traces complicates the optimization passes,
 as a more global view of a trace needs to be considered when optimizing.
 
@@ -450,17 +449,12 @@ in Figure~\ref{fig:objmodel}:
     \item \lstinline{new} creates a new object.
     \item \lstinline{get} reads an attribute of an object.
     \item \lstinline{set} writes to an attribute of an object.
-    \item \lstinline{guard_class} is a precise type check. It typically precedes
-    an (inlined) method call and is followed by the trace of the called method.
-    The type that the guard checks for is the one that the variable had during
-    tracing.
+    \item \lstinline{guard_class} is a precise type check, not checking for subclasses.
 \end{itemize}
 
-Method calls in the trace are preceded by a \lstinline{guard_class}
+Inlined method calls in the trace are preceded by a \lstinline{guard_class}
 operation, to check that the class of the receiver is the same as the one that
-was observed during tracing.\footnote{\lstinline{guard_class}
-performs a precise
-class check, not checking for subclasses.} These guards make the trace specific
+was observed during tracing. These guards make the trace specific
 to the situation where \lstinline{y} is really a \lstinline{BoxedInteger}. When
 the trace is turned into machine code and afterwards executed with
 \lstinline{BoxedFloat}, the
@@ -469,10 +463,10 @@ using the interpreter.
 
 \section{Making Trace Optimizations Loop Aware}
 
-Before a trace is passed to the backend compiling it into machine code
+Before a trace is compiled to machine code by the backend,
 it is optimized to achieve better performance.
 One goal of that is to move 
-operations out of the loop making them executed only once
+operations out of the loop to execute them only once
 and not every iteration. This can be achieved by loop peeling. It
 leaves the loop body intact, but prefixes it with one iteration of the
 loop. This operation by itself will not achieve anything. But if it is
@@ -493,7 +487,7 @@ loop peeling.
 \label{fig:overview}
 \end{figure}
 
-Loop peeling is achieved by appending an copy of the traced iteration at
+Loop peeling is achieved by appending a copy of the traced iteration at
 the end of itself. See Figure~\ref{fig:overview} for an illustration.
 The first part (called \emph{preamble}) finishes with a jump to the second part
 (called the \emph{peeled loop}). The second part finishes with a jump to itself. This way
@@ -502,7 +496,7 @@ be used for every further iteration. New variable names have to be
 introduced in the entire copied trace in order to maintain the SSA-property.
 
 When peeling the loop, no assumptions are made that the preamble is
-the \emph{first} iteration when later executing the loop. The preamble stays
+the \emph{first} iteration, when later executing the loop. The preamble stays
 general enough to correspond to any iteration of the loop.
 However, the peeled loop can then be optimized using the assumption that a
 previous iteration (the preamble) has been executed already.
@@ -513,7 +507,7 @@ When applying optimizations to this two-iteration trace
 some care has to taken as to how the arguments of the two
 \lstinline{jump} operations and the input arguments of the peeled loop are
 treated. It has to be ensured that the peeled loop stays a proper
-trace in the sense that the operations within it only operates on
+trace in the sense that the operations within it only operate on
 variables that are either among its input arguments 
 or produced within the peeled loop. To ensure this we need
 to introduce a bit of formalism.
@@ -617,6 +611,9 @@ jump($L_1$, $p_{0}$, $p_{9}$)
 
 \subsection{Redundant Guard Removal}
 
+Redundant guard removal removes guards that are implied by other guards earlier
+in the trace. The most common case is the removal of a guard that has already
+appeared.
 No special concern needs to be taken when implementing redundant
 guard removal together with loop peeling. The guards from
 the preamble might make the guards of the peeled loop
@@ -658,7 +655,8 @@ the guards of the previous iteration.
 
 If a pure operation appears more than once in the trace with the same input
 arguments, it only needs to be executed the first time and then the result
-can be reused for all other appearances. RPython's optimizers can also remove
+can be reused for all other appearances. This is achieved by common
+subexpression elimination. RPython's optimizers can also remove
 repeated heap reads if the intermediate operations cannot have changed their
 value.\footnote{We perform a type-based alias analysis to know which
 writes can affect which reads~\cite{diwan_type-based_1998}. In addition writes
@@ -742,16 +740,19 @@ and
 In the optimized trace $J$ is replaced by $\hat J$ and $K$ by $\hat
 K$.
 
-It is interesting to note that the described approach automatically deals with
-implicit control dependencies correctly, whereas in other approaches this needs
+It is interesting to note that the described approach deals correctly with
+implicit control dependencies, whereas in other approaches this needs
 to be carefully programmed in. A commonly used example for a control dependency
 is a division operation that needs to be preceded by a check for the second
 argument being 0. In a trace, such a check would be done with a guard. The
 division operation must not be moved before that guard, and indeed, this is
-never done. If the division is loop invariant, the result computed in copy of
+never done. If the division is loop invariant, the result computed by the copy of
 the division operation in the preamble is reused. This division operation is
-preceded by a copy of the non-null guard, which ensures that it can be executed
-correctly.
+preceded by a copy of the guard that checks that the second argument is not 0,
+which ensures that the division can be executed correctly.
+Such control dependencies are common in traces produced by dynamic languages.
+Reading a field out of an object is often preceded by checking the type of the
+object.
 
 \subsection{Allocation Removal}
 \label{sub:allocation}
@@ -791,8 +792,8 @@ If some of the attributes are themselves references to
 allocation-removed objects they are recursively exploded
 to make the vector contain only concrete variables. Some care has
 to be taken to always place the attributes in the same order when
-performing this explosion. Notation becomes somewhat simpler if also every
-concrete variable of the jump arguments is exploded into a vector containing
+performing this explosion. Notation becomes somewhat simpler if every
+concrete variable of the jump arguments is also exploded into a vector containing
 itself. For
 every variable, $J_k$, of the original jump arguments, $J$, let
 \begin{equation}
@@ -857,8 +858,8 @@ jump($L_1$, $p_{0}$, $i_8$)
 
 If all the optimizations presented above are applied, the resulting loop looks
 as in Figure~\ref{fig:opt-trace}.
-The resulting optimized peeled loop consists of a single integer addition
-only. That is it will become type-specialized to the types of the
+The resulting optimized peeled loop consists of a single integer addition. That
+is it will become type-specialized to the types of the
 variables \lstinline{step} and \lstinline{y}, and the overhead of
 using boxed values is removed.
 
@@ -954,28 +955,28 @@ sqrt(Fix16) & 463.46 & 5.12 $\pm$ 0.005 & 2.96 $\pm$ 0.007 & 4.00 $\pm$ 0.040 & 
 \end{tabular}
 }
 \end{center}
-\label{fig:benchmarks}
 \caption{Benchmark results in seconds with 95\% confidence intervals. The leftmost column gives the
 name of each benchmark and the values of the benchmark parameters used. The different benchmarks and the meaning of their parameters are described in Section~\ref{sec:benchmarks}.}
+\label{fig:benchmarks}
 \end{figure*}
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{benchmarks/result.pdf}
-\label{fig:benchmarks_plot}
-\caption{Benchmark results normalized with the runtime of the C version. The CPython results have been omitted to make the plot readable.}
 \end{center}
+\caption{Benchmark results normalized to the runtime of the C version. The CPython results have been omitted to make the plot readable.}
+\label{fig:benchmarks_plot}
 \end{figure}
 
 The Python interpreter of the RPython framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python, C and Lua and their
-runtimes are compared in Figuare~\ref{fig:benchmarks_plot} and Figure~\ref{fig:benchmarks}.\footnote{
+runtimes are compared in Figure~\ref{fig:benchmarks_plot} and Figure~\ref{fig:benchmarks}.\footnote{
     The benchmarks and the scripts to run them can be found in the repository for this paper:
     \texttt{https://bitbucket.org/pypy/extradoc/src/ tip/talk/dls2012/benchmarks}
 }
 For benchmarks using larger Python applications the times are unaffected or
-slightly improved by the loop optimization of this paper.
+only slightly improved by the loop optimization of this paper.
 
 The benchmarks are
 \begin{itemize}
@@ -1008,7 +1009,7 @@ with $n=10^5$.
 %\item {\bf conv5}$\left(n\right)$: one-dimensional convolution with fixed kernel-size $5$. Similar to conv3, but with 
 %${\bf k} = \left(k_1, k_2, k_3, k_4, k_5\right)$. The enumeration of the elements in $\bf k$ is still 
 hardcoded into the implementation making the benchmark consist of a single loop too.
-\item {\bf conv3x3}$\left(n,m\right)$: two-dimensional convolution with kernel of fixed
+\item {\bf conv3x3}$\left(n,m\right)$: two-dimensional convolution with a kernel of fixed
   size $3 \times 3$ using a custom class to represent two-dimensional
   arrays. It is implemented as two nested loops that iterates over the elements of the 
 $m\times n$ output matrix ${\bf B} = \left(b_{i,j}\right)$ and calculates each element from the input matrix
@@ -1024,7 +1025,7 @@ ${\bf A} = \left(a_{i,j}\right)$ and a kernel ${\bf K} = \left(k_{i,j}\right)$ u
 for $2 \leq i \leq m-1$ and $2 \leq j \leq n-1$.
 The memory for storing the matrices are again allocated outside the benchmark and $(n,m)=(1000,1000)$ 
  was used.
-\item {\bf dilate3x3}$\left(n\right)$: two-dimensional dilation with kernel of fixed
+\item {\bf dilate3x3}$\left(n\right)$: two-dimensional dilation with a kernel of fixed
   size $3 \times 3$. This is similar to convolution but instead of
   summing over the terms in Equation~\ref{eq:convsum}, the maximum over those terms is taken. That places a
   external call to a max function within the loop that prevents some
@@ -1081,7 +1082,7 @@ stored in compressed-row format, and a full storage vector, stored in a normal a
 
 Benchmarks were run on Intel Xeon X5680 @3.33GHz with 12M cache and 16G of RAM
 using Ubuntu Linux 11.4 in 64bit mode.
-The machine was otherwise unoccupied. We use the following software
+The machine was otherwise unoccupied. We used the following software
 for benchmarks:
 
 \begin{itemize}
@@ -1091,16 +1092,16 @@ for benchmarks:
 \item LuaJIT 2.0 beta, git head of August 15, 2012, commit ID 0dd175d9
 \end{itemize}
 
-We run GCC with -O3 -march=native, disabling the
+We ran GCC with -O3 -march=native, disabling the
 automatic loop vectorization. In all cases, SSE2 instructions were used for
 floating point operations.
-We also run PyPy and LuaJIT with loop peeling optimization and without (but otherwise
+We also ran PyPy and LuaJIT with loop peeling optimization and without (but otherwise
 identical).
 
-For PyPy and LuaJIT 10 iterations were run, prefaced with 3 iterations for warming up.
+For PyPy and LuaJIT, 10 iterations were run, prefaced with 3 iterations for warming up.
 Due to benchmarks taking large amounts of time on CPython, only one run
 was performed.
-For GCC 5 iterations
+For GCC, 5 iterations
 were run. In all cases, the standard deviation is very low, making benchmarks
 very well reproducible.
 
@@ -1108,7 +1109,7 @@ We can observe that PyPy (even without loop peeling) is orders of magnitude
 faster than CPython. This is due to the JIT compilation
 advantages and optimizations we discussed in previous
 work~\cite{bolz_allocation_2011, bolz_runtime_2011}, the main improvement for
-these concrete benchmarks come from the allocation removal/unboxing
+these concrete benchmarks comes from the allocation removal/unboxing
 optimization.
 
 The geometric mean of the
@@ -1153,8 +1154,9 @@ optimizations described here achieve are not in any way new. However, we think
 that achieving them in the way described in this paper is simpler than writing
 explicit algorithms.
 
-Loop invariant code motion has been part of early compilers in the 1960s and
-1970s~\cite{allen_catalogue_1971}. A common approach for achieving loop invariant
+Loop invariant code motion has been part of early compilers since the
+1960s~\cite{allen_catalogue_1971}. A common approach for achieving loop
+invariant
 code motion is to perform partial redundancy elimination. The
 approach was first proposed by Morel and Renvoise~\cite{morel_global_1979}. It
 involves solving data flow problems of bidirectional data flow
@@ -1162,8 +1164,8 @@ equations. After improvements~\cite{chow_portable_1984,
 dhamdhere_practical_1991} this approach was followed by the work of Knoop
 et.al.~\cite{knoop_lazy_1992} who cleanly separated the problem into a backward
 and forward data flow analysis. Implementing partial redundancy elimination in
-compilers that use SSA form \cite{chow_new_1997} simplified the algorithms
-because no iterative data flow analysis is needed any more.
+compilers that use SSA form~\cite{chow_new_1997} simplified the algorithms,
+because no iterative data flow analysis was needed any more.
 
 As described in the introduction,
 Mike Pall pioneered the approach described in this paper.
@@ -1181,7 +1183,7 @@ elimination. Loop recurrences are detected on-the-fly and a minimized set of
 PHIs is generated.''~\cite{pall_luajit_2009}
 
 Both the Hotpath VM~\cite{gal_hotpathvm:_2006} and
-SPUR~\cite{bebenita_spur:_2010} implements loop-invariant code motion
+SPUR~\cite{bebenita_spur:_2010} implement loop-invariant code motion
 directly, by explicitly marking as loop-invariant all variables that stay the
 same along all looping paths and then moving all pure computation that depends
 only on these variables out of the loop. SPUR can also hoist loads out of the
@@ -1211,12 +1213,11 @@ By using several benchmarks we show that the proposed algorithm can
 significantly improve the run time of small loops containing numerical
 calculations.
 
-The current approach still has some limitations which we plan to address in the
+The described approach still has some limitations which we plan to address in the
 future. In particular loop peeling works poorly in combination with trace
 trees~\cite{gal_incremental_2006} or trace stitching~\cite{gal_trace-based_2009}.
-The side exits attached guards that fail often
-currently have to jump to the preamble which makes loops with several equally
-common paths less efficient than they could be.
+The side exits attached to guards that fail often
+currently have to jump to the preamble.
 
 %\appendix
 %\section{Appendix Title}
@@ -1224,7 +1225,7 @@ common paths less efficient than they could be.
 %This is the text of the appendix, if you need one.
 
 \acks
-We would like to thank Samuele Pedroni, Sven Hager and the anonymous reviewers
+We would like to thank Samuele Pedroni, Sven Hager, David Schneider, and the anonymous reviewers
 for helpful comments on drafts of this paper. We owe gratitude to Mike Pall
 for making his impressive work on LuaJIT publicly available and for detailed
 reviews on drafts of the paper.
