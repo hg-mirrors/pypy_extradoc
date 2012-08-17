@@ -17,6 +17,8 @@ NAME_REPL = {
     'dilate3x3(1000)': 'dilate3x3(1000,1000)',
     'conv3x3(1000)': 'conv3x3(1000,1000)',
     'conv3x3(3)': 'conv3x3(1000000,3)',
+    'SparseMatMult(1000,5000,262144)': 'SparseMatMult(1e4,5e3,262144)',
+    'SparseMatMult(100000,1000000,1024)': 'SparseMatMult(1e5,1e6,1024)',
 }
 
 IGNORE = {
