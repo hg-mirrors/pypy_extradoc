@@ -74,7 +74,7 @@ def main(name):
         legend[0].insert(0, r[0])
         legend[1].insert(0, l)
     plt.yticks(x + 0.5 + width, sorted(res.keys()))
-    plt.subplots_adjust(left=0.35, right=0.95, top=0.9, bottom=0.1)
+    plt.subplots_adjust(left=0.35, right=0.95, top=0.99, bottom=0.02)
     plt.legend(*legend)
     plt.ylim((0, len(res)+0.5))
     #plt.show()

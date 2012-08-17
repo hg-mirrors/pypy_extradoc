@@ -956,10 +956,18 @@ sqrt(Fix16) & 463.46 & 5.12 $\pm$ 0.005 & 2.96 $\pm$ 0.007 & - & - & 1.34 $\pm$ 
 name of each benchmark and the values of the benchmark parameters used. The different benchmarks and the meaning of their parameters are described in Section~\ref{sec:benchmarks}.}
 \end{figure*}
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{benchmarks/result.pdf}
+\label{fig:benchmarks_plot}
+\caption{Benchmark results normalized with the runtime of the C version. The CPython results have been omitted to make the plot readable.}
+\end{center}
+\end{figure}
+
 The Python interpreter of the RPython framework is a complete Python
 version 2.7 compatible interpreter. A set of numerical
 calculations were implemented in both Python, C and Lua and their
-runtimes are compared in Figure~\ref{fig:benchmarks}.\footnote{
+runtimes are compared in Figuare~\ref{fig:benchmarks_plot} and Figure~\ref{fig:benchmarks}.\footnote{
     The benchmarks and the scripts to run them can be found in the repository for this paper:
     \texttt{https://bitbucket.org/pypy/extradoc/src/ tip/talk/dls2012/benchmarks}
 }
