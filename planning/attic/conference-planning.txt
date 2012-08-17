@@ -1,0 +1,189 @@
+
+Conferences Planning for PyPy talks 
+---------------------------------------
+
+CCC 2005
+---------------
+
+Chaos Communication Conference 2005, a 2000-3000 people
+conference focusing on all things hacking (including 
+cultural events).  Non-Python specific Audience. 
+
+Call for Papers: http://www.ccc.de/congress/2005/cfp.html
+DEADLINE: 31st September 2005 
+
+see http://codespeak.net/pypy/extradoc/talk/22c3 for 
+proposal preparations!
+
+Time & Location: 27th-30th December, Berlin. 
+
+holger submitted two proposals with help of Armin, Carl 
+and Bea. One very much regarding the technical implementation 
+and one regarding business/open-source 
+agile-development/pypy-sprint experiences. 
+
+Both talks were accepted into the CCC programme! 
+
+
+Winter Meeting of Chalmers
+--------------------------
+
+This is an internal meeting of the Computer Science and Engineering --
+Chalmers University of Technology and Goteborg University.
+
+Time & Location: 11th-13th January 2006, Alingsas.
+
+Armin submitted a technical implementation talk (mostly the same paper
+as for the CCC conference, based on architecture.txt).  In principle no
+submissions are rejected.
+
+See http://www.cs.chalmers.se/wm/.
+
+
+Solution Linux 2006
+-------------------
+
+Logilab will present PyPy in the "free software models" track.
+
+Time and Location: 31st jan to feb 2nd, Paris.
+
+
+Pycon 2006 
+---------------
+
+DEADLINE: 31st October 2005 
+
+Annual US Python conference, strong Python audience. 
+
+Call for Papers: http://www.python.org/pycon/2006/cfp
+
+Time & location: 24-26 Feburary, 2006, Addison, Texas (near Dallas)
+
+Out of the pypy group four talks were submitted.  
+Acceptance pending (15th November ASFAIK). 
+The 3 PyPy talks where accepted into the PyCon programme!
+
+Due: sprint planning, possibly inviting Ka Ping (regarding E-lang) 
+
+
+Calibre workshop
+-----------------
+CALIBRE Workshop on Distributed Development, Open Source & Industry
+- Opportunities, Suspicions, & Strategies 
+
+Time & location: 3 of March 2006 Skövde Sweden
+
+www.calibre.ie
+
+No papers submitted - Bea will attend.
+( Bea didnt attend - Jacob did).
+
+XP France:
+--------------
+24-25th March? Nicholas?
+
+Logilab attended and did a talk.
+
+
+ACCU 2006
+----------
+
+DEADLINE: 10th of February (early bird)
+
+Software development - C++, Agile methods and Python.
+
+Time & location: 19th -22nd of April, Oxford, UK
+
+http://www.accu.org/conference/
+
+No papers submitted - attendance - Michael H, Jacob?
+Michael will do a talk there about PyPy.
+
+XP 2006
+-----------
+
+eXtreme programming and agile processes in software engineering.
+
+Time & location: 17-22th June 2006 Oulu, Finland 
+
+Call for papers:
+Submission date: 30th of January 2006 
+Experience report accepted - Bea will go and present.
+
+http://virtual.vtt.fi/virtual/xp2006/sivu1.html
+
+Agile 2006
+-----------
+
+DEADLINE: 23 June 2005 (end of early bird registration)
+
+Annual US agile conference (the main agile alliance conference) - last year were
+sold out.
+
+Call for papers:
+http://www.agile2006.org./
+- 31 January for research papers
+- 28 February for experience reports
+
+Time and location: 23-28th of July 2006, Minneapolis, Minnesota, USA
+
+Experience report proposal accepted - Bea will submit the report 
+(first draft 14th April, final draft 30th April) and go there. 
+
+OOPSLA 2006
+------------
+DEADLINE: registration starts 15th of June (no deadline known)
+
+International conference on Objecto Oriented programming, Systems
+languages and applications.
+
+Time & location: 22nd-26th of October 2006, Portland, Oregon
+
+Call for papers: 
+Submission deadline: 18th of March
+
+http://www.oopsla.org/2006/
+
+Samuele and Armin plan to submit paper and attend.
+
+No paper submitted - attendance (workshop dynamic languages)?
+
+MIDDLEWARE 2006
+-------------------------
+DEADLINE: 3rd April 2006/scientific papers
+
+Time & location: November 27 - December 1, MELBOURNE, AUSTRALIA
+ 
+ http://2006.middleware-conference.org/
+ 
+ACM/IFIP/USENIX 7th International Middleware Conference
+ "Novel development paradigms, APIs, and languages"/PyPy?
+ 
+ Suggestion by Holger. Submission/attendance?
+
+Vancouver Python Worshop
+-------------------------
+Time  & Location: August 4 - August 5, Vancouver
+
+we have been invited there.
+
+Samuele is organizing to give a talk there
+
+PEPM 2007 - Workshop on Partial Evaluation and Program Manipulation 
+---------------------------------------------------------------------
+abstracts due Oct. 18
+
+Time & Location: January 15-16, 2007 Nice, France 
+
+ECOOP 2007 - European Conference on Object Oriented Programming
+-----------------------------------------------------------------
+estimated papers due date: November 1, 2006
+
+PLDI 2007 - Programming Language Design and Implementation
+------------------------------------------------------------
+http://ties.ucsd.edu/PLDI/papers.shtml
+
+Abstract deadline: Tuesday November 7, 2006, 1 PM CST
+Submission deadline: Tuesday November 14, 2006, 1 PM CST (no extensions) 
+
+Time & Location: June 10-13, 2006, San Diego CA

@@ -1,0 +1,138 @@
+Travel planning for Iceland PyPy sprinters 
+==================================================
+
+This sprint's travel organisation is to be handlded
+by EWT and CCP games, the sponsoring organisations. 
+Therefore we need to provide more information 
+(which is needed for bookings and asking back)
+Sprint core time is 21st till 28th (both including ASFAIK)
+
+
+Beatrice During 
+------------------------------
+
+preferred arrival date:  20th             acceptable arrival dates: 21th,22nd
+preferred departure date: 24th            acceptable departure dates: 25th
+start city / airport: Gothenburg
+mail: bea@changemaker.nu 
+birthdate: 3rd Dec 1973
+address: Eklandagatan5, 412 55 Göteborg, Sweden
+organisation: Change Maker
+comments: I do not want to stay away from Simone (my daughter) too long....
+
+Holger Krekel 
+------------------------------
+
+preferred arrival date:  20th         acceptable arrival dates: 19th, 21st
+preferred departure date: 28th        acceptable departure dates: 27th,29th
+start city / airport:  Hildesheim / Frankfurt (FRA) 
+mail: holger@merlinux.de 
+
+birthdate: 14th nov. 1969,  phone number: +49 171 464 8622
+address: Steinbergstr. 42, 31139 Hildesheim, Germany
+organisation: merlinux GmbH
+comments: departure not before 12 AM as i need a 3 hour train travel to FRA airport 
+
+Samuele Pedroni 
+------------------------------
+
+preferred arrival date: 21st          acceptable arrival dates: 21st-22nd
+preferred departure date: 29th        acceptable departure dates: 28th-31th
+start city / airport: Gothenburg / GOT or GSE
+mail: pedronis@strakt.com 
+birthdate: 22nd dec 1974
+address: Norra Agatan 10A, 416 64 Gothenburg, Sweden 
+organisation: AB Strakt 
+comments: need to be in Gothenburg on the 20th so cannot travel earlier,
+          direct flight preferred
+
+Anders Chrigstroem 
+------------------------------
+
+preferred arrival date: 21st          acceptable arrival dates: 19th-22nd
+preferred departure date: 29th        acceptable departure dates: 28th-31th
+start city / airport: Gothenburg / GOT or GSE
+mail: ac@strakt.com 
+birthdate: 10th dec 1966
+address: Norra Agatan 10A, 416 64 Gothenburg, Sweden
+organisation: AB Strakt, 
+comments: direct flight preferred
+
+Jan Balster 
+------------------------------
+
+preferred arrival date:  20th            acceptable arrival dates:  19th, 21st
+preferred departure date: 28th           acceptable departure dates: 27th, 29th
+start city / airport: Lübeck / Hamburg 
+mail: jan@merlinux.de 
+
+birthdate: 11th jan. 1978,
+address: Buergerweide 1, 23562 Lübeck, Germany
+organisation: merlinux GmbH
+comments: 
+
+Antonio Cuni 
+------------------------------
+
+preferred arrival date:  20th         acceptable arrival dates:  19th, 21st
+preferred departure date:  26th       acceptable departure dates:  27th
+start city / airport: Genova / Genova (GOA)
+mail:  anto.cuni@gmail.com
+birthdate: 13th may 1982
+address: Via Perniciaro 70, 16010 Mele(GE), Italy
+organisation: 
+comments: preferred start airport is Genova (GOA), but Milano Malpensa
+          (MXP) is acceptable, too. Need to be in Genova on the 28th.
+
+
+Anders Lehmann
+------------------------------
+
+preferred arrival date:  20.05.06     acceptable arrival dates: 21.05.06
+preferred departure date: 28.05.06    acceptable departure dates: 29.05.06
+start city / airport: Holstebro, Denmark / Copenhagen
+mail: anders.lehmann@dfki.de
+birthdate: 30.11.1962
+address: Anna Anchersvej 206, DK - 7500 Denmark
+organisation: DFKI Gmbh
+comments: I would like to return to Frankfurt, as I am going to Saarbrücken after the sprint
+
+Wanja Saatkamp 
+------------------------------
+
+preferred arrival date:  20th         acceptable arrival dates: 19th, 21st
+preferred departure date: 28th        acceptable departure dates: 27th,29th
+start city / airport:  Hildesheim / Frankfurt (FRA), Hannover, Berlin or Hamburg
+mail: wanja@merlinux.de 
+birthdate: 22.02.1975
+address: Wrangelstr. 67, 10997 Berlin, Germany
+organisation: Merlinux GmbH
+comments: no flight departure before 12AM because of travel time to the airport;
+
+
+Lawrence Oluyede
+------------------------
+
+preferred arrival date:  20.05.06 but 19th or 21th it's fine to me.
+preferred departure date:  28th or 29th it's the same for me.
+start city / airport: Milano / Milano Malpensa (MXP)
+mail:  l.oluyede@gmail.com
+birthdate: 3rd June 1983
+address: Via Misano 16, 24047 Treviglio (BG), Italy
+organisation:
+comments: every departure date it's fine to me.
+
+
+Armin Rigo
+---------------------
+
+arrival date: 21
+departure date 31
+
+Michael Hudson
+------------------------
+
+arrival date: 21
+departure date: 28
+
+(Armin and Michael are being paid for by their employer, HHU)

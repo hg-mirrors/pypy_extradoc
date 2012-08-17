@@ -1,0 +1,82 @@
+PyPy Sprint in Heidelberg 22nd - 29th August 2005 
+==================================================
+
+The next PyPy sprint will take place at the Heidelberg University
+in Germany from 22nd August to 29th August (both days included). 
+Its main focus is translation of the whole PyPy interpreter 
+to a low level language and reaching 2.4.1 Python compliancy. 
+To learn more about the new PyPy Python implementation 
+look here: 
+
+    http://codespeak.net/pypy 
+
+
+Goals and topics of the sprint 
+------------------------------
+
+One of the main goals of the sprint is going to be a 0.7 release of PyPy. The
+0.7 is meant to be the first self-contained PyPy version but still alpha with
+some C-extension modules missing and not meant for production use.
+
+Therefore the topics of the sprint will be:
+
+   - translation efforts: it's not completely clear now what related task will
+     be left at that time
+   - work on 2.4.1 compliancy: there are some failing compliancy tests on
+     which we plan to work
+   - rewriting c-extension modules/integrating existing rewrites
+   - all kinds of small release issues
+   - possibly some more LLVM efforts 
+
+
+Location & Accomodation  
+------------------------ 
+
+The sprint will be held in a conference room of the Institute of Physics,
+University of Heidelberg. We have WLAN connection there and small kitchen
+to make tea and coffee. `See here`_ how to get there from the Heidelberg
+main station.
+
+There is a huge number of hotels_ in Heidelberg, all of which are
+unfortunately rather expensive. It should be no problem to reach the sprint
+venue from anywhere in Heidelberg. As an alternative you could also take a
+`hotel in Mannheim`_ which you can reach in 15 min from Heidelberg with the
+train.
+
+.. _`See here`: http://www.physi.uni-heidelberg.de/physi/front/anfahrt.en.php
+.. _hotels: http://www.cvb-heidelberg.de/index_eng.html
+.. _`hotel in Mannheim`: http://www.hotels.de/en/mannheim.htm
+
+Exact times 
+-----------
+
+The Pypy sprint is held Monday 22nd August - Monday 29th August 2005.
+Hours will be from 09:00 until people have had enough. It's a good 
+idea to arrive a day before the sprint starts.   
+
+
+Network, Food
+------------- 
+
+The Heidelberg Altstadt can be reached in approximately 10 min from the sprint
+venue. There you will find all kinds of restaurants and fast food places.
+
+You will probably need a wireless network card to access the network although we
+could set up a WLAN to cable bridge if necessary.
+
+
+Registration etc.pp. 
+-------------------- 
+
+Please subscribe to the `PyPy sprint mailing list`_, introduce
+yourself and post a note that you want to come.  Feel free
+to ask any questions there!  There also is a separate  
+`Heidelberg people`_ page tracking who is already thought
+to come.  If you have commit rights on codespeak then
+you can modify yourself a checkout of 
+
+    http://codespeak.net/svn/pypy/extradoc/sprintinfo/heidelberg-people.txt 
+
+.. _`Heidelberg people`: http://codespeak.net/pypy/index.cgi?extradoc/sprintinfo/heidelberg-people.html 
+.. _`PyPy sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+

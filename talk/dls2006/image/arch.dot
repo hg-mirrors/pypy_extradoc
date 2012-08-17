@@ -1,0 +1,21 @@
+digraph arch {
+    rankdir=LR
+    input    [label="input RPython program", color=white];
+    cpy      [label="CPython Interpreter", shape=record];
+    funcs    [label="function objects", color=white];
+    frontend [label="Flow Graphing|Type Inference", shape=record];
+    graphs   [label="forest of typed flow graphs", color=white];
+    stack    [label="Transformation 1|Transformation 2|Transformation 3|<be> Back-end", shape=record];
+    end      [label="compiled code", color=white];
+
+    subgraph { rank=same input cpy }
+    subgraph { rank=same funcs frontend }
+    subgraph { rank=same graphs stack }
+
+    input -> cpy [arrowhead=vee, arrowsize=0.75];
+    cpy -> funcs;
+    funcs -> frontend [arrowhead=vee, arrowsize=0.75];
+    graphs -> frontend [dir=back];
+    graphs -> stack [arrowhead=vee, arrowsize=0.75];
+    stack:be -> end;
+}

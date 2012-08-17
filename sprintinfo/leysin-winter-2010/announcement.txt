@@ -1,0 +1,62 @@
+=====================================================================
+         PyPy Leysin Winter Sprint (23-30th January 2010)
+=====================================================================
+..                             image:: http://www.ermina.ch/003.JPG
+
+The next PyPy sprint will be in Leysin, Switzerland, for the
+seventh time.  This is a fully public sprint: newcomers and topics
+other than those proposed below are welcome.  
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+* The main idea of the sprint is to prepare the upcoming release of PyPy.
+  This means mostly JIT or JIT-related work.  It is a bit hard to be more
+  precise right now, because it depends on how much is left to do in the
+  core JIT.  So work will be focused either on the JIT itself or on "make
+  this or that feature of PyPy more JIT-friendly".  Of course, as usual,
+  we are ready to add any other task -- please mention on the mailing
+  list what you would like to work on; the list of task is not really fixed.
+
+* And as usual, the main side goal is to have fun in winter sports :-)
+  We can take a day off for ski.
+
+-----------
+Exact times
+-----------
+
+Officially, 23-30 January 2010.  The idea is that the 23rd should be the
+arrival day, so we won't work too much until the 24th.
+
+-----------------------
+Location & Accomodation
+-----------------------
+
+Leysin, Switzerland, "same place as before".  Let me refresh your
+memory: both the sprint venue and the lodging will be in a very spacious
+pair of chalets built specifically for bed & breakfast:
+http://www.ermina.ch/.  The place has a good ADSL Internet connexion
+with wireless installed.  You can of course arrange your own
+lodging anywhere (so long as you are in Leysin, you cannot be more than a
+15 minutes walk away from the sprint venue), but I definitely recommend
+lodging there too -- you won't find a better view anywhere else (though you
+probably won't get much worse ones easily, either :-)
+
+Please *confirm* that you are coming so that we can adjust the reservations
+as appropriate.  The rate so far has been around 60 CHF a night all included
+in 2-person rooms, with breakfast.  There are larger rooms too (less
+expensive) and maybe the possibility to get a single room if you really want
+to.
+
+Please register by svn:
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/leysin-winter-2010/people.txt
+
+or on the pypy-sprint mailing list if you do not yet have check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+You need a Swiss-to-(insert country here) power adapter.  There will be
+some Swiss-to-EU adapters around -- bring a EU-format power strip if you
+have one.

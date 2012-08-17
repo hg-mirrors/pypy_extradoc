@@ -1,0 +1,274 @@
+=============================================
+pypy-sync developer meeting 15th September 
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync 
+
+Attendees::
+
+         Samuele Pedroni
+         Anders Lehmann
+         Anders Chrigström
+         Christian Tismer (minutes/moderation)
+         Carl Friedrich Bolz
+         Holger Krekel
+         Eric van Riet Paap
+         Niklaus Heidimann
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No conflicts were discovered.
+
+Topics of the week
+===================
+
+A quick point about IRC logging
+-------------------------------------------------------
+
+- There were no proposals for new channelsto be logged.
+  The current set of logged channels is
+  #pypy, #pypy-funding (password), #pypy-sync, #pypy-tb.
+
+- There was no objection to have a second serverfor eggdrop.
+  Holger added that he is going to work on some IRC infrastructure,
+  without giving details. He proposed to use codespeak as
+  the second server, which was agreed.
+
+Participation on the CCC congress in Berlin
+-----------------------------------------------
+
+Holger would like to co-write a proposal and co-talk about PyPy.
+Christian is considering to join this. We will ask Armin who was
+interested but absent.
+
+The suggested re-structuring of the selection process was not discussed.
+
+Current optimization activities and allocation of work
+-------------------------------------------------------------
+
+There was consensus about current optimization efforts. There is no
+obvious target visible that gives huge improvements. 
+Opinions on profiling were different. We may need to have
+profiling at various levels. But profiling might be unsharp,
+if optimizing PyPy consists of a number of small improvements.
+It was also proposed to judge optimization based upon the effect
+multiplied by the speed of implementation.
+It was concluded that we shouldfocus more on the reporting.
+This topic will show up, again.
+
+Other activities, follow-up on sync meeting of last week
+-------------------------------------------------------------
+
+Nobody showed up who wanted to do something last week, which resulted
+in Armin, Samuele, Carl and Holger will work on that. It was proposed
+to ask again and find a way to motivate each other to help with this.
+Carl threw in that reporting actually can be fun. We should try to
+find ways tomotivate each other on #pypy.
+
+Making money out of PyPy
+------------------------------
+
+It was agreed that this topic is too big to be discussed on #pypy-sync.
+Some interesting input about this can be found on the pypy list. See
+"""Re: [pypy-dev] next pypy-sync meeting 20050915""" by Michal Wallace
+michal@sabren.com
+
+Next pypy-sync meeting
+-------------------------------
+
+Scheduled for next Thursday, Sept. 22nd, conducted by Anders Lehmann.
+The timing issue was touched, again, but needs to be deferred.
+
+
+Closing 
+------------------
+
+Christian closes the meeting in time at 13:33pm.
+
+The IRC log can be found at http://tismerysoft.de/pypy/irc-logs/pypy-sync/%23pypy-sync.log.20050915
+
+Holger asked to include it in the log, anyway, for ease of reference.
+
+.. _`IRC-log`: 
+
+Here is the full IRC log. Note that time is given in UTC:: 
+
+  [11:31] aleale (n=andersle@clogs.dfki.uni-sb.de) joined #pypy-sync.
+  [11:48] pedronis (n=Samuele_@c-398b70d5.022-54-67626719.cust.bredbandsbolaget.se) joined #pypy-sync.
+  [11:51] stakkars (i=sppspg@i577B427C.versanet.de) joined #pypy-sync.
+  [11:52] arre (i=ac@ratthing-b40e.strakt.com) joined #pypy-sync.
+  [11:55] hpk (n=hpk@merlinux.de) joined #pypy-sync.
+  [11:55] ericvrp (n=chatzill@ericvrp.demon.nl) joined #pypy-sync.
+  [11:55] cfbolz (n=carlson@merlinux.de) joined #pypy-sync.
+  [12:02] <hpk> hello all
+  [12:02] Action: hpk notices it's 13:03 on his clock
+  [12:02] <stakkars> hi all! Yes, I'm somewhat waiting for Armin and Michael
+  [12:03] nik (n=chatzill@ratthing-b410.strakt.com) joined #pypy-sync.
+  [12:03] <stakkars> I'd say let's start with the regular part
+  [12:03] <stakkars> ok?
+  [12:03] <hpk> armin may not come (and we should not wait too much in general i think)
+  [12:03] <hpk> yes
+  [12:03] <cfbolz> fine with me
+  [12:03] <ericvrp> great
+  [12:03] <ericvrp> hi all
+  [12:03] <stakkars> then I start with my three lines:
+  [12:04] <stakkars> DONE: some "ten lines for ten percent" speedups on dicts, interning would take more to do right
+  [12:04] <stakkars> NEXT: working on different approaches to reduces PyPy's stack requirements
+  [12:04] <stakkars> BLOCK: demotivation by randomness of optimization criteria
+  [12:04] <cfbolz> DONE: non-pypy
+  [12:04] <cfbolz> NEXT: non-pypy, vacation
+  [12:04] <cfbolz> BLOCKERS: none
+  [12:04] <aleale> prev: translate_pypy_new, internal DFKI stuff
+  [12:04] <aleale> next: see my family, moderate #pypy-sync
+  [12:04] <aleale> blockers: -
+  [12:04] <arre> PREV: astcompiler
+  [12:04] <arre> NEXT: astcompiler
+  [12:04] <arre> BLOCKERS: None
+  [12:04] <ericvrp> last: refactoring
+  [12:04] <ericvrp> next: profiling and dive into transformations
+  [12:04] <ericvrp> blockers: -
+  [12:05] <hpk> last: EU issues, background communication
+  [12:05] <hpk> next: non-pypy issues, EU-issues
+  [12:05] <hpk> blockers: -
+  [12:05] <pedronis> Last: astcompiler, rtyper ann fixes, hlinvoke support to move dict impl to low-level,
+  [12:05] <pedronis> some writing, understanding the fine point of the flow space again
+  [12:05] <pedronis> Next: astcompiler, reports, translate_pypy, ?
+  [12:05] <pedronis> Blockers: -
+  [12:05] <nik> last: non-pypy
+  [12:05] <nik> next: non-pypy
+  [12:05] <nik> blockers: -
+  [12:05] <hpk> nik: blockers: non-pypy? :-)
+  [12:05] <nik> uhm, yep ;)
+  [12:06] <stakkars> ok, then I'd add my toothache tomy blockers :-)
+  [12:06] <stakkars> anything else?
+  [12:07] <stakkars> I don't see blockers which are not touched by other topics.
+  [12:07] <stakkars> topic 1:
+  [12:07] <stakkars> A quick point about IRC logging
+  [12:07] <stakkars> does anybody have proposals about that to log else?
+  [12:07] <hpk> let me note that i plan to setup some IRC-logging infrastructure
+  [12:07] <hpk> on codespeak at some point.
+  [12:07] <stakkars> do we want a second server in another network?
+  [12:07] <stakkars> ah
+  [12:07] <hpk> but that shouldn't interfere with your nice efforts. 
+  [12:08] <hpk> it probably should be the second server then. 
+  [12:08] <stakkars> codespeak is of course a possible target. You can then easily attach something to thebasic logs
+  [12:08] <hpk> the HHU server is probably more helpful for getting computing/testing power
+  [12:08] <stakkars> ok, then I can do an eggdrop setup. Some postprocessing of the logs would be really really good!
+  [12:09] <stakkars> the performance penalty of eggdrop is very low.
+  [12:09] <stakkars> the criteria should be reliability of network and server.
+  [12:09] <hpk> yip.
+  [12:10] <stakkars> I take it that we want codespeakto be a second server, and there are no proposals of other channels?
+  [12:10] <stakkars> anything to be said, or next topic?
+  [12:10] <cfbolz> next for me
+  [12:10] <hpk> yip. next for me as well.
+  [12:10] <aleale> next
+  [12:10] <arre> next.
+  [12:11] <stakkars> Participation on the CCC congress in Berlin
+  [12:11] <hpk> i'd like to co-write a proposal and co-talk about PyPy.
+  [12:11] <stakkars> besides discussion of who wants to show what, I'd like to repeat: K can helptoget you a room
+  [12:11] <cfbolz> I am interested in that
+  [12:11] <hpk> great, but i know very many people in berlin :_) 
+  [12:12] <hpk> basically the CCC congress is much about showing off/reporting about cool technical stuff
+  [12:12] <stakkars> I was offering help, and you are overloaded, so let's put it together
+  [12:13] <hpk> not so much about scientific musings about possible benefits :-)
+  [12:13] <stakkars> did everybody read Armin's proposal?
+  [12:13] <nik> which proposal?
+  [12:14] <stakkars> draft-file in doc
+  [12:14] <hpk> you mean the report/deliverable draft? 
+  [12:14] <stakkars> don't read it now,toolong
+  [12:14] <hpk> is that much related to the CCC congress? 
+  [12:14] <stakkars> draft-dynamic-language-translation.txt
+  [12:14] <pedronis> is not a talk proposal
+  [12:14] <stakkars> I think this wasmeant as a start for a talk on CCC?
+  [12:15] <hpk> no, for a start ont he EU reporting issues
+  [12:15] <pedronis> it's the start of one of our reports
+  [12:15] <stakkars> uppsi :-)
+  [12:15] <pedronis> I even wrote stuff in it
+  [12:15] <hpk> np
+  [12:15] <stakkars> pedronis: I know
+  [12:16] <hpk> stakkars: you want to go and talk at CCC? 
+  [12:16] <stakkars> I'm not really sure, but I thought of it,not only becaue I was very quiet, yet.
+  [12:17] <stakkars> no idea if they want more than one talk. I might offer to do something with you if you like.
+  [12:17] mwh (n=user@82-33-185-193.cable.ubr01.azte.blueyonder.co.uk) joined #pypy-sync.
+  [12:17] <hpk> stakkars: yes, that's fine 
+  [12:17] <hpk> stakkars: also we should ask armin who was interested 
+  [12:17] <hpk> i don't think it's a problem to do a one hour talk with three persons
+  [12:17] <hpk> we have done that before
+  [12:17] <stakkars> let's try if we are able to share:
+  [12:17] <hpk> we can also consider doing two talks (but now now i suggest)
+  [12:18] <hpk> s/now now/not now/
+  [12:18] <stakkars> I think we should move on with the topics.
+  [12:18] <hpk> yip from my side.
+  [12:18] <stakkars> ok?
+  [12:18] <stakkars> Current optimization activities and allocation of work
+  [12:18] <cfbolz> yes
+  [12:18] <stakkars> we have done some random improvements, where none of these but the call optimization
+  [12:19] <stakkars> came in any waynear the criteria of a2.0 speedup.
+  [12:19] <stakkars> We might think to drop optimizationj completely at this point, or change criteria.
+  [12:19] <hpk> indeed. i think - as mwh points out on pypy-dev - we should go for profiling rather than direct optimizations at the moment
+  [12:20] <hpk> having profiling at various levels provides better grounds for judging optimizations later on 
+  [12:20] <pedronis> well, we should work on the reports more too
+  [12:20] <stakkars> I also would like to add three lines:
+  [12:20] <stakkars> we are very unlikely to hit such huge speed gains again at all.
+  [12:20] <hpk> pedronis: yes. but that's a different topic :-) 
+  [12:20] <stakkars> ANd if we have 10 percent speedups, it takes just 40 of these to rech the goal.
+  [12:21] <stakkars> >>> 1.1 ** 40
+  [12:21] <stakkars> 45.259255568176101
+  [12:21] <cfbolz> :-)
+  [12:21] <cfbolz> if we do one a week...
+  [12:21] <cfbolz> (just kidding, of course)
+  [12:22] <hpk> well, what about going for profiling rather than optimizations? 
+  [12:22] <stakkars> other thing: multiply time effort to do the implementation by it's effect, that would be a good criteria.
+  [12:22] <stakkars> hpk: I fear that profiling will not be very sharp, as it was not yet.
+  [12:22] <stakkars> The problem is that we loose speedd in many tiny issues, and we needto go the hard wayto remove one by one.
+  [12:22] <arre> I'm all for profiling of various sorts.
+  [12:22] <stakkars> absolutely, anecessary companion.
+  [12:23] <stakkars> may I conclude that we need to concentrate on reporting ATM and don't waste time on optimization which needs much resources?
+  [12:24] <stakkars> anything on this, or next topic?  ( 5 min left)
+  [12:24] <hpk> at this point, we cannot all focus just on one thing
+  [12:24] <hpk> reporting is currently thought to be brought forward by armin, samuele, carl and me 
+  [12:24] <hpk> i do think that help is much appreciated 
+  [12:24] <stakkars> that's next topic
+  [12:24] <stakkars> Other activities, follow-up on sync meeting of last week
+  [12:25] <stakkars> do we realy stick with last week's conclusion, or should we contractmore people on this
+  [12:25] <cfbolz> nobody said he wanted to something last week
+  [12:26] <stakkars> yes, I think that's bad. We need to structure work in a way that it is ieasy to work on something, and it is no func
+  [12:26] <stakkars> not much fun, so we need to motivate each other.
+  [12:26] <hpk> :-)
+  [12:27] <cfbolz> I actually think reporting _can_ be fun :-)
+  [12:27] <stakkars> I think this is great news, please tell this on #pypy, we are almost finished here
+  [12:27] <stakkars> Making money out of PyPy
+  [12:28] <stakkars> something interesting has been said on the list, and the topic is too big for pypy-sync, right?
+  [12:28] <pedronis> yes is too big
+  [12:28] <aleale> yes
+  [12:28] <hpk> i guess, it's a somewhat timeless question probably better discussed at some pub
+  [12:28] <nik> #pypy-pub? ;)
+  [12:29] <stakkars> my opinion was to get it a bit more pressure
+  [12:29] <hpk> :-)
+  [12:29] <stakkars> good idea.
+  [12:29] <stakkars> we have 3 mins left, becasue we started 3 after 1pm
+  [12:29] <stakkars> or we can close now if you like
+  [12:30] <hpk> fine for me.
+  [12:31] <ericvrp> ok then, till next weak. same place, same time?
+  [12:31] <ericvrp> s/weak/week/ ehum :)
+  [12:31] <stakkars> then thank you all for the nice input, closing JIT
+  [12:31] <hpk> yip, actually that was a topic we had from last time, the timing issue
+  [12:31] <hpk> stakkars: great, thanks
+  [12:31] <cfbolz> see you then
+  [12:31] cfbolz (n=carlson@merlinux.de) left #pypy-sync ("Verlassend").
+  [12:31] <ericvrp> bye
+  [12:31] <aleale> see you next week
+  [12:32] ericvrp (n=chatzill@ericvrp.demon.nl) left #pypy-sync.
+  [12:32] <stakkars> note that the protocol will not include the IRC log.
+  [12:32] <nik> see you
+  [12:32] nik (n=chatzill@ratthing-b410.strakt.com) left #pypy-sync.
+  [12:32] <stakkars> it can be found at tismerysoft.de:/pypy/irc-logs
+  [12:32] stakkars (i=sppspg@i577B427C.versanet.de) left #pypy-sync.
+  [12:32] arre (i=ac@ratthing-b40e.strakt.com) left #pypy-sync.
+  [12:32] aleale (n=andersle@clogs.dfki.uni-sb.de) left #pypy-sync.

@@ -1,0 +1,12 @@
+Testing and testing infrastructure for release 1.0
+====================================================
+
+XXX taken from 0.99, let's : 
+
+compliance tests for pypy-c's
+
+pypy-c py.test -A tests
+
+windows testing (http://scottdial.com/pypytest/summary.html (?))
+
+nightly builds and tests 

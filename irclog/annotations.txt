@@ -1,0 +1,174 @@
+About annotations
+=================
+
+We are running into limitations of the annotation system used for type inference.
+This document describes these limitations and how to slightly move the concepts
+around to fix them, and probably also how the whole issues occurred from having
+mixed concepts in wrong ways in the first place.
+
+Irc log from October, the 28th::
+
+  <arigo> sanxiyn: ok for a few words about annotations?
+  <sanxiyn> yep!
+  <sanxiyn> (sorry for being out; I forgot it...)
+  <arigo> np
+  <arigo> mutable structures pose some problems
+  <sanxiyn> e.g.
+  <arigo> because you cannot say "len(x) = 5" if 'x' is a list, of course
+  <arigo> because the length of x could change
+  <arigo> so just propagating the annotation is wrong
+  <sanxiyn> ah.
+  <arigo> it's more annoying to say e.g. that x is a list of integers
+  <sanxiyn> Is it annoying?
+  <arigo> getitem(x, anything) = y & type(y) = int
+  <sanxiyn> yep.
+  <arigo> but what if you call f(x)
+  <arigo> and f adds strings to the list x ?
+  <sanxiyn> I think RPython list shall be homogenous.
+  <arigo> yes, but:
+  <arigo> x = []
+  <arigo> f(x)
+  <arigo> then f is allowed to put strings in x
+  <sanxiyn> ah, empty list thing...
+  <arigo> yes but also:
+  <arigo> x = ['hello']
+  <arigo> f(x)
+  <sanxiyn> ML languages have precisely the same problem, aren't they?
+  <arigo> yes but i think we can solve it here
+  <arigo> but we need to be careful
+  <sanxiyn> special casing empty list should work. (IIRC that's how it's done in ML, basically)
+  <arigo> yes but i think we can solve it here (didn't i say that already :-)
+  <sanxiyn> agreed. so let's solve it;
+  <sanxiyn> :)
+  <arigo> won't help verbosity, but let's think bout that later.
+  <sanxiyn> List length seems to be impossible to guarantee.
+  
+  <arigo> we can say:
+  <arigo> deref(x) = z ; getitem(z, anything) = y ; type(y) = int
+  <arigo> here x is our variable, but z is a Cell()
+  <arigo> so the list has a life of its own, independently from the variable it is in
+  * sanxiyn reads it carefully.
+  <arigo> what i'm thinking about is this:
+  <arigo> we would have (conceptually) a single big pool of annotation
+  <arigo> not one AnnotationSet per basic block
+  <arigo> only one, for the whole program
+  <sanxiyn> Yes. I found annset per block annoying, and felt that it's that way for no real reason.
+  <arigo> we would map variables to this big annotation set
+  <arigo> this must probably still be done for each block independently
+  <arigo> each block would have a map {variable: cell-in-the-big-annset}
+  <arigo> or maybe not
+  <sanxiyn> hm
+  <arigo> because variables are supposed to be unique anyway
+  <arigo> still, i think the big annset should not use variables at all, just cells and constants.
+  <sanxiyn> comments in get_variables_ann say otherwise, but I suspect it's outdated.
+  <arigo> "supposed" to be unique... no, they still aren't really
+  <sanxiyn> eh, confused.
+  <arigo> the comment is not outdated
+  <sanxiyn> what does it mean, then?
+  <arigo> the same Variable() is still used in several blocks
+  <arigo> that should be fixed
+  <sanxiyn> indeed.
+  <sanxiyn> I commented out XXX: variables must not be shared, and ran test_pyrextrans, and got 6 failures.
+  <arigo> yes
+  <arigo> all EggBlocks are wrong, currently
+  <sanxiyn> I don't know what Spam/Egg Blocks are.
+  <arigo> :-)
+  <sanxiyn> Don't know at all.
+  <arigo> it's funny names describing how the block was built
+  <arigo> they are all Blocks
+  <arigo> an EggBlock is used after a fork
+  <sanxiyn> fork?
+  <arigo> a split, after a block with two exits
+  <arigo> but that's not relevant to the other transformations
+  <arigo> which can simplify the graph after it is built
+  
+  <arigo> we could have a single big annset
+  <arigo> it represents "the heap" of an abstract CPython process
+  <sanxiyn> hm.
+  <arigo> i.e. objects in the heap
+  <arigo> like lists, integers, all of them
+  <arigo> using Cell() to represent abstract objects, and Constant() for concrete ones
+  <arigo> then a variable is only something which appears in the basic block's SpaceOperations
+  * arigo is confused
+  <sanxiyn> So Variable() points to Cell().
+  <arigo> yes...
+  <arigo> currently we cannot handle mutable lists because:
+  <arigo> getitem(x, *) = z
+  <arigo> is an annotation talking about the variable x
+  <arigo> so we cannot propagate the annotation forth and back to called sub-functions
+  <arigo> instead, getitem should talk about an object, not the variable that points to it
+  <sanxiyn> exactly!
+  <sanxiyn> That's Python-think. :)
+  <sanxiyn> http://starship.python.net/crew/mwh/hacks/objectthink.html
+  <sanxiyn> Is mwh's wonderful piece "How to think like a Pythonista" relevant here?
+  * arigo tries to do 4 things at the same times and fails to
+  <sanxiyn> So variables are names.
+  <sanxiyn> It binds.
+  <arigo> yes
+  <sanxiyn> mwh wrote: "I find the world variable to be particularly unhelpful in a Python context..."
+  <sanxiyn> with wonderful diagrams :)
+  <hpk> yah, introducing namespaces into abstract-interpretation world! :-)
+  <sanxiyn> namespace? eh, not exactly, I think...
+  <arigo> hpk: yes, each block is its own namespace here :-)
+  <arigo> and obviously we need "heap objects" that these names can refer to
+  <hpk> (namespaces in the meaning of "living" bindings between names and objects)
+  <sanxiyn> So "objects" are actually cells unless constant-propagated...
+  <arigo> yes...
+  <arigo> i think we could even go for a full-Prolog representation:
+  <arigo> the "big heap" contains cells and constants.  cells can become constants when we know more about them.
+  * sanxiyn should read Borges and Calvino as Martellibot suggested. :)
+  <arigo> seems cleaner than the current cell-variable-constant mix.
+  <arigo> in other words, a SpaceOperation uses variables only,
+  <arigo> and the variable can refer to a cell or a constant from the heap...
+  <arigo> the point is that the objects in the heap can be manipulated
+  <arigo> say a variable v1 points to a cell c
+  <arigo> with type(c) = list and len(c) = 3
+  <sanxiyn> v2 = v1 and v1 points to the same cell c.
+  <sanxiyn> you modify v2 and v1 is modified, too, etc.
+  <arigo> yes exactly
+  <arigo> if you append an item to the list then the annotation len(c) = 3 is deleted
+  <sanxiyn> Is "prolog" a pronoun for "non-determinism"?
+  <arigo> Logic Programming i think
+  
+  <sanxiyn> arigo: I think that solves "reflow".
+  <arigo> sanxiyn: yes, possibly
+  <arigo> you can add annotations freely, at least
+  <arigo> that's fine
+  <arigo> we'll just need a trick to delete ("retract") annotations
+  <arigo> because other annotations may depend on this one
+  <arigo> like type(c3)=int is only valid if type(c1)=int and type(c2)=int because we used an 'add' operation
+  <sanxiyn> Currently flowin does similar thing.
+  <sanxiyn> It recomputes all annotations if len(annset) is decreased.
+  <arigo> sanxiyn: yes, but it should work without the need to re-flowin
+  <sanxiyn> eh?
+  <sanxiyn> without re-flowin?
+  <arigo> if you delete an annotation, then you must recompute annotations recursively on the rest of the graph
+  <sanxiyn> yes, how to avoid that?
+  <arigo> we can record dependencies
+  <arigo> each annotation "knows" that it depends on some other ones
+  <hpk> question is if there are different ways of "depending" or just one way
+  <arigo> hpk: right
+  <hpk> in a way a space operation modifying the assertions denotes 'edges' in this dependency graph? 
+  <arigo> yes
+  <sanxiyn> I think annotation should know about *others* which depend on itself, not which itself depends on.
+  <arigo> yes
+  <arigo> when you kill an annotation, just follow the forward dependencies to kill the ones it depends on
+  <sanxiyn> So not dependency... reverse dependency? :)
+  <arigo> forward dependency... ?
+  <sanxiyn> Should be easy to add.
+  <hpk> "reasons"? 
+  <hpk> origin? 
+  <sanxiyn> hpk: no, consequences.
+  <sanxiyn> hpk: neither reason nor origin.
+  <arigo> "dependents" ?
+  <sanxiyn> As in SF novel "time patrol", if you change the past, the future is all changed.
+  <sanxiyn> how about consequences? I'm not good at naming...
+  <hpk> too long :-)
+  <sanxiyn> implication
+  <sanxiyn> too long ;
+  <arigo> consequences is fine if you don't have to type it too often :-)
+  <hpk> hmmm. 
+  <arigo> i guess we need an Annotation class whose constructor takes a list of dependencies, and records 'self' in these dependencies' "consequences" or whatever
+  <sanxiyn> I think only deletion routine need to refer it.
+  
+...cut. So if you have a good name for that attributes, speak up :-)

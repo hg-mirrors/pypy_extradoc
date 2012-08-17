@@ -1,0 +1,38 @@
+Catch up with CPython 2.5/2.6
+=============================
+
+status: 
+
+ - PyPy already implements a few features of 2.5 (PEP 309, PEP 338,
+   PEP 341, PEP 357, partition, any, all)
+ - Currently underway (Google SOC 2008 project)
+
+todo:
+ - Implement these features that were new in CPython 2.5:
+
+   - PEP 308 (not sure how much compiler support there already is)
+   - PEP 328
+   - PEP 342
+   - PEP 342 (rumours are that parts of this PEP are already implemented
+     and that the implementation has to be matched to the current spec in the PEP)
+   - PEP 352
+   - Cf. http://docs.python.org/whatsnew/other-lang.html for these changes:
+
+     - defaultdict needs to be implemented (`__missing__` is already supported)
+     - new __hash__ semantics
+     - Default encoding ascii
+     - UnicodeWarning
+     - ImportWarning
+     - class C(): pass
+
+ - Merge Stdlib of Python 2.5/2.6
+ - Implement Python 2.6 features (not so important if 2.5 is the goal
+   for this task)
+
+expected outcome:
+ - PyPy supports Python 2.5 semantics and makes people with apps that use
+   these happy.
+
+dependencies:
+ - None
+

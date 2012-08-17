@@ -1,0 +1,210 @@
+=============================================
+pypy-sync developer meeting 03th November
+=============================================
+
+Time & location: 1pm (30 minutes), GMT+1 at #pypy-sync
+
+Attendees::
+
+         Samuele Pedroni
+         Armin Rigo
+         Holger Krekel 
+         Eric van Riet Paap
+         Michael Hudson
+         Carl Friedrich Bolz (moderation & minutes)
+         Anders Lehmann
+         Anders Chrigstrom
+
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+gothenburg sprint topics
+--------------------------
+
+We discussed the question how much room reports should have in the Gothenburg
+sprint. The general agreement was that seven days of report writing is too
+much.  The plan is to have two days of concentrated reportwriting that is
+mostly for people involved with the EU part of the project. Afterwards there
+will be five days of regular sprinting open to anybody interested. The topic of
+these days will be "general phase 2" work, Armin will flesh that out a bit.  If
+the sprint draws closer we can still decide which topics to stress harder.
+
+finalizing the release
+--------------------------
+
+The release seems to be ready. We distributed small tasks, like who sends the
+announcement to which mailing list.
+
+
+.. _`IRC-Log`:
+
+Complete IRC log
+=================
+
+complete log::
+
+    **** BEGIN LOGGING AT Thu Nov  3 12:01:17 2005
+
+    Nov 03 12:01:17 *	Now talking on #pypy-sync
+    Nov 03 12:48:30 *	hpk (n=hpk@adsl-129-240-192-81.adsl2.iam.net.ma) has joined #pypy-sync
+    Nov 03 12:49:08 *	pedronis (n=Samuele_@c-3c8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+    Nov 03 12:53:46 *	aleale (n=andersle@clogs.dfki.uni-sb.de) has joined #pypy-sync
+    Nov 03 13:00:22 cfbolz	it is one on my clock, shall we start?
+    Nov 03 13:00:28 hpk	fine with me 
+    Nov 03 13:01:09 mwh	yup
+    Nov 03 13:01:34 ericvrp	go for it
+    Nov 03 13:02:06 cfbolz	pedronis, arre, aleale : you there as well?
+    Nov 03 13:02:21 pedronis	yes
+    Nov 03 13:02:39 cfbolz	ok, then please everybody post their activity reports
+    Nov 03 13:03:01 mwh	last: import analysis, release
+    Nov 03 13:03:01 mwh	next: more refactoring stuff, some ppc32 stuff, ???
+    Nov 03 13:03:01 mwh	blockers: -
+    Nov 03 13:03:19 hpk	LAST: pypy-dissemination/pycon proposals, slight bit release participation NEXT: some sysadmin tasks BLOCKERS: travel, other activties
+    Nov 03 13:03:31 cfbolz	LAST: reviewing docs, testing, pypy unrelated
+    Nov 03 13:03:31 cfbolz	NEXT: reports
+    Nov 03 13:03:31 cfbolz	BLOCKERS: -
+    Nov 03 13:03:42 pedronis	LAST: release
+    Nov 03 13:03:44 pedronis	NEXT: reports, vacation (away next Thurs->Wed)
+    Nov 03 13:03:46 pedronis	BLOCKERS: -
+    Nov 03 13:03:49 ericvrp	Last: fixes for release 0.8 and improving genjs unittesting
+    Nov 03 13:03:49 ericvrp	Next: finish browser-based genjs unittesting
+    Nov 03 13:03:49 ericvrp	Blockers: -
+    Nov 03 13:04:33 cfbolz	hum, nobody else seems to participate. and since there are no blockers we can remove, let's move on
+    Nov 03 13:04:44 arre	PREV: Moving
+    Nov 03 13:05:03 arre	NEXT: Reviewing reports?
+    Nov 03 13:05:37 arre	Blockers: No report to review yet.
+    Nov 03 13:05:53 cfbolz	thanks
+    Nov 03 13:05:58 cfbolz	gothenburg sprint topics
+    Nov 03 13:05:58 cfbolz	-------------------------- 
+    Nov 03 13:06:23 *	pedronis has quit (Read error: 104 (Connection reset by peer))
+    Nov 03 13:06:28 cfbolz	maybe the first question is whether it is an open or more closed sprint
+    Nov 03 13:06:51 *	arigo (n=arigo@c-3c8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+    Nov 03 13:06:56 cfbolz	hi armin!
+    Nov 03 13:07:00 hpk	we could also consider making two days of reports and the rest coding or so 
+    Nov 03 13:07:01 arigo	hi
+    Nov 03 13:07:04 *	pedronis (n=Samuele_@c-3c8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+    Nov 03 13:07:34 mwh	i was kinda assuming that this would be a more closed, report oriented sprint
+    Nov 03 13:07:35 hpk	splitting report from coding for the sprint might make it easier for new/not EU-involved people to attend 
+    Nov 03 13:07:41 mwh	but i don't know why :)
+    Nov 03 13:07:51 hpk	mwh: no it's true but the question is to which degree 
+    Nov 03 13:08:11 hpk	i mean do we intend 7 days of report writing with like 7-9 people? 
+    Nov 03 13:09:05 mwh	that sounds like a lot
+    Nov 03 13:09:09 cfbolz	the alternative being 2 days of reports and 5 days real sprinting?
+    Nov 03 13:09:22 *	hpk notes that his participation is anyway uncertain, at the moment, because of the EU bruxelles workshop and going to brazil 
+    Nov 03 13:09:25 aleale	no hopefully not. two days must be enough
+    Nov 03 13:10:04 cfbolz	does the idea of splitting the sprint make sense to everybody?
+    Nov 03 13:10:06 hpk	i'd rather have 2 days of full focused report work than 7 days of some-do-reports-and-the-others-do-whatever-to-avoid-it
+    Nov 03 13:10:15 mwh	makes sense
+    Nov 03 13:10:19 cfbolz	hpk: yes, that makes sense
+    Nov 03 13:10:46 hpk	and anyway: the rough reports should be written by then, no? 
+    Nov 03 13:11:00 cfbolz	indeed
+    Nov 03 13:11:05 mwh	"should be", yes
+    Nov 03 13:11:10 cfbolz	pedronis, arigo: any opinions?
+    Nov 03 13:11:11 pedronis	yes, most reports are in-progress now apart one or two
+    Nov 03 13:11:37 arigo	I thought dec 1st was the hard deadline for reports?
+    Nov 03 13:11:53 pedronis	also possibly true
+    Nov 03 13:11:55 hpk	yip, but the sprint was still supposed to finalize them 
+    Nov 03 13:12:05 hpk	ASFAIR 
+    Nov 03 13:12:32 pedronis	yes, I also thinking that dragging the reports too much is not good vs phase 2 work
+    Nov 03 13:13:06 cfbolz	sure. but does this mean we won't do any reports on the sprint?
+    Nov 03 13:14:03 pedronis	well, we may do some consistency review, final touches
+    Nov 03 13:14:20 cfbolz	so two days sounds right, or we just say we do it in between?
+    Nov 03 13:14:46 pedronis	mixing coding and reporting doesn't work
+    Nov 03 13:14:54 pedronis	at least that was my impression in Paris
+    Nov 03 13:15:20 mwh	two days at the start sounds good to me
+    Nov 03 13:15:39 hpk	to me too, might just influence the break-day timing 
+    Nov 03 13:15:44 mwh	if we turn out to to have anything to do, all the better
+    Nov 03 13:15:50 hpk	like it would not make sense for coding-people to arrive and have a breakday after one day 
+    Nov 03 13:15:55 hpk	mwh: i agree
+    Nov 03 13:16:12 cfbolz	fine with everyone?
+    Nov 03 13:16:46 mwh	aye
+    Nov 03 13:16:47 aleale	yes
+    Nov 03 13:17:00 hpk	there are two remaining issues with the sprint, though: who heads the announcement/coordinates and what are the sprint coding topics? 
+    Nov 03 13:17:20 cfbolz	yes, sure. I just wanted to settle this issue first
+    Nov 03 13:17:35 cfbolz	and I think bea wanted to do announcement/coordinates
+    Nov 03 13:18:16 hpk	but writing the "main topics" needs to be done by one of us 
+    Nov 03 13:18:24 cfbolz	yes
+    Nov 03 13:18:29 mwh	when does that need to be done?
+    Nov 03 13:18:34 mwh	not yet, i'd have thought
+    Nov 03 13:18:39 cfbolz	as fast as possible
+    Nov 03 13:18:44 hpk	so: l3-interpreter, stackless, threading, optimizations, phase 2 in general? 
+    Nov 03 13:18:46 mwh	though obviously we could start thinking about it
+    Nov 03 13:18:52 cfbolz	to send out the announcement
+    Nov 03 13:19:11 cfbolz	hpk: sounds right
+    Nov 03 13:19:51 hpk	i think we could make it easy and list possible topics from  WP06/WP07 and maybe WP03 (socket would be nice) topics 
+    Nov 03 13:20:08 hpk	and refine later (after the announcement) what exactly we are tackling 
+    Nov 03 13:20:08 cfbolz	ok
+    Nov 03 13:20:22 cfbolz	any volunteers for doing that?
+    Nov 03 13:20:31 cfbolz	(listing topics for the announcement)
+    Nov 03 13:20:46 hpk	arigo: feel like a bit of holiday occupation? :) 
+    Nov 03 13:21:23 arigo	ok
+    Nov 03 13:21:51 cfbolz	so is everybody fine with that?
+    Nov 03 13:22:10 hpk	me->yes, obviously 
+    Nov 03 13:22:18 cfbolz	me as well
+    Nov 03 13:22:42 mwh	aye
+    Nov 03 13:22:52 arre	aye
+    Nov 03 13:22:53 pedronis	yes
+    Nov 03 13:22:57 ericvrp	aye, yes sir
+    Nov 03 13:23:02 cfbolz	:-)
+    Nov 03 13:23:21 cfbolz	next topic, then?
+    Nov 03 13:23:42 hpk	sure
+    Nov 03 13:23:43 cfbolz	finalizing the release
+    Nov 03 13:23:43 cfbolz	--------------------------
+    Nov 03 13:24:04 pedronis	first thanks to all people that helped with the release
+    Nov 03 13:24:09 mwh	we're really very nearly done aren't we?
+    Nov 03 13:24:15 cfbolz	pedronis: and thanks to you
+    Nov 03 13:24:25 pedronis	basically I need to flip the doc bits from branch back to the trunk
+    Nov 03 13:24:40 pedronis	and we need people to send out the annoucement to the various lists
+    Nov 03 13:24:57 cfbolz	who wants to send which announcements?
+    Nov 03 13:25:02 cfbolz	ericvrp: would you do llvm-dev?
+    Nov 03 13:25:11 ericvrp	'kay
+    Nov 03 13:25:22 cfbolz	I can do comp.lang.python, since I read it anyway
+    Nov 03 13:25:23 pedronis	mwh: python-dev?
+    Nov 03 13:25:38 cfbolz	(if nobody else wants to, that is)
+    Nov 03 13:25:46 mwh	pedronis: sure
+    Nov 03 13:25:55 ericvrp	I would like to suggest no announcement to comp.lang.javascript, yet.
+    Nov 03 13:26:03 hpk	pedronis: pypy-dev then? 
+    Nov 03 13:26:10 mwh	cfbolz: you'll do python-announce too?
+    Nov 03 13:26:10 cfbolz	ericvrp: sure :-)
+    Nov 03 13:26:12 pedronis	I will send to pypy-dev, yes
+    Nov 03 13:26:12 hpk	ericvrp: ok, can you do no announcement to c.l.js then? 
+    Nov 03 13:26:20 cfbolz	mwh: ok
+    Nov 03 13:26:27 hpk	i could send to c.l.announce 
+    Nov 03 13:26:28 pedronis	and pypy-funding
+    Nov 03 13:26:32 ericvrp	hpk: I will try
+    Nov 03 13:26:36 cfbolz	hpk: fine with me
+    Nov 03 13:26:37 hpk	ericvrp: i can help 
+    Nov 03 13:26:51 ericvrp	:-)
+    Nov 03 13:27:09 cfbolz	anything we forgot?
+    Nov 03 13:27:28 mwh	well, i can make a blog entry i guess :)
+    Nov 03 13:27:34 cfbolz	good!
+    Nov 03 13:27:48 pedronis	going to flip bits to trunk
+    Nov 03 13:28:00 cfbolz	I guess that's it then. anything else for the last two minutes?
+    Nov 03 13:28:57 hpk	john cage
+    Nov 03 13:29:02 cfbolz	haha
+    Nov 03 13:29:10 cfbolz	good, let's close the meeting then, thanks for attending!
+    Nov 03 13:29:19 aleale	that's too long
+    Nov 03 13:29:39 mwh	wow, an early finish
+    Nov 03 13:29:41 *	mwh (n=user@82-33-200-181.cable.ubr01.azte.blueyonder.co.uk) has left #pypy-sync ("ERC Version 5.0 (CVS) $Revision: 1.771 $ (IRC client for Emacs)")
+    Nov 03 13:29:44 aleale	bye
+    Nov 03 13:29:49 *	arre (i=ac@kourier.strakt.com) has left #pypy-sync
+    Nov 03 13:29:59 *	aleale (n=andersle@clogs.dfki.uni-sb.de) has left #pypy-sync
+    Nov 03 13:29:59 hpk	bye
+    Nov 03 13:30:03 arigo	bye
+    Nov 03 13:30:04 *	arigo (n=arigo@c-3c8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has left #pypy-sync
+    Nov 03 13:30:28 ericvrp	bye
+    Nov 03 13:30:31 cfbolz	bye all
+    Nov 03 13:30:36 hpk	ups, arigo from '.se', so he isn't actually in switzerland as i though 
+    Nov 03 13:30:36 *	ericvrp (n=ericvrp@ericvrp.demon.nl) has left #pypy-sync
+    **** ENDING LOGGING AT Thu Nov  3 13:30:36 2005
+

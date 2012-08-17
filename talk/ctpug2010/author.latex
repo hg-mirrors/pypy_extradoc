@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy 1.4]{PyPy 1.4: Status and News}
+\author[fijal]
+{Maciej Fijalkowski}
+
+\institute{Cape Town PUG}
+\date{November 27 2010  }

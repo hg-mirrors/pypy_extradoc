@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Writing Interpreters Using PyPy]{Writing Interpreters for Dynamic Languages Using PyPy (and Getting Them Fast)}
+\author[]
+{Antonio Cuni \\ Carl Friedrich Bolz\\ Armin Rigo}
+
+\institute{ECOOP '09 Summer School}
+\date{July 6 2009}

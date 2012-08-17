@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy]{Why is Python slow and how PyPy can help}
+\author[fijal, agaynor, arigato]
+{Maciej Fijałkowski, Alex Gaynor, Armin Rigo}
+
+\institute{PyCon 2011}
+\date{11 March 2011}

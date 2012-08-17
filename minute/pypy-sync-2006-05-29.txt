@@ -1,0 +1,274 @@
+#pypy-sync 29th May 2006, 5pm (UTC+2) 
+=====================================================
+
+attendants: michael (mod and minutes), anto (beforehand), samuele,
+            carl, eric, arre, armin, anders, holger, nik
+
+: everybody posted, see log below. 
+
+activity reports
+-----------------
+
+everybody posted, see log below. 
+
+Duesseldorf sprint planning
+------------------------------
+
+- thursday evening: a beer meeting point is 8pm "hotel an der uni"
+- friday morning: meeting point and time will be posted by Armin 
+  holger will also try to get information. 
+- monday is likely the breakday 
+- armin may only arrive on the 4th 
+
+- release day is set as the 7th, Wednesday 
+
+DLS paper 
+----------------
+
+The work on this is well in progress, says Armin.  But he
+needs two days of work with Samuele on some specific sections. 
+Michael offers to review wednesday afternoon. 
+
+Also, some LateX fighting is foreseen, help would 
+be appreciated!  
+
+EP pre and post sprint
+-------------------------------
+
+We decided to go for the full 6th-9th (both including) as the
+post-EP sprint time.  Sprint is scheduled in Geneva.
+Announcement pending. 
+
+pre-EP sprint: it is not clear yet who could come and focus on
+the core sprint.  Carl, Michael and possibly Holger will not
+be able to attend.  Niklaus, Christian, Armin, Anders and Arre
+could attend. 
+
+We'll decide in DDorf about the pre-EP sprint
+and its location (Geneva or Leysin). 
+
+Misc topics
+-------------
+
+Michael and holger will care tomorrow for co-ordinating/doing
+the pypy talk EuroPython 2006 submissions.  
+
+Christian reported that Gerald stopped working for tismerysoft
+by end of March on and that Eric will stop by end of June. 
+ 
+IRC logs 
+-------------
+
+::
+
+    May 29 16:50:43 -->	You are now talking on #pypy-sync
+    May 29 16:50:43 ---	Topic for #pypy-sync is PyPy - the flexible snake. This channel is used for pair programming and sync meetings.
+    May 29 16:50:43 ---	Topic for #pypy-sync set by xorAxAx at Sun Apr 16 21:44:23
+    May 29 17:01:09 <stakkars>	10:01
+    May 29 17:01:14 <hpk>	hum, a few people missing still that's we'd like to have here
+    May 29 17:01:15 <stakkars>	17:01
+    May 29 17:01:15 <hpk>	hi christian 
+    May 29 17:01:21 <stakkars>	hi Holgi
+    May 29 17:02:08 <arre>	Hi!
+    May 29 17:02:12 <stakkars>	hi
+    May 29 17:02:16 <hpk>	mwh: are you here? 
+    May 29 17:02:21 <stakkars>	no need to wait for Eric or Samuele, btw
+    May 29 17:02:33 <mwh>	ah right, i am here
+    May 29 17:02:33 -->	nikh (n=nikh@11.234.62.81.cust.bluewin.ch) has joined #pypy-sync
+    May 29 17:03:39 <hpk>	yip, i had hoped that armin comes
+    May 29 17:04:00 <stakkars>	Stephan seems to be busy in the afternoon
+    May 29 17:04:10 <hpk>	anyway, let's start, here is the topic list: 
+    May 29 17:04:24 <hpk>	* activity reports
+    May 29 17:04:24 <hpk>	* duesseldorf sprint planning
+    May 29 17:04:24 <hpk>	* DLS paper status
+    May 29 17:04:24 <hpk>	* pre-EP sprint
+    May 29 17:04:44 <stakkars>	ok, I'll start pasting
+    May 29 17:04:51 <hpk>	go ahead
+    May 29 17:04:55 <stakkars>	DONE: Need For Speed sprint: worked on an RPython version of decimal.py (not finished due to problems with the way it is written and prebuilt classes)
+    May 29 17:05:04 <stakkars>	NEXT: supporting Stackless and pickling work, still seaching for "the" way to handle threads, need to sync with Samuele
+    May 29 17:05:10 <stakkars>	BLOCK: hop.inputconst(Ptr(PyObject), nullptr(PyObject))
+    May 29 17:05:21 <hpk>	LAST: sprint issues, june technical project assessment, SoC issues
+    May 29 17:05:21 <hpk>	NEXT: DDorf sprint, HHU admin meeting, 0.9 works
+    May 29 17:05:21 <hpk>	BLOCKERS: too much
+    May 29 17:05:29 <nikh>	LAST: university stuff
+    May 29 17:05:29 <nikh>	NEXT: university stuff, a bit of sprinting
+    May 29 17:05:29 <nikh>	BLOCKERS: none
+    May 29 17:05:31 ---	You are now known as ericvrp
+    May 29 17:05:35 <aleale>	PREV: OWLreasoner
+    May 29 17:05:35 <aleale>	PREV: OWLreasoner
+    May 29 17:05:35 <aleale>	NEXT: more OWLreasoner and sprint
+    May 29 17:05:35 <aleale>	blocker: -
+    May 29 17:05:37 <ericvrp>	LAST: pickling + put profile based optimization in benchmark cronjob
+    May 29 17:05:37 <ericvrp>	+ speedup pypy-llvm
+    May 29 17:05:37 <ericvrp>	NEXT: pickling
+    May 29 17:05:37 <ericvrp>	BLOCKERS: -
+    May 29 17:05:40 ---	You are now known as hpk
+    May 29 17:05:43 <arre>	PREV: Vacation
+    May 29 17:05:44 <arre>	NEXT: Some Unicode work, Duesseldorf
+    May 29 17:05:44 <arre>	BLOCKERS: -
+    May 29 17:06:18 <mwh>	LAST: this and that, some gc stuff
+    May 29 17:06:19 <mwh>	NEXT: dls paper, travel, sprint
+    May 29 17:06:19 <mwh>	BLOCKERS: keeping up
+    May 29 17:06:40 <hpk>	ok then on to DDorf sprint planning 
+    May 29 17:06:55 <hpk>	stakkars: i guess it makes most sense to try to remove your blocker on #pypy later 
+    May 29 17:07:13 <hpk>	DDorf: most of us already arrive on 1st 
+    May 29 17:07:20 <hpk>	do we have a meeting point/time somewhere? 
+    May 29 17:07:23 <stakkars>	if you know what it means then you know that it is None :-)
+    May 29 17:08:14 <mwh>	i arrive pretty late on the 1st
+    May 29 17:08:22 <hpk>	ah ok
+    May 29 17:08:22 <mwh>	i don't actually know where we are sprinting
+    May 29 17:08:23 <aleale>	I will first arrive at 23
+    May 29 17:08:46 <stakkars>	I have no clue when I arrive. Will take some train
+    May 29 17:08:50 <mwh>	i guess we could meet somewhere near armin's and my office
+    May 29 17:08:56 <mwh>	stakkars: which day, at least?
+    May 29 17:09:02 <hpk>	or at the "hotel an der uni" where most everybody stays apparently 
+    May 29 17:09:11 <stakkars>	as I said in people.txt, June 1st.
+    May 29 17:09:16 <mwh>	stakkars: ok
+    May 29 17:09:28 <hpk>	ok, i guess i might drop by the hotel at 8 pm or so, more on the mobile phone
+    May 29 17:09:42 <stakkars>	then we should meet there
+    May 29 17:09:50 -->	arigo (n=arigo@c-1f8b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+    May 29 17:09:55 <hpk>	arigo: hi armin!
+    May 29 17:10:02 <stakkars>	welcome!
+    May 29 17:10:05 <arigo>	sorry
+    May 29 17:10:19 <hpk>	we just said that some of us weill meet already on june 1st 8pm "hotel an der uni" 
+    May 29 17:10:33 <hpk>	another question was: where do we meet friday morning 
+    May 29 17:10:49 <arigo>	at the CS department, I expect
+    May 29 17:10:59 <hpk>	it would be good if someone local could post some precise enough information
+    May 29 17:11:11 <arigo>	indeed
+    May 29 17:11:12 <hpk>	like street name and number or so 
+    May 29 17:11:15 <mwh>	prepare to get lost :)
+    May 29 17:11:20 <arigo>	yes :-)
+    May 29 17:11:20 <mwh>	the hhu campus is a maze
+    May 29 17:11:37 <hpk>	great, i'll be there on 1st already to meet with lene and HHU admins at 2pm, btw 
+    May 29 17:12:35 <hpk>	do we go for a breakday on monday? 
+    May 29 17:13:10 <stakkars>	well, if DDorf has something worthy to break for :-)
+    May 29 17:13:17 <hpk>	and a 0.9 release on wednesday? 
+    May 29 17:13:39 <hpk>	i'd not like to do it on the last day (which seems to become the 8th/thursday where everybody is still there)
+    May 29 17:13:48 <mwh>	hpk: makes sense
+    May 29 17:13:51 <arigo>	just to mention it, I'm still unsure if I arrive the 1st or only the 4th
+    May 29 17:14:03 <aleale>	Monday is a public holiday ?
+    May 29 17:14:14 <hpk>	aleale: in germany yes, don't know about others 
+    May 29 17:14:15 <mwh>	(i'm trying to find a map on the hhu website, i know one is there somewhere...)
+    May 29 17:14:37 <mwh>	arigo: when will you be sure?
+    May 29 17:14:49 <mwh>	i have sufficient keys to get in at any time
+    May 29 17:15:01 <hpk>	arigo: good to know, then 5th as a breakday would not be so great
+    May 29 17:15:20 <arigo>	hpk: I thought about it, and no other day looks very great anyway, so never mind
+    May 29 17:15:46 <hpk>	ok, it's going to be a busy sprint, i think
+    May 29 17:15:55 <arigo>	also, Carl is not around?  he's the only one that knows about the sprint venue AFAIK
+    May 29 17:16:05 <hpk>	arigo: i'll ask him when i see him 
+    May 29 17:16:23 <mwh>	arigo: i guess michael would know if we get desparate
+    May 29 17:16:26 <hpk>	he is very likely out a few days due to personal issues, unfortunately 
+    May 29 17:16:58 <arigo>	ok, then I'll post information about reaching the CS department, at least
+    May 29 17:17:17 <hpk>	arigo: ok, i'll also mail leuschel in a second (need to confirm the 1st june date anyway)
+    May 29 17:17:27 <hpk>	he probably has a good pointer 
+    May 29 17:17:39 <hpk>	i'll CC you so you can repost/enrich and send to pypy-sprint 
+    May 29 17:17:42 <mwh>	i expect so
+    May 29 17:17:47 <stakkars>	and hopefully no weak ref
+    May 29 17:17:51 <hpk>	next topic: DLS paper 
+    May 29 17:18:01 <hpk>	what is the status? 
+    May 29 17:18:23 <hpk>	(DLS = dynamic language symposium, deadline 30 or 31st may)
+    May 29 17:18:25 <mwh>	it seems to be about 50% done?
+    May 29 17:18:31 <mwh>	deadline is june 1
+    May 29 17:18:35 <hpk>	including? 
+    May 29 17:18:40 <arigo>	I think the meat of the text is done
+    May 29 17:18:46 <mwh>	http://www.dcl.hpi.uni-potsdam.de/dls2006/openconf.php
+    May 29 17:19:02 <mwh>	hpk: don't know, but as everyone is traveling on the 1st...
+    May 29 17:19:14 <hpk>	except armin maybe :) 
+    May 29 17:19:22 <hpk>	31st becomes the actual deadline indeed
+    May 29 17:19:43 <mwh>	makes some sense
+    May 29 17:19:46 <hpk>	this wednesday, uff
+    May 29 17:20:03 <mwh>	i will try to read through the paper tomorrow
+    May 29 17:20:19 <mwh>	then we can spend wednesday fighting with latex :/
+    May 29 17:20:20 <arigo>	I definitely plan to work on it with Samuele for the whole next two days
+    May 29 17:20:25 <mwh>	oh right
+    May 29 17:20:40 <arigo>	hum, that includes the fighting with latex day, hopefully
+    May 29 17:21:15 *	stakkars needs to add a tiny topic to the very, just telling about personnell changes in tismerysoft
+    May 29 17:21:22 <stakkars>	very end
+    May 29 17:21:43 <mwh>	so the DLS paper status is "in progress"
+    May 29 17:21:54 <hpk>	arigo: ok, please scream if you need help for reviewing or even writing
+    May 29 17:21:54 <arigo>	actively so, yes
+    May 29 17:22:14 <hpk>	the more precise the scream the better :) 
+    May 29 17:22:27 <stakkars>	arigo: if it helps, I can make up some time on Wednesday
+    May 29 17:22:30 <arigo>	what is left are the parts that only Samuele can really do right
+    May 29 17:22:37 <hpk>	i see
+    May 29 17:22:44 <arigo>	the references, related work etc.
+    May 29 17:23:04 <hpk>	arigo: well, thanks a lot for taking up on this, btw
+    May 29 17:23:47 <hpk>	one thing: i saw that hardly anyone assigned 0.9 issues to himself, it would really be helpful if we could distribute the efforts, also before the sprint 
+    May 29 17:24:27 <stakkars>	how about going through the list on Thursday evning, together?
+    May 29 17:24:46 <hpk>	might make sense, yes, or friday morning, where we need a planning session anyway
+    May 29 17:24:56 <hpk>	thursday evening not everybody will be there 
+    May 29 17:25:12 <stakkars>	but enough to get 80% off the kist
+    May 29 17:25:15 <stakkars>	list
+    May 29 17:25:21 <hpk>	mwh: how much are EP deadlines interfering with our sprint timing? 
+    May 29 17:25:41 <mwh>	well, the submission deadline for talks is the 31st
+    May 29 17:25:52 <stakkars>	*gulp*
+    May 29 17:26:05 <hpk>	mwh: sure but i mean the sprint itself 
+    May 29 17:26:10 <mwh>	so it would be nice to get a preliminary timetable up by the 4th or so
+    May 29 17:26:16 <hpk>	mwh: but we indeed need to submit our talks that we discussed about last time 
+    May 29 17:26:22 <mwh>	we need to get some pypy talk submissions in
+    May 29 17:26:24 <mwh>	yes, indeed
+    May 29 17:26:33 <mwh>	before the sprint...
+    May 29 17:26:45 <mwh>	i put a small summary of the ideas into extradoc
+    May 29 17:26:56 <hpk>	mwh: shall we co-ordinate tomorrow on #pypy regarding the talk submissions and see how we get them done? 
+    May 29 17:26:58 <mwh>	we need to decide who gives what talk
+    May 29 17:27:01 <mwh>	hpk: ok
+    May 29 17:27:10 <hpk>	mwh: yes
+    May 29 17:27:18 <mwh>	tomorrow then
+    May 29 17:27:39 <hpk>	ok, last topic
+    May 29 17:27:43 <mwh>	hpk: can you explain your pre-ep sprint mail then, you seem to have confused armin and me at least :)
+    May 29 17:27:57 <stakkars>	me 2
+    May 29 17:28:08 <hpk>	mwh: you answered "you had similar thoughts", didn't you? 
+    May 29 17:28:41 <mwh>	well, yes, but i'm not sure what you were in fact proposing
+    May 29 17:28:44 <hpk>	let's simply ask: who would come to a four-day pre-EP sprint and promise to 90% focus on pypy core and not on anything EP related? 
+    May 29 17:29:03 <mwh>	i think i want to be in geneva well before the conference
+    May 29 17:29:13 <mwh>	i don't think i could reasonably sprint in leysin say
+    May 29 17:29:20 <hpk>	i know that Carl can't either 
+    May 29 17:29:29 <mwh>	this doesn't apply to everyone else so much necessarily!
+    May 29 17:29:46 <hpk>	and i personally doubt that anyone would have the focus we had last time in leysin (where we convened for almost 7 days, without many distractions!)
+    May 29 17:29:51 <stakkars>	speaking for myself, Leysin would be preferable
+    May 29 17:30:34 <aleale>	I dont have anything to do concerning EP
+    May 29 17:30:44 <hpk>	anyway, let's close the official meeting (apart from christian's point) and decide in Duesseldorf about pre-EP
+
+    May 29 17:30:52 <nikh>	for what it's worth, i could come to a pre-EP sprint (but not the post-EP one). i'd prefer geneva.
+    May 29 17:31:12 *	hpk is not out to block it, just trying to realistically make a guess about how effective it would be
+    May 29 17:31:14 <stakkars>	I think to come to whatsoever
+    May 29 17:31:31 <stakkars>	shortly to my point?
+    May 29 17:31:47 <hpk>	sure
+    May 29 17:32:17 <stakkars>	1. Gerald has resigned from tismerysoft, backward by the end of March.
+    May 29 17:32:44 <stakkars>	2. Eric is leaving the company on his own behalf by end of June.
+    May 29 17:33:12 <stakkars>	3. I'm trying to get Richard back into more PyPy work by motivating EWT. This is in progress.
+    May 29 17:33:14 <stakkars>	EOF
+    May 29 17:33:24 <arre>	Pre- and/or post- is not problem for me.
+    May 29 17:33:43 <hpk>	the post-EP one is not in question 
+    May 29 17:34:23 <stakkars>	side note: EWT people are coming to EP, and might consider to join a sprint if they are welcome.
+    May 29 17:34:30 <hpk>	stakkars: i see, thanks for letting us know 
+    May 29 17:34:49 *	stakkars is actually sad about 1/2 but well
+    May 29 17:35:09 <hpk>	i imagine 
+    May 29 17:36:20 <hpk>	nikh: good to know, that you'd come to pre-ep :) 
+    May 29 17:36:24 <mwh>	any other business?
+    May 29 17:36:25 <arigo>	can we decide now that the post-EP sprint from 6th to 9th in Geneva will occur?
+    May 29 17:36:56 <hpk>	sure, it think it's clear that we do a post-ep, question is how long 
+    May 29 17:37:00 <arigo>	the situation seems confused enough that I think we should clarify this now, if possible
+    May 29 17:37:15 <arigo>	6th-9th are the official dates, I don't think it can easily be longer
+    May 29 17:37:30 <stakkars>	I think so, yes
+    May 29 17:37:30 <mwh>	arigo: sounds good to me
+    May 29 17:37:33 <hpk>	ok, then let's go for that 
+    May 29 17:37:46 <hpk>	9th including (to not loose another of those few days)
+    May 29 17:37:53 <arigo>	yes
+    May 29 17:38:07 <hpk>	so people should usually stay until 10th, unless they only have a short trip
+    May 29 17:38:41 <mwh>	makes sense
+    May 29 17:38:46 <hpk>	ok, this is set, then if nobody objects (/me notes that he is not sure about his full post-EP attendance yet)
+    May 29 17:39:07 <stakkars>	not sure about what?
+    May 29 17:39:16 <hpk>	not sure about coming the full post-ep time myself 
+    May 29 17:39:16 <stakkars>	ah, your attendance
+    May 29 17:39:19 <hpk>	right
+    May 29 17:39:43 *	hpk redundantly sidenotes that he'd like to get to some project planning regarding the rest of the year, including sprints
+    May 29 17:39:47 <stakkars>	my auto-detypo-filter made me read "this" :-)
+    May 29 17:40:15 <mwh>	hpk: i guess ddorf is a good place for that
+    May 29 17:41:15 <hpk>	yip
+    May 29 17:41:37 <hpk>	(the meeting is closed, in case nobody noticed yet :)
+    May 29 17:42:01 <stakkars>	bye
+    May 29 17:42:05 <nikh>	ok, bye then ;)
+    May 29 17:42:11 <arigo>	bye!
+    May 29 17:42:14 <hpk>	bye 
+    May 29 17:42:17 <aleale>	bye

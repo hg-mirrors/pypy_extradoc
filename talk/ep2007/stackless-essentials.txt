@@ -1,0 +1,78 @@
+Abstract ID:  	62
+Abstract content:
+
+This is a re-worked, actualized and improved version of
+my talk at PyCon 2007. Repeating the abstract:
+
+As a surprise for people who think they know Stackless,
+we present the new Stackless implementation For PyPy,
+which has led to a significant amount of new insight
+about parallel programming and its possible implementations.
+We will isolate the known Stackless as a special case of
+a general concept.
+
+This is a Stackless, not a PyPy talk. But the insights presented
+here would not exist without PyPy's existance.
+
+Summary:
+
+Stackless has been around for a long time now. After several
+versions with different goals in mind, the basic concepts of
+channels and tasklets turned out to be useful abstractions,
+and since many versions, Stackless is only ported from version
+to version, without fundamental changes to the principles.
+
+As some spin-off, Armin Rigo invented Greenlets at a Stackless
+sprint. They are some kind of coroutines and a bit of special
+semantics. The major benefit is that Greenlets can run on
+unmodified CPython.
+
+In parallel to that, the PyPy project is in its fourth year
+now, and one of its goals was Stackless integration as an option.
+And of course, Stackless has been integrated into PyPy in a very
+nice and elegant way, much nicer than expected. During the design
+of the Stackless extension to PyPy, it turned out, that tasklets,
+greenlets and coroutines are not that different in principle,
+and it was possible to base all known parallel paradigms on
+one simple coroutine layout, which is as minimalistic as possible.
+
+It is a side effect of PyPy's simplicity, that even led to a
+pretty new concept for Stackless, that allows all the different
+switching paradigms to co-exist without interference. Users
+could go further and implement their own concurrency model,
+and it would neither interfere with others nor cost performance.
+
+Today's Stackless can be seen as a special case of the more general
+implementation given for PyPy. This implementation can also be taken
+as a reference about how Stackless is meant to be implemented.
+This reference implementation is completely written in Python.
+
+The talk will try to isolate the crucial design decisions in
+Stackless from implementation details. The reduced concepts
+are together the essentials of Stackless.
+
+Special emphasis is given to interactive examples, simple use-cases,
+and an animation that visually explains the new concept of
+composability.
+
+Primary authors: 	TISMER, Christian (tismerysoft GmbH)
+Co-Authors: 	-- none --
+Presenters: 	TISMER, Christian
+Track classification: 	Python Language and Libraries
+Submitted by: 	TISMER, Christian
+Submitted on: 	25 May 2007 23:56
+Last modified on: 	25 May 2007 23:56
+Status: 	SUBMITTED
+Comments :
+	
+
+As this is a re-worked version of my PyCon 2007 talk, I would like
+to improve it by giving more examples, including some of
+Andrew Dahlke's PyCon talk.
+The original was quite short in explaining concepts, and moving
+over to the new concept of composability, quickly.
+I would lke to give more space to introducing the basic
+concepts this time, having more visualisation, iteractive sessions,
+and short repetitions and summaries.
+This talk intends to give some insight both to the novice and also
+to experienced stackless users.

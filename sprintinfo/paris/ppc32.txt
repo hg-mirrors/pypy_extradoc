@@ -1,0 +1,21 @@
+The PPC32 backend currently supports more-or-less any function that 
+manipulates only integers and does not call other functions or use
+exceptions.
+
+There are a bunch of things which could be done:
+
+The register allocator is currently exceedingly stupid.  Writing another
+one would be a good idea, but this is pretty much independent from anything
+else in pypy.
+
+On a similar note support for floats shouldn't be too hard.  Would require
+support for float registers, etc.  Again thoroughly independent.
+
+Local exceptions (i.e. ones that do not escape from the function, e.g. 
+overflow errors) would be an interesting thing to support.
+
+There is no support at all for PBCs, and this is a huge topic that is 
+a large part of what the LLInterpreter group is worrying about.
+
+There is probably not much point in doing any of these things at this
+sprint.

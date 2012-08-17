@@ -1,0 +1,204 @@
+======================================
+What can PyPy do for you?
+======================================
+
+:Authors: PyPy Team
+:Date: 5th October 2006
+:Location: AB Strakt, Gothenburg
+
+Peek under the hood
+====================
+ 
+ * ``sys.pypy_repr(obj)``
+
+ * returns the interpreter-level representation of an object
+
+ * ... demo
+
+Stackless Features (1/2)
+========================
+
+ * PyPy can be translated with stackless features
+
+ * allows arbitrarily deep recursion
+
+ * enables usage of coroutines
+
+ * tasklets and channels (as in Stackless Python)
+
+ * greenlets without evil platform hacks
+
+
+Stackless Features (2/2)
+========================
+
+ * experimentally: (un-)pickling of coroutines
+
+ * working on: making coroutines clonable
+
+ * made possible by our mark-n-sweep GC
+
+ * ... demo
+
+
+Lazy Computations
+=================
+
+.. raw:: html
+  
+   <br>
+
+two object spaces with lazy features:
+-------------------------------------
+
+ * thunk object space: lazily computed objects
+
+ * logic object space: logic variables, unification, microthreads
+
+
+The Thunk Object Space
+======================
+
+ * ``thunk(f, *args, **kwargs)``
+
+ * returns something that behaves like the result of the call
+
+ * the call is made as late as possible, only when the value is actually needed
+
+ * ... demo
+
+The Logic Object Space
+======================
+
+ * variables can be used to synchronize microthreads
+
+ * quite safe because variables can be bound once only
+
+ * general unification, pattern matching (prolog-like, Oz-like)
+
+ * in progress: constraint programming
+
+
+The Extension-Compiler
+======================
+
+ * pypy extension modules are written in RPython
+
+ * extensions translated to efficient low level code
+ 
+ * write fast extensions for PyPy `and` CPython
+
+RCTypes
+=======
+
+ * Makes it possible to use RCTypes in RPython
+
+ * usual type restrictions apply
+
+ * dynamic libary calls are translated to real ones
+
+ * makes wrapping of libaries easy and testable
+
+ * again useable with PyPy and CPython
+ 
+
+The Javascript backend
+======================
+
+Creates Javascript programs with Python semantics
+ 
+
+Why would you want that?
+========================
+
+ * ...
+
+
+Why would you want that?
+========================
+
+ * Because Python is way more fun than Javascript
+
+ * ...
+
+
+Why would you want that?
+========================
+
+ * Because Python is way more fun than Javascript
+
+ * Because it will allow you to test your code on top of a Python interpreter
+
+ * ...
+
+
+Why would you want that?
+========================
+
+ * Because Python is way more fun than Javascript
+
+ * Because it will allow you to test your code on top of a Python interpreter
+
+ * "Mochikit makes JavaScript suck less"
+
+ * PyPy makes living with JavaScript fun
+
+
+Why would you want that?
+========================
+
+ * Because Python is way more fun than Javascript
+
+ * Because it will allow you to test your code on top of a Python interpreter
+
+ * "Mochikit makes JavaScript suck less"
+ 
+ * PyPy makes living with JavaScript fun
+   (by not using it)
+
+
+Who?
+====
+
+ * It relies heavily on PyPy translation tool-chain
+
+ * Started about 9 months ago
+
+ * Restarted as a high-level backend by Maciej Fijalkowski for Google SoC 2006
+
+
+Current features
+================
+
+ * Using native Javascript for things like inheritance
+
+ * Semi transparent server-side call
+
+ * Limited support for DOM/CSS and whatnot
+
+
+What to do next
+===============
+
+ * Make the webcode testable on Python interpreters
+ 
+ * Finish DOM interface
+ 
+ * Coroutines/stackless features
+
+
+Examples
+========
+
+ * simple AJAX example
+
+ * check pypy svn for a Console sample
+
+
+Questions
+=========
+
+...
+
+.. |bullet| unicode:: U+02022
+.. footer:: PyPy |bullet| AB Strakt |bullet| 5th October 2006

@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy]{PyPy}
+\author[fijal, agaynor, arigato]
+{Maciej Fijałkowski \\ Alex Gaynor \\ Armin Rigo}
+
+\institute{Mozilla}
+\date{7 March 2011}

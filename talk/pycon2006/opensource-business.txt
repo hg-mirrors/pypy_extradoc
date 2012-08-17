@@ -1,0 +1,62 @@
+DEADLINE: 31st October 2005 
+
+Title:  agile open-source methods, businesses and EU-funding 
+
+Subtitle: Sprint driven development in Open Source projects - 
+          agile methods in open-source related companies 
+
+
+Author Names
+------------
+
+Beatrice Düring, Holger Krekel 
+
+Contact Information
+-------------------
+
+Beatrice During <bea@changemaker.nu> 
+Holger Krekel <hpk@merlinux.de>
+
+Requested Timeslot
+------------------
+
+30 minutes.
+
+Summary of proposed presentation
+--------------------------------
+
+There is a growing number of open-source developers
+organized and connected to company and money related work.
+We report our experiences from the first year of the PyPy
+project which has a 7 company/university consortium and a
+1.3 Million Euro research grant from the European Union.
+
+We'd like to present and discuss models and experiences
+for connecting open-source/hacking culture driven development 
+to money related projects and goals with the audience.  
+
+We are going to briefly describe the organisation of the PyPy project, 
+showing how formal stakeholders and OSS Python community interact 
+through agile practices like sprinting.  We will also reflect on the 
+aspect of diversity, combining technical and non technical people and 
+skills and learnings from this.
+
+We will relate the various agile techniques used in PyPy
+and other projects/companies to the agile practices known from 
+the work in the Agile Alliance (XP, Scrum, Crystal) in order to show how 
+agile techniques have been adopted and evolved by the Python community. 
+
+Lastly we will also share our experience of various challenges and 
+possibilities when integrating the different cultures and skills from 
+the OSS perspective, EU perspective and the Chaos Pilot/process management 
+perspective - managing diversities.   
+
+Links to background information on the talk:  
+    http://codespeak.net/pypy/dist/pypy/doc/dev_method.html
+    http://codespeak.net/pypy/dist/pypy
+
+Intended audience
+-----------------
+
+open-source developers, businesses 
+

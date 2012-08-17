@@ -1,0 +1,67 @@
+Documentation for release 1.0
+================================
+
+release announcement!
+
+improve getting-started (cfbolz, partially)
+ XXX put the windows things into their own file?
+ XXX add optional tools needed
+
+important cross-check that things still works, update links...
+
+consult, improve *how-to-release.txt*
+
+
+Done, postponed
+=====================
+
+contributor.txt, README and LICENSE: done
+
+faq.txt: done for now.
+
+index.txt: review the directory cross-reference (done)
+
+pypy.net      - also update translation.txt (antocuni, done)
+
+jit.txt: add examples of nice colors - postponed
+
+short how to compile on windows (based on docstring of
+goal/win32/gc_patch_windows.py) (antocuni, done)
+
+architecture.txt: killed status, updated
+
+theory.txt: add specialization
+
+review - check (or decide to ignore) the following .txt files. Pay
+particular attention to update the release number showed in the output
+of some examples:
+
+   * coding-guide.txt (reviewed by cfbolz)
+   * configuration.txt (cfbolz)
+   * constraints-and-logic.txt
+   * contact.txt
+   * dev_method.txt
+
+   * extcompiler.txt
+   * extradoc.txt
+   * garbage_collection.txt (transformed into a reference)
+   * geninterp.txt (made it good enough, pedronis)
+   * glossary.txt (add terms)
+
+   * howto-logicobjspace-0.9.txt
+   * index-report.txt (shouldn't be changed, I guess)
+   * interpreter.txt
+
+   * objspace.txt
+   * parser.txt (horribly incomplete)
+   * project-ideas.txt
+   * pyontology.txt
+   * rctypes.txt
+   * rlib.txt (cfbolz)
+   * rtyper.txt
+   * sprint-reports.txt (shouldn't be changed, I guess)
+   * stackless.txt
+   * standalone-howto.txt (remove/or update)
+   * svn-help.txt
+   * translation-aspects.txt
+   * translation.txt (made up-to-date, partially)

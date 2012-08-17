@@ -1,0 +1,27 @@
+This is a roadmap for the specific target of
+
+"Making PyPy a viable replacement for Jython and/or IronPython"
+
+Currently, the biggest advantage of pypy-jvm and pypy-cli over Jython
+and IronPython is compliance to CPython, which is already better than
+their counterparts. However, a lot of work has still to be done before
+they can be used in a production environment.
+
+Speed-wise, pypy-jvm is already slightly faster than Jython; however,
+pypy-cli is about 6x-10x slower than IronPython.
+
+.. include:: task_external_objects.txt
+
+.. include:: task_integration_vm.txt
+
+.. include:: task_manual_optimizations.txt
+
+.. include:: task_jit_ootype.txt
+
+.. include:: task_bytecode_compiler.txt
+
+.. include:: task_oothreading.txt
+
+.. include:: task_separate_compilation.txt
+
+.. include:: task_stdlib_modules.txt

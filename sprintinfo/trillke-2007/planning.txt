@@ -1,0 +1,98 @@
+============================
+Trillke Sprint 2007 Planning
+============================
+
+People present: Michael, Arre, Stephan, Anto, Guido, Armin, Maciek, Bea, 
+                Samuele, Georg, Alexander, Holger, Carl Friedrich, Anders
+
+post-eu funding planning at 16.30, Sunday
+
+Tutorial: Georg, Anders DONE
+
+ * prepare the post-eu funding planning meeting
+   (Carl Friedrich, Holger, Samuele)
+
+ * think a bit about what needs to be done for 1.0
+
+ * move some of the external functions to the new interface
+   IN-PROGRESS, but as good as it's going to get during the sprint
+
+ * fixing translation of the taint space IN-PROGRESS
+
+ * Fix the rdict bug DONE
+
+ * fix the new rdict bug
+ 
+ * run application on top of PyPy and turn them into benchmarks: Guido,
+   Christian
+   - templess is now a pypy benchmark (5-6x)
+   - docutils is now a pypy benchmark (5-6x)
+   - gadfly is working with old-style classes
+      - some progress on making it work with new-style classes
+
+ * object optimizations: ropes, list optimizations, cuckoo hashing,
+   tree-based dicts: after the tutorial, Holger, Armin, Carl Friedrich, Georg
+   - ropes BUGGY (but not so slow any more)
+   - chunked list DONE (but slower)
+   - multilist not broken any more DONE
+   - O(sqrt(n)) DONE but is slow and uses too much memory
+   - move string interpolation to rpython IN-PROGRESS (Holger, Stephan)
+   - chained hash table, DONE (two times slower on micro-benchmarks)
+   - discuss global dict lookup ideas PFFFF
+   - improve getattr chains DISCUSSED (Anto, Holger to write it down)
+
+ * improve the error messages of the rtyper
+
+ * improve setups of temporary test directories
+
+ * benchmarking: make nice graphs out of benchmark results IN-PROGRESS
+   (Michael, Holger)
+
+ * hunt the strange speed bottleneck of gencli: DONE
+    - wrote RPython microbenchmarks in the process
+
+ * fix application-level stackless code: DONE
+
+ * improve greensocks
+
+ * have a minimal readline support for history and line editing: DONE
+   - get completion working
+
+ * fix the javascript backend work in internet explorer: IN-PROGRESS
+   (Guido, Maciek)
+
+ * make the usage of the js backend nicer SOME PROGRESS (Guido, Maciek)
+
+ * discuss code sharing between the js backend and gencli: DONE
+
+ * make genllvm less of a FrankenBackend (Richard, half of Michael)
+   LOTS OF PROGRESS
+   - ripped out old code
+   - worked in the direction of supporting rctypes
+
+ * moved remaining useful stuff from translator/asm to jit/codegen/ppc
+   DONE
+
+ * use "const" for immutable structures
+
+ * have a pypy with a gil and threading that works
+
+ * object-level locking for a gil-less pypy: boehm seems to be a problem
+
+ * use no locking, multiple interpreters and shared memory instead of
+   object-level locks
+
+ * solved some of the issues in the tracker: -m working, <Ctrl>-C works
+   better, preventing changes to builtin types DONE
+
+ * start supporting __index__ IN-PROGRESS
+   (Georg, Alexander, Anders, help from Armin)
+
+ * re-think the interface of composable coroutines
+   (Armin, Christian, Stephan)
+
+ * incorporate Richard's rsocket changes (Arre, Richard)
+
+ * kill strdict, move normal dicts to the attic, keep only multidict
+   (Carl Friedrich, ...)
+

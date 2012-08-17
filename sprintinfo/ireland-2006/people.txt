@@ -1,0 +1,49 @@
+People for the Ireland sprint 2006 
+=============================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are thgouth to be coming but there are no details 
+available yet from them.
+
+==================== ============== ========================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== ========================
+Anders Chrigstroem   20-28/8        on-campus
+Samuele Pedroni      20-28/8        on-campus
+Michael Hudson       20-27          Brookfield Hall, Castletroy
+Armin Rigo           21-28          Brookfield Hall, Castletroy
+Holger Krekel        20-25/8        Old Quarter Lodge (city) 
+Maciej Fijalkowski   21-28?/8       Brookfield Hall, Castletroy
+Bea During           20-25/8        Old quarter Lodge (city)
+==================== ============== ========================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Christian Tismer     ?              ?
+Jacob Hallen         ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Laura Creighton      ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Alexander Schremmer  ?              ?
+Aurelien Campeas     ?              ?
+Alexandre Fayolle    ?              ?
+Ludovic   Aubry      ?              ?
+David Douard         ?              ?
+Michele Frettoli     ?              ?
+Simon Burton         ?              ?
+Aaron Bingham        ?              ?
+Pieter Zieschang     ?              ?
+Sad Rejeb            ?              ?
+Lawrence Oluyede     ?              ?
+Fabrizio Milo        ?              ?
+==================== ============== =====================

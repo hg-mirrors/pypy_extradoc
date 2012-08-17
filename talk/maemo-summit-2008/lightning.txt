@@ -1,0 +1,94 @@
+================================
+PyPy Python on Maemo 
+================================
+
+What is PyPy? 
+===================================
+
+* Python Interpreter written in (R)Python 
+
+* framework for implementing dynamic languages
+
+* goal: new deal on flexibility and speed 
+
+Why yet another Python interpreter?
+===================================
+
+* single source translated to C/LLVM/JVM/.NET 
+
+* highly compatible to CPython
+
+* super-fast JIT Compilation (in-progress)
+
+* metaprogramming: Waaaay easier to experiment with
+
+* sandboxing, transparent proxies, ... 
+
+PyPy-c on Maemo / expectations 
+=====================================
+
+* faster startup time (starts from image)
+* Less per-object memory overhead (new GCs)
+* more robust (built-in)
+* high potential for optimizations 
+* run multiple Pythons efficiently 
+* but: slower (0.8-4) for now
+* but: higher interpreter base size for now
+
+PyPy-c on Maemo / status
+========================
+
+* working on benchmarking memory and startup time
+* working on cross-compilation (scratchbox)
+* first pypy-c starts up on device 
+* plan for next months: 
+  * fully working pypy-c/maemo 
+  * extensive benchmarking
+  * some optimizations, maybe new GC 
+
+Garbage Collectors 
+========================
+
+* PyPy has pluggable garbage collectors 
+
+* why not come up with something embedded friendly?
+
+* Impossible in CPython optimizations
+
+* reusable for other language implementations! 
+
+JIT
+===
+
+* In progress for x86
+
+* Why not run on ARM as well?
+
+* speed/memory tradeoffs ?!
+
+Multiple interpreters
+=====================
+
+* goal: run multiple Python processes efficiently 
+
+* Again, pluggable GCs
+
+* Share some static data (pyc files, modules, etc.)
+
+Contact / Q&A 
+==========================
+
+holger krekel, Maciej Fijalkowski
+at http://merlinux.eu
+
+PyPy: http://codespeak.net/pypy
+
+Blog: http://morepypy.blogspot.com
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=64px,height=64px]{merlinux-logo.jpg}
+    \qquad
+    \includegraphics[width=80px]{../../img/py-web.png}
+    \end{figure}

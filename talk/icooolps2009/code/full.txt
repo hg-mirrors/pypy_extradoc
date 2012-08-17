@@ -1,0 +1,24 @@
+{\small
+\begin{verbatim}
+loop_start(a0, regs0)
+# MOV_R_A 0
+a1 = list_getitem(regs0, Const(0))
+# DECR_A
+a2 = int_sub(a1, Const(1))
+# MOV_A_R 0    
+list_setitem(regs0, Const(0), a2)
+# MOV_R_A 2
+a3 = list_getitem(regs0, Const(2))
+# ADD_R_TO_A  1
+i0 = list_getitem(regs0, Const(1))
+a4 = int_add(a3, i0)
+# MOV_A_R 2
+list_setitem(regs0, Const(2), a4)
+# MOV_R_A 0
+a5 = list_getitem(regs0, Const(0))
+# JUMP_IF_A 4
+i1 = int_is_true(a5)
+guard_true(i1)
+jump(a5, regs0)
+\end{verbatim}
+}

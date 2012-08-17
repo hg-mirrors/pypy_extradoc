@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy hands on]{PyPy hands on}
+\author[fijal]
+{Maciej Fijałkowski}
+
+\institute{Cape Town PUG 2011}
+\date{June 30 2011}

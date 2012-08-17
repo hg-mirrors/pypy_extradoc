@@ -1,0 +1,36 @@
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+There are many possible and interesting sprint topics to work on - here
+we list some possible task areas:
+
+* completing the missing python 2.5 features and support
+* write or port more extension modules (e.g. zlib is missing)
+* identify slow areas of PyPy through benchmarking and work on improvements,
+  possibly moving app-level parts of the Python interpreter to interp-level
+  if useful.
+* there are some parts of PyPy in need of refactoring, we may spend some time
+  on those, for example:
+
+    - rctypes and the extension compiler need some rethinking
+    - support for LLVM 2.0 for the llvm backend
+    - ...
+
+* some JIT improvement work
+* port the stackless transform to ootypesystem
+* make the JIT generate fast code for float operations (??)
+* experimenting in the perfect_dict direction (?????)
+* other interesting stuff that you would like to work on ...;-)
+
+
+IDEAS
+-----
+
+ * jgustak/antocuni -- pypy.lang.scheme
+ * rene/alecu/lucio -- js/actionscript
+ * maciej -- pypy-c self hosting
+ * christion -- tasklet pickling bugs
+ * simon -- rctypes/rffi
+ * michael/pedronis -- emptying-the-malloc-zoo (a bit)
+ * arlo/jacob -- python 2.5 features/extension modules

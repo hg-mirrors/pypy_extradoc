@@ -1,0 +1,110 @@
+\section{The TLC language}
+
+In this section, we will briefly describe \emph{TLC}, a simple dynamic
+language that we developed to exercise our JIT compiler generator and that will
+be used as a running example in this paper. The design goal of the language is
+to be very simple (the interpreter of the full language consists of about 600
+lines of RPython code) but to still have the typical properties of dynamic
+languages that make them hard to compile. \emph{TLC} is implemented with a small
+interpreter that interprets a custom bytecode instruction set. Since our main
+interest is in the runtime performance of the interpreter, we did not implement
+the parser nor the bytecode compiler, but only the interpreter itself.
+
+TLC provides four different types:
+\begin{enumerate}
+\item Integers
+\item \lstinline{nil}, whose only value is the null value
+\item Objects
+\item Lisp-like lists
+\end{enumerate}
+
+Objects represent a collection of named attributes (much like JavaScript or
+Self) and named methods.  At creation time, it is necessary to specify the set
+of attributes of the object, as well as its methods.  Once the object has been
+created, it is possible to call methods and read or write attributes, but not
+to add or remove them.
+
+The interpreter for the language is stack-based and uses bytecode to represent
+the program. It provides the following bytecode instructions:
+
+\begin{itemize}
+\item \textbf{Stack manipulation}: standard operations to manipulate the
+  stack, such as \lstinline{POP}, \lstinline{PUSHARG}, \lstinline{SWAP}, etc.
+\item \textbf{Flow control} to do conditional (\lstinline{BR_COND}) and
+  unconditional (\lstinline{BR}) jumps.
+\item \textbf{Arithmetic}: numerical operations on integers, like
+  \lstinline{ADD}, \lstinline{SUB}, etc.
+\item \textbf{Comparisons} like \lstinline{EQ}, \lstinline{LT},
+  \lstinline{GT}, etc.
+\item \textbf{Object-oriented} operations: \lstinline{NEW},
+  \lstinline{GETATTR}, \lstinline{SETATTR}, \lstinline{SEND}.
+\item \textbf{List operations}: \lstinline{CONS}, \lstinline{CAR},
+  \lstinline{CDR}.
+\end{itemize}
+
+Obviously, not all the operations are applicable to all types. For example,
+it is not possible to \lstinline{ADD} an integer and an object, or reading an
+attribute from an object which does not provide it.  Being dynamically typed,
+the interpreter needs to do all these checks at runtime; in case one of the check
+fails, the execution is simply aborted.
+
+\subsection{TLC properties}
+\label{sec:tlc-properties}
+
+Despite being very simple and minimalistic, \lstinline{TLC} is a good
+candidate as a language to test our JIT generator, as it has some of the
+properties that makes most of current dynamic languages so slow:
+
+\begin{itemize}
+
+\item \textbf{Stack based interpreter}: this kind of interpreter requires all the operands to be
+  on top of the evaluation stack.  As a consequence programs spend a lot of
+  time pushing and popping values to/from the stack, or doing other stack
+  related operations.  However, thanks to its simplicity this is still the
+  most common and preferred way to implement interpreters.
+
+\item \textbf{Boxed integers}: integer objects are internally represented as
+  an instance of the \lstinline{IntObj} class, whose field \lstinline{value}
+  contains the real value.  By having boxed integers, common arithmetic
+  operations are made very slow, because each time we want to load/store their
+  value we need to go through an extra level of indirection.  Moreover, in
+  case of a complex expression, it is necessary to create many temporary
+  objects to hold intermediate results.
+
+\item \textbf{Dynamic lookup}: attributes and methods are looked up at
+  runtime, because there is no way to know in advance if and where an object
+  have that particular attribute or method.
+\end{itemize}
+
+
+\subsection{TLC example}
+
+As we said above, TLC exists only at bytecode level; to ease the development
+of TLC programs, we wrote an assembler that generates TLC bytecode. Figure \ref{fig:tlc-abs}
+shows a simple program that computes the absolute value of
+the given integer.  In the subsequent sections, we will examine step-by-step 
+how the generated JIT compiler manages to produce a fully optimized version of it.
+
+\begin{figure}[h]
+\begin{center}
+\begin{lstlisting}
+main:             # stack: []
+    PUSHARG       #        [n]
+    PUSH 0        #        [n, 0]
+    LT            #        [0 or 1]
+    BR_COND neg
+
+pos:              #        []
+    PUSHARG       #        [n]
+    RETURN
+
+neg:
+    PUSH 0        #        [0]
+    PUSHARG       #        [0,n]
+    SUB           #        [-n]
+    RETURN
+\end{lstlisting}
+\caption{The TLC bytecode for computing the absolute value of a function}
+\label{fig:tlc-abs}
+\end{center}
+\end{figure}

@@ -1,0 +1,161 @@
+PyPy
+==================
+
+PyPy is both:
+
+  - a Python interpreter written in Python
+
+  - a framework for writing dynamic languages
+
+Today we will focus on the latter.
+
+
+Agenda
+======
+
+* quick overview & motivations
+
+* the translation framework
+
+* JIT generator
+
+* (demo)
+
+
+PyPy status update (1)
+======================
+
+- JVM backend completed, pypy-jvm
+
+- some new GCs, much faster than ever
+
+- ctypes for PyPy
+
+- JIT refactoring, needed to make the JIT production-ready
+
+- improved .NET integration for pypy-cli
+
+- new blog: http://morepypy.blogspot.com
+
+
+PyPy status update (2)
+======================
+
+- various performance improvements
+
+- slighly slower than CPython on pystone (10-20%)
+
+- but faster on richards (20-24%)
+
+- less than 2x slower on other benchmarks
+
+
+Interpreters
+==================
+
+...are good to implement dynamic languages:
+
+* Easy to write
+
+* Portable
+
+* Flexible and easy to evolve, if written in high-level language
+  (without low-level details)
+
+Folk Wisdom
+====================================================
+
+...about interpreters for Dynamic Languages:
+
+* There are unavoidable tradeoffs between flexibility, maintainability,
+  and speed
+
+* Fast, Maintainable, Flexible -- pick one
+
+What this means in Practice
+===========================
+
+Current popular open source dynamic language implementations:
+
+* are relatively slow
+
+* are not very flexible
+
+* are harder to maintain than we would like them to be
+
+Not very flexible
+=================
+
+- Low-level decisions permeate the entire code base.
+- Not ideal to experiment - cannot simply plug-in a new garbage collector,
+  memory model, or threading model
+- Early decisions come back to haunt you.
+
+Hard to maintain
+================
+
+because they are traditionally written in low-level languages:
+
+- the community generates experts in the dynamic language but
+  requires experts in C or C++ for its own maintenance
+- every time a new VM is needed, the language's community forks
+  (CPython - Jython - IronPython)
+
+
+The PyPy Project
+==================
+
+We built enough infrastructure such that:
+
+* speed is regained
+
+* features requiring low-level manipulations are (re-)added as *aspects*
+
+* interpreters are kept simple and uncluttered
+
+Targets as different as C and the industry OO VMs (JVM, CLR) are supported.
+
+A special aspect: **Generating JIT compilers**
+
+
+PyPy as a project
+===================
+
+- We operate both as an open source with production usage aspirations and
+  research project.
+
+- We focus on the whole system.
+
+- We want the tool-chain itself to be as simple as possible
+  (but not simpler).
+
+- Some of what we do is relatively straight-forward, some is challenging
+  (generating dynamic compilers!).
+
+
+
+PyPy Approach
+=============================
+
+.. image:: overview1.png
+   :align: center
+   :scale: 45
+
+
+Going from interpreters to VMs
+==============================
+
+In PyPy interpreters are written in RPython:
+
+* A subset of Python amenable to static analysis
+
+* Still fully garbage collected
+
+* Rich built-in types
+
+RPython is still close to Python.
+
+
+
+
+

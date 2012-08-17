@@ -1,0 +1,47 @@
+NEW TASKS
+---------
+
+- astype
+
+- a good sort function
+
+- indexing by arrays and lists
+
+- endianness
+
+- frompyfunc to create ufuncs from python functions
+
+- more ufuncs
+
+- linspace/other ranges
+
+- more attributes/methods on numpy.flatiter
+
+- expose ndarray.ctypes
+
+- Make .T not force a lazy array.
+
+- subclassing ndarray (instantiating subcalsses curently returns the wrong type)
+
+  * keep subclass type when slicing, __array_finalize__
+
+  * ndarray.view
+
+OPTIMIZATIONS
+-------------
+
+- SSE
+
+- count number of True's for bool arrays, so we don't have to recompute
+
+- bridges are a tad too complicated - we need to store optimizer info
+  in order to improve though
+
+- iterators should possibly not require reinstantiating them.
+
+- things like take/item/fancy indexing can use some knowledge about the density
+  of data and either evaluate interesting points (without forcing) or
+  do what they do now.
+
+- counting by element_size instead of by 1 and then multiply sounds
+  like a much faster option sometimes

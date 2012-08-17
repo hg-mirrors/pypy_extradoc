@@ -1,0 +1,26 @@
+How to support the notion of extension modules
+==============================================
+
+participants: Maciek, Armin, Alexander, Richard, Jacob, Christian
+
+two approaches
+ - app-level ctypes
+   - idea is to have pygame-ctypes as an intermediate goal
+   - the hard bit is callbacks
+   - only applevel code, which is good
+   - making ctypes_platform a generally useful thing (even for CPython)
+
+ - separate compilation, mixed modules
+   - two step process:
+     - prototyping for faster module development
+     - really loading the module later
+   - boehm only
+   - would allow to wrap C libs with rffi
+   - annotations on the object space method fixed
+   - fixed names for those in the C library
+   - duplication of low-level helpers, rlib
+
+the first one is easier to implement, to use, more useful for external people,
+which is why it is a priority (but we will need both eventually)
+
+far future idea: can we support CPython C extensions?

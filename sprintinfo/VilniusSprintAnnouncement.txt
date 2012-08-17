@@ -1,0 +1,51 @@
+Hi Pythonistas and interested developers,
+
+PyPy, the python-in-python implementation, is steadily moving
+on.  The next coding sprint will take place in Vilnius,
+Lithunia, from
+
+    15th to 23rd of November, 2004
+
+and is organized by the nice Programmers of Vilnius (POV)
+company.  See http://codespeak.net/pypy/index.cgi?doc for more
+in-depth information about PyPy.
+
+Again, we will be heading towards a first generated C version
+of our already pretty compliant Python interpreter and types
+implementation.  Last time, before the EuroPython 2004
+conference, we actually had a similar goal (a PyPy/C-version) but
+discovered we had to largely refactor the basic model for
+attribute accesses. We are now closely mirroring the marvelous
+"descriptor"-mechanism of CPython.   
+
+If you are interested to participate in our fun and somewhat
+mind-altering python sprint event then please subscribe at
+
+  http://codespeak.net/moin/pypy/moin.cgi/VilniusSprintAttendants
+
+and look around for more information. You'll find that most of
+the core PyPy developers are already determined to come. There
+are also many areas that need attention so that we should
+have tasks suited for different levels of expertise. 
+
+At http://codespeak.net/moin/pypy/moin.cgi/VilniusSprintTasks
+you'll find our sprint planning task list which will probably 
+grow in the next weeks.
+
+Note that our EU funding efforts are at the final stage now.
+In the next weeks, quite likely before the Vilnius sprint, we
+_hope_ to get a "go!" from the european commission.  One side
+effect would be that coders - probably restricted to european
+citizens - may generally apply for getting travel and
+accomodation costs refunded for PyPy sprints.  This would
+reduce the barrier of entry to the question if you like to
+spend your time with a pypy sprint.  However, we probably need
+some time to work out the details after when we get more
+information from the EU. 
+
+If you have any questions don't hesitate to contact
+pypy-sprint@codespeak.net or one of us personally.
+
+cheers & a bientot,
+
+    Holger Krekel, Armin Rigo 

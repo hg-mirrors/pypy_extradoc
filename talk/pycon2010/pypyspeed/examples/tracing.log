@@ -1,0 +1,33 @@
+# Loop 0 : loop with 29 ops
+[p0, p1, p2, i3, p4, p5, p6, i7]
+        >>   15 LOAD_FAST                1 (i)
+             18 LOAD_CONST               2 (10000000)
+             21 COMPARE_OP               0 (<)
+i9 = int_lt(i7, 10000000)
+guard_true(i9, descr=<Guard2>) [p0, p1, p2, p6, i7]
+             24 JUMP_IF_FALSE           35 (to 62)
+             27 POP_TOP             
+  6          28 LOAD_FAST                0 (k)
+guard_nonnull_class(p6, 141208832, descr=<Guard3>) [p0, p1, p6, p2, i7]
+             31 JUMP_IF_FALSE           14 (to 48)
+i11 = getfield_gc_pure(p6, descr=<SignedFieldDescr 8>)
+i13 = int_ne(i11, 0)
+guard_false(i13, descr=<Guard4>) [p0, p1, p6, p2, i7]
+        >>   48 POP_TOP             
+
+  8     >>   49 LOAD_FAST                1 (i)
+             52 LOAD_CONST               4 (1)
+             55 INPLACE_ADD         
+i15 = int_add_ovf(i7, 1)
+guard_no_overflow(, descr=<Guard5>) [p0, p1, i7, i15, p2, p6, None]
+             56 STORE_FAST               1 (i)
+             59 JUMP_ABSOLUTE           15
+i18 = getfield_raw(147012160, descr=<SignedFieldDescr 0>)
+i20 = int_add(i18, 1)
+setfield_raw(147012160, i20, descr=<SignedFieldDescr 0>)
+i23 = int_and(i20, -2131755008)
+i24 = int_is_true(i23)
+guard_false(i24, descr=<Guard6>) [p0, p1, p2, p6, i15, None]
+jump(p0, p1, p2, 15, ConstPtr(ptr26), ConstPtr(ptr26), p6, i15, descr=<Loop0>)
+
+

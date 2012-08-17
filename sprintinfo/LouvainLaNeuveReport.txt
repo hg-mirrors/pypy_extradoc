@@ -1,0 +1,79 @@
+LouvainLaNeuveSprint summary report
+-----------------------------------
+
+- enhanced/reviewed standard object space 
+
+  - reviewed, improved and enriched object implementations
+    mostly done by Christian, Alex 
+    boolobject_, cpythonobject_, instmethodobject_, longobject_ (removed),
+    sliceobject_, userobject_, dictobject_, iterobject_.
+
+  - stringobject was completed with lots of tests 
+    (Tomek, Guenter)
+
+  - various improvements/bugfixes in a lot of objects/types
+
+  - implemented tool/methodChecker.py to examine which methods 
+    are existing on the types of the standard object space 
+    (Jacob)
+
+- implemented language features
+    - implemented nested scopes (Michael, Holger)
+      dissassociated the frame.locals implementation from
+      the dict objectspace implementation (Guido, Holger)
+
+    - implemented generators (Michael, Holger)  in Std,Triv space
+
+    - implemented unbound methods and descriptors (Michael, Samuele)
+
+    - first cut at implementing the right __new__/__init__ semantics 
+      (Armin, Samuele)
+
+    - use intepreter-level Python class inheritance for structure
+      sharing for user subclasses of builtin types, switched to an
+      indipendent hierarchy for mm-dispatch purposes (dispatchclass attr)
+      (Samuele, design discussion with Armin)
+
+- implemented the beginnings of the AnnotationObjectSpace
+  (Armin, Guido, Michael) for abstract interpretation.
+
+- added lots of tests (all of us)
+
+- refactoring of argument-parsing for tool/test.py 
+  and introduction of the "py.py" tool that unifies 
+  executing commands, files and going interactive. 
+  (Michael)
+
+- refactoring, improvements of multimethods (Armin, Samuele)
+
+- documentation was restructured and transfered from
+  the wiki to subversion. The documents are now in reST-format 
+  Also improvements and crossreferences between the
+  documents. (Anna)
+  a trigger was implemented that generates the new html-pages after 
+  each checkin in the pypy/trunk/doc directory. (Holger)
+
+- OSCON-2003 paper was beeing worked on and enhanced! 
+  (Laura, Jacob, Guido, Armin, ...)
+
+- we had a discussion about EU-Funding. The EU currently
+  puts forward a Call for Proposals which apparently fits
+  the goals of pypy-development very much. There is interest 
+  among current developers to go in this direction.
+
+- bugfixes, refactorings and adding tests all over the place 
+  (everybody)
+
+---------------------------------------------------------------
+
+.. _boolobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000381.html
+.. _cpythonobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000385.html
+.. _instmethodobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000389.html
+.. _longobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000410.html
+.. _sliceobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000408.html
+.. _userobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000449.html
+.. _dictobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000515.html
+.. _intobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000443.html
+.. _instmethod: http://codespeak.net/pipermail/pypy-svn/2003-June/000389.html
+.. _iterobject: http://codespeak.net/pipermail/pypy-svn/2003-June/000529.html
+

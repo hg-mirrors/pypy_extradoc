@@ -1,0 +1,47 @@
+Author Names
+------------
+
+(from) Holger Krekel, Armin Rigo
+
+Contact Information
+-------------------
+
+pypy-dev@codespeak.net (developer mailing list)
+arigo@tunes.org 
+hpk@merlinux.de 
+
+Requested Timeslot
+------------------
+
+45 minutes or 30 minutes. both possible (the talk can be considered
+a kind of tutorial on PyPy architectural pictures). 
+
+Summary of proposed presentation
+--------------------------------
+
+After reaching important milestones, the PyPy project is now
+(starting autumn 2005) heading towards building a specializing
+JIT-compiler, stackless features and translation to higher
+level languages into the code base.   In this session we will
+present and interactively discuss with the audience the basic
+architectural pictures.  We'd are going to emphasize the
+various emerging possibilities for further development part of
+which will be an ongoing effort of the European Union's funded
+part of the PyPy project. 
+
+In particular, we'll describe the following architectural pictures 
+and point out extension and optimization possibilities: 
+
+- Language Implementation: Bytecode Interpreter and Object Space interaction
+- Translation to low level languages (C/LLVM)
+- Translation to higher level languages (e.g. Squeak/Java) 
+- JIT-compiler architecture (very-low-level/l3 interpreter) 
+- Interweaving of Garbage Collection, threading and stackless
+  operations into the translation process 
+
+Intended audience
+-----------------
+
+People who feel comfortable with receiving too much information 
+and accept that there are more levels of architecture involved 
+than a single person can instantly cope with. 

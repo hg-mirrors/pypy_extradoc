@@ -1,0 +1,20 @@
+{\noop
+\begin{lstlisting}[mathescape,basicstyle=\ttfamily]
+# $inst_1$.getattr("a")
+$map_1$ = $inst_1$.map
+guard($map_1$ == 0xb74af4a8)
+$storage_1$ = $inst_1$.storage
+$result_1$ = $storage_1$[0]
+
+# $inst_1$.getattr("b")
+$cls_1$ = $inst_1$.cls
+guard($cls_1$ == 0xb7aaaaf8)
+$version_1$ = $cls_1$.version
+guard($version_1$ == 0xb7bbbb18)
+$v_2$ = $result_1$ + 41
+
+# $inst_1$.getattr("c")
+$v_4$ = $v_2$ + 17
+return($v_4$)
+\end{lstlisting}
+}

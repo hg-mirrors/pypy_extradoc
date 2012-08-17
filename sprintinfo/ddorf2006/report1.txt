@@ -1,0 +1,151 @@
+Duesseldorf Sprint Report Days 1-4
+==================================
+
+So we're sitting in the geography^Wcomputer science department of
+Heinrich-Heine-Universitaet Duesseldorf, the alleged employers of
+Armin and Michael, and (also alleged) educator of Carl.  We've been
+doing the usual sprinty things of drinking beer, getting up late,
+going to bed even later (and so still not really getting much sleep)
+and hacking.
+
+An early task was finishing off the mostly complete weakref support.
+After drawing an extremely confusing diagram:
+
+    http://codespeak.net/~mwh/blackboard.jpg
+
+Carl and Arre realized that there were a few strange cases that our
+model cannot support (in the case of a object and a
+weakref-with-callback to the same object both being in the same trash
+cycle, it is unclear whether the callback will be called).  We plan to
+deal with this by calling anyone who claims to care insane.  They then
+looked at getting CPython's test_weakref to run (something that's been
+on the "that would be nice" list for a looong time).  This uncovered
+an amusing problem, a result of three facts: 
+
+1. the conservative Boehm collector cannot distinguish between a
+   pointer and an integer that happens to have the same bit pattern as
+   the pointer (this is what is meant by "conservative").
+
+2. the hash of a weakref object is the hash of the referenced object.
+
+3. the default hash of a Python instance is it's id, which is usually
+   the memory address cast to an int.
+
+This made weakref.WeakKeyDictionary rather poorly named.  This was
+fixed by changing the id when using Boehm; the pointer is cast to an
+integer and then bitwise complemented.  Accidentally, this means that
+that this:
+
+    bool(id(object()) & 1)
+
+is now a check for pypy-c linked with the Boehm GC (use this fact with
+care).
+
+After solving the weak-keys-are-strong problem and adding a few calls
+to gc.collect() to CPython's test_weakref (to give Boehm a hurry up),
+test_weakref now passes.
+
+This leads on to the work that Anders and Holger did during the first
+day of the sprint: improving PyPy's "compliance score":
+
+    http://codespeak.net/~hpk/pypy-testresult/
+
+After a couple of months of relative neglect, this measure of how
+accurately we implement CPython's behaviour had slipped to around 80%.
+After fixing a few problems with the new interp-level implementation
+of the complex type and the above weakref work, we are back well over
+95%.
+
+Michael helped Samuele remember exactly what he was thinking of in a
+branch that previously had only been the subject of hacking in the
+small hours of the night before his vacation.  The goal of the
+nocturnal head bashing was to introduce the concept of an "explicit
+resume point" in an RPython program: a named, arbitrary location in
+the code and a way of transferring control to that point together with
+values for all live local variables.  For example:
+
+    def f(x, y, z):
+        r = x + y
+        rstack.resume_point("rp_f", r, z)
+        return r + z
+
+defines a resume point called "rp_f" and records that the values of r
+and z must be supplied when the state is jumped to, like so:
+
+    state = rstack.resume_state_create(None, "rp_f", 3, 4)
+    result = rstack.resume_state_invoke(state)
+
+Something like this is a necessary piece in the puzzle that is
+implementing tasklet pickling, or more properly tasklet unpickling.
+This was a nice illustration of the "build one to throw away" concept:
+we were able to see that what Samuele had implemented as one operation
+really needed to be implemented as two (resume_state_create and
+resume_state_invoke in the above examples), and the rest of the coding
+only required moderate amounts of head bashing.  By this morning, they
+had written a test that manually copied a (interp-level) coroutine,
+which validates the approach to at least some extent.
+
+You can also use explicit resume points to write some extremely
+confusing programs (as we discovered by mistake when debugging).
+
+The other major pieces of the tasklet pickling puzzle are being able
+to pickle and unpickle the core interpreter types such as frames,
+generators, tracebacks, ..., placing enough explicit resume points in
+the source of the Standard Interpreter to be able to resume a pickled
+tasklet and integration of the various pieces.  Christian and Eric
+(working remotely; he arrives in Duesseldorf today) worked on the
+pickling and unpickling of interpreter types and have now implemented
+this for enough types that we now have no real option but to face the
+scary task of making something useful.
+
+For the last couple of days, the attention of Holger, Armin (still
+recovering from the 'flu, that's why we haven't mentioned him yet),
+Arre and a bit of Carl have been focussed on the elusive
+"ext-compiler": a tool designed to take an RPython module in a form
+suitable for making an "extension" for PyPy and translating it into an
+efficient extension module for CPython.  This would clearly already be
+useful for purely algorithmic code, but the new-ish rctypes package of
+PyPy allows it to be used for modules that wrap an external library.
+
+While most of the basic technology is present for this, the tool is
+still far too rough to be unleashed even on unsuspecting Summer of
+Code students, never mind mere humans.  Holger and Arre fleshed out
+ideas for how to build a more usable interface and wrote some
+documentation explaining this interface (who said open source projects
+are rubbish at documentation?).  Armin began implementing support for
+typedefs, i.e. exposing custom types in the module interface, but ran
+into a small army of confusing levels of abstraction, which shift
+around as soon as you aren't staring at them.  We're sure they're no
+match for Armin's planet-sized [#]_ brain though :)
+
+.. [#] http://mail.python.org/pipermail/python-dev/2003-January/032600.html
+
+While some of the above work involved much discussion and occasional
+voluminous cursing, two or three people have been sitting in the
+corner muttering about strange things like "ootypes" and "dot-net" and
+"javaskript", as well as producing a stream of high quality checkins
+(most of them have the log message "More ootypesystem tests", though).
+PyPy semi-regular Nik and newcomers and Summer of Code participants
+Antonio and Maciej worked on the ootypesystem backends, fixing many
+bugs and implementing new features, to the point that the richards and
+rpystone benchmarks can be run using the llinterpreter (now
+increasingly badly named; rinterpreter would prooooobably be better,
+but would have other unhelpful connotations).
+
+They couldn't run these benchmarks without a small modification:
+removing the print at the end that tells you how fast they ran
+(running things on the llinterpreter is so horrendously slow that this
+doesn't defeat the point of the excercise as you might at first
+think).  The problem with printing is that it involves calling an
+external function, something that was not at all supported in the
+ootypesystem's world.  So they decided to fix that :)  And they did.
+
+Maciej also worked on the newer, ootype-using version of Javascript
+backend, and can now write python programs which bounce bub-n-bros
+characters around a browser window.  This was a good way of getting
+Armin's attention :)
+
+Pozdrawiam,
+mwh & Carl Friedrich
+
+

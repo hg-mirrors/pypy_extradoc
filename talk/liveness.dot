@@ -1,0 +1,28 @@
+digraph g {
+    node [shape=Mrecord, height=0.1];
+    roots [label="<r0>root1|<r1>root2", color=green];
+    object0 [label="<start>|<cls>|2.71|<p>"];
+    object1 [label="<start>|<cls>|3.14|<p>"];
+    object2 [label="<start>|<cls>|1.41|<p>", color=darksalmon];
+    object3 [label="<start>|<cls>|1.65|<p>", color=darksalmon];
+    object4 [label="<start>|<cls>|0.71|<p>", color=darksalmon];
+    string1 [label="<start>-152653889|'string1'"];
+    subgraph bottom {
+        rank=same;
+        class0 [label="<start>|<parent>|'Klass'"];
+        string2 [label="<start>-2129553658|'garbage'", color=darksalmon];
+    }
+    
+    roots:r0 -> string1:start [style=bold];
+    roots:r1 -> object0:start [style=bold];
+    object0:cls -> class0:start [style=bold];
+    object0:p -> object1:start [style=bold];
+    object1:cls -> class0:start [style=bold];
+    object2:cls -> class0:start;
+    object2:p -> object1:start;
+
+    object3:p -> object4:start;
+    object3:cls -> class0:start;
+    object4:p -> object3:start;
+    object4:cls -> class0:start;
+}

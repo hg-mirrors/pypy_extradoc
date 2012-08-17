@@ -1,0 +1,232 @@
+=============================================
+pypy-sync developer meeting 22th September 
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync 
+
+Attendees::
+
+         Samuele Pedroni
+         Anders Lehmann (minutes/moderation)
+         Anders Chrigström
+         Christian Tismer 
+         Holger Krekel
+         Eric van Riet Paap
+         Michael Hudson
+         Adrien Di Mascio
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No conflicts were discovered (which we could address).
+
+Topics of the week
+===================
+
+1. translate_pypy_new
+------------------------------
+
+We should try to make translate_pypy_new be the default way of translating pypy this week (ale and pedronis). There are wishes as to be able to specify options in the target, that translate_pypy_new should propagate to the translation process.
+
+Better naming and better choice of default values should be done first.
+
+Batch mode is another wish
+
+2. A pypy scrap-book ?
+------------------------------
+
+It was agreed that it was a nice idea, and that we should setup a file for 
+that purpose. (ale will do that)
+
+3. Candidates for Refactoring
+--------------------------------
+
+Two candidates were mentioned. The backendoptimizations and the that we should separate inlining and malloc removal. Both topics was deemed as hard and as good topics for a sprint.
+
+
+Next pypy-sync meeting
+-------------------------------
+
+Scheduled for next Thursday, Sept. 29nd 1300h CET, conducted by Anders Lehmann.
+
+
+Closing 
+------------------
+
+Anders closes the meeting at 13:34pm.
+
+.. _`IRC-log`:
+
+IRC-log:: 
+
+    <aleale> Hi everyone, my watch says 1 o'clock. Have anyone heard from pedronis, ludal, stakkars and arigo
+    <aleale> Should we ait for them ?
+    <hpk> not sure
+    <adim> aleale: Hi
+    <arre> Samuele is not in the office.
+    <hpk> armin flew to goetheborg today 
+    <adim> ludal won't be here today
+    <hpk> let's start the meeting anyway, i'd say
+    <aleale> Ok 
+    <aleale> Welcome 
+    <mwh> hello
+    <aleale> Lets start with what we have prepared
+    <aleale> Prev: a little on translate_pypy_new
+    <aleale> Next: translate_pypy_new ?
+    <aleale> Blockers: -
+    <arre> PREV: Getting the astcompiler is shape
+    <arre> NEXT: Even more work on the astcompiler
+    <arre> BLOCKERS: None
+    <adim> LAST: astcompiler
+    <adim> NEXT: none
+    <adim> BLOCKERS: none
+    <mwh> last: dealt with UoB stuff
+    <mwh> next: continue to attempt to resolve UoB situation
+    <mwh> blockers: UoB administrative delays
+    ??? stakkars [i=oauxesw@i577B5C64.versanet.de] has joined #pypy-sync
+    <hpk> last: EU issues, py lib/test stuff
+    <hpk> next: relaxing, pytest related things
+    <hpk> blockers: -
+    <aleale> welcome stakkars, we just doing the round of prepared stuff
+    <stakkars> ok
+    <stakkars> DONE: optimization and benchmarking
+    <stakkars> NEXT: more of this, splitting generated code
+    <stakkars> BLOCK: None
+    <aleale> ericvp: Do you have something?
+    <hpk> probably he is not actually here at the moment
+    <aleale> The only block seems to be mwh's wrestling with UoB bureaucraci
+    <aleale> I dont know if we can help, anyone ?
+    <mwh> not really
+    ??? bertf [n=bertf@pD9514462.dip0.t-ipconnect.de] has joined #pypy-sync
+    <mwh> we talked about it in the consortium meeting yesterday
+    <aleale> yes
+    <mwh> if the uob doesn't work out, it looks like i'll join armin at hhud
+    <mwh> (administratively more than physically :)
+    <aleale> Hi bertf. we are just about moving to the weekly topics
+    <aleale> Ok, mwh good luck
+    <bertf> yea, sorry, was in the wrong channel. Hi
+    <mwh> aleale: thanks
+    <mwh> let's not waste time on this one today :)
+    <aleale> The weekly topics are:
+    <aleale>        1. translate_pypy_new
+    <aleale>        2. A pypy scrap-book ?
+    <aleale>        3. Candidates for Refactoring
+    <hpk> bertf: hi bert 
+    <ericvrp> sorry, was asleep. will paste now
+    <ericvrp> last: transformation for faster exception handling in llvm
+    <ericvrp> next: nightly cronjob benchmarking of pypy-c and pypy-llvm
+    <ericvrp> blockers: -
+    <aleale> first I would like if we could give a hint on in what direction we are heading with translate_pypy_new
+    <aleale> Thanks ericvp
+    <aleale> But since armin and pedronis are not here we better defer it to #pypy ?
+    <mwh> can someone quickly summarize the point of translate_pypy_new ?
+    <stakkars> yes.  I heared Samuele saying he would help with this
+    <mwh> is it just to tidy up the various translation target/option/... stuff
+    <mwh> ?
+    <hpk> mwh: yes
+    <mwh> right, thanks
+    <aleale> It was/is an attempt to clean up te mess and maybe add some flexibility, I think
+    <aleale> Defer ?
+    <hpk> yes, the idea is a more unified model for options regarding our pypy entry points
+    <hpk> aleale: can one currently use translate_pypy_new already? 
+    ? hpk/#pypy-sync hasn't tried so far
+    <aleale> I have tried it on targetrichards and standalone. seems to work
+    <aleale> Actually I think all the checked in versions have work (with different naming of options)
+    <hpk> it probably makes sense to switch it in sometime next week, after some more people have tried to use it 
+    <stakkars> I was a bit puzzled about new option names. I know the old ones by heart. that made me lazy to try it.
+    <ericvrp> It is working, some options do the opposite of what you expect and default values need to be choosen better
+    <ericvrp> but yes, it is working
+    <aleale> the naming had to change due to optparse - maybe we dont want to use that
+    <aleale> Hi pedronis
+    ??? pedronis [n=Samuele_@c-278b70d5.022-54-67626719.cust.bredbandsbolaget.se] has joined #pypy-sync
+    <aleale> Hi pedronis
+    ? pedronis/#pypy-sync sorry
+    <stakkars> ha
+    <hpk> no, we should use optparse 
+    <aleale> Ok, we were discussing the state of translate_pypy_new
+    <hpk> but keep the option meanings and default values as close as sensible to the current script 
+    <hpk> like Eric said
+    <aleale> sure
+    <stakkars> what was the expected changeof the refactoring?
+    <pedronis> there's an issue about that
+    <aleale> less mess/ more flexibility
+    <stakkars> just better layout, or adding features easily?
+    <stakkars> sorry, I didn't look last time. Is it considered ready?
+    <pedronis> well, one thing we may want is pass --usemodulus to targertpypy.
+    <hpk> yip
+    <pedronis> other is to run it unattended with a failed/successed exit value and writing to logs (maybe)
+    <hpk> yip, but we can add that 
+    <hpk> i think it's good to head for actually using it some time soon
+    <stakkars> a complete batch mode: compile with options, run tests, do next one.
+    <aleale> Ok, I'll conclude that we want to have translate_pypy_new brougth into a usable state soon
+    <pedronis> at the moment if used with -d option on targetrichads it crashed
+    <stakkars> --usemodules is indeed a thing where I'd like to have the defaults in the target. It would be nice if the
+               translate_pypy was able to read the options which a target has and to support them
+    <aleale> and that we want to add more features.
+    <stakkars> a way to specify specific things in a target without cluttering translate
+    <pedronis> well, but also to take them from the command line
+    <pedronis> target specific options
+    <aleale> Who have time to look at it ( I wont be able to do anything before tuesday)?
+    <stakkars> I want to provide them in the commandline, for the target, without defining them in translate, necessarily
+    <pedronis> I can look at it a bit
+    <aleale> I have prepared for target specific options (add a dictionary called "options" in the target)
+    <stakkars> as an aside: I'd like to renew the idea of saving state to a file which can be postprocessed, right before the
+               backend
+    <aleale> I think we should go to the next topic (8 mins left)
+    <mwh> a scrap book sounds like a nice idea, but is there that much to go in it?
+    <aleale> mwh: what to you mean?
+    <mwh> maybe in misunderstood the idea then
+    <mwh>       ^I
+    <aleale> I think we should start thinking about it and collecting stuff.
+    <aleale> Then we can later decide how to present it
+    <hpk> well, just start a .txt file 
+    <mwh> makes sense
+    <mwh> i certainly don't know where to find all our conference presentations
+    <aleale> what about pictures and video?
+    <aleale> should it be a directory instead
+    <hpk> we don't have much in that area (apart from the sprint pictures i took)
+    <hpk> they can be referenced along with the sprint reports 
+    <aleale> ok I wil start the scrapbook then
+    <aleale> topic 3 : Candidates for refactoring
+    <mwh> well, the backendoptimizations are still pretty scary
+    <mwh> don't know if that's fixable, though
+    <aleale> It seems that we have enough tasks for the next week so I think we can postpone it ?
+    <stakkars> we should try to seperate inlining and malloc removal
+    <aleale> mwh: do you have time to look at that ?
+    <mwh> not really
+    <aleale> stakkars: will that be done as part of the current optimisations
+    <stakkars> I hope so. But it is difficult.
+    <aleale> Ok the candidates will be recorded in the minutes. Anyway the time is up
+    <mwh> might be a better sprint topic
+    ??? mwh [n=user@82-33-185-193.cable.ubr01.azte.blueyonder.co.uk] has left #pypy-sync ["ERC Version 5.0 (CVS) $Revision:
+              1.771 $ (IRC client for Emacs)"]
+    <aleale> Have we choesen a moderator for next week ?
+    <stakkars> yes, the list is completely incomplete :)
+    <hpk> yes, who is doing it next week? 
+    <aleale> Any takers?
+    <aleale> Ok I can do it again ?
+    <stakkars> I think of a number, you guess it. who is closes takes it
+    ? stakkars/#pypy-sync thinks this didn't work
+    <aleale> I would like to add : "Incredible job You've done with optimisations. Great job"
+    <hpk> stakkars, aleale: what about the two of you doing it the next two times? 
+    <hpk> after that we already have the paris sprint and can plan further
+    <aleale> I will do it next week . See you all then
+    <stakkars> no problem
+    <hpk> ok, great.
+    <aleale> and we are 4 minutes late
+    <stakkars> no idea why exactly we, but it's fine
+    ??? stakkars [i=oauxesw@i577B5C64.versanet.de] has left #pypy-sync []
+    <adim> see you
+    <hpk> see you
+    ??? adim [n=adim@logilab.net2.nerim.net] has left #pypy-sync []
+    <aleale> bye. I have to prepare my sons 18 birthday now - so the minutes will first be done tomorrow 
+    <ericvrp> goodbye
+    <bertf> bye
+     [01:40pm][aleale] [#pypy-sync(+ns)]                                                                                      
+     [Lag  0] [O/1 N/6 I/0 V/0 F/0]                                                                                [U:a:S:b:h]
+    [#pypy-sync] 

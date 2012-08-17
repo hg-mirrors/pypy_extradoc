@@ -1,0 +1,20 @@
+Separate compilation
+====================
+
+status:
+
+ - Currently PyPy has to be compiled as a monolithic system with all
+   extension modules included at compile time.
+
+todo:
+
+ - To make porting third party modules reasonable, it should not be
+   necessary to recompile all of PyPy every time you want to integrate
+   a new extension module. This requires supporting separate
+   compilation in our translation tool chain.
+
+expected outcome:
+
+dependencies:
+
+ - None

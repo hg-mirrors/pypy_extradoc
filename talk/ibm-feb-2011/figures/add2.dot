@@ -1,0 +1,40 @@
+digraph G {
+    a -> b_int [label="Integer", color=red];
+    a -> b_float [label="Float"];
+
+    a [label="a", shape=box];
+    b_int [label="b", shape=box];
+    b_float [label="b", shape=box];
+
+    b_int -> int [label="Integer", color=red];
+    b_int -> float [label="Float"];
+
+    b_float -> float [label="Float"];
+    b_float -> float [label="Integer"];
+
+    int [label="Integer\laddition"];
+    float [label="Float\laddition"];
+
+    int -> x [color=red];
+    float -> x;
+    x [label="x", shape=box];
+
+    x -> c_int [label="Integer", color=red];
+    x -> c_float [label="Float"];
+
+    c_int [label="c", shape=box];
+    c_float [label="c", shape=box];
+
+    c_int -> int2 [label="Integer", color=red];
+    c_int -> float2 [label="Float"];
+
+    c_float -> float2 [label="Float"];
+    c_float -> float2 [label="Integer"];
+
+    int2 [label="Integer\laddition"];
+    float2 [label="Float\laddition"];
+
+    int2 -> r [color=red];
+    float2 -> r;
+    r [label="r", shape=box];
+}

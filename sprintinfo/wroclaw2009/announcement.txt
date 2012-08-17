@@ -1,0 +1,101 @@
+========================================================
+Wrocław PyPy sprint 7-14th February, 2009
+========================================================
+
+The next PyPy sprint will be held in Wrocław, Poland. This is fully public
+sprint and all newcomers are welcomed. Preceeding the sprint there
+will be a talk at University of Technology in Wrocław held at 22nd of January.
+
+Worth noting is that this is a perfect time and place to go cross country
+skiing either before or after sprint, so if anyone wants to participate in
+such activity, we can organize something.
+
+--------
+Location
+--------
+
+Wrocław University of Technology, Poland
+Wybrzeże Wyspiańskiego 23-25, Wrocław
+building: C-13 (picture: http://tinyurl.com/6vvzwq)
+room: 3.01 (3rd floor)
+opening-hours: 8-21 (but the building is opened 24h/7)
+campus map: http://www.pwr.wroc.pl/upload_module/images/english/campus_map.png
+city map: http://tinyurl.com/7q3tfx
+
+---------------
+Native speakers
+---------------
+
+Official language in Poland is polish. There shouldn't be any problem with
+english at all (especially during hotel booking etc) but if you need any help,
+here is a list of native speakers who participate in the sprint. Feel free
+to contact with any of them:
+
+ * Maciej Fijałkowski ( fijall at gmail.com )
+ * Bartosz Skowron ( getxsick at gmail.com )
+ * Jakub Gustak ( jgustak at gmail.com )
+
+------------
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More
+organisational information will be sent to that list.
+
+Please register by adding yourself on the following list (via svn):
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/wroclaw2009/people.txt
+
+or announce yourself on the pypy-sprint mailing list if you do not 
+yet have check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+-------
+Flights
+-------
+
+You can either fly directly to Wrocław, with many international connections
+(like one to Dortmund and one to Duesseldorf). Details are available on
+airport's webpage: http://www.airport.wroclaw.pl/en/. You can also fly to:
+Warsaw (5h by train), Berlin (6h by train), Poznan (2h by train),
+Katowice (3h by train) or Kraków (4h by train).
+
+------------
+Accomodation
+------------
+
+Unfortunately, there aren't any hotels in really close area to sprint venue.
+There is a lot of hotels in city centre area and it's like 10-20 mins far away.
+List of possible accomodations:
+
+* http://www.wroclaw.pl/m6874/p7318.aspx (hotels)
+* http://www.wroclaw.pl/m6875/p7137.aspx (hostels)
+
+You can simple check the location at http://maps.google.com
+If you have any additional questions or advice, drop a line to Bartosz Skowron.
+
+--------------------------------------
+Preparation (if you feel it is needed)
+--------------------------------------
+
+* read the `getting-started`_ pages on http://codespeak.net/pypy
+
+* for inspiration, overview and technical status you are welcome to
+  read `the technical reports available and other relevant documentation`_
+
+* please direct any technical and/or development oriented questions to
+  pypy-dev at codespeak.net and any sprint organizing/logistical
+  questions to pypy-sprint at codespeak.net
+
+We are looking forward to meet you at the Wrocław PyPy sprint!
+
+The PyPy team 
+
+.. See also ..
+
+.. _getting-started: http://codespeak.net/pypy/dist/pypy/doc/getting-started.html
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`the technical reports available and other relevant documentation`: http://codespeak.net/pypy/dist/pypy/doc/index.html
+

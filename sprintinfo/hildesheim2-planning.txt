@@ -1,0 +1,82 @@
+
+
+PyPy Hildesheim2 sprint planning (25th-31st July) 
+-------------------------------------------------------
+
+overall time planning:: 
+    25th full sprint day 
+    26th full sprint day 
+    27th afternoon break
+    28th morning break 
+    29th full sprint day   # (compliance test decision)
+    30th full sprint day 
+    31th more or less full sprint day 
+
+    each day:  
+        9-10 AM breakfast
+        10:30 planning session 
+        evening: dinner 
+
+    Carl Friedrich Bolz   
+    Richard Emslie        
+    Armin Rigo            
+    Holger Krekel         whole-time 
+    Christian Tismer      whole-time 
+    Samuele Pedroni       whole-time  
+
+
+Current Main task: RTYPER issues
+-----------------------------------
+
+Left::
+
+    - (Holger, Armin) add a compiling option to the C backend that allows to 
+      generate a standalone binary (as opposed to a Python extension module) 
+
+    - (Samuele, Carl) WRITE A TEST or TRACKER or TRY TO FIX ->
+      likely we have a possibly deep exception handling problem:
+      implicitely exceptions are attached to the last (high level) 
+      operation in a block but when the RTyper converts this operation
+      into possibly many low-level operations then it's unlikely 
+      that we can preserve the implicit assumption that only 
+      the last (low-level) operation possibly raises an exception. 
+
+      solution: unknown at this point. 
+
+      maybe describe a few scenarios regarding exception handling 
+      describing the interactions/processing of exceptions in 
+      flowobjspace/annotation/rtyping 
+
+    - (Richard) TRACKER -> finish and polish and test our own posix module
+
+    - (Nik with help of one of us)
+      integrate Niklaus's applevel _sre module as a mixed module  
+      (so that you can switch it in via usemodules=_sre). This may
+      also ease moving gradually to an interplevel implementation. 
+      
+        pypy/module/_sre/
+            full_sre_project/ # with manifest and so on 
+            conftest.py # don't recurse into full_sre_project (unless the unittests
+            are converted to py.test) 
+            __init__.py: (appleveldefs -> full_sre_projec/...) 
+            DONE Armin is going to ask niklaus about his plans and 
+            suggest something along these lines. 
+
+      OUTCOME: should go as a mixed module, but we don't have to keep the full
+      subproject structure but just keep _sre and the tests in PyPy.  Nik will
+      keep the stand-alone version only if there is interest.  (The sre-pypy
+      branch should be ignored and removed.)
+
+    - (all) investigate the possibility of translating the interactive part of PyPy
+      or alternatively (probably preferably) running it completely at applevel
+
+
+    - (Richard, Eric) more llvm stuff: overflow, missing basic
+      operations, and exceptions.  Think about unifying the tests between genc 
+      and llvm2.
+
+    - GOOD PROGRESS WE GUESS rewriting the marshal module on interplevel (mostly
+      done but there are difficult dependencies on the applevel _codecs.py 
+      and some builtins (like frozenset) that live at applevel) 
+
+

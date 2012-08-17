@@ -1,0 +1,42 @@
+
+http://www.python-in-business.org/ep2005/talk.chtml?talk=2238&track=687
+http://codespeak.net/~cfbolz/translation.pdf
+
+
+PyPy as a Compiler
+Carl Friedrich Bolz, Holger Krekel, Christian Tismer, Armin Rigo    60 minutes
+A status report on PyPy, the Python interpreter implemented in Python.
+
+1) introduction to the PyPy release 
+   Holger (10 minutes including thunk space example)
+   (python interpreter/objectspace/compliancy) 
+
+2) type inference and specialization:: 
+    - flowgraph     \
+    - Annotation     |
+    - RTyper         |
+   15 minutes        | arigo
+                     |
+3) backends          |
+    - genc 5 min    /
+    - llvm 5 min               \
+                                |   cfbolz
+4) show demo/bpnn.py example    |
+   5 minutes                   /
+
+5) Conclusions & roadmap 2005/2006 
+   5 minutes (Armin)
+
+    the previous technqiues will be used internally to translate PyPy 
+    to low level languages.  In particular we aim for: 
+    (the primary point is NOT to systematically translate your own programs!)
+
+    - self-contained PyPy version before end 2005 
+
+    - stackless and psyco/JIT-compilation in 2006! 
+
+    - tool for building custom PyPy versions by end 2006
+
+6) questions and answers 
+   (armin)
+

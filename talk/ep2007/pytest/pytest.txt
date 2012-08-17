@@ -1,0 +1,157 @@
+.. include:: <s5defs.txt>
+
+=================================================================
+py.test: towards interactive, distributed and rapid testing 
+=================================================================
+
+:authors: Holger Krekel, Maciej Fijalkowski (merlinux GmbH) 
+:event: 9.7.2007, EuroPython 2007, Vilnius 
+
+
+Intro 
+===================
+
+- py.test released 0.9 as part of py lib, feb 2007 
+- cross-project external testing tool 
+- many mature and experimental features 
+- minimal boilerplate approach 
+- developed partly for purposes of PyPy 
+- this talk will assess status and discuss future 
+
+recap: main features 
+======================
+
+- assertions by assert statement, nice debugging 
+- unittests, generative tests, doctests, rest-tests
+- automatic customaize collection of tests 
+- select tests by keyword 
+- capture stdout/stderr per-test 
+
+ad-hoc distribution of tests 
+===================================
+
+``py.test --dist`` sends tests to remote places
+or multiple processors
+
+- for each host: 
+
+  - setup (ssh) connection 
+  - sync local source code to remote place
+  - trigger running of (isolated) tests 
+
+ad-hoc distribution of tests (2)
+=====================================
+
+- synchronise source code "1 -> N" simultanously 
+
+- uses py.execnet: 
+
+  - can connect e.g. via SSH
+  - expects plain Python executable on remote side 
+  - no need to pre-install other software remotely 
+
+- generated AJAX application async displays test results 
+
+- demo
+
+cross-platform testing 
+=============================
+
+- test run on linux, test execution on windows 
+- uses py.execnet (same technique as "--dist")
+- works well with "--looponfailing" 
+
+status cross-platform/distributed testing
+==============================================
+
+- should basically work for any project 
+- gives full tracebacks, most options work 
+
+todo: 
+
+- make introspection/pdb work 
+- use ``screen`` for access to failed tests 
+- accellerate py.execnet setup 
+- more unification among testing modes
+
+collect info about functions (apigen) 
+=============================================
+
+- collect function signatures (via settrace) 
+- track input values/types, stacktraces, return values 
+- web page with rich automatically produced information 
+- TODO: decoupling of collecting info and generating html 
+
+doctests 
+==============
+
+- basically work (automatically collected from text files) 
+- uses 2.5's doctest module 
+- needs more fine-grained integration 
+
+Unifying Test Reporting 
+=================================
+
+py.test contains two approaches for processing test results: 
+
+- "old style": methods invoked on session object 
+- "new style": reporting events are sent to Reporter object 
+
+next: 
+
+- use reporting event architecture pervasively 
+- refactor existing reporting extensions 
+
+py.test extensions (conftest)
+=================================
+
+- all conftest.py files are considered in traversed directories 
+- can extend/modify testing process in arbitrary ways 
+- however: 
+
+  - often requires too much knowledge of internal architecture 
+  - no convention for organising shared test support code 
+
+- ergo: introduce mechanism to share test support code / plugins 
+
+
+Platform support 
+======================
+
+- py lib works on linux, freebsd, windows and OSX, ...
+- works on python 2.3, 2.4, 2.5 
+- py lib provides doctest/optparse/... unified compat modules
+- todo: improve and automate packaging/installation 
+
+test networks
+==================
+
+- currently model for 1:1 process-to-process 
+- "A <-> B and B <-> C" connections do not imply "A <-> C" 
+- fix that! 
+- then: manage (large) network of test hosts 
+- select set of test deployment hosts by platform, load
+- have modes for testing on several platforms at once 
+
+difference to "buildbot" ...
+==================================
+
+- py.test generally works from developers WC 
+- no need to first commit and wait for later (nightly) test run 
+- developer's choice of test setting 
+- more interactivity 
+
+summary development topics 
+=============================
+
+- refactor/unify reporting mechanisms 
+- introduce shared test support code (plugins) 
+- improve py.execnet (towards networks) 
+- interactive debugging / introspection everywhere 
+- systematically persist test results 
+
+Goal
+=============
+
+Maximize fun and efficiency of (test-driven) development 
+

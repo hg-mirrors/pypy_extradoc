@@ -1,0 +1,137 @@
+Planning/status for the first morning
+=========================================
+
+Holger is AWOL, Christian is doing paperwork, Armin and Nik aren't here yet...
+
+Looking at the 0.9 issues, critical first:
+
+* 111	test reports / platform sorted :
+
+  Holger!
+
+* 194	Advance rctypes approach to become usable
+
+  Basically done (ask Armin)
+
+* 197	implement __del__ support for framework gcs
+
+  Needs more testing (particularly with the stacklessgc), but we think this
+  works.
+
+* 198	implement tasklet pickling
+
+  No problem at all! hahahaha
+
+  - finish needed object type pickling/unpickling
+  - finish and integrate explict resume points support
+  - use the latter to implement restarting after unpickling
+    (likely hack! hack! hack! until it works)
+
+  Tasklet cloning has become completely different, that kind of works now
+  (needs more testing).
+
+* 30	dist -> trunk, dist becomes newest release
+
+  Not something to do at a sprint.
+
+* 81	weakrefs
+
+  This is about 90% done, only the other 90% to go :)
+  Many of the CPython tests are hopeless, we need
+  modified-2.4.1/test/test_weakref.py.  Exposing gc.collect() would help.
+
+Now the bugs:
+
+* 137	Control-C runtime support
+
+  No progress here.  Hopefully not that hard.
+
+* 181	time module is incomplete
+
+  Will be done by the SoC ctypes project we hope :)
+
+* 182	compiler crash on windows
+
+  We need a windows user for this?
+
+* 183	windows build needs superuser
+
+  This too.
+
+* 184	compiled pypy-c is host dependent
+
+  How much of this do we want to do for 0.9?
+
+* 195	Make website doc generation more reliable
+
+  Holger!
+
+* 21	_file.py needs more tests
+
+  Yes, it does.
+
+* 22	app-level docstrings missing everywhere
+
+  Should be an easy sprint task.
+
+* 3	fix real bugs exposed by test_descr
+
+  We can do this now we have weakrefs, but it's a bonus point type task.
+  
+* 95	create a glossary for common PyPy terms
+
+  Should be done, at last.
+
+Features:
+
+* 101	Tool for discovering REV that broke translation	
+
+  We're surviving without it ok, eric's nightly benchmarks help.
+
+* 103	finish posix module
+
+  SoC!
+
+* 145	implement -m command line option
+
+  Probably not critical for 0.9.
+
+* 199	finish app-level stackless support
+
+  This should be rated 'critical'!  Not sure what the status is.
+
+* 200	moving gcs
+
+  Another GC bonus point.  Probably not going to happen for 0.9.
+
+* 34	running translator goals per revision
+
+  See comments on issue101.
+
+* 41	roadmap till PyPy 1.x
+
+  Well, yes.  We need to have this by the end of the sprint, I guess.
+
+* 44	have a doc chapter for CPython-dev'ers
+
+  This is part of getting the ext-compiler to be usable in some sense.
+  There should be an "0.9 documentation" issue.
+
+* 74	come up with nice pictures/diagrams
+
+  It's not so much coming up with these things as actually linking to them
+  from the docs that remains to be done.
+
+Wish:
+
+* 133	remove unused files
+
+  Part of preparing for the release.
+
+* 4	code integrity in documentation
+
+  No closer to fixing the hard problems at the moment?
+
+* 6	Allow users to specify 'allwaysnosy'
+
+  This is a codespeak issue, mainly.

@@ -1,0 +1,57 @@
+
+People coming to the Berlin sprint 2008
+========================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Maciej Fijalkowski   14-22.V        private
+Stephan Diehl        ?              private
+Toon Verwaest        14-16-22       hotel - Die Fabrik
+Camillo Bruni        14-16-22       hotel - Die Fabrik
+Samuele Pedroni      16-21          Hotel Klassik Berlin
+Armin Rigo           14-22(noon)    private, thanks Stephan
+Carl Friedrich Bolz  14-22          Die Fabrik
+Antonio Cuni         19-24          A&O Hotel Mitte
+Alexander Schremmer  16(night)-18   www.singer109.com
+Holger Krekel        19/evening-22  private 
+==================== ============== =======================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Niko Matsakis        ?              ?
+Anders Chrigstroem   ?              ?
+Michael Hudson       ?              ?
+Niko Matsakis        ?              ?
+Eric van Riet Paap   ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Holger Krekel        ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+==================== ============== =====================

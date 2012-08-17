@@ -1,0 +1,169 @@
+=============================================
+pypy-sync developer meeting 09th March 2006
+=============================================
+
+
+Attendees:  Samuele around
+            Anders C.
+            Anders L.
+            Carl Friedrich (minutes)
+            Michael
+            Nik
+            Gerald
+
+Topics 
+====================
+
+- activity reports (3 prepared lines of info). 
+  Everybody submitted activity reports (see `IRC-Log`_ at the end)
+  There was one blocker: it seems that the people working on logic would really
+  like to have lightweight threads exposed to app-level (in basically any
+  form, for example tasklets). 
+
+trying to get pypy-syncs to happen more regular again
+------------------------------------------------------
+
+Since this weeks pypy-sync was more ad-hoc than organized we should really try
+to get the meetings going on more regularly again and have more people
+attending. Michael volunteered to organize the next two sync meetings, Carl
+Friedrich will bug him to send out invitations. Also it was decided to try to
+move the sync meeting to thursday 17.00 CET to enable developers in the US to
+attend.
+
+.. _`IRC-Log`:
+
+fixating sprint in Hildesheim (25th-31st July)
+-------------------------------------------------
+
+complete log::
+
+    **** BEGINNE LOGBUCH UM Thu Mar  9 13:02:25 2006
+
+    Mär 09 13:02:25 *	Du sprichst jetzt in #pypy-sync
+    Mär 09 13:03:05 *	aleale (n=aleale@130.104.228.188) hat #pypy-sync betreten
+    Mär 09 13:04:51 *	mwh (n=mwh@82-32-1-111.cable.ubr01.azte.blueyonder.co.uk) hat #pypy-sync betreten
+    Mär 09 13:05:03 mwh	crud, i meant to write a mail yesterday about pypy-sync
+    Mär 09 13:06:08 cfbolz	:-)
+    Mär 09 13:06:16 cfbolz	quick lines round? or do you have issues?
+    Mär 09 13:06:56 aleale	PREV: Sprint, jetlag
+    Mär 09 13:07:14 aleale	NEXT: revisit pyontology
+    Mär 09 13:07:22 aleale	Blockers: -
+    Mär 09 13:07:23 mwh	PREV: sprint, gc hacking
+    Mär 09 13:07:28 mwh	NEXT: more gc hacking
+    Mär 09 13:07:34 cfbolz	LAST: vacation, logic sprint
+    Mär 09 13:07:34 cfbolz	NEXT: logic sprint, GC work
+    Mär 09 13:07:34 cfbolz	BLOCKER: none
+    Mär 09 13:07:34 mwh	BLOCKERS: -
+    Mär 09 13:07:52 *	Gromit (n=gek@code0.codespeak.net) hat #pypy-sync betreten
+    Mär 09 13:07:52 mwh	does anyone ever have any blockers?
+    Mär 09 13:07:58 cfbolz	yes
+    Mär 09 13:08:08 nikh	LAST: sprint, picked up squeak backend
+    Mär 09 13:08:08 nikh	NEXT: squeak backend
+    Mär 09 13:08:08 nikh	BLOCKERS: still sickish
+    Mär 09 13:08:13 nikh	yes, me ;)
+    Mär 09 13:08:18 mwh	ah
+    Mär 09 13:08:24 cfbolz	mwh: we actually have blockers on stackless having an applevel interface right now
+    Mär 09 13:08:31 arre	PREV: Recovering from PyCon
+    Mär 09 13:08:31 arre	NEXT: Non-PyPy work, maybe some JIT.
+    Mär 09 13:08:31 arre	BLOCKERS: -
+    Mär 09 13:08:33 mwh	oh, cool :)
+    Mär 09 13:08:50 mwh	in some sense
+    Mär 09 13:09:12 cfbolz	hehe
+    Mär 09 13:09:22 cfbolz	I guess the best thing we can do to get the pypy-syncs going again is to assign next weeks moderation to someone
+    Mär 09 13:09:28 cfbolz	and have an invitation send out
+    Mär 09 13:09:32 cfbolz	in time
+    Mär 09 13:10:10 mwh	i could do the next two, but then i'm on holiday
+    Mär 09 13:10:24 cfbolz	I will try to remind you of the invitation
+    Mär 09 13:10:43 Gromit	LAST, NEXT, BOLCKERS: Busy with other work
+    Mär 09 13:13:06 cfbolz	meeting closed then?
+    Mär 09 13:13:17 arre	What about moving the time of the meeting to acomodate our friends across the Atlantic?
+    Mär 09 13:13:33 cfbolz	I would like to discuss this with more people
+    Mär 09 13:14:12 xorAxAx	how about using the mailing list for the discussion?
+    Mär 09 13:14:34 mwh	it's a chicken and egg situation, a bit
+    Mär 09 13:14:38 nikh	did anyone overseas express interestin pypy-sync?
+    Mär 09 13:14:39 cfbolz	yes
+    Mär 09 13:14:46 cfbolz	holger :-)
+    Mär 09 13:14:52 mwh	gene said he might
+    Mär 09 13:14:54 nikh	ah, of course ...
+    Mär 09 13:15:22 cfbolz	how about thursday at 16.00?
+    Mär 09 13:15:38 cfbolz	or 17.00?
+    Mär 09 13:15:44 nikh	16.00 is 7 am on the west cost
+    Mär 09 13:15:49 nikh	so better 17.00 i guess
+    Mär 09 13:15:59 arre	17:00 is better.
+    Mär 09 13:16:05 cfbolz	ok with me
+    Mär 09 13:16:22 aleale	Most weeks it will be ok (every fourth week it will be a nuissance)
+    Mär 09 13:16:39 Gromit	ok, that's much better, it won't collide with my sync-meetings here
+    Mär 09 13:16:50 cfbolz	good!
+    Mär 09 13:17:35 cfbolz	then we actually have something to write a summary about :-)
+    Mär 09 13:17:40 cfbolz	meeting closed then
+    Mär 09 13:18:40 *	Gromit (n=gek@code0.codespeak.net) hat #pypy-sync verlassen ("Leaving")
+    Mär 09 13:19:16 mwh	ok with me
+    Mär 09 13:19:20 cfbolz	good
+    Mär 09 13:19:22 cfbolz	see you then
+    **** BEENDE LOGBUCH UM Thu Mar  9 13:19:23 2006
+
+    **** BEGINNE LOGBUCH UM Thu Mar  9 13:02:25 2006
+
+    Mär 09 13:02:25 *	Du sprichst jetzt in #pypy-sync
+    Mär 09 13:03:05 *	aleale (n=aleale@130.104.228.188) hat #pypy-sync betreten
+    Mär 09 13:04:51 *	mwh (n=mwh@82-32-1-111.cable.ubr01.azte.blueyonder.co.uk) hat #pypy-sync betreten
+    Mär 09 13:05:03 mwh	crud, i meant to write a mail yesterday about pypy-sync
+    Mär 09 13:06:08 cfbolz	:-)
+    Mär 09 13:06:16 cfbolz	quick lines round? or do you have issues?
+    Mär 09 13:06:56 aleale	PREV: Sprint, jetlag
+    Mär 09 13:07:14 aleale	NEXT: revisit pyontology
+    Mär 09 13:07:22 aleale	Blockers: -
+    Mär 09 13:07:23 mwh	PREV: sprint, gc hacking
+    Mär 09 13:07:28 mwh	NEXT: more gc hacking
+    Mär 09 13:07:34 cfbolz	LAST: vacation, logic sprint
+    Mär 09 13:07:34 cfbolz	NEXT: logic sprint, GC work
+    Mär 09 13:07:34 cfbolz	BLOCKER: none
+    Mär 09 13:07:34 mwh	BLOCKERS: -
+    Mär 09 13:07:52 *	Gromit (n=gek@code0.codespeak.net) hat #pypy-sync betreten
+    Mär 09 13:07:52 mwh	does anyone ever have any blockers?
+    Mär 09 13:07:58 cfbolz	yes
+    Mär 09 13:08:08 nikh	LAST: sprint, picked up squeak backend
+    Mär 09 13:08:08 nikh	NEXT: squeak backend
+    Mär 09 13:08:08 nikh	BLOCKERS: still sickish
+    Mär 09 13:08:13 nikh	yes, me ;)
+    Mär 09 13:08:18 mwh	ah
+    Mär 09 13:08:24 cfbolz	mwh: we actually have blockers on stackless having an applevel interface right now
+    Mär 09 13:08:31 arre	PREV: Recovering from PyCon
+    Mär 09 13:08:31 arre	NEXT: Non-PyPy work, maybe some JIT.
+    Mär 09 13:08:31 arre	BLOCKERS: -
+    Mär 09 13:08:33 mwh	oh, cool :)
+    Mär 09 13:08:50 mwh	in some sense
+    Mär 09 13:09:12 cfbolz	hehe
+    Mär 09 13:09:22 cfbolz	I guess the best thing we can do to get the pypy-syncs going again is to assign next weeks moderation to someone
+    Mär 09 13:09:28 cfbolz	and have an invitation send out
+    Mär 09 13:09:32 cfbolz	in time
+    Mär 09 13:10:10 mwh	i could do the next two, but then i'm on holiday
+    Mär 09 13:10:24 cfbolz	I will try to remind you of the invitation
+    Mär 09 13:10:43 Gromit	LAST, NEXT, BOLCKERS: Busy with other work
+    Mär 09 13:13:06 cfbolz	meeting closed then?
+    Mär 09 13:13:17 arre	What about moving the time of the meeting to acomodate our friends across the Atlantic?
+    Mär 09 13:13:33 cfbolz	I would like to discuss this with more people
+    Mär 09 13:14:12 xorAxAx	how about using the mailing list for the discussion?
+    Mär 09 13:14:34 mwh	it's a chicken and egg situation, a bit
+    Mär 09 13:14:38 nikh	did anyone overseas express interestin pypy-sync?
+    Mär 09 13:14:39 cfbolz	yes
+    Mär 09 13:14:46 cfbolz	holger :-)
+    Mär 09 13:14:52 mwh	gene said he might
+    Mär 09 13:14:54 nikh	ah, of course ...
+    Mär 09 13:15:22 cfbolz	how about thursday at 16.00?
+    Mär 09 13:15:38 cfbolz	or 17.00?
+    Mär 09 13:15:44 nikh	16.00 is 7 am on the west cost
+    Mär 09 13:15:49 nikh	so better 17.00 i guess
+    Mär 09 13:15:59 arre	17:00 is better.
+    Mär 09 13:16:05 cfbolz	ok with me
+    Mär 09 13:16:22 aleale	Most weeks it will be ok (every fourth week it will be a nuissance)
+    Mär 09 13:16:39 Gromit	ok, that's much better, it won't collide with my sync-meetings here
+    Mär 09 13:16:50 cfbolz	good!
+    Mär 09 13:17:35 cfbolz	then we actually have something to write a summary about :-)
+    Mär 09 13:17:40 cfbolz	meeting closed then
+    Mär 09 13:18:40 *	Gromit (n=gek@code0.codespeak.net) hat #pypy-sync verlassen ("Leaving")
+    Mär 09 13:19:16 mwh	ok with me
+    Mär 09 13:19:20 cfbolz	good
+    Mär 09 13:19:22 cfbolz	see you then
+    **** BEENDE LOGBUCH UM Thu Mar  9 13:19:23 2006
+

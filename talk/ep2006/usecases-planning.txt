@@ -1,0 +1,51 @@
+What can PyPy do for you?
+=========================
+
+Peek under the hood
+-------------------
+
+ - sys.pypy_repr() with small ints::
+
+    >>>> import sys
+    >>>> sys.pypy_repr(1)
+    '<unboxed 1>'
+    >>>> sys.pypy_repr(42)
+    '<unboxed 42>'
+    >>>> sys.pypy_repr(sys.maxint)
+    '<W_IntObject object>'
+    >>>> sys.pypy_repr(sys.maxint / 2)
+    '<unboxed 1073741823>'
+    >>>> sys.pypy_repr(sys.maxint / 2 + 1)
+    '<W_IntObject object>'
+
+Stackless stuff
+---------------
+
+ - lightweight threadlets similar to what stackless python provides
+
+ - tasklet cloning
+
+ - gc: performance/memory/feature tradeoffs: e.g. (check if and) show an
+   example where a refcounting pypy uses less Unix process memory than a Boehm
+   one (but of course the latter is faster).  Mention that tasklet cloning
+   requires a gc which is (ATM) a bit slower.
+ 
+Lazy stuff
+----------
+ 
+ - lazy evaluation with the thunk object space
+   try running demo/sharedref on pypy-c-thunk.
+ 
+ - Oz-like dataflow variables with the logic object space
+   py.py -o logic --usemodules=_stackless fibonacci{,2,3,4}.py
+
+Compiling
+---------
+
+ - algo example, e.g. sieve of eratosthenes
+ - ctypes example
+ - Writing compatible extension modules for PyPy and CPython with the PyPy
+   extension compiler
+
+ - The Javascript backend and its uses
+

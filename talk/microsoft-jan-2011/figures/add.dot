@@ -1,0 +1,31 @@
+digraph G {
+    a -> b_int [label="Integer"];
+    a -> b_float [label="Float"];
+    a -> b_long [label="Long"];
+    a -> b_string [label="String"];
+    a -> b_list [label="List"];
+    a -> b_tuple [label="Tuple"];
+    a -> b_user [label="User defined"];
+
+    a [label="a", shape=box];
+    b_int [label="b", shape=box];
+    b_float [label="b", shape=box];
+    b_long [label="b", shape=box];
+    b_string [label="b", shape=box];
+    b_list [label="b", shape=box];
+    b_tuple [label="b", shape=box];
+    b_user [label="b", shape=box];
+
+    b_int -> int [label="Integer"];
+    b_int -> float [label="Float"];
+    b_int -> long [label="Long"];
+    b_int -> user [label="User defined"];
+
+    b_float -> float [label="Integer"];
+    b_long -> long [label="Integer"];
+
+    int [label="Integer"];
+    float [label="Float"];
+    long [label="Long"];
+    user [label="User defined"];
+}

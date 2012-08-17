@@ -1,0 +1,178 @@
+=============
+Speed of PyPy
+=============
+
+JIT - what's that about?
+========================
+
+* removing bytecode-dispatch overhead
+
+* removing frame overhead
+
+* other optimizations which can be derived
+  from the two above
+
+The main idea
+=============
+
+* python has advanced features (frame introspection,
+  arbitrary code execution, overloading globals)
+
+* with JIT, you don't pay for them if you don't use
+  them
+
+* however, you pay if you use them
+
+So, the general advice
+======================
+
+* don't use advanced feature if you don't use them
+
+* don't try to outsmart your compiler
+
+Tracing JIT - short intro
+=========================
+
+* the main idea being speeding up loops
+
+* only linear trace of code that was
+  actually executed
+
+* mostly can trace loops and to certain
+  extent recursion
+
+XXX example of tracing, maybe
+
+Removing frame overhead
+=======================
+
+* frames are costly
+
+* *x = y + z* has 5 frame accesses
+
+* it all can be removed!
+
+Removing object boxing
+======================
+
+* intermediate values does not need to be allocated
+
+* integer can stay in the register
+
+XXX maybe demo assembler, maaaaybe
+
+Local access costs nothing
+==========================
+
+* local variables are not stored on the frame,
+  unless *sys._getframe()* is called
+
+* ... or *sys.exc_info()* or exception escapes
+
+XXX picture exception escaping
+
+Shared dicts (aka hidden classes)
+=================================
+
+* instance *__dict__* access becomes a list
+  lookup
+
+* however, if you do evil hacks,
+  it'll bail down back
+
+... only for newstyle classes
+=============================
+
+* there are few minor, but annoying, differences
+
+* while it can be done, we ask you to not use
+  old style classes instead :-)
+
+Version tags
+============
+
+XXX
+
+Generators are tricky (for now)
+===============================
+
+* they can't be as fast, because generator
+  frame needs to be allocated
+
+* they still can be sped up by a bit and
+  that's a current limitation
+
+Generator expressions are even trickier
+=======================================
+
+* for now, if possible, use list comprehension
+
+Don't try to outsmart your compiler
+===================================
+
+* simple loop is better than a complex
+  map/lambda/reduce combination
+
+* even if on CPython the latter is faster
+
+* general rule: if it's easier to read, it's easier
+  to read by the JIT
+
+Solution: move back code to python
+==================================
+
+XXX remove this slide
+
+Allocation patterns
+===================
+
+* PyPy uses a moving GC (like JVM, .NET, etc.)
+
+* pretty efficient for usecases with a lot of
+  short-living objects
+
+* objects are smaller than on CPython
+
+Never use id(obj), unless you really have to
+============================================
+
+* contrary to popular belief, *id* semantics make
+  that a complex operation on a moving GC
+
+Bad case for a moving GC
+========================
+
+xxx
+
+Problems
+========
+
+* long traces
+
+* megamorphic calls
+
+* metaclasses
+
+* class global state
+
+Future
+======
+
+* release
+
+* try & see
+
+Q&A
+===
+
+* http://morepypy.blogspot.com
+
+* http://merlinux.eu
+
+XXX more:
+
+(versiontag stuff basically)
+
+- counters on classes are bad
+- we don't do well with metaclasses
+

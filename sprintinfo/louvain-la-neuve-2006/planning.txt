@@ -1,0 +1,30 @@
+Louvain-la-Neuve Logic programming sprint
+=========================================
+
+Tasks:
+------
+
+DONE plan the agenda for tomorrow/thursday (Aurelien, Nicolas)
+ * identify parts of the current logic module that can be usefully implemented
+   in RPython (Ludovic, Samuele)
+ * take a look at existing logic programming software (pychinko,
+   GECODE, CWM, tableau, pylog) and at the RETE algorithm. Think about
+   integration (Alf, Carl Friedrich, Anders)
+ * existing Python syntax/new syntax: look at and update existing document
+ * consistency for multi-paradigm programming languages (especially Python)
+ * write a glossary for terms that occur
+
+Links:
+------
+
+ * description of the Rete algorithm: http://drools.org/Rete
+ * CWM (closed world machine): http://infomesh.net/2001/cwm/
+ * pychinko: http://www.mindswap.org/~katz/pychinko/ 
+ * pylog (implementation of prolog in python): http://christophe.delord.free.fr/en/pylog/
+ * cookbook receipt that lets one add arbitrary infix binary operators: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/384122
+ * continuations to implement backtracking search: http://www.ps.uni-sb.de/~duchier/python/continuations.html
+ * linear programming with nice syntactic sugar via operator overloading: http://www.jeannot.org/~js/code/index.en.html
+ * erlang style message-based communication and concurrency: http://candygram.sourceforge.net/
+ * discussing extending python with future/promises: http://lists.logilab.org/pipermail/python-logic/2005-August/000112.html
+ * two python recipes that analyse and transform the bytecode of a function to interpret it as a set of facts and rules: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/360698 ; http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/303057
+ 

@@ -1,0 +1,83 @@
+Author Names
+------------
+
+Michael Hudson, Christian Tismer 
+
+Contact Information
+-------------------
+
+pypy-dev@codespeak.net <- preferred (is a mailing list)
+mwh@python.net <- if the above is unacceptable for some reason.
+
+Requested Timeslot
+------------------
+
+30 minutes.
+
+Summary of proposed presentation
+--------------------------------
+
+PyPy, the notorious Python-in-Python project reached a significant
+milestone in the summer of 2005: being able to produce a standalone
+python interpreter with no dependencies on any of CPython's C code.
+
+This talk will describe as much of the toolchain that got us to this
+point as it's possible to cram into 30 minutes :).
+
+Presentation Outline
+--------------------
+
+- Introduction to PyPy.
+
+  + PyPy is an implementation of Python, written in Python.
+  + Aims for more flexibility and performance than existing
+    implementations.
+
+- Demo of pypy-c.
+
+  + "pypy-c" is the name of the binary produced by the translation
+    process.
+  + We will run some python commands interactively to show how
+    similar we are to CPython.
+
+- Overview.
+
+  + The interpreter/object space split.
+  + One sentence description of each part of the toolchain.
+
+- Our Toolchain (1): The Flow Object Space.
+
+  + The FlowObjectSpace abstractly interprets a function to build a
+    control flow graph of its structure.
+  + Works on function objects, not source code.
+  + Basically stable since early 2005, about 2000 lines of code.
+
+- Our Toolchain (2): The Annotator.
+
+  + The RPythonAnnotator analyses an RPython program to infer types
+    and inter-function control flow.
+  + Works on the graphs produced by the FlowObjectSpace.
+  + More or less stable since early summer 2005, about 4000 lines of code.
+
+- Our Toolchain (3): The RTyper.
+
+  + Converts the still-fairly-high-level output of the annotator into
+    lower level operations that are easier to translate into languages
+    like C.
+  + In particular, removes polymorphic calls from the graph.
+  + Basically working since summer 2005, restructuring in progress at
+    time of writing.  About 10000 lines of code.
+
+- Our Toolchain (4): The Low Level Backend(s).
+
+  + Take the low-level operations produced by the RTyper and converts
+    to a low-level language.
+  + At time of writing, C and LLVM are the supported targets.
+  + Working though not stable from spring 2005.  C backend about 4000
+    lines of code.
+
+Intended audience
+-----------------
+
+Anyone interested, talk should be accessible to anyone who knows
+Python reasonably well.

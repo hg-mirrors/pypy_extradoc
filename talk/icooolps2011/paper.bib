@@ -1,0 +1,413 @@
+
+@inproceedings{deutsch_efficient_1984,
+	address = {Salt Lake City, Utah},
+	title = {Efficient implementation of the Smalltalk-80 system},
+	isbn = {0-89791-125-3},
+	url = {http://portal.acm.org/citation.cfm?id=800017.800542},
+	doi = {10.1145/800017.800542},
+	abstract = {The Smalltalk-80* programming language includes dynamic storage allocation, full upward funargs, and universally polymorphic procedures; the Smalltalk-80 programming system features interactive execution with incremental compilation, and implementation portability. These features of modern programming systems are among the most difficult to implement efficiently, even individually. A new implementation of the Smalltalk-80 system, hosted on a small microprocessor-based computer, achieves high performance while retaining complete (object code) compatibility with existing implementations. This paper discusses the most significant optimization techniques developed over the course of the project, many of which are applicable to other languages. The key idea is to represent certain runtime state (both code and data) in more than one form, and to convert between forms when needed.},
+	booktitle = {{POPL}},
+	publisher = {{ACM}},
+	author = {L. Peter Deutsch and Allan M. Schiffman},
+	year = {1984}
+},
+
+@inproceedings{carl_friedrich_bolz_towards_2010,
+	address = {Hagenberg, Austria},
+	title = {Towards a Jitting {VM} for Prolog execution},
+	isbn = {978-1-4503-0132-9},
+	url = {http://portal.acm.org/citation.cfm?id=1836102},
+	doi = {10.1145/1836089.1836102},
+	abstract = {Most Prolog implementations are implemented in low-level languages such as C and are based on a variation of the {WAM} instruction set, which enhances their performance but makes them hard to write. In addition, many of the more dynamic features of Prolog (like assert), despite their popularity, are not well supported. We present a high-level continuation-based Prolog interpreter based on the {PyPy} project. The {PyPy} project makes it possible to easily and efficiently implement dynamic languages. It provides tools that automatically generate a just-in-time compiler for a given interpreter of the target language, by using partial evaluation techniques. The resulting Prolog implementation is surprisingly efficient: it clearly outperforms existing interpreters of Prolog in high-level languages such as Java. Moreover, on some benchmarks, our system outperforms state-of-the-art {WAM-based} Prolog implementations. Our paper aims to show that declarative languages such as Prolog can indeed benefit from having a just-in-time compiler and that {PyPy} can form the basis for implementing programming languages other than Python.},
+	booktitle = {{PPDP}},
+	publisher = {{ACM}},
+	author = {Carl Friedrich Bolz and Michael Leuschel and David Schneider},
+	year = {2010},
+	keywords = {interpreters, jit, logic programming, partial evaluation}
+},
+
+@inproceedings{bebenita_spur:_2010,
+	address = {{Reno/Tahoe,} Nevada, {USA}},
+	title = {{SPUR:} a trace-based {JIT} compiler for {CIL}},
+	isbn = {978-1-4503-0203-6},
+	shorttitle = {{SPUR}},
+	url = {http://portal.acm.org/citation.cfm?id=1869459.1869517&coll=GUIDE&dl=GUIDE&type=series&idx=SERIES318&part=series&WantType=Proceedings&title=OOPSLA%2FSPLASH&CFID=106280261&CFTOKEN=29377718},
+	doi = {10.1145/1869459.1869517},
+	abstract = {Tracing just-in-time compilers {(TJITs)} determine frequently executed traces (hot paths and loops) in running programs and focus their optimization effort by emitting optimized machine code specialized to these traces. Prior work has established this strategy to be especially beneficial for dynamic languages such as {JavaScript,} where the {TJIT} interfaces with the interpreter and produces machine code from the {JavaScript} trace.},
+	booktitle = {{OOPSLA}},
+	publisher = {{ACM}},
+	author = {Michael Bebenita and Florian Brandner and Manuel Fahndrich and Francesco Logozzo and Wolfram Schulte and Nikolai Tillmann and Herman Venter},
+	year = {2010},
+	keywords = {cil, dynamic compilation, javascript, just-in-time, tracing},
+	annote = {{\textless}h3{\textgreater}{\textless}a {href="http://morepypy.blogspot.com/2010/07/comparing-spur-to-pypy.html"{\textgreater}Comparing} {SPUR} to {PyPy{\textless}/a{\textgreater}{\textless}/h3{\textgreater}}
+{{\textless}p{\textgreater}Recently,} I've become aware of the {\textless}a {href="http://research.microsoft.com/en-us/projects/spur/"{\textgreater}SPUR} project{\textless}/a{\textgreater} of Microsoft Research and read some of their papers (the tech report {"SPUR:} A {Trace-Based} {JIT} Compiler for {CIL"} is very cool). I found the project to be very interesting and since their approach is in many ways related to what {PyPy} is doing, I now want to compare and contrast the two projects.{\textless}/p{\textgreater}
+{\textless}div id="a-tracing-jit-for-net"{\textgreater}
+{{\textless}h2{\textgreater}A} Tracing {JIT} for {.NET{\textless}/h2{\textgreater}}
+{{\textless}p{\textgreater}SPUR} consist of two parts: On the one hand it is a {VM} for {CIL,} the bytecode of the {.NET} {VM.} This {VM} uses a tracing {JIT} compiler to compile the programs it is running to machine code. As opposed to most existing {VMs} that have a tracing {JIT} it does not use an interpreter at all. Instead it contains various variants of a {JIT} compiler that produce different versions of each method. Those are:{\textless}/p{\textgreater}
+{\textless}ul{\textgreater}
+{\textless}li{\textgreater}a {\textless}em{\textgreater}profiling {JIT{\textless}/em{\textgreater}} which produces code that does lightweight profiling when running the compiled method{\textless}/li{\textgreater}
+{\textless}li{\textgreater}a {\textless}em{\textgreater}tracing {JIT{\textless}/em{\textgreater}} which produces code that produces a trace when running the compiled method{\textless}/li{\textgreater}
+{\textless}li{\textgreater}a {\textless}em{\textgreater}transfer-tail {JIT{\textless}/em{\textgreater}} which is used to produce code which is run to get from a failing guard back to the normal profiling version of a method{\textless}/li{\textgreater}
+{\textless}li{\textgreater}an {\textless}em{\textgreater}optimizing {JIT{\textless}/em{\textgreater}} that actually optimizes traces and turns them into machine code{\textless}/li{\textgreater}
+{\textless}/ul{\textgreater}
+{\textless}div id="optimizations-done-by-the-optimizing-jit"{\textgreater}
+{{\textless}h3{\textgreater}Optimizations} Done by the Optimizing {JIT{\textless}/h3{\textgreater}}
+{{\textless}p{\textgreater}SPUR's} optimizing {JIT} does a number of powerful optimizations on the traces before it turns them into machine code. Among them are usual compiler optimizations such as register allocation, common subexpression elimination, loop invariant code motion, etc.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}It} also performs some optimizations that are specific to the tracing context and are thus not commonly found in "normal" compilers:{\textless}/p{\textgreater}
+{\textless}ul{\textgreater}
+{\textless}li{\textgreater}{\textless}em{\textgreater}guard implication{\textless}/em{\textgreater}: if a guard is implied by an earlier guard, it is removed{\textless}/li{\textgreater}
+{\textless}li{\textgreater}{\textless}em{\textgreater}guard strengthening{\textless}/em{\textgreater}: if there is a sequence of guards that become stronger and stronger (i.e. each guard implies the previous one), the first guard in the sequence is replaced by the last one, and all others are removed. This can greatly reduce the number of guards and is generally safe. It can shift a guard failure to an earlier point in the trace, but the failure would have occurred at some point in the trace anyway.{\textless}/li{\textgreater}
+{\textless}li{\textgreater}{\textless}em{\textgreater}load/store optimizations{\textless}/em{\textgreater}: this is an optimization for memory reads/writes. If several loads from the same memory location occur without writes in between, all but the first one are removed. Similarly, if a write to a memory location is performed, this write is delayed as much as possible. If there is a write to the same location soon afterwards, the first write can be removed.{\textless}/li{\textgreater}
+{\textless}li{\textgreater}{\textless}em{\textgreater}escape analysis{\textless}/em{\textgreater}: for allocations that occur in a loop, the optimizer checks whether the resulting object escapes the loop. If not, the allocation is moved before the loop, so that only one object needs to be allocated, instead of one every loop iteration.{\textless}/li{\textgreater}
+{\textless}li{\textgreater}{\textless}em{\textgreater}user-controlled loop unrolling{\textless}/em{\textgreater}: not exactly an optimization, but an interesting feature anyway. It is possible to annotate a {CIL} method with a special decorator {{\textless}tt{\textgreater}[TraceUnfold]{\textless}/tt{\textgreater}} and then the tracing {JIT} will fully unroll the loops it contains. This can be useful for loops than are known to run a small and fixed number of iterations for each call-site.{\textless}/li{\textgreater}
+{\textless}li{\textgreater}{\textless}em{\textgreater}user controlled tracing{\textless}/em{\textgreater}: The user can also control tracing up to a point. Methods can be annotated with {{\textless}tt{\textgreater}[NativeCall]{\textless}/tt{\textgreater}} to tell the tracer to never trace their execution. Instead they appear as a direct call in the trace.{\textless}/li{\textgreater}
+{\textless}/ul{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}div id="a-javascript-implementation"{\textgreater}
+{{\textless}h2{\textgreater}A} {JavaScript} Implementation{\textless}/h2{\textgreater}
+{{\textless}p{\textgreater}In} addition to the tracing {JIT} I just described, {SPUR} also contains a {JavaScript} implementation for {.NET.} The approach of this implementation is to translate {JavaScript} to {CIL} bytecode, doing some amount of type inference to detect variables that have fixed types. All operations where no precise type could be determined are implemented with calls to a {JavaScript} runtime system, which does the necessary type dispatching. The {JavaScript} runtime is implemented in C\#.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}The} {JavaScript} implementation and the {CLI} {VM} with a tracing {JIT} sound quite unrelated at first, but together they amplify each other. The tracing {JIT} traces the {JavaScript} functions that have been translated to {CLI} bytecode. Since the {JavaScript} runtime is in C\#, it exists as {CLI} bytecode too. Thus it can be inlined into the {JavaScript} functions by the tracer. This is highly beneficial, since it exposes the runtime type dispatching of the {JavaScript} operations to the optimizations of the tracing {JIT.} Particularly the common expression elimination helps the {JavaScript} code. If a series of operations is performed on the same object, the operations will all do the same type checks. All but the type checks of the first operation can be removed by the optimizer.{\textless}/p{\textgreater}
+{\textless}div id="performance-results"{\textgreater}
+{{\textless}h3{\textgreater}Performance} Results{\textless}/h3{\textgreater}
+{{\textless}p{\textgreater}The} speed results of the combined {JavaScript} implementation and tracing {JIT} are quite impressive. It beats {TraceMonkey} for most benchmarks in {SunSpider} (apart from some string-heavy benchmarks that are quite slow) and can compete with V8 in many of them. However, all this is steady-state performance and it seems {SPUR's} compile time is rather bad currently.{\textless}/p{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}div id="further-possibilities"{\textgreater}
+{{\textless}h3{\textgreater}Further} Possibilities{\textless}/h3{\textgreater}
+{{\textless}p{\textgreater}A} further (so far still hypothetical) advantage of {SPUR} is that the approach can optimize cases where execution crosses the border of two different systems. If somebody wrote an {HTML} layout engine and a {DOM} in C\# to get a web browser and integrated it with the {JavaScript} implementation described above, the tracing {JIT} could optimize {DOM} manipulations performed by {JavaScript} code as well as callbacks from the browser into {JavaScript} code.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}Of} course the approach {SPUR} takes to implement {JavaScript} is completely generalizable. It should be possible to implement other dynamic languages in the same way as {JavaScript} using {SPUR.} One would have to write a runtime system for the language in C\#, as well as a compiler from the language into {CIL} bytecode. Given these two elements, {SPUR's} tracing {JIT} compiler would probably do a reasonable job at optimizing this other language (of course in practise, the language implementation would need some tweaking and annotations to make it really fast).{\textless}/p{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}div id="comparison-with-pypy"{\textgreater}
+{{\textless}h2{\textgreater}Comparison} With {PyPy{\textless}/h2{\textgreater}}
+{{\textless}p{\textgreater}The} goals of {PyPy} and {SPUR} are very similar. Both projects want to implement dynamic languages in an efficient way by using a tracing {JIT.} Both apply the tracing {JIT} "one level down", i.e. the runtime system of the dynamic language is visible to the tracing {JIT.} This is the crucial point of the approach of both projects. Since the runtime system of the dynamic language is visible to the tracing {JIT,} the {JIT} can optimize programs in that dynamic language. It does not itself need to know about the semantics of the dynamic language. This makes the tracing {JIT} usable for a variety of dynamic languages. It also means that the two halves can be implemented and debugged independently.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}In} {SPUR,} C\# (or another language that is compilable to {CIL)} plays the role of {RPython,} and {CIL} is equivalent to the intermediate format that {PyPy's} translation toolchain uses. Both formats operate on a similar abstraction level, they are quite close to C, but still have support for the object system of their respective language and are garbage-collected.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}SPUR} supports only a {JavaScript} implementation so far, which could maybe change in the future. Thus {JavaScript} in {SPUR} corresponds to Python in {PyPy,} which was the first dynamic language implemented in {PyPy} (and is also the reason for {PyPy's} existence).{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}There} are obviously also differences between the two projects, although many of them are only skin-deep. The largest difference is the reliance of {SPUR} on compilers on all levels. {PyPy} takes the opposite approach of using interpreters almost everywhere. The parts of {PyPy} that correspond to {SPUR's} compilers are {(I} will use the Python implementation of {PyPy} as an example):{\textless}/p{\textgreater}
+{\textless}ul{\textgreater}
+{\textless}li{\textgreater}the {{\textless}em{\textgreater}JavaScript-to-CIL} compiler{\textless}/em{\textgreater} corresponds to the Python interpreter of {PyPy{\textless}/li{\textgreater}}
+{\textless}li{\textgreater}the {\textless}em{\textgreater}profiling {JIT{\textless}/em{\textgreater}} corresponds to a part of {PyPy's} translation toolchain which adds some profiling support in the process of turning {RPython} code into C code,{\textless}/li{\textgreater}
+{\textless}li{\textgreater}the {\textless}em{\textgreater}tracing {JIT{\textless}/em{\textgreater}} corresponds to a special interpreter in the {PyPy} {JIT} which executes an {RPython} program and produces a trace of the execution{\textless}/li{\textgreater}
+{\textless}li{\textgreater}the {\textless}em{\textgreater}transfer-tail {JIT{\textless}/em{\textgreater}} corresponds to {PyPy's} {\textless}a href="http://morepypy.blogspot.com/2010/06/blackhole-interpreter.html"{\textgreater}blackhole interpreter{\textless}/a{\textgreater}, also called fallback interpreter{\textless}/li{\textgreater}
+{\textless}li{\textgreater}the {\textless}em{\textgreater}optimizing {JIT{\textless}/em{\textgreater}} corresponds to the optimizers and backends of {PyPy's} {JIT{\textless}/li{\textgreater}}
+{\textless}/ul{\textgreater}
+{\textless}div id="pypy-s-optimizations"{\textgreater}
+{{\textless}h3{\textgreater}PyPy's} Optimizations{\textless}/h3{\textgreater}
+{{\textless}p{\textgreater}Comparing} the optimizations that the two projects perform, the biggest difference is that {PyPy} does "trace stitching" instead of fully supporting trace trees. The difference between the two concerns what happens when a new trace gets added to an existing loop. The new trace starts from a guard in the existing loop that was observed to fail often. Trace stitching means that the loop is just patched with a jump to the new trace. {SPUR} instead recompiles the whole trace tree, which gives the optimizers more opportunities, but also makes compilation a lot slower. Another difference is that {PyPy} does not perform loop-invariant code motion yet.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}Many} of the remaining optimizations are very similar. {PyPy} supports guard implication as well as guard strengthening. It has some load/store optimizations, but {PyPy's} alias analysis is quite rudimentary. On the other hand, {PyPy's} escape analysis is very powerful. {PyPy} also has support for the annotations that {SPUR} supports, using some decorators in the {\textless}tt{\textgreater}pypy.rlib.jit{\textless}/tt{\textgreater} module. User-controlled loop unrolling is performed using the {\textless}tt{\textgreater}unroll\_safe{\textless}/tt{\textgreater} decorator, tracing of a function can be disabled with the {\textless}tt{\textgreater}dont\_look\_inside{\textless}/tt{\textgreater} decorator.{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}PyPy} has a few more annotations that were not mentioned in the {SPUR} tech report. Most importantly, it is possible to declare a function as pure, using the {\textless}tt{\textgreater}purefunction{\textless}/tt{\textgreater} decorator. {PyPy's} optimizers will remove calls to a function decorated that way if the arguments to the call are all constant. In addition it is possible to declare instances of classes to be immutable, which means that field accesses on constant instances can be folded away. Furthermore there is the promote hint, which is spelled {\textless}tt{\textgreater}x = hint(x, {promote=True){\textless}/tt{\textgreater}.} This will produce a guard in the trace, to turn {\textless}tt{\textgreater}x{\textless}/tt{\textgreater} into a constant after the guard.{\textless}/p{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}/div{\textgreater}
+{\textless}div id="summary"{\textgreater}
+{{\textless}h2{\textgreater}Summary{\textless}/h2{\textgreater}}
+{{\textless}p{\textgreater}Given} the similarity between the projects' goals, it is perhaps not so surprising to see that {PyPy} and {SPUR} have co-evolved and reached many similar design decisions. It is still very good to see another project that does many things in the same way as {PyPy.{\textless}/p{\textgreater}}
+{\textless}/div{\textgreater}}
+},
+
+@inproceedings{gal_trace-based_2009,
+	address = {New York, New York},
+	series = {{PLDI} '09},
+	title = {Trace-based just-in-time type specialization for dynamic languages},
+	isbn = {978-1-60558-392-1},
+	location = {Dublin, Ireland},
+	doi = {10.1145/1542476.1542528},
+	abstract = {Dynamic languages such as {JavaScript} are more difficult to compile than statically typed ones. Since no concrete type information is available, traditional compilers need to emit generic code that can handle all possible type combinations at runtime. We present an alternative compilation technique for dynamically-typed languages that identifies frequently executed loop traces at run-time and then generates machine code on the fly that is specialized for the actual dynamic types occurring on each path through the loop. Our method provides cheap inter-procedural type specialization, and an elegant and efficient way of incrementally compiling lazily discovered alternative paths through nested loops. We have implemented a dynamic compiler for {JavaScript} based on our technique and we have measured speedups of 10x and more for certain benchmark programs.},
+	booktitle = {{PLDI}},
+	publisher = {{ACM}},
+	author = {Andreas Gal and Brendan Eich and Mike Shaver and David Anderson and David Mandelin and Mohammad R Haghighat and Blake Kaplan and Graydon Hoare and Boris Zbarsky and Jason Orendorff and Jesse Ruderman and Edwin W Smith and Rick Reitmaier and Michael Bebenita and Mason Chang and Michael Franz},
+	year = {2009},
+	note = {{ACM} {ID:} 1542528},
+	keywords = {code generation, design, dynamically typed languages, experimentation, incremental compilers, languages, measurement, performance, run-time environments, trace-based compilation}
+},
+
+@article{rose_bytecodes_2009,
+	series = {{VMIL} '09},
+	title = {Bytecodes meet combinators: invokedynamic on the {JVM}},
+	location = {Orlando, Florida},
+	shorttitle = {Bytecodes meet combinators},
+	doi = {10.1145/1711506.1711508},
+	abstract = {The Java Virtual Machine {(JVM)} has been widely adopted in part because of its classfile format, which is portable, compact, modular, verifiable, and reasonably easy to work with. However, it was designed for just one {language---Java---and} so when it is used to express programs in other source languages, there are often "pain points" which retard both development and execution. The most salient pain points show up at a familiar place, the method call site. To generalize method calls on the {JVM,} the {JSR} 292 Expert Group has designed a new invokedynamic instruction that provides user-defined call site semantics. In the chosen design, invokedynamic serves as a hinge-point between two coexisting kinds of intermediate language: bytecode containing dynamic call sites, and combinator graphs specifying call targets. A dynamic compiler can traverse both representations simultaneously, producing optimized machine code which is the seamless union of both kinds of input. As a final twist, the user-defined linkage of a call site may change, allowing the code to adapt as the application evolves over time. The result is a system balancing the conciseness of bytecode with the dynamic flexibility of function pointers.},
+	journal = {Proceedings of the Third Workshop on Virtual Machines and Intermediate Languages},
+	author = {John R Rose},
+	year = {2009},
+	keywords = {bytecode, code generation, combinator}
+},
+
+@article{grant_dyc:_2000,
+	title = {{DyC:} an expressive annotation-directed dynamic compiler for C},
+	volume = {248},
+	issn = {0304-3975},
+	shorttitle = {{DyC}},
+	url = {http://dx.doi.org/10.1016/S0304-3975(00)00051-7},
+	doi = {http://dx.doi.org/10.1016/S0304-3975(00)00051-7},
+	abstract = {An abstract is not available.},
+	journal = {Theoretical Computer Science},
+	author = {Brian Grant and Markus Mock and Matthai Philipose and Craig Chambers and Susan J Eggers},
+	month = oct,
+	year = {2000},
+	note = {{ACM} {ID:} 357493},
+	keywords = {c, c language, compilers, constant folding, dataflow analysis, design, dynamic compilation, languages, optimization, partial evaluation, performance, program optimization, run-time code generation, specialization},
+	pages = {147{\textendash}199}
+},
+
+@inproceedings{bolz_towards_2009,
+	title = {Towards {Just-In-Time} Partial Evaluation of Prolog},
+	doi = {10.1007/978-3-642-12592-8_12},
+	booktitle = {Logic Program Synthesis and Transformation},
+	author = {Carl Friedrich Bolz and Michael Leuschel and Armin Rigo},
+	year = {2009},
+	pages = {158{\textendash}172}
+},
+
+@inproceedings{bolz_allocation_2011,
+	series = {{PEPM} '11},
+	title = {Allocation removal by partial evaluation in a tracing {JIT}},
+	location = {Austin, Texas, {USA}},
+	doi = {10.1145/1929501.1929508},
+	abstract = {The performance of many dynamic language implementations suffers from high allocation rates and runtime type checks. This makes dynamic languages less applicable to purely algorithmic problems, despite their growing popularity. In this paper we present a simple compiler optimization based on online partial evaluation to remove object allocations and runtime type checks in the context of a tracing {JIT.} We evaluate the optimization using a Python {VM} and find that it gives good results for all our (real-life) benchmarks.},
+	booktitle = {{PEPM}},
+	author = {Carl Friedrich Bolz and Antonio Cuni and Maciej Fija\l{}kowski and Michael Leuschel and Samuele Pedroni and Armin Rigo},
+	year = {2011},
+	keywords = {code generation, experimentation, interpreters, languages, optimization, partial evaluation, performance, run-time environments, tracing jit}
+},
+
+@inproceedings{chang_tracing_2009,
+	address = {Washington, {DC}},
+	title = {Tracing for Web 3.0: Trace Compilation for the Next Generation Web Applications},
+	isbn = {978-1-60558-375-4},
+	shorttitle = {Tracing for web 3.0},
+	url = {http://portal.acm.org/citation.cfm?id=1508293.1508304},
+	doi = {10.1145/1508293.1508304},
+	abstract = {Today's web applications are pushing the limits of modern web browsers. The emergence of the browser as the platform of choice for rich client-side applications has shifted the use of in-browser {JavaScript} from small scripting programs to large computationally intensive application logic. For many web applications, {JavaScript} performance has become one of the bottlenecks preventing the development of even more interactive client side applications. While traditional just-in-time compilation is successful for statically typed virtual machine based languages like Java, compiling {JavaScript} turns out to be a challenging task. Many {JavaScript} programs and scripts are short-lived, and users expect a responsive browser during page loading. This leaves little time for compilation of {JavaScript} to generate machine code.},
+	booktitle = {{VEE}},
+	publisher = {{ACM}},
+	author = {Mason Chang and Edwin Smith and Rick Reitmaier and Michael Bebenita and Andreas Gal and Christian Wimmer and Brendan Eich and Michael Franz},
+	year = {2009},
+	keywords = {dynamically typed languages, forth, tamarin, trace trees, tracing, type specialization},
+	pages = {71--80}
+},
+
+@inproceedings{davide_ancona_rpython:_2007,
+	address = {Montreal, Quebec, Canada},
+	title = {{RPython:} a step towards reconciling dynamically and statically typed {OO} languages},
+	isbn = {978-1-59593-868-8},
+	shorttitle = {{RPython}},
+	url = {http://portal.acm.org/citation.cfm?id=1297091},
+	doi = {10.1145/1297081.1297091},
+	abstract = {Although the C-based interpreter of Python is reasonably fast, implementations on the {CLI} or the {JVM} platforms offers some advantages in terms of robustness and interoperability. Unfortunately, because the {CLI} and {JVM} are primarily designed to execute statically typed, object-oriented languages, most dynamic language implementations cannot use the native bytecodes for common operations like method calls and exception handling; as a result, they are not able to take full advantage of the power offered by the {CLI} and {JVM.}},
+	booktitle = {{DLS}},
+	publisher = {{ACM}},
+	author = {Davide Ancona and Massimo Ancona and Antonio Cuni and Nicholas D. Matsakis},
+	year = {2007},
+	keywords = {{JVM,} .net, Python}
+},
+
+@article{futamura_partial_1999,
+	title = {Partial Evaluation of Computation Process - An Approach to a {Compiler-Compiler}},
+	volume = {12},
+	url = {http://citeseer.ist.psu.edu/futamura99partial.html},
+	number = {4},
+	journal = {{Higher-Order} and Symbolic Computation},
+	author = {Yoshihiko Futamura},
+	year = {1999},
+	keywords = {Futamura},
+	pages = {381--391},
+	annote = {{{\textless}p{\textgreater}Classical} futamura paper, defines partial evaluation as follow:{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}a function f(c, r) to some output. partial evaluation is a function a such that{\textless}/p{\textgreater}{\textless}p{\textgreater}f(c`, r`) = a(f, c`)(r`){\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}hints at futamura-projections. Describes a vague algorithm for actually doing partial evaluation. The algorithm contains some elements that are quite similar to merging.{\textless}/p{\textgreater}}
+},
+
+@book{jones_partial_1993,
+	title = {Partial evaluation and automatic program generation},
+	isbn = {0-13-020249-5},
+	url = {http://portal.acm.org/citation.cfm?id=153676},
+	abstract = {This book is out of print. For copies, Please refer to the following online page},
+	publisher = {{Prentice-Hall}},
+	author = {Neil D. Jones and Carsten K. Gomard and Peter Sestoft},
+	year = {1993}
+},
+
+@inproceedings{armin_rigo_pypys_2006,
+	address = {Portland, Oregon, {USA}},
+	title = {{PyPy's} approach to virtual machine construction},
+	isbn = {{1-59593-491-X}},
+	url = {http://portal.acm.org/citation.cfm?id=1176753},
+	doi = {10.1145/1176617.1176753},
+	abstract = {The {PyPy} project seeks to prove both on a research and a practical level the feasibility of constructing a virtual machine {(VM)} for a dynamic language in a dynamic language - in this case, Python. The aim is to translate (i.e. compile) the {VM} to arbitrary target environments, ranging in level from {C/Posix} to {Smalltalk/Squeak} via Java and {CLI/.NET,} while still being of reasonable efficiency within these {environments.A} key tool to achieve this goal is the systematic reuse of the Python language as a system programming language at various levels of our architecture and translation process. For each level, we design a corresponding type system and apply a generic type inference engine - for example, the garbage collector is written in a style that manipulates simulated pointer and address objects, and when translated to C these operations become C-level pointer and address instructions.},
+	booktitle = {{DLS}},
+	publisher = {{ACM}},
+	author = {Armin Rigo and Samuele Pedroni},
+	year = {2006},
+	keywords = {metacircularity, Python, retargettable code generation, type inference, {VM}}
+},
+
+@article{georges_statistically_2007,
+	title = {Statistically rigorous java performance evaluation},
+	volume = {42},
+	url = {http://portal.acm.org/citation.cfm?id=1297105.1297033},
+	doi = {10.1145/1297105.1297033},
+	abstract = {Java performance is far from being trivial to benchmark because it is affected by various factors such as the Java application, its input, the virtual machine, the garbage collector, the heap size, etc. In addition, non-determinism at run-time causes the execution time of a Java program to differ from run to run. There are a number of sources of non-determinism such as {Just-In-Time} {(JIT)} compilation and optimization in the virtual machine {(VM)} driven by timer-based method sampling, thread scheduling, garbage collection, and various.},
+	number = {10},
+	journal = {{SIGPLAN} Notices},
+	author = {Andy Georges and Dries Buytaert and Lieven Eeckhout},
+	year = {2007},
+	keywords = {benchmarking, data analysis, methodology, statistics},
+	pages = {57--76},
+	annote = {{{\textless}p{\textgreater}The} paper evaluates the various ways in which a number of Java papers do their Java benchmarks. It then proposes a statistically correct way to do this and compares common approaches against the statistically correct way. Especially if the results of two alternatives are very close together, many common approaches can lead to systematic errors.{\textless}/p{\textgreater}}
+},
+
+@inproceedings{bolz_tracing_2009,
+	address = {Genova, Italy},
+	title = {Tracing the meta-level: {PyPy's} tracing {JIT} compiler},
+	isbn = {978-1-60558-541-3},
+	shorttitle = {Tracing the meta-level},
+	url = {http://portal.acm.org/citation.cfm?id=1565827},
+	doi = {10.1145/1565824.1565827},
+	abstract = {We attempt to apply the technique of Tracing {JIT} Compilers in the context of the {PyPy} project, i.e., to programs that are interpreters for some dynamic languages, including Python. Tracing {JIT} compilers can greatly speed up programs that spend most of their time in loops in which they take similar code paths. However, applying an unmodified tracing {JIT} to a program that is itself a bytecode interpreter results in very limited or no speedup. In this paper we show how to guide tracing {JIT} compilers to greatly improve the speed of bytecode interpreters. One crucial point is to unroll the bytecode dispatch loop, based on two kinds of hints provided by the implementer of the bytecode interpreter. We evaluate our technique by applying it to two {PyPy} interpreters: one is a small example, and the other one is the full Python interpreter.},
+	booktitle = {{ICOOOLPS}},
+	publisher = {{ACM}},
+	author = {Carl Friedrich Bolz and Antonio Cuni and Maciej Fija\l{}kowski and Armin Rigo},
+	year = {2009},
+	pages = {18--25}
+},
+
+@article{bala_dynamo:_2000,
+	title = {Dynamo: a transparent dynamic optimization system},
+	volume = {35},
+	shorttitle = {Dynamo},
+	url = {http://citeseer.ist.psu.edu/bala00dynamo.html},
+	number = {5},
+	journal = {{ACM} {SIGPLAN} Notices},
+	author = {Vasanth Bala and Evelyn Duesterwald and Sanjeev Banerjia},
+	year = {2000},
+	keywords = {toread},
+	pages = {1--12}
+},
+
+@techreport{andreas_gal_incremental_2006,
+	title = {Incremental Dynamic Code Generation with Trace Trees},
+	abstract = {The unit of compilation for traditional just-in-time compilers is the method. We have explored trace-based compilation, in which the unit of compilation is a loop, potentially spanning multiple methods and even library code. Using a new intermediate representation that is discovered and updated lazily on-demand while the program is being executed, our compiler generates code that is competitive with traditional dynamic compilers, but that uses only a fraction of the compile time and memory footprint.},
+	number = {{ICS-TR-06-16}},
+	institution = {Donald Bren School of Information and Computer Science, University of California, Irvine},
+	author = {Andreas Gal and Michael Franz},
+	month = nov,
+	year = {2006},
+	pages = {11}
+},
+
+@inproceedings{gal_hotpathvm:_2006,
+	address = {Ottawa, Ontario, Canada},
+	title = {{HotpathVM:} an effective {JIT} compiler for resource-constrained devices},
+	isbn = {1-59593-332-6},
+	shorttitle = {{HotpathVM}},
+	url = {http://portal.acm.org/citation.cfm?doid=1134760.1134780},
+	doi = {10.1145/1134760.1134780},
+	abstract = {We present a just-in-time compiler for a Java {VM} that is small enough to fit on resource-constrained devices, yet is surprisingly effective. Our system dynamically identifies traces of frequently executed bytecode instructions (which may span several basic blocks across several methods) and compiles them via Static Single Assignment {(SSA)} construction. Our novel use of {SSA} form in this context allows to hoist instructions across trace side-exits without necessitating expensive compensation code in off-trace paths. The overall memory consumption (code and data) of our system is only 150 {kBytes,} yet benchmarks show a speedup that in some cases rivals heavy-weight just-in-time compilers.},
+	booktitle = {{VEE}},
+	publisher = {{ACM}},
+	author = {Andreas Gal and Christian W. Probst and Michael Franz},
+	year = {2006},
+	keywords = {dynamic compilation, embedded, software trace scheduling, {SSA,} {VM}}
+},
+
+@inproceedings{mario_wolczko_towards_1999,
+	title = {Towards a Universal Implementation Substrate for {Object-Oriented} Languages},
+	abstract = {Self is a minimalist object-oriented language with a sophisticated implementation that utilizes adaptive optimization. We have built implementations of Smalltalk and Java by translation to Self. These implementations were much easier to construct in Self than by conventional means, and perform surprisingly well (competitively with conventional, commercial implementations). This leads us to believe that a Self-like system may form the basis of a universal substrate for implementation of object-oriented languages.},
+	booktitle = {{OOPSLA} workshop on Simplicity, Performance, and Portability in Virtual Machine Design},
+	author = {Mario Wolczko and Ole Agesen and David Ungar},
+	year = {1999},
+	keywords = {fixme},
+	annote = {{{\textless}p{\textgreater}Describes} implementations of Smalltalk and Java by translation to {SELF.} The performance of each is better than some \&quot;good\&quot; implementations of both at the time. They argue that {SELF} can be used to make good implementations of {OO} languages by translation easily (employs many {PyPy-like} arguments, that {VM} construction is hard, {etc.).{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}They} cut corners in some places (e.g. about floats in Java) and need to extend the handling of integers in the {SELF} {VM.} In addition, writing a translator to {SELF} {\textendash} while easier than writing a full {VM} in {C/C++} {\textendash} is still more work than actually writing a simple interpreter.{\textless}/p{\textgreater}}
+},
+
+@inproceedings{hoelzle_optimizing_1994,
+	address = {Orlando, Florida, United States},
+	title = {Optimizing dynamically-dispatched calls with run-time type feedback},
+	isbn = {{0-89791-662-X}},
+	url = {http://portal.acm.org/citation.cfm?id=178243.178478},
+	doi = {10.1145/178243.178478},
+	abstract = {Note: {OCR} errors may be found in this Reference List extracted from the full text article. {ACM} has opted to expose the complete List rather than only correct and linked references.},
+	booktitle = {{PLDI}},
+	publisher = {{ACM}},
+	author = {Urs H\"{o}lzle and David Ungar},
+	year = {1994},
+	keywords = {{JIT,} polymorphic inline cache, self, type-feedback},
+	pages = {326--336},
+	annote = {{{\textless}p{\textgreater}Completely} straightforward paper about type-feedback: collect type statistics at runtime and use them later to make better code by special-casing the common cases.{\textless}/p{\textgreater}}
+},
+
+@inproceedings{yermolovich_optimization_2009,
+	address = {Orlando, Florida, {USA}},
+	title = {Optimization of dynamic languages using hierarchical layering of virtual machines},
+	isbn = {978-1-60558-769-1},
+	url = {http://portal.acm.org/citation.cfm?id=1640134.1640147},
+	doi = {10.1145/1640134.1640147},
+	abstract = {Creating an interpreter is a simple and fast way to implement a dynamic programming language. With this ease also come major drawbacks. Interpreters are significantly slower than compiled machine code because they have a high dispatch overhead and cannot perform optimizations. To overcome these limitations, interpreters are commonly combined with just-in-time compilers to improve the overall performance. However, this means that a just-in-time compiler has to be implemented for each language.
+
+We explore the approach of taking an interpreter of a dynamic 
+language and running it on top of an optimizing trace-based virtual machine, i.e., we run a guest {VM} on top of a host {VM.} The host {VM} uses trace recording to observe the guest {VM} executing the application program. Each recorded trace represents a sequence
+of guest {VM} bytecodes corresponding to a given execution path
+through the application program. The host {VM} optimizes and compiles these traces to machine code, thus eliminating the need for a custom just-in-time compiler for the guest {VM.} The guest {VM} only needs to provide basic  information about its interpreter loop to the
+host {VM.}},
+	booktitle = {{DLS}},
+	publisher = {{ACM}},
+	author = {Alexander Yermolovich and Christian Wimmer and Michael Franz},
+	year = {2009},
+	keywords = {actionscript, dynamic languages, hierarchical virtual machines, trace compilation},
+	pages = {79--88}
+},
+
+@inproceedings{chambers_efficient_1989,
+	title = {An efficient implementation of {SELF} a dynamically-typed object-oriented language based on prototypes},
+	volume = {24},
+	url = {http://portal.acm.org/citation.cfm?id=74884},
+	doi = {10.1145/74878.74884},
+	abstract = {We have developed and implemented techniques that double the performance of dynamically-typed object-oriented languages. Our {SELF} implementation runs twice as fast as the fastest Smalltalk implementation, despite {SELF's} lack of classes and explicit variables. To compensate for the absence of classes, our system uses implementation-level maps to transparently group objects cloned from the same prototype, providing data type information and eliminating the apparent space overhead for prototype-based systems. To compensate for dynamic typing, user-defined control structures, and the lack of explicit variables, our system dynamically compiles multiple versions of a source method, each customized according to its receiver's map. Within each version the type of the receiver is fixed, and thus the compiler can statically bind and inline all messages sent to self. Message splitting and type prediction extract and preserve even more static type information, allowing the compiler to inline many other messages. Inlining dramatically improves performance and eliminates the need to hard-wire low-level methods such as +,==, and {ifTrue:.} Despite inlining and other optimizations, our system still supports interactive programming environments. The system traverses internal dependency lists to invalidate all compiled methods affected by a programming change. The debugger reconstructs inlined stack frames from compiler-generated debugging information, making inlining invisible to the {SELF} programmer.},
+	booktitle = {{OOPSLA}},
+	author = {C. Chambers and D. Ungar and E. Lee},
+	year = {1989},
+	keywords = {self, specialization},
+	annote = {{\textless}p{\textgreater}describes the first implementation of {SELF.} Since {SELF} is highly dynamic, it is not easy to optimize it well.{\textless}/p{\textgreater}
+{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}The} first problem is one of space, the prototypical nature of self makes its objects much larger. This is solved by "maps", which are like sharing dicts in pypy: every object has an associated map (structure object) that describes how the layout of the object. In that respect a map is a bit like a class, but user-invisible.{\textless}/p{\textgreater}
+{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}The} compilation behavior of {SELF} is such that the every method is specialized for the map of the first argument. Then aggressive inlining is performed, which is particularly useful for self-sends (which are syntactically easy to write in {SELF),} since the lookup of those methods can be done at compile-time since the map is static due to specialization.{\textless}/p{\textgreater}
+{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}
+{{\textless}p{\textgreater}Further} optimizations are removal of unused closures and method splitting (which essentially prevents merging of paths in the flow graph to keep more information).{\textless}/p{\textgreater}}
+},
+
+@inproceedings{hoelzle_optimizing_1991,
+	title = {Optimizing {Dynamically-Typed} {Object-Oriented} Languages With Polymorphic Inline Caches},
+	isbn = {3-540-54262-0},
+	url = {http://portal.acm.org/citation.cfm?id=679193&dl=ACM&coll=portal},
+	booktitle = {{ECOOP}},
+	publisher = {{Springer-Verlag}},
+	author = {Urs H\"{o}lzle and Craig Chambers and David Ungar},
+	year = {1991}
+},
+
+@inproceedings{rigo_representation-based_2004,
+	address = {Verona, Italy},
+	title = {Representation-based just-in-time specialization and the Psyco prototype for Python},
+	isbn = {1-58113-835-0},
+	url = {http://portal.acm.org/citation.cfm?id=1014010},
+	doi = {10.1145/1014007.1014010},
+	abstract = {A powerful application of specialization is to remove interpretative overhead: a language can be implemented with an interpreter, whose performance is then improved by specializing it for a given program source. This approach is only moderately successful with very high level languages, where the operation of each single step can be highly dependent on run-time data and context. In the present paper, the Psyco prototype for the Python language is presented. It introduces two novel techniques. The first is just-in-time specialization, or specialization by need, which introduces the "unlifting" ability for a value to be promoted from run-time to compile-time during specialization -- the inverse of the lift operator of partial evaluation. Its presence gives an unusual and powerful perspective on the specialization process. The second technique is representations, a theory of data-oriented specialization generalizing the traditional specialization domains (i.e. the compile-time/run-time dichotomy).},
+	booktitle = {{PEPM}},
+	publisher = {{ACM}},
+	author = {Armin Rigo},
+	year = {2004},
+	keywords = {{JIT,} Python}
+},
+
+@inproceedings{sullivan_dynamic_2003,
+	address = {San Diego, California},
+	title = {Dynamic native optimization of interpreters},
+	isbn = {1-58113-655-2},
+	url = {http://portal.acm.org/citation.cfm?id=858570.858576},
+	doi = {10.1145/858570.858576},
+	abstract = {For domain specific languages, "scripting languages", dynamic languages, and for virtual machine-based languages, the most straightforward implementation strategy is to write an interpreter. A simple interpreter consists of a loop that fetches the next bytecode, dispatches to the routine handling that bytecode, then loops. There are many ways to improve upon this simple mechanism, but as long as the execution of the program is driven by a representation of the program other than as a stream of native instructions, there will be some "interpretive {overhead".There} is a long history of approaches to removing interpretive overhead from programming language implementations. In practice, what often happens is that, once an interpreted language becomes popular, pressure builds to improve performance until eventually a project is undertaken to implement a native Just In Time {(JIT)} compiler for the language. Implementing a {JIT} is usually a large effort, affects a significant part of the existing language implementation, and adds a significant amount of code and complexity to the overall code {base.In} this paper, we present an innovative approach that dynamically removes much of the interpreted overhead from language implementations, with minimal instrumentation of the original interpreter. While it does not give the performance improvements of hand-crafted native compilers, our system provides an appealing point on the language implementation spectrum.},
+	booktitle = {Workshop on Interpreters, virtual machines and emulators},
+	publisher = {{ACM}},
+	author = {Gregory T. Sullivan and Derek L. Bruening and Iris Baron and Timothy Garnett and Saman Amarasinghe},
+	year = {2003},
+	annote = {{{\textless}p{\textgreater}Describes} the application of Dynamo to interpreters. The unchanged dynamo does not fare too well on interpreters, since it traces one iteration of the bytecode loop, and the next iteration is likely to be very different. Matters are improved by adding hints to the interpreter that tell the tracer what the program counter of the interpreter is. Then the tracer only closes loops at the application {level.{\textless}/p{\textgreater}{\textless}p{\textgreater}\&nbsp;{\textless}/p{\textgreater}{\textless}p{\textgreater}Strong} restrictions due to the fact that things happen on the assembler level.{\textless}/p{\textgreater}}
+}

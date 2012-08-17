@@ -1,0 +1,260 @@
+=============================================
+pypy-sync developer meeting 14th July 2005
+=============================================
+
+
+Attendees:  Samuele, Anders C., Anders L., Adrien Di Mascio, Ludovic Aubrien, 
+            Christian Tismer, Carl-Friedrich Bolz, Holger Krekel 
+
+Excused with Pre-Info: Armin 
+
+
+Regular Topics 
+====================
+
+- roll call. OK.
+
+- activity reports (3 prepared lines of info). 
+  Everybody submitted activity reports (see `IRC-Log`_ at the end)
+
+- re-assigning / adjusting planning / resolve conflicts/blockers
+
+  Everybody except Anders Lehmann has plans for next week. 
+  No conflicts.  Anders L., Samuele and Holger are to try discuss
+  tasks for Anders outside of this pypy-sync meeting. Holger 
+  notes that he wants to be signalled before the meeting 
+  if somebody is lacking tasks. 
+
+Topics of the week
+===================
+
+fixating sprint in Hildesheim (25th-31st July)
+-------------------------------------------------
+
+Armin, Samuele, Christian, Carl (except for one day) and Holger 
+can make it to the Hildesheim sprint.  We decided that it will 
+take place. 
+
+decide/agree about usage of issue tracker (for 0.6.2/0.7.0)
+-----------------------------------------------------------
+
+everybody agrees and recognizes that we are going to use 
+the issue tracker for the upcoming releases. So be it. 
+
+list current main areas of work regarding reaching Deliverable D05.2
+----------------------------------------------------------------------
+
+Armin: Progressing on translate_pypy.py.  There is a temp file
+pypy/translator/goal/ISSUES.txt which lists currently open issues.  
+Samuele adds that he has some worries about memory usage 
+regarding the rtyping process but nothing concrete yet. 
+Generally the strategy is to try translate_pypy.py with 
+a different SEED.  Christian will add info to ISSUES.txt 
+about how to use it. 
+
+Heidelberg sprint planning status, 22nd-29th August 
+----------------------------------------------------------
+
+It is re-confirmed that the sprint should take place 
+from 22nd-29th in Heidelberg, Germany.  Carl Friedrich will fix
+the place now and report back.  We should discuss/prepare 
+the sprint-announcement regarding topics etc.pp. at the
+next sync-meeting. 
+
+Close
+---------
+
+Holger closes the meeting in time at 13:30pm. 
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+
+ **** BEGIN LOGGING AT Thu Jul 14 13:01:32 2005
+ Jul 14 13:01:32 -->	You are now talking on #pypy-sync
+ Jul 14 13:01:32 ---	#pypy-sync :[freenode-info] please register your nickname...don't forget to auto-identify! http://freenode.net/faq.shtml#nicksetup
+ Jul 14 13:02:30 <hpk>	pedronis: hello?
+ Jul 14 13:02:34 -->	adim (~adim@fny94-6-82-229-225-51.fbx.proxad.net) has joined #pypy-sync
+ Jul 14 13:02:39 <pedronis>	hpk: hi
+ Jul 14 13:03:02 <adim>	Hi Holger, Hi Samuele
+ Jul 14 13:03:06 <hpk>	hi adrien
+ Jul 14 13:03:07 -->	cfbolz (~a@zenon.physi.uni-heidelberg.de) has joined #pypy-sync
+ Jul 14 13:03:10 -->	arre (ac@ratthing-b40b.strakt.com) has joined #pypy-sync
+ Jul 14 13:03:17 -->	aleale (~chatzilla@83.72.68.168.ip.tele2adsl.dk) has joined #pypy-sync
+ Jul 14 13:03:38 <hpk>	cfbolz: hi carl
+ Jul 14 13:03:49 <hpk>	ok, i think we can start the meeting.
+ Jul 14 13:03:56 <hpk>	armin send me info already he might make it later 
+ Jul 14 13:04:00 -->	ludal (~ludal@lab75-1-81-57-254-81.fbx.proxad.net) has joined #pypy-sync
+ Jul 14 13:04:08 <hpk>	christian didn't say anything, though
+ Jul 14 13:04:11 <hpk>	anyway. 
+ Jul 14 13:04:24 <hpk>	the idea is to really stick to the 30 minutes, we will end the meeting at 13:30 
+ Jul 14 13:04:37 <hpk>	so don't walk away to grab a coffee or something :-) 
+ Jul 14 13:04:46 <hpk>	here is the agenda: 
+ Jul 14 13:04:53 <hpk>	- roll call
+ Jul 14 13:04:53 <hpk>	- activity reports (3 prepared lines of info)
+ Jul 14 13:04:53 <hpk>	- re-assigning / adjusting planning / resolve conflicts/blockers
+ Jul 14 13:04:53 <hpk>	- Topics of the week:
+ Jul 14 13:04:53 <hpk>	  - fixating sprint in Hildesheim (25th-31st July)
+ Jul 14 13:04:53 <hpk>	  - decide/agree about usage of issue tracker (for 0.6.2/0.7.0)
+ Jul 14 13:04:53 <hpk>	  - list current main areas of work regarding reaching Deliverable D05.2
+ Jul 14 13:04:53 <hpk>	  - Heidelberg sprint planning status (now: 15-22th August !!!)
+ Jul 14 13:05:19 <hpk>	everybody fine with this agenda? 
+ Jul 14 13:05:27 <cfbolz>	yes
+ Jul 14 13:05:30 <aleale>	yes
+ Jul 14 13:05:36 <pedronis>	yes
+ Jul 14 13:05:55 <adim>	yes
+ Jul 14 13:05:55 <arre>	yes
+ Jul 14 13:05:56 <hpk>	ok, then activity reports: i'll just start off with my and Armin's info: 
+ Jul 14 13:06:03 <hpk>	last week: begin interpreter-docs, fix codespeak/website issues, fix testresults page, some eu/managementissues
+ Jul 14 13:06:03 <hpk>	next week: finish interpreter docs, write external (oslevel) functions, prepare codespeak-move
+ Jul 14 13:06:03 <hpk>	blocking: (slightly) terminology cleanup / missing glossary / (maybe llvm-state)
+ Jul 14 13:06:14 ---	You are now known as arigo
+ Jul 14 13:06:28 <arigo>	last week: rtyper; progress in translate_pypy; polished framework for external func calls.
+ Jul 14 13:06:28 <arigo>	next week: holidays until wednesday
+ Jul 14 13:06:28 <arigo>	blockers: None
+ Jul 14 13:06:35 ---	You are now known as hpk
+ Jul 14 13:06:40 <cfbolz>	last week: logistics, accomodation for Heidelberg sprint; own stuff
+ Jul 14 13:06:40 <cfbolz>	next week: more logistics; garbage collection
+ Jul 14 13:06:40 <cfbolz>	blockers: my own stuff takes too much time :-(
+ Jul 14 13:06:41 <hpk>	pedronis: you continue? 
+ Jul 14 13:06:49 <hpk>	cfbolz: ok
+ Jul 14 13:06:49 <cfbolz>	sorry
+ Jul 14 13:06:52 <hpk>	np
+ Jul 14 13:07:00 <pedronis>	DONE: translate_pypy progress, instatiate of classes with Armin...; solved some attributes that were attached too high the hierarchy, some support for pyobjs ops in the llinterp, and more work with Arre on translate_pypy; refactored rtyper to use argument.py for args parsing and call_args support
+ Jul 14 13:07:01 <pedronis>	NEXT: more translate_pypy work, possibly refactor specialisation to treats override and memos as builtins, refactor gencapi usage to go through external func table
+ Jul 14 13:07:03 <pedronis>	ISSUES: a bit worried about rtyping mem usage but too soon too really tell
+ Jul 14 13:07:43 <hpk>	adim, ludal, aleale, arre: in this order? 
+ Jul 14 13:07:44 -->	stakkars (ihdhcvza@i528C1A57.versanet.de) has joined #pypy-sync
+ Jul 14 13:07:53 <stakkars>	hi
+ Jul 14 13:07:56 <hpk>	stakkars: hi christian, we are in activity reports already 
+ Jul 14 13:08:03 <adim>	last week: Nothing since Europython sprint
+ Jul 14 13:08:12 <adim>	next week: astbuilder (parser/compiler)
+ Jul 14 13:08:18 <stakkars>	here my three sentences:
+ Jul 14 13:08:19 <stakkars>	I have worked on long math and strutil and continued on seed 49 
+ Jul 14 13:08:19 <stakkars>	I want to work on seed 49 next week
+ Jul 14 13:08:19 <stakkars>	main blocker is windows, and I cannot use the fork thing.
+ Jul 14 13:08:25 <adim>	blockers: nothing in particular
+ Jul 14 13:08:30 <ludal>	last week: work on providing translatable ast builder
+ Jul 14 13:08:30 <ludal>	next week: try and finish it
+ Jul 14 13:08:30 <ludal>	blockers: none
+ Jul 14 13:08:54 <aleale>	last week: vacation
+ Jul 14 13:09:11 <aleale>	next week: weakref, ?
+ Jul 14 13:09:20 <aleale>	blocks : none
+ Jul 14 13:09:53 *	stakkars is sorry to be late, the machine decided to run a windows update right now :-(
+ Jul 14 13:10:02 <hpk>	ludal: you are going to post? 
+ Jul 14 13:10:13 <hpk>	stakkars: what is "seed 49"? 
+ Jul 14 13:10:19 <arre>	Last week: Fixing some problems related to unicode,  Work on annotation/rtyper to be able to process PyPy
+ Jul 14 13:10:28 <arre>	Next week: annotation/rtyper and/or implementing modules os and math, if there is enough time take the week off.
+ Jul 14 13:10:41 <arre>	Blockers:  Not knowing the darker corners of the annotator/rtyper (In the process of being solved through having Samuele close by)
+ Jul 14 13:10:55 <hpk>	arre: take the week of from Strakt you mean? 
+ Jul 14 13:10:57 <ludal>	hpk: post?
+ Jul 14 13:11:02 <stakkars>	:-)  there is a random shuffling algo in the annotator, and I got seed 49
+ Jul 14 13:11:09 <hpk>	ludal: forget it,  i missed your lines, sorry
+ Jul 14 13:11:22 <hpk>	stakkars: ah fine :-) 
+ Jul 14 13:11:27 <arre>	Yes. I have woked too many hours as it is.
+ Jul 14 13:11:46 <hpk>	ok, we got it then for now. Next topic: re-assigning/resolving 
+ Jul 14 13:12:01 <hpk>	it seems that only aleale doesn't have a plan for next week
+ Jul 14 13:12:15 <hpk>	i think that weakref is not a priority and we should wait a bit with cfbolz's work on GC 
+ Jul 14 13:12:15 <aleale>	right
+ Jul 14 13:12:26 <cfbolz>	wanted to say the same :-)
+ Jul 14 13:12:33 <aleale>	indeed
+ Jul 14 13:12:58 <hpk>	aleale: let's discuss possible work areas for you this off this pypy-sync meeting with Samuele and maybe others 
+ Jul 14 13:13:08 <aleale>	ok
+ Jul 14 13:13:10 <hpk>	generally i'd like to be signalled ahead of the meeting if one doesn't know what to work on
+ Jul 14 13:13:29 <hpk>	next topic:   - fixating sprint in Hildesheim (25th-31st July)
+ Jul 14 13:13:45 <hpk>	you probably all have read that the technical board thinks we should do a in-between internal sprint 
+ Jul 14 13:13:56 <hpk>	the idea is 25th-31st July in Hildesheim (at my house) 
+ Jul 14 13:14:15 <hpk>	who could come and who could not come? please everybody post here
+ Jul 14 13:14:19 <stakkars>	yes, I thought this was decided, already
+ Jul 14 13:14:39 <cfbolz>	I can, minus one day
+ Jul 14 13:14:39 <stakkars>	I will order my ticket, today
+ Jul 14 13:14:39 <adim>	I won't come
+ Jul 14 13:14:57 <pedronis>	yes, need to organize travel
+ Jul 14 13:15:01 <ludal>	can't: vacation
+ Jul 14 13:15:05 <arre>	My vacation starts that week, so no.
+ Jul 14 13:15:20 <aleale>	I am not sure yet, just learned about it yesterday
+ Jul 14 13:15:27 <stakkars>	what about arigo, is he traveling right now?
+ Jul 14 13:15:32 <hpk>	armin is going to come 
+ Jul 14 13:15:36 <aleale>	will know tomorrow
+ Jul 14 13:15:37 <pedronis>	he will be there
+ Jul 14 13:15:57 <hpk>	ok, that means: samuele, christian, holger, armin fulltime and cfbolz (-1 day) 
+ Jul 14 13:15:58 <stakkars>	I asked why he is not in themeeting.
+ Jul 14 13:16:09 <hpk>	he is busy, but he sent me mail with his info before 
+ Jul 14 13:16:22 <pedronis>	he is in belgium
+ Jul 14 13:16:43 <pedronis>	then will be in Düsseldorf and from there to the sprint
+ Jul 14 13:16:57 <stakkars>	thanks
+ Jul 14 13:17:15 <stakkars>	for the sprint, we need an even number of people, as I remember :-)
+ Jul 14 13:17:16 <hpk>	ok, so the 25th-31st sprint is fixed then and i will prepare it, please arrive on the 24th evening or 25th morning and mail me about accomodation wishes 
+ Jul 14 13:17:42 <hpk>	i'll post some info on pypy-sprint, make sure you are subscribed there
+ Jul 14 13:18:01 <hpk>	next topic: usage of issue tracker
+ Jul 14 13:18:25 <hpk>	for the upcoming releases (0.6.2 and 0.7/1.0) it has been discussed that we want to use the issue tracker 
+ Jul 14 13:18:43 <hpk>	it should be clear to everyone (e.g. regarding the parser issues) that it is neccessary to look there 
+ Jul 14 13:18:55 <hpk>	and update the issues accordingly 
+ Jul 14 13:19:12 <hpk>	also the longobject issues etc.pp. 
+ Jul 14 13:19:32 <hpk>	does everyone agree about using the pypy-dev tracker in this way? 
+ Jul 14 13:19:41 <aleale>	ye
+ Jul 14 13:19:43 <aleale>	s
+ Jul 14 13:19:54 <cfbolz>	yes
+ Jul 14 13:20:05 <adim>	yes
+ Jul 14 13:20:09 <ludal>	yes
+ Jul 14 13:20:19 <arre>	yes
+ Jul 14 13:20:42 <stakkars>	yes
+ Jul 14 13:20:51 <hpk>	pedronis: you too, i guess? 
+ Jul 14 13:21:05 *	hpk notes we have 9 minutes left 
+ Jul 14 13:21:14 <pedronis>	yes
+ Jul 14 13:21:23 <hpk>	next topic:   - list current main areas of work regarding reaching Deliverable D05.2
+ Jul 14 13:21:30 <hpk>	armin sent me this info from his POV: 
+ Jul 14 13:21:39 <hpk>	Progressing on translate_pypy.py.  There is a temp file
+ Jul 14 13:21:39 <hpk>	pypy/translator/goal/ISSUES.txt.  Difficult to know more precisely what
+ Jul 14 13:21:39 <hpk>	is left.  AFAICT we'll reach the first goal (PyPy as C ext module) any
+ Jul 14 13:21:39 <hpk>	day or week now.
+ Jul 14 13:22:08 <hpk>	samuele, anything you'd like to add (if not now then just to ISSUES.txt) 
+ Jul 14 13:22:50 <pedronis>	we are solving issues as we seen them fromt translate_pypy
+ Jul 14 13:22:58 <pedronis>	there are 14000 blocks to go
+ Jul 14 13:23:09 <pedronis>	we reach some hundreds now
+ Jul 14 13:23:16 <cfbolz>	oops
+ Jul 14 13:23:27 <pedronis>	well, it doesn't mean much
+ Jul 14 13:23:46 <pedronis>	each fix should adress more than one block
+ Jul 14 13:23:55 <pedronis>	much more
+ Jul 14 13:24:13 <hpk>	pedronis: ok, i suggest to add separatable issues into the ISSUES.txt for everyone to see (if they are not solved/solveable isntantly)
+ Jul 14 13:24:15 <pedronis>	the only worry is a bit memory usage but hard to tell until we go trough more blocks
+ Jul 14 13:24:28 <ludal>	any way we could parallelize the work ?
+ Jul 14 13:24:37 <stakkars>	yes.
+ Jul 14 13:24:45 <hpk>	pedronis, stakkars: can you quickly tell about the "seed" situation? 
+ Jul 14 13:24:59 <stakkars>	pick a random seed not in (42, 49, samuele what's your's?)
+ Jul 14 13:25:18 <pedronis>	46
+ Jul 14 13:25:22 <stakkars>	set the environ variable (wait...)
+ Jul 14 13:25:28 <pedronis>	RTYPERSEED
+ Jul 14 13:25:41 <hpk>	let's put this info into ISSUES.txt please, stakkars, can you do that? 
+ Jul 14 13:25:43 <stakkars>	yep! And this gives you a different order of problems.
+ Jul 14 13:25:49 <stakkars>	sure
+ Jul 14 13:25:55 <hpk>	ok, next topic (5 minutes left) 
+ Jul 14 13:26:03 <stakkars>	4
+ Jul 14 13:26:07 <hpk>	Heidelberg sprint planning status (now: 15-22th August !!!)
+ Jul 14 13:26:16 <cfbolz>	why did the date change?
+ Jul 14 13:26:25 <hpk>	you mailed the 15th-22nd august for the sprint-date 
+ Jul 14 13:26:29 <hpk>	in your last mail to me 
+ Jul 14 13:26:31 <cfbolz>	hum
+ Jul 14 13:26:43 <hpk>	you are the person who needs to reserve the rooms :-)
+ Jul 14 13:26:58 <arre>	Bad timing. My vacation ends 21/8.
+ Jul 14 13:27:11 <cfbolz>	it doesn't matter much for the rooms, I think I did a mistake in the mail to you :-(
+ Jul 14 13:27:16 <cfbolz>	sorry for the confusion
+ Jul 14 13:27:25 <cfbolz>	(I can get a room for the whole of August)
+ Jul 14 13:27:59 <hpk>	cfbolz: ok, so it stays 22nd (monday) -29th August (monday) ? 
+ Jul 14 13:28:07 <stakkars>	I have a fixed date on 24.09. in Kiel and on 27.08., everything else is fine.
+ Jul 14 13:28:18 <cfbolz>	hpk: I guess so
+ Jul 14 13:28:29 <hpk>	cfbolz: let's fix it until monday next week
+ Jul 14 13:28:34 <hpk>	is that possible for you? 
+ Jul 14 13:28:46 <cfbolz>	I can fix it immediately, I just have to know
+ Jul 14 13:28:50 <hpk>	stakkars: the 27th August would be in the sprint, but maybe you can just travel a day? 
+ Jul 14 13:29:30 <ludal>	for me it's fine 22-29 aug
+ Jul 14 13:29:41 <hpk>	ludal: great!
+ Jul 14 13:29:43 <stakkars>	yes, I have to go to a big party, my ex-wife becomes 50
+ Jul 14 13:29:50 <hpk>	aleale, arre, pedronis: for you it's fine as well i guess 
+ Jul 14 13:29:57 <pedronis>	yes
+ Jul 14 13:30:01 <aleale>	I am happy with the 22-29 too
+ Jul 14 13:30:13 <stakkars>	all fine with me
+ Jul 14 13:30:14 <hpk>	i am going to contact Michael Hudson 
+ Jul 14 13:30:19 <arre>	Would work.
+ Jul 14 13:30:22 <hpk>	great, this finishes this meeting! 
+ Jul 14 13:30:31 <hpk>	thanks for coming, see you next week latest!

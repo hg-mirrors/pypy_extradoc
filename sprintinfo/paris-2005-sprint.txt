@@ -1,0 +1,124 @@
+PyPy Sprint in Paris 10th - 16th October 2005 
+==========================================================
+
+The next PyPy sprint will take place in Paris at Logilab's office
+in France from the 10th to the 16th of October 2005 
+(both days fully included). 
+
+To learn more about the new PyPy Python implementation look here: 
+
+    http://codespeak.net/pypy 
+
+
+Goals and topics of the sprint 
+------------------------------
+
+Now that pypy-0.7.0_ has been released, it is time for refactoring and planning
+of the next features.
+
+For these reasons the currently scheduled  main topics of this 
+sprint will be: 
+
+ - threading and GC
+ - refactoring and translation features
+ - discussing/experimenting towards JIT_ and `continuation-passing`_
+   style translation 
+
+Moreover, we are open to work in other areas that participants are
+interested in.  Please raise topics on the mailinglist_. 
+
+Location & Accomodation  
+------------------------ 
+
+The sprint will be held in Logilab's offices in Paris. The exact address is::
+
+  10 rue Louis Vicat
+  75015 Paris
+
+We'll provide WLAN connection and there is a small kitchen to make tea
+and coffee.  `See here`_ for a map of the area nearby.
+
+There are two metro lines and three bus lines that stop close to Logilab's:
+
+ - Metro line 12 : stop "Porte de Versailles"
+ - Metro line 13 : stop "Malakoff plateau de Vanves"
+ - Bus 89 or 58 : stop "Carrefour Albert Legris"
+ - Bus PC1 : stop "Porte de la Plaine"
+
+Those are more or less within 5 minutes walk.
+
+There is a huge number of hotels_ in Paris, all of which are
+unfortunately rather expensive. Here is another site for `hotels en France`_.
+
+It should be no problem to reach the sprint venue from anywhere in
+Paris using public transportation. However it would be better to find
+accomodation in the southern districts (14th, 15th) or in the nearby
+towns (Malakoff, Vanves) not far from Paris. Another good choice is to
+find an hotel near one of the metro line above. (avoid long bus trips
+as it takes more time.)
+
+Looking at the map here: hotels_, the area you should look at is
+between (3) and (6), (5) is still ok.
+
+As an alternative you could also try to group (4 or 5 people) and try
+to rent a furnished appartment for the week. Almost all announces from
+French websites come from `Lodgis agency`_. They are rather expensive
+but most of the time it can be cheaper than hotels. For the more
+adventurous you can look on the french site pap_ which lists rental
+ads. (select appartements, département=75, arrondissements=15,14,13)
+
+For transportation we strongly recommend the public transportation
+(metro and buses).  There are weekly tickets (monday to sunday) from
+15.70 euros (Zone 1-2). You need a picture (ID format) and ask for a
+*Carte Orange*.
+
+Don't get the tourist's cards which are more expensive and valid only
+for 5 days.  Also note that zone 1-2 won't pay for your ticket from
+the airport and is valid only (mostly) inside Paris. If you arrive by
+plane this will be most probably at Roissy airport and from there you
+can take the RER line B to Paris for about 8 euros.
+
+.. _`See here`: http://www.logilab.com/contact
+.. _hotels: http://www.hotel-paris.net/index-hotels-English.htm
+.. _`hotels en France`: http://www.0800paris-hotels.com/
+.. _pap: http://www.pap.fr/immobilier/offres/offre-location-vacances.asp
+.. _`Lodgis agency`: http://www.lodgis.com/ 
+
+Exact times 
+-----------
+
+The PyPy sprint is held Monday 10th October - Sunday 16th October
+2005.  Hours will be from 09:00 until 20:00. It's a good idea to
+arrive a day before the sprint starts and leave a day later.  
+In the middle of the sprint there usually is a break day 
+and it's usually ok to take half-days off if you feel like it. 
+
+Network, Food
+------------- 
+
+There are plenty of restaurants and sandwich places around and a big supermarket
+for those who would rather make their own food.
+
+You will probably need a wireless network card to access the network but we can
+provide ethernet cables for those who don't have one.
+
+
+Registration etc. 
+----------------- 
+
+Please subscribe to the `PyPy sprint mailing list`_, introduce
+yourself and post a note that you want to come.  
+
+Feel free to ask any questions there!  There also is a separate  
+`Paris people`_ page tracking who is already thought
+to come.  If you have commit rights on codespeak then
+you can modify yourself a checkout of 
+
+    http://codespeak.net/svn/pypy/extradoc/sprintinfo/paris-2005-people.txt 
+
+.. _`Paris people`: http://codespeak.net/pypy/extradoc/sprintinfo/paris-2005-people.html 
+.. _`mailinglist`: 
+.. _`PyPy sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`pypy-0.7.0`: http://codespeak.net/pypy/dist/pypy/doc/release-0.7.0.html
+.. _JIT: http://en.wikipedia.org/wiki/Just-in-time_compilation
+.. _`continuation-passing`: http://en.wikipedia.org/wiki/Continuation_passing_style
