@@ -27,7 +27,6 @@ if [ "$1" == "gcc" ]; then
     ./runner.py -n 5 -c "$* -lm" scimark/run_FFT.c 1048576 2
     rm a.out
 elif [[ "$1" == luajit* ]]; then
-    $* runner.lua sqrt int
     $* runner.lua sqrt float
     $* runner.lua sqrt Fix16
     $* runner.lua convolution conv3 100
