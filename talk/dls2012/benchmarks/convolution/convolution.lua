@@ -1,13 +1,13 @@
 module(..., package.seeall);
 local ffi = require("ffi")
 
-function array(length, initializer)
+local function array(length, initializer)
     return ffi.new("double[?]", length, initializer)
 end
 
 -- _______________ conv3 _______________
 
-function _conv3(a, arraylength, k, n)
+local function _conv3(a, arraylength, k, n)
     assert(#k == 3)
     local b = array(arraylength - 2, 0)
     while n > 0 do
@@ -20,7 +20,7 @@ function _conv3(a, arraylength, k, n)
     return b
 end
 
-function conv3(n)
+local function conv3(n)
     local arraylength = 100000000/n
     _conv3(array(arraylength, 1), arraylength,
            {-1, 0, 1}, n)
@@ -29,7 +29,7 @@ end
 
 -- _______________ conv5 _______________
 
-function _conv5(a, arraylength, k, n)
+local function _conv5(a, arraylength, k, n)
     assert(#k == 5)
     n = n or 1
     local b = array(arraylength - 4, 0)
@@ -43,7 +43,7 @@ function _conv5(a, arraylength, k, n)
     return b
 end
 
-function conv5(n)
+local function conv5(n)
     local arraylength = 100000000/n
     _conv5(array(arraylength, 1), arraylength,
            {1, 4, 6, 4, 1}, n)
@@ -54,101 +54,86 @@ end
 
 -- begin class Array2D
 
-Array2D = {
-
-    new = function(self, w, h, initializer)
-        initializer = initializer or 0
-        return setmetatable(
-            {width = w, height = h, data=array(w * h, initializer)}, self)
-    end,
-
-    __tostring = function(self)
-        return string.format("Array2D(%d, %d)", self.width, self.height)
-    end,
-
-    idx = function(self, x, y)
-        return y * self.width + x
-    end,
-
-    get = function(self, x, y)
-        return self.data[self:idx(x, y)]
-    end,
-
-    set = function(self, x, y, val)
-        self.data[self:idx(x, y)] = val
-    end,
-}
-
-Array2D.__index = Array2D
+local mt = { __index = function(o, x) return o.a[x] end }
+local tc = {}
+local function Array2D(w, h)
+  local t = tc[w*2^20+h]
+  if not t then
+    t = ffi.typeof("struct { int width, height; double a[$][$]; }", w, h)
+    tc[w*2^20+h] = t
+    ffi.metatype(t, mt)
+  end
+  return t(w, h)
+end
 
 -- end class Array2D
 
-function _conv3x3(a, b, k)
+local function _conv3x3(a, b, k)
     assert(k.width == 3 and k.height == 3)
     for y = 1, a.height - 2     do
         for x = 1, a.width - 2 do
-            b:set(x, y, k:get(2, 2) * a:get(x - 1, y - 1) + k:get(1, 2) * a:get(x, y - 1) + k:get(0, 2) * a:get(x + 1, y - 1) +
-                        k:get(2, 1) * a:get(x - 1, y) + k:get(1, 1) * a:get(x, y) + k:get(0, 1) * a:get(x + 1, y) +
-                        k:get(2, 0) * a:get(x - 1, y + 1) + k:get(1, 0) * a:get(x, y + 1) + k:get(0, 0) * a:get(x + 1, y + 1))
+            b[x][y] = k[2][2] * a[x-1][y-1] + k[1][2] * a[x][y-1] + k[0][2] * a[x+1][y-1] +
+                      k[2][1] * a[x-1][y]   + k[1][1] * a[x][y]   + k[0][1] * a[x+1][y]   +
+		      k[2][0] * a[x-1][y+1] + k[1][0] * a[x][y+1] + k[0][0] * a[x+1][y+1]
         end
     end
     return b
 end
 
-function conv3x3(x, y)
-    local a = Array2D:new(x, y)
-    local b = Array2D:new(x, y)
+local function conv3x3(x, y)
+    local a = Array2D(x, y)
+    local b = Array2D(x, y)
     for i = 1, 10 do
-        _conv3x3(a, b, Array2D:new(3, 3))
+        _conv3x3(a, b, Array2D(3, 3))
     end
     return string.format("conv3x3(Array2D(%dx%d))", x, y)
 end
 
 
-function morphology3x3(a, b, k, func)
+local function morphology3x3(a, b, k, func)
     assert(k.width == 3 and k.height == 3)
     for y = 1, a.height - 2 do
         for x = 1, a.width - 2 do
-            b:set(x, y, func(k:get(2, 2) * a:get(x - 1, y - 1), k:get(1, 2) * a:get(x, y - 1), k:get(0, 2) * a:get(x + 1, y - 1),
-                             k:get(2, 1) * a:get(x - 1, y), k:get(1, 1) * a:get(x, y), k:get(0, 1) * a:get(x + 1, y),
-                             k:get(2, 0) * a:get(x - 1, y + 1), k:get(1, 0) * a:get(x, y + 1), k:get(0, 0) * a:get(x + 1, y + 1)))
+            b[x][y] = func(k[2][2] * a[x-1][y-1], k[1][2] * a[x][y-1], k[0][2] * a[x+1][y-1],
+                           k[2][1] * a[x-1][y],   k[1][1] * a[x][y],   k[0][1] * a[x+1][y],
+                           k[2][0] * a[x-1][y+1], k[1][0] * a[x][y+1], k[0][0] * a[x+1][y+1])
         end
     end
     return b
 end
 
-function _dilate3x3(a, b, k)
+local function _dilate3x3(a, b, k)
     return morphology3x3(a, b, k, math.max)
 end
 
-function dilate3x3(x, y)
-    local a = Array2D:new(x, y)
-    local b = Array2D:new(x, y)
+local function dilate3x3(x, y)
+    local a = Array2D(x, y)
+    local b = Array2D(x, y)
     for i = 1, 10 do
-        _dilate3x3(a, b, Array2D:new(3, 3))
+        _dilate3x3(a, b, Array2D(3, 3))
     end
     return string.format("dilate3x3(Array2D(%dx%d))", x, y)
 end
 
-function _sobel_magnitude(a)
-    b = Array2D:new(a.width, a.height)
+local function _sobel_magnitude(a)
+    local b = Array2D(a.width, a.height)
     for y = 1, a.height - 2 do
         for x = 1, a.width - 2 do
-            local dx = -1 * a:get(x - 1, y - 1) + 1 * a:get(x + 1, y - 1) +
-                       -2 * a:get(x - 1, y) + 2 * a:get(x + 1, y) +
-                       -1 * a:get(x - 1, y + 1) + 1 * a:get(x + 1, y + 1)
-            local dy = -1 * a:get(x - 1, y - 1) - 2 * a:get(x, y - 1) - 1 * a:get(x + 1, y - 1) +
-                        1 * a:get(x - 1, y + 1) + 2 * a:get(x, y + 1) + 1 * a:get(x + 1, y + 1)
-            b:set(x, y, math.sqrt(dx * dx + dy * dy) / 4)
+            local dx = -1 * a[x-1][y-1] + 1 * a[x+1][y-1] +
+                       -2 * a[x-1][y]   + 2 * a[x+1][y] +
+                       -1 * a[x-1][y+1] + 1 * a[x+1][y+1]
+            local dy = -1 * a[x-1][y-1] - 2 * a[x][y-1]-1 * a[x+1][y-1] +
+                        1 * a[x-1][y+1] + 2 * a[x][y+1]+1 * a[x+1][y+1]
+            b[x][y] = math.sqrt(dx * dx + dy * dy) / 4
         end
     end
     return b
 end
 
 
-function sobel_magnitude(x, y)
+local function sobel_magnitude(x, y)
     for i = 1, 10 do
-        _sobel_magnitude(Array2D:new(x, y))
+        _sobel_magnitude(Array2D(x, y))
     end
     return string.format('sobel(Array2D(%sx%s))', x, y)
 end
@@ -156,20 +141,18 @@ end
 
 -- entry point
 function main(args)
-    arg = args[1]
-    num = tonumber(args[2])
+    local arg = args[1]
+    local num = tonumber(args[2]) or 1000
+    local num2 = tonumber(args[3]) or num
     if arg == "conv3" then
         return conv3(num)
     elseif arg == "conv5" then
         return conv5(num)
     elseif arg == "conv3x3" then
-        num2 = tonumber(args[3])
         return conv3x3(num, num2)
     elseif arg == "dilate3x3" then
-        num2 = tonumber(args[3])
         return dilate3x3(num, num2)
     elseif arg == "sobel_magnitude" then
-        num2 = tonumber(args[3])
         return sobel_magnitude(num, num2)
     end
 end
