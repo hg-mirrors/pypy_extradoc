@@ -20,9 +20,9 @@ done in a local copy.  If this transaction successfully commits, the
 original global object is *not* changed --- it is really immutable.  But
 the copy becomes global, and the old global object's header is updated
 with a pointer to the new global object.  We thus make a chained list
-of global versions.
+of global revisions.
 
-It is the job of the GC to collect the older versions when they are
+It is the job of the GC to collect the older revisions when they are
 not referenced any more by any thread.
 
 
@@ -55,21 +55,32 @@ Every object starts with three fields:
 - h_global (boolean)
 - h_possibly_outdated (boolean)
 - h_written (boolean)
-- h_version (unsigned integer)
+- h_revision (unsigned integer)
 
-The h_version is an unsigned "version number".  More about it below.
-The other fields are flags.  (In practice they are just bits inside the
-GC h_tid field.)
+The h_revision is an unsigned "revision number" that can also
+alternatively contain a pointer.  The other fields are flags.  (In
+practice they are just bits inside the GC h_tid field.)
 
 - ``h_global`` means that the object is a global object.
 
 - ``h_possibly_outdated`` is used as an optimization: it means that the
   object is possibly outdated.  It is False for all local objects.  It
   is also False if the object is a global object, is the most recent of
-  its chained list of versions, and is known to have no modified local
+  its chained list of revisions, and is known to have no modified local
   version in any transaction.
 
 - ``h_written`` is set on local objects that have been written to.
+
+- ``h_revision`` on local objects points to the global object that they
+  come from, if any; otherwise it is NULL.
+
+- ``h_revision`` on global objects depends on whether the object is the
+  head of the chained list of revisions or not.  If it is, then
+  ``h_revision`` contains the "timestamp" of the revision at which this
+  version of the object was committed.  For non-head revisions,
+  ``h_revision`` is a pointer to a more recent revision.  To distinguish
+  these two cases we set the lowest bit of ``h_revision`` in the latter
+  case.
 
 
 Transaction details
@@ -92,32 +103,60 @@ that is atomically incremented whenever a transaction commits.
 their corresponding local objects.
 
 ``list_of_read_objects`` is a set of all global objects read from, in
-the version that was used for reading.  It is actually implemented as a
-list, but the order or repeated presence of elements in the list is
-irrelevant.
+the revision that was used for reading.  It is actually implemented as a
+list, but the order or repetition of elements in the list is irrelevant.
 
 ``recent_reads_cache`` is a fixed-size cache that remembers recent
 additions to the preceeding list, in order to avoid inserting too much
 repeated entries into the list, as well as keep lightweight statistics.
 
 
-Pseudo-code: read/write barriers
+Read/write barriers design
 ---------------------------------------
 
-Variable names:
+The read/write barriers are designed with the following goals in mind:
 
-* ``P`` is a pointer to any object.
+- In the source code (graphs from RPython), variables containing
+  pointers can be annotated as beloning to one of 6 categories:
 
-* ``G`` is a pointer to a *global* object.
+  * ``P`` is a pointer to any object.
 
-* ``R`` is a pointer to an object that was checked for being
-  *read-ready*: reading its fields is ok.
+  * ``G`` is a pointer to a *global* object.
 
-* ``L`` is a pointer to a *local* object.  We can always read from
-  but not necessarily write to local objects.
+  * ``R`` is a pointer to an object that was checked for being
+    *read-ready*: reading its fields is ok.
 
-* ``W`` is a pointer to a *writable* local object.
+  * ``O`` is an *old* pointer that used to be read-ready, but in which
+    we may have written to in the meantime
 
+  * ``L`` is a pointer to a *local* object.  We can always read from
+    but not necessarily write to local objects.
+
+  * ``W`` is a pointer to a *writable* local object.
+
+- The goal is to insert calls to the following write barriers so that we
+  only ever read from objects in the ``R``, ``L`` or ``W`` categories,
+  and only ever write to objects in the ``W`` category.
+
+- The read barriers themselves need to ensure that
+  ``list_of_read_objects`` contains exactly the set of global objects
+  that have been read from.  These objects must all be of the most
+  recent revision that is not more recent than ``start_time``.  If an
+  object has got a revision more recent than ``start_time``, then the
+  current transaction is in conflict.  The transaction is aborted as
+  soon as this case is detected.
+
+- The write barriers make sure that all modified objects are local and
+  the ``h_written`` flag is set.
+
+- All barriers ensure that ``global_to_local`` satisfies the following
+  property for any local object ``L``: either ``L`` was created by
+  this transaction (``L->h_revision == NULL``) or else satisfy
+  ``global_to_local[L->h_revision] == L``.
+
+
+Pseudo-code for read/write barriers
+---------------------------------------
 
 ``W = Allocate(size)`` allocates a local object::
 
@@ -126,24 +165,24 @@ Variable names:
         W->h_global = False
         W->h_possibly_outdated = False
         W->h_written = True
-        W->h_version = 0
+        W->h_revision = 0
         return W
 
 
-``R = LatestGlobalVersion(G)`` takes a pointer ``G`` to a global object,
-and if necessary follows the chain of newer versions, until it reaches
-the most recent version ``R``.  Then it checks the version number of
+``R = LatestGlobalRevision(G)`` takes a pointer ``G`` to a global object,
+and if necessary follows the chain of newer revisions, until it reaches
+the most recent revision ``R``.  Then it checks the revision number of
 ``R`` to see that it was not created after ``start_time``.
 Pseudo-code::
 
-    def LatestGlobalVersion(G, ...):
+    def LatestGlobalRevision(G, ...):
         R = G
-        while (v := R->h_version) & 1:    # "has a more recent version"
+        while (v := R->h_revision) & 1:    # "has a more recent revision"
             R = v & ~ 1
-        if v > start_time:                # object too recent?
-            ValidateFast()                # try to move start_time forward
-            return LatestGlobalVersion(G) # restart searching from G
-        PossiblyUpdateChain(G, R, ...)    # see below
+        if v > start_time:                 # object too recent?
+            ValidateFast()                 # try to move start_time forward
+            return LatestGlobalRevision(G) # restart searching from G
+        PossiblyUpdateChain(G, R, ...)     # see below
         return R
 
 
@@ -159,7 +198,7 @@ or until a write into the same object is done.  Pseudo-code::
         if not P->h_possibly_outdated:
             R = P
         else:
-            R = LatestGlobalVersion(P, ...)
+            R = LatestGlobalRevision(P, ...)
             if R->h_possibly_outdated and R in global_to_local:
                 L = ReadGlobalToLocal(R, ...)  # see below
                 return L
@@ -167,20 +206,21 @@ or until a write into the same object is done.  Pseudo-code::
         return R
 
 
-A simple optimization is possible.  If ``R`` is returned by a previous
-call to ``DirectReadBarrier`` and the current transaction is still
-running, but we could have written to ``R`` in the meantime, then we
-need to repeat only part of the logic, because we don't need
-``AddInReadSet`` again.  It gives this::
+A simple optimization is possible.  Assume that ``O`` is a pointer
+returned by a previous call to ``DirectReadBarrier`` and the current
+transaction is still running, but we could have written to ``O`` in the
+meantime.  Then we need to repeat only part of the logic, because we
+don't need ``AddInReadSet`` again.  It gives this::
 
-    def RepeatReadBarrier(R, ...):
-        if not R->h_possibly_outdated:       # fast-path
-            return R
-        # LatestGlobalVersion(R) would either return R or abort
+    def RepeatReadBarrier(O, ...):
+        if not O->h_possibly_outdated:       # fast-path
+            return O
+        # LatestGlobalRevision(R) would either return R or abort
         # the whole transaction, so omitting it is not wrong
-        if R in global_to_local:
-            L = ReadGlobalToLocal(R, ...)    # see below
+        if O in global_to_local:
+            L = ReadGlobalToLocal(O, ...)    # see below
             return L
+        R = O
         return R
 
 
@@ -194,7 +234,7 @@ global object and returns a corresponding pointer to a local object::
         L->h_global = False
         L->h_possibly_outdated = False
         L->h_written = False
-        L->h_version = R          # back-reference to the original
+        L->h_revision = R          # back-reference to the original
         L->objectbody... = R->objectbody...
         global_to_local[R] = L
         return L
@@ -207,7 +247,7 @@ two versions of the write barrier::
         if not P->h_global:       # fast-path
             return P
         if P->h_possibly_outdated:
-            R = LatestGlobalVersion(P)
+            R = LatestGlobalRevision(P)
         else:
             R = P
         W = Localize(R)
@@ -292,18 +332,23 @@ container's field out of which ``R`` was read::
 
 
 Finally, a similar optimization can be applied in
-``LatestGlobalVersion``.  After it follows the chain of global versions,
-it can "compress" that chain in case it contained several hops, and also
-update the original container's field to point directly to the latest
-version::
+``LatestGlobalRevision``.  After it follows the chain of global
+revisions, it can "compress" that chain in case it contained several
+hops, and also update the original container's field to point directly
+to the latest version::
 
     def PossiblyUpdateChain(G, R, R_Container, FieldName):
         if R != G:
             # compress the chain
-            while G->h_version != R | 1:
-                G_next = G->h_version & ~ 1
-                G->h_version = R | 1
+            while G->h_revision != R | 1:
+                G_next = G->h_revision & ~ 1
+                G->h_revision = R | 1
                 G = G_next
             # update the original field
             R_Container->FieldName = R
 
+
+Committing
+------------------------------------
+
+xxxx
