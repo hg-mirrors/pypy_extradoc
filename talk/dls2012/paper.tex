@@ -742,6 +742,17 @@ and
 In the optimized trace $J$ is replaced by $\hat J$ and $K$ by $\hat
 K$.
 
+It is interesting to note that the described approach automatically deals with
+implicit control dependencies correctly, whereas in other approaches this needs
+to be carefully programmed in. A commonly used example for a control dependency
+is a division operation that needs to be preceded by a check for the second
+argument being 0. In a trace, such a check would be done with a guard. The
+division operation must not be moved before that guard, and indeed, this is
+never done. If the division is loop invariant, the result computed in copy of
+the division operation in the preamble is reused. This division operation is
+preceded by a copy of the non-null guard, which ensures that it can be executed
+correctly.
+
 \subsection{Allocation Removal}
 \label{sub:allocation}
 
