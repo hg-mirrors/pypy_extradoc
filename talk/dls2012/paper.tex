@@ -984,18 +984,21 @@ initialized to $x_0=y/2$ and the benchmark consists of a single loop updating th
 approximation using $x_i = \left( x_{i-1} + y/x_{i-1} \right) / 2$ for $1\leq i < 10^8$. 
 Only the latest calculated value $x_i$ is kept alive as a local variable within the loop.
 There are three different versions of this benchmark where $x_i$
-  is represented with different type of objects, $T$,: int's, float's and
+  is represented with different type $T$ of objects: int's, float's and
   Fix16's. The latter, Fix16, is a custom class that implements
-  fixpoint arithmetic with 16 bits precision. In Python there is only
+  fixpoint arithmetic with 16 bits precision. In Python and Lua there is only
   a single implementation of the benchmark that gets specialized
-  depending on the class of it's input argument, $y$, while in C,
-  there are three different implementations. In Lua there is no support for
-  integers so only the floating point number is provided.
-  
-  \XXXfixme: mikepall fijal, cfbolz: Also, sqrt(Fix16) is now a
-  meaningful result, but the text describing the benchmarks hasn't
-  changed.
-  
+  depending on the class of it's input argument, $y$. In C,
+  there are three different implementations.
+
+The Fix16 type is a custom class with operator overloading in Lua and Python.
+The C version uses a C++ class. The goal of this variant of the benchmark is to
+check how large the overhead of a custom arithmetic class is, compared to
+builtin data types.
+
+In Lua there is no direct support for
+integers so the int version is not provided.
+
 \item {\bf conv3}$\left(n\right)$: one-dimensional convolution with fixed kernel-size $3$. A single loop
 is used to calculate a vector ${\bf b} = \left(b_1, \cdots, b_{n-2}\right)$ from a vector
 ${\bf a} = \left(a_1, \cdots, a_n\right)$ and a kernel ${\bf k} = \left(k_1, k_2, k_3\right)$ using 
@@ -1130,6 +1133,16 @@ even surpassing it. LuaJIT is generating machine code of higher quality because
 it has more optimizations\footnote{See
 \texttt{http://wiki.luajit.org/Optimizations}} and produces much better
 machine code than PyPy.
+
+The slowdown of sqrt(Fix16) compared to sqrt(int) or sqrt(float) show the
+overhead of using a custom class with operator overloading for arithmetic. For
+C/C++, this overhead is very low, for CPython the code becomes 30 times slower.
+In LuaJIT, the overhead is a slowdown of 70\%. For PyPy, sqrt(Fix16) is only
+slightly slower than sqrt(int), which is itself three times slower than
+sqrt(float). This is probably due to the additional overflow checking necessary
+for integer arithmetic in Python. The fact that LuaJIT and PyPy do so well on
+sqrt(Fix16) shows that the allocation removal/sinking optimizations work well
+in both JITs.
 
 \section{Related Work}
 \label{sec:related}
