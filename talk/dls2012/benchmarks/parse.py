@@ -1,5 +1,7 @@
 
 import pdb, sys
+import numpy as np
+import matplotlib.pyplot as plt
 
 NAME_REPL = {
     'dilate3x3(Array2D(1000x1000))': 'dilate3x3(1000,1000)',
@@ -21,6 +23,7 @@ def main(name):
     interp = None
     res = {}
     order = ['python2.7', 'pypy --jit enable_opts=intbounds:rewrite:virtualize:string:earlyforce:pure:heap:ffi', 'pypy', 'luajit -O-loop', 'luajit', 'gcc -O3 -march=native -fno-tree-vectorize']
+    labels = ['CPython', 'PyPy no LP', 'PyPy', 'LuaJIT no LP', 'LuaJIT', 'gcc -O3']
     with open(name) as f:
         for line in f:
             line = line.strip("\n")
@@ -37,9 +40,10 @@ def main(name):
                     res.setdefault(bench, {})[interp] = float(a), float(d)
                 else:
                     res.setdefault(bench, {})[interp] = float(rest)
-    for key in sorted(res.keys()):
+    resmat = np.zeros((len(res), len(order)))
+    for i, key in enumerate(sorted(res.keys())):
         sys.stdout.write(key)
-        for ord in order:
+        for j, ord in enumerate(order):
             try:
                 e = res[key][ord]
             except KeyError:
@@ -49,10 +53,28 @@ def main(name):
                     # to get a 95% confidence interval, the std deviation is multiplied with a factor
                     # see the table at http://en.wikipedia.org/wiki/Standard_deviation#Rules_for_normally_distributed_data
                     sys.stdout.write(' & %.2f $\pm$ %.3f' % (e[0], e[1] * 1.959964))
+                    resmat[i, j] = e[0]
                 else:
                     sys.stdout.write(' & %.2f' % e)
+                    resmat[i, j] = e
         sys.stdout.write('\\\\\n')
         print "\hline"
+
+    width = 0.7 / resmat.shape[1]
+    x = np.array(range(len(res)))
+    plt.figure(figsize=(10, 15))
+    plt.subplot(111).set_xscale("log")
+    legend = ([], [])
+    for i, l  in enumerate(labels):
+        r = plt.barh(x + i*width + 0.3/2, resmat[:,i]/resmat[:,-1], width,
+                     color='bgrcmykw'[i])
+        legend[0].append(r[0])
+        legend[1].append(l)
+    plt.yticks(x + 0.5, sorted(res.keys()))
+    plt.subplots_adjust(left=0.35, right=0.95, top=0.9, bottom=0.1)
+    plt.legend(*legend)
+    #plt.show()
+    plt.savefig('result.pdf')
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
