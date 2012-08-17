@@ -350,6 +350,14 @@ to the latest version::
             # update the original field
             R_Container->FieldName = R
 
+This last line is a violation of the rule that global objects are
+immutable.  It still works because it is only an optimization that will
+avoid some chain-walking in the future.  If two threads conflict in
+updating the same field to possibly different values, it is undefined
+what exactly occurs: other CPUs can see either the original or any of
+the modified values.  It works because the original and each modified
+value are all interchangeable as far as correctness goes.
+
 
 Committing
 ------------------------------------
