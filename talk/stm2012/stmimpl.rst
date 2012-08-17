@@ -138,6 +138,9 @@ The read/write barriers are designed with the following goals in mind:
   only ever read from objects in the ``R``, ``L`` or ``W`` categories,
   and only ever write to objects in the ``W`` category.
 
+- Global objects are immutable, and so can only contain pointers to
+  further global objects.
+
 - The read barriers themselves need to ensure that
   ``list_of_read_objects`` contains exactly the set of global objects
   that have been read from.  These objects must all be of the most
@@ -351,4 +354,26 @@ to the latest version::
 Committing
 ------------------------------------
 
-xxxx
+Committing is a four-steps process:
+
+- We first find all global objects that we have written to,
+  and mark them "locked" by putting in their ``h_revision`` field
+  a special value that will cause parallel CPUs to spin loop in
+  ``LatestGlobalRevision``.  We also prepare the local versions
+  of these objects to become the next head of the chained lists,
+  by fixing the headers.
+
+- We atomically increase the global time (with LOCK CPMXCHG).  This
+  causes a MFENCE too.  (Useful in later ports to non-x86 CPUs: it makes
+  sure that the local objects we are about to expose are fully visible
+  to other CPUs, in their latest and last version.)
+
+- We check again that all read objects are still up-to-date, i.e. have
+  not been replaced by a revision more recent than ``start_time``.
+  (This is the last chance to abort a conflicting transaction; if we
+  do, we have to remember to release the locks.)
+
+- Finally, we fix the global objects written to by overriding their
+  ``h_revision``.  We put there a pointer to the previously-local
+  object, ``| 1``.  The previously-local object plays from now on
+  the role of the global head of the chained list.
