@@ -84,7 +84,7 @@ def main(name):
             continue
         bottoms = x + (len(labels) - 1 - i) * width + 0.3/2
         print bottoms
-        r = plt.barh(bottoms, resmat[:,i][::-1]/resmat[:,-1][::-1], width,
+        r = plt.barh(bottoms, resmat[:,i]/resmat[:,-1], width,
                      color=str(1. / (len(labels) - 1) * i))
         legend[0].append(r[0])
         legend[1].append(l)
