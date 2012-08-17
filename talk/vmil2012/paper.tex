@@ -171,22 +171,19 @@ In this paper we want to substantiate the aforementioned observations about guar
 describe based on them the reasoning behind their implementation in
 RPython's tracing just-in-time compiler. The contributions of this paper are:
 \begin{itemize}
-  \item an analysis and benchmark of guards in the context of RPython's tracing JIT,
-  %An analysis of guards in the context of RPython's tracing JIT to
-  %substantiate the aforementioned observation, based on a set of benchmarks,
+  \item An analysis guards in the context of RPython's tracing JIT,
   \item detailed measurements about the frequency and the
   overhead associated with guards, and
   \item a description about how guards are implemented in the high\-
-  and low-level components of the JIT and describe the rationale behind the design
+  and low-level components of RPython's JIT and a description of the rationale behind the design.
 \end{itemize}
 
 The set of central concepts upon which this work is based are described in
 Section~\ref{sec:Background}, such as the PyPy project, the RPython language
 and its meta-tracing JIT. Based on these concepts in Section~\ref{sec:Resume
-Data} we proceed to describe for RPython's tracing JIT the details of guards in
-the frontend. In this context the frontend is concerned with recording and storing the
-information required to rebuild the interpreter state in case of a guard
-failure. Once the frontend has traced and optimized a loop it invokes the
+Data} we proceed to describe the details of guards in
+the frontend of RPython's tracing JIT.
+Once the frontend has traced and optimized a loop it invokes the
 backend to compile the operations to machine code, Section~\ref{sec:Guards in
 the Backend} describes the low-level aspects of how guards are implemented in
 the machine specific JIT-backend. The frequency of guards and the overhead associated with the
@@ -204,10 +201,10 @@ gives an outlook on further research topics.
 \label{sub:pypy}
 
 
-The RPython language and the PyPy project~\cite{rigo_pypys_2006} were started
+The RPython language and the PyPy project\footnote{\url{http://pypy.org}}~\cite{rigo_pypys_2006} were started
 in 2002 with the goal of
 creating a Python interpreter written in a high level language, allowing easy
-language experimentation and extension.\footnote{\url{http://pypy.org}} PyPy is now a fully compatible
+language experimentation and extension. PyPy is now a fully compatible
 alternative interpreter for the Python language.
 Using RPython's tracing JIT compiler it is on average about 5 times faster than
 CPython, the reference implementation.
@@ -221,15 +218,14 @@ and developing fast and maintainable dynamic language implementations. Besides
 the Python interpreter there are several experimental language implementation at different
 levels of completeness, e.g. for Prolog~\cite{bolz_towards_2010}, Smalltalk~\cite{bolz_back_2008}, JavaScript and R.
 
-different levels of completeness.
-
 RPython can mean one of two things:
 \begin{itemize}
  \item the language itself
  \item the translation toolchain used to transform RPython programs to executable units
 \end{itemize}
-The RPython language
-is a statically typed object-oriented high level language. The language provides
+The RPython language, is a subset of Python that provides a
+statically typed object-oriented high level language. The subset of Python available in RPython is chosen in a way type inference is possible\cite{ancona_rpython:_2007}.
+The language provides
 several features such as automatic memory management
 and just-in-time compilation. When writing an interpreter using RPython the
 programmer only has to write the interpreter for the language she is
@@ -259,15 +255,15 @@ path, tracing is started thus recording all operations that are executed on this
 path. This includes inlining functional calls.
 As in most compilers, tracing JITs use an intermediate representation to
 store the recorded operations, typically in SSA
-form~\cite{cytron_efficiently_1991}. Since tracing follows actual execution the
+form~\cite{cytron_efficiently_1991}. Since tracing follows actual execution, the
 code that is recorded
 represents only one possible path through the control flow graph. Points of
 divergence from the recorded path are marked with special operations called
-\emph{guards}, these operations ensure that assumptions valid during the
+\emph{guards}. These operations ensure that assumptions valid during the
 tracing phase are still valid when the code has been compiled and is executed.
 In the case of dynamic languages, guards are also used to encode type checks
 that come from optimistic type specialization by recording the types of
-variables seen during tracing.
+variables seen during tracing\cite{Gal:2009ux}.
 After a trace has been recorded it is optimized and then compiled to platform
 specific machine code.
 
@@ -314,6 +310,10 @@ one, or odd. In either of these cases the trace is left via a guard failure.
 \section{Guards in the Frontend} %{Resume Data}
 \label{sec:Resume Data}
 
+In this context we refer to frontend as the component of the JIT that is
+concerned with recording and optimizing the traces as well as storing the
+information required to rebuild the interpreter state in case of a guard
+failure.
 Since tracing linearizes control flow by following one concrete execution,
 the full control flow of a program is not observed.
 The possible points of deviation from the trace are denoted by guard operations
@@ -531,6 +531,7 @@ guard_false($b_3$)                          |\setcounter{lstnumber}{-1}|
 CMP r6, #1
 MOVEQ r8, #1
 MOVNE r8, #0
+...
 CMP r8, #0
 BEQ <bailout>
     \end{lstlisting}
@@ -540,6 +541,7 @@ BEQ <bailout>
     \begin{lstlisting}
 CMP r6, #1
 BNE <bailout>
+...
 ...
 ...
 ...
@@ -560,8 +562,7 @@ mapping from IR-variables needed by the guard to rebuild the state to the
 low-level locations (registers and stack) where the corresponding values will
 be stored when the guard is executed.
 This data
-structure stores the values in a succinct manner using an encoding that requires
-8 bits to store 7 bits of information, ignoring leading zeros. This encoding is efficient to create and
+structure stores the values in a succinct manner. The encoding is efficient to create and
 provides a compact representation of the needed information in order
 to maintain an acceptable memory profile.
 
@@ -613,8 +614,9 @@ Once the bridge has been compiled the corresponding guard is
 patched to redirect control flow to the bridge in case the check fails. In
 the future, if the guard fails again it jumps to the code compiled for the bridge
 instead of bailing out. Once the guard has been compiled and attached to the
-loop the guard becomes just a point where control-flow can split. The loop
-after the guard and the bridge are just conditional paths.
+loop the guard becomes just a point where control-flow can split.
+The guard becomes the branching point of two conditional paths with no
+additional overhead.
 Figure~\ref{fig:trampoline} shows a diagram of a compiled loop with two guards,
 Guard~\#1 jumps to the trampoline, loads the backend map and
 then calls the bailout handler, whereas Guard~\#2 has already been patched
@@ -715,12 +717,54 @@ The frequency of guard operations makes it important to store the associated
 information efficiently and also to make sure that guard checks are executed
 quickly.
 
+\subsection{Guard Failures}
+\label{sub:guard_failure}
+The last point in this discussion is the frequency of guard failures.
+Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
+relative amounts of guards that ever fail and of guards that fail often enough that a bridge is compiled.\footnote{
+    The threshold used is 200 failures. This rather high threshold was picked experimentally to give
+    good results for long-running programs.
+}
+
+The numbers presented for guards that have a bridge represent the
+failures up to the compilation of the bridge and all executions of the then
+attached bridge.
+
+\begin{figure}
+    \include{figures/failing_guards_table}
+    \caption{Failing guards, guards with more than 200 failures and guards responsible for 50\% of the failures relative to the total number of guards}
+    \label{fig:failing_guards}
+\end{figure}
+
+From Figure~\ref{fig:failing_guards} we can see that only a very small amount
+of all the guards in the compiled traces ever fail. This amount varies between
+2.4\% and 5.7\% of all guards. As can be expected, even fewer, only 1.2\% to 3.6\% of all guards fail often
+enough that a bridge is compiled for them.
+Also, of all failing guards a few fail extremely often
+and most fail rarely. Reinforcing this notion the figure shows that, depending on the
+benchmark, between 0.008\% and 0.225\% of the guards are responsible for 50\%
+of the total guards failures.
+These results emphasize that as most of the guards never
+fail it is important to make sure that the successful execution of a guard does
+not have unnecessary overhead.
+
+This low guard failure rate is expected. Most guards do not come from actual
+control flow divergences in the user program, but from type checks needed for
+type specialization. Various prior work has
+shown~\cite{holkner_evaluating_2009, richards_analysis_2010, callau_how_2011}
+that most programs in dynamic languages only use a limited amount of runtime
+variability. Therefore many guards are needed for making the traces behave
+correctly in all cases but fail rarely.
+
+
+
 \subsection{Space Overhead of Guards}
 \label{sub:guard_overhead}
+
 \begin{figure}
-    \include{figures/resume_data_table}
-    \caption{Resume data sizes}
-    \label{fig:resume_data_sizes}
+    \include{figures/backend_table}
+    \caption{Total size of generated machine code and resume data}
+    \label{fig:backend_data}
 \end{figure}
 
 The overhead that is incurred by the JIT to manage the resume data,
@@ -752,9 +796,9 @@ creates a larger discrepancy between the size of the resume data when
 compared to the size of the generated machine code and illustrates why it is important to compress the resume data information.
 
 \begin{figure}
-    \include{figures/backend_table}
-    \caption{Total size of generated machine code and resume data}
-    \label{fig:backend_data}
+    \include{figures/resume_data_table}
+    \caption{Resume data sizes}
+    \label{fig:resume_data_sizes}
 \end{figure}
 
 Why the efficient storing of the resume data is a central concern in the design
@@ -772,49 +816,10 @@ shows that large parts of the resume data are redundant and can be stored more
 efficiently using the techniques described earlier. On the other hand
 comparing the results to the xz compression which only needs between 17.1\%
 and 21.1\% of the space required by our compression shows that the compression
-is not optimal but a trade-off between the required space and the time needed
-to build a good, compressed representation of the resume data for the
-large amount of guards present in the traces.
-
-\subsection{Guard Failures}
-\label{sub:guard_failure}
-The last point in this discussion is the frequency of guard failures.
-Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
-relative amounts of guards that ever fail and of guards that fail often enough that a bridge is compiled.\footnote{
-    The threshold used is 200 failures. This rather high threshold was picked experimentally to give
-    good results for long-running programs.
-}
-
-The numbers presented for guards that have a bridge represent the
-failures up to the compilation of the bridge and all executions of the then
-attached bridge.
-
-\begin{figure}
-    \include{figures/failing_guards_table}
-    \caption{Failing guards, guards with more than 200 failures and guards responsible for 50\% of the failures relative to the total number of guards}
-    \label{fig:failing_guards}
-\end{figure}
-
-From Figure~\ref{fig:failing_guards} we can see that only a very small amount
-of all the guards in the compiled traces ever fail. This amount varies between
-2.4\% and 5.7\% of all guards. As can be expected, even fewer guards fail often
-enough that a bridge is compiled for them, only 1.2\% to 3.6\% of all guards
-fail often enough that a bridge is compiled. Also, of all failing guards a few fail extremely often
-and most fail rarely. Reinforcing this notion the figure shows that, depending on the
-benchmark, between 0.008\% and 0.225\% of the guards are responsible for 50\%
-of the total guards failures.
-These results emphasize that as most of the guards never
-fail it is important to make sure that the successful execution of a guard does
-not have unnecessary overhead.
-
-This low guard failure rate is expected. Most guards do not come from actual
-control flow divergences in the user program, but from type checks needed for
-type specialization. Various prior work has
-shown~\cite{holkner_evaluating_2009, richards_analysis_2010, callau_how_2011}
-that most programs in dynamic languages only use a limited amount of runtime
-variability. Therefore many guards are needed for making the traces behave
-correctly in all cases but fail rarely.
-
+is not optimal and could be improved taking into account the trade-off between
+the required space and the time needed to build a good, compressed
+representation of the resume data for the large amount of guards present in the
+traces.
 
 \section{Related Work}
 \label{sec:Related Work}
@@ -845,7 +850,8 @@ of snapshots for every guard to reduce memory pressure. Snapshots are only
 created for guards after updates to the global state, after control flow points
 from the original program and for guards that are likely to fail. As an outlook
 Pall mentions plans to switch to compressed snapshots to further reduce
-redundancy. The approach of not creating snapshots at all for every guard is
+redundancy.\footnote{This optimization is now implemented in LuaJIT, at the time of writing it has not been fully documented in the LuaJIT Wiki (\url{http://wiki.luajit.org/Optimizations\#1-D-Snapshot-Compression}).}
+The approach of not creating snapshots at all for every guard is
 orthogonal to the resume data compression presented in this paper and could be
 reused within RPython to improve the memory usage further.
 
