@@ -63,8 +63,8 @@ GC h_tid field.)
 - ``h_possibly_outdated`` is used as an optimization: it means that the
   object is possibly outdated.  It is False for all local objects.  It
   is also False if the object is a global object, is the most recent of
-  its chained list of versions, and is known to have no ``global2local``
-  entry in any transaction.
+  its chained list of versions, and is known to have no
+  ``global_to_local`` entry in any transaction.
 
 - ``h_written`` is set on local objects that have been written to.
 
@@ -76,7 +76,7 @@ Every CPU is either running one transaction, or is busy trying to commit
 the transaction it has so far.  The following data is transaction-local:
 
 - start_time
-- global2local
+- global_to_local
 - list_of_read_objects
 - recent_reads_cache
 
@@ -85,8 +85,8 @@ reads and writes done so far in the transaction appear consistent with
 the state at time ``start_time``.  The "time" is a single global number
 that is atomically incremented whenever a transaction commits.
 
-``global2local`` is a dictionary-like mapping of global objects to their
-corresponding local objects.
+``global_to_local`` is a dictionary-like mapping of global objects to
+their corresponding local objects.
 
 ``list_of_read_objects`` is a set of all global objects read from, in
 the version that was used for reading.  It is actually implemented as a
@@ -133,14 +133,14 @@ the most recent version ``R``.  Then it checks the version number of
 ``R`` to see that it was not created after ``start_time``.
 Pseudo-code::
 
-    def LatestGlobalVersion(G):
+    def LatestGlobalVersion(G, ...):
         R = G
         while (v := R->h_version) & 1:    # "has a more recent version"
             R = v & ~ 1
         if v > start_time:                # object too recent?
             ValidateFast()                # try to move start_time forward
             return LatestGlobalVersion(G) # restart searching from G
-        PossiblyUpdateChain(G)
+        PossiblyUpdateChain(G, R, ...)    # see below
         return R
 
 
@@ -150,17 +150,17 @@ It takes a random pointer ``P`` and returns a possibly different pointer
 remains valid for read access until either the current transaction ends,
 or until a write into the same object is done.  Pseudo-code::
 
-    def DirectReadBarrier(P):
-        if not P->h_global:         # fast-path
+    def DirectReadBarrier(P, ...):
+        if not P->h_global:                    # fast-path
             return P
         if not P->h_possibly_outdated:
             R = P
         else:
-            R = LatestGlobalVersion(P)
-            if R->h_possibly_outdated and R in global2local:
-                L = global2local[R]
+            R = LatestGlobalVersion(P, ...)
+            if R->h_possibly_outdated and R in global_to_local:
+                L = ReadGlobalToLocal(R, ...)  # see below
                 return L
-        R = AddInReadSet(R)         # see below
+        R = AddInReadSet(R)                    # see below
         return R
 
 
@@ -170,13 +170,13 @@ running, but we could have written to ``R`` in the meantime, then we
 need to repeat only part of the logic, because we don't need
 ``AddInReadSet`` again.  It gives this::
 
-    def RepeatReadBarrier(R):
-        if not R->h_possibly_outdated:   # fast-path
+    def RepeatReadBarrier(R, ...):
+        if not R->h_possibly_outdated:       # fast-path
             return R
         # LatestGlobalVersion(R) would either return R or abort
         # the whole transaction, so omitting it is not wrong
-        if R in global2local:
-            L = global2local[R]
+        if R in global_to_local:
+            L = ReadGlobalToLocal(R, ...)    # see below
             return L
         return R
 
@@ -185,15 +185,15 @@ need to repeat only part of the logic, because we don't need
 global object and returns a corresponding pointer to a local object::
 
     def Localize(R):
-        if R in global2local:
-            return global2local[R]
+        if R in global_to_local:
+            return global_to_local[R]
         L = malloc(sizeof R)
         L->h_global = False
         L->h_possibly_outdated = False
         L->h_written = False
         L->h_version = R          # back-reference to the original
         L->objectbody... = R->objectbody...
-        global2local[R] = L
+        global_to_local[R] = L
         return L
 
 
@@ -239,6 +239,11 @@ completely avoid triggering the read barrier's implementation.  So
 occasionally, it is better to *localize* global objects even when they
 are only read from.
 
+The idea of localization is to break the strict rule that, as long as we
+don't write anything, we can only find more global objects starting from
+a global object.  This is relaxed here by occasionally making a local
+copy even though we don't write to the object.
+
 This is done by tweaking ``AddInReadSet``, whose main purpose is to
 record the read object in a set (actually a list)::
 
@@ -258,3 +263,44 @@ record the read object in a set (actually a list)::
             else:
                 L = Localize(R) 
                 return L
+
+
+Note that the localized objects are just copies of the global objects.
+So all the pointers they normally contain are pointers to further global
+objects.  If we have a data structure involving a number of objects,
+when traversing it we are going to fetch global pointers out of
+localized objects, and we still need read barriers to go from the global
+objects to the next local objects.
+
+To get the most out of the optimization above, we also need to "fix"
+local objects to change their pointers to go directly to further
+local objects.
+
+So ``L = ReadGlobalToLocal(R, R_Container, FieldName)`` is called with
+optionally ``R_Container`` and ``FieldName`` referencing some
+container's field out of which ``R`` was read::
+
+    def ReadGlobalToLocal(R, R_Container, FieldName):
+        L = global_to_local[R]
+        if not R_Container->h_global:
+            L_Container = R_Container
+            L_Container->FieldName = L     # fix in-place
+        return L
+
+
+Finally, a similar optimization can be applied in
+``LatestGlobalVersion``.  After it follows the chain of global versions,
+it can "compress" that chain in case it contained several hops, and also
+update the original container's field to point directly to the latest
+version::
+
+    def PossiblyUpdateChain(G, R, R_Container, FieldName):
+        if R != G:
+            # compress the chain
+            while G->h_version != R | 1:
+                G_next = G->h_version & ~ 1
+                G->h_version = R | 1
+                G = G_next
+            # update the original field
+            R_Container->FieldName = R
+
