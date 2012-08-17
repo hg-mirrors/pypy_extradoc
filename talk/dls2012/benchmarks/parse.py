@@ -52,7 +52,9 @@ def main(name):
                 else:
                     res.setdefault(bench, {})[interp] = float(rest)
     resmat = np.zeros((len(res), len(order)))
-    for i, key in enumerate(sorted(res.keys())):
+    benchmarks = res.keys()
+    benchmarks.sort()
+    for i, key in enumerate(benchmarks):
         sys.stdout.write(key)
         for j, ord in enumerate(order):
             try:
@@ -72,7 +74,7 @@ def main(name):
         print "\hline"
 
     width = 0.8 / sum(1 for l in labels if l)
-    x = np.array(range(len(res)))
+    x = np.array(range(len(res))[::-1])
     plt.figure(figsize=(10, 15))
     #plt.subplot(111).set_xscale("log")
     r = plt.plot([1, 1], [0, len(res)+0.5], 'k--')
@@ -80,11 +82,13 @@ def main(name):
     for i, l  in enumerate(labels):
         if not l:
             continue
-        r = plt.barh(x + i*width + 0.3/2, resmat[:,i]/resmat[:,-1], width,
-                     color='bgrcmykw'[i])
-        legend[0].insert(0, r[0])
-        legend[1].insert(0, l)
-    plt.yticks(x + 0.5 + width, sorted(res.keys()))
+        bottoms = x + (len(labels) - 1 - i) * width + 0.3/2
+        print bottoms
+        r = plt.barh(bottoms, resmat[:,i][::-1]/resmat[:,-1][::-1], width,
+                     color=str(1. / (len(labels) - 1) * i))
+        legend[0].append(r[0])
+        legend[1].append(l)
+    plt.yticks(x + 0.5 + width, benchmarks)
     plt.subplots_adjust(left=0.35, right=0.95, top=0.99, bottom=0.02)
     plt.legend(*legend)
     plt.ylim((0, len(res)+0.5))
