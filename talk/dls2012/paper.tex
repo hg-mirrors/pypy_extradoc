@@ -124,7 +124,7 @@
 \maketitle
 
 \begin{abstract}
-One of the nice properties of a tracing JIT is that many of its optimizations
+One of the nice properties of a tracing just-in-time compiler (JIT) is that many of its optimizations
 are simple, requiring one forward pass only. This is not true for loop-invariant code
 motion which is a very important optimization for code with tight kernels.
 Especially for dynamic languages that typically perform quite a lot of loop invariant
@@ -160,7 +160,7 @@ by moving those operations out of the loop. We explain a simple scheme
 to make a tracing JIT loop-aware by allowing it's existing optimizations to
 perform loop invariant code motion. 
 
-One of the advantages that tracing JIT compilers have above traditional
+One of the advantages that tracing just-in-time compilers (JITs) have above traditional
 method-based
 JITs is that their optimizers are much easier to write. Because a tracing JIT
 produces only linear pieces of code without control flow joins, many
@@ -212,7 +212,7 @@ dynamic languages efficiently~\cite{rigo_pypys_2006}. When implementing a
 language with PyPy, one writes an interpreter for the language in RPython~\cite{ancona_rpython:_2007}.
 RPython (``Restricted Python``) is a subset
 of Python chosen in such a way that it can be efficiently translated to a
-C-based VM by performing type inference.
+C-based virtual machine (VM) by performing type inference.
 
 Many low-level aspects of the final VM are not contained within the interpreter
 implementation but are inserted during translation to C. Examples for this are a
