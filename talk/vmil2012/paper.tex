@@ -119,9 +119,9 @@ inserting operations called guards at points of possible divergence. These
 operations occur frequently in generated traces and therefore it is important to
 design and implement them carefully to find the right trade-off between
 execution speed, deoptimization,
-and memory overhead.  In this paper we describe the design decisions about
-guards taken in the implementation of the RPython tracing JIT. Furthermore we
-measure various properties of guards.
+and memory overhead. In this paper, we perform an empirical analysis of runtime
+properties of guards. This is used to guide the design of guards in the RPython
+tracing JIT.
 % \o/
 \end{abstract}
 
@@ -141,7 +141,7 @@ provides a tracing JIT compiler geared at dynamic language optimization.
 
 Our aim is to help understand the constraints when implementing guards
 and to describe the concrete techniques used in the various layers of RPython's
-tracing JIT. All design decisions will be motivated by concrete numbers for the
+tracing JIT. All design decisions are be motivated by an empirical analysis of the
 frequency and the overhead related to guards.
 
 It is important to handle guards well, because they are very common operations
