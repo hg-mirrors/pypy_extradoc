@@ -23,7 +23,7 @@ def main(name):
     interp = None
     res = {}
     order = ['python2.7', 'pypy --jit enable_opts=intbounds:rewrite:virtualize:string:earlyforce:pure:heap:ffi', 'pypy', 'luajit -O-loop', 'luajit', 'gcc -O3 -march=native -fno-tree-vectorize']
-    labels = ['CPython', 'PyPy no LP', 'PyPy', 'LuaJIT no LP', 'LuaJIT', 'gcc -O3']
+    labels = [None, 'PyPy no LP', 'PyPy', 'LuaJIT no LP', 'LuaJIT', None]
     with open(name) as f:
         for line in f:
             line = line.strip("\n")
@@ -60,19 +60,23 @@ def main(name):
         sys.stdout.write('\\\\\n')
         print "\hline"
 
-    width = 0.7 / resmat.shape[1]
+    width = 0.8 / sum(1 for l in labels if l)
     x = np.array(range(len(res)))
     plt.figure(figsize=(10, 15))
-    plt.subplot(111).set_xscale("log")
-    legend = ([], [])
+    #plt.subplot(111).set_xscale("log")
+    r = plt.plot([1, 1], [0, len(res)+0.5], 'k--')
+    legend = ([r[0]], ['gcc -O3'])
     for i, l  in enumerate(labels):
+        if not l:
+            continue
         r = plt.barh(x + i*width + 0.3/2, resmat[:,i]/resmat[:,-1], width,
                      color='bgrcmykw'[i])
-        legend[0].append(r[0])
-        legend[1].append(l)
-    plt.yticks(x + 0.5, sorted(res.keys()))
+        legend[0].insert(0, r[0])
+        legend[1].insert(0, l)
+    plt.yticks(x + 0.5 + width, sorted(res.keys()))
     plt.subplots_adjust(left=0.35, right=0.95, top=0.9, bottom=0.1)
     plt.legend(*legend)
+    plt.ylim((0, len(res)+0.5))
     #plt.show()
     plt.savefig('result.pdf')
 
