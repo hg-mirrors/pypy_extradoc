@@ -875,6 +875,7 @@ jump($L_1$, $p_{0}$, $i_{3}$, $i_8$)
 
 
 \section{Benchmarks}
+\label{sec:benchmarks}
 
 The loop peeling optimization was implemented in RPython's tracing JIT
 in about 450 lines of RPython code. That means that the JIT-compilers generated for all
@@ -950,11 +951,8 @@ sqrt(Fix16) & 463.46 & 5.12 $\pm$ 0.005 & 2.96 $\pm$ 0.007 & - & - & 1.34 $\pm$ 
 }
 \end{center}
 \label{fig:benchmarks}
-\caption{Benchmark results in seconds with 95\% confidence intervals. Arrays of length $10^5$ and
-  $10^6$ and matrices of size $1000\times 1000$ and $1000000 \times
-  3$ are used. The one used in each benchmark is indicated in
-  the leftmost column. For the matrices, only the number of rows are
-  specified.} 
+\caption{Benchmark results in seconds with 95\% confidence intervals. The leftmost column gives the
+name of each benchmark and the values of the benchmark parameters used. The different benchmarks and the meaning of their parameters are described in Section~\ref{sec:benchmarks}.}
 \end{figure*}
 
 The Python interpreter of the RPython framework is a complete Python
