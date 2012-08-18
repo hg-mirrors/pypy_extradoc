@@ -439,8 +439,12 @@ field; it does not involve OS-specific thread locks::
     def AcquireLocks(cur_time):
         new_revision = cur_time + 1     # make an odd number
         for (R, L) in global_to_local:
-            L->h_revision = new_revision
             L->h_global = True
+            if not L->h_written:
+                #L->h_revision already points to R
+                L->h_possibly_outdated = True
+                continue
+            L->h_revision = new_revision
             L->h_written = False
             assert L->h_possibly_outdated == False
             v = R->h_revision
@@ -450,7 +454,11 @@ field; it does not involve OS-specific thread locks::
                 AbortTransaction()  # already locked by someone else
             if not CMPXCHG(&R->h_revision, v, -1):
                 AbortTransaction()  # just changed by someone else
-            locks_to_cancel.add(R, v)
+            locks_acquired.add(R, L, v)
+
+(Note that for non-written local objects, we skip this locking entirely;
+instead, we turn the object into a "global but outdated" object, keeping
+the same ``h_revision`` but with a different meaning.)
 
 We use CMPXCHG to store the lock.  This is required, because we must
 not conflict with another CPU that would try to write the same lock
@@ -469,7 +477,7 @@ locks::
 
     def AcquireLocksAgain(cur_time):
         new_revision = cur_time + 1
-        for (R, L) in global_to_local:
+        for (R, L, v) in locks_acquired:
             L->h_revision = new_revision
 
 
@@ -478,7 +486,7 @@ is done by writing back the original timestamps in the ``h_revision``
 fields::
 
     def AbortTransaction():
-        for R, v in locks_to_cancel:
+        for R, L, v in locks_acquired:
             R->h_revision = v
         # call longjmp(), which is the function from C
         # going back to the transaction start
@@ -491,5 +499,5 @@ pointer to the previously-local object, thus increasing the length of
 the chained list by one::
 
     def UpdateChainHeads():
-        for (R, L) in global_to_local:
+        for (R, L, v) in locks_acquired:
             R->h_version = L
