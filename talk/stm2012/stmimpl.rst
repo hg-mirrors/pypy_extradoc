@@ -182,7 +182,9 @@ Pseudo-code::
         while not (v := R->h_revision) & 1:# "is a pointer", i.e.
             R = v                          #   "has a more recent revision"
         if v > start_time:                 # object too recent?
-            Validate(global_cur_time)      # try to move start_time forward
+            t = global_cur_time            # read global current time
+            Validate()                     # try to move start_time forward
+            start_time = t                 # update start_time
             return LatestGlobalRevision(R) # restart searching from R
         PossiblyUpdateChain(G, R, ...)     # see below
         return R
@@ -361,16 +363,14 @@ value are all interchangeable as far as correctness goes.
 Validation
 ------------------------------------
 
-``Validate(cur_time)`` is called during a transaction to update
+``Validate`` is called during a transaction to update
 ``start_time``, as well as during committing.  It makes sure that none
-of the read objects have been modified between ``start_time`` and the
-new current time, ``cur_time``::
+of the read objects have been modified since ``start_time``::
 
-    def Validate(cur_time):
+    def Validate():
         for R in list_of_read_objects:
             if not (R->h_revision & 1): # "is a pointer", i.e.
                 AbortTransaction()      #   "has a more recent revision"
-        start_time = cur_time
 
 Note that if such an object is modified by another commit, then this
 transaction will eventually fail --- the next time ``Validate`` is
@@ -416,7 +416,7 @@ In pseudo-code::
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
             AcquireLocksAgain(cur_time)
-        Validate(cur_time)
+        Validate()
         UpdateChainHeads()
 
 Note the general style of usage of CMPXCHG: we first read normally the
@@ -446,7 +446,7 @@ field; it does not involve OS-specific thread locks::
                 continue
             L->h_revision = new_revision
             L->h_written = False
-            assert L->h_possibly_outdated == False
+            #L->h_possibly_outdated is already False
             v = R->h_revision
             if not (v & 1):         # "is a pointer", i.e.
                 AbortTransaction()  #   "has a more recent revision"
