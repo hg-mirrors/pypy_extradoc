@@ -50,7 +50,7 @@ compare-and-exchange operation.
 Object header
 -------------
 
-Every object starts with three fields:
+Every object has a header with these fields:
 
 - h_global (boolean)
 - h_possibly_outdated (boolean)
@@ -92,11 +92,12 @@ the transaction it has so far.  The following data is transaction-local:
 - global_to_local
 - list_of_read_objects
 - recent_reads_cache
+- my_lock
 
 The ``start_time`` is the "time" at which the transaction started.  All
 reads and writes done so far in the transaction appear consistent with
-the state at time ``start_time``.  The "time" is a single global number
-that is atomically incremented whenever a transaction commits.
+the state at time ``start_time``.  The global "time" is a single global
+number that is atomically incremented whenever a transaction commits.
 
 ``global_to_local`` is a dictionary-like mapping of global objects to
 their corresponding local objects.
@@ -108,6 +109,9 @@ list, but the order or repetition of elements in the list is irrelevant.
 ``recent_reads_cache`` is a fixed-size cache that remembers recent
 additions to the preceeding list, in order to avoid inserting too much
 repeated entries into the list, as well as keep lightweight statistics.
+
+``my_lock`` is a constant in each thread: it is a very large (>= LOCKED)
+odd number that identifies the thread in which the transaction runs.
 
 
 Read/write barriers design
@@ -182,9 +186,7 @@ Pseudo-code::
         while not (v := R->h_revision) & 1:# "is a pointer", i.e.
             R = v                          #   "has a more recent revision"
         if v > start_time:                 # object too recent?
-            t = global_cur_time            # read global current time
-            Validate()                     # try to move start_time forward
-            start_time = t                 # update start_time
+            ValidateDuringTransaction()    # try to move start_time forward
             return LatestGlobalRevision(R) # restart searching from R
         PossiblyUpdateChain(G, R, ...)     # see below
         return R
@@ -219,7 +221,7 @@ don't need ``AddInReadSet`` again.  It gives this::
     def RepeatReadBarrier(O, ...):
         if not O->h_possibly_outdated:       # fast-path
             return O
-        # LatestGlobalRevision(R) would either return R or abort
+        # LatestGlobalRevision(O) would either return O or abort
         # the whole transaction, so omitting it is not wrong
         if O in global_to_local:
             L = ReadGlobalToLocal(O, ...)    # see below
@@ -259,7 +261,7 @@ two versions of the write barrier::
         R->h_possibly_outdated = True
         return W
 
-    def WriteBarrierFromReadReady(P):
+    def WriteBarrierFromReadReady(R):
         if not R->h_global:       # fast-path
             return R
         W = Localize(R)
@@ -363,24 +365,33 @@ value are all interchangeable as far as correctness goes.
 Validation
 ------------------------------------
 
-``Validate`` is called during a transaction to update
-``start_time``, as well as during committing.  It makes sure that none
-of the read objects have been modified since ``start_time``::
+``ValidateDuringTransaction`` is called during a transaction to update
+``start_time``.  It makes sure that none of the read objects have been
+modified since ``start_time``::
 
-    def Validate():
+    def ValidateDuringTransaction():
+        start_time = global_cur_time    # copy from the global time
         for R in list_of_read_objects:
             if not (R->h_revision & 1): # "is a pointer", i.e.
                 AbortTransaction()      #   "has a more recent revision"
 
-Note that if such an object is modified by another commit, then this
-transaction will eventually fail --- the next time ``Validate`` is
-called, which may be during our own attempt to commit.  But
-``LatestGlobalRevision`` also calls ``Validate`` whenever it sees an
-object more recent than ``start_time``.  It is never possible that new
-object revisions may be added by other CPUs with a time lower than or
-equal to ``start_time``.  So this guarantees consistency: the program
-will never see during the same transaction two different versions of the
-same object.
+If such an object is modified by another commit, then this transaction
+will eventually fail --- hopefully, the next time
+``ValidateDuringTransaction`` is called.
+
+The last detection for inconsistency is during commit, when
+``ValidateDuringCommit`` is called.  It is a slightly more complex
+version than ``ValidateDuringTransaction`` because it has to handle
+"locks" correctly::
+
+    def ValidateDuringCommit():
+        for R in list_of_read_objects:
+            v = R->h_revision
+            if not (v & 1):            # "is a pointer", i.e.
+                AbortTransaction()     #   "has a more recent revision"
+            if v >= LOCKED:            # locked
+                if v != my_lock:       # and not by me
+                    spin loop retry    # jump back to the "v = ..." line
 
 
 Committing
@@ -416,7 +427,7 @@ In pseudo-code::
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
             AcquireLocksAgain(cur_time)
-        Validate()
+        ValidateDuringCommit()
         UpdateChainHeads()
 
 Note the general style of usage of CMPXCHG: we first read normally the
@@ -433,8 +444,8 @@ use CMPXCHG, so that after a successful CMPXCHG the other CPUs are
 guaranteed to see the new values --- both the locks and the
 previously-local objects with the proper fixes.
 
-Note that "locking" here only means writing a -1 in the ``h_revision``
-field; it does not involve OS-specific thread locks::
+Note that "locking" here only means writing a value >= LOCKED in the
+``h_revision`` field; it does not involve OS-specific thread locks::
 
     def AcquireLocks(cur_time):
         new_revision = cur_time + 1     # make an odd number
@@ -450,10 +461,10 @@ field; it does not involve OS-specific thread locks::
             v = R->h_revision
             if not (v & 1):         # "is a pointer", i.e.
                 AbortTransaction()  #   "has a more recent revision"
-            if v == -1:
-                AbortTransaction()  # already locked by someone else
-            if not CMPXCHG(&R->h_revision, v, -1):
-                AbortTransaction()  # just changed by someone else
+            if v >= LOCKED:         # already locked by someone else
+                spin loop retry     # jump back to the "v = ..." line
+            if not CMPXCHG(&R->h_revision, v, my_lock):
+                spin loop retry     # jump back to the "v = ..." line
             locks_acquired.add(R, L, v)
 
 (Note that for non-written local objects, we skip this locking entirely;
@@ -464,11 +475,11 @@ We use CMPXCHG to store the lock.  This is required, because we must
 not conflict with another CPU that would try to write the same lock
 in the same field --- in that case, only one CPU can succeed.
 
-The lock's value is more precisely the *unsigned* equivalent of -1, i.e.
-the largest integer.  It is also an odd number.  As we can check, this
-is enough to cause ``LatestGlobalRevision`` to spin loop, calling
-``Validate`` over and over again, until the lock is released (i.e.
-another value is written in ``h_revision``).
+The lock's value ``my_lock`` is, precisely, a very large odd number, at
+least LOCKED (which should be some value like 0xFFFF0000).  As we can
+check, this is enough to cause ``LatestGlobalRevision`` to spin loop,
+calling ``ValidateDuringTransaction`` over and over again, until the
+lock is released (i.e.  another value is written in ``h_revision``).
 
 ``AcquireLocksAgain`` is called instead of ``AcquireLocks`` if the first
 CMPXCHG fails in ``CommitTransaction``.  It just needs to update the
