@@ -250,7 +250,7 @@ global object and returns a corresponding pointer to a local object::
 two versions of the write barrier::
 
     def WriteBarrier(P):
-        if not P->h_global:       # fast-path
+        if P->h_written:          # fast-path
             return P
         if P->h_possibly_outdated:
             R = LatestGlobalRevision(P)
@@ -262,7 +262,7 @@ two versions of the write barrier::
         return W
 
     def WriteBarrierFromReadReady(R):
-        if not R->h_global:       # fast-path
+        if R->h_written:          # fast-path
             return R
         W = Localize(R)
         W->h_written = True
