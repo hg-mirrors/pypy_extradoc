@@ -252,11 +252,15 @@ two versions of the write barrier::
     def WriteBarrier(P):
         if P->h_written:          # fast-path
             return P
-        if P->h_possibly_outdated:
-            R = LatestGlobalRevision(P)
+        if not P->h_global:
+            W = P
+            R = W->h_revision
         else:
-            R = P
-        W = Localize(R)
+            if P->h_possibly_outdated:
+                R = LatestGlobalRevision(P)
+            else:
+                R = P
+            W = Localize(R)
         W->h_written = True
         R->h_possibly_outdated = True
         return W
@@ -264,7 +268,11 @@ two versions of the write barrier::
     def WriteBarrierFromReadReady(R):
         if R->h_written:          # fast-path
             return R
-        W = Localize(R)
+        if not R->h_global:
+            W = R
+            R = W->h_revision
+        else:
+            W = Localize(R)
         W->h_written = True
         R->h_possibly_outdated = True
         return W
