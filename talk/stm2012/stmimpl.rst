@@ -502,13 +502,22 @@ the chained list by one::
             L->h_written = False
             #L->h_possibly_outdated is already False
             L->h_revision = new_revision
-            smp_wb()
-            R->h_version = L
+            smp_wmb()
+            R->h_revision = L
 
-``smp_wb`` means "make sure the compiler doesn't reorder the previous
-writes after the succeeding writes".  On x86 it is just a "compiler
-fence".  On non-x86 CPUs, it is actually a real CPU instruction, needed
-because the CPU doesn't send to main memory the writes in the original
-program order.  In that case, this can be more efficiently done by
-splitting the loop in two: first update all local objects, then do only
-one ``smp_wb``, and then update all ``R->h_version``.
+``smp_wmb`` is a "write memory barrier": it means "make sure the
+previous writes are sent to the main memory before the succeeding
+writes".  On x86 it is just a "compiler fence", preventing the compiler
+from doing optimizations that would move ``R->h_revision`` earlier.  On
+non-x86 CPUs, it is actually a real CPU instruction, needed because the
+CPU doesn't normally send to main memory the writes in the original
+program order.  (In that situation, it could be more efficiently done by
+splitting the loop in two: first update all local objects, then only do
+one ``smp_wmb``, and then update all the ``R->h_revision`` fields.)
+
+Note that the Linux documentation pushes forward the need to pair
+``smp_wmb`` with either ``smp_read_barrier_depends`` or ``smp_rmb``.  In
+our case we would need an ``smp_read_barrier_depends`` in
+``LatestGlobalRevision``, in the loop.  It was omitted here because this
+is always a no-op (i.e. the CPUs always provide this effect for us), not
+only on x86 but on all modern CPUs.
