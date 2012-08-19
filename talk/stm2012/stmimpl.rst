@@ -397,24 +397,24 @@ version than ``ValidateDuringTransaction`` because it has to handle
 Committing
 ------------------------------------
 
-Committing is a four-steps process:
+Committing is a five-steps process:
 
-1. We first find all global objects that we have written to, and mark
-them "locked" by putting in their ``h_revision`` field a special value
-that will cause parallel CPUs to spin loop in ``LatestGlobalRevision``.
-We also prepare the local versions of these objects to become the next
-head of the chained lists, by fixing the headers.
+1. We first find all global objects with a local copy that has been
+written to, and mark them "locked" by putting in their ``h_revision``
+field a special value that will cause parallel CPUs to spin loop in
+``LatestGlobalRevision``.
 
-2. We atomically increase the global time (with LOCK CMPXCHG).  This
-causes a MFENCE too: all prepared local objects are visible to all other
-CPUs afterwards.
+2. We atomically increase the global time (with LOCK CMPXCHG).
 
-3. We check again that all read objects are still up-to-date, i.e. have
+3. We prepare the local versions of the global modified objects to
+become the next head of the chained lists, by fixing the headers.
+
+4. We check again that all read objects are still up-to-date, i.e. have
 not been replaced by a revision more recent than ``start_time``.  (This
 is the last chance to abort a conflicting transaction; if we do, we have
 to remember to release the locks.)
 
-4. Finally, we unlock the global objects by overriding their
+5. Finally, we unlock the global objects by overriding their
 ``h_revision``.  We put there now a pointer to the corresponding
 previously-local object.  The previously-local object plays from now on
 the role of the global head of the chained list.
@@ -422,42 +422,33 @@ the role of the global head of the chained list.
 In pseudo-code::
 
     def CommitTransaction():
+        AcquireLocks()
         cur_time = global_cur_time
-        AcquireLocks(cur_time)
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
-            AcquireLocksAgain(cur_time)
+        FixHeadersOfLocalModified(cur_time)
         ValidateDuringCommit()
         UpdateChainHeads()
 
 Note the general style of usage of CMPXCHG: we first read normally the
-current version of some data (here ``global_cur_time``), do some
-preparations based on this value (here ``AcquireLocks``), and then do
-the expensive CMPXCHG operation.  It checks atomically if the value 
-of the data is still equal to the old value; if yes, it replaces it
-with a new specified value and returns True; otherwise, it simply
-returns False.  In the latter case we just loop again.
+current version of some data (here ``global_cur_time``), and then do the
+expensive CMPXCHG operation.  It checks atomically if the value of the
+data is still equal to the old value; if yes, it replaces it with a new
+specified value and returns True; otherwise, it simply returns False.
+In the latter case we just loop again.  (A simple case like this could
+also be done with XADD, with a locked increment-by-two.)
 
-Here is ``AcquireLocks``, doing both the locking of the global objects
-and the fixing of the local objects.  This is done together *before* we
-use CMPXCHG, so that after a successful CMPXCHG the other CPUs are
-guaranteed to see the new values --- both the locks and the
-previously-local objects with the proper fixes.
-
-Note that "locking" here only means writing a value >= LOCKED in the
+Here is ``AcquireLocks``, locking the global objects.  Note that
+"locking" here only means writing a value >= LOCKED in the
 ``h_revision`` field; it does not involve OS-specific thread locks::
 
-    def AcquireLocks(cur_time):
-        new_revision = cur_time + 1     # make an odd number
+    def AcquireLocks():
         for (R, L) in global_to_local:
-            L->h_global = True
             if not L->h_written:
+                L->h_global = True
                 #L->h_revision already points to R
                 L->h_possibly_outdated = True
                 continue
-            L->h_revision = new_revision
-            L->h_written = False
-            #L->h_possibly_outdated is already False
             v = R->h_revision
             if not (v & 1):         # "is a pointer", i.e.
                 AbortTransaction()  #   "has a more recent revision"
@@ -471,9 +462,13 @@ Note that "locking" here only means writing a value >= LOCKED in the
 instead, we turn the object into a "global but outdated" object, keeping
 the same ``h_revision`` but with a different meaning.)
 
-We use CMPXCHG to store the lock.  This is required, because we must
-not conflict with another CPU that would try to write the same lock
-in the same field --- in that case, only one CPU can succeed.
+We use CMPXCHG to store the lock.  This is required, because we must not
+conflict with another CPU that would try to write its own lock in the
+same field --- in that case, only one CPU can succeed.  The order of
+enumeration of ``global_to_local`` must be the same one --- for example,
+following the numeric order of ``R``.  This is needed to avoid
+deadlocks.  Alternatively we could consider this case rare, and abort
+instead of waiting.
 
 The lock's value ``my_lock`` is, precisely, a very large odd number, at
 least LOCKED (which should be some value like 0xFFFF0000).  As we can
@@ -481,20 +476,24 @@ check, this is enough to cause ``LatestGlobalRevision`` to spin loop,
 calling ``ValidateDuringTransaction`` over and over again, until the
 lock is released (i.e.  another value is written in ``h_revision``).
 
-``AcquireLocksAgain`` is called instead of ``AcquireLocks`` if the first
-CMPXCHG fails in ``CommitTransaction``.  It just needs to update the
-previously-local object's ``h_revision``, keeping the already-acquired
-locks::
 
-    def AcquireLocksAgain(cur_time):
-        new_revision = cur_time + 1
+After this, ``CommitTransaction`` increases the global time and then
+calls ``FixHeadersOfLocalModified`` to adjust the local object's
+headers::
+
+    def FixHeadersOfLocalModified(cur_time):
+        new_revision = cur_time + 1     # make an odd number
         for (R, L, v) in locks_acquired:
+            L->h_global = True
+            L->h_written = False
+            #L->h_possibly_outdated is already False
             L->h_revision = new_revision
 
 
-In case ``AbortTransaction`` is called, it must release the locks.  This
-is done by writing back the original timestamps in the ``h_revision``
-fields::
+Then we call ``ValidateDuringCommit`` defined above.  It may still
+abort.  In case ``AbortTransaction`` is called, it must release the
+locks.  This is done by writing back the original timestamps in the
+``h_revision`` fields::
 
     def AbortTransaction():
         for R, L, v in locks_acquired:
