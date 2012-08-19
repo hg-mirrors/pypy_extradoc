@@ -426,9 +426,8 @@ In pseudo-code::
         cur_time = global_cur_time
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
-        FixHeadersOfLocalModified(cur_time)
         ValidateDuringCommit()
-        UpdateChainHeads()
+        UpdateChainHeads(cur_time)
 
 Note the general style of usage of CMPXCHG: we first read normally the
 current version of some data (here ``global_cur_time``), and then do the
@@ -478,22 +477,10 @@ lock is released (i.e.  another value is written in ``h_revision``).
 
 
 After this, ``CommitTransaction`` increases the global time and then
-calls ``FixHeadersOfLocalModified`` to adjust the local object's
-headers::
-
-    def FixHeadersOfLocalModified(cur_time):
-        new_revision = cur_time + 1     # make an odd number
-        for (R, L, v) in locks_acquired:
-            L->h_global = True
-            L->h_written = False
-            #L->h_possibly_outdated is already False
-            L->h_revision = new_revision
-
-
-Then we call ``ValidateDuringCommit`` defined above.  It may still
-abort.  In case ``AbortTransaction`` is called, it must release the
-locks.  This is done by writing back the original timestamps in the
-``h_revision`` fields::
+calls ``ValidateDuringCommit`` defined above.  It may still abort.  In
+case ``AbortTransaction`` is called, it must release the locks.  This is
+done by writing back the original timestamps in the ``h_revision``
+fields::
 
     def AbortTransaction():
         for R, L, v in locks_acquired:
@@ -508,6 +495,20 @@ releases the locks --- but it does so by writing in ``h_revision`` a
 pointer to the previously-local object, thus increasing the length of
 the chained list by one::
 
-    def UpdateChainHeads():
+    def UpdateChainHeads(cur_time):
+        new_revision = cur_time + 1     # make an odd number
         for (R, L, v) in locks_acquired:
+            L->h_global = True
+            L->h_written = False
+            #L->h_possibly_outdated is already False
+            L->h_revision = new_revision
+            smp_wb()
             R->h_version = L
+
+``smp_wb`` means "make sure the compiler doesn't reorder the previous
+writes after the succeeding writes".  On x86 it is just a "compiler
+fence".  On non-x86 CPUs, it is actually a real CPU instruction, needed
+because the CPU doesn't send to main memory the writes in the original
+program order.  In that case, this can be more efficiently done by
+splitting the loop in two: first update all local objects, then do only
+one ``smp_wb``, and then update all ``R->h_version``.
