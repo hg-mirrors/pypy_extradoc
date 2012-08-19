@@ -405,7 +405,7 @@ of this explanation we will always assume that it aborts.
 Committing
 ------------------------------------
 
-Committing is a five-steps process:
+Committing is a four-steps process:
 
 1. We first find all global objects with a local copy that has been
 written to, and mark them "locked" by putting in their ``h_revision``
@@ -414,18 +414,16 @@ field a special value that will cause parallel CPUs to spin loop in
 
 2. We atomically increase the global time (with LOCK CMPXCHG).
 
-3. We prepare the local versions of the global modified objects to
-become the next head of the chained lists, by fixing the headers.
-
-4. We check again that all read objects are still up-to-date, i.e. have
+3. We check again that all read objects are still up-to-date, i.e. have
 not been replaced by a revision more recent than ``start_time``.  (This
 is the last chance to abort a conflicting transaction; if we do, we have
 to remember to release the locks.)
 
-5. Finally, we unlock the global objects by overriding their
+4. Finally, we unlock the global objects by overriding their
 ``h_revision``.  We put there now a pointer to the corresponding
-previously-local object.  The previously-local object plays from now on
-the role of the global head of the chained list.
+previously-local object, and the previously-local object's header is
+fixed so that it plays from now on the role of the global head of the
+chained list.
 
 In pseudo-code::
 
