@@ -391,7 +391,15 @@ version than ``ValidateDuringTransaction`` because it has to handle
                 AbortTransaction()     #   "has a more recent revision"
             if v >= LOCKED:            # locked
                 if v != my_lock:       # and not by me
-                    spin loop retry    # jump back to the "v = ..." line
+                    spin loop retry OR # jump back to the "v = ..." line
+                    AbortTransaction() # ...or just abort
+
+The choice of waiting or aborting when encountering a read of a locked
+object needs to be done carefully to avoid deadlocks.  Always aborting
+would be correct, but a bit too restrictive.  Always entering a spin
+loop could lead to deadlocks with two transactions that each locked
+objects from the other's ``list_of_read_objects``.  So for the purposes
+of this explanation we will always assume that it aborts.
 
 
 Committing
@@ -508,12 +516,13 @@ the chained list by one::
 ``smp_wmb`` is a "write memory barrier": it means "make sure the
 previous writes are sent to the main memory before the succeeding
 writes".  On x86 it is just a "compiler fence", preventing the compiler
-from doing optimizations that would move ``R->h_revision`` earlier.  On
-non-x86 CPUs, it is actually a real CPU instruction, needed because the
-CPU doesn't normally send to main memory the writes in the original
-program order.  (In that situation, it could be more efficiently done by
-splitting the loop in two: first update all local objects, then only do
-one ``smp_wmb``, and then update all the ``R->h_revision`` fields.)
+from doing optimizations that would move the assignment to
+``R->h_revision`` earlier.  On non-x86 CPUs, it is actually a real CPU
+instruction, needed because the CPU doesn't normally send to main memory
+the writes in the original program order.  (In that situation, it could
+be more efficiently done by splitting the loop in two: first update all
+local objects, then only do one ``smp_wmb``, and then update all the
+``R->h_revision`` fields.)
 
 Note that the Linux documentation pushes forward the need to pair
 ``smp_wmb`` with either ``smp_read_barrier_depends`` or ``smp_rmb``.  In
