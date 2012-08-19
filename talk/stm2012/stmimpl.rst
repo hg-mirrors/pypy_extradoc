@@ -72,7 +72,7 @@ practice they are just bits inside the GC h_tid field.)
 - ``h_written`` is set on local objects that have been written to.
 
 - ``h_revision`` on local objects points to the global object that they
-  come from, if any; otherwise it is NULL.
+  come from, if any; otherwise it is 1.
 
 - ``h_revision`` on global objects depends on whether the object is the
   head of the chained list of revisions or not.  If it is, then
@@ -157,7 +157,7 @@ The read/write barriers are designed with the following goals in mind:
 
 - All barriers ensure that ``global_to_local`` satisfies the following
   property for any local object ``L``: either ``L`` was created by
-  this transaction (``L->h_revision == 0``) or else satisfies
+  this transaction (``L->h_revision == 1``) or else satisfies
   ``global_to_local[L->h_revision] == L``.
 
 
@@ -171,7 +171,7 @@ Pseudo-code for read/write barriers
         W->h_global = False
         W->h_possibly_outdated = False
         W->h_written = True
-        W->h_revision = 0
+        W->h_revision = 1
         return W
 
 
