@@ -171,7 +171,7 @@ Pseudo-code for read/write barriers
         W->h_global = False
         W->h_possibly_outdated = False
         W->h_written = True
-        W->h_revision = 1
+        W->h_revision = 0
         return W
 
 
@@ -410,12 +410,67 @@ objects from the other's ``list_of_read_objects``.  So for the purposes
 of this explanation we will always assume that it aborts.
 
 
+Local garbage collection
+------------------------------------
+
+Before we can commit, we need the system to perform a "local garbage
+collection" step.  The problem is that recent objects (obtained with
+``Allocate`` during the transaction) must originally have the
+``h_global`` flag set to False, but this must be changed to True before
+the commit is complete.  While we could make a chained list of all such
+objects and change all their ``h_global`` flags now, such an operation
+is wasteful: at least in PyPy, the vast majority of such objects are
+already garbage.
+
+Instead, we describe here the garbage collection mechanism used in PyPy
+(with its STM-specific tweaks).  All newly allocated objects during a
+transaction are obtained from a thread-specific "nursery".  The nursery
+is empty when the transaction starts.  If the nursery fills up during
+the execution of the transaction, a "minor collection" cycle moves the
+surviving objects outside.  All these objects, both from the nursery and
+those moved outside, have the ``h_global`` flag set to False.
+
+At the end of the transaction, we perform a "local collection" cycle.
+The main goal is to make surviving objects non-movable --- they cannot
+live in any thread-local nursery as soon as they are visible from other
+threads.  If they did, we could no longer clear the content of the
+nursery when it fills up later.
+
+The secondary goal of the local collection is to change the header flags
+of all surviving objects: their ``h_global`` is set to True.  As an
+optimization, during this step, all pointers that reference a *local but
+not written to* object are changed to point directly to the original
+global object.
+
+Actual committing occurs after the local collection cycle is complete,
+when *all* reachable objects are ``h_global``.
+
+Hand-wavy pseudo-code::
+
+    def TransactionEnd():
+        FindRootsForLocalCollect()
+        PerformLocalCollect()
+        TransactionCommit()          # see below
+
+    def FindRootsForLocalCollect():
+        for (R, L) in global_to_local:
+            if not L->h_written:     # non-written local objs are dropped
+                #L->h_revision is already R
+                continue
+            roots.add(R, L, 0)       # add 'L' as a root
+
+    def PerformLocalCollect():
+        collect from the roots...
+        for all reached object, change h_global False->True
+        and h_written True->False
+
+
 Committing
 ------------------------------------
 
 Committing is a four-steps process:
 
-1. We first find all global objects with a local copy that has been
+1. We first take all global objects with a local copy that has been
 written to, and mark them "locked" by putting in their ``h_revision``
 field a special value that will cause parallel CPUs to spin loop in
 ``LatestGlobalRevision``.
@@ -456,20 +511,16 @@ Here is ``AcquireLocks``, locking the global objects.  Note that
 ``h_revision`` field; it does not involve OS-specific thread locks::
 
     def AcquireLocks():
-        for (R, L) in global_to_local:
-            if not L->h_written:
-                L->h_global = True
-                #L->h_revision already points to R
-                L->h_possibly_outdated = True
-                continue
+        for (R, L, 0) in roots:
             v = R->h_revision
             if not (v & 1):         # "is a pointer", i.e.
                 AbortTransaction()  #   "has a more recent revision"
             if v >= LOCKED:         # already locked by someone else
-                spin loop retry     # jump back to the "v = ..." line
+                spin loop retry OR  # jump back to the "v = ..." line
+                AbortTransaction()
             if not CMPXCHG(&R->h_revision, v, my_lock):
                 spin loop retry     # jump back to the "v = ..." line
-            locks_acquired.add(R, L, v)
+            save v into the third item in roots, replacing the 0
 
 (Note that for non-written local objects, we skip this locking entirely;
 instead, we turn the object into a "global but outdated" object, keeping
@@ -497,8 +548,9 @@ done by writing back the original timestamps in the ``h_revision``
 fields::
 
     def AbortTransaction():
-        for R, L, v in locks_acquired:
-            R->h_revision = v
+        for (R, L, v) in roots:
+            if v != 0:
+                R->h_revision = v
         # call longjmp(), which is the function from C
         # going back to the transaction start
         longjmp()
@@ -511,12 +563,13 @@ the chained list by one::
 
     def UpdateChainHeads(cur_time):
         new_revision = cur_time + 1     # make an odd number
-        for (R, L, v) in locks_acquired:
-            L->h_global = True
-            L->h_written = False
+        for (R, L, v) in roots:
+            #L->h_global is already True
+            #L->h_written is already False
             #L->h_possibly_outdated is already False
             L->h_revision = new_revision
             smp_wmb()
+            #R->h_possibly_outdated is already True
             R->h_revision = L
 
 ``smp_wmb`` is a "write memory barrier": it means "make sure the
