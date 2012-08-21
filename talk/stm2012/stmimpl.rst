@@ -455,14 +455,17 @@ Hand-wavy pseudo-code::
     def FindRootsForLocalCollect():
         for (R, L) in global_to_local:
             if not L->h_written:     # non-written local objs are dropped
+                L->h_global = True   # (becoming global and outdated -> R)
+                L->h_possibly_outdated = True
                 #L->h_revision is already R
                 continue
-            roots.add(R, L, 0)       # add 'L' as a root
+            gcroots.add(R, L, 0)       # add 'L' as a root
 
     def PerformLocalCollect():
         collect from the roots...
-        for all reached object, change h_global False->True
-        and h_written True->False
+        for all reached local object,
+            change h_global False->True
+            and h_written True->False
 
 
 Committing
@@ -511,7 +514,7 @@ Here is ``AcquireLocks``, locking the global objects.  Note that
 ``h_revision`` field; it does not involve OS-specific thread locks::
 
     def AcquireLocks():
-        for (R, L, 0) in roots:
+        for (R, L, 0) in gcroots:
             v = R->h_revision
             if not (v & 1):         # "is a pointer", i.e.
                 AbortTransaction()  #   "has a more recent revision"
@@ -520,7 +523,7 @@ Here is ``AcquireLocks``, locking the global objects.  Note that
                 AbortTransaction()
             if not CMPXCHG(&R->h_revision, v, my_lock):
                 spin loop retry     # jump back to the "v = ..." line
-            save v into the third item in roots, replacing the 0
+            save v into the third item in gcroots, replacing the 0
 
 (Note that for non-written local objects, we skip this locking entirely;
 instead, we turn the object into a "global but outdated" object, keeping
@@ -548,7 +551,7 @@ done by writing back the original timestamps in the ``h_revision``
 fields::
 
     def AbortTransaction():
-        for (R, L, v) in roots:
+        for (R, L, v) in gcroots:
             if v != 0:
                 R->h_revision = v
         # call longjmp(), which is the function from C
@@ -563,7 +566,7 @@ the chained list by one::
 
     def UpdateChainHeads(cur_time):
         new_revision = cur_time + 1     # make an odd number
-        for (R, L, v) in roots:
+        for (R, L, v) in gcroots:
             #L->h_global is already True
             #L->h_written is already False
             #L->h_possibly_outdated is already False
