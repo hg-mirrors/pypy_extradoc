@@ -14,7 +14,7 @@
    height="258.50427"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.1 r9760"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="overview.svg">
   <sodipodi:namedview
      id="base"
@@ -30,7 +30,7 @@
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1127"
+     inkscape:window-height="1176"
      inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
@@ -287,7 +287,8 @@
          sodipodi:role="line"
          id="tspan7842"
          x="24.218153"
-         y="64.057243">Original Loop:</tspan></text>
+         y="64.057243"
+         style="-inkscape-font-specification:TeXGyreHeros;font-family:TeXGyreHeros;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Original Loop:</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
@@ -298,7 +299,8 @@
          sodipodi:role="line"
          id="tspan7842-5"
          x="209.21815"
-         y="61.914364">After Loop Peeling:</tspan></text>
+         y="61.914364"
+         style="-inkscape-font-specification:TeXGyreHeros;font-family:TeXGyreHeros;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">After Loop Peeling:</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
@@ -309,7 +311,8 @@
          sodipodi:role="line"
          id="tspan7842-5-0"
          x="302.34222"
-         y="102.66729">Preamble</tspan></text>
+         y="102.66729"
+         style="-inkscape-font-specification:TeXGyreHeros;font-family:TeXGyreHeros;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Preamble</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
@@ -320,7 +323,8 @@
          sodipodi:role="line"
          id="tspan7842-5-8"
          x="287.34222"
-         y="232.66733">Peeled Loop</tspan></text>
+         y="232.66733"
+         style="-inkscape-font-specification:TeXGyreHeros;font-family:TeXGyreHeros;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Peeled Loop</tspan></text>
     <rect
        y="90.183556"
        x="209.65353"

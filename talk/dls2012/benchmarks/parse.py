@@ -3,6 +3,13 @@ import pdb, sys
 import numpy as np
 import matplotlib.pyplot as plt
 
+# force type 1 fonts
+import matplotlib
+
+matplotlib.rcParams['ps.useafm'] = True
+matplotlib.rcParams['pdf.use14corefonts'] = True
+matplotlib.rcParams['text.usetex'] = True
+
 NAME_REPL = {
     'dilate3x3(Array2D(1000x1000))': 'dilate3x3(1000,1000)',
     'sobel_magnitude(1000,1000)': 'sobel(1000,1000)',
