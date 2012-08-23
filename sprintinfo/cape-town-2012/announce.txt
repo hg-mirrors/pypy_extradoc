@@ -1,0 +1,53 @@
+PyPy Cape Town Sprint Oct 7th - Oct 21st 2012
+=============================================
+
+The next PyPy sprint will be in Cape Town, South Africa. It is a public sprint, 
+suitable for newcomers. The sprint is hosted after the end of
+`PyCon South Africa`_, which happens on 4th and 5th of October.
+This is a relatively unusual sprint that is hosted
+halfway across the world from where most contributors live, hence we plan
+to spend some time during those 2 weeks doing sprinting and some time doing
+touristy stuff. The goals for the sprint are general progress and whatever
+people are interested in.
+
+.. _`PyCon South Africa`: http://za.pycon.org
+
+Possible topics:
+
+XXX
+
+Location
+--------
+
+The sprint will be either held in the apartment of fijal, which is in
+Tamboerskloof, Cape Town or in the office of Praekelt Foundation, located
+in Woodstock, Cape Town.
+
+Cape Town, as a very touristy place, has tons of accomodation going from
+good to amazing. Depending on the sprint location you might need a car.
+
+
+Good to Know
+------------
+
+XXXX rewrite
+
+Sweden is not part of the Euro zone. One SEK (krona in singular, kronor
+in plural) is roughly 1/10th of a Euro (9.36 SEK to 1 Euro).
+
+The venue is central in Gothenburg.  There is a large selection of
+places to get food nearby, from edible-and-cheap to outstanding.  We
+often cook meals together, so let us know if you have any food allergies,
+dislikes, or special requirements.
+
+Sweden uses the same kind of plugs as Germany. 230V AC.
+
+Who's Coming?
+--------------
+
+If you'd like to come, please let us know when you will be arriving and 
+leaving, as well as letting us know your interests  We'll keep a list
+of `people`_ which we'll update (which you can do so yourself if you
+have bitbucket pypy commit rights).
+
+.. _`people`: https://bitbucket.org/pypy/extradoc/src/tip/sprintinfo/cape-town-2012/people.txt
