@@ -171,7 +171,7 @@ Pseudo-code for read/write barriers
         W->h_global = False
         W->h_possibly_outdated = False
         W->h_written = True
-        W->h_revision = 0
+        W->h_revision = 1
         return W
 
 
@@ -447,10 +447,10 @@ when *all* reachable objects are ``h_global``.
 
 Hand-wavy pseudo-code::
 
-    def TransactionEnd():
+    def FinishTransaction():
         FindRootsForLocalCollect()
         PerformLocalCollect()
-        TransactionCommit()          # see below
+        CommitTransaction()          # see below
 
     def FindRootsForLocalCollect():
         for (R, L) in global_to_local:
