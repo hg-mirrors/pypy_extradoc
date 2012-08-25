@@ -352,7 +352,7 @@ hops, and also update the original container's field to point directly
 to the latest version::
 
     def PossiblyUpdateChain(G, R, R_Container, FieldName):
-        if R != G:
+        if R != G and Rarely():
             # compress the chain
             while G->h_revision != R:
                 G_next = G->h_revision
@@ -368,6 +368,17 @@ updating the same field to possibly different values, it is undefined
 what exactly occurs: other CPUs can see either the original or any of
 the modified values.  It works because the original and each modified
 value are all interchangeable as far as correctness goes.
+
+``Rarely`` uses a thread-local counter to return True only rarely.  We
+do the above update only rarely, rather than always, although it would
+naively seem that doing the update always is a good idea.  The problem
+is that it generates a lot of write traffic to global data that is
+potentially shared between CPUs.  We will need more measurements, but it
+seems that doing it too often causes CPUs to stall.  It is probable that
+updates done by one CPU are sent to other CPUs at high cost, even though
+these updates are not so important in this particular case (i.e. the
+program would work fine if the other CPUs didn't see such updates at all
+and instead repeated the same update logic locally).
 
 
 Validation
@@ -399,15 +410,7 @@ version than ``ValidateDuringTransaction`` because it has to handle
                 AbortTransaction()     #   "has a more recent revision"
             if v >= LOCKED:            # locked
                 if v != my_lock:       # and not by me
-                    spin loop retry OR # jump back to the "v = ..." line
-                    AbortTransaction() # ...or just abort
-
-The choice of waiting or aborting when encountering a read of a locked
-object needs to be done carefully to avoid deadlocks.  Always aborting
-would be correct, but a bit too restrictive.  Always entering a spin
-loop could lead to deadlocks with two transactions that each locked
-objects from the other's ``list_of_read_objects``.  So for the purposes
-of this explanation we will always assume that it aborts.
+                    AbortTransaction()
 
 
 Local garbage collection
@@ -514,13 +517,12 @@ Here is ``AcquireLocks``, locking the global objects.  Note that
 ``h_revision`` field; it does not involve OS-specific thread locks::
 
     def AcquireLocks():
-        for (R, L, 0) in gcroots:
+        for (R, L, 0) in gcroots SORTED BY R:
             v = R->h_revision
             if not (v & 1):         # "is a pointer", i.e.
                 AbortTransaction()  #   "has a more recent revision"
             if v >= LOCKED:         # already locked by someone else
-                spin loop retry OR  # jump back to the "v = ..." line
-                AbortTransaction()
+                spin loop retry     # jump back to the "v = ..." line
             if not CMPXCHG(&R->h_revision, v, my_lock):
                 spin loop retry     # jump back to the "v = ..." line
             save v into the third item in gcroots, replacing the 0
@@ -531,11 +533,13 @@ the same ``h_revision`` but with a different meaning.)
 
 We use CMPXCHG to store the lock.  This is required, because we must not
 conflict with another CPU that would try to write its own lock in the
-same field --- in that case, only one CPU can succeed.  The order of
-enumeration of ``global_to_local`` must be the same one --- for example,
-following the numeric order of ``R``.  This is needed to avoid
-deadlocks.  Alternatively we could consider this case rare, and abort
-instead of waiting.
+same field --- in that case, only one CPU can succeed.
+
+Acquiring multiple locks comes with the question of how to avoid
+deadlocks.  In this case, it is prevented by ordering the lock
+acquisitions in the numeric order of the R pointers.  This should be
+enough to prevent deadlocks even if two threads have several objects in
+common in their gcroots.
 
 The lock's value ``my_lock`` is, precisely, a very large odd number, at
 least LOCKED (which should be some value like 0xFFFF0000).  As we can
