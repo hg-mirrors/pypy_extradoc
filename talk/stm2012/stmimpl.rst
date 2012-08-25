@@ -89,6 +89,7 @@ Every CPU is either running one transaction, or is busy trying to commit
 the transaction it has so far.  The following data is transaction-local:
 
 - start_time
+- is_inevitable
 - global_to_local
 - list_of_read_objects
 - recent_reads_cache
@@ -98,6 +99,8 @@ The ``start_time`` is the "time" at which the transaction started.  All
 reads and writes done so far in the transaction appear consistent with
 the state at time ``start_time``.  The global "time" is a single global
 number that is atomically incremented whenever a transaction commits.
+
+``is_inevitable`` is a flag described later.
 
 ``global_to_local`` is a dictionary-like mapping of global objects to
 their corresponding local objects.
@@ -499,7 +502,7 @@ In pseudo-code::
     def CommitTransaction():
         AcquireLocks()
         cur_time = global_cur_time
-        while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
+        while not CMPXCHG(&global_cur_time, cur_time, cur_time + 1):
             cur_time = global_cur_time    # try again
         ValidateDuringCommit()
         UpdateChainHeads(cur_time)
@@ -596,3 +599,41 @@ our case we would need an ``smp_read_barrier_depends`` in
 ``LatestGlobalRevision``, in the loop.  It was omitted here because this
 is always a no-op (i.e. the CPUs always provide this effect for us), not
 only on x86 but on all modern CPUs.
+
+
+Inevitable transactions
+------------------------------------
+
+A transaction is "inevitable" when it cannot abort any more.  It occurs
+typically when the transaction tries to do I/O or a similar effect that
+we cannot roll back.  Such effects are O.K., but they mean that we have
+to guarantee the transaction's eventual successful commit.
+
+The main restriction is that there can be only one inevitable
+transaction at a time.  Right now the model doesn't allow any other
+transaction to start or commit when there is an inevitable transaction;
+this restriction could be lifted with additional work.
+
+For now, the hint that the system has currently got an inevitable
+transaction is given by the value stored in ``global_cur_time``:
+the largest positive number (equal to the ``INEVITABLE`` constant).
+
+``BecomeInevitable`` is called from the middle of a transaction to
+(attempt to) make the current transaction inevitable::
+
+    def BecomeInevitable():
+        cur_time = global_cur_time
+        while not CMPXCHG(&global_cur_time, cur_time, INEVITABLE):
+            cur_time = global_cur_time    # try again
+        if start_time != cur_time:
+            ValidateForInevitable(cur_time)
+        is_inevitable = True
+
+    def ValidateForInevitable(t):
+        start_time = t
+        for R in list_of_read_objects:
+            if not (R->h_revision & 1):
+                global_cur_time = t     # must restore the value
+                AbortTransaction()
+
+...
