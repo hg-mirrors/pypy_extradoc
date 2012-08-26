@@ -392,7 +392,7 @@ Validation
 modified since ``start_time``::
 
     def ValidateDuringTransaction():
-        start_time = global_cur_time    # copy from the global time
+        start_time = GetGlobalCurTime() # copy from the global time
         for R in list_of_read_objects:
             if not (R->h_revision & 1): # "is a pointer", i.e.
                 AbortTransaction()      #   "has a more recent revision"
@@ -500,11 +500,13 @@ chained list.
 In pseudo-code::
 
     def CommitTransaction():
+        # (see below for the full version with inevitable transactions)
         AcquireLocks()
         cur_time = global_cur_time
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 1):
             cur_time = global_cur_time    # try again
-        ValidateDuringCommit()
+        if cur_time != start_time:
+            ValidateDuringCommit()   # only call it if needed
         UpdateChainHeads(cur_time)
 
 Note the general style of usage of CMPXCHG: we first read normally the
@@ -557,10 +559,13 @@ case ``AbortTransaction`` is called, it must release the locks.  This is
 done by writing back the original timestamps in the ``h_revision``
 fields::
 
-    def AbortTransaction():
+    def CancelLocks():
         for (R, L, v) in gcroots:
             if v != 0:
                 R->h_revision = v
+
+    def AbortTransaction():
+        CancelLocks()
         # call longjmp(), which is the function from C
         # going back to the transaction start
         longjmp()
@@ -622,6 +627,7 @@ the largest positive number (equal to the ``INEVITABLE`` constant).
 (attempt to) make the current transaction inevitable::
 
     def BecomeInevitable():
+        inevitable_mutex.acquire()
         cur_time = global_cur_time
         while not CMPXCHG(&global_cur_time, cur_time, INEVITABLE):
             cur_time = global_cur_time    # try again
@@ -634,6 +640,46 @@ the largest positive number (equal to the ``INEVITABLE`` constant).
         for R in list_of_read_objects:
             if not (R->h_revision & 1):
                 global_cur_time = t     # must restore the value
+                inevitable_mutex.release()
                 AbortTransaction()
 
-...
+We use a normal OS mutex to allow other threads to really sleep instead
+of spin-looping until the inevitable transaction finishes.  So the
+function ``GetGlobalCurTime`` is defined to return ``global_cur_time``
+after waiting for other inevitable transaction to finish::
+
+    def GetGlobalCurTime():
+        assert not is_inevitable    # must not be myself inevitable
+        t = global_cur_time
+        if t == INEVITABLE:         # there is another inevitable tr.?
+            inevitable_mutex.acquire()   # wait
+            inevitable_mutex.release()
+            return GetGlobalCurTime()    # retry
+        return t
+
+Then we extend ``CommitTransaction`` for inevitable support::
+
+    def CommitTransaction():
+        AcquireLocks()
+        if is_inevitable:
+            cur_time = start_time
+            if not CMPXCHG(&global_cur_time, INEVITABLE, cur_time + 1):
+                unreachable: no other thread changed global_cur_time
+            inevitable_mutex.release()
+        else:
+            cur_time = GetGlobalCurTimeInCommit()
+            while not CMPXCHG(&global_cur_time, cur_time, cur_time + 1):
+                cur_time = GetGlobalCurTimeInCommit()  # try again
+            if cur_time != start_time:
+                ValidateDuringCommit()   # only call it if needed
+        UpdateChainHeads(cur_time)
+
+    def GetGlobalCurTimeInCommit():
+        t = global_cur_time
+        if t == INEVITABLE:
+            CancelLocks()
+            inevitable_mutex.acquire()   # wait until released
+            inevitable_mutex.release()
+            AcquireLocks()
+            return GetGlobalCurTimeInCommit()
+        return t
