@@ -567,6 +567,7 @@ fields::
         for (R, L, v) in gcroots:
             if v != 0:
                 R->h_revision = v
+                reset the entry in gcroots to v=0
 
     def AbortTransaction():
         CancelLocks()
