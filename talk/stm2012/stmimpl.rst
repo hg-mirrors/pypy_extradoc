@@ -189,8 +189,10 @@ Pseudo-code::
         while not (v := R->h_revision) & 1:# "is a pointer", i.e.
             R = v                          #   "has a more recent revision"
         if v > start_time:                 # object too recent?
+            if V >= LOCKED:                # object actually locked?
+                goto retry                 # spin-loop to start of func
             ValidateDuringTransaction()    # try to move start_time forward
-            return LatestGlobalRevision(R) # restart searching from R
+            goto retry                     # restart searching from R
         PossiblyUpdateChain(G, R, ...)     # see below
         return R
 
@@ -503,7 +505,7 @@ In pseudo-code::
         # (see below for the full version with inevitable transactions)
         AcquireLocks()
         cur_time = global_cur_time
-        while not CMPXCHG(&global_cur_time, cur_time, cur_time + 1):
+        while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
         if cur_time != start_time:
             ValidateDuringCommit()   # only call it if needed
@@ -547,9 +549,8 @@ enough to prevent deadlocks even if two threads have several objects in
 common in their gcroots.
 
 The lock's value ``my_lock`` is, precisely, a very large odd number, at
-least LOCKED (which should be some value like 0xFFFF0000).  As we can
-check, this is enough to cause ``LatestGlobalRevision`` to spin loop,
-calling ``ValidateDuringTransaction`` over and over again, until the
+least LOCKED (which should be some value like 0xFFFF0000).
+Such a value causes ``LatestGlobalRevision`` to spin loop until the
 lock is released (i.e.  another value is written in ``h_revision``).
 
 
@@ -620,7 +621,7 @@ transaction to start or commit when there is an inevitable transaction;
 this restriction could be lifted with additional work.
 
 For now, the hint that the system has currently got an inevitable
-transaction is given by the value stored in ``global_cur_time``:
+transaction running is given by the value stored in ``global_cur_time``:
 the largest positive number (equal to the ``INEVITABLE`` constant).
 
 ``BecomeInevitable`` is called from the middle of a transaction to
@@ -647,7 +648,7 @@ We use a normal OS mutex to allow other threads to really sleep instead
 of spin-looping until the inevitable transaction finishes.  So the
 function ``GetGlobalCurTime`` is defined to return ``global_cur_time``
 after waiting for other inevitable transaction to finish::
-
+    
     def GetGlobalCurTime():
         assert not is_inevitable    # must not be myself inevitable
         t = global_cur_time
@@ -663,12 +664,12 @@ Then we extend ``CommitTransaction`` for inevitable support::
         AcquireLocks()
         if is_inevitable:
             cur_time = start_time
-            if not CMPXCHG(&global_cur_time, INEVITABLE, cur_time + 1):
+            if not CMPXCHG(&global_cur_time, INEVITABLE, cur_time + 2):
                 unreachable: no other thread changed global_cur_time
             inevitable_mutex.release()
         else:
             cur_time = GetGlobalCurTimeInCommit()
-            while not CMPXCHG(&global_cur_time, cur_time, cur_time + 1):
+            while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
                 cur_time = GetGlobalCurTimeInCommit()  # try again
             if cur_time != start_time:
                 ValidateDuringCommit()   # only call it if needed
