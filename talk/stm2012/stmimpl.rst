@@ -406,16 +406,18 @@ will eventually fail --- hopefully, the next time
 The last detection for inconsistency is during commit, when
 ``ValidateDuringCommit`` is called.  It is a slightly more complex
 version than ``ValidateDuringTransaction`` because it has to handle
-"locks" correctly::
+"locks" correctly.  It also returns a True/False result instead of
+aborting::
 
     def ValidateDuringCommit():
         for R in list_of_read_objects:
             v = R->h_revision
             if not (v & 1):            # "is a pointer", i.e.
-                AbortTransaction()     #   "has a more recent revision"
+                return False           #   "has a more recent revision"
             if v >= LOCKED:            # locked
                 if v != my_lock:       # and not by me
-                    AbortTransaction()
+                    return False
+        return True
 
 
 Local garbage collection
@@ -508,7 +510,8 @@ In pseudo-code::
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
         if cur_time != start_time:
-            ValidateDuringCommit()   # only call it if needed
+            if not ValidateDuringCommit():   # only call it if needed
+                AbortTransaction()           # last abort point
         UpdateChainHeads(cur_time)
 
 Note the general style of usage of CMPXCHG: we first read normally the
@@ -633,16 +636,12 @@ the largest positive number (equal to the ``INEVITABLE`` constant).
         while not CMPXCHG(&global_cur_time, cur_time, INEVITABLE):
             cur_time = global_cur_time    # try again
         if start_time != cur_time:
-            ValidateForInevitable(cur_time)
-        is_inevitable = True
-
-    def ValidateForInevitable(t):
-        start_time = t
-        for R in list_of_read_objects:
-            if not (R->h_revision & 1):
+            start_time = cur_time
+            if not ValidateDuringCommit():
                 global_cur_time = t     # must restore the value
                 inevitable_mutex.release()
                 AbortTransaction()
+        is_inevitable = True
 
 We use a normal OS mutex to allow other threads to really sleep instead
 of spin-looping until the inevitable transaction finishes.  So the
