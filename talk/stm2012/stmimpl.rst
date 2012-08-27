@@ -477,6 +477,11 @@ Hand-wavy pseudo-code::
             change h_global False->True
             and h_written True->False
 
+Note that non-written local objects are just shadow copies of existing
+global objects.  For the sequel we just replace them with the original
+global objects again.  This is done by tweaking the local objects'
+header.
+
 
 Committing
 ------------------------------------
@@ -536,10 +541,6 @@ Here is ``AcquireLocks``, locking the global objects.  Note that
             if not CMPXCHG(&R->h_revision, v, my_lock):
                 spin loop retry     # jump back to the "v = ..." line
             save v into the third item in gcroots, replacing the 0
-
-(Note that for non-written local objects, we skip this locking entirely;
-instead, we turn the object into a "global but outdated" object, keeping
-the same ``h_revision`` but with a different meaning.)
 
 We use CMPXCHG to store the lock.  This is required, because we must not
 conflict with another CPU that would try to write its own lock in the
