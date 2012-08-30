@@ -391,17 +391,25 @@ Validation
 
 ``ValidateDuringTransaction`` is called during a transaction to update
 ``start_time``.  It makes sure that none of the read objects have been
-modified since ``start_time``::
+modified since ``start_time``.  If one of these objects is modified by
+another commit in parallel, then we want this transaction to eventually
+fail.  More precisely, it will fail the next time one of the
+``ValidateDuring*`` functions is called.
+
+Note a subtle point: if an object is currently locked, we have to wait
+until it gets unlocked, because it might turn out to point to a more
+recent version that is still older than the current global time.
+
+Here is ``ValidateDuringTransaction``::
 
     def ValidateDuringTransaction():
         start_time = GetGlobalCurTime() # copy from the global time
         for R in list_of_read_objects:
-            if not (R->h_revision & 1): # "is a pointer", i.e.
+            v = R->h_revision
+            if not (v & 1):             # "is a pointer", i.e.
                 AbortTransaction()      #   "has a more recent revision"
-
-If such an object is modified by another commit, then this transaction
-will eventually fail --- hopefully, the next time
-``ValidateDuringTransaction`` is called.
+            if v >= LOCKED:             # locked
+                spin loop retry         # jump back to the "v = ..." line
 
 The last detection for inconsistency is during commit, when
 ``ValidateDuringCommit`` is called.  It is a slightly more complex
@@ -640,7 +648,7 @@ the largest positive number (equal to the ``INEVITABLE`` constant).
         if start_time != cur_time:
             start_time = cur_time
             if not ValidateDuringCommit():
-                global_cur_time = t     # must restore the value
+                global_cur_time = cur_time     # must restore the value
                 inevitable_mutex.release()
                 AbortTransaction()
         is_inevitable = True
@@ -673,7 +681,8 @@ Then we extend ``CommitTransaction`` for inevitable support::
             while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
                 cur_time = GetGlobalCurTimeInCommit()  # try again
             if cur_time != start_time:
-                ValidateDuringCommit()   # only call it if needed
+                if not ValidateDuringCommit():   # only call it if needed
+                    AbortTransaction()           # last abort point
         UpdateChainHeads(cur_time)
 
     def GetGlobalCurTimeInCommit():
