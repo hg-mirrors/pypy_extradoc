@@ -250,6 +250,13 @@ global object and returns a corresponding pointer to a local object::
         global_to_local[R] = L
         return L
 
+    def LocalizeReadReady(R):
+        if R->h_global:
+            L = Localize(R)
+        else:
+            L = R
+        return L
+
 
 ``W = WriteBarrier(P)`` and ``W = WriteBarrierFromReadReady(R)`` are
 two versions of the write barrier::
@@ -281,6 +288,27 @@ two versions of the write barrier::
         W->h_written = True
         R->h_possibly_outdated = True
         return W
+
+The above read/write barriers are just the most common cases.  A pointer
+to an object in the category ``R`` might actually point to one that is
+in the more precise category ``L`` or ``W``, following the implication
+relationships: ``W => L => R => O => P`` and ``G => P``.  Barriers are
+used to bring an object's category in the opposite direction.  Here are
+all the interesting conversions, with the five functions above (DRB,
+RRB, LRR, WrB, WFR) as well as seven more potential conversions (``*``)
+that could be implemented more efficiently with slight variations:
+
+    +--------+-----------------------------------+
+    |        |                From               |
+    +--------+-----+-----+-----+-----+-----+-----+
+    |   To   |  P  |  G  |  O  |  R  |  L  |  W  |
+    +========+=====+=====+=====+=====+=====+=====+
+    |     R  | DRB |``*``| RRB |                 |
+    +--------+-----+-----+-----+-----+-----------+
+    |     L  |``*``|``*``|``*``| LRR |           |
+    +--------+-----+-----+-----+-----+-----+-----+
+    |     W  | WrB |``*``|``*``| WFR |``*``|     |
+    +--------+-----+-----+-----+-----+-----+-----+
 
 
 Auto-localization of some objects
