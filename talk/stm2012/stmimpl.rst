@@ -2,8 +2,9 @@
 STM implementation model
 ========================
 
+
 Overview
---------
+============================================================
 
 Objects are either global (visible to everybody, and read-only), or
 they are local (visible only to the current thread).
@@ -45,6 +46,11 @@ stores are flushed.)
 
 The LOCK CMPXCHG instruction does a MFENCE followed by an atomic
 compare-and-exchange operation.
+
+
+
+The STM implementation
+============================================================
 
 
 Object header
@@ -288,27 +294,6 @@ two versions of the write barrier::
         W->h_written = True
         R->h_possibly_outdated = True
         return W
-
-The above read/write barriers are just the most common cases.  A pointer
-to an object in the category ``R`` might actually point to one that is
-in the more precise category ``L`` or ``W``, following the implication
-relationships: ``W => L => R => O => P`` and ``G => P``.  Barriers are
-used to bring an object's category in the opposite direction.  Here are
-all the interesting conversions, with the five functions above (DRB,
-RRB, LRR, WrB, WFR) as well as seven more potential conversions (``*``)
-that could be implemented more efficiently with slight variations:
-
-    +--------+-----------------------------------+
-    |        |                From               |
-    +--------+-----+-----+-----+-----+-----+-----+
-    |   To   |  P  |  G  |  O  |  R  |  L  |  W  |
-    +========+=====+=====+=====+=====+=====+=====+
-    |     R  | DRB |``*``| RRB |                 |
-    +--------+-----+-----+-----+-----+-----------+
-    |     L  |``*``|``*``|``*``| LRR |           |
-    +--------+-----+-----+-----+-----+-----+-----+
-    |     W  | WrB |``*``|``*``| WFR |``*``|     |
-    +--------+-----+-----+-----+-----+-----+-----+
 
 
 Auto-localization of some objects
@@ -722,3 +707,93 @@ Then we extend ``CommitTransaction`` for inevitable support::
             AcquireLocks()
             return GetGlobalCurTimeInCommit()
         return t
+
+
+
+Barrier placement in the source code
+============================================================
+
+
+Overview
+-----------
+
+Placing the read/write barriers in the source code is not necessarily
+straightforward, because there are a lot of object states to choose
+from.  The barriers described above are just the most common cases.
+
+We classify here the object categories more precisely.  A pointer to an
+object in the category ``R`` might actually point to one that is in the
+more precise category ``L`` or ``W``, or not.  However a pointer to an
+object in the category ``L`` is also always in the categories ``R`` or
+``O``.  This can be seen more generally in the implication
+relationships::
+
+     W => L => R => O => P       G => P    (I)
+
+A letter X is called *more general than* a letter Y if ``Y => X``, and
+*more precise than* a letter Y if ``X => Y``.
+
+Barriers are used to make an object's category more precise.  Here are
+all 12 interesting conversions, with the five functions from the section
+`Read/write barriers design`_ (abbreviated as DRB, RRB, LRR, WrB and
+WFR) as well as seven more potential conversions (written ``*``) that
+could be implemented efficiently with slight variations:
+
+    +--------+-----------------------------------+
+    |        |                From               |
+    +--------+-----+-----+-----+-----+-----+-----+
+    |   To   |  P  |  G  |  O  |  R  |  L  |  W  |
+    +========+=====+=====+=====+=====+=====+=====+
+    |     R  | DRB |``*``| RRB |                 |
+    +--------+-----+-----+-----+-----+-----------+
+    |     L  |``*``|``*``|``*``| LRR |           |
+    +--------+-----+-----+-----+-----+-----+-----+
+    |     W  | WrB |``*``|``*``| WFR |``*``|     |
+    +--------+-----+-----+-----+-----+-----+-----+
+
+In the sequel we will refer to each of the 12 variations as *X2Y*
+for X in ``P, G, O, R, L`` and Y in ``R, L, W``.
+
+
+Constraints
+-----------
+
+The source code's pointer variables are each assigned one letter
+from ``P, G, O, R, L, W`` such that:
+
+* A variable is only passed into another variable with either the same
+  or a more general letter.  This holds for intra- as well as
+  inter-procedural definitions of "being passed" (i.e. also for
+  arguments and return value).
+
+* Read/write barriers can be inserted at any point, returning a variable
+  of a more precise letter.
+
+* Any read must be done on an object in category ``R, L, W``.  Any write
+  must be done on an object in category ``W``.  Moreover an object must
+  only be in category ``W`` if we can prove that a write necessarily
+  occurs on the object.
+
+* The ``L2W`` barrier is very cheap.  It is also the only barrier which
+  doesn't need to return a potentially different pointer.  However,
+  converting objects to the ``L`` category in first place (rather than
+  ``R``) has a cost.  It should be done only for the objects on which we
+  are *likely* to perform a write.
+
+* An object in the ``R`` category falls back automatically to the ``O``
+  category if we perform an operation (like a call to an unrelated
+  function) that might potentially cause it to be written to.
+
+* If we do a call that might cause the current transaction to end and
+  the next one to start, then all live variables fall back to the ``P``
+  category.
+
+* In general, it is useful to minimize the number of executed barriers,
+  and have the cheapest barriers possible.  If, for example, we have a
+  control flow graph with two paths that reach (unconditionally) the
+  same write location, but on one path the object is a ``R`` (because we
+  just read something out of it) and on the other path the object is a
+  ``G`` (because it is a global on which we did not perform any read),
+  then we should insert the ``R2W`` barrier at the end of the first path
+  and the ``G2W`` barrier at the end of the second path, rather than the
+  ``P2W`` barrier only once after the control flow merges.
