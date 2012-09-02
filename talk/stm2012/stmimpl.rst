@@ -829,3 +829,22 @@ Pseudo-code for some of the remaining barriers::
         L->h_revision->h_possibly_outdated = True
         return L
 
+Pointer equality: a comparison ``P1 == P2`` needs special care, because
+there are several physical pointers corresponding logically to the same
+object.  If ``P1`` or ``P2`` is the constant ``NULL`` then no special
+treatment is needed.  Likewise if ``P1`` and ``P2`` are both known to be
+local.  Otherwise, we need in general the following code (which could be
+specialized as well if needed)::
+
+    def PtrEq(P1, P2):
+        return GlobalizeForComparison(P1) == GlobalizeForComparison(P2)
+
+    def GlobalizeForComparison(P):
+        if P == NULL:
+            return NULL
+        elif P->h_global:
+            return LatestGlobalRevision(P)
+        elif P->h_revision != 1:
+            return P->h_revision  # return the original global obj
+        else:
+            return P              # local, allocated during this transaction
