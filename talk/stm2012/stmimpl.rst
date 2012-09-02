@@ -242,9 +242,10 @@ don't need ``AddInReadSet`` again.  It gives this::
 
 
 ``L = Localize(R)`` is an operation that takes a read-ready pointer to a
-global object and returns a corresponding pointer to a local object::
+*global* object and returns a corresponding pointer to a local object::
 
     def Localize(R):
+        assert R->h_global
         if R in global_to_local:
             return global_to_local[R]
         L = malloc(sizeof R)
@@ -723,7 +724,7 @@ from.  The barriers described above are just the most common cases.
 
 We classify here the object categories more precisely.  A pointer to an
 object in the category ``R`` might actually point to one that is in the
-more precise category ``L`` or ``W``, or not.  However a pointer to an
+more precise category ``L`` or ``W``.  Conversely, a pointer to an
 object in the category ``L`` is also always in the categories ``R`` or
 ``O``.  This can be seen more generally in the implication
 relationships::
@@ -788,6 +789,11 @@ from ``P, G, O, R, L, W`` such that:
   the next one to start, then all live variables fall back to the ``P``
   category.
 
+* The ``G`` category is only used by prebuilt constants.  In all
+  other cases we don't know that a pointer is definitely not a local
+  pointer.  The ``NULL`` constant is in all categories; ``G`` and ``L``
+  have only ``NULL`` in common.
+
 * In general, it is useful to minimize the number of executed barriers,
   and have the cheapest barriers possible.  If, for example, we have a
   control flow graph with two paths that reach (unconditionally) the
@@ -797,3 +803,29 @@ from ``P, G, O, R, L, W`` such that:
   then we should insert the ``R2W`` barrier at the end of the first path
   and the ``G2W`` barrier at the end of the second path, rather than the
   ``P2W`` barrier only once after the control flow merges.
+
+Pseudo-code for some of the remaining barriers::
+
+    def G2R(G):
+        assert G->h_global
+        return P2R(G)        # the fast-path never works
+
+    def G2W(G):
+        assert G->h_global
+        assert not G->h_written
+        if G->h_possibly_outdated:
+            R = LatestGlobalRevision(G)
+        else:
+            R = G
+        W = Localize(R)
+        W->h_written = True
+        R->h_possibly_outdated = True
+        return W
+
+    def L2W(L):
+        if L->h_written:    # fast-path
+            return L
+        L->h_written = True
+        L->h_revision->h_possibly_outdated = True
+        return L
+
