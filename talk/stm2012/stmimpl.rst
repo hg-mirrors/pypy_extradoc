@@ -61,6 +61,7 @@ Every object has a header with these fields:
 - h_global (boolean)
 - h_possibly_outdated (boolean)
 - h_written (boolean)
+- h_local_copy (boolean)
 - h_revision (unsigned integer)
 
 The h_revision is an unsigned "revision number" that can also
@@ -76,9 +77,14 @@ practice they are just bits inside the GC h_tid field.)
   version in any transaction.
 
 - ``h_written`` is set on local objects that have been written to.
+  It is false on global objects.
+
+- ``h_local_copy`` is set on local objects that are a copy of a global
+  object.  It is undefined on global objects.
 
 - ``h_revision`` on local objects points to the global object that they
-  come from, if any; otherwise it is 1.
+  come from, if any (i.e. if ``h_local_copy``); otherwise it is
+  undefined (and can be used for other purposes, e.g. by the GC).
 
 - ``h_revision`` on global objects depends on whether the object is the
   head of the chained list of revisions or not.  If it is, then
@@ -166,7 +172,7 @@ The read/write barriers are designed with the following goals in mind:
 
 - All barriers ensure that ``global_to_local`` satisfies the following
   property for any local object ``L``: either ``L`` was created by
-  this transaction (``L->h_revision == 1``) or else satisfies
+  this transaction (``L->h_revision`` is undefined) or else satisfies
   ``global_to_local[L->h_revision] == L``.
 
 
@@ -180,7 +186,8 @@ Pseudo-code for read/write barriers
         W->h_global = False
         W->h_possibly_outdated = False
         W->h_written = True
-        W->h_revision = 1
+        W->h_local_copy = False
+        #W->h_revision can be left uninitialized
         return W
 
 
@@ -252,6 +259,7 @@ don't need ``AddInReadSet`` again.  It gives this::
         L->h_global = False
         L->h_possibly_outdated = False
         L->h_written = False
+        L->h_local_copy = True
         L->h_revision = R          # back-reference to the original
         L->objectbody... = R->objectbody...
         global_to_local[R] = L
@@ -497,12 +505,18 @@ Hand-wavy pseudo-code::
         collect from the roots...
         for all reached local object,
             change h_global False->True
-            and h_written True->False
+            change h_written True->False
+            if not h_local_copy:
+                h_revision = 1
 
 Note that non-written local objects are just shadow copies of existing
 global objects.  For the sequel we just replace them with the original
 global objects again.  This is done by tweaking the local objects'
 header.
+
+Note also that ``h_revision`` is free to be (ab)used on newly allocated
+objects (the GC of PyPy does this), but it should be set to 1 just
+before calling ``CommitTransaction``.
 
 
 Committing
@@ -844,7 +858,7 @@ specialized as well if needed)::
             return NULL
         elif P->h_global:
             return LatestGlobalRevision(P)
-        elif P->h_revision != 1:
+        elif P->h_local_copy:
             return P->h_revision  # return the original global obj
         else:
-            return P              # local, allocated during this transaction
+            return P
