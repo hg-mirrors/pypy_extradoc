@@ -51,6 +51,8 @@
   pdfauthor={David Schneider},
 }
 
+\newcommand{\bigtodo}[1]{\todo[inline,color=red!30]{#1}}
+
 \newboolean{showcomments}
 \setboolean{showcomments}{true}
 \ifthenelse{\boolean{showcomments}}
@@ -129,6 +131,12 @@ tracing JIT.
 %___________________________________________________________________________
 \section{Introduction}
 
+
+\bigtodo{reviewer c: The use of an interpreter is a typical choice, but it is
+not the only choice (e.g., Jikes RVM is compile only) so it might make
+sense to introduce this idea earlier.}
+
+
 Tracing just-in-time (JIT) compilers record and compile commonly executed
 linear control flow paths consisting of operations executed by an interpreter.
 At points of possible divergence from the traced path operations called guards
@@ -141,7 +149,7 @@ provides a tracing JIT compiler geared at dynamic language optimization.
 
 Our aim is to help understand the constraints when implementing guards
 and to describe the concrete techniques used in the various layers of RPython's
-tracing JIT. All design decisions are be motivated by an empirical analysis of the
+tracing JIT. All design decisions are motivated by an empirical analysis of the
 frequency and the overhead related to guards.
 
 It is important to handle guards well, because they are very common operations
@@ -227,7 +235,10 @@ The RPython language is a
 statically typed object-oriented high-level subset of Python. The subset is chosen in such a way to make type inference possible\cite{ancona_rpython:_2007}.
 The language provides
 several features such as automatic memory management
-and just-in-time compilation. When writing an interpreter using RPython the
+and just-in-time compilation.\todo{reviewer d: I argue that jit compilation is
+not a feature of a language, but a feature of a language
+\emph{implementation}.}
+When writing an interpreter using RPython the
 programmer only has to write the interpreter for the language she is
 implementing.  The second RPython component, the translation toolchain, is used
 to transform the interpreter into a C program.\footnote{
@@ -241,8 +252,15 @@ added to the program such as a garbage collector and a tracing JIT compiler.
 The process of inserting a tracing JIT is not fully automatic but is guided by
 hints from the interpreter author.
 
-\subsection{RPython's Tracing JIT Compilers}
+\subsection{RPython's Tracing JIT Compiler}
 \label{sub:tracing}
+
+\bigtodo{reviewer c: In 2.2 there was a comment that guards can be used to
+specialize based on type in dynamic languages. Is this only applicable to
+dynamic languages, or could the same thing occur due to simple inheritance?}
+
+
+
 Tracing is a technique of just-in-time compilers that generate code by
 observing the execution of a program. VMs using tracing JITs are typically
 mixed-mode execution environments that also contain an interpreter. The
@@ -636,6 +654,29 @@ guards that work based on the same principles.
 \section{Evaluation}
 \label{sec:evaluation}
 
+\bigtodo{reviewer b: sadly no graphs}
+
+\bigtodo{reviewer b: One missing data set in the empirical study
+is excution time performance info for the 
+various guard implementation choices.
+The empirical data focuses on space not
+time.}
+
+\bigtodo{reviewer c: I found the evaluation less detailed than I was hoping
+for, which was a shame as I was very interested in learning how well everything
+performed after reading the earlier sections!}
+
+
+\bigtodo{reviewer c:
+I would have liked to see an evaluation based on execution time rather than
+operations. I do not have a good sense of the relative cost of different
+operations, and from my experience know that it can be misleading to use such a
+measure.}
+
+\bigtodo{reviewer c:
+For all of the results some aggregate values would be useful (max/min, etc.)
+}
+
 The results presented in this section are based on numbers gathered by running
 a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
 measure the performance of PyPy and are composed of a series of
@@ -695,6 +736,16 @@ cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
 the total amount of code and resume data that is generated.
 
+\bigtodo{reviewer c: Figure 7 was printed out of order. It was not clear if
+    Figure 7 was talking about static measures (count once per compilation),
+    vs. dynamic measures (count once per actual execution). When I have done
+    studies like this in the past the difference between these two measures can
+    be very interesting. One has more of an impact on memory and compiler
+    issues, while the other will more significantly affect execution
+    performance.
+}
+
+
 
 \subsection{Frequency of Guards}
 \label{sub:guard_frequency}
@@ -729,6 +780,14 @@ relative amounts of guards that ever fail and of guards that fail often enough t
 The numbers presented for guards that have a bridge represent the
 failures up to the compilation of the bridge and all executions of the then
 attached bridge.
+
+\bigtodo{reviewer c: It might be possible to use a chart for
+Figure~\ref{fig:failing_guards} to give more information?}
+
+\bigtodo{reviewer d:
+I would also like to see the number of guard that account for 99\% (or even
+99.9\%) of all guard failures, in addition to the 50\% number.}
+
 
 \begin{figure}
     \include{figures/failing_guards_table}
@@ -782,6 +841,10 @@ approximation of the size of the compressed high-level resume data as described
 in Section~\ref{sec:Resume Data}.\footnote{
 The size of the resume data is not measured at runtime, but reconstructed from
 log files.}
+
+\bigtodo{ reviewer c: I found it difficult to understand how the size of the
+resume structures are approximated, or what you mean in the footnote where you
+say it is reconstructed from log files. }
 
 For the different benchmarks the backend map has
 about 15\% to 20\% of the size compared to the size of the
@@ -837,6 +900,12 @@ that transfers control back to the unoptimized code.
 Since the transfer code needs to reconstruct the stack frames
 of the unoptimized code,
 the transfer code is quite large.
+
+\bigtodo{reviewer c: In 6.1 you claim that the elimination of snapshots is
+orthogonal to resume data compression. While they are techniques that can
+be used individually or together, I think there may be non-trivial
+interactions, in particular eliminating snapshots may alter opportunities
+for compression.}
 
 Mike Pall, the author of LuaJIT describes in a post to the lua-users mailing
 list different technologies and techniques used in the implementation of
@@ -926,6 +995,14 @@ The paper does not describe any attempts to store this information compactly.
 This may not be needed in their approach, because method-based JITs have
 fewer deoptimization points than tracing JITs.
 
+\bigtodo{reviewer d: You state that Kotzmann et al. do not explain how the
+debug information is store in a compact way. They have a second paper that
+describes exactly that: Thomas Kotzmann, Hanspeter Mössenböck: Run-Time
+Support for Optimizations Based on Escape Analysis Proceedings of the
+International Symposium on Code Generation and Optimization, San Jose,
+March 2007.}
+
+
 
 % subsection Deoptimization in Method-Based JITs (end)
 % section Related Work (end)
@@ -989,5 +1066,5 @@ others. Any remaining errors are our own.
 %\end{figure*}
 \bibliographystyle{abbrv}
 \bibliography{zotero,paper}
-%\listoftodos
+\listoftodos
 \end{document}
