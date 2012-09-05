@@ -1,14 +1,14 @@
 PyPy Cape Town Sprint Oct 7th - Oct 21st 2012
 =============================================
 
-The next PyPy sprint will be in Cape Town, South Africa. It is a public sprint, 
-suitable for newcomers. The sprint is hosted after the end of
-`PyCon South Africa`_, which happens on 4th and 5th of October.
-This is a relatively unusual sprint that is hosted
-halfway across the world from where most contributors live, hence we plan
-to spend some time during those 2 weeks doing sprinting and some time doing
-touristy stuff. The goals for the sprint are general progress and whatever
-people are interested in.
+The next PyPy sprint will be in Cape Town, South Africa. It is a
+public sprint, suitable for newcomers. It starts a couple of days
+after `PyCon South Africa`_, which is on the 4th and 5th of October.
+This is a relatively unusual sprint in that it is hosted halfway
+across the world from where most contributors live, so we plan to
+spend some time during those two weeks doing sprinting and some time
+doing touristy stuff. The goals for the sprint are general progress
+and whatever people are interested in.
 
 .. _`PyCon South Africa`: http://za.pycon.org
 
@@ -18,50 +18,47 @@ Possible topics:
 
 * running your software on PyPy
 
-* work on PyPy's numpy (status__)
-
-* work on STM (status__)
-
 * JIT improvements
 
-* any exciting stuff you can think about
+* any exciting stuff you can think of
 
-In case there will be newcomers, we'll run the usual introduction to hacking
-on PyPy.
-
-.. __: http://morepypy.blogspot.ch/2012/09/numpy-on-pypy-status-update.html
-.. __: http://mail.python.org/pipermail/pypy-dev/2012-September/010513.html
+If there are newcomers, we'll run the usual introduction to hacking on
+PyPy.
 
 Location
 --------
 
-The sprint will be either held in the apartment of fijal, which is in
-Tamboerskloof, Cape Town or in the office of Praekelt Foundation, located
-in Woodstock, Cape Town. Praekelt Foundation offered to host us, if needed.
+The sprint will be held either in the apartment of fijal, which is in
+Tamboerskloof, Cape Town, or in the offices of the Praekelt
+Foundation, located in Woodstock, Cape Town. The Praekelt Foundation
+has offered to host us, if needed.
 
-Cape Town, as a very touristy place, has tons of accomodation going from
-good to amazing. Depending on the sprint location you might need a car.
+Cape Town, as a very touristy place, has tons of accomodation ranging
+in quality from good to amazing. Depending on the sprint location you
+might need a car.
 
 
 Good to Know
 ------------
 
-You very likely don't need visa for South Africa, consult the wikipedia.
-South Africa is a lovely place with lots of stuff to visit. You can come
-and see penguins, elephants, lions and sharks all in one (or more) days.
+You probably don't need visa for South Africa -- consult Wikipedia.
+South Africa is a lovely place with lots of stuff to do. You can see
+penguins, elephants, lions and sharks all on one day (or better yet,
+on multiple days).
 
-There is a wide selection of good restaurants within a reasonable distance
-from the sprint venue (depending on the venue, either walking or driving).
+There is a wide selection of good restaurants within a reasonable
+distance of the sprint venue (depending on the venue, either walking
+or driving).
 
-The power plug is some weird old-english standard, but adapters are easy
-to acquire in every shop.
+The power plug is some weird derivative of an old-english standard,
+but adapters are easily acquired.
 
 Who's Coming?
---------------
+-------------
 
-If you'd like to come, please let us know when you will be arriving and 
-leaving, as well as letting us know your interests.  We'll keep a list
-of `people`_ which we'll update (which you can do so yourself if you
-have bitbucket pypy commit rights).
+If you'd like to come, please let us know when you will be arriving
+and leaving, as well as what your interests are. We'll keep a list of
+`people`_ which we'll update (or you can do so yourself if you have
+bitbucket pypy commit rights).
 
 .. _`people`: https://bitbucket.org/pypy/extradoc/src/tip/sprintinfo/cape-town-2012/people.txt
