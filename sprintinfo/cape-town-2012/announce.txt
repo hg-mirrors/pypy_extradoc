@@ -18,12 +18,19 @@ Possible topics:
 
 * running your software on PyPy
 
+* work on PyPy's numpy (status__)
+
+* work on STM (status__)
+
 * JIT improvements
 
 * any exciting stuff you can think about
 
 In case there will be newcomers, we'll run the usual introduction to hacking
 on PyPy.
+
+.. __: http://morepypy.blogspot.ch/2012/09/numpy-on-pypy-status-update.html
+.. __: http://mail.python.org/pipermail/pypy-dev/2012-September/010513.html
 
 Location
 --------
@@ -53,7 +60,7 @@ Who's Coming?
 --------------
 
 If you'd like to come, please let us know when you will be arriving and 
-leaving, as well as letting us know your interests  We'll keep a list
+leaving, as well as letting us know your interests.  We'll keep a list
 of `people`_ which we'll update (which you can do so yourself if you
 have bitbucket pypy commit rights).
 
