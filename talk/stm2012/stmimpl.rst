@@ -2,9 +2,33 @@
 STM implementation model
 ========================
 
+Abstract
+========
+
+This paper present an implementation of a Software Transactional Memory in
+the context of a high level virtual machine, which is very different than
+a typical STM implementation that assumes more C-level semantics from the
+user. This gives us the opportunity to implement an STM in the context
+of having an efficient Garbage Collector, read, write and pointer comparison
+barriers and references that can be moving pointers. XXX write down what it
+gives in exchange
 
 Overview
-============================================================
+========
+
+The approach we're presenting differs much from the classic STM one. In our
+approach, the transactions are generally unbound - which means they can
+be arbitrarily large without much performance hit.
+
+XXX how exactly this removes the need for nested transactions?
+
+API overview
+============
+
+XXX
+
+Object model
+============
 
 Objects are either global (visible to everybody, and read-only), or
 they are local (visible only to the current thread).
