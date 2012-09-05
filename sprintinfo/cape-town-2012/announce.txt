@@ -14,14 +14,23 @@ people are interested in.
 
 Possible topics:
 
-XXX
+* PyPy release 2.0
+
+* running your software on PyPy
+
+* JIT improvements
+
+* any exciting stuff you can think about
+
+In case there will be newcomers, we'll run the usual introduction to hacking
+on PyPy.
 
 Location
 --------
 
 The sprint will be either held in the apartment of fijal, which is in
 Tamboerskloof, Cape Town or in the office of Praekelt Foundation, located
-in Woodstock, Cape Town.
+in Woodstock, Cape Town. Praekelt Foundation offered to host us, if needed.
 
 Cape Town, as a very touristy place, has tons of accomodation going from
 good to amazing. Depending on the sprint location you might need a car.
@@ -32,7 +41,7 @@ Good to Know
 
 You very likely don't need visa for South Africa, consult the wikipedia.
 South Africa is a lovely place with lots of stuff to visit. You can come
-and see penguins, elephants, lions and sharks all in one (or more) day.
+and see penguins, elephants, lions and sharks all in one (or more) days.
 
 There is a wide selection of good restaurants within a reasonable distance
 from the sprint venue (depending on the venue, either walking or driving).
