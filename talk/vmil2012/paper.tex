@@ -132,13 +132,12 @@ tracing JIT.
 \section{Introduction}
 
 
-\bigtodo{reviewer c: The use of an interpreter is a typical choice, but it is
-not the only choice (e.g., Jikes RVM is compile only) so it might make
-sense to introduce this idea earlier.}
-
-
 Tracing just-in-time (JIT) compilers record and compile commonly executed
-linear control flow paths consisting of operations executed by an interpreter.
+linear control flow paths consisting of operations executed by an
+interpreter.\footnote{There are also virtual machines that have a tracing JIT
+compiler and do not use an interpreter~\cite{xxx}. This paper assumes that the
+baseline is provided by an interpreter. Similar design constraints would apply
+to a purely compiler-based system.}
 At points of possible divergence from the traced path operations called guards
 are inserted. Furthermore, type guards are inserted to specialize the trace
 based on the types observed during tracing. In this paper we describe and
@@ -233,11 +232,9 @@ RPython can mean one of two things:
 \end{itemize}
 The RPython language is a
 statically typed object-oriented high-level subset of Python. The subset is chosen in such a way to make type inference possible\cite{ancona_rpython:_2007}.
-The language provides
+The language tool-set provides
 several features such as automatic memory management
-and just-in-time compilation.\todo{reviewer d: I argue that jit compilation is
-not a feature of a language, but a feature of a language
-\emph{implementation}.}
+and just-in-time compilation.
 When writing an interpreter using RPython the
 programmer only has to write the interpreter for the language she is
 implementing.  The second RPython component, the translation toolchain, is used
@@ -254,12 +251,6 @@ hints from the interpreter author.
 
 \subsection{RPython's Tracing JIT Compiler}
 \label{sub:tracing}
-
-\bigtodo{reviewer c: In 2.2 there was a comment that guards can be used to
-specialize based on type in dynamic languages. Is this only applicable to
-dynamic languages, or could the same thing occur due to simple inheritance?}
-
-
 
 Tracing is a technique of just-in-time compilers that generate code by
 observing the execution of a program. VMs using tracing JITs are typically
@@ -279,9 +270,9 @@ represents only one possible path through the control flow graph. Points of
 divergence from the recorded path are marked with special operations called
 \emph{guards}. These operations ensure that assumptions valid during the
 tracing phase are still valid when the code has been compiled and is executed.
-In the case of dynamic languages, guards are also used to encode type checks
+Guards are also used to encode type checks
 that come from optimistic type specialization by recording the types of
-variables seen during tracing\cite{Gal:2009ux}.
+variables seen during tracing\cite{Gal:2006, Gal:2009ux}.
 After a trace has been recorded it is optimized and then compiled to platform
 specific machine code.
 
@@ -657,15 +648,10 @@ guards that work based on the same principles.
 \bigtodo{reviewer b: sadly no graphs}
 
 \bigtodo{reviewer b: One missing data set in the empirical study
-is excution time performance info for the 
+is excution time performance info for the
 various guard implementation choices.
 The empirical data focuses on space not
 time.}
-
-\bigtodo{reviewer c: I found the evaluation less detailed than I was hoping
-for, which was a shame as I was very interested in learning how well everything
-performed after reading the earlier sections!}
-
 
 \bigtodo{reviewer c:
 I would have liked to see an evaluation based on execution time rather than
@@ -735,6 +721,10 @@ of machine code can be globally invalidated or just become cold again. In both
 cases the generated machine code and the related data is garbage collected. The
 figures show the total amount of operations that are evaluated by the JIT and
 the total amount of code and resume data that is generated.
+%The measurements and the evaluation focus on trace properties and memory
+%consumption, and do not discuss the execution time of the benchmarks. These
+%topics were covered in earlier work~\cite{bolz_allocation_2011} and furthermore
+%are not influenced that much by the techniques described in this paper.
 
 \bigtodo{reviewer c: Figure 7 was printed out of order. It was not clear if
     Figure 7 was talking about static measures (count once per compilation),
@@ -757,7 +747,7 @@ the total amount of code and resume data that is generated.
 
 Figure~\ref{fig:benchmarks} summarizes the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
-operations are guards. The number of operations was counted on the unoptimized
+operations are guards. The static number of operations was counted on the unoptimized
 and optimized traces. The figure also shows the overall optimization rate for
 operations, which is between 69.4\% and 83.89\%, of the traced operations and the
 optimization rate of guards, which is between 65.8\% and 86.2\% of the
@@ -784,16 +774,12 @@ attached bridge.
 \bigtodo{reviewer c: It might be possible to use a chart for
 Figure~\ref{fig:failing_guards} to give more information?}
 
-\bigtodo{reviewer d:
-I would also like to see the number of guard that account for 99\% (or even
-99.9\%) of all guard failures, in addition to the 50\% number.}
-
-
-\begin{figure}
+\begin{figure*}
     \include{figures/failing_guards_table}
-    \caption{Failing guards, guards with more than 200 failures and guards responsible for 50\% of the failures relative to the total number of guards}
+    \caption{Failing guards, guards with more than 200 failures and guards
+    responsible for 50\%, 99\% and 99.9\% of the failures relative to the total number of guards}
     \label{fig:failing_guards}
-\end{figure}
+\end{figure*}
 
 From Figure~\ref{fig:failing_guards} we can see that only a very small amount
 of all the guards in the compiled traces ever fail. This amount varies between
@@ -836,15 +822,12 @@ composed of the compiled operations, the trampolines generated for the guards
 and a set of support functions that are generated when the JIT starts and which
 are shared by all compiled traces. The size of the backend map
 is the size of the compressed mapping from registers and stack to
-IR-level variables and finally the size of the resume data is an
-approximation of the size of the compressed high-level resume data as described
+IR-level variables and finally the size of the resume data is
+the size of the compressed high-level resume data as described
 in Section~\ref{sec:Resume Data}.\footnote{
-The size of the resume data is not measured at runtime, but reconstructed from
-log files.}
-
-\bigtodo{ reviewer c: I found it difficult to understand how the size of the
-resume structures are approximated, or what you mean in the footnote where you
-say it is reconstructed from log files. }
+Due to technical reasons the size of the resume data is hard to measure
+directly at runtime. Therefore the size given in the table is reconstructed
+from debugging information stored in log files produced by the JIT.}
 
 For the different benchmarks the backend map has
 about 15\% to 20\% of the size compared to the size of the
@@ -901,12 +884,6 @@ Since the transfer code needs to reconstruct the stack frames
 of the unoptimized code,
 the transfer code is quite large.
 
-\bigtodo{reviewer c: In 6.1 you claim that the elimination of snapshots is
-orthogonal to resume data compression. While they are techniques that can
-be used individually or together, I think there may be non-trivial
-interactions, in particular eliminating snapshots may alter opportunities
-for compression.}
-
 Mike Pall, the author of LuaJIT describes in a post to the lua-users mailing
 list different technologies and techniques used in the implementation of
 LuaJIT~\cite{Pall:2009}. Pall explains that guards in LuaJIT use a datastucture
@@ -920,9 +897,8 @@ created for guards after updates to the global state, after control flow points
 from the original program and for guards that are likely to fail. As an outlook
 Pall mentions plans to switch to compressed snapshots to further reduce
 redundancy.\footnote{This optimization is now implemented in LuaJIT, at the time of writing it has not been fully documented in the LuaJIT Wiki: \url{http://wiki.luajit.org/Optimizations\#1-D-Snapshot-Compression}}
-The approach of not creating snapshots at all for every guard is
-orthogonal to the resume data compression presented in this paper and could be
-reused within RPython to improve the memory usage further.
+It should be possible to combine the approaches of not creating snapshots at all
+for every guard and the resume data compression presented in this paper.
 
 Linking side exits to pieces of later compiled machine code was described first
 in the context of Dynamo~\cite{Bala:2000wv} under the name of fragment linking.
@@ -951,7 +927,6 @@ state. TraceMonkey uses trace stitching to avoid the overhead of returning to
 the trace monitor and calling another trace when taking a side exit. In this
 approach it is required to write live values to an activation record before
 entering the new trace.
-
 % subsection Guards in Other Tracing JITs (end)
 
 \subsection{Deoptimization in Method-Based JITs}

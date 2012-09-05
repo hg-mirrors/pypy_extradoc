@@ -28,25 +28,31 @@ def build_failing_guards_table(files, texfile, template):
     head = ['Benchmark',
             'Failing',
             '> %d failures' % BRIDGE_THRESHOLD,
-            '50\% of failures']
+            '50\% of failures',
+            '99\% of failures',
+            '99.9\% of failures',
+            ]
 
     for bench, info in failures.iteritems():
         total = info['nguards']
         total_failures = len(info['results'])
         bridges = len([k for k,v in info['results'].iteritems() \
                                             if v > BRIDGE_THRESHOLD])
-        num_50 = we_are_50_percent(info)
+        num_50 = we_are_n_percent(info, 50)
+        num_99 = we_are_n_percent(info, 99)
+        num_99_dot_9 = we_are_n_percent(info, 99.9)
         res = [bench.replace('_', '\\_'),
                 "%.1f\\%%" % (100 * total_failures/total),
                 "%.1f\\%%" % (100 * bridges/total),
                 "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_50, num_50 / total * 100),
+                "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_99, num_99 / total * 100),
+                "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_99_dot_9, num_99_dot_9 / total * 100),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
-def we_are_50_percent(info):
-    total_guards = info['nguards']
+def we_are_n_percent(info, n):
     failure_counts = info['results'].values()
     print failure_counts
     failure_counts.sort()
@@ -58,7 +64,7 @@ def we_are_50_percent(info):
     current_sum = 0
     for i, f in enumerate(failure_counts):
         current_sum += f
-        if current_sum > total_failures * 0.50:
+        if current_sum > total_failures * n/100.0:
             return (i + 1)
     return -1
 
