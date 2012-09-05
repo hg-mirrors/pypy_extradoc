@@ -18,12 +18,20 @@ Possible topics:
 
 * running your software on PyPy
 
+* work on PyPy's numpy (status__)
+
+* work on STM (status__)
+
 * JIT improvements
 
 * any exciting stuff you can think of
 
 If there are newcomers, we'll run the usual introduction to hacking on
 PyPy.
+
+.. __: http://morepypy.blogspot.ch/2012/09/numpy-on-pypy-status-update.html
+.. __: http://mail.python.org/pipermail/pypy-dev/2012-September/010513.html
+
 
 Location
 --------
@@ -52,6 +60,7 @@ or driving).
 
 The power plug is some weird derivative of an old-english standard,
 but adapters are easily acquired.
+
 
 Who's Coming?
 -------------
