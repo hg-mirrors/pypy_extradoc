@@ -33,24 +33,58 @@ def build_failing_guards_table(files, texfile, template):
             '99\% of failures',
             '99.9\% of failures',
             ]
-
-    for bench, info in failures.iteritems():
+    mins = [(10000, 0)] * (len(head) - 2)
+    maxs = [(0, 0)] * (len(head) - 2)
+    for i, (bench, info) in enumerate(failures.iteritems()):
         total = info['nguards']
         total_failures = len(info['results'])
-        bridges = len([k for k,v in info['results'].iteritems() \
+        bridges = len([k for k, v in info['results'].iteritems()
                                             if v > BRIDGE_THRESHOLD])
+        perc_failures = (100 * total_failures / total)
+        perc_bridges = (100 * bridges / total)
         num_50 = we_are_n_percent(info, 50)
         num_99 = we_are_n_percent(info, 99)
         num_99_dot_9 = we_are_n_percent(info, 99.9)
+
+        mins[0] = min(mins[0], (perc_failures, i))
+        maxs[0] = max(maxs[0], (perc_failures, i))
+
+        mins[1] = min(mins[1], (perc_bridges, i))
+        maxs[1] = max(maxs[1], (perc_bridges, i))
+
+        mins[2] = min(mins[2], (num_50, i))
+        maxs[2] = max(maxs[2], (num_50, i))
+
+        mins[3] = min(mins[3], (num_99, i))
+        maxs[3] = max(maxs[3], (num_99, i))
+
+        mins[4] = min(mins[4], (num_99_dot_9, i))
+        maxs[4] = max(maxs[4], (num_99_dot_9, i))
+
         res = [bench.replace('_', '\\_'),
-                make_sparkline(info['results'], num_50 - 1, num_99 - 1, num_99_dot_9 - 1),
-                "%.1f\\%%" % (100 * total_failures/total),
-                "%.1f\\%%" % (100 * bridges/total),
-                "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_50, num_50 / total * 100),
-                "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_99, num_99 / total * 100),
-                "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_99_dot_9, num_99_dot_9 / total * 100),
+                make_sparkline(info['results'], num_50 - 1,
+                                num_99 - 1, num_99_dot_9 - 1),
+                "%.1f\\%%" % perc_failures,
+                "%.1f\\%%" % perc_bridges,
+                "%d~~\\textasciitilde{}~~%.3f\\%%" %
+                                    (num_50, num_50 / total * 100),
+                "%d~~\\textasciitilde{}~~%.3f\\%%" %
+                                    (num_99, num_99 / total * 100),
+                "%d~~\\textasciitilde{}~~%.3f\\%%" %
+                                    (num_99_dot_9, num_99_dot_9 / total * 100),
         ]
         table.append(res)
+    # mark min
+    for column, (_, index) in enumerate(mins):
+        table[index][column + 2] = "\cellcolor{darkgray}%s" % \
+                                    table[index][column + 2]
+
+    # marks max
+    # mark min
+    for column, (_, index) in enumerate(maxs):
+        table[index][column + 2] = "\cellcolor{lightgray}%s" % \
+                                    table[index][column + 2]
+
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
