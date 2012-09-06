@@ -1,7 +1,7 @@
 \begin{center}
 {\smaller
-    \begin{tabular}{ |l{% for c in head %} {% if not loop.first %} |r {% endif %} {% endfor %} }
-    \hline
+    \begin{tabular}{ l{% for c in head %} {% if not loop.first %} r {% endif %} {% endfor %} }
+    \toprule
     {% for col in head %}
         \textbf{ {{col|safe}} }
         {% if not forloop.last %}
@@ -9,7 +9,7 @@
         {% endif %}
     {% endfor %}
     \\
-    \hline
+    \midrule
     {% for row in table %}
         {% for cell in row %}
             {{cell}}
@@ -19,7 +19,7 @@
         {% endfor %}
         \\
     {% endfor %}
-    \hline
+    \bottomrule
     \end{tabular}
 }
 \end{center}
