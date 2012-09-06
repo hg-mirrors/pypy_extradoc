@@ -74,19 +74,21 @@ def build_failing_guards_table(files, texfile, template):
                                     (num_99_dot_9, num_99_dot_9 / total * 100),
         ]
         table.append(res)
-    # mark min
-    for column, (_, index) in enumerate(mins):
-        table[index][column + 2] = "\cellcolor{darkgray}%s" % \
-                                    table[index][column + 2]
-
-    # marks max
-    # mark min
-    for column, (_, index) in enumerate(maxs):
-        table[index][column + 2] = "\cellcolor{lightgray}%s" % \
-                                    table[index][column + 2]
-
+    mark_min_max(table, mins, maxs, 2)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
+
+
+def mark_min_max(table, mins, maxs, offs):
+    # mark minima
+    for column, (_, index) in enumerate(mins):
+        table[index][column + offs] = "\cellcolor{darkgray}%s" % \
+                                    table[index][column + offs]
+
+    # mark maxima
+    for column, (_, index) in enumerate(maxs):
+        table[index][column + offs] = "\cellcolor{lightgray}%s" % \
+                                    table[index][column + offs]
 
 
 def we_are_n_percent(info, n):
@@ -135,17 +137,28 @@ def build_resume_data_table(csvfiles, texfile, template):
     lines = getlines(csvfiles[0])
     table = []
     head = ['Benchmark', 'Compressed', 'Naive', 'xz compressed']
-
-    for bench in lines:
+    mins = [(99999, 0)] * 3
+    maxs = [(0, 0)] * 3
+    for i, bench in enumerate(lines):
         total = float(bench['total resume data size'])
         naive = float(bench['naive resume data size'])
         xz = float(bench['compressed resume data size'])
+        mins[0] = min(mins[0], (total, i))
+        maxs[0] = max(maxs[0], (total, i))
+
+        mins[1] = min(mins[1], (naive, i))
+        maxs[1] = max(maxs[1], (naive, i))
+
+        mins[2] = min(mins[2], (xz, i))
+        maxs[2] = max(maxs[2], (xz, i))
         res = [bench['bench'].replace('_', '\\_'),
                 "%.2f {\scriptsize KiB}" % (total,),  # (100*total/naive)),
                 "%.2f {\scriptsize KiB}" % (naive),  # , 100*naive/total),
                 "%.2f {\scriptsize KiB}" % (xz),  # , 100*xz/total),
         ]
         table.append(res)
+    # mark min
+    mark_min_max(table, mins, maxs, 1)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
@@ -214,15 +227,39 @@ def build_benchmarks_table(csvfiles, texfile, template):
             'Opt. rate',
             'Guard opt. rate',
             ]
+    mins = [(99999, 0)] * (len(head) - 1)
+    maxs = [(0, 0)] * (len(head) - 1)
 
     table = []
     # collect data
     keys = 'numeric guard set get rest new'.split()
-    for bench in lines:
+    for i, bench in enumerate(lines):
         ops_bo = sum(int(bench['%s before' % s]) for s in keys)
         ops_ao = sum(int(bench['%s after' % s]) for s in keys)
         guards_bo = int(bench['guard before'])
+        perc_guards_bo = guards_bo / ops_bo * 100
         guards_ao = int(bench['guard after'])
+        perc_guards_ao = guards_ao / ops_ao * 100
+        opt_rate = (1 - ops_ao / ops_bo) * 100
+        guard_opt_rate = (1 - guards_ao / guards_bo) * 100
+
+        mins[0] = min(mins[0], (ops_bo, i))
+        maxs[0] = max(maxs[0], (ops_bo, i))
+
+        mins[1] = min(mins[1], (perc_guards_bo, i))
+        maxs[1] = max(maxs[1], (perc_guards_bo, i))
+
+        mins[2] = min(mins[2], (ops_ao, i))
+        maxs[2] = max(maxs[2], (ops_ao, i))
+
+        mins[3] = min(mins[3], (perc_guards_ao, i))
+        maxs[3] = max(maxs[3], (perc_guards_ao, i))
+
+        mins[4] = min(mins[4], (opt_rate, i))
+        maxs[4] = max(maxs[4], (opt_rate, i))
+
+        mins[5] = min(mins[5], (guard_opt_rate, i))
+        maxs[5] = max(maxs[5], (guard_opt_rate, i))
         # the guard count collected from jit-summary counts more guards than
         # actually emitted, so the number collected from parsing the logfiles
         # will probably be lower
@@ -230,13 +267,14 @@ def build_benchmarks_table(csvfiles, texfile, template):
         res = [
                 bench['bench'].replace('_', '\\_'),
                 ops_bo,
-                "%.1f\\%%" % (guards_bo / ops_bo * 100,),
+                "%.1f\\%%" % perc_guards_bo,
                 ops_ao,
-                "%.1f\\%%" % (guards_ao / ops_ao * 100,),
-                "%.1f\\%%" % ((1 - ops_ao / ops_bo) * 100,),
-                "%.1f\\%%" % ((1 - guards_ao / guards_bo) * 100,),
+                "%.1f\\%%" % perc_guards_ao,
+                "%.1f\\%%" % (opt_rate,),
+                "%.1f\\%%" % (guard_opt_rate,),
               ]
         table.append(res)
+    mark_min_max(table, mins, maxs, 1)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
@@ -254,15 +292,25 @@ def build_backend_count_table(csvfiles, texfile, template):
             r'Backend map',
             #r'Relation',
             ]
+    mins = [(99999, 0)] * (len(head) - 1)
+    maxs = [(0, 0)] * (len(head) - 1)
 
     table = []
     # collect data
-    for bench in lines:
+    for i, bench in enumerate(lines):
         name = bench['bench']
         bench['bench'] = bench['bench'].replace('_', '\\_')
         gmsize = float(bench['guard map size'])
         asmsize = float(bench['asm size'])
         rdsize = float(resumedata[name]['total resume data size'])
+        mins[0] = min(mins[0], (asmsize, i))
+        maxs[0] = max(maxs[0], (asmsize, i))
+
+        mins[1] = min(mins[1], (rdsize, i))
+        maxs[1] = max(maxs[1], (rdsize, i))
+
+        mins[2] = min(mins[2], (gmsize, i))
+        maxs[2] = max(maxs[2], (gmsize, i))
         table.append([
             r"%s" % bench['bench'],
             r"%.1f {\scriptsize KiB}" % (asmsize,),
@@ -270,6 +318,7 @@ def build_backend_count_table(csvfiles, texfile, template):
             r"%.1f {\scriptsize KiB}" % (gmsize,),
             #rel,
             ])
+    mark_min_max(table, mins, maxs, 1)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
