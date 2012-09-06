@@ -12,7 +12,7 @@ The speed comes from a custom Just-in-Time compiler (JIT).  It is the
 first Virtual Machine to have a JIT generated automatically from the
 interpreter of the language, which makes it correct and complete by
 construction.  The JIT itself is a tracing JIT, roughly similar to
-SpiderMonkey.
+TraceMonkey.
 
 * most Python benchmarks run much faster than with CPython or Psyco
 * the real-world PyPy compiler toolchain itself (200 KLocs) runs twice as fast
