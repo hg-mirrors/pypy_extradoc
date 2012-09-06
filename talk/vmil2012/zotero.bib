@@ -176,6 +176,22 @@
 	pages = {32–43}
 },
 
+@inproceedings{kotzmann_run-time_2007,
+	address = {Washington, {DC}, {USA}},
+	series = {{CGO} '07},
+	title = {Run-Time Support for Optimizations Based on Escape Analysis},
+	isbn = {0-7695-2764-7},
+	url = {http://dx.doi.org/10.1109/CGO.2007.34},
+	doi = {10.1109/CGO.2007.34},
+	abstract = {The {JavaTM} programming language does not allow the programmer to influence memory management. An object is usually allocated on the heap and deallocated by the garbage collector when it is not referenced any longer. Under certain conditions, the virtual machine can allocate objects on the stack or eliminate their allocation via scalar replacement. However, even if the dynamic compiler guarantees that the conditions are fulfilled, the optimizations require support by the run-time environment. We implemented a new escape analysis algorithm for Sun Microsystems' Java {HotSpotTM} {VM.} The results are used to replace objects with scalar variables, to allocate objects on the stack, and to remove synchronization. This paper deals with the representation of optimized objects in the debugging information and with reallocation and garbage collection support for a safe execution of optimized methods. Assignments to fields of parameters that can refer to both stack and heap objects are associated with an extended write barrier which skips card marking for stack objects. The traversal of objects during garbage collection uses a wrapper that abstracts from stack objects and presents their pointer fields as root pointers to the garbage collector. When a previously compiled and currently executing method must be continued in the interpreter because dynamic class loading invalidates the machine code, execution is suspended and compiler optimizations are undone. Scalar-replaced objects are reallocated on the heap lazily when control returns to the invalidated method, whereas stack-allocated objects must be reallocated immediately before program execution resumes. After reallocation, objects for which synchronization was removed are relocked.},
+	urldate = {2012-09-06},
+	booktitle = {Proceedings of the International Symposium on Code Generation and Optimization},
+	publisher = {{IEEE} Computer Society},
+	author = {Kotzmann, Thomas and Mossenbock, Hanspeter},
+	year = {2007},
+	pages = {49–60}
+},
+
 @inproceedings{ancona_rpython:_2007,
 	address = {Montreal, Quebec, Canada},
 	title = {{RPython:} a step towards reconciling dynamically and statically typed {OO} languages},
