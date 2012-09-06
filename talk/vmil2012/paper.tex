@@ -951,7 +951,7 @@ There is no discussion of the memory use of this information.
 
 The deoptimization information of Hotspot is extended
 to support correct behaviour
-when scalar replacement of fields is done for non-escaping objects~\cite{kotzmann_escape_2005}.
+when scalar replacement of fields is done for non-escaping objects~\cite{kotzmann_escape_2005, kotzmann_run-time_2007}.
 The approach is extremely similar to how RPython's JIT handles virtual objects.
 For every object that is not allocated in the code,
 the deoptimization information contains a description
@@ -959,16 +959,22 @@ of the content of the fields.
 When deoptimizing code, these objects are reallocated
 and their fields filled with the values
 described by the deoptimization information.
-The paper does not describe any attempts to store this information compactly.
-This may not be needed in their approach, because method-based JITs have
-fewer deoptimization points than tracing JITs.
+The data structures for the deoptimization information are very similar to
+those used by RPython's tracing JIT. For every compiled Java method there is a
+\emph{scope entry} for the stack and one for the local variables. The objects
+that are replaced by scalars are described by \emph{object entries}, which are
+equivalent to RPython's virtual objects.
 
-\bigtodo{reviewer d: You state that Kotzmann et al. do not explain how the
-debug information is store in a compact way. They have a second paper that
-describes exactly that: Thomas Kotzmann, Hanspeter Mössenböck: Run-Time
-Support for Optimizations Based on Escape Analysis Proceedings of the
-International Symposium on Code Generation and Optimization, San Jose,
-March 2007.}
+The papers does not describe any attempts to share the object entries and scope
+entries between different deoptimization safe points. This seems to not be
+needed in a method-based JIT compiler, because method-based JITs have fewer
+deoptimization points than tracing JITs. Indeed, in the evaluation presented in
+the second paper~\cite{kotzmann_run-time_2007} the number of safe points is low
+for the benchmarks presented there, between 167 and 1512. The size of the
+debugging information in the presented benchmarks is at most about half the
+size of the machine code generated.
+
+\bigtodo{for comparison we should add the total number of guards per benchmark to one of the tables}
 
 
 
