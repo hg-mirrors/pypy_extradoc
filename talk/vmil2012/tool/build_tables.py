@@ -26,6 +26,7 @@ def build_failing_guards_table(files, texfile, template):
 
     table = []
     head = ['Benchmark',
+            'Sparkline' + "~" * 8,
             'Failing',
             '> %d failures' % BRIDGE_THRESHOLD,
             '50\% of failures',
@@ -42,6 +43,7 @@ def build_failing_guards_table(files, texfile, template):
         num_99 = we_are_n_percent(info, 99)
         num_99_dot_9 = we_are_n_percent(info, 99.9)
         res = [bench.replace('_', '\\_'),
+                make_sparkline(info['results'], num_50 - 1, num_99 - 1, num_99_dot_9 - 1),
                 "%.1f\\%%" % (100 * total_failures/total),
                 "%.1f\\%%" % (100 * bridges/total),
                 "%d~~\\textasciitilde{}~~%.3f\\%%"  % (num_50, num_50 / total * 100),
@@ -67,6 +69,23 @@ def we_are_n_percent(info, n):
         if current_sum > total_failures * n/100.0:
             return (i + 1)
     return -1
+
+def make_sparkline(results, index_50, index_99, index_99_9):
+    results = results.values()
+    results.sort()
+    results.reverse()
+    running = 0
+    lines = ["\\begin{sparkline}{20}"]
+    lines.append("\\sparkdot %04f %04f blue" % (float(index_50) / (len(results) - 1), float(results[index_50]) / max(results)))
+    lines.append("\\sparkdot %04f %04f red" % (float(index_99) / (len(results) - 1), float(results[index_99]) / max(results)))
+    lines.append("\\sparkdot %04f %04f green" % (float(index_99_9) / (len(results) - 1), float(results[index_99_9]) / max(results)))
+    lines.append("\\spark")
+    for i, result in enumerate(results):
+        lines.append("%04f %04f" % (float(i) / (len(results) - 1), float(result) / max(results)))
+    lines.append("/")
+    lines.append("\\end{sparkline}")
+    return " ".join(lines)
+
 
 def build_resume_data_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
