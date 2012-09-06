@@ -54,6 +54,7 @@ def build_failing_guards_table(files, texfile, template):
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
+
 def we_are_n_percent(info, n):
     failure_counts = info['results'].values()
     print failure_counts
@@ -66,22 +67,30 @@ def we_are_n_percent(info, n):
     current_sum = 0
     for i, f in enumerate(failure_counts):
         current_sum += f
-        if current_sum > total_failures * n/100.0:
+        if current_sum > total_failures * n / 100.0:
             return (i + 1)
     return -1
+
 
 def make_sparkline(results, index_50, index_99, index_99_9):
     results = results.values()
     results.sort()
     results.reverse()
-    running = 0
     lines = ["\\begin{sparkline}{20}"]
-    lines.append("\\sparkdot %04f %04f blue" % (float(index_50) / (len(results) - 1), float(results[index_50]) / max(results)))
-    lines.append("\\sparkdot %04f %04f red" % (float(index_99) / (len(results) - 1), float(results[index_99]) / max(results)))
-    lines.append("\\sparkdot %04f %04f green" % (float(index_99_9) / (len(results) - 1), float(results[index_99_9]) / max(results)))
+    lines.append("\\sparkdot %04f %04f blue" %
+            (float(index_50) / (len(results) - 1),
+                float(results[index_50]) / max(results)))
+    lines.append("\\sparkdot %04f %04f red" %
+            (float(index_99) / (len(results) - 1),
+                float(results[index_99]) / max(results)))
+    lines.append("\\sparkdot %04f %04f green" %
+            (float(index_99_9) / (len(results) - 1),
+                float(results[index_99_9]) / max(results)))
     lines.append("\\spark")
     for i, result in enumerate(results):
-        lines.append("%04f %04f" % (float(i) / (len(results) - 1), float(result) / max(results)))
+        lines.append("%04f %04f" %
+                (float(i) / (len(results) - 1),
+                    float(result) / max(results)))
     lines.append("/")
     lines.append("\\end{sparkline}")
     return " ".join(lines)
@@ -98,13 +107,14 @@ def build_resume_data_table(csvfiles, texfile, template):
         naive = float(bench['naive resume data size'])
         xz = float(bench['compressed resume data size'])
         res = [bench['bench'].replace('_', '\\_'),
-                "%.2f {\scriptsize KiB}" %  (total,),# (100*total/naive)),
-                "%.2f {\scriptsize KiB}" % (naive),#, 100*naive/total),
-                "%.2f {\scriptsize KiB}" % (xz),#, 100*xz/total),
+                "%.2f {\scriptsize KiB}" % (total,),  # (100*total/naive)),
+                "%.2f {\scriptsize KiB}" % (naive),  # , 100*naive/total),
+                "%.2f {\scriptsize KiB}" % (xz),  # , 100*xz/total),
         ]
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
+
 
 def build_ops_count_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
@@ -119,7 +129,7 @@ def build_ops_count_table(csvfiles, texfile, template):
         ops = {'before': sum(int(bench['%s before' % s]) for s in keys),
                 'after': sum(int(bench['%s after' % s]) for s in keys)}
 
-        res = [bench['bench'].replace('_', '\\_'),]
+        res = [bench['bench'].replace('_', '\\_')]
         for t in ('before', 'after'):
             values = []
             for key in keys:
@@ -132,6 +142,7 @@ def build_ops_count_table(csvfiles, texfile, template):
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
 
+
 def build_guard_table(csvfiles, texfile, template):
     assert len(csvfiles) == 1
     lines = getlines(csvfiles[0])
@@ -143,14 +154,13 @@ def build_guard_table(csvfiles, texfile, template):
         ops = {'before': sum(int(bench['%s before' % s]) for s in keys),
                 'after': sum(int(bench['%s after' % s]) for s in keys)}
 
-        res = [bench['bench'].replace('_', '\\_'),]
+        res = [bench['bench'].replace('_', '\\_')]
         for t in ('before', 'after'):
             o = int(bench['guard %s' % t])
             res.append('%.1f\\%%' % (o / ops[t] * 100))
         table.append(res)
     output = render_table(template, head, sorted(table))
     write_table(output, texfile)
-
 
 
 def build_benchmarks_table(csvfiles, texfile, template):
@@ -219,7 +229,6 @@ def build_backend_count_table(csvfiles, texfile, template):
         gmsize = float(bench['guard map size'])
         asmsize = float(bench['asm size'])
         rdsize = float(resumedata[name]['total resume data size'])
-        rel = r"%.1f{\scriptsize\%%}" % (asmsize / (gmsize + rdsize) * 100,)
         table.append([
             r"%s" % bench['bench'],
             r"%.1f {\scriptsize KiB}" % (asmsize,),
@@ -249,7 +258,8 @@ tables = {
         'benchmarks_table.tex':
             (['summary.csv', 'bridge_summary.csv'], build_benchmarks_table),
         'backend_table.tex':
-            (['backend_summary.csv', 'resume_summary.csv'], build_backend_count_table),
+            (['backend_summary.csv', 'resume_summary.csv'],
+                                    build_backend_count_table),
         'ops_count_table.tex':
             (['summary.csv'], build_ops_count_table),
         'guard_table.tex':
@@ -257,7 +267,8 @@ tables = {
         'resume_data_table.tex':
             (['resume_summary.csv'], build_resume_data_table),
         'failing_guards_table.tex':
-            (['resume_summary.csv', 'guard_summary.json'], build_failing_guards_table),
+            (['resume_summary.csv', 'guard_summary.json'],
+                                    build_failing_guards_table),
         }
 
 
