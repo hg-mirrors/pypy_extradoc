@@ -19,6 +19,8 @@
 \usepackage[pdfpagelabels=true]{hyperref}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{flafter}
+\usepackage{enumitem}
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
 
 \usepackage{listings}
 
@@ -233,11 +235,8 @@ and developing fast and maintainable dynamic language implementations. Besides
 the Python interpreter there are several experimental language implementation at different
 levels of completeness, e.g. for Prolog~\cite{bolz_towards_2010}, Smalltalk~\cite{bolz_back_2008}, JavaScript and R.
 
-RPython can mean one of two things:
-\begin{itemize}
- \item the language itself
- \item the translation toolchain used to transform RPython programs to executable units
-\end{itemize}
+RPython can mean one of two things, the language itself and the translation
+toolchain used to transform RPython programs to executable units.
 The RPython language is a
 statically typed object-oriented high-level subset of Python. The subset is chosen in such a way to make type inference possible\cite{ancona_rpython:_2007}.
 The language tool-set provides
@@ -302,7 +301,7 @@ The only point of interaction is that some of the guards that are inserted into
 the trace stem from an annotation provided by the interpreter
 author~\cite{bolz_runtime_2011}.
 
-\begin{figure}
+\begin{figure}[ht]
     \input{figures/example.tex}
     \caption{Example program}
     \label{fig:example}
@@ -318,7 +317,7 @@ correspond to the line numbers in Figure~\ref{fig:trace-log}. The resulting
 trace repeatedly halves the current value and checks whether it is equal to
 one, or odd. In either of these cases the trace is left via a guard failure.
 
-\begin{figure}
+\begin{figure}[ht]
     \input{figures/unopt-log.tex}
     \caption{Unoptimized trace, the line numbers in the trace correspond to the line numbers in Figure~\ref{fig:trace-log}.}
     \label{fig:unopt-trace}
@@ -407,7 +406,6 @@ Every variable in the symbolic frame is encoded using two bytes.
 Two bits are used as a tag to denote where the value of the variable
 comes from.
 The remaining 14 bits are a payload that depends on the tag bits.
-
 The possible sources of information are:
 
 \begin{itemize}
@@ -498,7 +496,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 
 % section Resume Data (end)
 
-\begin{figure}
+\begin{figure}[ht]
     \input{figures/log.tex}
     \caption{Optimized trace}
     \label{fig:trace-log}
@@ -507,7 +505,7 @@ virtual instance of \lstinline{Even} are shared between the two guards.
 \section{Guards in the Backend}
 \label{sec:Guards in the Backend}
 
-\begin{figure}
+\begin{figure}[ht]
 \includegraphics[width=0.4\textwidth]{figures/resume_data.pdf}
 \caption{The resume data for Figure~\ref{fig:trace-log}}
 \label{fig:resume-data}
@@ -648,7 +646,6 @@ guards that work based on the same principles.
 % section Guards in the Backend (end)
 
 %___________________________________________________________________________
-
 
 \section{Evaluation}
 \label{sec:evaluation}
