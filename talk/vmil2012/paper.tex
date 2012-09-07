@@ -27,6 +27,12 @@
 \usepackage[T1]{fontenc}
 \usepackage[scaled=0.81]{beramono}
 
+\newenvironment{zitemize}% zero - line spacing itemize environment
+   {\begin{list}{--}{
+   \setlength{\itemsep}{0 pt}
+   \setlength{\parsep}{0 pt}
+   \setlength{\topsep} {0 pt} }}% the end stuff
+   {\end{list}}
 
 \definecolor{commentgray}{rgb}{0.3,0.3,0.3}
 \definecolor{darkgray}{rgb}{0.6,0.6,0.6}
