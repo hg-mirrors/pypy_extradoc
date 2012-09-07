@@ -652,22 +652,6 @@ guards that work based on the same principles.
 \section{Evaluation}
 \label{sec:evaluation}
 
-\bigtodo{reviewer b: One missing data set in the empirical study
-is excution time performance info for the
-various guard implementation choices.
-The empirical data focuses on space not
-time.}
-
-\bigtodo{reviewer c:
-I would have liked to see an evaluation based on execution time rather than
-operations. I do not have a good sense of the relative cost of different
-operations, and from my experience know that it can be misleading to use such a
-measure.}
-
-\bigtodo{reviewer c:
-For all of the results some aggregate values would be useful (max/min, etc.)
-}
-
 The results presented in this section are based on numbers gathered by running
 a subset of the standard PyPy benchmarks. The PyPy benchmarks are used to
 measure the performance of PyPy and are composed of a series of
@@ -977,8 +961,6 @@ that the density of safe points is low also means that the sharing approaches
 of this chapter likely would not work well.} The size of the
 debugging information in the presented benchmarks is at most about half the
 size of the machine code generated.
-
-\bigtodo{for comparison we should add the total number of guards per benchmark to one of the tables, and maybe also the number of traces}
 
 
 
