@@ -728,7 +728,8 @@ are not influenced that much by the techniques described in this paper.
     \label{fig:benchmarks}
 \end{figure*}
 
-Figure~\ref{fig:benchmarks} summarizes the total number of operations that were
+Figure~\ref{fig:benchmarks} summarizes\footnote{In all tables the minimum and
+maximum values for each column are highlighted in dark/light gray.} the total number of operations that were
 recorded during tracing for each of the benchmarks and what percentage of these
 operations are guards. The static number of operations was counted on the unoptimized
 and optimized traces. The figure also shows the overall optimization rate for
@@ -749,7 +750,8 @@ relative amounts of guards that ever fail and of guards that fail often enough t
     The threshold used is 200 failures. This rather high threshold was picked experimentally to give
     good results for long-running programs.
 }
-
+It also contains sparklines depicting the failure rates for the failing guards
+in decreasing order, each normalized to the most failing guard.
 The numbers presented for guards that have a bridge represent the
 failures up to the compilation of the bridge and all executions of the then
 attached bridge.
@@ -768,7 +770,9 @@ enough that a bridge is compiled for them.
 Also, of all failing guards a few fail extremely often
 and most fail rarely. Reinforcing this notion the figure shows that, depending on the
 benchmark, between 0.008\% and 0.225\% of the guards are responsible for 50\%
-of the total guards failures.
+of the total guards failures. Even considering 99.9\% of guard failures the
+relative amount of guards does not rise above 3\%.
+The colored dots in the sparklines correspond to 50\%, 99\% and 99.9\%.
 These results emphasize that as most of the guards never
 fail it is important to make sure that the successful execution of a guard does
 not have unnecessary overhead.
@@ -1029,5 +1033,5 @@ others. Any remaining errors are our own.
 %\end{figure*}
 \bibliographystyle{abbrv}
 \bibliography{zotero,paper}
-\listoftodos
+%\listoftodos
 \end{document}
