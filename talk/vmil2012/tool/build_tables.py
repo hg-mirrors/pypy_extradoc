@@ -45,6 +45,9 @@ def build_failing_guards_table(files, texfile, template):
         num_50 = we_are_n_percent(info, 50)
         num_99 = we_are_n_percent(info, 99)
         num_99_dot_9 = we_are_n_percent(info, 99.9)
+        perc_50 = num_50 / total * 100
+        perc_99 = num_99 / total * 100
+        perc_99_dot_9 = num_99_dot_9 / total * 100
 
         mins[0] = min(mins[0], (perc_failures, i))
         maxs[0] = max(maxs[0], (perc_failures, i))
@@ -52,14 +55,14 @@ def build_failing_guards_table(files, texfile, template):
         mins[1] = min(mins[1], (perc_bridges, i))
         maxs[1] = max(maxs[1], (perc_bridges, i))
 
-        mins[2] = min(mins[2], (num_50, i))
-        maxs[2] = max(maxs[2], (num_50, i))
+        mins[2] = min(mins[2], (perc_50, i))
+        maxs[2] = max(maxs[2], (perc_50, i))
 
-        mins[3] = min(mins[3], (num_99, i))
-        maxs[3] = max(maxs[3], (num_99, i))
+        mins[3] = min(mins[3], (perc_99, i))
+        maxs[3] = max(maxs[3], (perc_99, i))
 
-        mins[4] = min(mins[4], (num_99_dot_9, i))
-        maxs[4] = max(maxs[4], (num_99_dot_9, i))
+        mins[4] = min(mins[4], (perc_99_dot_9, i))
+        maxs[4] = max(maxs[4], (perc_99_dot_9, i))
 
         res = [bench.replace('_', '\\_'),
                 make_sparkline(info['results'], num_50 - 1,
@@ -67,11 +70,11 @@ def build_failing_guards_table(files, texfile, template):
                 "%.1f\\%%" % perc_failures,
                 "%.1f\\%%" % perc_bridges,
                 "%d~~\\textasciitilde{}~~%.3f\\%%" %
-                                    (num_50, num_50 / total * 100),
+                                    (num_50, perc_50),
                 "%d~~\\textasciitilde{}~~%.3f\\%%" %
-                                    (num_99, num_99 / total * 100),
+                                    (num_99, perc_99),
                 "%d~~\\textasciitilde{}~~%.3f\\%%" %
-                                    (num_99_dot_9, num_99_dot_9 / total * 100),
+                                    (num_99_dot_9, perc_99_dot_9),
         ]
         table.append(res)
     mark_min_max(table, mins, maxs, 2)
