@@ -220,6 +220,7 @@ def build_benchmarks_table(csvfiles, texfile, template):
         bridgedata[l['bench']] = l
 
     head = ['Benchmark',
+            '\# Traces',
             'Ops. before',
             'Guards before',
             'Ops. after',
@@ -242,34 +243,41 @@ def build_benchmarks_table(csvfiles, texfile, template):
         perc_guards_ao = guards_ao / ops_ao * 100
         opt_rate = (1 - ops_ao / ops_bo) * 100
         guard_opt_rate = (1 - guards_ao / guards_bo) * 100
+        no_traces = bench['number of loops'] + bridgedata[bench['bench']]['bridges']
 
-        mins[0] = min(mins[0], (ops_bo, i))
-        maxs[0] = max(maxs[0], (ops_bo, i))
+        mins[0] = min(mins[0], (no_traces, i))
+        maxs[0] = max(maxs[0], (no_traces, i))
 
-        mins[1] = min(mins[1], (perc_guards_bo, i))
-        maxs[1] = max(maxs[1], (perc_guards_bo, i))
+        mins[1] = min(mins[1], (ops_bo, i))
+        maxs[1] = max(maxs[1], (ops_bo, i))
 
-        mins[2] = min(mins[2], (ops_ao, i))
-        maxs[2] = max(maxs[2], (ops_ao, i))
+        mins[2] = min(mins[2], (perc_guards_bo, i))
+        maxs[2] = max(maxs[2], (perc_guards_bo, i))
 
-        mins[3] = min(mins[3], (perc_guards_ao, i))
-        maxs[3] = max(maxs[3], (perc_guards_ao, i))
+        mins[3] = min(mins[3], (ops_ao, i))
+        maxs[3] = max(maxs[3], (ops_ao, i))
 
-        mins[4] = min(mins[4], (opt_rate, i))
-        maxs[4] = max(maxs[4], (opt_rate, i))
+        mins[4] = min(mins[4], (perc_guards_ao, i))
+        maxs[4] = max(maxs[4], (perc_guards_ao, i))
 
-        mins[5] = min(mins[5], (guard_opt_rate, i))
-        maxs[5] = max(maxs[5], (guard_opt_rate, i))
+        mins[5] = min(mins[5], (opt_rate, i))
+        maxs[5] = max(maxs[5], (opt_rate, i))
+
+        mins[6] = min(mins[6], (guard_opt_rate, i))
+        maxs[6] = max(maxs[6], (guard_opt_rate, i))
         # the guard count collected from jit-summary counts more guards than
         # actually emitted, so the number collected from parsing the logfiles
         # will probably be lower
         assert guards_ao <= bridgedata[bench['bench']]['guards']
         res = [
                 bench['bench'].replace('_', '\\_'),
+                no_traces,
                 ops_bo,
-                "%.1f\\%%" % perc_guards_bo,
+                "%d~~\\textasciitilde{}~~%.1f\\%%" %
+                                        (guards_bo, perc_guards_bo),
                 ops_ao,
-                "%.1f\\%%" % perc_guards_ao,
+                "%d~~\\textasciitilde{}~~%.1f\\%%" %
+                                        (guards_ao, perc_guards_ao),
                 "%.1f\\%%" % (opt_rate,),
                 "%.1f\\%%" % (guard_opt_rate,),
               ]
