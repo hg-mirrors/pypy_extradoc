@@ -363,7 +363,7 @@ If the guard fails later the bridge is executed. Therefore the resume data of
 that guard is no longer needed.
 
 There are several forces guiding the design of resume data handling.
-Guards are a very common operations in the traces.
+Guards are a very common operation in the traces.
 However, as will be shown, a large percentage of all operations
 are optimized away before code generation.
 Since there are a lot of guards
@@ -744,7 +744,7 @@ quickly.
 
 \subsection{Guard Failures}
 \label{sub:guard_failure}
-The last point in this discussion is the frequency of guard failures.
+The next point in this discussion is the frequency of guard failures.
 Figure~\ref{fig:failing_guards} presents for each benchmark a list of the
 relative amounts of guards that ever fail and of guards that fail often enough that a bridge is compiled.\footnote{
     The threshold used is 200 failures. This rather high threshold was picked experimentally to give
