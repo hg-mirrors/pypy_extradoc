@@ -25,12 +25,20 @@ class ReloadHack(object):
                                 reload(self.module)
                                 self.iterator_class = getattr(self.module, self.name).iterator_class
                                 obj = iter(self.iterator_class(*args, **kwargs))
+                                halted = False
                         except Exception as e:
                             print
                             traceback.print_exc()
                         else:
-                            break
-                yield obj.next()
+                            if not halted:
+                                break
+                try:
+                    yield obj.next()
+                except Exception as e:
+                    print
+                    traceback.print_exc()
+                    halted = True
+
 
         return wrapper()
 

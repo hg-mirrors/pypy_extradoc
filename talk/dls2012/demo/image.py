@@ -46,11 +46,13 @@ class Image(object):
     __sub__ = binop(float.__sub__)
     __mul__ = binop(float.__mul__)
     __div__ = binop(float.__div__)
+    __pow__ = binop(float.__pow__)
 
     __radd__ = binop(float.__radd__)
     __rsub__ = binop(float.__rsub__)
     __rmul__ = binop(float.__rmul__)
     __rdiv__ = binop(float.__rdiv__)
+    __rpow__ = binop(float.__rpow__)
 
     __lt__ = binop(float.__lt__)
     __le__ = binop(float.__le__)

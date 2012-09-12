@@ -1,8 +1,10 @@
 from reloader import ReloadHack
+from fgbg import background
 
 @ReloadHack
 def process(video):
-    for img in video:
-        yield img * 2 
+    bkg = background(video)
+    for img in bkg:
+        yield img 
 
 
