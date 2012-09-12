@@ -8,8 +8,9 @@ else:
     fn = 'tv://'
 
 tracker = Tracker()
-for img in mplayer(fn):
-    view(img, 'Input')
-    tracker.update(img)
+while True:
+    for img in mplayer(fn):
+        view(img, 'Input')
+        tracker.update(img)
 
 

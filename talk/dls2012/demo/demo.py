@@ -32,7 +32,7 @@ class Tracker(ReloadHack):
     def update(self, frame):
         view(frame)
 """
-    runner = Popen(['pypy', 'run.py', 'demo.mpg'])
+    runner = Popen(['pypy', 'run.py', 'demo.avi'])
     vim = Vim('analytics.py')
 
     pause("We'r looking at the input and output of this Tracker object that\n" + 
