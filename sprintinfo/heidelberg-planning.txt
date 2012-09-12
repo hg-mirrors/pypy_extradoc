@@ -1,0 +1,169 @@
+PyPy Heidelberg sprint planning (22th-29st August) 
+-----------------------------------------------------
+
+Armin Rigo         rel 
+Samuele Pedroni    rel 
+Carl Friedrich Bolz  rel/GC
+Niklaus Haldimann [work on _sre]
+Holger Krekel   rel 
+Richard Emslie  llvm/rel
+Eric van Riet Paap [llvm/rel]
+Jacob Hallen    [manage]   
+Laura Creighton  [rel] 
+Ludovic Aubry    [rel] 
+Anders Chrigstroem [rel]
+Christian Tismer  [rel]
+Anders Lehmann  [rel]
+Beatrice Duering [rel/sprint-driven dev]
+
+Rough Week planning::
+    each day: 10 AM - 7 PM (lunch break at ~1-3pm)
+
+    monday 22nd sprinting
+    tuesday 23rd sprinting 
+    wednesday 24th sprinting
+
+    thursday 25th break day!
+
+    friday 26th sprinting / release 
+    saturday 27th sprinting 
+    sunday 28th sprinting / technical summary/some future planning
+    monday 29th sprinting/eu-meeting/cleanup
+
+Release (PyPy-0.7)::
+
+  - fix download locations, prepare/try out packaging 
+  - RELEASE CUTTING 
+    - copy pypy/dist to pypy/release/0.7.x 
+      and work on 0.7.x regarding remaining release issues 
+
+      documentation/all release-issues from the tracker  
+      are worked on in the release-branch, including documentation 
+
+    - which documentation should be served on the web
+      page?   Probably just serving dist would fit for now. 
+
+  - NOTE: the translated pypy versions should be named:
+
+            pypy-c [--info --version] richards.py 
+            pypy-c-boehm 
+            pypy-llvm 
+
+    the version should be 0.7.0 
+
+  - to be done: entry-point commandline option parsing/repr-of-info 
+
+Translation
+
+  - Finish GIL-based threading: backend support, fix bugs?
+   
+    seems to work: but still needs checks if it translates and 
+    then runs successfully (possibly lurking segfaults).  
+
+  - Isolate refcounting in genc, and
+    have an option to enable and use Boehm instead
+
+    DONE: you can use boehm with a translation of PyPy 
+    interpreting richards.py. (translate_pypy.py -boehm) 
+
+2.4.1 Compliance::
+
+  - Recategorize the tests in core/non-core ( = language compliancy)
+    41 current-core tests should not be in core, 
+    11 current-non-core tests should be in core 
+     5 are about threading (should be core?)
+  - test_unicode, test_codecs
+    test_unicode has one remaining error involving 
+    eval(unicode) which means that compile(unicode) does not work
+    currently. (see issue in the tracker, ludovic will try to look
+    into this briefly) 
+
+  - Fix/adjust/prioritize compliance test problems
+    done: fixed binascii problems. 
+
+  - (tismer) mostly done: speeding up compilation on the 
+    translated pypy version by doing an external cpython-invocation 
+    to produce the code object. 
+    one can use an external python invocation to compile 
+    from an AST to code objects to speed up compilation 
+    for the translated PyPy. pypy/fakecompiler should be moved 
+    to pypy/lib/_fakecompiler 
+
+  - Some other "non-core" tests revealing real bugs/problems?
+
+  - DONE SO FAR: from wednesday morning on most of us should work 
+    on compliancy related issues (mostly everybody)
+
+  - (holger) try to fix the problem that you have to be in 
+    2.4.1/test in order to successfully run tests 
+
+  - NOTE: pypy-dist/lib-python/failure_list.txt 
+    contains ongoing anaylsis/Status for compliancy tests!
+
+Compiler/Parser::
+
+  - Fix bugs, missing features (some cause compliance regressions) 
+  - Work on making the compiler interp-level 
+      st->ast mostly done, should go into the release (ludal, nik)
+        integrated with a runtime option
+        need to fix astcompiler 
+      ast->bytecode may be done for the release? in-progress
+
+  - compiling unicode strings (see failing test_builtins)
+    https://codespeak.net/issue/pypy-dev/issue97 
+
+  - interactive mode parsing (issue115 -- use "single" instead of "exec"?
+      look at code.py from lib-python/2.4.1/)
+      high priority: why is "from __future__" not working? (flag missing?)
+      inputs that are a single string are considered docstrings
+      (also single unicode strings are considered docstrings)
+
+    no progress on the bugs
+
+Built-in modules::
+
+  - Do we still miss important os.* functionality?
+  - FIXED: errno (easy for now)
+  - Enable our own array/_sre when translating 
+    applevel _sre should be put into pypy/lib/
+    (mixed re-module is well in progress towards becoming
+    translateable) 
+  - mostly done: 'math' must be finished (math.log(<long object>))
+    left: enable by default. 
+
+Fix/garden issues for the release in the tracker::
+
+  - Go over the issues in the tracker: close, postpone or fix them as needed
+    for the release
+  - Review Hildes_to_Heidel.txt contents too
+
+LLVM backend (richard, eric)::
+
+  - done (see next point) Improvement work to stabilize and match genc
+
+  - somewhat done: Try to share code with genc (c-code resused by)
+
+  - status: external function implementations are reused from gen-c 
+    by using the llvm-c-frontend.  The latter is installed on codespeak 
+    and can be run remotely from a client. (the underlying problem 
+    is that the llvm-c frontend is hard to install). 
+
+ 
+GC (carl friedrich, samuele)::
+ 
+  - Complete SoC GC framework (cfbolz)
+    in-progress: two more nights or so. 
+
+  - (Start to think how/what is still missing to leverage it for Phase 2) 
+  - (related: isolating refcounting)
+
+Cleanups
+
+  - We didn't really manage to tackle the cleanups listed in Hildes_to_Heidel.txt;
+    do we want, have we the time to address some of them during the sprint for the release
+
+Future Planning
+
+  - Plan work until next sprint 
+  - Consider priorities up to review
+  - Start thinking about organizing Phase2 work, baseline status wrt this 

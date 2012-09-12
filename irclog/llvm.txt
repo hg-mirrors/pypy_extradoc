@@ -1,0 +1,167 @@
+LLVM
+====
+
+First discussion about using LLVM as a target language.
+LLVM (Low Level Virtual Machine) is a Compiler Infrastructure;
+see http://llvm.cs.uiuc.edu/.
+
+Irc log from October, the 28th::
+
+  <stackless>	So I smell something growing here...
+  <sanxiyn>	arigo: thanks. I lost some of up-logs... so I asked.
+  <arigo>	stackless: nice
+  <stackless>	on that assembly target: How is their source code? Had no time to look. I hope
+  <stackless>	they don't use huge ugly other languages like ML?
+  <sanxiyn>	stackless: good for you! I thank Richard Emslie, I thank Richard Emslie (he repeats)
+  <hpk>	arigo: uh, bob ippolito just wrote that LLVM is all C++
+  <arigo>	stackless: i doubt it
+  <sanxiyn>	Yep. LLVM is in C++.
+  <sanxiyn>	arigo: so logging & summary is for you (evil grin)
+  <arigo>	sanxiyn: yes
+  <arigo>	stackless: i think they are using fast custom back-ends for runtime code generation
+  <stackless>	arigo: that sounds like what I like.
+  <arigo>	stackless: they also mentioned grabbing parts of GCC
+  <hpk>	who bothers - we have to have some binding with C++ then :-)
+  <arigo>	stackless: or ideas and AST structures at least
+  <hpk>	but they seemed to like to move away from it (because of licensing issues)
+  <stackless>	well, they might like PyPy and decide to become part of the project, supporting us.
+  *	sanxiyn baffles, "ML is neither huge nor ugly!"
+  <arigo>	stackless: yes !
+  <arigo>	in all cases i think that a genllvm.py should be easy to write
+  <hpk>	right
+  <arigo>	and if their compilers are good it could be faster than C
+  *	stackless apologises, didn't mean ML, probably. But last time he looked into C--, he was unhappy to pull so much tings in...
+  <arigo>	because it has a lot of meta-information
+  <arigo>	not only types, but single-step-assignment guarantees no aliasing, whereas GCC tries hard to find out what could alias what
+  <stackless>	single-step-assignment is one thing I remember from C--
+  <arigo>	yes
+  <arigo>	it's a good idea
+  <stackless>	really good. They never have expressions in function calls.
+  <arigo>	and it's natural for intermediate languages like our flow graphs
+  <stackless>	Instead, order of evaluation is crystal clear.
+  <sanxiyn>	I think FlowModel has that property too...
+  <arigo>	yes
+  <sanxiyn>	since it's derived from Python bytecode... etc.
+  <arigo>	interesting stuff from the e-mail at http://mail.cs.uiuc.edu/pipermail/llvmdev/2003-October/000501.html
+  <arigo>	"programs which have high-degree basic blocks"
+  <arigo>	high-degree mean (unless i'm mistaken) a lot of inputargs
+  <arigo>	we have a lot of them indeed
+  <hpk>	yes!
+  <hpk>	that's what'
+  <arigo>	that's a problem when using languages like ML as intermediate languages
+  <arigo>	you can write functions with 23 arguments
+  <arigo>	but the compiler isn't optimized for that
+  <arigo>	i tried, it produces bad code :-)
+  <sanxiyn>	Ah, I heard it from Lisp gotchas, i.e. it's easier to write slow code in Lisp.
+  <sanxiyn>	(it specifically mentioned problem with multiple value return optimization. sounds similar.)
+  <sanxiyn>	btw, what is SSA...
+  <arigo>	single-step assignment (never write to a variable more than once)
+  <sanxiyn>	I'm not sure how does it help, but I don't know much about this area.
+  <hpk>	i a m just skimming the source code
+  <hpk>	looks nice and readable
+  <hpk>	and good inline documentation it seems
+  <hpk>	it is c++ though :-)
+  <sanxiyn>	arigo: Was thinking more about SpaceOp/Annset. It's a constraint-based programming.
+  <arigo>	yes, constrain propagation...
+  <sanxiyn>	That's what Screamer (sorry, don't know about others. this one is Lisp) do very well...
+  <sanxiyn>	Integer range analysis and all goodies.
+  *	hpk has not often seen such nice c++ code ...
+  <sanxiyn>	So it's not really a new idea. But that means we have lots of expereince to learn from.
+  <arigo>	sanxiyn: yes
+  *	sanxiyn loads screamer intro he downloaded but have never read.
+  <hpk>	hmmm, it's really a high level c++ code, probably pretty easy to convert to python (the parts i have seen)
+  <sanxiyn>	How much code is LLVM?
+  <hpk>	i have no idea
+  <hpk>	i just read the commit mails
+  <sanxiyn>	ls
+  <sanxiyn>	PyPy is currently 39844 lines of code.
+  <sanxiyn>	(22000 of them is PyPy, 16000 Pyrex.)
+  <hpk>	what? 
+  <hpk>	16000 pyrex? what do you mean? 
+  <sanxiyn>	Plex + Pyrex is 16000 lines.
+    
+    Oct 28 16:10:18 -->	pedronis (~sp@91.51.202.62.dial.bluewin.ch) has joined #pypy
+  <sanxiyn>	Hello.
+  <pedronis>	hi
+  <hpk>	pedronis: hi samuele
+  <arigo>	hi samuele
+  *	sanxiyn downloads LLVM 1.0
+  <sanxiyn>	hpk: what do you think about line count? :)
+  *	arigo downloads LLVM 1.0 too
+  <pedronis>	why do we need to be so fast with  LLVM, is why they want to setup a public repo and we want to offer hosting it?
+  <sanxiyn>	we don't need to be hasty, right.
+  <sanxiyn>	hpk: eh. should I register to download?
+  <hpk>	i just did :-)
+  <arigo>	so did i :-)
+  <hpk>	with real name and all :-)
+  <sanxiyn>	me too.
+  <hpk>	pedronis: it cant hurt to contact them informally and see/talk about ideas i think
+  <sanxiyn>	well. it's *huge*;
+  <hpk>	pedronis: if we find out that we were over-enthusiatic we have not lost much, i think
+  <arigo>	pedronis: i think their project is interesting, for PyPy or not, and holger talked about offering hosting
+  <arigo>	pedronis: but mostly i'm sure if llvm is well written it is excellent for PyPy
+  <arigo>	pedronis: this needs to be checked and discussed of course
+  <pedronis>	arigo: what I'm not sure, and we should ask is how much they are interested in optimization for VHLL
+  <arigo>	as opposed to C-like languages ?
+  <pedronis>	arigo: yup, it seems that LLVM need to extended for thing like exact GC, or some possible lookup opts for VHLL
+  <arigo>	yes, i think the VHLL is supposed to do language-specific optimizations itself
+  *	sanxiyn metions Parrot... not.
+  <arigo>	and only emit a low-level code that contains enough information for good low-level optimization
+  <sanxiyn>	Parrot is the only explicitly VHLL VM I know of.
+  <pedronis>	arigo: it seems they are interested in things like region-based memory allocation etc
+  <arigo>	yes, which is fine i think
+  <pedronis>	arigo: which goes more in the device driver, OS kernel direction
+  <hpk>	quote: The Python test classes are more UNIX-centric than they should be, so porting to non-UNIX like platforms 
+  <arigo>	we can have refcounted regions and garbage-collected ones
+  <hpk>	(i thought it's interesting that they are using python for something :-)
+  <sanxiyn>	hpk: Many projects use Python for unittesting, but usually they have not much to do with Python.
+  <sanxiyn>	For example, svn uses Python for unittesting.
+  <hpk>	sanxiyn: sure, but it's still significant information 
+  <arigo>	pedronis: llvm is definitely a low-level tool
+  <hpk>	and BIND and whatnot
+  <sanxiyn>	Yes. It tells us they know about Python. :)
+  <pedronis>	arigo: yes, the point is whether they are happy extending it to support non-low-level stuff
+  <arigo>	pedronis: i'm thinking about it at least as a very good alternative to C for the translator
+  <arigo>	pedronis: but i think they would be happy to design some "hooks" needed for high-level languages
+  <arigo>	pedronis: they don't have Java yet for example but mention wanting to look in that direction
+  <pedronis>	arigo: OK, so using the their static compiler?
+  <arigo>	pedronis: at least
+  <arigo>	pedronis: we should try to write "genllvm.py"
+  <sanxiyn>	If RPython can be translated to C, it surely can be translated to LLVM.
+  <sanxiyn>	And moreover, as Psyco do (perhaps I'm wrong here), some Applevel Python function may be able to be JITted by (LLVM or whatever).
+  <arigo>	pedronis: i think the experiment is worth being made
+  <arigo>	sanxiyn: yes, that's what is beyond my "at least" :-)
+  <pedronis>	arigo: well the experiment is cheap
+  <sanxiyn>	arigo: Will you post log and summary for binding concept and forward-dependency, constraint-based programming?
+  <arigo>	sanxiyn: yes
+  <arigo>	pedronis: yes
+  <sanxiyn>	topic is moving farther and farther from that.
+  <arigo>	sanxiyn: i've saved the relevant parts, will edit them when i've a minute
+  <sanxiyn>	ah, ok.
+  <pedronis>	arigo: my issue is how much their JIT is usable and drivable at runtime, and intergation with things like GC etc
+  <pedronis>	arigo: OTOH yes as target of the translator, that another situation
+  <arigo>	pedronis: yes for the JIT it needs more investigation
+  <arigo>	pedronis: for full Psyco i'd need compilation of basic-blocks-at-a-time (not whole functions at a time)
+  <pedronis>	arigo: yes, I know that, is one of the thing I was wondering about
+  <sanxiyn>	I remeber Psyco does very complex things to accomplish that.
+  <arigo>	pedronis: right now i'm pretty enthusiastic because the LLVM language is just the same as our flowgraphs, so we could probably at least have a JIT for RPython
+  
+    Oct 28 16:31:22 -->	faassen (~faassen@a213-84-57-72.adsl.xs4all.nl) has joined #pypy
+  <arigo>	hi martijn
+  <pedronis>	arigo: yes or just static compilation
+  <pedronis>	arigo: it seems they are investigating trace-based techniques like Dynamo
+  <arigo>	pedronis: actually, i don't know many projects with a good runtime compiler that accepts an in-memory SSA representation of code
+  <faassen>	hey.
+  <arigo>	pedronis: this alone makes llvm interesting, for many projects that I can think about besides or on top of PyPy
+  <sanxiyn>	So LLVM is already a rare case?
+  <hpk>	what really impresses me is how their website and the source code is done
+  <hpk>	faassen: hi martijn
+  <faassen>	hpk: hey! :)
+  <arigo>	pedronis: trace techniques are nice, Psyco's profiler is a bit primitive
+  <sanxiyn>	website is impressive. I don't know C++ very well to judge the code. :(
+  <hpk>	sanxiyn: trust me it's better than average :-)
+  <faassen>	what website is that? :)
+  <arigo>	pedronis: at this point i think we should at least consider using llvm even if we have to change a bit the C++ code to add a couple of instructions.
+  <hpk>	http://llvm.cs.uiuc.edu/#subprojects
+    
+... cut at Martijn's arrival :-)

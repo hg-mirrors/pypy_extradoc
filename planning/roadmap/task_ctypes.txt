@@ -1,0 +1,18 @@
+Support app-level ctypes
+========================
+
+status:
+ - Done (with a few minor exceptions).
+
+todo:
+ - As a first approach for providing C-level bindings, we should implement
+   the ctypes module on top of already existing _ffi wrapper. This would
+   allow to access quite a bit of libraries which use ctypes already
+   (like SDL wrapper).
+
+ - This is probably a medium-sized task.  The details of the ctypes semantics
+   are messy and can only be found by poking around the implementation.
+
+expected outcome:
+
+dependencies:

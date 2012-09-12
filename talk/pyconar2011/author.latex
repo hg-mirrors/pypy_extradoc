@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Little things that PyPy makes possible]{Little things that PyPy makes possible}
+\author[fijal]
+{Maciej Fijałkowski}
+
+\institute{Pycon Argentina 2011}
+\date{Sep 23 2011}

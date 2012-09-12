@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy: current status and GIL-less future]{PyPy: current status and GIL-less future}
+\author[antocuni, fijal, arigo]
+{Antonio Cuni, Maciej Fijałkowski, Armin Rigo}
+
+\institute{EuroPython 2012}
+\date{July 2 2012}

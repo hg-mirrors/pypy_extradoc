@@ -1,0 +1,235 @@
+=============================================
+pypy-sync developer meeting 29th September
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync
+
+Attendees::
+
+         Samuele Pedroni
+         Anders Lehmann (minutes/moderation)
+         Anders Chrigström
+         Christian Tismer
+         Holger Krekel 
+         Eric van Riet Paap
+         Michael Hudson
+         Carl Friedrich Bolz
+         Bert Freudenberg 
+
+Absentees:
+         Ludovic Aubry
+         Adrien Di Mascio
+         Armin Rigo
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+    Christian had a problem with debugging of pypy-c (Samuelle and Christian will try to solve this).
+    Carl Friedrich has trouble finding a bug (proposed deferred to the Sprint).
+    Holger had a problem finding accomodation in Paris (Holger resolves this).
+
+Topics of the week
+===================
+
+
+1. Pre christmas sprint
+
+    There a possibilities for a sprint in the last week of november/ first week of december in Barcelona or Ireland (Bea) or Bruxelles or Istanbul (Holger) or Finland (Christian). Nothing firm at this point, but it was agreed that the possibilities should be investigated before Paris so the dates and venue could be fixed at the sprint.
+
+2. Compliance
+
+    It seems that pypy-c cant run py.test and that several tests in the lib-python testsuite will make pypy-c segfault. It was chosen to not invest time into solving these problems at this point since pypy-c is in such a flux anyway.
+
+3. Marketing
+
+    The topic was deferred due to lack of time.
+
+4. Not announced topic - Status of AST-compiler.
+
+    It seems that there is only ony remaining problem left. There is hope that the parse/compiler multitude will be resolved before the Paris sprint.
+
+Next pypy-sync meeting
+-------------------------------
+
+Scheduled for next Thursday,  oct. 6th 1300h CET, conducted by Christian Tismer.
+
+Closing
+------------------
+
+Anders closes the meeting at 13:31pm.
+
+
+.. _`IRC-log`: 
+
+Log:: 
+
+    <stakkars> DONE: other work/vacation
+    <stakkars> NEXT: multi-source compile, usability, stacklessdesign paper
+    <stakkars> BLOCK: None
+    <aleale> so we are starting with our reports ?
+    ??? willingsl is now known as ericvrp
+    <cfbolz> aleale: you are the leader
+    <stakkars> I'd suggest to start pasting at 13:00 without asking :-)
+    <aleale> ok the meeting is open - please go ahead with the reports
+    <pedronis> LAST: killing duplication, worked on reports, worked on goal
+               oriented translate_pypy, moving away from print to logging in our
+               toolchain
+    <pedronis> NEXT: finish translate_pypy work, more report work, ...
+    <pedronis> BLOCKERS: -
+    <aleale> Prev: DFKI stuff
+    <aleale> Next: WP 9 stuff
+    <aleale> Blockers: -
+    <ericvrp> last: llvm hacky transforms to see effect of mallocs for exceptions
+    <ericvrp> next: lurk #pypy for paris activities
+    <ericvrp> blockers: -
+    ??? hpk [n=hpk@merlinux.de] has joined #pypy-sync
+    <arre>     LAST: astcompiler, making sure we pass compilancy tests with it.
+    <arre>     NEXT: More astcompiler, sourcecode encoding and cleaning up.
+    <arre> BLCOKERS: None.
+    <cfbolz> LAST: vacation, optimization fun (constant folding)
+    <cfbolz> NEXT: probably PyPy unrelated?
+    <cfbolz> BLOCKER: can't find my bug in constant folding :-(
+    <hpk> last: a bit py lib work, 22C3 proposal, paris-org, emails and
+              communication
+    <hpk> next: EU reports, some dev coordination stuff
+    <hpk> blockers: paris appartment planning
+    ??? Topic (#pypy-sync): changed by pedronis: log at
+              http://tismerysoft.de/pypy/irc-logs/pypy-sync/
+    ??? mwh [n=user@82-33-185-193.cable.ubr01.azte.blueyonder.co.uk] has joined
+              #pypy-sync
+    <aleale> I see two blockers
+    <aleale> a bug and housing in Paris
+    <stakkars> ok, three: BLOCKER: can't debug the PyPy crash, yet.
+    <aleale> stakkars: sorry
+    <cfbolz> it's probably not possible to do much about mine
+    <hpk> aleale: the housing problem cannot be solved here (and it's not anyone
+              else blocking me ASFAIK :)
+    <stakkars> mine has a simple solution: implement multi-source, so that's
+               doable by me
+    <aleale> ok, maybe we can look at cfbolz's bug in Paris, make sense?
+    <pedronis> stakkars: you probaly need info lost from previous stages, I can
+               help with that
+    <aleale> Before we start withe the weekly topics
+    <stakkars> pedronis: for the multi-source? ok, we'll talk on  #pypy
+    <aleale> hpk has asked for a status  on the ast-compiler, can anyone give a
+              short report ?
+    <cfbolz> where are the logilab people?
+    <pedronis> arre: ?
+    <stakkars> can we maybe raise a topic somewhere about importance of pypy-sync
+               and attendance? 
+    <aleale> cfbolz: having lunch ? havent heard from them (or arigo)
+    <arre> I think the last problem to sort out is sourcecode encoding stuff.
+    <cfbolz> stakkars: I agree
+    <cfbolz> arre: that's the only thing left? cool!
+    <arre> After that i think we can start using it as the default.
+    <mwh> stakkars: and consortium meetings...
+    <arre> cfbolz: That is unless something ugly turns up.
+    <stakkars> mwh: yes, I missed that one because I was in vacation and didn't
+               read enough
+    <aleale> arre: sounds good
+    <arre> It's passing the compliancytests as good as sablecompiler.
+    <hpk> it would be great if we could get rid of our various compilers and just
+              have astcompiler (especially for newcomers)
+    <hpk> before the paris sprint 
+    <hpk> and it seems very close to it already (good work, btw!)
+    <arre> I'll do my best!
+    <aleale> Any suggestions where we can raise the issue, pypy-dev?
+    <hpk> we have raised it here, it will be in the minutes which you can reply
+              to your invitation
+    <aleale> ok,lets move on the announced topics
+    <aleale> 1 Pre christmas sprint. I think it would be nice to get this planned
+    <aleale> 2 Compliance. Are we able to run the compliance test with
+              pypy-c/pypy-llvm?
+    <aleale> 3 Marketing. It would be nice to haave a press kit aimed at
+              non-python people
+    <aleale> Bea talk about a sprint in Barcelona, any other suggestions ?
+    <mwh> barcelona in december sounds nice :)
+    <mwh> are there locals, though?
+    <stakkars> ad 1: at some point, I'd like topropose a sprint in Finland. But
+               maybe Winter isn't perfect for that. Opinions?
+    <hpk> i thinkt he only _concrete_ efforts currently are from bea (Ireland,
+              Barcelona) and me (Bruxelles, Istanbul)
+    <hpk> bruxelles: no answer yet, though
+    <aleale> stakkars: if the venue includes a sauna it should be ok
+    <hpk> istanbul: unlikely in the december time frame, need to re-check
+    <stakkars> aleale: sure, there is no Finish house without it
+    <hpk> to be honest, we increasingly need more than ideas: concrete
+              contacts/opportunities, no? 
+    <stakkars> it is the question whether we want it at all, because the travel
+               is a bit expensive. Sure I have a contact
+    <aleale> hpk: yes, I need to plan my christmas vacation
+    <aleale> so date are important too
+    <hpk> the thing is that i might not be at a december sprint myself (at least
+              not fully), which makes it dubious if i organize it
+    <aleale> We ahve talked about first week of december, right?
+    <cfbolz> right
+    <stakkars> crosing Nov/Dec would be fine
+    <hpk> yes
+    <hpk> 5th-9th is a Calibre conference in Bruxelles 
+    <hpk> (which is why i asked someone in bruxelles)
+    <aleale> Ok, I want to conclude that we work on the opportunities in order to
+              fix date and location in Paris.
+    <aleale> time is running
+    <stakkars> barcelona sounds cosy.
+    <hpk> sounds good.  everyone can check around. it's usually a matter of
+              douing the first contact and sorting out possibilities with the
+              local person
+    <aleale> ad 2. I havent been able to run the test suite, Am I the only one? 
+    <cfbolz> what is the problem?
+    <stakkars> ad 2: didn't try that exactly, but we have some serious problems
+               with memory management
+    <pedronis> until we support things like dectecting C level stack overflow we
+               have few chances
+    <aleale> It seems that pytest needs something in os, which isnt there
+    <stakkars> something is quite broken with Boehm, I need to discuss on #pypy
+    <ericvrp> stakkars: Boehm is known to give warning/errors when data is not
+              cleared
+    <aleale> test_str segfaults like several other tests
+    <stakkars> there is more to it
+    <ericvrp> ok, #pypy later. Will have to step back from this computer in 6
+              minutes anyway
+    <aleale> Well, time is running. I raised the issue, sounds like something for
+              #pypy or Paris
+    <stakkars> is making tests posible a valuable target that I shouldconcentrate
+               on?
+    <aleale> stakkars
+    <aleale> ?
+    <hpk> so do we need to think about a way to run tests so that we don't crash
+              the test process on SEG-faults? 
+    <hpk> (apart from fixing the underlying problem, of course)
+    <aleale> could be nice, is it hard to do ?
+    <stakkars> capturing the crash is probably not too hard to do
+    <hpk> somewhat hard, but not impossible
+    <hpk> basically it means that we have to run tests (maybe per module or so)
+              in a separate process and catch such crashes
+    <pedronis> well, but is what we do for py.py without -E
+    <pedronis> apart the capturing crashes
+    <pedronis> I don't think it makese to run both py.test and the tests on pypy
+               itself at the moment
+    <aleale> doesnt sound like something that will before Paris
+    <aleale> Ok, we will defer until pypy-c is more stable?
+    <aleale> last topic 3. Marketing 
+    ? ericvrp/#pypy-sync has to leave in two minutes
+    <pedronis> we should work on it but it something to discuss in paris
+    <hpk> pedronis: i don't fully understand, but we can clarify that on #pypy
+    <stakkars> that's what I was asking: should I push myself into making it more
+               stable right now?
+    <pedronis> stakkars:one thing, it's about raising RuntimeErrors on stack
+               overflows but it should be done in a clean way
+    ??? SignOff ericvrp: #pypy-sync (Read error: 104 (Connection reset by peer))
+    <aleale> I put thiss topic on because trying to get a journalist made me
+              realise that what we have for apress kit may be to technical.
+    <hpk> sure
+    <aleale> But I see that the time is up . So I propose to defer it
+    <aleale> Next week Christian wil do the moderating ?
+    <stakkars> yes, putting the last topic as the first, maybe
+    <aleale> Ok, the meeting is ajourned. Thank You all
+    <cfbolz> bye
+    <stakkars> bye
+    <bertf> bye
+    <aleale> bye

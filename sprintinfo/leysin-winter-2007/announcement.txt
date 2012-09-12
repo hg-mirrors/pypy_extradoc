@@ -1,0 +1,86 @@
+=====================================================================
+         PyPy Leysin Winter Sports Sprint (8-14th January 2007)
+=====================================================================
+..                             image:: http://www.ermina.ch/002.JPG
+
+The next PyPy sprint will be in Leysin, Switzerland, for the fourth
+time.  This sprint is a fully public sprint and will also be a kick-off 
+for the final work on the upcoming PyPy 1.0 release (scheduled for 
+mid-February).
+
+The sprint is the last best chance for students looking for a "summer" job
+with PyPy this winter! If you have a proposal and would like to 
+work with us in the mountains please send it in before 15th December 
+to "pypy-tb at codespeak.net" and cross-read this page: 
+
+   http://codespeak.net/pypy/dist/pypy/doc/summer-of-pypy.html
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+* Like previous winter, the main side goal is to have fun in winter
+  sports :-) We can take a couple of days off for ski; at this time of
+  year, ski days end before 4pm, which still leaves plenty of time
+  to recover (er, I mean hack).
+
+* Progress on the JIT compiler, which we are just starting to scale to
+  the whole of PyPy. `[1]`_
+
+* Polish the code and documentation of the py lib, and eventually
+  release it.
+
+* Work on prototypes that use the new features that PyPy enables:
+  distribution `[2]`_ (based on transparent proxying `[3]`_),
+  security `[4]`_, persistence `[5]`_, etc. `[6]`_.
+
+.. _[1]: http://codespeak.net/pypy/dist/pypy/doc/jit.html
+.. _[2]: http://codespeak.net/svn/pypy/dist/pypy/lib/distributed/
+.. _[3]: http://codespeak.net/pypy/dist/pypy/doc/proxy.html
+.. _[4]: http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html#security
+.. _[5]: http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html#persistence
+.. _[6]: http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html
+
+-----------------------
+Location & Accomodation
+-----------------------
+
+Leysin, Switzerland, "same place as before".  Let me refresh your
+memory: both the sprint venue and the lodging will be in a very spacious
+pair of chalets built specifically for bed & breakfast:
+http://www.ermina.ch/.  The place has a baseline ADSL Internet connexion
+(600Kb) with wireless installed.  You can of course arrange your own
+lodging anywhere (so long as you are in Leysin, you cannot be more than a
+15 minute walk away from the sprint venue), but I definitely recommend
+lodging there too -- you won't find a better view anywhere else (though you
+probably won't get much worse ones easily, either :-)
+
+I made pre-reservations in the Chalet, so please *confirm* quickly that
+you are coming so that we can adjust the reservations as appropriate.
+The rate so far has been 60 CHF a night all included in 2-person rooms,
+with breakfast.  There are larger rooms too (less expensive, possibly
+more available too) and the possibility to get a single room if you
+really want to.
+
+Please register by svn:
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/leysin-winter-2007/people.txt
+
+or on the pypy-sprint mailing list if you do not yet have check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+You need a Swiss-to-(insert country here) power adapter.  There will be
+some Swiss-to-EU adapters around - bring a EU-format power strip if you
+have one.
+
+-----------
+Exact times
+-----------
+
+Officially, 8th-14th January 2007.  Both dates are flexible, you can
+arrive or leave earlier or later, though it is recommended to arrive on
+the 7th (if many people arrive on the 6th we need to check for
+accomodation availability first).  We will give introductions and
+tutorials on the 8th, in the morning if everybody is there, or in the
+afternoon otherwise.

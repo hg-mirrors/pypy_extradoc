@@ -1,0 +1,66 @@
+===============================
+SDG Stackless Development Group
+===============================
+
+People:
+-------
+
+    Christian, Armin 
+    Valentino, Amaury 
+    Adrien, Anders 
+
+
+
+improving / refactoring
+-----------------------
+
+- DONE (Valentino, Amaury, Armin) move stack check out of stackless.h, let it
+  either unwind or raise RuntimeError
+  
+- DONE (Valentino, Amaury, Armin) always use automatic stack check detection
+  by default, and test:
+  
+  - DONE test_annotated.test_recursion_detection()
+  - (progressing) pypy-c running CPython´s test_builtins.py
+
+- DONE (Valentino, Amaury) make Stacklessness a translate_pypy option
+
+- DONE (Anders, Chris) add some documentation about how to make
+  a stand-alone target (which is not obvious)
+  
+  - done by adding some comment into targetrpystonedalone.py.
+    Where else should we put this information? 
+    targetnopstandalone.py too.
+
+performance evaluation
+----------------------
+
+- (thinking) merge stackless support and exception handling
+  to produce just one if clause. Use small test
+  programs to measure the effect (see below).
+
+- DONE (Anders, Chris) write smaller stand-alone applications
+  (rpystone, richards), provide benchmark
+  
+- DONE (Adrien) check the effect of false branch predicition
+  (if slp_frame_stack_bottom etc.)
+
+  - the result appears to be identical, regardless how we
+    spell the conditionals :-(
+
+::
+    if(!RPyExceptionOccured()) {} else FAIL();
+  
+- (progressing) instrument generated code to provide statistics
+
+  - (waiting) do some source ordering by frequency. See thoughts about
+    this in the chapter to come, below.
+
+
+large open tasks
+----------------
+
+- design an interface for RPython code to manipulate
+  the frame chains
+
+- expose to app-level a greenlet built-in module

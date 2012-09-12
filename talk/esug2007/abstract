@@ -1,0 +1,27 @@
+
+
+Description
+-----------
+
+PyPy is a framework written in Python for generating virtual machines
+for dynamic languages.  The VMs are flexibly produced from a high-level
+"specification" in the form of a simple interpreter for the dynamic
+language.  Low-level details like memory allocation and object layout
+are not encoded manually, but inserted by the VM generation process.
+This allows us to produce VMs that run within a wide range of execution
+environments (from C-like to JVM/.NET).  Interesting features can be
+automatically inserted into the VMs at production time -- including a
+good just-in-time compiler tuned to the dynamic language at hand.
+
+More than "selling" PyPy specifically, our aim in this project is to
+raise interest in our approach to virtual machine construction.  After a
+demo and architecture overview, I will explain the context in which we
+wrote PyPy, and how much of these ideas could be applied to a Smalltalk
+context.
+
+Bio
+---
+
+/me has been an open source developer and post-doc working in Python on
+language implementation issues for quite a few years now, after a
+Ph.D. in mathematical logic at the Free University of Brussels.

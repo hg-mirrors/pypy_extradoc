@@ -1,0 +1,50 @@
+People coming to the Duesseldorf sprint October 2010
+====================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Carl Friedrich Bolz  always there   private
+Antonio Cuni         leaves the 30  private
+Armin Rigo           always there   private
+Hakan Ardo           28/10 - 31/10  staying with antocuni
+==================== ============== =====================
+
+
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Holger Krekel
+Samuele Pedroni
+Armin Rigo                                
+Michael Hudson                             
+Anders Chrigstroem                                  
+Maciej Fijalkowski                                   
+Andrew Thompson                      
+Stephan Diehl                                  
+Eric van Riet paap                              
+Niko Matsakis                                    
+Leonardo Santagada                   
+Richard Emslie                                      
+Christian Tismer                                    
+Alexander Schremmer                     
+Jacob Hallen         ?              ?
+Aurelien Campeas     ?              ?
+Alexandre Fayolle    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Bert Freudenberg     ?              ?
+Laura Creighton      ?              ?
+Beatrice Duering     ?              ?
+Johan Hahn           ?              ?
+Anders Chrigstroem   ?              ?
+Anders Lehmann       ?              ? 
+Niklaus Haldimann    ?              ?
+==================== ============== =====================

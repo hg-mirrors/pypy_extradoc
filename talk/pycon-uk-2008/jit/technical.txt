@@ -1,0 +1,555 @@
+
+
+
+Translation details (1)
+=======================
+
+- First, load and initialize RPython code inside a normal Python VM
+
+- RPython translation starts from the resulting "live" bytecode
+
+- Unified "intermediate code" representation:
+  a forest of *Control Flow Graphs*
+
+.. image:: flowgraph.png
+   :align: right
+   :scale: 30
+
+
+Translation details (2)
+=======================
+
+PyPy uses abstract interpretation extensively:
+
+- to construct Flow Graphs
+- for type inference
+- to gather info for some optimisations
+- for Partial Evaluation in the generated Dynamic Compilers...
+
+also uses Flow Graph transformation and rewriting.
+
+Type Systems (1)
+=========================
+
+We model the different targets through different type systems:
+
+- LL (low-level C-like targets): data and function pointers, structures,
+  arrays...
+
+- OO (object oriented targets): classes and instances
+  with inheritance and dispatching
+
+Type Systems (2)
+===========================
+
+Translation:
+
+* starts from *RPython Flow Graphs*
+
+* turns them into *LL Flow Graphs* or *OO Flow Graphs*
+
+* the flowgraphs are transformed in various ways
+
+* then they are sent to the backends.
+
+
+Translation aspects (1)
+========================
+
+The interpreters in RPython are free of low-level details
+(as required to target platforms as different as Posix/C
+and the JVM/.NET).
+
+- Advanced features related to execution should not need wide-spread
+  changes to the interpreters
+
+- Instead, the interpreters should use support from
+  the translation framework
+
+Translation aspects (2)
+========================
+
+Examples:
+
+- GC and memory management
+
+- memory layout
+
+- stack inspection and manipulation
+
+- unboxed integers as tagged pointers
+
+Implementation
+==================
+
+- Translation aspects are implemented as transformation of low-level
+  graphs
+
+- Calls to library/helper code can be inserted too
+
+- The helper code is also written in RPython and analyzed and translated
+
+GC Framework
+===============
+
+The LL Type System is extended with allocation and address manipulation
+primitives, used to express GC in RPython directly.
+
+- GCs are linked by substituting memory allocation operations with calls
+  into them
+
+- Transformation inserts bookkeeping code, e.g. to keep track of roots
+
+- Inline fast paths of allocation and barriers
+
+.. MMTk reference
+
+
+JIT motivation
+==================================
+
+Flexibility vs. Performance:
+
+* Interpreters are easy to write and evolve
+
+* For high performance, dynamic compilation is required
+
+Traditional JIT compilers
+===============================
+
+* Huge resource investment
+* The richer the semantics, the harder to write
+* Poor encoding of language semantics
+* Hard to evolve
+
+Need for novel approaches!
+
+PyPy Architecture
+=============================
+
+.. image:: overview2.png
+   :align: center
+   :scale: 60
+
+
+Basics
+=======================
+
+* Use partial evaluation techniques to generate a dynamic compiler
+  from an interpreter 
+* Inspiration: Psyco 
+* Our translation tool-chain was designed for trying this
+
+Futamura
+=====================
+
+* *Partial evalution of computation process -
+  an approach to a compiler-compiler*, 1971
+
+* Generating compilers from interpreters
+  with automatic specialization
+
+* Relatively little practical impact so far
+
+General idea
+================
+
+Partial evaluation (PE):
+
+* Assume the Python bytecode to be constant, and
+  constant-propagate it into the Python
+  interpreter.
+
+
+PE for dummies
+==============
+
+|example<| Example |>|
+::
+
+  def f(x, y):    
+    x2 = x * x    
+    y2 = y * y    
+    return x2 + y2
+
+|end_example|
+
+|pause|
+|column1|
+|alert<| case x=3 |>|
+::
+
+  def f_3(y):    
+    y2 = y * y   
+    return 9 + y2
+
+|end_alert|
+
+|pause|
+|column2|
+|alert<| case x=10 |>|
+::
+
+  def f_10(y):    
+    y2 = y * y   
+    return 100 + y2
+
+|end_alert|
+|end_columns|
+
+
+Challenges
+======================
+
+* A shortcoming of PE is that in many cases not much can be really
+  assumed constant at compile-time: poor results
+
+* Effective dynamic compilation requires feedback of runtime
+  information into compile-time
+
+* For a dynamic language: types are a primary example
+
+Solution: Promotion
+====================
+
+* Enhance PE with the ability
+  to "promote" run-time values
+  to compile-time
+
+* Leverage the dynamic setting
+
+
+Overall ingredients
+=====================
+
+The pieces to enable effective dynamic compiler generation
+in PyPy:
+
+- a few hints in the Python interpreter to guide the JIT
+  generator
+- *promotion*
+- lazy allocation of objects (only on escape)
+- use CPU stack and registers for the contents of the Python frame
+
+..  ("virtualizables")
+
+Language-agnostic
+====================
+
+* The dynamic generation process and primitives are language-agnostic.
+
+* The language implementations should be able to evolve up to
+  maintaining the hints.
+
+* By construction all interpreter/language features are supported
+
+
+pypy-c-jit
+======================
+
+PyPy 1.0 contains both the dynamic compiler generator and the start of
+its application to PyPy's Python intepreter.
+
+JIT refactoring in-progress.
+
+* included are backends for IA32 and PPC
+* experimental/incomplete CLI backend
+* integer arithmetic operations are optimized
+* for these, we are in the speed range of ``gcc -O0``
+
+
+EXTRA MATERIAL
+==================
+
+* More about the JIT Generation:
+
+  - The *Rainbow interpreter*
+  - *Virtuals* and *Promotion*
+
+
+Execution steps
+===============
+
+* Translation time
+
+  - pypy-c-jit is translated into an executable
+
+  - the JIT compiler is automatically generated
+
+* Compile-time: the JIT compiler runs
+
+* Runtime: the JIT compiled code runs
+
+* Compile-time and runtime are intermixed
+
+
+The Rainbow interpreter
+==================================
+
+.. raw:: latex
+
+  {\vspace{-1cm}\hfill\scalebox{0.300000}{\includegraphics{rainbow.png}}}
+
+  \addvspace{0.3cm}
+
+* A special interpreter whose goal is to produce executable code
+
+* Written in RPython
+
+* Guided by a binding time analysis ("color" of the graphs)
+
+* Green operations: executed at compile-time
+
+* Red operations: produce code that executes the operation at runtime
+
+
+Rainbow architecture
+====================
+
+|alert<| Translation time |>|
+
+* Low-level flowgraphs are produced
+
+* The *hint-annotator* colors the variables
+
+* The *rainbow codewriter* translates flowgraphs into rainbow bytecode
+
+|end_alert|
+
+|pause|
+|example<| Compile-time |>|
+
+* The rainbow interpreter executes the bytecode
+
+* As a result, it produces executable code
+
+|end_example|
+
+|pause|
+|alert<| Runtime |>|
+
+* The produced code is executed
+
+|end_alert|
+
+
+Coloring
+=================
+
+* :green:`Green`: compile-time value
+* :red:`Red`: runtime value
+
+* The hints give constraints from which the colors
+  of all values are derived
+
+We reuse the type inference
+framework to propagate colors
+
+Partial Evaluation with Colors
+==============================
+
+* :green:`Green operations`: unchanged, executed at compile-time
+
+* :red:`Red operations`: converted into corresponding code emitting code
+
+|pause|
+|column1|
+|example<| Example |>|
+
+.. raw:: latex
+
+   \smallskip
+   \begin{rtbliteral}
+   def~f(\green{x},~\red{y}):~\\
+   ~~\green{x2}~=~\green{x}~*~\green{x}~\\
+   ~~\red{y2}~=~\red{y}~*~\red{y}~\\
+   ~~return~\green{x2}~+~\red{y2}
+   \end{rtbliteral}
+   \smallskip
+
+|end_example|
+
+|pause|
+|column2|
+|alert<| case x=10 |>|
+::
+
+  def f_10(y):    
+    y2 = y * y   
+    return 100 + y2
+
+|end_alert|
+|end_columns|
+
+
+Partial Evaluate Control Flow
+===============================
+
+- red split points: schedule multiple compilation states 
+- merge points: merge logic to reuse code for equivalent states
+
+|pause|
+|column1|
+|example<| Example |>|
+
+.. raw:: latex
+
+   \smallskip
+   \begin{rtbliteral}
+   if~\red{x}:\\
+   ~~print~"x is true"\\
+   if~\green{y}:\\
+   ~~print~"y is true"
+   \end{rtbliteral}
+   \smallskip
+
+|end_example|
+
+|pause|
+|column2|
+|alert<| case y != 0 |>|
+::
+
+  if x:
+    print "x is true"
+  print "y is true"
+
+
+|end_alert|
+|end_columns|
+
+
+Promotion
+=================
+
+Promotion is implemented generating a switch that grows to cover the
+seen runtime values
+
+* First compilation stops at a promotion point and generates a switch
+  with only a default case.  The default will call back into
+  the compiler with runtime values.
+  
+* On callback the compiler adds one more case to the switch and
+  generates more code assuming the received value.
+
+.. need to save state in a compact form: paths
+
+Promotion (example)
+========================
+
+|example<| Example |>|
+
+.. raw:: latex
+
+   \smallskip
+   \begin{rtbliteral}
+   def~f(\red{x},~\red{y}):\\
+   ~~\green{x1}~=~hint(\red{x},~promote=True)\\
+   ~~return~\green{x1}*\green{x1}~+~\red{y}*\red{y}
+   \end{rtbliteral}
+   \smallskip
+
+|end_example|
+
+|small|
+|pause|
+|column1|
+|alert<| original |>|
+::
+
+  def f_(x, y):
+    switch x:
+      pass
+    default:
+      compile_more(x)
+
+|end_alert|
+
+|pause|
+|column2|
+|alert<| augmented |>|
+::
+
+  def f_(x, y):
+    switch x:
+      case 3:
+        return 9 + y*y
+    default:
+      compile_more(x)
+
+|end_alert|
+|end_columns|
+|end_small|
+
+
+
+Virtuals + Promotion
+=====================
+
+|small|
+|example<| Example from PyPy (simplified!) |>|
+ 
+.. raw:: latex
+
+   \smallskip
+   \begin{rtbliteral}
+   def~add\_python\_objects(\red{obj1},~\red{obj2}):\\
+   ~~\green{obj1cls}~=~hint(\red{obj1}.\_\_class\_\_,~promote=True)\\
+   ~~\green{obj2cls}~=~hint(\red{obj2}.\_\_class\_\_,~promote=True)\\
+   ~~if~\green{obj1cls}~is~IntObject~and~\green{obj2cls}~is~IntObject:\\
+   ~~~~\red{x}~=~\red{obj1}.intval\\
+   ~~~~\red{y}~=~\red{obj2}.intval\\
+   ~~~~\red{z}~=~\red{x}~+~\red{y}\\
+   ~~~~return~IntObject(intval=\red{z})\\
+   \end{rtbliteral}
+   \smallskip
+
+|end_example|
+|end_small|
+
+
+Conclusion (JIT)
+================
+
+- Effective dynamic compiler generation
+
+  * flexibility and ease of evolution
+
+  *  **orthogonal to the performance question**.
+
+- Languages implemented as **understandable interpreters**.
+
+- PyPy proves this a viable approach worth of further exploration.
+
+
+.. backend material: not for the general talk
+.. virtualizables: not for general talk
+.. state of gc framework
+
+Open Issues
+==============
+
+- inlining control
+
+- promotion switch explosion fallbacks
+
+- jit only the hot-spots
+
+- more hints needed in PyPy's Python
+
+- JIT backends for CLI/JVM
+
+Virtualizable Frames
+======================
+
+- frames need to live in the heap
+  (tracebacks ...) and be introspectable
+- jit code wants local variables to live in registers
+  and on the stack
+- => mark the frame class as "virtualizable"
+- jit code uses lazy allocation and stores
+  some contents (local variables...) in register
+  and stack
+- outside world access gets intercepted
+  to be able to force lazy virtual data into the heap
+

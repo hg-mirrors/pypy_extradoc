@@ -1,0 +1,29 @@
+=============================================
+Two page summary of sprint-driven development
+=============================================
+
+Overview
+========
+
+A sprint is a very focused coding session to drive forward development quickly
+in an explorative style.
+
+ - Structure:
+
+   - 6-20 developers in one room
+   - 5-7 days
+   - predefined goals
+
+Details
+=======
+
+ - daily planning session in the morning
+   
+   - discuss status of the work done on the previous day
+   - assign tasks to pairs of people
+   - produce a status file, which is updated during the day
+
+ - development
+ 
+   - Pair-programming
+   - Test-driven

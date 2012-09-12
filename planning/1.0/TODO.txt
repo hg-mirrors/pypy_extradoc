@@ -1,0 +1,122 @@
+TODO for 1.0 
+============================
+
+DONE. 
+
+current general timeline 
+-----------------------------
+
+Note: meetings in #pypy-sync every day at 4pm (GMT+1) 
+(weekend attendance optional :-)
+
+published final reports: 2.1, 2.3, 3.1, 10.1, 12.1, 14.2
+
+27 RELEASE                                    (1.2-4, 13.1)
+28 
+29 
+30
+31 (weekend)
+
+NOTES AND DONE TASKS 
+-----------------------------
+
+  - (arigo,cfbolz,pedronis) review/refactor new-architecture.txt 
+    
+  - (fijal intends to drop around 7-8pm) 
+    play1 additional features 
+    - pending updates of docs
+    - snapshotting current state 
+
+  - (cfbolz, done?) getting-started links and version numbers
+    (antocuni) link precompiled windows binaries 
+
+  - (pedronis, in-progress) tarball packaging and testing 
+    - tarball can be prepared now, only doc-changes pending 
+
+  - (mwh,pedronis,hpk,ALL)
+    finalise release announcement 
+
+  - (cfbolz) write news entry
+
+  - send out of announcements to lists: 
+    - (pedronis) pypy-dev pypy-funding
+    - (cf) c.l.py, c.l.py.announce
+    - (arigo) llvm list, python-dev
+    - (holger) Charles 
+
+
+  - (done) update README, also link and version numbers!
+
+  - (should be ok) briefly review FAQ
+
+
+  - ensure working Interpreter translation combinations: 
+    - test various config option configurations -- use build tool? (guido)
+    - test windows situation (antocuni, fijal) -- seems generally good
+
+  - integrate and test: 
+    - (arigo,pedronis,arre, IN-PROGRESS): wp08 docs & examples, getting-started 
+    - (cfbolz) test wp09 getting-started examples: after some fixing things seem to work
+    - wp09 docs, examples and code - maybe what we have is good enough?  (christian looking into this currently) a bit of progress, but no feedback/interaction with DFKI/Danish yet. 
+
+
+  - move pedronis/pypy-c-testing, pedronis/tarball-testing 
+    and pypy/tool/build all into 
+        
+        http://codespeak.net/svn/pypy/build
+
+    directory and arigo's htmlconftest as a snapshot or external. 
+    refactor docs to point to the tools correctly
+    (build/bin/* probably) 
+
+
+  - (done by NNN: fijal, NNN) play1 issues: 
+    - rebuild pypy's to use the new readline stub (fixing ugly stdout/stdin interactions) 
+    - review/refine help (add examples where necessary)
+    - make examples execute more cleanly
+    - fix linking (it gets easily confused if you click around), make correct 404 and 500 pages
+    - discuss/do a JIT demo
+
+  - (DROPPED for 1.0) include documentation/entry point for 
+    the JS interpreter (santagada, fijal) 
+
+
+  - (hpk, guido, DONE) review entry points from the play1 demos. 
+
+  - (DONE), arigo,pedronis,hpk) fix test failures of translated PyPys 
+    related to aop.py module modifying global compiler state and
+    subsequent tests randomly breaking 
+
+
+  - (DONE) consider where/how to put special builtins ("pypymagic"
+    might not be a good name), suggestions: 
+    - names: not pypymagic, not pypybuiltin, holger and cf to propose (done, result is __pypy__)
+    - document pypybuiltin module (add docstrings) (done)
+    - functions should only be there if the according option is enabled (e.g. method cache) (done)
+    - functions only relating to py.py should not appear in translated version (unless they work :) (done) (cfbolz)
+
+  - (done, still a bit of doc's/demo refinements maybe) 
+    make transparent proxies more prominent 
+    because they are a rather powerful feature)
+    - write a nice support module (pypy/lib/tputil.py - in progress)
+    - write/review documentation (in-progress)
+    - fix bugs if any
+    (hpk) 
+
+    - (done) wp10 - basically complete, pending issues brought up in review
+    - (done) wp08 code 
+
+  - (done) make a matrix of possible combinations (wp13-report) (cfbolz) 
+
+  - complete/debug jit on powerpc 
+    (basically done) somewhat working
+
+  - (done for release) debug jit on intel (arigo/pedronis/arre)
+    appears to work well, gives nice speedups on suitably contrived examples
+
+  - (done) document build tool usages (getting-started?)
+
+  - (DONE, arigo) fix bad terminal behaviour of translated PyPy's 
+
+    (contributing to play1 quirks) 
+

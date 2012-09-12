@@ -1,0 +1,322 @@
+============
+STM planning
+============
+
+|
+| Bars on the left describe the next thing to work on.
+| On the other hand, "TODO" means "to do later".
+|
+
+
+Python Interface
+----------------
+
+Planned interface refactorings:
+
+* inspired by "concurrent.futures" from Python 3.2: have
+  transaction.add() return a Future instance with a method result().
+  If called inside another transaction, it will suspend it until the
+  result is available, i.e. until the first transaction commits.  Can
+  be used even if the result is not used, just to ensure some ordering.
+  XXX but can that be emulated in transaction.py???
+
+* (later, maybe) allow nested transactions: either by calling
+  transaction.run() inside transactions too, or with actual objects
+  that store collections of transactions.
+
+
+Overview of the GC
+------------------
+
+A saner approach (and likely better results that now): integrate with
+the GC.  Here is the basic plan.
+
+Let T be the number of threads.  Use a custom GC, with T nurseries and
+one "global area."  Every object in the nursery t is only visible to
+thread t.  Every object in the global area is shared but read-only.
+Changes to global objects are only done by committing.
+
+Every thread t allocates new objects in the nursery t.  Accesses to
+nursery objects are the fastest, not monitored at all.  When we need
+read access to a global object, we can read it directly, but we need to
+record the version of the object that we read.  When we need write
+access to a global object, we need to make a whole copy of it into our
+nursery.
+
+| The "global area" should be implemented by reusing gc/minimarkpage.py.
+
+The RPython program can use this hint: 'x = hint(x, stm_write=True)',
+which is like writing to an object in the sense that it forces a local
+copy.
+
+In translator.stm.transform, we track which variables contain objects
+that are known to be local.  It lets us avoid the run-time check.
+That's useful for all freshly malloc'ed objects, which we know are
+always local; and that's useful for special cases like the PyFrames, on
+which we used the "stm_write=True" hint before running the interpreter.
+In both cases the result is: no STM code is needed any more.
+
+When a transaction commits, we do a "minor collection"-like process,
+called an "end-of-transaction collection": we move all surviving objects
+from the nursery to the global area, either as new objects (first step
+done by stmgc.py), or as overwrites of their previous version (second
+step done by et.c).  Unlike the minor collections in other GCs, this one
+occurs at a well-defined time, with no stack roots to scan.
+
+| We also need to consider what occurs if a nursery grows too big while
+| the transaction is still not finished.  In this case we need to run a
+| similar collection of the nursery, but with stack roots to scan.  We
+| call this a local collection.
+|
+| This can also occur before or after we call transaction.run(), when
+| there is only the main thread running.  In this mode, we run the main
+| thread with a nursery too.  It can fill up, needing a local collection.
+| When transaction.run() is called, we also do a local collection to
+| ensure that the nursery of the main thread is empty while the
+| transactions execute.
+|
+| Of course we also need to do from time to time a major collection.  We
+| will need at some point some concurrency here, to be able to run the
+| major collection in a random thread t but detecting changes done by the
+| other threads overwriting objects during their own end-of-transaction
+| collections.  See below.
+
+
+GC flags
+--------
+
+Still open to consideration, but the basic GC flags could be:
+    
+  * GC_GLOBAL      if the object is in the global area
+
+  * GC_WAS_COPIED  on a global object: it has at least one local copy
+                   (then we need to look it up in some local dictionary)
+                   on a local object: it comes from a global object
+
+  * and one complete word (for now?) for the version number, see below
+
+(Optimization: objects declared immutable don't need a version number.)
+
+TODO: GC_WAS_COPIED should rather be some counter, counting how many threads
+have a local copy; something like 2 or 3 bits, where the maximum value
+means "overflowed" and is sticky (maybe until some global
+synchronization point, if we have one).  Or, we can be more advanced and
+use 4-5 bits, where in addition we use some "thread hash" value if there
+is only one copy.
+
+
+stm_read
+--------
+
+The STM read operation is potentially a complex operation.  (That's why
+it's useful to remove it as much as possible.)
+
+stm_read(obj, offset) -> field value
+
+- If obj is not GC_GLOBAL, then read directly and be done.
+
+- Otherwise, if GC_WAS_COPIED, and if we find 'localobj' in this
+  thread's local dictionary, then read directly from 'localobj' and
+  be done.  (Ideally we should also use 'localobj' instead of 'obj'
+  in future references to this object, but unclear how.)
+
+- Otherwise, we need to do a global read.  This is a real STM read.
+  Done (on x86 [1]) by reading the version number, then the actual field,
+  then *again* the version number.  If the version number didn't change
+  and if it is not more recent than the transaction start, then the read
+  is accepted; otherwise not (we might retry or abort the transaction,
+  depending on cases).  And if the read is accepted then we need to
+  remember in a local list that we've read that object.
+
+For now the thread's local dictionary is in C, as a widely-branching
+search tree.
+
+
+stm_write
+---------
+
+- If obj is GC_GLOBAL, we need to find or make a local copy
+
+- Then we just perform the write.
+
+This means that stm_write could be implemented with a write barrier that
+returns potentially a copy of the object, and which is followed by a
+regular write to that copy.
+
+Note that "making a local copy" implies the same rules as stm_read: read
+the version number, copy all fields, then read *again* the version
+number [1].  If it didn't change, then we know that we got at least a
+consistent copy (i.e. nobody changed the object in the middle of us
+reading it).  If it is too recent, then we might have to abort.
+
+TODO: how do we handle MemoryErrors when making a local copy??
+Maybe force the transaction to abort, and then re-raise MemoryError
+--- for now it's just a fatal error.
+
+
+End-of-transaction collections
+------------------------------
+
+Start from the "roots" being all local copies of global objects.  (These
+are the only roots: if there are none, then it means we didn't write
+anything in any global object, so there is no new object that can
+survive.)  From the roots, scan and move all fresh new objects to the
+global area.  Add the GC_GLOBAL flag to them, of course.  Then we need,
+atomically (in the STM sense), to overwrite the old global objects with
+their local copies.  This is done by temporarily locking the global
+objects with a special value in their "version" field that will cause
+concurrent reads to spin-loop.
+
+This is also where we need the list of global objects that we've read.
+We need to check that each of these global objects' versions have not
+been modified in the meantime.
+
+
+Static analysis support
+-----------------------
+
+To get good performance, we should as much as possible use the
+'localobj' version of every object instead of the 'obj' one.  At least
+after a write barrier we should replace the local variable 'obj' with
+'localobj', and translator.stm.transform propagates the
+fact that it is now a localobj that doesn't need special stm support
+any longer.  Similarly, all mallocs return a localobj.
+
+The "stm_write=True" hint is used on PyFrame before the main
+interpreter loop, so that we can then be sure that all accesses to
+'frame' are to a local obj.
+
+TODO: Ideally, we could even track which fields
+of a localobj are themselves localobjs.  This would be useful for
+'PyFrame.fastlocals_w': it should also be known to always be a localobj.
+
+
+Local collections
+-----------------
+
+|
+| This needs to be done.
+|
+
+If a nursery fills up too much during a transaction, it needs to be
+locally collected.  This is supposed to be a generally rare occurrance,
+with the exception of long-running transactions --- including the main
+thread before transaction.run().
+
+Surviving local objects are moved to the global area.  However, the
+GC_GLOBAL flag is still not set on them, because they are still not
+visible from more than one thread.  For now we have to put all such
+objects in a list: the list of old-but-local objects.  (Some of these
+objects can still have the GC_WAS_COPIED flag and so be duplicates of
+other really global objects.  The dict maintained by et.c must be
+updated when we move these objects.)
+
+Unlike end-of-transaction collections, we need to have the stack roots
+of the current transaction.  For now we just use
+"gcrootfinder=shadowstack" with thread-local variables.  At the end of
+the local collection, we do a sweep: all objects that were previously
+listed as old-but-local but don't survive the present collection are
+marked as free.
+
+TODO: Try to have a generational behavior here.  Could probably be done
+by (carefully) promoting part of the surviving objects to GC_GLOBAL.
+
+If implemented like minimarkpage.py, the global area has for each size a
+chained list of pages that are (at least partially) free.  We make the
+heads of the chained lists thread-locals; so each thread reserves one
+complete page at a time, reducing cross-thread synchronizations.
+
+TODO: The local collection would also be a good time to compress the
+local list of all global reads done --- "compress" in the sense of
+removing duplicates.
+
+
+Global collections
+------------------
+
+|
+| This needs to be done.
+|
+
+We will sometimes need to do a "major" collection, called global
+collection here.  The issue with it is that there might be live
+references to global objects in the local objects of any thread.  The
+problem becomes even harder as some threads may be currently blocked in
+some system call.  As an intermediate solution that should work well
+enough, we could try to acquire a lock for every thread, a kind of LIL
+(local interpreter lock).  Every thread releases its LIL around
+potentially-blocking system calls.  At the end of a transaction and once
+per local collection, we also do the equivalent of a
+release-and-require-the-LIL.  The point is that when a LIL is released,
+another thread can acquire it temporarily and read the shadowstack of
+that thread.
+
+The major collection is orchestrated by whichever thread noticed one
+should start; let's call this thread tg.  So tg first acquires all the
+LILs.  (A way to force another thread to "soon" release its LIL is to
+artifically mark its nursery as exhausted.)  For each thread t, tg
+performs a local collection for t.  This empties all the nurseries and
+gives tg an up-to-date point of view on the liveness of the objects: the
+various lists of old-but-local objects for all the t's.  tg can use
+these --- plus external roots like prebuilt objects --- as the roots of
+a second-level, global mark-and-sweep.
+
+For now we release the LILs only when the major collection is finished.
+
+TODO: either release the LILs earlier, say after we processed the lists
+of old-but-local objects but before we went on marking and sweeping ---
+but we need support for detecting concurrent writes done by concurrent
+commits; or, ask all threads currently waiting on the LIL to help with
+doing the global mark-and-sweep in parallel.
+
+Note: standard terminology:
+
+* Concurrency: there is one thread that does something GC-related,
+  like scan the heap, and at the same time another thread changes
+  some object from the heap.
+
+* Parallelism: there are multiple threads all doing something GC-related,
+  like all scanning the heap together.
+
+
+When not running transactively
+------------------------------
+
+The above describes the mode during which there is a main thread blocked
+in transaction.run().  The other mode is mostly that of "start-up",
+before we call transaction.run().  Of course no STM is needed in that
+mode, but it's still running the same STM-enabled interpreter.
+
+| In this mode, we just have one nursery and the global area.  When
+| transaction.run() is called, we do a local collection to empty it, then
+| make sure to flag all surviving objects as GC_GLOBAL in preparation for
+| starting actual transactions.  Then we can reuse the nursery itself for
+| one of the threads.
+
+
+Pointer equality
+----------------
+
+Another (traditionally messy) issue is that by having several copies of
+the same object, we need to take care of all pointer comparisons too.
+This is all llops of the form ``ptr_eq(x, y)`` or ``ptr_ne(x, y)``.
+
+If we know statically that both copies are local copies, then we can
+just compare the pointers.  Otherwise, we compare
+``stm_normalize_global(x)`` with ``stm_normalize_global(y)``, where
+``stm_normalize_global(obj)`` returns ``globalobj`` if ``obj`` is a
+local, GC_WAS_COPIED object.  Moreover the call to
+``stm_normalize_global()`` can be omitted for constants.
+
+
+JIT support
+-----------
+
+TODO
+
+
+notes
+-----
+
+[1] this relies on a property guaranteed so far by the x86, but not,
+    say, by PowerPCs.  (XXX find a reference again)

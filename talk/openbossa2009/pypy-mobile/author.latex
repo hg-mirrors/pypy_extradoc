@@ -1,0 +1,7 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy status / mobile perspectives]{PyPy status / mobile perspectives}
+\author[H. Krekel]{Holger Krekel \\ http://merlinux.eu}
+
+\institute[OpenBossa 2009, Recife, Brazil]{OpenBossa 2009, Brazil}
+\date{March 11, 2009}

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# you can find rst2beamer.py here:
+# http://codespeak.net/svn/user/antocuni/bin/rst2beamer.py
+
+# WARNING: to work, it needs this patch for docutils
+# https://sourceforge.net/tracker/?func=detail&atid=422032&aid=1459707&group_id=38414
+
+BASE=talk
+rst2beamer.py --stylesheet=stylesheet.latex --documentoptions=14pt $BASE.txt $BASE.latex || exit
+sed 's/\\date{}/\\input{author.latex}/' -i $BASE.latex || exit
+sed 's/\\maketitle/\\input{title.latex}/' -i $BASE.latex || exit
+pdflatex $BASE.latex  || exit
+

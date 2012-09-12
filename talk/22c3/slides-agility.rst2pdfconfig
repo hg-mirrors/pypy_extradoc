@@ -1,0 +1,14 @@
+rest_sources = [
+    'slides-agility.txt', 
+]
+
+rest_options = ['--use-latex-footnotes', '--use-latex-toc']
+toc_depth = 2
+
+logo = 'py-web.png'
+heading = 'Open Source, EU Funding and Agile Methods'
+# pagebreak = True
+# possible fonts:
+# times, helvetica, new century schoolbock, avant garde, palatino
+
+font = 'avant garde'

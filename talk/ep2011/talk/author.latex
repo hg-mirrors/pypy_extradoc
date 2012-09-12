@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy in Production]{PyPy in Production}
+\author[antocuni, arigo]
+{Antonio Cuni \\ Armin Rigo}
+
+\institute{EuroPython 2011}
+\date{June 23 2011}

@@ -1,0 +1,32 @@
+drafted a target type system for rtyping which has first-class support
+for classes: ootype
+
+primitive types are the same as in lltype,
+
+to define a type of instance (a.k.a. class) we introduced
+
+Instance(name, <superclass>, <fields>, <methods>)
+
+<superclasss> = None|another Instance
+<fields> is a dict mapping names to ootypes, or tuples (ootype, default-value)
+
+callable in ootype are either typed StaticMethod(arg-types, result-type)
+or Meth(art-types-without-self, result-types)
+
+they have constructors:
+
+`static_meth(STATICMETHOD, name, **attrs)`
+`meth(METHOD, **attrs)`
+
+<methods> is dict mapping names to meths
+
+there is a new(INSTANCE) operation to create new instances.
+
+We started a concrete implementation of this model running on CPython,
+and adding annotation/rtyping support for the ootype itself.
+
+We also started refactoring the rtyper such that a parameter type_system
+can be given to the constructor/Translator.specialize to choose
+either "lltype" (the default) or the new "ootype".
+
+ 

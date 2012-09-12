@@ -1,0 +1,31 @@
+Mini Sprint report Paris January 23-27
+================================================================
+
+Logic programming
+================================
+
+Aurelien and Anders worked the whole week on trying to understand how Oz/Mozart 
+works. After a lot of trials they achieved in implementing:
+
+    Aurelien had already made basic single assignment store.
+    
+    The store was completed (with tests)
+    
+    They made the basic infrastructure for computation spaces based on the store.
+    
+    From Logilab they stole and adapted code for the FiniteDomain, Constraints and 
+    DichotomyDistributor.
+    
+    On the computation space they implemented the semantics of Choose, Commit, Ask 
+    and Clone.
+    
+    Some experiments on making these constructs concurrent were made (not finished).
+    
+Aspects and contracts
+========================
+
+Annotation and cleanup/refactoring of the grammar/parser.
+
+Research of different implementations of aspects and contracts. One reference is here_
+
+.. _here: http://aosd-europe.net/documents/aspLang.pdf

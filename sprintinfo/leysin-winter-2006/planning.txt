@@ -1,0 +1,44 @@
+
+
+work and ski days 
+---------------------
+
+monday: some start of hacking 
+tuesday: (jacob, arre, niklaus, alexandre, aurelien, michael)
+         09:00 AM starting time for half-day ski-ing 
+         15:00 sprinting time 
+
+wednesday-friday: sprinting, maybe more half-day ski-ing 
+
+tasks tackled during this sprint 
+--------------------------------------
+
+- progress on logic object space 
+  (alexandre, aurelien, Anders)
+  - integrate constraint-solver
+  - implement stackless-thread-cloning 
+
+- stackless as a CFG transformation   
+  - heading towards thread pickling 
+  (holger, michael)
+
+- move rctypes towards something usable 
+  (Armin, Arre)
+
+- GC works 
+  - finalize explicit-exceptions 
+    (and GC cleanup) branch 
+  - weakrefs 
+  - GC performance 
+  - support moving GCs 
+
+- play with core optimizations 
+  - type impls
+  - tagged integers 
+  - lazy slicing / concatentation 
+
+- progress on JIT 
+
+- progress on ootype / gensqueak  
+  (niklaus, samuele)
+

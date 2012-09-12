@@ -1,0 +1,183 @@
+tasks with "(( ))" around them are unlikely.
+
+BUGS
+----
+
+* fix the cases of MemoryError during the execution of machine code
+  (they are now a fatal RPython error)
+
+
+NEW TASKS
+---------
+
+- have benchmarks for jit compile time and jit memory usage
+
+- maybe refactor a bit the x86 backend, particularly the register
+  allocation
+
+- consider how much old style classes in stdlib hurt us.
+
+- the integer range analysis cannot deal with int_between, because it is
+  lowered to uint arithmetic too early
+
+- regular expressions are still not very efficient in cases. For example:
+
+  re.search("b+", "a" * 1000 + "b") gets compiled to a residual call
+  re.search("(ab)+", "a" * 1000 + "b") almost doesn't get compiled and
+  gets very modest speedups with the JIT on (10-20%)
+
+- consider an automated way in RPython: a function with a loop and generate a
+  JITable preamble and postamble with a call to the loop in the middle.
+
+- implement small tuples, there are a lot of places where they are hashed and
+  compared
+
+- implement INT_ABS in the JIT, currently jtransform generates a call to an
+  inlined function, which does the trivial branching. However, GCC shows that
+  it can be done branchless in the ASM (as we do for FLOAT_ABS, which is easier
+  because it has an explicit sign bit). GCC generates:
+
+    movq    %rdi, %rdx
+    sarq    $63, %rdx
+    movq    %rdx, %rax
+    xorq    %rdi, %rax
+    subq    %rdx, %rax
+    ret
+
+
+OPTIMIZATIONS
+-------------
+
+Things we can do mostly by editing optimizeopt/:
+
+- if we move a promotion up the chain, some arguments don't get replaced
+  with constants (those between current and previous locations). So we get
+  like
+
+  guard_value(p3, ConstPtr(X))
+  getfield_gc(p3, descr)
+  getfield_gc(ConstPtr(X), descr)
+
+  maybe we should move promote even higher, before the first use and we
+  could possibly remove more stuff?
+
+  This shows up in another way as well, the Python code
+
+  if x is None:
+      i += x
+
+  We promote the guard_nonnull when we load x into guard_nonnull class,
+  however this happens after the optimizer sees `x is None`, so that ptr_eq
+  still remains, even though it's obviously not necessary since x and None
+  will have different known_classes.
+
+- optimize arraycopy also in the cases where one of the arrays is a virtual and
+  short. This is seen a lot in translate.py
+
+- calling string equality does not automatically promote the argument to
+  a constant.
+
+
+PYTHON EXAMPLES
+---------------
+
+Extracted from some real-life Python programs, examples that don't give
+nice code at all so far:
+
+- let super() work with the method cache.
+
+- ((turn max(x, y)/min(x, y) into MAXSD, MINSD instructions when x and y are
+  floats.)) (a mess, MAXSD/MINSD have different semantics WRT nan)
+
+
+BACKEND TASKS
+-------------
+
+- Look into this: http://paste.pocoo.org/show/450051/
+  commenting out the first line of f makes ~30% improvement. This is due to
+  the fact of reordering locals and valuestack when jumping across incompatible
+  loops (for no good reason really, but it does make a lot of assembler)
+
+
+LATER (maybe) TASKS
+-------------------
+
+- ((merge tails of loops-and-bridges?))
+
+UNROLLING
+---------
+ -  Replace full preamble with short preamble
+
+ -  Reenable string optimizations in the preamble. This could be done
+    currently, but would not make much sense as all string virtuals would
+    be forced at the end of the preamble. Only the virtuals that
+    contains new boxes inserted by the optimization that can possible be
+    reused in the loops needs to be forced.
+
+ -  Replace the list of short preambles with a tree, similar to the
+    tree formed by the full preamble and it's bridges. This should
+    enable specialisaton of loops in more complicated situations, e.g.
+    test_dont_trace_every_iteration in test_basic.py. Currently the
+    second case there become a badly optimized bridge from the
+    preamble to the preamble. This is solved differently with
+    jit-virtual_state, make sure the case mentioned is optimized.
+
+ -  To remove more of the short preamble a lot more of the optimizer
+    state would have to be saved and inherited by the bridges. However
+    it should be possible to recreate much of this state from the short
+    preamble. To do that, the bridge have to know which of it's input
+    boxes corresponds to which of the output boxes (arguments of the
+    last jump) of the short preamble. One idea of how to store this
+    information is to introduce some VFromStartValue virtuals that
+    would be some pseudo virtuals containing a single input argument
+    box and it's index.
+
+  - When retracing a loop, make the optimizer optimizing the retraced
+    loop inherit the state of the optimizer optimizing the bridge
+    causing the loop to be retraced.
+
+  - After the jit-virtual_state is merge it should be possible to
+    generate the short preamble from the internal state of the
+    optimizer. This should be a lot easier and cleaner than trying to
+    decide when it is safe to reorder operations.
+
+  - Could the retracing be generalized to the point where the current
+    result after unrolling could be achieved by retracing a second
+    iteration of the loop instead of inlining the same trace? That
+    would remove the restricting assumptions made in unroll.py and
+    e.g. allow virtual string's to be kept alive across boundaries. It
+    should also better handle loops that don't take the exact same
+    path through the loop twice in a row.
+
+  - After the jit-virtual_state is merged, the curent policy of always
+    retracing (or jumping to the preamble) instead of forcing virtuals
+    when jumping to a loop should render the force_all_lazy_setfields()
+    at the end of the preamble unnessesary. If that policy wont hold
+    in the long run it should be straight forward to augument the
+    VirtualState objects with information about storesinking.
+
+
+Random ideas from hakanardo
+----------------------------
+
+  - Let bridges inherit more information form their parent traces to allow
+	them to be better optimized. One idea is to augument the resumedata with
+	the index within the trace inputargs for each failarg that comes directly
+	from the inputargs. That way a lot of info can be deduced from the short
+	preamble. Another idea is to actually store a lot of status information on
+	the guards as they are generated, but then forget (and free) that info as
+	the guards grow older (in terms of the number of generated guards or
+	something).
+
+  - Generalisation strategies. Once jit-short_from_state is merged we'll have
+	a nice platform to experiment with generalizing the loops created. Today
+	unrolling makes the jit specialize as much as possible which is one reason
+	it's hard for bridges to reuse the created peeled loops. There is also a
+	tradeoff between forcing things to be able to reuse an existing loop and
+	retracing it to form a new specialized version.
+
+  - Better pointer aliasing analyzer that will emit guards that pointers are
+	different when needed.
+
+  - Movinging loop-invariant setitems out of the loops entierly.
+

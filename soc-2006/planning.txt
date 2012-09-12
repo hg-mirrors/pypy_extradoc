@@ -1,0 +1,38 @@
+PyPy Summer of Code mentors and plans 
+==============================================
+
+mentors 
+------------------------
+
+Michael Hudson
+Christian Tismer 
+Anders Chrigstroem 
+Holger Krekel 
+
+People already registered as a PSF mentor:
+
+Michael Hudson
+Carl Friedrich Bolz 
+Aurelien Campeas (pending)
+Samuele Pedroni 
+Armin Rigo 
+Christian Tismer (pending)
+
+On the 27th of April or so, mwh will send a list of all
+not-yet-registered mentors to Neal Norwitz.
+
+possible topics by keyword
+----------------------------------------
+
+- orthogonal persistence
+- implementing security models, e.g. sandboxing 
+- work on high level backends 
+- transactional memory 
+- writing extension modules 
+- various optimization approaches 
+- extending py.test to support distributed testing 
+- specialized propagators for the constraint solver [1]
+- efficient builtin numeric arrays [1]
+- a template system for python code [1]
+
+[1] see wp09_10_ideas.txt for more complete descriptions.

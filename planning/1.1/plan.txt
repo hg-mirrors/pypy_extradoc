@@ -1,0 +1,32 @@
+1.1 release goals: PyPy Python Interpreter 
+  - compliant to CPython 2.5
+  - ctypes 
+  - robustness 
+  - source distribution that installs and 
+    runs on Linux, OSX, Windows  
+  - supports easy_install / setuptools 
+  - works with django, pylons and many other apps 
+  - features stackless, transparent proxies, xxx sandboxing
+  - experimental .NET and JVM versions?? 
+
+major todos: 
+
+- cleanup of directories and maybe modularizing 
+- documentation about writing new extension modules 
+- integrate SoC 2.5 work, port lib-python to 2.5, fix remaining 2.5 issues 
+- review ctypes skipped tests 
+- threading works nicely 
+- a build process that integrates well with distutils,
+  should fail gracefully for c-extensions 
+- setup automated windows testing, integrate testing "pypy-c"
+  on all platforms, **have one central pypy-c testing page**
+- check missing standard library modules
+- trunk/dist separation, dist is automatically copied from
+  trunk after all tests have passed 
+- refactor documentation to have separated entry points: 
+  - for users of the mainline PyPy Python Interpreter 
+  - for advanced users/developers/experimenters of the PyPy Python Interpreter 
+  - all the rest - toolchain, prolog, squeak, javascript 
+- revise and cleanup play1 - run more things through sandboxing? 
+- debian packaging? 
+- check licensing/copyright situation and boilerplate 

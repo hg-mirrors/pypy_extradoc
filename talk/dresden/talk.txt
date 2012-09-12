@@ -1,0 +1,113 @@
+What is PyPy?
+==============
+
+- multiplatform compiler toolchain
+
+- flexible interpreter
+
+- an open source project
+
+- STReP
+
+Python - quick summary
+======================
+
+- interpreted language
+
+- very dynamic and introspective
+
+- diversity of implementations
+  (platforms, features, JIT)
+
+- (?)complex
+
+Our goal
+========
+
+- write (runnable) specification in high-level
+  language (RPython)
+
+- use python as a meta-programming language
+  for RPython
+
+- reason: C is to low level to analyze
+  efficiently
+
+Single source approach
+======================
+
+- multiple backends (C, CLI, JVM coming...) [m]
+
+- multiple interpreter (Python, Javascript, scheme...) [n]
+
+- multiple different approaches
+  (JIT, stackless, gc, threading, ...) [o]
+
+- in summary m+n+o code, not m*n*o
+
+Forest of flow graphs/translation
+=================================
+
+XXX interactive demo of pygame viewer
+
+Transformation approach
+=======================
+
+- most of our optimisations/safety checks
+  are done as a graph transformation
+
+- example - stack checks
+
+- example - gc (modeled after Jikes MMtk)
+
+Objspace concept
+================
+
+- single place where operations on objects
+  are performed
+
+Taint objspace
+==============
+
+- intercepts all operations performed on objects
+
+.. image:: interpreterarch.png
+
+Multiple object implementation
+==============================
+
+- variety of different implementations per
+  interpreter type
+
+- example: multidict
+
+- example: ropes
+
+Transparent proxies
+===================
+
+- works as a different object implementation
+
+- intercepts all operations on objects
+  and calls app-level code
+
+- very much like .NET transparent proxy
+
+Custom persistance scheme
+=========================
+
+- can be implemented on top of tproxy
+
+- using whatever storage mechanism
+
+- with desired granularity
+
+Sandboxing
+==========
+
+- replace all external calls by stream writing methods
+
+- create a custom library to cope with that
+
+- some demo?
+

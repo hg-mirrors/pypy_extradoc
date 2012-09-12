@@ -1,0 +1,16 @@
+
+ - nicer python interface (Carl Friedrich, Wim)
+ - fix Makefile generation (Armin, Anto)
+ - set up tests correctly, use ROOTSYS if it is there (Anto, Armin)
+ - genreflex whacking (Anto, Armin)
+ - data members
+ - passing and returning objects to C++ (Carl Friedrich, Wim)
+ - garbage collection?
+ - tons of details
+
+Detailed TODO list:
+
+ - Deal with opened cpplibs: ownership and possible offloading 
+ - Interacting of cache from a get_cppclass-like UI and gbl getattr
+ - Need a "counter" mixin baseclass for memory tracking
+ - Better error reporting when overloads fail

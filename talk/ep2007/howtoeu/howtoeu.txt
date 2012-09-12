@@ -1,0 +1,219 @@
+
+.. include:: <s5defs.txt>
+
+
+==================================================
+How to do an open source EU research project
+==================================================
+
+
+:authors: Lene Wagner, Holger Krekel (merlinux GmbH) 
+:event: 10.7.2007, EuroPython 2007, Vilnius 
+
+
+Intro 
+=================== 
+
+- we have participated in the PyPy project 
+- both on technical and management levels 
+- founded merlinux GmbH in 2004, doing various projects 
+- we discuss *open source* research projects 
+- skip "Intellectucal Property" issues
+
+EU Framework Research Programme 
+====================================
+
+- IST = Information Society and Technology 
+- PyPy was a STREP 
+- FP7 spends some 20.000.000.000 Euro in 7 years 
+- regularly publishes Work Programmes and Topics 
+- puts out CALLS for Proposals 
+- we mainly discuss FP7 (only few changes from FP6) 
+
+Getting started 
+=====================
+
+- visions / ideas? 
+- reading Work programmes / CALL topics 
+- finding people to collaborate 
+- finding a set of organisations 
+- drafting a proposal ... 
+
+(Research) Objectives? 
+==============================
+
+- formulate core research objective(s)
+  (state of the art & how the project aims beyond) 
+- formulate core technical objectives? 
+- core other objectives? (methodological/social) 
+
+can you summarize it on one page? 
+
+The Proposal 
+===============
+
+- High level Objectives 
+- Impact on industry and society 
+- management structures
+- work plan in long form
+- detailed description of work packages 
+- Project duration, budget? 
+
+Work Packages 
+=================== 
+
+- each has a specific objective 
+- Person Months allocated from Partners 
+- Lead Partner 
+- Deliverables (Reports, Releases, Papers) 
+
+Consortium 
+============================
+
+- looking for interested parties 
+- consortium consists of organisations 
+- is collective entity towards EU 
+- requires co-ordinator/contact person for EU 
+- receives and distributes money
+
+
+Applying to the EU 
+=========================
+
+- answer to CALLS within stated deadline 
+- co-ordinator registers project and proposal 
+- proposals gets reviewed by *independent* experts 
+- proposals receive points (PyPy had 26 out of 30) 
+- Invitation to "negotiation" 
+
+Negotiation 
+==============
+
+- discuss criticism of reviewers, change proposal 
+- Prepare paperwork (CPF = Contract Preparation Forms) 
+- sign CONTRACT with the European Union 
+
+Funding Schemes
+=====================
+
+- Universities receive (basically) 75% funding 
+- Small/Medium Companies (SME) receive 75% funding of costs 
+- actual or 20% flat administrative overheads accountable
+
+Signing the contract? 
+========================
+
+signature of the (negotiated) contract: 
+
+- is legally binding for all contractors and the EU 
+- afterwards the EU does pre-payments (40-80%) 
+- the consortium can ask for amendments later 
+
+Infrastructure 
+==================
+- ensure close collaboration of non co-located developers
+- ensure openness for external contributors
+- ensure consistency of codebase/project
+- PyPy: IRC, svn, mailing lists
+
+
+Management structures  
+============================
+
+- Administrative team (preparing Consortium decisions) 
+- Technical Board (discussing problems, deciding roadmap) 
+- developer body (everybody can participate) 
+- Consortium and Co-ordinator
+
+
+Meetings and Sprints 
+============================
+
+- sprints provide the rhythm of the project 
+- plan for core for newcomer-friendly sprints 
+- integrate a model for funding new contributors! 
+
+
+Contractual and actual developments 
+=====================================
+- Contract implies a 'plan' for the development
+- Project may evolve into other directions
+- do checkpoints for assessing the work package status 
+
+Planning for changes 
+===========================
+
+- be able to shift work among partners
+- if necessary: amend work plan, change the contract with the EU
+- but: don't touch the objectives!
+
+
+Reporting / Deliverables 
+============================
+
+- interim reviews each 12-18 months 
+- Deliverables are: Reports, Releases etc. 
+- Deadlines 
+- official submission of Reports/Documentation to EU
+
+Recommendations 
+====================
+
+- sprint-driven model of development;
+- share some funding with upcoming contributors;
+- balance contractual with community interests 
+- consider changes to the contractual work plan if 
+  it fits the objectives better;
+
+More Recommendations
+========================
+- transparent and flat communication and decision culture
+- be ready to adjust roles and not stick to formal issues too much. 
+- dual-use Deliverables for Community/Industry and EU contract purposes
+
+
+Roles and Responsbilities 
+============================
+
+- assign responsibilities to people 
+
+  - per aspect (administration, technical, research) 
+  - per work package
+
+- plan for changing responsibilities 
+
+Changes from FP6 to FP7 
+=============================
+
+- apparently FP7 improves some regulations that PyPy found burdonsome
+- less collective financial responsibility 
+- 75% funding for (small/medium) companies 
+- subcontracting relaxed (important for international companies)
+
+
+What Remains? 
+================================
+
+- build the project on a shared vision and shared interest
+- don't build it on money (too much) 
+- get into contact with national support offices! 
+- use the national and EU help infrastructure! 
+
+
+Further information
+==========================
+
+- official EU FP7 website: 
+  http://cordis.europa.eu/fp7/home_en.html
+
+- information leaflet on FP7:
+  http://ec.europa.eu/research/fp7/pdf/fp7-inbrief_en.pdf
+
+- Information and Communication Technology department:
+  http://cordis.europa.eu/fp7/ict/
+
+- PyPy project http://pypy.org
+
+
+
+

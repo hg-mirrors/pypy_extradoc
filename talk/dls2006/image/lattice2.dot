@@ -1,0 +1,9 @@
+digraph lattice2 {
+    Top -> "NullableInst(object)" -> "Inst(object)" -> "Inst(cls1)" -> Bottom;
+    "NullableInst(object)" -> "NullableInst(cls1)" -> None -> Bottom;
+    "NullableInst(cls1)" -> "Inst(cls1)";
+
+    "Inst(object)" -> "Inst(cls2)" -> Bottom;
+    "NullableInst(object)" -> "NullableInst(cls2)" -> "Inst(cls2)";
+    "NullableInst(cls2)" -> None;
+}

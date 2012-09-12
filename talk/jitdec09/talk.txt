@@ -1,0 +1,83 @@
+.. include:: <s5defs.txt>
+
+=========================================================
+A generated JIT compiler for Python
+=========================================================
+
+:Author: Samuele Pedroni, Open End AB
+:Date: December '09
+
+
+Idea
+==========
+
+Derive a dynamic compiler from a sufficiently rich intermediate representation
+of the interpreter while it is turned into a VM
+
+- all features supported by construction
+
+- semantics are more easily encoded as interpreting code
+
+Tracing JIT compiler
+=======================
+
+Template: use the streamlined approach introduced by tracing JITs
+
+- identify hot loops
+- produce linear traces with stay-on-trace checks (guards), follow calls!
+- compile the traces to assembler which run the loop
+
+Details
+=========
+
+- Identifying loops: hints for the JIT runtime to identify the
+  interpreter loop, and back edges of user loops
+
+- Tracing: build encoding such that interpreter functions can be
+  executed and their operation recorded in the traces
+
+- Exploit when heap allocation can be forgone, mirror Python frames on
+  the CPU stack
+
+Example
+=========
+
+
+Status
+=======
+
+- Intel x86-32
+- Small and some medium examples run
+- Good results for algorithmic code, see benchmarks
+- Reasonable heuristic when traces get too long
+
+Benchmarks
+============
+
+.. image:: result.png
+   :align: center
+
+Work Left
+==========
+
+- Further work on memory footprint
+- Correct and improved behavior in the presence of exceptions: work in progress
+- Better results for recursion, asm to asm calls
+- Bugs, correctness (sys.settrace for example)
+
+Work Left (ii)
+===============
+
+- Machine code management, discard no longer valid traces
+- Make the interpreter more JIT-friendly
+- Interpreter-level algorithmic improvements
+- Intel x86-64
+
+Links
+============
+
+Status blog
+http://morepypy.blogspot.com
+
+Website
+http://codespeak.net/pypy

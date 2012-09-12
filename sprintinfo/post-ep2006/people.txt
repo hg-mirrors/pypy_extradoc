@@ -1,0 +1,53 @@
+People coming to the Post EuroPython Sprint (Geneva) 2006 
+=============================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Michael Hudson       6-9th          ? 
+Armin Rigo           ?              private
+Carl Friedrich Bolz  6-9th          CERN hostel 
+Guido Wesdorp        6-9th          CERN hostel 
+Holger Krekel        6-?            CERN hostel 
+Maciej Fijalkowski   6-9th          ? 
+Anders Chrigstroem   2/7 - 10/7     NH Geneva Airport
+Samuele Pedroni      2/7 - 10/7     NH Geneva Airport
+Antonio Cuni         6-9th          CERN Hostel 
+Anders Lehmann       6-9th          ? 
+Eric van Riet Paap   2-9th          CERN Hostel
+Lawrence Oluyede     6-9th          CERN Hostel
+Fabrizio Milo        6-9th          Geneva City Hostel
+Alexander Schremmer  6-9th          CERN Hostel
+Aurelien Campeas     6-8th          ?
+Alexandre Fayolle    6-7th          ?
+Ludovic   Aubry      6-8th          ?
+David Douard         6-8th          ?
+Michele Frettoli     6-7th          ?
+Simon Burton         6-10th         ?
+Aaron Bingham        6-7th          ?
+Pieter Zieschang     6-9th          ?
+Sad Rejeb            7-9th          ?
+==================== ============== =====================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Christian Tismer     ?              ?
+Jacob Hallen         ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Laura Creighton      ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+==================== ============== =====================

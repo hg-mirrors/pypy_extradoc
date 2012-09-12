@@ -1,0 +1,53 @@
+Author Names
+------------
+
+(from) Holger Krekel, Armin Rigo 
+
+Contact Information
+-------------------
+
+holger krekel <hpk@merlinux.de>
+Armin Rigo <arigo@tunes.org> 
+py-dev@codespeak.net (py lib developers list) 
+http://codespeak.net/py/  (web page)
+
+Requested Timeslot
+------------------
+
+45 minutes tutorial.
+
+Summary of proposed presentation
+--------------------------------
+
+Title: using the py library (apart from py.test) 
+
+The py lib is a development support library and evolves itself
+from a strictly test-driven development process.  Already
+known for the widely used py.test tool, the "py lib" has more
+to offer.  
+
+Apart from its intense usage in the PyPy project a number of
+other projects have adapted its methods.  We plan to give
+usage examples for various parts of the py library: 
+
+- py.log:     keyword/subscription based lazy logging 
+- py.compat:  provides standard library modules for older python versions
+- py.initpkg: export name/lazy import mechanism ("import py" 
+              is all you ever need to do).
+- py.path:    path objects unifying access to svn- and
+              local filesystems. 
+- py.execnet: ad-hoc distributing programs across ssh- and process
+              barriers. 
+
+All of these features are already used by a growing number of 
+projects.  We will give interactive examples and conclude 
+with an outlook. 
+
+Presentation Outline (optional)
+---------------------------------
+
+Intended audience
+-----------------
+
+All python developers (who are interested in lightweight libraries and 
+lean pythonic APIs in order to support agile development)

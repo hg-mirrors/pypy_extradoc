@@ -1,0 +1,61 @@
+
+People coming to the Leysin sprint Winter 2009
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Armin Rigo           --             private
+Carl Friedrich Bolz  14th-21st      Ermina
+Antonio Cuni         15th-21st      Ermina
+Samuele Pedroni      14th-22nd      Ermina
+Anders Hammarquist   14th-22nd      Ermina
+Christian Tismer     14th-22nd      Ermina
+Niko Matsakis        14th-19th      Ermina
+==================== ============== =======================
+
+Samuele and Anders Hammarquist would like to share a two persons room.
+
+Niko, Carl and Antonio plan to share a room.
+
+Christian is sorry but he needs a single room.
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Maciej Fijalkowski   ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Stephan Diehl        ?              ?
+Alexander Schremmer  ?              ?
+Anders Chrigstroem   ?              ?
+Samuele Pedroni      ?              ?
+Eric van Riet Paap   ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Holger Krekel        ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+==================== ============== =====================

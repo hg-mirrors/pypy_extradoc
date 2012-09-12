@@ -1,0 +1,148 @@
+~~~~~
+Draft
+~~~~~
+
+
+Introduction
+============
+
+- Some kind of intro about dynamic language implementations
+
+- In the context of academic or Open Source communities:
+  limited resources (applies also to DSLs)
+
+.. (keep the rest of the intro very short!) ..
+
+- What is the best way to implement dynamic languages?
+  Current situation (e.g. Python): for C (Posix, Windows) as
+  custom VMs, several ones; for Java; for .NET; other incomplete
+  ones.  Problem in our context: redundant and out-of-sync
+  implementations of the dyn language, divides the available resources.
+
+- Trend:
+  * OO VMs give more support and people want integration with OO VMs anyway
+  * so, some propose to standardize on one OO VM to increase interoperability
+    and reduce redundancy and out-of-sync implementations of the dyn language
+
+- Our view on the issue:
+  * we're opposed to that conclusion
+  * this is really a metaprogramming issue, not a standardization issue
+  * implementations should be generated - don't write VMs by hand any more
+
+
+Advantages of OO VMs
+====================
+
+- C-level implementations of dyn language VMs have issues and trade-offs
+  (GC, perf, flexibility).  This alone leads to multiple implementations
+  (Stackless, Psyco).
+
+- People eventually ask for better integration with successful OO VMs,
+  mere bridges are temporary hacks => more implementations
+
+- Let's first explore the alledged advantages of writing dynamic language
+  implementations in an OO VM over writing custom VMs in C:
+  * more interoperability than the C level
+  * cross-platform portability
+  * better tools
+  * better implementation of low-level issues like GC
+  * better performance
+  * ease of implementation
+  * a single base, which makes alternate implementations
+    unnecessary
+  (expand each topic with concrete supporting data...)
+
+- Some of these are only partially true:
+  * "better performance": so far it's the other way around, and the
+    VM's JIT compilers don't help much the very dynamic languages (expand...)
+  * "better GCs" is unclear - obvious in theory, but OO VMs tend to
+    have quite large memory overheads to start with (ref...)
+  * "cross-platform portability": yes to some extend, but e.g. C/Posix is
+    relatively portable too
+  * "ease of implementation" disputable: it's really a trade-off:
+    it gives a higher-level language but also an imposed model in
+    which concepts must be mapped, which may be anywhere from easy
+    to mostly impossible depending on the language we want to implement
+    (ref... e.g. bad Prolog on .NET and JVM)
+
+- Not all arguments are bogus: we get better tools and in theory GCs and
+  other low-level aspects, and of course interoperability with the rest
+  of the VM
+
+
+- Proliferation of implementations, division of the effort, troublesome
+  if resources are limited.  Implementations written for a specific OO VM
+  have advantages over custom VMs in C, so people propose as a solution
+  to standardize on one OO VM and just have this one implementation of
+  the dyn language.
+
+- A single best base OO VM for everyone would help reducing the
+  proliferation of implementations; but that's unlikely to occur,
+  and it would come with trade-offs too
+
+
+Metaprogramming Is Good
+=======================
+
+- Introduction to the generation of VMs from high-level interpreters
+  * PyPy proof of concept: can target many environments
+  * single source => multiple VMs
+
+- PyPy architecture in metaprogramming terms: 
+  * very expressive object language (RPython) for language VMs and semantics 
+  * very expressive metalanguage (Python) for analysis and susccessive transformation 
+  * transformations add aspects and specialize to fit 
+    virtual or hardware runtime environment 
+
+- Makes interpreters easy to write, update, and generally experiment with
+  * more expressiveness helps on all levels (use d12's
+    security references and texts, mention the thunk space)
+  * the requirement "specify an interpreter for your language" is much
+    less strong than "fit it into the OO VM's model" [e.g. Pyrolog on .NET]
+  * transformations [Stackless]
+
+- We can get similarly good GCs and tools
+  * (if we really want - still less work than writing a complete good OO VM)
+  * no easier or harder than what needs to be put in an OO VM
+  * existing GCs can also be reused
+  * a metaprogramming translation toolchain requires a lot of work,
+    but it is highly reusable
+
+- We can get better performance
+  * good baseline speed (e.g. pypy-c quite faster than Jython)
+  * JIT generation framework
+  * expand...
+
+in an appropriate place above:
+ - writing a translation toolchain is easier and simpler than writing an OO VM
+
+Conclusion
+==========
+
+- Don't write dynamic language implementations "by hand"
+  * writing them more abstractly at a high level has mostly only advantages
+  * we can still reuse existing good OO VMs
+
+- Don't write VMs by hand any more
+  * certainly not language-specific VMs
+  * but even general-purpose OO VMs have trade-offs and are too much work
+    unless you have the necessary resources
+
+- Let's write more metaprogramming translation toolchains
+  * diversity is good
+  * no need for VM standardization
+  * very large, mostly unexplored design space (some of PyPy's choices will
+    probably turn out to not be optimal)
+  * might open the door to better solutions for interoperability
+    (high-level bridges instead of low-level ones, cross-translation...)
+  * ultimately a better investment of efforts than writing general-purpose VMs
+
+
+References 
+-------------
+
+DLS paper 
+
+expressiveness: couldn't find a classification scheme for computer languages, but see: 
+    http://en.wikipedia.org/wiki/Comparison_of_programming_languages#Expressiveness
+

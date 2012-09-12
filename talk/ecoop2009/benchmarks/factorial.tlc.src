@@ -1,0 +1,21 @@
+    PUSH 1   #  accumulator
+    PUSHARG
+
+start:
+    PICK 0
+    PUSH 1
+    LE
+    BR_COND exit
+
+    SWAP
+    PICK 1
+    MUL
+    SWAP
+    PUSH 1
+    SUB
+    PUSH 1
+    BR_COND start
+
+exit:
+    POP
+    RETURN

@@ -1,0 +1,11 @@
+chaos
+crypto_pyaes
+django
+go
+pyflate-fast
+raytrace-simple
+richards
+spambayes
+sympy_expand
+telco
+twisted_names

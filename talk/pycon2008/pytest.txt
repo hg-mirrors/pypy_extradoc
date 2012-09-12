@@ -1,0 +1,138 @@
+
+===========================================
+py.test
+===========================================
+
+:authors: Maciej Fijalkowski (merlinux GmbH), Brian Dorsey (noonhat)
+:Title: py.test - rapid testing with minimal effort
+:date: 16 March 2008
+:Event: Pycon 2008, Chicago IL
+
+Intro
+==========
+
+* general purpose testing tool
+
+* minimal boilerplate code
+
+* developed partly for purposes of PyPy
+
+Writing tests with py.test
+===========================
+
+* almost identical to Nose 
+
+* def ``test_foo():`` defines test function
+
+* ``class TestFoo:`` defines test class
+
+* setup/teardown on many levels (module, class, function)
+
+* generative tests::
+
+   def test_one():
+       yield function, arg
+
+Automatic test collection
+==========================
+
+* no need for specific test runners
+
+* simply running py.test is enough
+
+* py.test --collectonly to show tests which would run
+
+* demo
+
+assert by assert
+=================
+
+* no self.assertEqual, self.failNotUnlessEqual and friends
+
+* ``assert x == 3`` is enough
+
+* assert reinterpretation
+
+* demo
+
+stdout/err capturing
+=====================
+
+* no point in showing output of working tests
+
+* leave your debug prints in your tests
+
+* options to control
+
+test selection
+===============
+
+* -k selects tests
+
+* -k classname.methodname works as well (trunk only)
+
+* -k -name selects all but name
+
+* multiple -k are treated as "and" operator
+
+installation
+=============
+
+* easy_install py
+
+* run py.test on your testing directory
+
+* you can checkout svn trunk directory for
+  new cool features
+
+ad-hoc test distribution
+=========================
+
+* done over py.execnet
+
+* can connect over Popen, Ssh, socket...
+
+* rsyncs local dir, no need to copy files
+
+* demo
+
+web reporter
+=============
+
+* useful for running distributed tests
+
+* still needs some work (any volunteers?)
+
+extending
+==============
+
+* conftest.py does the "magic"
+
+* you can add options per-project
+
+* you can change the way tests are run (validating ReST,
+  running ecma test suite, etc.)
+
+pypy extenstions
+=================
+
+* we use py.test extensively in pypy
+
+* few side-projects, buildbot hooks, htmlconftest
+
+extending - reporters
+=========================
+
+* parsing output is not any fun in general
+
+* reporter hooks (trunk only)
+
+future
+==========
+
+* 0.9 was Feb 2007, so releasing 1.0 soon
+
+* cleanup a bit, more plugin architecture
+
+* more common interface with Nose (skip, raises, etc)
+

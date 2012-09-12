@@ -1,0 +1,51 @@
+People present
+--------------
+
+Carl Friedrich
+Armin
+Adrian K
+Toon
+Niko
+Oscar
+Lukas
+Adrian L
+
+Task ideas
+----------
+
+- presenting the new way of registering primitives (cfbolz)
+
+- new coding convention for indices (akuhn)
+
+- demoing the working translation (cfbolz)
+
+Afterwards:
+-----------
+
+- Implement loading the image (cfbolz, akuhn)
+  MOSTLY DONE, floats missing
+  
+- interpreter loop and bytecode dispatch (Armin, Adrian L,
+  Lukas, Toon) DONE
+
+- implementing numbered primitives MORE PROGRESS (lukas,
+  cfbolz, niko, oscar, etc)
+
+- test for all primitives (niko, lukas)
+
+- implement all the bytecodes (Armin, Toon, Lukas, Adrian L)
+  MOSTLY DONE
+
+- define a common interface for real image and mock image (Niko, Carl
+  Friedrich, Adrian K) DONE
+
+- make image loading RPython (oscar, cfbolz)
+
+- try to generate the fib example and fight with RPython :)
+  (Armin, together to teach the smalltalkers) DONE!
+
+- write the report for yesterday (Carl Friedrich, Adrian K) DONE
+
+okay, done.
+
+

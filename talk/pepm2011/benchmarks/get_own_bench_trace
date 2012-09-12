@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for i in crypto_pyaes.py fannkuch.py go.py meteor-contest.py nbody_modified.py pyflate-fast.py raytrace-simple.py spectral-norm.py telco.py
+do
+    echo $i
+    PYPYLOG=jit-log:$i.trace /tmp/pypy-c-jit-77705-linux/bin/pypy --jit optimizer=1 $i -n 20
+done
+
+

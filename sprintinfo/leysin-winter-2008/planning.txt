@@ -1,0 +1,51 @@
+
+Task ideas
+==========
+
+ - skiing/snowboarding/snow hiking: IN-PROGRESS
+
+ - try getting debug information in the Java class files DONE
+
+ - benchmark the size of the young nursery for generational GC
+   DONE, the result still is that picking half the L2 cache
+   size for the nursery sounds good
+
+ - look at the RPython microbenchmarks for Java
+   DONE, fixed sized-lists are slow
+ 
+ - work on CTypes
+   more general non-progress
+   nested structure and arrays of structure support in rawffi DONE
+
+ - callbacks in rawffi
+
+ - write tests for GIL handling in callbacks in rffi (maciek)
+
+ - think about summarizing test outcomes
+
+ - JVM integration (probably only when Anto is here)
+
+ - does JPype support reflection? (Paul, Anto around)
+   wrap it into an rlib module
+
+ - look at the CLI integration on the clr-module-improvements/ branch and
+   maybe improve/merge it? Some problems left: newly loaded assemblies are a
+   problem
+   
+ - implement fixed-size lists as arrays in the ootypesystem (Carl Friedrich,
+   Toby) IN PROGRESS, jvm backend supported, more minor problems
+   java bytecode verifier complains
+ 
+ - give a JIT code walkthrough DONE
+
+ - give a JIT promotion walkthrough (Armin)
+ 
+ - start writing more unit-style tests for the JIT (Armin, Carl Friedrich,
+   Anto)
+   SOME PROGRESS
+
+ - ported some JIT tests to ootype
+ 
+ - explore the parsers a bit DONE
+
+ - hack a bit on an AVM backend (Toby, Maciek)

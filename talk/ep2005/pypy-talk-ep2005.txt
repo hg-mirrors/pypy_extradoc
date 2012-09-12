@@ -1,0 +1,40 @@
+
+
+
+PyPy as a compiler
+------------------
+
+A status report on PyPy, the Python interpreter implemented in Python.
+
+1) introduction to the PyPy release (planned one month before EuroPython);
+2) current work on the compilation infrastructure for PyPy;
+3) (if time permits) a short tutorial on how to compile your own Python programs.
+
+The main part of the talk will be the second one, as it is where we are putting the most efforts at the moment: "how to turn an interpreter into a compiler".
+We will dig into:
+
+- what kind of programs we can statically compile;
+- the frontend infrastructure (control flow graph production, type inference);
+- the C back-end, and the role of the "typer" component bridging the gap between high-level type annotations and the C data model;
+- the LLVM back-end (targetting a virtual machine with a different model and different trade-offs than plain C);
+- how this relates to our rather different long-term goal of making a really fast PyPy interpreter.
+
+-------------------------------------------
+
+The PyPy project (http://codespeak.net/pypy) aims at producing a simple runtime system for the Python language, expressing the basic abstractions within the Python language itself.  Simplicity and Flexibilty are the foremost goals.
+
+To reach our goal, we are currently working on a Python source analysis and compilation toolchain -- based on PyPy as well -- and a minimal low-level core that doesn't need CPython any more.  The presentation will focus on these tools, which are able to perform automatic static type inference of "static enough" Python programs and then compile them to various lower-level languages (currently, we have experimental back-ends for C, LLVM, Python, Lisp, Pyrex and Java).  This analysis works on fully standard Python sources (bytecodes, actually), and the distinguishing feature of the techniques we use -- "abstract interpretation" -- is to allow type inference to be performed for any language for which we have an interpreter.  Moreover, it doesn't require explicit type annotations added by the user. 
+
+To some extent, and although it is not our primary long-term goal, the tools we have developped could be used generally to check or improve the performance of any program.  We will see in particular which "staticness" restrictions must be met for these tools to work, and look under the hood: 
+
+* how we build control flow graphs; 
+
+* how we perform type inference, and what "type inference" precisely means in this context; 
+
+* type inference is not the end of the story: good code must be generated from the source and the inferred types.
+
+The presentation will focus on the latter point, explaining the two major code generators we have at the moment: the C and LLVM back-ends.
+
+The techniques relate to Psyco's, the just-in-time specializer for CPython.  We will compare them, and also contrast the "internal" notion of type used as an implementation detail (as in PyPy and Psyco) with the other typical approach of explicit user-specified types.  This point of view puts our current efforts in the more general context of our long-term goals, which are about dynamic optimizations rather than static compilation.
+
+Our approach is motivated by the desire of flexibility: it allows issues that normally require early design decisions to be postponed, and addressed later in possibly more than one way, without rewriting everything.  Typical example: adding Stackless-style continuations in CPython required a whole-scale rewrite, but has only a "local" impact on PyPy.  We will plead for a framework based on interpreters as a way to gain the most flexibility from programming languages -- and the best performances too, for very-high-level languages!

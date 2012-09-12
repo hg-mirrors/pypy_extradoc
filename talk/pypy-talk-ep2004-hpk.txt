@@ -1,0 +1,14 @@
+
+EuroPython 2004 PyPy talk
+
+1. Motivation / small summary of our EU efforts (Laura?)
+
+2. architecture / pygame view  (Michael, Armin)
+
+3. source explanation + lower level architecture + examples (Holger)
+
+4. translation / flowgraphs / (Samuele)
+
+5. future directions / how to get involved / questions 
+   (al together)
+

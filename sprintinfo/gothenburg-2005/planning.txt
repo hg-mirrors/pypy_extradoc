@@ -1,0 +1,122 @@
+
+Gothenburg Coding Sprint 7/12-11/12 2005
+==================================================
+
+Ludovic Aubry        5/12-10/12    
+Adrien Di Mascio     5/12-10/12   
+Jacob Hallen                     
+Laura Creighton                 
+Beatrice Duering     5/12-11/12 
+Armin Rigo           5/12-11/12 
+Samuele Pedroni      5/12-11/12 
+Anders Chrigstroem   5/12-11/12 
+Eric van Riet Paap   6/12-11/12 
+Michael Hudson       5/12-11/12 
+Carl Friedrich Bolz  5/12-11/12 
+Anders Lehmann       4/12-11/12
+Christian Tismer     4/12-11/12
+Niklaus Haldimann    6/12-11/12
+Richard Emslie       5/12-11/12
+Johan Hahn           7/12-
+
+Thursday afternoon: half-breakday (starting at 15.00)
+
+Possible sprint tasks / Work distribution after the sprint
+=============================================================
+
+JIT work 
+~~~~~~~~~~~~~~~~~
+
+see doc/discussion/draft-jit-ideas.txt
+
+- toy target intepreter + parser/assembler (DONE)
+- low-level graphs abstract interpreter: Armin, Michael, Carl Friedrich,
+  Samuele)
+- (L3 interpreter: Carl Friedrich)
+
+Stackless
+~~~~~~~~~~
+
+Expose the low-level switching facilities:
+
+Christian, Richard?
+
+- write RPython structures (tasklet, channel) and basic
+  functions for switching
+- prototypes for channels and tasklets + tests
+- add an app-level interface
+- implement support structures - a deque module exists already
+  which can be used for channel queues
+
+GC, __del__, weakref
+~~~~~~~~~~~~~~~~~~~~~
+
+- implement __del__ support in the RTyper and backends (DONE,
+  performance killer! 10 times slower! argh!!!), Samuele, Carl Friedrich 
+
+- (possibly implement weakref (at least with Boehm))
+
+- integrate GC construction framework in the backends: Eric, Carl
+  Friedrich
+
+_socket, C gluing for extensions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- work on _socket: Nik, later
+- this exposes limitations in our way to 
+  glue to C libraries, think/design solutions: Armin, maybe
+
+
+threading
+~~~~~~~~~~~
+
+- fix stack_too_big with threads on Windows (Johan, work started, help
+  needed, Christian)
+- investigate why enabling threads creates such a large overhead
+- think of a design to release the GIL around blocking calls
+
+possible optimisation work
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- look into the perfomance and code path for function calls
+  in our interpreter (MOSTLY DONE)
+- look into converting the indirect call in the eval loop for bytecode
+  dispatch into a switch: probably needs a representation choice in the RTyper,
+  a transformation, and integer exitswitch implementation as switch in the
+  backends: Arre, Eric
+- ...
+
+Logic programming, WP9
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(Ludovic, Adrien, maybe some help needed)
+
+- export the AST nodes hierarchy to application level through the
+  compiler module (IN-PROGRESS)
+  - all the AST tree exported to applevel
+  - still need to create new nodes
+- export the Grammar representation and provide means to (at least) add
+  new rules (long) which involve providing ST->AST transformation functions
+  - the grammar rules are exported too
+
+US travel report, maybe towards WP03/WP07
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Saturday morning  (DONE)
+
+- telling the story about a commercial travel to the states
+  to optimize some Python application - done using RPython
+- discussing possible advantages/new goals/extensions to the project
+- ideas about producing extension modules: a new object space?
+
+Reports finalization (important!!!, done before 16th December)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- pdf generation (Carl Friedrich)
+- beautification (people responsible)
+
+next pypy-sync meeting topics (eric)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- pypy-sync meetings attendance
+- mallorca sprint topics
+

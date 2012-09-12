@@ -1,0 +1,29 @@
+      - mission statement should emphasize VM framework/translation and not mention project results 
+      - always clearly separate the talk about the VM translation 
+        framework and the Python implementation (and its features) 
+        for example "PyPy - implementation of python in python" 
+        as the first title is misleading.  maybe something like: 
+
+        a) PyPy is a VM/VHLL translation framework (or whatever we settle on)
+        b) already contains a full Python implementation
+           part of which is re-used from the translation framework 
+           to analyse RPython programs (abstract interpretation ...)
+      - make the descriptions more "future" proof, i.e. 
+        not reflecting the current state, possibly shortening
+      - check other entry level docs (also FAQ) for keeping to this
+        updated view 
+
+      rationale for looking in more depth at architecture.txt: 
+      this document and getting-started.txt document are
+      the most viewed (arch: 1500 times in march, getting-started: 
+      around 2200 times) ones and people expect archictecture.txt
+      to reflect our view on the project. 
+
+
+* current play1 entry points docs: 
+  taint: objspace-proxies.html#the-taint-object-space
+  thunk: objspace-proxies.html#the-thunk-object-space
+  stackless: stackless.html 
+  TProxies: objspspace-proxies.html#tproxy 
+  XXX
+

@@ -1,0 +1,14 @@
+I'm listing here some ideas gathered around on IRC:
+
+1. "A usual pypy talk" - architecture, motivation etc. (samuele,armin)
+2. An RPython talk: .NET, JVM, JS, extcompiler, possible uses, caveats,
+   probably some architecture (anto,fijal)
+3. Interpreters talk: taint, thunk, persistance, distribution, probably
+   some stackless (?), interpreter for .NET (hpk, fijal)
+4. recommendations on "how to" OSS/EU-funding/research project (hpk,lene)
+5. development process "how to" (bea, hpk maybe)
+
+These last two talks (4-5) should be scheduled together - let´s ask for it
+when submitting. They are "final" recommendations and reflections from PyPy
+regarding formal structures and informal structures (contract and development process).
+(Phone discussion between hpk and bea 18/5)

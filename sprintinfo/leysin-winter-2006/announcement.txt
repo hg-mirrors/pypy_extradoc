@@ -1,0 +1,60 @@
+==============================================
+Leysin Internal Winter Sprint (3-9 April 2006)
+==============================================
+
+The next PyPy sprint will be in Leysin, Switzerland, for the second
+time.  Its main focus is progressing in the core PyPy areas.  This
+sprint is "internal" in the sense that we would like to concentrate on
+areas that are not terribly newcomer-friendly, so prior knowledge in
+PyPy is definitely required.  (A priori, it is not closed to people
+outside the "official" core developers group, though.)
+
+Goals and topics of the sprint 
+------------------------------
+
+It so happens that the sprint goals can be summarized in two opposite
+statements:
+
+1. Have fun in winter sports.  There is plenty of snow this year,
+   so skiing will still be great during the sprint.  For non-skiers,
+   there are many winter things to do: walks, ice skating, sledge
+   and other forms of downhill gliding, etc...  The idea would be to
+   reserve several days for this; ski days end around 4pm, which
+   still leaves plenty of time for hacking.
+
+2. Progress on the "core" areas that are critical in our EU-phase-2:
+   JIT, GC, Tasklet pickling, rctypes, (logic if Logilab people are
+   here).  More specific goals are not necessary: in most areas we
+   will just continue the on-going effort from wherever it is at the
+   moment.
+
+Location & Accomodation
+-----------------------
+
+Leysin, Switzerland, same place as in January 2005.  Let me refresh your
+memory: both the sprint venue and the logding will be in a very spacious
+pair of chalets built specifically for bed & breakfast:
+http://www.ermina.ch/.  The place has a baseline ADSL Internet connexion
+(600Kb) with wireless installed.  You can of course arrange your own
+lodging anywhere (you cannot be more than a 15 minutes walk away from
+the sprint venue), but I definitely recommend to lodge there too -- you
+won't find better sights anywhere else (though you probably won't get
+much worse ones easily, either :-)
+
+I made pre-reservations in the Chalet, so please *confirm* quickly that
+you are coming so that we can adjust the reservations as appropriate.
+We get 2-persons rooms for 60 CHF a night all included, with breakfast.
+There are larger rooms too (less expensive, possibly more available too)
+and the possibility to get a single room if you really want to.
+Depending on availability we might have to juggle a bit dynamically.
+
+Please register by svn:
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/leysin-winter-2006/people.txt
+
+Exact times
+-----------
+
+Officially, 3-9 April 2006.  Both dates are flexible, you can arrive or
+leave earlier or later: I don't expect this to be a problem in such
+internal sprints.

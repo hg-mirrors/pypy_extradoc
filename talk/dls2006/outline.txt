@@ -1,0 +1,57 @@
+************************************************************
+                       Cool Title Here
+************************************************************
+
+
+Introduction
+============
+
+VM portability+flexibility goals with comparisons
+(rigidity, less expressiveness of implementation languages)
+
+Architecture
+============
+
+High-level architecture, shortly
+
+System programming with Python
+==============================
+
+* PyPy in RPython
+* RTyper helpers (ll, oo type systems)
+* GC
+
+Manipulatable, e.g. as in Stackless Transform
+
+Type inference details
+======================
+
+Flow space, annotator overviews
+
+Not very precise, no automatic polymorphism, but easy to control, fast, easy
+and to reuse with different type systems: RPython, ll, oo, rctypes,
+BTA (binding-time analysis for the JIT)...  easy custom specializations
+
+Experimental results
+====================
+
+a few numbers
+
+Future work
+===========
+
+JIT
+
+Related work
+============
+
+* Squeak
+* Jikes RVM
+
+Conclusion
+==========
+
+Works, effectively increases flexibility and expressiveness,
+reasonably efficient, quite confusing at times;
+work in progress, some things are rough and could use more
+streamlined implementations and uniform approaches

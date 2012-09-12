@@ -1,0 +1,123 @@
+Ireland PyPy sprint 21th-27th August 2006
+====================================================
+
+The next PyPy sprint will happen in the nice city of 
+Limerick in Ireland from 21st till 27th August.  
+(Most people intend to arrive 20th August). 
+
+The main focus of the sprint will be on JIT compiler works, 
+various optimization works, porting extension modules, 
+infrastructure works like a build tool for PyPy, or 
+extended (distributed) testing. 
+
+It's also open to new topics.  If you are a student
+consider to participate in `Summer of PyPy`_ in order 
+get funding for your travels and accomodation. 
+
+The sprint is being hosted by University of Limerick
+(http://www.ul.ie/) - and is arranged in co-operation
+with people from our sister project Calibre (www.calibre.ie).
+Our contact at the University is Pär Ågerfalk and Eoin
+Oconchuir. 
+
+.. _`Summer of PyPy`: http://codespeak.net/pypy/dist/pypy/doc/summer-of-pypy
+
+Workshop parallell to the first day of the sprint, 21st of August
+------------------------------------------------------------------------
+
+During the first day (21st of August) there will be in parallell to the sprint:
+
+* a workshop covering more in-depth methodology aspects of PyPy 
+  aiming at explaining the pros and cons of sprint-driven development.
+  (suited for sprint attendants, students, staff and other 
+  interested parties from/around the University and the local area)
+
+The workshop participants (mostly University of Limerick researchers) will 
+observe the sprint during parts of the first day, film an take pictures as well.
+
+
+Tutorial, PyPy introduction and dinner on friday, 25th of August
+---------------------------------------------------------------------------
+
+During friday we will arrange a tutorial and technical 
+introduction to the PyPy codebase, followed by a Q&A session. This session was originally
+planned for the first day but we moved it to friday afternoon in order to 
+make it easier for people from the irish python group to participate. 
+This tutorial session starts at 5pm. At 8pm we go for a nice dinner together.
+
+This friday afternoon tutorial session and dinner is open for anyone interested,
+you do not have to be a sprint participant to join us for this event.
+
+
+If you want to come ...
+----------------------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More 
+organisational information will be send to that list.  We'll keep
+a list of `people`_ which we'll update (which you can do so yourself
+if you have codespeak commit rights). 
+
+.. _`Calibre`: http://www.calibre.ie 
+
+A small disclaimer:
+There might be people visiting the sprint in order to do research on 
+how open source communities work, organize and communicate. This 
+research might be done via filming, observing or interviewing. 
+But of course you will be able to opt-out of being filmed at the sprint. 
+
+Logistics 
+--------------------------------------
+
+NOTE: you need a UK style of power adapter (220V). 
+
+The sprint will be held in the Computer Science Building, room CSG-025, 
+University of Limerick (no 7 on http://www.ul.ie/main/places/campus.shtml). 
+
+Bus 308 from Limerick city will take you to no 30 (approx.).
+See http://www.ul.ie/main/places/travel.shtml for more on how to get to UL.
+
+We will have access to the sprint facilities from 09:00-19:00 every day (it might
+be even later than 19:00). Monday-Wednesday, Friday-Sunday are sprint days,
+Thursday is likely a break day.
+
+Food on campus varies in price and quality ;-) : from ca 4 EUR to 7-8 EUR for 
+a lunch. There are of course a lot more food alternatives in down town Limerick.
+
+Next Airports
+------------------
+
+Shannon Airport (SNN) is the nearest airport (Ryanair flies
+there) - you may check out more information about flights
+to/from the airport at
+
+    http://www.shannonairport.com/index.html 
+
+There are busses from there to downtown Limerick, and busses
+from Limerick to the UL campus. Taxis are about 35 EUR.
+
+Accomodation
+-----------------
+
+There is a website address for campus accomodation at 
+
+    http://www.ul.ie/conference/accommodation.htm.  
+
+The rate should be 49 euro for Bed and Breakfast.  If you are interested 
+in booking campus accommodation, please contact deborah.tudge at ul ie
+and make reference to the PyPy workshop and sprint.  Please try 
+to book as soon as possible. 
+
+As an off-campus accommodation alternative you can also try:
+
+Castletroy Lodge and Castletroy Inn (Bed and Breakfast)
+Dublin Road (15 to 20 mins walk to UL)
+Tel: +353 61 338385 / +353 61 331167
+
+- In Castletroy Lodge they've got no rooms for 23,24,25 [just called, fijal]
+
+Brookfield Hall, about 10 minutes walk from UNI.
+Could be booked at travellerspoint.com
+
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`people`: people.html 

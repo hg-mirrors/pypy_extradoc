@@ -1,0 +1,216 @@
+pypy-sync 18th May 2006, 17:30 - 18:00 (UTC+2)
+=====================================================
+
+attendants: michael (mod and minutes), anto (beforehand), samuele,
+            carl, eric, arre, armin, anders, holger, nik
+
+* activity reports: everybody posted, see log below. 
+
+* oopsla paper and europython submissions
+
+  We talked about the requirements for a paper at the Dynamic Language
+  Symposium at OOPSLA.  There was discussion about whether we could
+  (probably) or should (probably not) reuse material from our WP05 reports.
+  It was agreed that Samuele and Armin would spend a little time working on
+  an outline before Samuele goes on holiday on Monday.  This is in
+  <http://codespeak.net/pypy/extradoc/talk/dls2006/outline.txt> so far.
+
+  The deadline is June 1.
+
+  We also talked about how many talks we should submit to EuroPython
+  this year.  I've summarized the decisions in
+  <http://codespeak.net/pypy/extradoc/talk/ep2006/planning.txt>.
+
+* state of the world
+
+  We didn't really get to this in any meaningful way.  Try again next week?
+
+* any other business?
+
+  Samuele noted that translation with --new-stackless is very, very slow.
+  Michael responded that he was running a version with profiling using
+  lsprof to see if he could find any obvious stupidities.  This translation
+  has still not finished, nearly 24 hours later, so it must be breaking all
+  known records for longest translation...
+
+IRC logs 
+-------------
+
+::
+
+    [16:22] <antocuni> uhm... I've to go out at 17:30
+    [16:22] <antocuni> here is my report:
+    [16:22] <antocuni> LAST: completed ootypesystem string; broken the translation few times :-)
+    [16:22] <antocuni> NEXT: string support in gencli; some university stuff
+    [16:22] <antocuni> BLOCKERS: None
+    [16:22] <antocuni> see you later
+    [16:23] antocuni (n=chatzill@217.201.198.80) left irc: "Chatzilla 0.9.72 [Firefox 1.5/2005120619]"
+    [16:27] hpk (n=hpk@codespeak.net) joined #pypy-sync.
+    [16:29] nikh (n=nikh@102-187.1-85.cust.bluewin.ch) joined #pypy-sync.
+    [16:30] ericvrp (n=ericvrp@ericvrp.demon.nl) joined #pypy-sync.
+    [16:31] <mwh> hello everyone
+    [16:31] <hpk> hi all
+    [16:31] <cfbolz> hi!
+    [16:31] <janb_> hi!
+    [16:31] <nikh> howdy
+    [16:32] arigo (n=arigo@c-1f8b70d5.022-54-67626719.cust.bredbandsbolaget.se) joined #pypy-sync.
+    [16:32] <mwh> so, activity reports from everyone please
+    [16:32] Nick change: mwh -> not-stakkars
+    [16:32] <aleale> PREV: OWL reasoner, recreation with my family
+    [16:32] <not-stakkars> DONE: coached Stephan on app-level Stackless, helped Eric with
+    [16:32] <not-stakkars> the pickling support, analyzed many flow-graphs
+    [16:32] <not-stakkars> NEXT: support for costate for app-level, more coaching, implement
+    [16:32] <not-stakkars> a few demo picklers, investigate more on feasibility of the
+    [16:32] <not-stakkars> pickling design doc, prepare for Iceland sprint
+    [16:32] <not-stakkars> BLOCK: I cannot estimate what will come out of it. I'm not
+    [16:32] <not-stakkars> sure if I can find a way to avoid pickling of many records.
+    [16:32] <aleale> NEXT: More OWL
+    [16:32] Nick change: not-stakkars -> mwh
+    [16:32] <aleale> block : -
+    [16:33] <cfbolz> LAST: uni stuff mostly, some small things
+    [16:33] <cfbolz> NEXT: __del__ support??
+    [16:33] <cfbolz> BLOCKERS: time constraints
+    [16:33] <mwh> LAST: this and that, weakrefs, stackless
+    [16:33] <mwh> NEXT: not sure, some performance measurements
+    [16:33] <mwh> BLOCKERS: hard to keep up!
+    [16:33] <hpk> LAST: pypy duesseldorf and some other pypy orga + plannings, new pypy build host setup, non-pypy
+    [16:33] <hpk> NEXT: make pypy build host available, SoC/EU models, non-pypy
+    [16:33] <hpk> BLOCKERS: -
+    [16:33] <arigo> LAST: integrate stackless and GC
+    [16:33] <arigo> NEXT: oopsla paper, thread cloning
+    [16:33] <arigo> BLOCKERS: -
+    [16:33] <nikh> LAST: non-pypy
+    [16:33] <nikh> NEXT: non-pypy
+    [16:33] <nikh> BLOCKERS: none, but i'm very deep in university stuff
+    [16:34] <mwh> pedronis? arre?
+    [16:34] <pedronis> LAST: rctypes primitive types with arre, gc, stackless stuff with Armin, bug fixing
+    [16:34] <pedronis> NEXT: vacation, no internet as least until thurs
+    [16:34] <pedronis> BLOCKERS: -
+    [16:34] <mwh> ericvrp?
+    [16:34] <ericvrp> on moment
+    [16:34] <arre> PREV: rctypes
+    [16:34] <arre> NEXT: Mostly vacation
+    [16:34] <arre> BLOCKERS: -
+    [16:34] <ericvrp> LAST: slow progress with pickling + dusting of genllvm + little genjs documentation
+    [16:34] <ericvrp> NEXT: more pickling and some distractions
+    [16:34] <ericvrp> BLOCKERS: don't know
+    [16:35] <mwh> so the first topic is the oopsla paper
+    [16:35] <mwh> (with an additional subtopic of "europython papers")
+    [16:36] <mwh> the deadline is june 1
+    [16:36] <mwh> arigo, pedronis: i think you talked a bit about this yesterday?
+    [16:38] Action: mwh bounces
+    [16:38] <arigo> samuele?  want to say a word about it?
+    [16:38] <hpk> i am curious if you considered a research or an experience paper
+    [16:38] <hpk> or both :)
+    [16:39] <pedronis> well, I think the idea is to write an overview paper, describing how basic techniques: type inference/ abstract interpreation
+    [16:39] <hpk> based on the d05 papers?
+    [16:40] <hpk> i mean the work package 5 papers
+    [16:40] <pedronis> shortly and then seeing how this are repeatedly used through the tool chain and to impose types on our singled langague
+    [16:40] <pedronis> and what can we achieve with this
+    [16:40] <cfbolz> hpk: much more overviewish, I think
+    [16:41] <pedronis> s/singled .../single not statically typed language
+    [16:41] <mwh> do we know e.g. how long papers are expected to be?
+    [16:41] <hpk> mwh: max 12 pages in PDF
+    [16:41] <hpk> and they require the "ACM format"
+    [16:42] <mwh> right
+    [16:42] <mwh> that's just a style file with the latex, i don't think that's too big a deal
+    [16:42] <mwh> ... cfbolz ? :)
+    [16:42] <cfbolz> :-)
+    [16:42] <cfbolz> we will see :-)
+    [16:43] <pedronis> well, with 12 pages, is hard not to be overviewish
+    [16:43] <hpk> right
+    [16:43] <pedronis> and unless we focused on a single thing
+    [16:43] <pedronis> and even then
+    [16:43] <hpk> we do not have the problem that we couldn't reuse stuff from existing reports though
+    [16:43] <hpk> because none of them was published in their sense, or is that not correct?
+    [16:43] <pedronis> I think it will read differently
+    [16:44] <pedronis> but yes copying long chunks is not a good idea
+    [16:44] <hpk> yip
+    [16:44] <mwh> i think that's correct, but possibly not that relevant
+    [16:44] <pedronis> also I'm not sure we can
+    [16:44] <pedronis> under the 12 pages constraint
+    [16:44] <pedronis> we really need to write a fresh text
+    [16:45] <pedronis> we cannot cram the wp05 report in it
+    [16:45] <pedronis> which is more than 20 pages
+    [16:45] <mwh> so, next question: who writes it
+    [16:45] <mwh> pedronis is on holiday next week
+    [16:46] <mwh> so arigo and ... ?
+    [16:46] <hpk> pedronis: sure, i understood that point (although i am not as sure as you that we cannot use anything of what we already have, including graphics etc.)
+    [16:46] <pedronis> I can possibly help a bit after next thursday
+    [16:46] <mwh> ok
+    [16:46] <pedronis> or before monday
+    [16:46] <mwh> would be nice to have the bones of a report before then
+    [16:46] <mwh> oh
+    [16:47] <mwh> maybe you and arigo could come up with an outline soon-ish?
+    [16:47] <pedronis> arigo: we may try to write an outline tomorrow
+    [16:47] Action: hpk thinks he can proof-read and possibly help end next week/early the following
+    [16:48] <arigo> ok for me
+    [16:48] <hpk> but again, research or experience paper?
+    [16:48] <hpk> they seem to make this distinction
+    [16:48] <cfbolz> sounds more like research to me
+    [16:48] <pedronis> I think experience papers are more about using a language or some features
+    [16:49] <mwh> yes research i think
+    [16:49] <hpk> ok
+    [16:49] <mwh> if we can hurry on
+    [16:49] <mwh> how many talks do we want to submit to europython?
+    [16:50] <mwh> hpk: is bea going to do a talk in the agility track?
+    [16:50] <hpk> mwh: quite likely, yes, i meet her in 10 minutes
+    [16:50] <mwh> hpk: coool
+    [16:50] <mwh> do we think there's still a market for an introductory talk?
+    [16:50] <mwh> i think there probably is
+    [16:51] <hpk> mwh: your accu talk is a 80% base talk for that, i'd think
+    [16:51] <mwh> it's fairly long though
+    [16:51] <mwh> but i guess, do we want to do something else as well?
+    [16:52] <hpk> one on the ext-compiler?
+    [16:52] <cfbolz> now comes the potentially interesting talk :-)
+    [16:52] <mwh> hpk: that might be good, yes
+    [16:53] <hpk> what about the pypy archsession from Pycon?
+    [16:53] <arigo> we should have something for the language track
+    [16:54] <hpk> the intersection between pycon and EP is not that large, so doing the arch-session + introductory talk (+ maybe ext-compiler) would make sense IMO, but what do you all think?
+    [16:54] <arigo> hpk: maybe i'm getting skeptical about the usefulness of that talk
+    [16:54] <ericvrp> I was thinking of giving a pypy-js/genjs talk but there has been to little progress/things to show to make it worth while
+    [16:54] <hpk> arigo: it did receive quite positive feedback as far as i heard it, do you know/feel differently?
+    [16:55] <arigo> hpk: no, good then
+    [16:55] <arigo> I was thinking that it should soon be time to present a language talk
+    [16:55] <arigo> about the new language-visible features we can have in PyPy
+    [16:56] <hpk> right
+    [16:56] <hpk> a "pypy features" talk would be well received, i'd guess
+    [16:56] <cfbolz> and maybe get people away from the speed thing
+    [16:56] <mwh> yes, i think so too
+    [16:57] <mwh> four pypy related talks might be a bit much though :)
+    [16:57] <arigo> yes, I'm worrying a bit that pypy is seen mostly as a large complicated architecture
+    [16:57] <pedronis> ah ah. people will never get away from the speed thing
+    [16:57] <hpk> arigo: you don't worry that it actually _is_ a complicated arch, right? :)
+    [16:57] <arigo> never :-)
+    [16:57] <pedronis> is quite simple in some sense
+    [16:58] <hpk> some swiss sense
+    [16:58] <cfbolz> :-)
+    [16:58] <hpk> anyway, so let's agree on how to proceed there maybe next week?
+    [16:58] <mwh> so, um, we're running out of time
+    [16:58] <arigo> well, maybe this could go together with the ext-compiler
+    [16:59] <hpk> arigo: yes, pypy features should have 10 minutes about the ext-compiler because that's probably the most real thing
+    [16:59] <mwh> pypy agility + pypy intro + pypy features
+    [16:59] <mwh> sounds like a plan for now
+    [16:59] <arigo> "agility" or "architecture" ?
+    [16:59] <hpk> + maybe pypy arch
+    [16:59] <hpk> pypy bea/agility
+    [16:59] <hpk> is what mwh meant
+    [16:59] <arigo> ok
+    [16:59] <mwh> pypy bea then :)
+    [16:59] <arigo> :-)
+    [17:00] <mwh> i think doing the state of the pypy universe in 1 minute is a bit of a stretch
+    [17:00] <cfbolz> "confusing"
+    [17:00] <mwh> any other business?
+    [17:00] <hpk> ericvrp: but i think a pypy/js focused talk would also make some sense - in the web track :)
+    [17:00] <pedronis> new-stackless translation is veeeeeery slow
+    [17:00] <mwh> i'm profiling now
+    [17:01] <arigo> ericvrp: indeed, maybe with fijal even?
+    [17:01] <ericvrp> hpk, the problem is I can not point people to some concrete examples, so it's a bit vague IMO
+    [17:01] <pedronis> we need to kill the defaults assumption in lltype, we may gain some speed in the gcs
+    [17:01] <hpk> ericvrp: maybe, but you do have code that runs in a browser
+    [17:02] <ericvrp> well yes, how many minutes should such a talk be ?
+    [17:02] <mwh> well, 30 minutes is the shortest you can do :)
+    [17:03] <mwh> there are always lightning talks if you don't want to commit to any results :)
+    [17:03] <ericvrp> I have the feeling that would be better. Real work on genjs will start after europython
+    [17:04] <mwh> ok
+    [17:04] <mwh> so unless there's anything else, i'd like to close the meeting

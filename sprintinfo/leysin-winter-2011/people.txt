@@ -1,0 +1,57 @@
+
+People coming to the Leysin sprint Winter 2011
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Armin Rigo           --/23          private
+Antonio Cuni         14/22          ermina
+Michael Foord        15/22          ermina
+Maciej Fijalkowski   17/22          ermina
+David Schneider      15/23          ermina
+Jacob Hallen         15/21          ermina
+Laura Creighton      15/21          ermina
+Hakan Ardo           20/23          ermina
+==================== ============== =======================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Carl Friedrich Bolz  ?              ?
+Samuele Pedroni      ?              ?
+Anders Hammarquist   ?              ?
+Christian Tismer     ?              ?
+Niko Matsakis        ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Stephan Diehl        ?              ?
+Alexander Schremmer  ?              ?
+Anders Chrigstroem   ?              ?
+Eric van Riet Paap   ?              ?
+Holger Krekel        ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+==================== ============== =====================

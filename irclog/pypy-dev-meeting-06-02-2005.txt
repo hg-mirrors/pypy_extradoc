@@ -1,0 +1,86 @@
+pypy-dev meeting on #pypy at irc.freenode.net 
+
+    Thursday, 2nd June, 3pm (CEST == GMT+2) 
+
+attendees: Armin Rigo, Samuele Pedroni, Carl Friedrich Bolz, 
+           Holger Krekel, Anders Chrigstroem, Anders Lehmann, 
+           Adrien di Mascio, Stelios Xanthakis, Bert Freudenberg
+
+topics and decisions: 
+
+.. contents::
+.. sectnum::
+
+------------------------------------------- 
+news/infos 
+------------------------------------------- 
+
+Bert Freudenberg introduces himself as a Squeak Developer
+since '97 who intends to enter the EU project and to come
+to the Post-EuroPython sprint. 
+
+Stelios Xanthakis (mayall) has been watching PyPy from the sideline. 
+He is the author of 'pyvm', a python virtual machine experiment. 
+
+------------------------------------------- 
+short-term release planning 
+------------------------------------------- 
+
+around 23rd of June we'd like to do a 0.6.2 release 
+which includes moving our lib-python base to 2.4.1 and
+improved documentation (especially for newcomers). 
+
+------------------------------------------- 
+sprint announcement/topics
+------------------------------------------- 
+
+although times and city are fixed already, the actual sprint
+topics for the post-europython sprint from 1st-7th July (both 
+including) July in Goetheborg (Sweden) are not yet decided and
+announced.  However, almost all active developers will come and
+it's already safe to reserve the time and book your flights 
+if you want to attend a newcomer-friendly sprint. 
+
+Sprint topics (Armin has already formulated a more detailed topic 
+announcement draft in extradoc/sprintinfo/EP2005-announcement.txt): 
+
+- translation : - rtyper (low-level impl of RPython objects)
+                - genc/genllvm (might be well advanced by EP)
+- integrate parser module (possibly making it RPython
+  conformant) 
+
+- various topics (name some examples from the tracker) 
+  depending on people's interests 
+
+------------------------------------------- 
+Advancing Issue Tracking: 
+------------------------------------------- 
+
+Holger will extend/modify issue tracking so that 
+
+- each issue is classsified as requiring hard, medium or easy efforts 
+  (maybe name that 'effort' or something) 
+
+- milestones should go in favour of a release-field which should
+  initially contain '0.6.2', '1.0' (mainly reflecting Milestone 1 
+  stuff) and 'general' (not yet tied to any release in particular) 
+
+  later we add release values like a possible 0.7 etc.pp. 
+
+------------------------------------------- 
+stable base for Translation efforts
+------------------------------------------- 
+giving the translation efforts a stable base: 
+
+One problem with ongoing development of PyPy is that
+the translation process is still somewhat fragile with
+respect to type inference (annotation) on our source tree.  
+
+-> resolved already before the meeting: see 
+Armin's pypy-dev posting. 
+
+[current approach: pypy/translator/goal contains a stable
+snapshot of interpreter, module and objspace directories 
+so that main-line changes don't disturb translation work, 
+run 'python translate_pypy.py targetpypy1.py' to get interactive
+advise]

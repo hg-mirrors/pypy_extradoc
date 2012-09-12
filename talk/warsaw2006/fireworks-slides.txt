@@ -1,0 +1,228 @@
+PyPy fireworks
+==============
+
+:Authors: Maciej Fijalkowski
+:Location: Warsaw Univeristy
+:Date: 1.XII.2006
+
+.. raw:: html
+
+   <script src="jssource.js" type="text/javascript"></script>
+   <script src="MochiKit.js" type="text/javascript"></script>
+
+What is PyPy?
+=============
+
+* An implementation of Python written in Python
+
+* A very flexible compiler toolchain
+
+* An open source project (MIT License)
+
+* A STREP ("Specific Targeted REsearch Project"), partially funded by the EU
+
+* A lot of fun!
+
+Compiler toolchain:
+===================
+
+* eats RPython
+
+* C considered harmful
+
+* is kind-of-stable right now
+
+Flow graphs & annotation:
+=========================
+
+* We create flow graph out of RPython code `flow`_::
+
+   def g(x):
+      return 1
+
+   def f(x):
+      return g(x) + 3
+
+* We `annotate`_ variables encountered
+
+* It must be "static-enough" to perform such operation
+
+* We `RType`_ (creating low-level types)
+
+* Source generation
+
+.. _`flow`: javascript:flow()
+.. _`annotate`: javascript:annotate()
+.. _`RType`: javascript:rtype()
+
+RPython:
+========
+
+* *is* Python (can be unittested in Python)
+
+* Can perform full type inference (top to bottom)
+
+* Is run over living python objects (full range of meta-programming)
+
+* Is build "as we need it", so no real definition
+
+Backends & more flow graphs:
+============================
+
+* LLtype-based: C, LLVM, 
+
+* OOtype-based: CLI, JVM, JavaScript, (CL and Squeak in some state).
+
+* All optimisations are done on flow graphs
+
+* `example`_, and a `constant-folded one`_::
+
+    def g():
+       return 3
+        
+    def f():
+       return g() + 1 * 2
+
+* Wide range of possible things to do with it
+
+.. _`example`: javascript:example()
+.. _`constant-folded one`: javascript:const_fold()
+
+JavaScript backend:
+===================
+
+* Co-funded by Google Summer of Code *and* Summer of PyPy.
+
+* Mochikit: Makes JavaScript suck less...
+
+JavaScript backend:
+===================
+
+* pypy.js: makes JavaScript suck less by not using it::
+
+   def f(x):
+      return dom.get_document().getElementById(x)
+
+* Unittest in python run in browser::
+
+   def test_f():
+      assert isinstance(f("id"), dom.Element)
+
+* Python semantics (not only syntax)::
+
+   try:
+       {'a':3}['b']
+   except KeyError:
+       # will arrive here
+
+JavaScript example one (console):
+=================================
+
+.. raw:: html
+
+   <a href="http://localhost:8001">Here</a>
+
+JavaScript example two (Bub'n'Bros):
+====================================
+
+.. raw:: html
+
+   <a href="http://localhost:8080">Here</a>
+
+Transparent proxy:
+==================
+
+* Idea - proxied to app-level
+
+* Possible usecase - shallow copy of remote objects::
+  
+    elem = get_remote("obj") # accessed as a name in globals
+                             # remote type is faked here
+    getattr(elem, '__str__')() # will access remote object *and* remote type
+                               # afterwards
+  
+* Working simulation on top of greenlets::
+
+    def f(x):
+        return x
+    
+    get_remote(obj).method(f) # will work
+
+Deterministic concurrency:
+==========================
+
+* So called "stackless" features
+
+* Available primitives: coroutines, greenlets, tasklets::
+
+   c = channel()
+
+   def f():
+      c.send(3)
+
+   def g():
+      return c.receive()
+
+   tasklet(f)()
+   assert g() == 3
+
+* It provides way of copying stack to heap and backwards
+
+Stackless goodies:
+==================
+
+* Very deep recursion
+
+* No deadlock
+
+* No race conditions (in a classic sense)
+
+* Explicit scheduling
+
+* Pickling coroutines
+
+* Cloning coroutines
+
+* All based on graph-transform
+
+Composability:
+==============
+
+* So called 'cosets'
+
+* Each 'part' has it's own "parent coroutine"
+
+Things that I didn't talk about:
+================================
+
+* Offline partial evaluation
+
+* Prolog interpreter written in RPython
+
+* Security approaches
+
+* Garbage collectors (Boehm, mark&sweep, refcounting)
+
+* GIL
+
+* pylib (support library for pypy)
+
+Developement process:
+=====================
+
+* Test driven (few thousand tests)
+
+* Distributed team
+
+* Sprint driven (every 2 months)
+
+Summer of PyPy:
+===============
+
+* Open for students
+
+* Proposal based
+
+* We can fund sprint-trip as well as staying costs
+
+* Last call (last two EU-funded sprints)

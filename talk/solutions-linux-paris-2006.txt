@@ -1,0 +1,133 @@
+.. include:: <s5defs.txt>
+
+=====================================================
+PyPy - un projet libre doté d'un financement européen
+=====================================================
+
+:Auteur: Nicolas Chauvat (Logilab)
+
+
+Sujets abordés
+========================================================
+
+- quels modèles économiques pour le logiciel libre ?
+- le logiciel libre et les projets européens
+- le langage Python et l'interpréteur PyPy
+
+
+Plan
+========================================================
+
+- historique du projet
+- procédure de candidature
+- déroulement
+- UE et agilité
+- qu'est-ce que PyPy ?
+
+Historique
+========================================================
+
+- débute mi-2003 suite à EuroPython
+- prototype prometteur en 2004
+- début 2004, recherche des moyens nécessaires à la poursuite du projet
+- fin 2004, signature contrat
+
+Candidature
+========================================================
+
+- appels à projet (IST - 6th Framework)
+- recherche partenaires manquants
+- rédaction collaborative de l'offre (outils et méthodes du libre)
+- soumission automne 2004
+- signature contrat déc 2004
+
+Caractéristiques
+========================================================
+
+- projet innovant
+- budget 1,3 Millions EUR
+- 2 ans (2005/2006)
+- 7 partenaires européens
+- 15 années.homme
+- logiciel libre
+
+Consortium
+========================================================
+
+- DFKI (Allemagne)
+- HHU (Allemagne)
+- Logilab (France)
+- Strakt (Suède)
+- Merlinux (Allemagne)
+- Tismerysoft (Allemagne)
+- Changemaker (Suède)
+
+Financement européen
+========================================================
+
+- financement partiel:
+
+  * 50% pour partenaires privés
+
+  * 100% pour partenaires publics
+
+- deniers publics financent biens publics
+- délais de paiement
+
+
+Financement public pour LL
+========================================================
+
+- projets menés par administrations
+- certaines réductions d'impôts
+- approche politique au niveau local
+
+Différences culturelles
+========================================================
+
+- gestion de projet par méthodes agiles
+- UE gestion plus "classique"
+- documentation, processus de validation, délais, etc.
+- sprints toutes les 6 semaines
+- reste ouvert aux contributeurs externes
+
+Et PyPy ?
+=============================
+
+- interpréteur pour langage Python
+- flexible
+- performant
+- modulable
+
+Objectifs PyPy
+==============
+
+- Python en Python
+- respect de la définition du langage
+- performances équivalentes à CPython
+- traduction vers langages cibles
+- ajout fonctionnalités
+- un interpréteur déclinable
+
+Etat début 2006
+=================
+
+- version 0.8 est un Python 2.4 fonctionnel
+- manque gestion de la mémoire
+- 10 fois plus lent que l'original
+- génère code C (et autres)
+
+Etapes pour fin 2006
+=====================
+
+- compilation et évaluation partielle
+- logique, aspects, distribution
+- diffusion
+
+Pour finir
+==========
+
+- Questions
+
+.. |bullet| unicode:: U+02022
+.. footer:: Nicolas Chauvat (Logilab)

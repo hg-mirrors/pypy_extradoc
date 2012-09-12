@@ -1,0 +1,19 @@
+digraph _generated__graph {
+subgraph _generated__ {
+_generated__ [shape="box", label="generated", color="black", fillcolor="#a5e6f0", style="filled", width="0.75"];
+edge [label="startblock", style="dashed", color="black", dir="forward", weight="5"];
+_generated__ -> _generated____1
+_generated____1 [shape="box", label="generated__1\ninputargs: v6024\n\nv6025 = cast_pointer(v6024)\l", color="black", fillcolor="white", style="filled", width="0.75"];
+edge [label="v6025", style="solid", color="black", dir="forward", weight="5"];
+_generated____1 -> _generated____2
+_generated____2 [shape="box", label="generated__2\ninputargs: v6026\n\nv6027 = getfield(v6026, ('typeptr'))\l", color="black", fillcolor="white", style="filled", width="0.75"];
+edge [label="v6026 v6027", style="solid", color="black", dir="forward", weight="5"];
+_generated____2 -> _generated____3
+_generated____3 [shape="box", label="generated__3\ninputargs: v6030 v6028\n\nv6029 = cast_ptr_to_int(v6028)\l\lexitswitch: v6029", color="black", fillcolor="#e5ffff", style="filled", width="0.75"];
+edge [label="'default': v6028 v6030", style="dotted", color="red", dir="forward", weight="5"];
+_generated____3 -> _generated____4
+_generated____4 [shape="box", label="generated__4\ninputargs: v6035 v6039\n\nv6031 = getfield((<* struct ExcData { ex...=... }>), ('exc_type'))\lv6032 = getfield((<* struct ExcData { ex...=... }>), ('exc_value'))\lv6033 = setfield((<* struct ExcData { ex...=... }>), ('exc_type'), (<* None>))\lv6034 = setfield((<* struct ExcData { ex...=... }>), ('exc_value'), (<* None>))\lv6036 = direct_call((<* fn ll_continue_comp...blePtr>), (<* struct object { typ...=... }>), v6035)\lv6037 = setfield((<* struct ExcData { ex...=... }>), ('exc_type'), v6031)\lv6038 = setfield((<* struct ExcData { ex...=... }>), ('exc_value'), v6032)\l", color="black", fillcolor="white", style="filled", width="0.75"];
+edge [label="v6039 v6035", style="solid", color="black", dir="forward", weight="5"];
+_generated____4 -> _generated____3
+}
+}

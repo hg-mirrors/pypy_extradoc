@@ -1,0 +1,19 @@
+Support a GUI
+=============
+
+status:
+
+todo:
+
+ - One of the C extension modules that we need to have in order to get
+   traction is support for one of the multi-platform GUI toolkits. The
+   choice is probably between gtk (in use by olpc and others), Qt
+   (written in c++, using SIP to get a cpython package) and wxWindows,
+   with Tkinter as a possible fourth. Someone with more understanding
+   of the Python community than us should make the pick. Which one
+   would bring more users to PyPy? Would any one of them prompt
+   proponents of other GUI toolkits to make their own ports?
+
+expected outcome:
+
+dependencies:

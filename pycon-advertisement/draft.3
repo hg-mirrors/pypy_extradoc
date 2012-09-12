@@ -1,0 +1,64 @@
+High-level languages are faster than low-level ones! - (Armin Rigo circa 1999)
+
+For the past 8 years, the PyPy team has been working on this dream.  We
+are delighted that we can now bring you a very fast, very flexible, and very
+compliant Python, ready for production use.  We are very  proud of this 
+result, and especially of our Just-In-Time compiler generator.
+
+* most Python benchmarks run much faster than with CPython or Psyco
+* tight loops run between 20 and 60 times faster than CPython
+* our favourite large Python program, PyPy itself (200 KLocs) runs 2x as fast
+* smaller total memory usage for large and long-running programs
+* full (and JIT-ed) ctypes support for calling C libraries from Python
+* a new "cpyext" layer which integrates existing CPython C extensions
+* an experimental super-fast JIT-compilation of calls to C++ libraries
+* support for X86 and amd64 -- we are very close to supporting ARM
+* we are reliable, and with over 16,000 tests we can prove it.
+* our generational GC is much faster than CPython's refcounting one.
+* by the end of PyCon we will have full compatibility with  CPython 2.7
+
+To see our speed results visit the PyPy Speed Center: http://speed.pypy.org/
+
+To find out more about PyPy:
+   - visit  http://pypy.org
+   - read our blog at http://morepypy.blogspot.com/ 
+   - or come by the #pypy channel on irc.freenode.net 
+
+
+But we'd like your help. There are many ways you could support PyPy, an 
+MIT-licensed Open Souce project, including:
+   - contributing code  
+   - coming to sprints
+   - running your test suites under PyPy and reporting any errors you find
+   - donating money to us through our non-profit foundation, via Flattr, 
+     paypal, or Google Checkout. 
+
+Making a donation is easy. It's just one click away on our blog site
+http://morepypy.blogspot.com/ And because PyPy is a member of the
+Software Freedom Conservancy, a 501(c)(3) charity, American donors
+can often deduct the donation on their USA taxes.
+
+Another way that you could help us is through finding us Paid Consulting 
+Work.  We are the proven Python speed experts. And we know that companies and 
+organizations exist out there for whom speed really is money.  They'd be 
+happy to pay us to speed up their code, if only they knew that this service
+was available.  Maybe you work for such a company, or maybe you know somebody
+who does.  We'd like to get in touch.  Things we'd like to do for you include:
+
+- speeding up your Python based project
+- making your product run seemlessly on top of PyPy
+- teaching you how to get the best out of PyPy
+- modifying PyPy to better suit your needs
+- on-site mentoring of developers, company sprints, teaching agile methodology
+- commercial support contracts for PyPy
+- porting your favourite C/C++ extension library to RPython, so that PyPy
+  can jit it.
+- integrating PyPy with Cython or NumPy
+
+We could write a new backend so that PyPy can run on your favourite
+VM or CPU archtecture, or even write an interpreter for your second favourite
+dynamic programming language, so that it can be sped up as well!
+
+Open End and merlinux along with the PyPy developers stand ready to help,
+contact us at contracts@pypy.org
+

@@ -1,0 +1,20 @@
+
+People present
+--------------
+
+- Sven Hager
+- Jasper Schulz
+- Maciej Fijalkowski
+- Mike Müller
+- Armin Rigo
+
+
+Topics
+------
+
+- discuss R, in particular sharing with numpypy
+
+- discuss hard problems and next steps in numpypy
+
+- demos: CFFI, STM, general PyPy
+

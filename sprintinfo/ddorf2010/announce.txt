@@ -1,0 +1,33 @@
+Düsseldorf PyPy sprint October 25th-31st 2010
+=====================================================
+
+The next PyPy sprint will be held in the Computer Science department of
+Heinrich-Heine Universität Düsseldorf from the 25th to the 31st of
+October 2010. This is a fully public sprint, everyone is welcome to
+join us.
+
+Topics and goals
+----------------
+
+Open. (to be defined more precisely)
+
+Location
+--------
+
+The sprint will take place in a seminar room of the computer science
+department.  It is in the building 25.12 of the university campus. For
+travel instructions see
+
+    http://stups.cs.uni-duesseldorf.de/anreise/esbahn.php
+
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing
+list`_ and drop a note about your interests and post any questions.
+More organisational information will be sent to that list.  We'll keep a
+list of `people`_ which we'll update (which you can do so yourself if
+you have codespeak commit rights). 
+
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`people`: http://codespeak.net/svn/pypy/extradoc/sprintinfo/ddorf2010/people.txt

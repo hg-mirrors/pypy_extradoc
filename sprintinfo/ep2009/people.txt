@@ -1,0 +1,60 @@
+        
+People coming to the EuroPython Sprints (Birmingham) 28-29 June/3-4 July 2009
+===============================================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+
+==================== ============== ============================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== ============================
+Samuele Pedroni      28*/5          conference hotel
+Antonio Cuni         28*/4*         ETAPS Hotel (shared with cfbolz)
+Carl Friedrich Bolz  29?/4           ETAPS Hotel
+Bea During           30/4           ?
+Armin Rigo           28*/4*         conference hotel
+==================== ============== ============================
+
+(the ``*`` means on the evening of that day)
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Alexander Schremmer  ?              ?
+Alexandre Fayolle    ?              ?
+Amaury Forgeot d'Arc ?              ?
+Anders Chrigstroem   ?              ?
+Anders Lehmann       ?              ?
+Andrew Thompson      ?              ?
+Antonio Cuni         ?              ?
+Armin Rigo           ?              ?
+Beatrice Duering     ?              ?
+Bert Freudenberg     ?              ?
+Boris Feigin	     ?              ?
+Camillo Bruni        ?              ?
+Christian Tismer     ?              ?
+Eric van Riet Paap   ?              ?
+Guido Wesdorp        ?              ?
+Holger Krekel        ?              ?
+Jacob Hallen         ?              ?
+Jakub Gustak         ?              ?
+Johan Hahn           ?              ?
+Laura Creighton      ?              ?
+Lene Wagner          ?              ?
+Leonardo Santagada   ?              ?
+Maciej Fijalkowski   ?              ?
+Michael Hudson       ?              ?
+Niklaus Haldimann    ?              ?
+Niko Matsakis        ?              ?
+Paul deGrandis       ?              ?
+Richard Emslie       ?              ?
+Stephan Diehl        ?              ?
+Sylvain Thénault     ?              ?
+Toby Watson          ?              ?
+Toon Verwaest        ?              ?
+Valentino Volonghi   ?              ?
+==================== ============== =====================

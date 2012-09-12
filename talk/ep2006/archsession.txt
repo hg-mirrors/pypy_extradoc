@@ -1,0 +1,44 @@
+Author Names
+------------
+
+Samuele Pedroni, Holger Krekel
+
+Contact Information
+-------------------
+
+pypy-dev@codespeak.net (developer mailing list)
+pedronis@strakt.com
+hpk@merlinux.de 
+
+Requested Timeslot
+------------------
+
+30 minutes (or longer). 
+
+Summary of proposed presentation
+--------------------------------
+
+XXX DRAFT 
+
+In this session we will present and interactively discuss with
+the audience the basic architectural pictures of PyPy - a next
+generation Python compiler and interpreter.  We will emphasize 
+emphasize various emerging possibilities enabled by our
+architecture and ask the audience for questions. 
+
+In particular, we'll describe the following architectural pictures 
+and point out extension and optimization possibilities: 
+
+- Language Implementation: Bytecode Interpreter and Object Space interaction
+- Translation to low level languages (e.g. C/LLVM)
+- Translation to higher level languages (e.g. .NET/Squeak) 
+- JIT-compiler architecture 
+- Interweaving of Garbage Collection, threading and stackless
+  operations into the translation process 
+
+Intended audience
+-----------------
+
+Python programmers and people interested in the general picture
+of the PyPy code base. 
+
