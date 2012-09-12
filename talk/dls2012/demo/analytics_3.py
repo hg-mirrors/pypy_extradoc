@@ -8,4 +8,4 @@ class Tracker(ReloadHack):
 
     def update(self, img):
         background = self.bkg.update(img)
-        view(background, 'bkg')
+        view(background)

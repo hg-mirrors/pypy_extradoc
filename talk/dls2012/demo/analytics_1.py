@@ -3,4 +3,4 @@ from io import view
 
 class Tracker(ReloadHack):
     def update(self, img):
-        view(img, 'bkg')
+        view(img)

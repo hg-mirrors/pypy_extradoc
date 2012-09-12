@@ -9,7 +9,7 @@ else:
 
 tracker = Tracker()
 for img in mplayer(fn):
-    view(img)
+    view(img, 'Input')
     tracker.update(img)
 
 
