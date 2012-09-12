@@ -1,6 +1,6 @@
-from reloader import ReloadHack
+from reloader import autoreload
 
-class Foreground(ReloadHack):
-    def update(self, img, bkg):
-        return ((bkg - img) ** 2) > 100
+@autoreload
+def foreground(img, bkg):
+    return ((bkg - img) ** 2) > 100
 
