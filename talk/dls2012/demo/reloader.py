@@ -29,6 +29,7 @@ class ReloadHack(object):
                             except Exception as e:
                                 print
                                 traceback.print_exc()
+                                self.halted = True
                             else:
                                 if not self.halted:
                                     break

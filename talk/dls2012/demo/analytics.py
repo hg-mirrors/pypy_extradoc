@@ -1,3 +1,4 @@
+
 from reloader import ReloadHack
 from io import view
 from background import Background
@@ -10,4 +11,6 @@ class Tracker(ReloadHack):
     def update(self, frame):
         self.background.update(frame)
         fg = foreground(frame, self.background.image)
-        view(255*fg)
+        #view(self.background.image)
+        view(255 * fg)
+
