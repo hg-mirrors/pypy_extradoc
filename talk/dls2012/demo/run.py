@@ -1,15 +1,15 @@
 from io import mplayer, view
-from process import process
+from analytics import Tracker
 import sys
 
 if len(sys.argv) > 1:
-    video = mplayer(sys.argv[1])
+    fn = sys.argv[1]
 else:
-    video = mplayer()
+    fn = 'tv://'
 
-result = process(video)
-
-for img in result:
+tracker = Tracker()
+for img in mplayer(fn):
     view(img)
+    tracker.update(img)
 
 

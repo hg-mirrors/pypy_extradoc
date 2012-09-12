@@ -1,18 +1,16 @@
 import os, sys, time, traceback
 
 class ReloadHack(object):
-    def __init__(self, iterator_class):
-        self.module = sys.modules[iterator_class.__module__]
-        self.filename = self.module.__file__
-        if self.filename.endswith('.pyc'):
-            self.filename = self.filename[:-1]
-        self.name = iterator_class.__name__
-        self.mtime = -1
-        self.iterator_class = iterator_class
+    def __new__(cls, *new_args, **new_kwargs):
+        class Wrapper(object):
+            module = sys.modules[cls.__module__]
+            filename = module.__file__
+            if filename.endswith('.pyc'):
+                filename = filename[:-1]
+            name = cls.__name__
+            mtime = -1
 
-    def __call__(self, *args, **kwargs):
-        def wrapper():
-            while True:
+            def update(self, *args, **kwargs):
                 while True:
                     try:
                         mtime = os.stat(self.filename).st_mtime
@@ -23,22 +21,22 @@ class ReloadHack(object):
                             if mtime > self.mtime:
                                 self.mtime = mtime
                                 reload(self.module)
-                                self.iterator_class = getattr(self.module, self.name).iterator_class
-                                obj = iter(self.iterator_class(*args, **kwargs))
-                                halted = False
+                                cls = getattr(self.module, self.name)
+                                self.obj = object.__new__(cls)
+                                self.obj.__init__(*new_args, **new_kwargs)
+                                self.halted = False
                         except Exception as e:
                             print
                             traceback.print_exc()
                         else:
-                            if not halted:
+                            if not self.halted:
                                 break
                 try:
-                    yield obj.next()
+                    return self.obj.update(*args, **kwargs)
                 except Exception as e:
                     print
                     traceback.print_exc()
-                    halted = True
+                    self.halted = True
 
-
-        return wrapper()
+        return Wrapper()
 
