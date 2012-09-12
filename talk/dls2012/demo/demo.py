@@ -41,7 +41,7 @@ class Tracker(ReloadHack):
     vim.send('7gg$')
     vim.type('i * 2<ESC>:w<CR>', 0.2)
 
-    pause("Now let's create a new class that estimetae a background image\n" +
+    pause("Now let's create a new class that estimates a background image\n" +
           "using a sliding mean.")
     with open('background.py', 'w') as fd:
         print >>fd, """
