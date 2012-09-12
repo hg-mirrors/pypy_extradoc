@@ -39,6 +39,9 @@ class ReloadHack(object):
                         traceback.print_exc()
                         self.halted = True
 
+            def __getattr__(self, name):
+                return getattr(self.obj, name)
+
         return Wrapper()
 
 def autoreload(fn):

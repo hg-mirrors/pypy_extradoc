@@ -5,9 +5,9 @@ from foreground import foreground
 
 class Tracker(ReloadHack):
     def __init__(self):
-        self.bkg = Background()
+        self.background = Background()
 
-    def update(self, img):
-        background = self.bkg.update(img)
-        fg = foreground(img, background)
+    def update(self, frame):
+        self.background.update(frame)
+        fg = foreground(frame, self.background.image)
         view(255*fg)
