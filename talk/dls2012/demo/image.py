@@ -19,6 +19,7 @@ class Image(object):
     def __init__(self, w, h, typecode='d', data=None):
         self.width = w
         self.height = h
+        self.typecode = typecode
         if data is None:
             self.data = array(typecode, [0]) * (w*h)
         else:
