@@ -409,11 +409,8 @@ to the latest version::
 
     def PossiblyUpdateChain(G, R, R_Container, FieldName):
         if R != G and Rarely():
-            # compress the chain
-            while G->h_revision != R:
-                G_next = G->h_revision
-                G->h_revision = R
-                G = G_next
+            # compress the chain one step (cannot compress the whole chain!)
+            G->h_revision = R
             # update the original field
             R_Container->FieldName = R
 
@@ -424,6 +421,12 @@ updating the same field to possibly different values, it is undefined
 what exactly occurs: other CPUs can see either the original or any of
 the modified values.  It works because the original and each modified
 value are all interchangeable as far as correctness goes.
+
+However, note that if the chain is longer than one item, we cannot fix
+the whole chain -- we can only fix the first item.  The issue is that we
+cannot at this point reliably walk the chain again until we reach ``R``,
+precisely because *another* thread might be fixing the *same* chain in
+such a way that ``R`` is then skipped.
 
 ``Rarely`` uses a thread-local counter to return True only rarely.  We
 do the above update only rarely, rather than always, although it would
