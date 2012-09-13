@@ -16,17 +16,15 @@ def morph(fg, r, fn):
 
 def morph(fg, r, fn):
     xres = fg.new()
-    for y in xrange(fg.height):
-        for x in xrange(fg.width):
-            xres[x, y] = fg[x, y]
-            for dx in xrange(-r, r+1):
-                xres[x, y] = fn(xres[x, y], fg[x+dx, y])
+    for x, y in fg.indexes():
+        xres[x, y] = fg[x, y]
+        for dx in xrange(-r, r+1):
+            xres[x, y] = fn(xres[x, y], fg[x+dx, y])
     res = fg.new()
-    for y in xrange(fg.height):
-        for x in xrange(fg.width):
-            res[x, y] = xres[x, y]
-            for dy in xrange(-r, r+1):
-                res[x, y] = fn(res[x, y], xres[x, y+dy])
+    for x, y in fg.indexes():
+        res[x, y] = xres[x, y]
+        for dy in xrange(-r, r+1):
+            res[x, y] = fn(res[x, y], xres[x, y+dy])
     return res
 
 def erode(fg, r=1):
@@ -61,17 +59,15 @@ def bwlabel(seg):
     labels = Labler(seg)
     while not labels.done:
         labels.done = True
-        for y in xrange(seg.height):
-            for x in xrange(seg.width):
-                if seg[x, y]:
-                    ll = [labels[x, y], labels[x-1, y], labels[x-1, y-1], labels[x, y-1], labels[x+1, y-1]]
-                    labels.update(x, y, ll)
+        for x, y in seg.indexes():
+            if seg[x, y]:
+                ll = [labels[x, y], labels[x-1, y], labels[x-1, y-1], labels[x, y-1], labels[x+1, y-1]]
+                labels.update(x, y, ll)
 
-        for y in reversed(xrange(seg.height)):
-            for x in reversed(xrange(seg.width)):
-                if seg[x, y]:
-                    ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1], labels[x, y+1], labels[x+1, y+1]]
-                    labels.update(x, y, ll)
+        for x, y in reversed(seg.indexes()):
+            if seg[x, y]:
+                ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1], labels[x, y+1], labels[x+1, y+1]]
+                labels.update(x, y, ll)
 
     return labels.labels
 
@@ -98,13 +94,12 @@ class BoundingBox(object):
 
 def extract_boxes(labels):
     boxes = {}
-    for y in xrange(labels.height):
-        for x in xrange(labels.width):
-            l = labels[x, y]
-            if l:
-                if l not in boxes:
-                    boxes[l] = BoundingBox()
-                boxes[l].add(x, y)
+    for x, y in labels.indexes():
+        l = labels[x, y]
+        if l:
+            if l not in boxes:
+                boxes[l] = BoundingBox()
+            boxes[l].add(x, y)
     return boxes.values()
 
 

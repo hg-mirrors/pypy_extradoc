@@ -68,6 +68,9 @@ class Image(object):
     def __iter__(self):
         return iter(self.data)
 
+    def indexes(self):
+        return PixelIter(self.width, self.height)
+
 class ConstantImage(Image):
     def __init__(self, w, h, value):
         self.width = w
@@ -80,6 +83,34 @@ class ConstantImage(Image):
     def __setitem__(self, (x, y), value):
         raise TypeError('ConstantImage does not support item assignment')
 
+class PixelIter(object):
+    def __init__(self, w, h, rev=False):
+        self.width, self.height, self.rev = w, h, rev
+        if rev:
+            self.iter_x = reversed(xrange(w))
+            self.iter_y = reversed(xrange(h))
+        else:
+            self.iter_x = iter(xrange(w))
+            self.iter_y = iter(xrange(h))
+        self.y = self.iter_y.next()
+
+    def next(self):
+        try:
+            x = self.iter_x.next()
+        except StopIteration:
+            self.y = self.iter_y.next()
+            if self.rev:
+                self.iter_x = reversed(xrange(self.width))
+            else:
+                self.iter_x = iter(xrange(self.width))
+            x = self.iter_x.next()
+        return x, self.y
+
+    def __iter__(self):
+        return self
+
+    def __reversed__(self):
+        return PixelIter(self.width, self.height, not self.rev)
 
 def test_image():
     img = Image(10, 20)
