@@ -8,9 +8,8 @@ def binop(op):
             b = ConstantImage(a.width, a.height, b)
 
         out = a.new(typecode='d')
-        for y in xrange(a.height):
-            for x in xrange(a.width):
-                out[x, y] = op(float(a[x, y]), float(b[x, y]))
+        for x, y in a.indexes():
+            out[x, y] = op(float(a[x, y]), float(b[x, y]))
 
         return out
     return f
