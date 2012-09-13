@@ -1,5 +1,5 @@
 from subprocess import call, Popen
-import os, time, re
+import os, time, re, sys
 
 class Vim(object):
     def __init__(self, *args):
@@ -18,9 +18,9 @@ class Vim(object):
         self.send('<ESC>:q!<CR>')
 
 def pause(msg=''):
-    print
+    print "\n"
     print msg
-    raw_input('Press ENTER')
+    raw_input('Press ENTER\n')
 
 def demo():
     with open('analytics.py', 'w') as fd:
@@ -32,7 +32,7 @@ class Tracker(ReloadHack):
     def update(self, frame):
         view(frame)
 """
-    runner = Popen(['pypy', 'run.py', 'demo.avi'])
+    runner = Popen([sys.executable, 'run.py', 'demo.avi'])
     vim = Vim('analytics.py')
 
     pause("We'r looking at the input and output of this Tracker object that\n" + 
