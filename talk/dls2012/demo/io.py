@@ -37,6 +37,7 @@ def mplayer(filename='tv://', options=()):
 class MplayerViewer(object):
     def __init__(self):
         self.width = self.height = None
+
     def view(self, img):
         if img.data.typecode != 'B':
             out = img.new(typecode='B')
@@ -58,11 +59,23 @@ class MplayerViewer(object):
         assert self.height == img.height
         img.data.tofile(self.mplayer.stdin)
 
+    def viewsc(self, img):
+        a, b = min(img), max(img)
+        if a == b:
+            b += 1
+        self.view((img - a) * 255 / (b - a))
+
 viewers = {}
-def view(img, name='default'):
+def view(img, name='default', scale=False):
     try:
         viewer = viewers[name]
     except KeyError:
         viewer = viewers[name] = MplayerViewer()
-    viewer.view(img)
-    
+    if scale:
+        viewer.viewsc(img)
+    else:
+        viewer.view(img)
+
+def viewsc(img, name='default'):
+    view(img, name, True)
+

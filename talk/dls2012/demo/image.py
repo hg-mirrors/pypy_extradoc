@@ -65,6 +65,9 @@ class Image(object):
     def __nonzero__(self):
         return all(self.data)
 
+    def __iter__(self):
+        return iter(self.data)
+
 class ConstantImage(Image):
     def __init__(self, w, h, value):
         self.width = w
