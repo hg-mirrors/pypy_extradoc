@@ -5,7 +5,7 @@ import sys
 if len(sys.argv) > 1:
     fn = sys.argv[1]
 else:
-    fn = 'tv://'
+    fn = 'demo.avi'
 
 tracker = Tracker()
 while True:
