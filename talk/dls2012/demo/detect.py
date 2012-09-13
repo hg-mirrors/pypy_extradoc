@@ -54,6 +54,15 @@ class Labler(object):
     def __getitem__(self, (x, y)):
         return self.labels[x, y]
 
+    def renumber(self):
+        ll = list(set(self.labels))
+        ll.sort()
+        if ll[0] != 0:
+            ll.insert(0, 0)
+        for x, y in self.labels.indexes():
+            self.labels[x, y] = ll.index(self.labels[x, y])
+        self.last_label = len(ll) - 1
+
 
 def bwlabel(seg):
     labels = Labler(seg)
@@ -68,7 +77,7 @@ def bwlabel(seg):
             if seg[x, y]:
                 ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1], labels[x, y+1], labels[x+1, y+1]]
                 labels.update(x, y, ll)
-
+    labels.renumber()
     return labels.labels
 
 class BoundingBox(object):
@@ -109,5 +118,5 @@ def find_objects(fg, minarea=100):
     labels = bwlabel(seg)
     boxes = extract_boxes(labels)
     boxes = [b for b in boxes if b.area() >= minarea]
-    view(64*labels, 'segments')
+    viewsc(labels, 'segments')
     return boxes
