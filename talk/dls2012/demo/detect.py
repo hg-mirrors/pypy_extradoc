@@ -52,6 +52,25 @@ class Labler(object):
             self.labels[x, y] = ll.index(self.labels[x, y])
         self.last_label = len(ll) - 1
 
+    def renumber(self):
+        ll = list(set(self.labels))
+        ll.sort()
+        if ll[0] != 0:
+            ll.insert(0, 0)
+        for x, y in self.labels.indexes():
+            self.labels[x, y] = ll.index(self.labels[x, y])
+        self.last_label = len(ll) - 1
+
+    def renumber(self):
+        ll = list(set(self.labels))
+        ll.sort()
+        if ll[0] != 0:
+            ll.insert(0, 0)
+        for x, y in self.labels.indexes():
+            self.labels[x, y] = ll.index(self.labels[x, y])
+        self.last_label = len(ll) - 1
+        labels.renumber()
+
 
 def bwlabel(seg):
     labels = Labler(seg)

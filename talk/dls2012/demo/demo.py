@@ -14,8 +14,11 @@ class Vim(object):
             self.send(c)
             time.sleep(delay)
 
-    def __del__(self):
+    def close(self):
         self.send('<ESC>:q!<CR>')
+
+    def __del__(self):
+        self.close()
 
 def pause(msg=''):
     print "\n"
@@ -41,6 +44,7 @@ class Tracker(ReloadHack):
     part2(vim, skip1)
 
     runner.kill()
+    vim.close()
 
 def part1(vim):
 
@@ -191,7 +195,7 @@ def find_objects(fg):
     pause("It still seems to work as before. Now lets add the second pass")
     vim.type('O<CR><BS><BS>for x, y in reversed(seg.indexes()):<CR>if seg[x, y]:<CR>ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1],<CR>labels[x, y+1], labels[x+1, y+1]]<CR>labels.update(x, y, ll)<CR><ESC>:w<CR>', 0.01)
 
-    pause("That's starting to look good, but in complicated cases we can still" + 
+    pause("That's starting to look good, but in complicated cases we can still\n" + 
           "get multiple lables per segment, so we need to repeat until convergance")
     vim.type('56ggVkkkkkkkkkk', 0.2)
     vim.send('>')
@@ -201,8 +205,8 @@ def find_objects(fg):
 
     pause("As a final touch, lets renumber the labels be consecutative\n" + 
           "integers.")
-    vim.type('44ggo<CR>def renumber(self):<CR>ll = list(set(self.labels))<CR>ll.sort()<CR>if ll[0] != 0:<CR>ll.insert(0, 0)<CR><BS>for x, y in self.labels.indexes():<CR>self.labels[x, y] = ll.index(self.labels[x, y])<CR><BS>self.last_label = len(ll) - 1<ESC>', 0.01)
-    vim.type('G72ggOlabels.renumber()<ESC>:w<CR>', 0.01)
+    vim.type('G63ggOlabels.renumber()<ESC>', 0.01)
+    vim.type('44ggo<CR>def renumber(self):<CR>ll = list(set(self.labels))<CR>ll.sort()<CR>if ll[0] != 0:<CR>ll.insert(0, 0)<CR><BS>for x, y in self.labels.indexes():<CR>self.labels[x, y] = ll.index(self.labels[x, y])<CR><BS>self.last_label = len(ll) - 1<ESC>:w<CR>', 0.01)
        
 
 
