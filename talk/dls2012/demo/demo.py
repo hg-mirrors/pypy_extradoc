@@ -40,6 +40,8 @@ class Tracker(ReloadHack):
         part1(vim)
     part2(vim, skip1)
 
+    runner.kill()
+
 def part1(vim):
 
     pause("We'r looking at the input and output of this Tracker object that\n" + 
@@ -120,15 +122,14 @@ def part2(vim, skip1=False):
         print >>fd, """
 from reloader import autoreload
 from io import view, viewsc
+from image import PixelIter
 
 def dilate(fg, r=1):
     res = fg.new()
     for x, y in fg.indexes():
         res[x, y] = fg[x, y]
-
-        for dx in xrange(-r, r+1):
-            for dy in xrange(-r, r+1):
-                res[x, y] = max(res[x, y], fg[x+dx, y+dy])
+        for dx, dy in PixelIter(xrange(-r, r+1), xrange(-r, r+1)):
+            res[x, y] = max(res[x, y], fg[x+dx, y+dy])
     return res
 
 @autoreload
@@ -148,25 +149,23 @@ def find_objects(fg):
     pause("That's a bit slow, but this operation is separable, let's see\n"+
           "if it is faster with two passes.")
     vim.send(':e detect.py<CR>')
-    vim.type('6ggix<ESC>9ggix<ESC>jjdd')
-    vim.send('<<')
-    vim.type('ix<ESC>9wix<ESC>13wxxx', 0.2)
-    vim.type('VkkkkkyP6jx')
-    vim.type('15ggx7wcwxres<ESC>')
+    vim.type('7ggix<ESC>9ggix<ESC>jddOfor dx in xrange(-r, r+1):<ESC>')
+    vim.type('11ggix<ESC>9wix<ESC>13wxxx', 0.2)
+    vim.type('VkkkkyP5jx', 0.2)
+    vim.type('14ggx7wcwxres<ESC>')
     vim.type('jbbbcwdy<ESC>jhx9wx6wcwxres<ESC>3wxxxllli+dy<ESC>:w<CR>', 0.2)
 
     pause("Now we need som erosion to thin out the objects again. Let's\n"+
           "generalize dilate make it implement both dilation and erotion")
-    vim.type('5ggwcwmorph<ESC>$hi<BS><BS>, fn<ESC>')
+    vim.type('6ggwcwmorph<ESC>$hi<BS><BS>, fn<ESC>')
     vim.type('11gg7wcwfn<ESC>', 0.2)
-    vim.type('17gg7wcwfn<ESC>', 0.2)
-    vim.type('20ggOdef dilate(fg, r=1):<CR>return morph(fg, r, max)<CR>')
+    vim.type('16gg7wcwfn<ESC>', 0.2)
+    vim.type('19ggOdef dilate(fg, r=1):<CR>return morph(fg, r, max)<CR>')
     vim.type('<CR>def erode(fg, r=1):<CR>return morph(fg, r, min)<CR><ESC>')
-    vim.type('28ggwwierode(<ESC>A, 4)<ESC>:w<CR>')
+    vim.type('G27ggwwierode(<ESC>A, 4)<ESC>:w<CR>')
 
     pause("That's all! Feel free to make your own adjustments or (to quit),")
 
 
-    runner.kill()
 if __name__ == '__main__':
     demo(*map(eval, sys.argv[1:]))

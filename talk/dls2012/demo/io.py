@@ -79,3 +79,4 @@ def view(img, name='default', scale=False):
 def viewsc(img, name='default'):
     view(img, name, True)
 
+

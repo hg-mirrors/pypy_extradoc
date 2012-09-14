@@ -68,7 +68,7 @@ class Image(object):
         return iter(self.data)
 
     def indexes(self):
-        return PixelIter(self.width, self.height)
+        return PixelIter(xrange(self.width), xrange(self.height))
 
 class ConstantImage(Image):
     def __init__(self, w, h, value):
@@ -83,14 +83,14 @@ class ConstantImage(Image):
         raise TypeError('ConstantImage does not support item assignment')
 
 class PixelIter(object):
-    def __init__(self, w, h, rev=False):
-        self.width, self.height, self.rev = w, h, rev
+    def __init__(self, range_x, range_y, rev=False):
+        self.range_x, self.range_y, self.rev = range_x, range_y, rev
         if rev:
-            self.iter_x = reversed(xrange(w))
-            self.iter_y = reversed(xrange(h))
+            self.iter_x = reversed(self.range_x)
+            self.iter_y = reversed(self.range_y)
         else:
-            self.iter_x = iter(xrange(w))
-            self.iter_y = iter(xrange(h))
+            self.iter_x = iter(self.range_x)
+            self.iter_y = iter(self.range_y)
         self.y = self.iter_y.next()
 
     def next(self):
@@ -99,9 +99,9 @@ class PixelIter(object):
         except StopIteration:
             self.y = self.iter_y.next()
             if self.rev:
-                self.iter_x = reversed(xrange(self.width))
+                self.iter_x = reversed(self.range_x)
             else:
-                self.iter_x = iter(xrange(self.width))
+                self.iter_x = iter(self.range_x)
             x = self.iter_x.next()
         return x, self.y
 
@@ -109,7 +109,7 @@ class PixelIter(object):
         return self
 
     def __reversed__(self):
-        return PixelIter(self.width, self.height, not self.rev)
+        return PixelIter(self.range_x, self.range_y, not self.rev)
 
 def test_image():
     img = Image(10, 20)

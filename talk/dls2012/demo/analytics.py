@@ -12,9 +12,7 @@ class Tracker(ReloadHack):
     def update(self, frame):
         self.background.update(frame)
         fg = foreground(frame, self.background.image)
+        find_objects(fg)
         #view(self.background.image)
-        for box in find_objects(fg):
-            box.draw(frame)
-        view(frame, 'result')
         view(255 * fg)
 
