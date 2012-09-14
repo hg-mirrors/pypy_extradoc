@@ -22,9 +22,10 @@ def pause(msg=''):
     print msg
     raw_input('Press ENTER\n')
 
-def demo():
-    with open('analytics.py', 'w') as fd:
-        print >>fd, """
+def demo(skip1=False):
+    if not skip1:
+        with open('analytics.py', 'w') as fd:
+            print >>fd, """
 from reloader import ReloadHack
 from io import view
 
@@ -34,6 +35,12 @@ class Tracker(ReloadHack):
 """
     runner = Popen([sys.executable, 'run.py', 'demo.avi'])
     vim = Vim('analytics.py')
+
+    if not skip1:
+        part1(vim)
+    part2(vim, skip1)
+
+def part1(vim):
 
     pause("We'r looking at the input and output of this Tracker object that\n" + 
           "currently simply returns it input. Let's modify it to make some\n" +
@@ -107,6 +114,8 @@ def foreground(img, bkg):
     pause("Now, let us start designing an object detector. First step would\n"+
           "be to implement dilation to get rid of small holes within\n"+
           "the objects,")
+
+def part2(vim, skip1=False):
     with open('detect.py', 'w') as fd:
         print >>fd, """
 from reloader import autoreload
@@ -114,12 +123,12 @@ from io import view, viewsc
 
 def dilate(fg, r=1):
     res = fg.new()
-    for y in xrange(fg.height):
-        for x in xrange(fg.width):
-            res[x, y] = fg[x, y]
-            for dx in xrange(-r, r+1):
-                for dy in xrange(-r, r+1):
-                    res[x, y] = max(res[x, y], fg[x+dx, y+dy])
+    for x, y in fg.indexes():
+        res[x, y] = fg[x, y]
+
+        for dx in xrange(-r, r+1):
+            for dy in xrange(-r, r+1):
+                res[x, y] = max(res[x, y], fg[x+dx, y+dy])
     return res
 
 @autoreload
@@ -130,10 +139,11 @@ def find_objects(fg):
 """
     vim.send(':e detect.py<CR>')
 
-    pause('and to call it from our tracker.')
-    vim.send(':e analytics.py<CR>')
-    vim.type('5ggofrom detect import find_objects<ESC>')
-    vim.type('14ggofind_objects(fg)<ESC>:w<CR>')
+    if not skip1:
+        pause('and to call it from our tracker.')
+        vim.send(':e analytics.py<CR>')
+        vim.type('5ggofrom detect import find_objects<ESC>')
+        vim.type('14ggofind_objects(fg)<ESC>:w<CR>')
 
     pause("That's a bit slow, but this operation is separable, let's see\n"+
           "if it is faster with two passes.")
@@ -159,4 +169,4 @@ def find_objects(fg):
 
     runner.kill()
 if __name__ == '__main__':
-    demo()
+    demo(*map(eval, sys.argv[1:]))
