@@ -208,7 +208,25 @@ def find_objects(fg):
     vim.type('G63ggOlabels.renumber()<ESC>', 0.01)
     vim.type('44ggo<CR>def renumber(self):<CR>ll = list(set(self.labels))<CR>ll.sort()<CR>if ll[0] != 0:<CR>ll.insert(0, 0)<CR><BS>for x, y in self.labels.indexes():<CR>self.labels[x, y] = ll.index(self.labels[x, y])<CR><BS>self.last_label = len(ll) - 1<ESC>:w<CR>', 0.01)
        
+    pause("Now, lets find a boudningbox for each segment,")
+    vim.type("G75ggOclass BoundingBox(object):<CR>def __init__(self):<CR>self.maxx = self.maxy = float('-Inf')<CR>self.minx = self.miny = float('Inf')<CR><CR><BS>def add(self, x, y):<CR>self.maxx = max(self.maxx, x)<CR>self.maxy = max(self.maxy, y)<CR>self.minx = min(self.minx, x)<CR>self.miny = min(self.miny, y)<CR><BS><BS><CR>def extract_boxes(labels):<CR>boxes = [BoundingBox() for i in xrange(max(labels))]<CR>for x, y in labels.indexes():<CR>l = labels[x, y]<CR>if l:<CR>boxes[int(l-1)].add(x, y)<CR><BS><BS>return boxes<CR><ESC>", 0.01)
+    vim.type("G98ggOboxes = extract_boxes(labels)<ESC>:w<CR>", 0.01)
+    
+    pause("and draw that boudning box.")
+    vim.type("84ggo<BS><CR>def draw(self, img):<CR>for y in xrange(self.miny, self.maxy + 1):<CR>img[self.maxx, y] = 255<CR>img[self.minx, y] = 255<CR><BS>for x in xrange(self.minx, self.maxx + 1):<CR>img[x, self.miny] = 255<CR>img[x, self.maxy] = 255<CR><ESC>:w<CR>", 0.01)
+    vim.type('108ggoreturn boxes<ESC>', 0.01)
+    vim.type(':e analytics.py<CR>', 0.2)
+    vim.type('15ggIfor box in <ESC>A:<CR>box.draw(frame)<CR><BS>view(frame)<ESC>')
+    vim.type('19ggI#<ESC>:w<CR>')
 
+    pause("The background model needs to converge again, but even after that\n"+
+          "noise can sometimes create small detections. Lets discard them.")
+    vim.send(':e detect.py<CR>')
+    vim.type('75gg92ggo<BS><BS><CR>def area(self):<CR>return (self.maxx - self.minx + 1) * (self.maxy - self.miny + 1)<CR><ESC>', 0.01)
+    vim.type('G108gg$hi, minarea=100<ESC>')
+    vim.type('111ggoboxes = [b for b in boxes if b.area() ', 0.01)
+    vim.send('>=')
+    vim.type(' minarea]<ESC>:w<CR>', 0.01)
 
     pause("That's all! Feel free to make your own adjustments or (to quit),")
 
