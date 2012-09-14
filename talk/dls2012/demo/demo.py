@@ -1,10 +1,27 @@
 from subprocess import call, Popen
 import os, time, re, sys
+import tempfile
 
 class Vim(object):
     def __init__(self, *args):
         self.servername = 'DEMO_%d_%d' % (os.getpid(), id(self))
-        call(['gvim', '--servername', self.servername] + list(args))
+        self.tmp = tempfile.mktemp()
+        with open(self.tmp, "w") as fd:
+            print >>fd, """
+syntax on
+:set vb
+set nocompatible
+
+filetype plugin indent on
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set softtabstop=4
+autocmd FileType make set noexpandtab shiftwidth=8
+
+:set backspace=indent,eol,start
+"""
+        call(['gvim', '--servername', self.servername, '-u', self.tmp] + list(args))
 
     def send(self, cmd):
         call(['gvim', '--servername', self.servername, '--remote-send', cmd])
@@ -16,6 +33,7 @@ class Vim(object):
 
     def close(self):
         self.send('<ESC>:q!<CR>')
+        os.unlink(self.tmp)
 
     def __del__(self):
         self.close()
@@ -214,7 +232,7 @@ def find_objects(fg):
     
     pause("and draw that boudning box.")
     vim.type("84ggo<BS><CR>def draw(self, img):<CR>for y in xrange(self.miny, self.maxy + 1):<CR>img[self.maxx, y] = 255<CR>img[self.minx, y] = 255<CR><BS>for x in xrange(self.minx, self.maxx + 1):<CR>img[x, self.miny] = 255<CR>img[x, self.maxy] = 255<CR><ESC>:w<CR>", 0.01)
-    vim.type('108ggoreturn boxes<ESC>', 0.01)
+    vim.type('108ggoreturn boxes<ESC>:w<CR>', 0.01)
     vim.type(':e analytics.py<CR>', 0.2)
     vim.type('15ggIfor box in <ESC>A:<CR>box.draw(frame)<CR><BS>view(frame)<ESC>')
     vim.type('19ggI#<ESC>:w<CR>')
