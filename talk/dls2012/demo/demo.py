@@ -164,6 +164,48 @@ def find_objects(fg):
     vim.type('<CR>def erode(fg, r=1):<CR>return morph(fg, r, min)<CR><ESC>')
     vim.type('G27ggwwierode(<ESC>A, 4)<ESC>:w<CR>')
 
+    pause('Now, lets label each of the foreground pixels with one label\n' + 
+          'per segment using a floodfill like algorithm')
+    vim.type('25ggOdef bwlabel(seg):<CR>labels = seg.new()<CR>last_label = 0<CR>for x, y in seg.indexes():<CR>if seg[x, y]:<CR>ll = [labels[x, y], labels[x-1, y], labels[x-1, y-1],<CR>labels[x, y-1], labels[x+1, y-1]]<CR>neighbours = set(ll)<CR>neighbours.discard(0)<CR>if not neighbours:<CR>last_label += 1<CR>l = last_label<CR><BS>else:<CR>l = min(neighbours)<CR><BS>labels[x, y] = l<CR><BS><BS>return labels<CR><ESC>', 0.01)
+    vim.type('G45ggOlabels = bwlabel(seg)<ESC>')
+    vim.type('j4bcwlabels<ESC>:w<CR>', 0.2)
+
+    pause("We'r getting several labels per object so lets try to repeat the\n" + 
+          "floodfilling trversing the image in reversed order. But first, to\n" + 
+          "prevent code duplication we're moving the common parts to a Labler class.")
+    vim.type('25ggOclass Labler(object):<CR>def __init__(self, seg):<CR><CR><ESC>')
+    vim.type('30ggVjxkkkPVj', 0.2)
+    vim.send('>')
+    vim.type('Iself.<ESC>jIself.<ESC>')
+    vim.type('o<CR><BS>def update(self, x, y, ll):<ESC>')
+    vim.type('38ggVjjjjjjjx', 0.2)
+    vim.type('30ggpVjjjjjjj')
+    vim.send('<')
+    vim.type('34ggIself.<ESC>jiself.<ESC>')
+    vim.type('38ggIself.<ESC>')
+    vim.type('o<CR><BS>def __getitem__(self, (x, y)):<CR>return self.labels[x, y]<ESC>')
+    vim.type('G45ggOlabels = Labler(seg)<ESC>')
+    vim.type('49ggolabels.update(x, y, ll)<ESC>')
+    vim.type('51ggA.labels<ESC>:w<CR>')
+
+    pause("It still seems to work as before. Now lets add the second pass")
+    vim.type('O<CR><BS><BS>for x, y in reversed(seg.indexes()):<CR>if seg[x, y]:<CR>ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1],<CR>labels[x, y+1], labels[x+1, y+1]]<CR>labels.update(x, y, ll)<CR><ESC>:w<CR>', 0.01)
+
+    pause("That's starting to look good, but in complicated cases we can still" + 
+          "get multiple lables per segment, so we need to repeat until convergance")
+    vim.type('56ggVkkkkkkkkkk', 0.2)
+    vim.send('>')
+    vim.type('Owhile not labels.done:<CR>labels.done = True<ESC>')
+    vim.type('28ggoself.done = False<ESC>')
+    vim.type('43gg39ggO<BS>if self.labels[x, y] != l:<CR>self.done = False<ESC>:w<CR>')
+
+    pause("As a final touch, lets renumber the labels be consecutative\n" + 
+          "integers.")
+    vim.type('44ggo<CR>def renumber(self):<CR>ll = list(set(self.labels))<CR>ll.sort()<CR>if ll[0] != 0:<CR>ll.insert(0, 0)<CR><BS>for x, y in self.labels.indexes():<CR>self.labels[x, y] = ll.index(self.labels[x, y])<CR><BS>self.last_label = len(ll) - 1<ESC>', 0.01)
+    vim.type('G72ggOlabels.renumber()<ESC>:w<CR>', 0.01)
+       
+
+
     pause("That's all! Feel free to make your own adjustments or (to quit),")
 
 
