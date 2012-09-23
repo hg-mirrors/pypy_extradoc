@@ -6,7 +6,7 @@ The PyPy project has recently gathered a lot of attention for its
 progress in speeding up the Python language -- it is the fastest,
 most compatible and most stable 'alternative´ Python interpreter.  No
 longer merely a research curiosity, PyPy is now suitable for production
-use. I would like to present PyPy, it's current status, near future goals
+use. I would like to present PyPy, its current status, near future goals
 and the general performance Python landscape.
 
 NOTES TO ORGANIZERS:
