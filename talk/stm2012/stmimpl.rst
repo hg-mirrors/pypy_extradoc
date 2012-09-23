@@ -33,7 +33,7 @@ Overview of the object model
 In this model there are two kinds of objects. As an object gets allocated,
 it's created as a local object that's only visible to the current thread.
 Local object operations are completely like STM-less operations, the fields
-are just modified. When object survives 
+are just modified.
 
 Objects are either global (visible to everybody, and read-only), or
 they are local (visible only to the current thread).
