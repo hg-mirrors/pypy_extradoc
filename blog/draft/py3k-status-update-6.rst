@@ -58,7 +58,7 @@ fixed, including (but not limited to):
 Finally, I would like to thank Amaury Forgeot d'Arc and Ariel Ben-Yehuda for
 their work on the branch; among other things, Amaury recently worked on
 ``cpyext`` and on the PyPy ``_cffi_backend``, while Ariel submitted a patch to
-implement `PEP 3138`.
+implement `PEP 3138`_.
 
 .. _donated: http://morepypy.blogspot.com/2012/01/py3k-and-numpy-first-stage-thanks-to.html
 .. _`py3k proposal`: http://pypy.org/py3donate.html
