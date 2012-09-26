@@ -4,7 +4,7 @@ Py3k status update #6
 This is the sixth status update about our work on the `py3k branch`_, which we
 can work on thanks to all of the people who donated_ to the `py3k proposal`_.
 
-The coolest new is not about what we did in the past weeks, but what we will
+The coolest news is not about what we did in the past weeks, but what we will
 do in the next: I am pleased to announce that Philip Jenvey has been selected
 to be funded for his upcoming work on py3k, thanks to your generous
 donations. He will start to work on it shortly, and he will surely help the
