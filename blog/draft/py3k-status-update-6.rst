@@ -40,13 +40,20 @@ for example, it now supports unicode string formatting (using the percent
 operator) and the methods ``.encode/.decode('utf-8')``.
 
 Other than that there is the usual list of smaller issues and bugs that got
-fixed, such as: teach the compiler when to emit the new opcode
-``DELETE_DEREF`` (and implement it!); detect when we use spaces and TABs
-inconsistently in the source code, as CPython does; fix yet another bug
-related to the new lexically scoped exceptions (this is the last one,
-hopefully); port some of the changes that we did to the standard CPython 2.7
-tests to 3.2, to mark those which are implementation details and should not be
-run on PyPy.
+fixed, including (but not limited to):
+
+  - teach the compiler when to emit the new opcode ``DELETE_DEREF`` (and
+    implement it!)
+
+  - detect when we use spaces and TABs inconsistently in the source code, as
+    CPython does
+
+  - fix yet another bug related to the new lexically scoped exceptions (this
+    is the last one, hopefully)
+
+  - port some of the changes that we did to the standard CPython 2.7 tests to
+    3.2, to mark those which are implementation details and should not be run on
+    PyPy
 
 Finally, I would like to thank Amaury Forgeot d'Arc and Ariel Ben-Yehuda for
 their work on the branch; among other things, Amaury recently worked on
