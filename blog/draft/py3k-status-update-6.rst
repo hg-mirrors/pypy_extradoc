@@ -34,7 +34,7 @@ identifiers, however you can see it with a bit of creativity::
 Before the latest changes, you used to get question marks instead of the
 proper name for the keyword argument.  Although this might seem like a small
 detail, it is a big step towards a proper working Python 3 interpreter and it
-required a couple of days of headaches.  A spin-off of this work is that now
+required a couple days of headaches.  A spin-off of this work is that now
 RPython has better built-in support for unicode (also in the default branch):
 for example, it now supports unicode string formatting (using the percent
 operator) and the methods ``.encode/.decode('utf-8')``.
