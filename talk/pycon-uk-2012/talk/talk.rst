@@ -15,6 +15,8 @@ About me
 
 - Consultant, trainer
 
+- You can hire me :-)
+
 - http://antocuni.eu
 
 
@@ -22,8 +24,6 @@ About this talk
 ----------------
 
 * What is PyPy? (in 30 seconds)
-
-  - (for those who missed the keynote :-))
 
 * Overview of tracing JITs
 
