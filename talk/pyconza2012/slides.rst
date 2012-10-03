@@ -22,11 +22,16 @@ What this talk is about?
 
 |pause|
 
-* who some assembler
+* show some assembler
 
 |pause|
 
 * just joking
+
+Disclaimer
+----------
+
+* we're trying to make it better
 
 What is PyPy?
 -------------
@@ -124,5 +129,29 @@ Calls
 Attribute access
 ----------------
 
+* if optimized, almost as fast as local var access
+
+* ``dict`` lookup optimized away
+
+* class attributes considered constant
+
+* meta programming is better than dynamism
+
+* objects for small number of constant keys, dicts for large
+  numbers of changing keys
+
 Other sorts of loops
 --------------------
+
+* there is more!
+
+* ``tuple(iterable)``, ``map(iterable)``, ``re.search``
+
+* they're all jitted
+
+* not all nicely
+
+Future improvements
+-------------------
+
+Xxxx
