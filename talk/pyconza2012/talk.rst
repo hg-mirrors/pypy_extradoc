@@ -1,3 +1,5 @@
+.. include:: beamerdefs.txt
+
 ==================================
 Python performance characteristics
 ==================================
@@ -40,7 +42,7 @@ What is PyPy?
 
 * PyPy is a toolchain for creating dynamic language implementations
 
-  * we try to rename the latter RPython
+  * we try to rename the latter to RPython
 
 * also, an Open Source project that has been around for a while
 

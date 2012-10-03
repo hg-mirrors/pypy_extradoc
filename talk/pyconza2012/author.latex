@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Python performance characteristics]{Python performance characteristics}
+\author[Maciej Fijałkowski]
+{Maciej Fijałkowski}
+
+\institute{PyCon 2012}
+\date{October 5, 2012}
