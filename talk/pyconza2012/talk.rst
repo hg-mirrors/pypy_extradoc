@@ -16,24 +16,79 @@ Who am I?
 What this talk is about?
 ------------------------
 
-* I'll start where Larry finished
+* python performance (or lack of it)
 
-* describe a bit how the PyPy JIT works
+* why does it matter
 
-* what's the difference between interpretation and JIT compilation
+* what can we do about it
+
+* how PyPy works
+
+Python performance message
+---------------------------
+
+* according to Guido
+
+* "Avoid overengineering datastructures. Tuples are better than objects (try namedtuple too though). Prefer simple fields over getter/setter functions."
+
+* "Built-in datatypes are your friends. Use more numbers, strings, tuples, lists, sets, dicts. Also check out the collections library, esp. deque."
+
+* "Be suspicious of function/method calls; creating a stack frame is expensive."
+
+* "The universal speed-up is rewriting small bits of code in C. Do this only when all else fails."
+
+What does it mean?
+------------------
+
+* don't use abstractions
 
 |pause|
 
-* show some assembler
+* don't use Python
+
+But also
+--------
+
+* measure!
+
+* there are so many variables, you cannot care without benchmarks
 
 |pause|
 
-* just joking
+* if you have no benchmarks, you don't care
 
-Disclaimer
-----------
+This is not how I want to write software
+----------------------------------------
 
-* we're trying to make it better
+* I like my abstractions
+
+* I like Python
+
+* I don't want to rewrite stuff for performance
+
+|pause|
+
+* in C/C++
+
+Second best
+-----------
+
+* keep my abstractions
+
+* do arcane voodoo to keep my programs fast
+
+* but you have to understand the voodo in the first place
+
+But Python performance!
+-----------------------
+
+* there is no such thing as language performance
+
+* there is implementation performance
+
+* the language might be easier or harder to optimize
+
+* CPython performance characteristics is relatively straightforward
 
 What is PyPy?
 -------------
@@ -41,8 +96,6 @@ What is PyPy?
 * PyPy is a Python interpreter (that's what we care about)
 
 * PyPy is a toolchain for creating dynamic language implementations
-
-  * we try to rename the latter to RPython
 
 * also, an Open Source project that has been around for a while
 
@@ -82,15 +135,19 @@ So what PyPy does?
 
 * compiles loops and functions
 
+Some properties
+---------------
+
+* the code speed **changes** over time
+
+* hopefully from slow to fast
+
+* you need to warm up things before they get fast
+
 Some example
 ------------
 
 * integer addition!
-
-So wait, where are those allocations?
--------------------------------------
-
-* they don't escape, so they're removed!
 
 Abstractions
 ------------
@@ -103,8 +160,28 @@ Abstractions
 
 * if they don't introduce too much complexity
 
-Allocations
------------
+Few words about garbage collection
+----------------------------------
+
+* ``CPython``: refcounting + cyclic collector
+
+* ``PyPy``: generational mark & sweep
+
+|pause|
+
+* errr....
+
+The rest
+--------
+
+* I'll explain various PyPy strategies
+
+* ideally all this knowledge will be unnecessary
+
+* this is the second best, how to please the JIT compiler
+
+Allocations (PyPy)
+------------------
 
 * allocation is expensive
 
@@ -153,7 +230,18 @@ Other sorts of loops
 
 * not all nicely
 
-Future improvements
--------------------
+Summary
+-------
 
-Xxxx
+* we hope this knowledge will not be needed
+
+* the more you care, the better you need to know
+
+Questions?
+----------
+
+* Thank you!
+
+* http://pypy.org
+
+* http://baroquesoftware.com

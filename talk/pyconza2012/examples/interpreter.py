@@ -9,6 +9,9 @@ class BaseObject(object):
         # try right
         return right.radd(left)
 
+    def radd(self, left):
+        raise TypeError
+
 class Long(BaseObject):
     pass
 
@@ -22,6 +25,8 @@ class Integer(BaseObject):
                 return Integer(self.intval + right.intval)
             except OverflowError:
                 return Long(self.intval).add(Long(right.intval))
+        else:
+            return right.radd(self)
 
 def interpret(bytecode, variables, constants):
     stack = []
@@ -55,3 +60,13 @@ def interpret(bytecode, variables, constants):
             pos = arg0
             continue
         pos += 1
+
+
+def f(a, b):
+    return a + b
+
+stack.append(variables[arg0])
+stack.append(variables[arg0])
+right = stack.pop()
+left = stack.pop()
+stack.append(left.add(right))

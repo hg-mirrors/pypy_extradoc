@@ -30,7 +30,7 @@ def run(func):
     count = int(sys.argv[1])
     t0 = time.time()
     o = A()
-    for i in range(count):
+    for i in xrange(count):
         func(i, i, o)
     tk = time.time()
     t = (tk - t0) / count
