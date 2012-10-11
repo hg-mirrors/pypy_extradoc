@@ -90,6 +90,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \begin{itemize}
           \item for interesting, commonly executed code paths
           \item produces a linear list of operations (trace)
+          \item automatically does (potentially deep) inlining
       \end{itemize}
       \item trace is optimized and then turned into machine code
   \end{itemize}
@@ -97,7 +98,19 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 
 \begin{frame}
   \frametitle{Guards}
-
+  \begin{itemize}
+      \item Points of control flow divergence are marked with guards
+      \item Operations that check whether conditions are still true
+      \item When a guard fails, execution of the trace stops and continues in the interpreter
+      \pause
+      \begin{block}{Guard Characteristics}
+          \begin{itemize}
+              \item lots of them, up to 20\% guards
+              \item most never fail
+              \item costly to implement
+          \end{itemize}
+      \end{block}
+  \end{itemize}
 \end{frame}
 
 % this talk wants to go over a lot of details that are usually glossed over as
@@ -105,10 +118,21 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 
 \begin{frame}
   \frametitle{Bridges}
+  \begin{itemize}
+      \item When a trace fails often, it becomes worth to attach a new trace to it
+          \item This is called a bridge
+          \item The bridge is attached by patching the guard machine code
+          \item when this guard fails in the future, the new trace is executed instead
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{RPython and PyPy}
+  \begin{itemize}
+      \item Context: RPython
+      \item a generic tracing JIT, applicable to many languages
+      \item main use: PyPy, an efficient Python interpreter
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -119,14 +143,38 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 
 \begin{frame}
   \frametitle{Symbolic Frame Capturing}
+  \begin{itemize}
+      \item Guard can fail deep inside inlined function
+      \item when going back to the interpreter, call stack needs to be re-created
+      \item done with the help of symbolic frame stacks
+      \item these show how trace trace variables fill the to-be-built stack frames
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Symbolic Frame Compression}
+  \begin{itemize}
+      \item There are \emph{a lot of} guards
+      \item Naively storing symbolic frames would be costly in terms of memory
+      \item need to store them compactly
+      \item observation: from one guard to the next, the non-top stack frames don't change
+      \item share these between subsequent guards
+      \pause
+      \item also need a byte-saving binary representation, but that's just boring work
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Interaction with Optimization}
+  \begin{itemize}
+      \item Some optimizations make it necessary to store extra information in symbolic frames
+      \item examples:
+          \begin{itemize}
+              \item delayed heap stores (need to do stores before resuming interpreter)
+              \item allocation remvoal (need to allocate objects before resuming)
+          \end{itemize}
+      \item can be compressed using similar techniques
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
