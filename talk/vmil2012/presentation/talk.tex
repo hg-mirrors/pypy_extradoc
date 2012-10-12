@@ -179,6 +179,16 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 
 \begin{frame}
   \frametitle{Emitting Guards}
+  Guards are compiled as
+  \begin{itemize}
+    \item Quick Check if the condition holds
+    \item and a mapping of machine locations to JIT-variables % indirection using the fail-boxes
+  \end{itemize}
+  In case of failure
+  \begin{itemize}
+    \item execution jumps to compensation code, decodes and stores mapping
+    \item returns to interpreter that rebuilds state
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
