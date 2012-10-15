@@ -42,6 +42,9 @@ logs/resume_summary.csv: logs/logbench* tool/rdatasize.py
 logs::
 	tool/run_benchmarks.sh
 
+slides:
+	$(MAKE) -C presentation
+
 clean:
 	rm -f *.aux *.bbl *.blg *.log *.tdo
 	rm -f *.pdf
