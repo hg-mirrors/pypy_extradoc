@@ -21,6 +21,8 @@
 \usepackage{ulem}
 \usepackage{color}
 \usepackage{alltt}
+\usepackage{tikz}
+\usepackage{pgfplots}
 
 \usepackage[utf8x]{inputenc}
 
@@ -197,7 +199,6 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \begin{figure}
   \centering
   \includegraphics[width=1\textwidth]{figures/loop.pdf}
-  \label{fig:trampoline}
   \end{figure}
 \end{frame}
 
@@ -205,19 +206,57 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \begin{figure}
   \centering
   \includegraphics[width=1\textwidth]{figures/bridge_compiled.pdf}
-  \label{fig:trampoline}
   \end{figure}
 \end{frame}
 \begin{frame}
   \begin{figure}
   \centering
   \includegraphics[width=1\textwidth]{figures/bridge_patched.pdf}
-  \label{fig:trampoline}
   \end{figure}
 \end{frame}
 
 \begin{frame}
   \frametitle{Patching Guards for Bridges}
+\end{frame}
+\begin{frame}[t,fragile]
+\pgfplotsset{tick label style={font=\tiny\bfseries},
+label style={font=\small},
+legend style={font=\tiny}
+}
+    \frametitle{Guard Failure Rates}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+            xlabel= Guards by failures,
+            ylabel=Relative \# of failures,
+            xtick=\empty,
+            ytick=\empty,
+            ]
+                \input{figures/data}
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
+\begin{frame}[t,fragile]
+\pgfplotsset{tick label style={font=\tiny\bfseries},
+label style={font=\small},
+legend style={font=\tiny}
+}
+    \frametitle{Guard Failure Rates / Go Benchmark}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+            xlabel= Guards by failures,
+            ylabel=Relative \# of failures,
+            xtick=\empty,
+            ytick=\empty,
+            ]
+                \input{figures/go_data}
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
 \end{frame}
 
 %\section{Evaluation}
