@@ -80,7 +80,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \titlepage
 \end{frame}
 
-\section{Introduction}
+%\section{Introduction}
 
 \begin{frame}
   \frametitle{Tracing JITs Compile by Observing an Interpreter}
@@ -103,11 +103,13 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item Operations that check whether conditions are still true
       \item When a guard fails, execution of the trace stops and continues in the interpreter
       \pause
+      \item \emph{This talk:} describe technology and design decisions around guards
+      \pause
       \begin{block}{Guard Characteristics}
           \begin{itemize}
               \item lots of them, up to 20\% guards
               \item most never fail
-              \item costly to implement
+              \item need big information attached to them
           \end{itemize}
       \end{block}
   \end{itemize}
@@ -139,7 +141,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \frametitle{Running Example}
 \end{frame}
 
-\section{High-Level}
+%\section{High-Level}
 
 \begin{frame}
   \frametitle{Symbolic Frame Capturing}
@@ -170,8 +172,8 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item Some optimizations make it necessary to store extra information in symbolic frames
       \item examples:
           \begin{itemize}
-              \item delayed heap stores (need to do stores before resuming interpreter)
               \item allocation removal (need to allocate objects before resuming)
+              \item delayed heap stores (need to do stores before resuming interpreter)
           \end{itemize}
       \item can be compressed using similar techniques
   \end{itemize}
@@ -186,7 +188,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \end{itemize}
   In case of failure
   \begin{itemize}
-    \item execution jumps to compensation code, decodes and stores mapping
+    \item execution jumps to shared compensation code, decodes and stores mapping
     \item returns to interpreter that rebuilds state
   \end{itemize}
 \end{frame}
@@ -218,7 +220,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \frametitle{Patching Guards for Bridges}
 \end{frame}
 
-\section{Evaluation}
+%\section{Evaluation}
 
 %as in paper
 %fancy graphs
