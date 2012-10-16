@@ -1,0 +1,10 @@
+Things to do
+============
+
+* Fix ctypes performnace for 2.0 beta
+* result-in-resop (maybe)
+* NumPy speed for 2.0 final
+* cffi on pypy on windows
+* raw malloc virtuals
+* bug tracker gardening
+* all green buildbots
