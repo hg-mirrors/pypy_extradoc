@@ -20,11 +20,8 @@ def getlines(csvfile):
 
 def we_are_n_percent(info, n):
     failure_counts = info['results'].values()
-    print failure_counts
     failure_counts.sort()
-    print failure_counts
     failure_counts.reverse()
-    print failure_counts
 
     total_failures = sum(failure_counts)
     current_sum = 0
@@ -44,23 +41,42 @@ def build_plot_data(files):
 
     output = []
     plot = """
-\\addplot[%(color)s] coordinates {
+\\addplot[%(color)s,mark=none] coordinates {
 %(data)s
 };
+\\addplot[%(color)s,only marks,mark=*] coordinates {%(marks)s};
     """
     for j, (bench, info) in enumerate(failures.iteritems()):
         data = []
+        marks = []
         results = info['results'].values()
         results.sort()
         results.reverse()
+
+        num_50 = we_are_n_percent(info, 50)
+        num_99 = we_are_n_percent(info, 99)
+        num_99_dot_9 = we_are_n_percent(info, 99.9)
+
+        marks.append("(%04f,%04f)" % (float(num_50) / (len(results) - 1), 
+            float(results[num_50]) / max(results)))
+        marks.append("(%04f,%04f)" % (float(num_99) / (len(results) - 1), 
+            float(results[num_99]) / max(results)))
+        marks.append("(%04f,%04f)" % (float(num_99_dot_9) / (len(results) - 1), 
+            float(results[num_99_dot_9]) / max(results)))
         for i, result in enumerate(results):
             data.append("(%04f,%04f)" % (float(i) / (len(results) - 1),
                         float(result) / max(results)))
 
         if bench == 'go':
             with open('figures/go_data.tex', 'w') as f:
-                f.write(plot % {'color': 'black', 'name': bench, 'data': " ".join(data)})
-        output.append(plot % {'color':COLORS[j], 'name': bench, 'data': " ".join(data)})
+                f.write(plot % {'color': 'green',
+                                'name': bench,
+                                'marks': " ".join(marks),
+                                'data': " ".join(data)})
+        output.append(plot % {'color': COLORS[j],
+                              'name': bench,
+                              'marks': " ".join(marks),
+                              'data': " ".join(data)})
 
     with open('figures/data.tex', 'w') as f:
         for l in output:
