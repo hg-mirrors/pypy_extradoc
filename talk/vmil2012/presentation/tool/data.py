@@ -49,6 +49,7 @@ def build_plot_data(files):
     for j, (bench, info) in enumerate(failures.iteritems()):
         data = []
         marks = []
+        color_map = {}
         results = info['results'].values()
         results.sort()
         results.reverse()
@@ -66,14 +67,15 @@ def build_plot_data(files):
         for i, result in enumerate(results):
             data.append("(%04f,%04f)" % (float(i) / (len(results) - 1),
                         float(result) / max(results)))
-
+        #
+        color_map[bench] = COLORS[j]
         if bench == 'go':
             with open('figures/go_data.tex', 'w') as f:
-                f.write(plot % {'color': 'green',
+                f.write(plot % {'color': color_map[bench],
                                 'name': bench,
                                 'marks': " ".join(marks),
                                 'data': " ".join(data)})
-        output.append(plot % {'color': COLORS[j],
+        output.append(plot % {'color': color_map[bench],
                               'name': bench,
                               'marks': " ".join(marks),
                               'data': " ".join(data)})
