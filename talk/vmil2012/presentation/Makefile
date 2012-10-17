@@ -1,4 +1,4 @@
-talk.pdf: talk.tex figures/data.tex figures/go_data.tex tool/data.py
+talk.pdf: talk.tex figures/data.tex figures/go_data.tex tool/data.py figures/*.pdf figures/*.graffle
 	pdflatex talk.tex &> /dev/null
 
 UNAME := $(shell "uname")
