@@ -292,6 +292,28 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \includegraphics[width=1\textwidth]{figures/bridge_patched.pdf}
   \end{figure}
 \end{frame}
+
+\begin{frame}[t,fragile]
+\pgfplotsset{tick label style={font=\tiny\bfseries},
+label style={font=\small},
+legend style={font=\tiny}
+}
+    \frametitle{Guard Failure Rates / Go Benchmark (29989 Guards)}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+            xlabel= Guards by failures,
+            ylabel=Relative \# of failures,
+            xtick=\empty,
+            ytick=\empty,
+            ]
+                \input{figures/go_data}
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
+
 \begin{frame}[t,fragile]
 \pgfplotsset{tick label style={font=\tiny\bfseries},
 label style={font=\small},
@@ -308,26 +330,6 @@ legend style={font=\tiny}
             ytick=\empty,
             ]
                 \input{figures/data}
-            \end{axis}
-        \end{tikzpicture}
-    \end{figure}
-\end{frame}
-\begin{frame}[t,fragile]
-\pgfplotsset{tick label style={font=\tiny\bfseries},
-label style={font=\small},
-legend style={font=\tiny}
-}
-    \frametitle{Guard Failure Rates / Go Benchmark}
-    \begin{figure}
-        \centering
-        \begin{tikzpicture}
-            \begin{axis}[
-            xlabel= Guards by failures,
-            ylabel=Relative \# of failures,
-            xtick=\empty,
-            ytick=\empty,
-            ]
-                \input{figures/go_data}
             \end{axis}
         \end{tikzpicture}
     \end{figure}
