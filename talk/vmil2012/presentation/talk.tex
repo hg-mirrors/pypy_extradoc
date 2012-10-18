@@ -89,13 +89,17 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \begin{itemize}
       \item VM contains both an interpreter and the tracing JIT compiler
       \item JIT works by observing and logging what the interpreter does
-      \begin{itemize}
-          \item for interesting, commonly executed code paths
-          \item produces a linear list of operations (trace)
-          \item automatically does (potentially deep) inlining
-      \end{itemize}
-      \item trace is optimized and then turned into machine code
+      \item for interesting, commonly executed code paths
+      \item produces a linear list of operations (trace)
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop01}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop02}
 \end{frame}
 
 \begin{frame}
@@ -105,7 +109,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item Operations that check whether conditions are still true
       \item When a guard fails, execution of the trace stops and continues in the interpreter
       \pause
-      \item \emph{This talk:} describe technology and design decisions around guards
+      \item \emph{This talk:} technology and design decisions of guards
       \pause
       \begin{block}{Guard Characteristics}
           \begin{itemize}
@@ -115,6 +119,53 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
           \end{itemize}
       \end{block}
   \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop03}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Inlining}
+  Tracing automatically does (potentially deep) inlining
+\end{frame}
+
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop04}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop05}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop06}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop07}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop08}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop09}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop10}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop11}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop12}
 \end{frame}
 
 % this talk wants to go over a lot of details that are usually glossed over as
@@ -139,10 +190,6 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Running Example}
-\end{frame}
-
 %\section{High-Level}
 
 \begin{frame}
@@ -154,6 +201,15 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item these show how trace variables fill the to-be-built stack frames
   \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop07}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/framechain1}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Symbolic Frame Compression}
@@ -169,9 +225,26 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 \end{frame}
 
 \begin{frame}
+  \includegraphics[scale=0.4]{figures/loop07}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/framechain1}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/loop08}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[scale=0.4]{figures/framechain2}
+\end{frame}
+
+\begin{frame}
   \frametitle{Interaction with Optimization}
   \begin{itemize}
       \item Some optimizations make it necessary to store extra information in symbolic frames
+      \pause
       \item examples:
           \begin{itemize}
               \item allocation removal (need to allocate objects before resuming)
@@ -185,9 +258,10 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \frametitle{Emitting Guards}
   Guards are compiled as
   \begin{itemize}
-    \item Quick Check if the condition holds
+    \item quick Check if the condition holds
     \item and a mapping of machine locations to JIT-variables % indirection using the fail-boxes
   \end{itemize}
+  \pause
   In case of failure
   \begin{itemize}
     \item execution jumps to shared compensation code, decodes and stores mapping
