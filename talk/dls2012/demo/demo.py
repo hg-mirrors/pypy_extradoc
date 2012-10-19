@@ -70,8 +70,11 @@ class Tracker(ReloadHack):
     except SkipToEnd:
         os.system('hg revert analytics.py background.py detect.py foreground.py')
 
+    pause("New lets compare this with cpython.")
+    runner2 =  Popen(["python", 'run.py', 'demo.avi'])
     pause("That's all! Feel free to make your own adjustments or (to quit),")
     runner.kill()
+    runner2.kill()
     vim.close()
 
 def part1(vim):
