@@ -50,8 +50,8 @@ def pause(msg=''):
         raise SkipToEnd
 
 def demo(skip1=False):
-    if not skip1:
-        with open('analytics.py', 'w') as fd:
+    with open('analytics.py', 'w') as fd:
+        if not skip1:
             print >>fd, """
 from reloader import ReloadHack
 from io import view
@@ -60,7 +60,29 @@ class Tracker(ReloadHack):
     def update(self, frame):
         view(frame)
 """
+        else:
+            print >>fd, """
+from reloader import ReloadHack
+from io import view
+from background import Background
+from foreground import foreground
+from detect import find_objects
+
+class Tracker(ReloadHack):
+    def __init__(self):
+        self.background = Background()
+
+    def update(self, frame):
+        self.background.update(frame)
+        fg = foreground(frame, self.background.image)
+        find_objects(fg)
+        #view(self.background.image)
+        view(255 * fg)
+
+"""
+
     vim = Vim('analytics.py')
+    time.sleep(0.1)
     vim.send('<ESC>:winpos 0 30<CR>:winsize 75 30<CR>')
     time.sleep(0.5)
     runner = Popen([sys.executable, 'run.py', 'demo.avi'])
@@ -186,7 +208,7 @@ def find_objects(fg):
     pause("That's a bit slow, but this operation is separable, let's see\n"+
           "if it is faster with two passes.")
     vim.send(':e detect.py<CR>')
-    vim.type('7ggix<ESC>9ggix<ESC>jddOfor dx in xrange(-r, r+1):<ESC>')
+    vim.type('7ggix<ESC>9ggix<ESC>jddkofor dx in xrange(-r, r+1):<ESC>')
     vim.type('11ggix<ESC>9wix<ESC>13wxxx', 0.2)
     vim.type('VkkkkyP5jx', 0.2)
     vim.type('14ggx7wcwxres<ESC>')
@@ -226,15 +248,15 @@ def find_objects(fg):
     vim.type('51ggA.labels<ESC>:w<CR>')
 
     pause("It still seems to work as before. Now lets add the second pass")
-    vim.type('O<CR><BS><BS>for x, y in reversed(seg.indexes()):<CR>if seg[x, y]:<CR>ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1],<CR>labels[x, y+1], labels[x+1, y+1]]<CR>labels.update(x, y, ll)<CR><ESC>:w<CR>', 0.01)
+    vim.type('O<ESC>jOfor x, y in reversed(seg.indexes()):<CR>if seg[x, y]:<CR>ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1],<CR>labels[x, y+1], labels[x+1, y+1]]<CR>labels.update(x, y, ll)<CR><ESC>:w<CR>', 0.01)
 
     pause("That's starting to look good, but in complicated cases we can still\n" + 
           "get multiple lables per segment, so we need to repeat until convergance")
     vim.type('56ggVkkkkkkkkkk', 0.2)
     vim.send('>')
-    vim.type('Owhile not labels.done:<CR>labels.done = True<ESC>')
+    vim.type('kowhile not labels.done:<CR>labels.done = True<ESC>')
     vim.type('28ggoself.done = False<ESC>')
-    vim.type('43gg39ggO<BS>if self.labels[x, y] != l:<CR>self.done = False<ESC>:w<CR>')
+    vim.type('43gg39ggOif self.labels[x, y] != l:<CR>self.done = False<ESC>:w<CR>')
 
     pause("As a final touch, lets renumber the labels be consecutative\n" + 
           "integers.")

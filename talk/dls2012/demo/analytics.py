@@ -18,3 +18,4 @@ class Tracker(ReloadHack):
         #view(self.background.image)
         #view(255 * fg)
 
+
