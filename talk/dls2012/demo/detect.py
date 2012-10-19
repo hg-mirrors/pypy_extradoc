@@ -60,13 +60,13 @@ def bwlabel(seg):
         for x, y in seg.indexes():
             if seg[x, y]:
                 ll = [labels[x, y], labels[x-1, y], labels[x-1, y-1],
-                        labels[x, y-1], labels[x+1, y-1]]
+                      labels[x, y-1], labels[x+1, y-1]]
                 labels.update(x, y, ll)
 
         for x, y in reversed(seg.indexes()):
             if seg[x, y]:
                 ll = [labels[x, y], labels[x+1, y], labels[x-1, y+1],
-                        labels[x, y+1], labels[x+1, y+1]]
+                      labels[x, y+1], labels[x+1, y+1]]
                 labels.update(x, y, ll)
 
     labels.renumber()

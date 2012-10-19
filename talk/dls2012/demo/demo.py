@@ -256,7 +256,7 @@ def find_objects(fg):
     vim.send('>')
     vim.type('kowhile not labels.done:<CR>labels.done = True<ESC>')
     vim.type('28ggoself.done = False<ESC>')
-    vim.type('43gg39ggOif self.labels[x, y] != l:<CR>self.done = False<ESC>:w<CR>')
+    vim.type('43gg39ggI<CR><ESC>ka<BS><TAB>if self.labels[x, y] != l:<CR>self.done = False<ESC>:w<CR>')
 
     pause("As a final touch, lets renumber the labels be consecutative\n" + 
           "integers.")
