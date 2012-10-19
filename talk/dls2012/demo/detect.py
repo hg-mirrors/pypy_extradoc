@@ -97,7 +97,7 @@ class BoundingBox(object):
 
 
 def extract_boxes(labels):
-    boxes = [BoundingBox() for i in xrange(max(labels))]
+    boxes = [BoundingBox() for i in xrange(int(max(labels)))]
     for x, y in labels.indexes():
         l = labels[x, y]
         if l:

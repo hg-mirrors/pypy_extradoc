@@ -227,7 +227,7 @@ def find_objects(fg):
     vim.type('44ggo<CR>def renumber(self):<CR>ll = list(set(self.labels))<CR>ll.sort()<CR>if ll[0] != 0:<CR>ll.insert(0, 0)<CR><BS>for x, y in self.labels.indexes():<CR>self.labels[x, y] = ll.index(self.labels[x, y])<CR><BS>self.last_label = len(ll) - 1<ESC>:w<CR>', 0.01)
        
     pause("Now, lets find a boudningbox for each segment,")
-    vim.type("G75ggOclass BoundingBox(object):<CR>def __init__(self):<CR>self.maxx = self.maxy = float('-Inf')<CR>self.minx = self.miny = float('Inf')<CR><CR><BS>def add(self, x, y):<CR>self.maxx = max(self.maxx, x)<CR>self.maxy = max(self.maxy, y)<CR>self.minx = min(self.minx, x)<CR>self.miny = min(self.miny, y)<CR><BS><BS><CR>def extract_boxes(labels):<CR>boxes = [BoundingBox() for i in xrange(max(labels))]<CR>for x, y in labels.indexes():<CR>l = labels[x, y]<CR>if l:<CR>boxes[int(l-1)].add(x, y)<CR><BS><BS>return boxes<CR><ESC>", 0.01)
+    vim.type("G75ggOclass BoundingBox(object):<CR>def __init__(self):<CR>self.maxx = self.maxy = float('-Inf')<CR>self.minx = self.miny = float('Inf')<CR><CR><BS>def add(self, x, y):<CR>self.maxx = max(self.maxx, x)<CR>self.maxy = max(self.maxy, y)<CR>self.minx = min(self.minx, x)<CR>self.miny = min(self.miny, y)<CR><BS><BS><CR>def extract_boxes(labels):<CR>boxes = [BoundingBox() for i in xrange(int(max(labels)))]<CR>for x, y in labels.indexes():<CR>l = labels[x, y]<CR>if l:<CR>boxes[int(l-1)].add(x, y)<CR><BS><BS>return boxes<CR><ESC>", 0.01)
     vim.type("G98ggOboxes = extract_boxes(labels)<ESC>:w<CR>", 0.01)
     
     pause("and draw that boudning box.")
