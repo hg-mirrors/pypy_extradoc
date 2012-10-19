@@ -38,10 +38,16 @@ autocmd FileType make set noexpandtab shiftwidth=8
     def __del__(self):
         self.close()
 
+
+class SkipToEnd(Exception):
+    pass
+
 def pause(msg=''):
     print "\n"
     print msg
-    raw_input('Press ENTER\n')
+    res = raw_input('Press ENTER (s)\n')
+    if res == 's':
+        raise SkipToEnd
 
 def demo(skip1=False):
     if not skip1:
@@ -57,10 +63,14 @@ class Tracker(ReloadHack):
     runner = Popen([sys.executable, 'run.py', 'demo.avi'])
     vim = Vim('analytics.py')
 
-    if not skip1:
-        part1(vim)
-    part2(vim, skip1)
+    try:
+        if not skip1:
+            part1(vim)
+        part2(vim, skip1)
+    except SkipToEnd:
+        os.system('hg revert analytics.py background.py detect.py foreground.py')
 
+    pause("That's all! Feel free to make your own adjustments or (to quit),")
     runner.kill()
     vim.close()
 
@@ -246,7 +256,6 @@ def find_objects(fg):
     vim.send('>=')
     vim.type(' minarea]<ESC>:w<CR>', 0.01)
 
-    pause("That's all! Feel free to make your own adjustments or (to quit),")
 
 
 if __name__ == '__main__':
