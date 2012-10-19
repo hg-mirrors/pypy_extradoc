@@ -60,8 +60,10 @@ class Tracker(ReloadHack):
     def update(self, frame):
         view(frame)
 """
-    runner = Popen([sys.executable, 'run.py', 'demo.avi'])
     vim = Vim('analytics.py')
+    vim.send('<ESC>:winpos 0 30<CR>:winsize 75 30<CR>')
+    time.sleep(0.5)
+    runner = Popen([sys.executable, 'run.py', 'demo.avi'])
 
     try:
         if not skip1:
