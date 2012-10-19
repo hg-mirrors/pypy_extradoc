@@ -17,10 +17,31 @@
 
 
 \usepackage[english]{babel}
+\usepackage{fancyvrb}
 \usepackage{listings}
 \usepackage{ulem}
 \usepackage{color}
 \usepackage{alltt}
+
+
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\usepackage[scaled=0.81]{beramono}
+\definecolor{gray}{rgb}{0.3,0.3,0.3}
+
+\lstset{
+  basicstyle=\setstretch{1.05}\ttfamily\footnotesize,
+  language=Python,
+  keywordstyle=\bfseries,
+  stringstyle=\color{blue},
+  commentstyle=\color{gray}\textit,
+  fancyvrb=true,
+  showstringspaces=false,
+  %keywords={def,while,if,elif,return,class,get,set,new,guard_class}
+  numberstyle = \tiny,
+  numbersep = -20pt,
+}
+
 
 \usepackage[utf8x]{inputenc}
 
@@ -140,5 +161,68 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Demo}
+  \vfill
+  \begin{itemize}
+      \item Video analytics research example
+      \item Experimenten driven
+      \item Custom loops over the pixels
+      \item Good enough performace
+  \end{itemize}
+  \vfill
+  \begin{itemize}
+      \item Image class with task specific features
+        \begin{itemize}
+            \item Zero-padded
+            \item Clips updates within border
+        \end{itemize}
+      \item @autoreload decorator reloading functions on code change
+      \item ReloadHack class reloads and reinstanciates on code change
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Image class}
+\begin{lstlisting}[mathescape,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+class Image(object):
+    def __getitem__(self, (x, y)):
+        if 0 <= x < self.width and 0 <= y < self.height:
+            return self.data[y * self.width + x]
+        return 0
+
+    def __setitem__(self, (x, y), value):
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.data[y * self.width + x] = value
+
+    __add__ = binop(float.__add__)
+    __sub__ = binop(float.__sub__)
+    __mul__ = binop(float.__mul__)
+    __div__ = binop(float.__div__)
+    __pow__ = binop(float.__pow__)
+
+   ...
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Image class}
+\begin{lstlisting}[mathescape,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+def binop(op):
+    def f(a, b):
+        if not isinstance(a, Image):
+            a = ConstantImage(b.width, b.height, a)
+        if not isinstance(b, Image):
+            b = ConstantImage(a.width, a.height, b)
+
+        out = a.new(typecode='d')
+        for x, y in a.indexes():
+            out[x, y] = op(float(a[x, y]), float(b[x, y]))
+
+        return out
+    return f
+\end{lstlisting}
+\end{frame}
 
 \end{document}
