@@ -47,7 +47,7 @@ class MplayerViewer(object):
             img = out
         if not self.width:
             w, h = img.width, img.height
-            self.mplayer = Popen(['mplayer', '-', '-benchmark',
+            self.mplayer = Popen(['mplayer', '-', '-fps', '200', #'-benchmark',
                                   '-demuxer', 'rawvideo',
                                  '-rawvideo', 'w=%d:h=%d:format=y8' % (w, h),
                                  '-really-quiet'],
