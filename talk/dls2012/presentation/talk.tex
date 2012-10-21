@@ -116,13 +116,18 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 \begin{frame}
   \frametitle{Optimizing traces}
   \begin{itemize}
-      \item Traces trivial to optimize, because there's no control flow
+      \item A trace is an extended basic block
+      \item traces are easy to optime due to lack of control flow merges
       \item most optimizations are one forward pass
       \item optimizers are often like symbolic executors
       \item can do optimizations that are untractable with full control flow
-      \item XXX example
   \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Example}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Problems with this approach}
@@ -146,6 +151,7 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
           \item apply the unchanged forward-pass optimizations
           \item do some post-processing
           \item pre-processing is done in such a way that the normal optimizations become loop-aware
+          \pause
           \item intuition: give the optimizations a second iteration of context to work with
       \end{itemize}
   \end{block}

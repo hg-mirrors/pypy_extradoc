@@ -35,7 +35,7 @@
 % does not look nice, try deleting the line with the fontenc.
 
 
-\title{The Efficient Handling of Guards in the Design of RPython's Tracing JIT}
+\title[Guards in RPython's Tracing JIT]{The Efficient Handling of Guards in the Design of RPython's Tracing JIT}
 
 \author[David Schneider, Carl Friedrich Bolz]{David Schneider \and \emph{Carl Friedrich Bolz}}
 % - Give the names in the same order as the appear in the paper.
@@ -85,6 +85,21 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 %\section{Introduction}
 
 \begin{frame}
+  \frametitle{RPython and PyPy}
+  \begin{itemize}
+      \item Context: RPython
+      \item a language for writing interpreters for dynamic languages
+      \item a generic tracing JIT, applicable to many languages
+      \item used to implement PyPy, an efficient Python interpreter
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How fast is PyPy?}
+  \includegraphics[scale=0.3]{figures/all_numbers.png}
+\end{frame}
+
+\begin{frame}
   \frametitle{Tracing JITs Compile by Observing an Interpreter}
   \begin{itemize}
       \item VM contains both an interpreter and the tracing JIT compiler
@@ -109,6 +124,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item Operations that check whether conditions are still true
       \item When a guard fails, execution of the trace stops and continues in the interpreter
       \pause
+      \item similar to deoptimization points, but more common, and patchable
       \item \emph{This talk:} technology and design decisions of guards
       \pause
       \begin{block}{Guard Characteristics}
@@ -121,6 +137,51 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \includegraphics[scale=0.6]{figures/op_percentage_after}
+\end{frame}
+
+\begin{frame}[t,fragile]
+\pgfplotsset{tick label style={font=\tiny\bfseries},
+label style={font=\small},
+legend style={font=\tiny}
+}
+    \frametitle{Guard Failure Rates / Go Benchmark (29989 Guards)}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+            xlabel= Guards by failures,
+            ylabel=Relative \# of failures,
+            xtick=\empty,
+            ytick=\empty,
+            ]
+                \input{figures/go_data}
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[t,fragile]
+\pgfplotsset{tick label style={font=\tiny\bfseries},
+label style={font=\small},
+legend style={font=\tiny}
+}
+    \frametitle{Guard Failure Rates}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+            xlabel= Guards by failures,
+            ylabel=Relative \# of failures,
+            xtick=\empty,
+            ytick=\empty,
+            ]
+                \input{figures/data}
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
 
 \begin{frame}
   \includegraphics[scale=0.4]{figures/loop03}
@@ -171,25 +232,6 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 % this talk wants to go over a lot of details that are usually glossed over as
 % "easy" when tracing JITs are introduced.
 
-\begin{frame}
-  \frametitle{Bridges}
-  \begin{itemize}
-      \item When a trace fails often, it becomes worth to attach a new trace to it
-          \item This is called a bridge
-          \item The bridge is attached by patching the guard machine code
-          \item when this guard fails in the future, the new trace is executed instead
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{RPython and PyPy}
-  \begin{itemize}
-      \item Context: RPython
-      \item a generic tracing JIT, applicable to many languages
-      \item main use: PyPy, an efficient Python interpreter
-  \end{itemize}
-\end{frame}
-
 %\section{High-Level}
 
 \begin{frame}
@@ -198,7 +240,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item Guard can fail deep inside inlined function
       \item when going back to the interpreter, call stack needs to be re-created
       \item done with the help of symbolic frame stacks
-      \item these show how trace variables fill the to-be-built stack frames
+      \item these show how trace variables fill the to-be-built interpreter stack frames
   \end{itemize}
 \end{frame}
 
@@ -219,8 +261,6 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item need to store them compactly
       \item observation: from one guard to the next, the non-top stack frames don't change
       \item share these between subsequent guards
-      \pause
-      \item also need a byte-saving binary representation, but that's just boring work
   \end{itemize}
 \end{frame}
 
@@ -241,6 +281,12 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 \end{frame}
 
 \begin{frame}
+  \frametitle{Compact Representation}
+    also need a byte-saving binary representation, but that's just boring work
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Interaction with Optimization}
   \begin{itemize}
       \item Some optimizations make it necessary to store extra information in symbolic frames
@@ -258,7 +304,7 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \frametitle{Emitting Guards}
   Guards are compiled as
   \begin{itemize}
-    \item quick Check if the condition holds
+    \item quick check if the condition holds
     \item and a mapping of machine locations to JIT-variables % indirection using the fail-boxes
   \end{itemize}
   \pause
@@ -275,6 +321,16 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \centering
   \includegraphics[width=1\textwidth]{figures/loop.pdf}
   \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bridges}
+  \begin{itemize}
+      \item When a trace fails often, it becomes worth to attach a new trace to it
+          \item This is called a bridge
+          \item The bridge is attached by patching the guard machine code
+          \item when this guard fails in the future, the new trace is executed instead
+  \end{itemize}
 \end{frame}
 
 
@@ -294,51 +350,6 @@ Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 \end{frame}
 
 
-\begin{frame}
-  \includegraphics[scale=0.6]{figures/op_percentage_after}
-\end{frame}
-
-\begin{frame}[t,fragile]
-\pgfplotsset{tick label style={font=\tiny\bfseries},
-label style={font=\small},
-legend style={font=\tiny}
-}
-    \frametitle{Guard Failure Rates / Go Benchmark (29989 Guards)}
-    \begin{figure}
-        \centering
-        \begin{tikzpicture}
-            \begin{axis}[
-            xlabel= Guards by failures,
-            ylabel=Relative \# of failures,
-            xtick=\empty,
-            ytick=\empty,
-            ]
-                \input{figures/go_data}
-            \end{axis}
-        \end{tikzpicture}
-    \end{figure}
-\end{frame}
-
-\begin{frame}[t,fragile]
-\pgfplotsset{tick label style={font=\tiny\bfseries},
-label style={font=\small},
-legend style={font=\tiny}
-}
-    \frametitle{Guard Failure Rates}
-    \begin{figure}
-        \centering
-        \begin{tikzpicture}
-            \begin{axis}[
-            xlabel= Guards by failures,
-            ylabel=Relative \# of failures,
-            xtick=\empty,
-            ytick=\empty,
-            ]
-                \input{figures/data}
-            \end{axis}
-        \end{tikzpicture}
-    \end{figure}
-\end{frame}
 
 \begin{frame}
   \frametitle{JIT memory overhead}
@@ -354,12 +365,23 @@ legend style={font=\tiny}
   \begin{itemize}
       \item Things that sound simple still often need careful engineering
       \pause
+      \item guards are fundamental part of tracing JITs, need to be implemented well
       \item not even any direct performance gains
       \item keep memory usage sane
       \item allows good bridges
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Thank you! Questions?}
+  \begin{itemize}
+      \item Things that sound simple still often need careful engineering
+      \item guards are fundamental part of tracing JITs, need to be implemented well
+      \item not even any direct performance gains
+      \item keep memory usage sane
+      \item allows good bridges
+  \end{itemize}
+\end{frame}
 %\section{Evaluation}
 
 %as in paper
