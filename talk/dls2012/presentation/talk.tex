@@ -56,7 +56,7 @@
 
 \title{Loop-Aware Optimizations in PyPy’s Tracing JIT}
 
-\author[Ardö, Bolz, Fijałkowski]{Håkan Ardö$^1$ \and \emph{Carl Friedrich Bolz}$^2$ \and Maciej Fijałkowski}
+\author[Ardö, Bolz, Fijałkowski]{\emph{Håkan Ardö}$^1$ \and \emph{Carl Friedrich Bolz}$^2$ \and Maciej Fijałkowski}
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -103,11 +103,36 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 \end{frame}
 
 \begin{frame}
+  \frametitle{RPython and PyPy}
+  \begin{itemize}
+      \item Context: RPython
+      \item a language for writing interpreters for dynamic languages
+      \item a generic tracing JIT, applicable to many languages
+      \item used to implement PyPy, an efficient Python interpreter
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How fast is PyPy?}
+  \includegraphics[scale=0.3]{figures/all_numbers.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tracing JITs Compile by Observing an Interpreter}
+  \begin{itemize}
+      \item VM contains both an interpreter and the tracing JIT compiler
+      \item JIT works by observing and logging what the interpreter does
+      \item for interesting, commonly executed code paths
+      \item produces a linear list of operations (trace)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
   \frametitle{Why do tracing JITs work?}
   \begin{itemize}
       \item They are good at selecting interesting and common code paths
-      \item both through user program and through the runtime
-      \item the latter is particularly important for dynamic languages
+      \item both through the user program and through the runtime
+      \item the latter is particularly important for dynamic languages with a big runtime like Python
           \pause
       \item traces are trivial to optimize
   \end{itemize}
@@ -117,10 +142,11 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \frametitle{Optimizing traces}
   \begin{itemize}
       \item A trace is an extended basic block
+      \item (it has one entry and several exits)
       \item traces are easy to optime due to lack of control flow merges
       \item most optimizations are one forward pass
       \item optimizers are often like symbolic executors
-      \item can do optimizations that are untractable with full control flow
+      \item can do optimizations that are expensive or even untractable with full control flow
   \end{itemize}
 \end{frame}
 
@@ -166,6 +192,220 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item this yields loop-invariant code motion and related optimizations
   \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Loop Peeling}
+\begin{center}
+\includegraphics[width=\columnwidth]{../figures/overview}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Loop Peeling}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+            \begin{lstlisting}[mathescape]%,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+            abc
+            $L_0$($i_{0}$):
+            $i_1$ = $i_0$ + 1
+            print($i_1$)
+            jump($L_0$, $i_0$)
+            $$
+            $$
+            $$
+            $$
+            $$
+            \end{lstlisting}
+    \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}
+      \centering
+            \begin{lstlisting}[mathescape]%,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+            abc
+            $L_0$($i_{0}$):
+            $i_1$ = $i_0$ + 1
+            print($i_1$)
+            jump($L_1$, $i_0$)
+
+            $L_1$($i_{0}$):
+            $i_2$ = $i_0$ + 1
+            print($i_2$)
+            jump($L_1$, $i_0$)
+            \end{lstlisting}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Apply Optimizations}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+            \begin{lstlisting}[mathescape]%,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+            abc
+            $L_0$($i_{0}$):
+            $i_1$ = $i_0$ + 1
+            print($i_1$)
+            jump($L_1$, $i_0$)
+
+            $L_1$($i_{0}$):
+            $i_2$ = $i_0$ + 1
+            print($i_2$)
+            jump($L_1$, $i_0$)
+            \end{lstlisting}
+    \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}
+      \centering
+            \begin{lstlisting}[mathescape]%,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+            abc
+            $L_0$($i_{0}$):
+            $i_1$ = $i_0$ + 1
+            print($i_1$)
+            jump($L_1$, $i_0$)
+
+            $L_1$($i_{0}$):
+            print($i_1$)
+            jump($L_1$, $i_0$)
+            \end{lstlisting}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Add extra arguments}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+            \begin{lstlisting}[mathescape]%,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+            abc
+            $L_0$($i_{0}$):
+            $i_1$ = $i_0$ + 1
+            print($i_1$)
+            jump($L_1$, $i_0$)
+
+            $L_1$($i_{0}$):
+            print($i_1$)
+            jump($L_1$, $i_0$)
+            \end{lstlisting}
+    \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}
+      \centering
+            \begin{lstlisting}[mathescape]%,numbers = right,basicstyle=\setstretch{1.05}\ttfamily\scriptsize]
+            abc
+            $L_0$($i_{0}$):
+            $i_1$ = $i_0$ + 1
+            print($i_1$)
+            jump($L_1$, $i_0$, $i_1$)
+
+            $L_1$($i_{0}$, $i_1$):
+            print($i_1$)
+            jump($L_1$, $i_0$, $i_1$)
+            \end{lstlisting}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Larger example}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+  \begin{lstlisting}
+   while True:
+      y = y + 1
+  \end{lstlisting}
+  \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}
+\begin{lstlisting}[mathescape]
+$L_0$($p_{0}$, $p_{1}$):
+guard_class($p_{1}$, BoxedInteger)
+$i_{2}$ = get($p_{1}$, intval)
+guard_class($p_{0}$, BoxedInteger)
+$i_{3}$ = get($p_{0}$, intval)
+$i_{4}$ = $i_{2} + i_{3}$
+$p_{5}$ = new(BoxedInteger)
+set($p_{5}$, intval, $i_{4}$)
+jump($L_0$, $p_{0}$, $p_{5}$)
+\end{lstlisting}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Peeled trace}
+\begin{lstlisting}[mathescape]
+$L_0$($p_{0}$, $p_{1}$):
+guard_class($p_{1}$, BoxedInteger)
+$i_{2}$ = get($p_{1}$, intval)
+guard_class($p_{0}$, BoxedInteger)
+$i_{3}$ = get($p_{0}$, intval)
+$i_{4}$ = $i_{2}+i_{3}$
+$p_{5}$ = new(BoxedInteger)
+set($p_{5}$, intval, $i_{4}$)
+jump($L_1$, $p_{0}$, $p_{5}$)
+
+$L_1$($p_{0}$, $p_{5}$):
+guard_class($p_{5}$, BoxedInteger)
+$i_{6}$ = get($p_{5}$, intval)
+guard_class($p_{0}$, BoxedInteger)
+$i_{7}$ = get($p_{0}$, intval)
+$i_{8}$ = $i_{6}+i_{7}$
+$p_{9}$ = new(BoxedInteger)
+set($p_{9}$, intval, $i_{8}$)
+jump($L_1$, $p_{0}$, $p_{9}$)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Final trace}
+\begin{lstlisting}[mathescape]
+$L_0$($p_{0}$, $p_{1}$):
+guard_class($p_{1}$, BoxedInteger)
+$i_{2}$ = get($p_{1}$, intval)
+guard_class($p_{0}$, BoxedInteger)
+$i_{3}$ = get($p_{0}$, intval)
+$i_{4}$ = $i_{2}+i_{3}$
+jump($L_1$, $p_{0}$, $i_{4}$)
+
+$L_1$($p_{0}$, $i_{3}$, $i_{4}$):
+$i_{8}$ = $i_{4}+i_{3}$
+jump($L_1$, $p_{0}$, $i_{3}$, $i_8$)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Results}
+  \begin{itemize}
+      \item a number of numeric kernels
+      \item some for image processing
+      \item some from SciMark
+      \item comparison against GCC and LuaJIT
+      \pause
+      \item geometric mean of speedups of loop peeling is 70\%
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Benchmark Results}
+  \includegraphics[width=0.7\textwidth,angle=90]{../benchmarks/result}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusion}
+  \begin{itemize}
+      \item a simple preprocessing step on traces enables loop-aware optimizations for tracing JITs
+      \item no changes to the existing optimizations necessary
+  \end{itemize}
+\end{frame}
+
+
 
 \begin{frame}
   \frametitle{Demo}
