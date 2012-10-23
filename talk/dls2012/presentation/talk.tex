@@ -113,11 +113,6 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 \end{frame}
 
 \begin{frame}
-  \frametitle{How fast is PyPy?}
-  \includegraphics[scale=0.3]{figures/all_numbers.png}
-\end{frame}
-
-\begin{frame}
   \frametitle{Tracing JITs Compile by Observing an Interpreter}
   \begin{itemize}
       \item VM contains both an interpreter and the tracing JIT compiler
@@ -144,6 +139,7 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
       \item A trace is an extended basic block
       \item (it has one entry and several exits)
       \item traces are easy to optime due to lack of control flow merges
+          \pause
       \item most optimizations are one forward pass
       \item optimizers are often like symbolic executors
       \item can do optimizations that are expensive or even untractable with full control flow
@@ -152,6 +148,27 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
 
 \begin{frame}
   \frametitle{Example}
+  \includegraphics[width=\columnwidth]{figures/optimization1}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example}
+  \includegraphics[width=\columnwidth]{figures/optimization2}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example}
+  \includegraphics[width=\columnwidth]{figures/optimization3}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example}
+  \includegraphics[width=\columnwidth]{figures/optimization4}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example}
+  \includegraphics[width=\columnwidth]{figures/optimization5}
 \end{frame}
 
 
@@ -160,7 +177,7 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \begin{itemize}
       \item most traces actually are loops
       \item naive foward passes ignore this bit of control flow optimization available
-      \item how to fix that without sacrifing simplicity?
+      \item how to fix that without sacrifing simplicity of optimizations?
   \end{itemize}
 \end{frame}
 
@@ -309,6 +326,17 @@ $^2$Heinrich-Heine-Universität Düsseldorf, STUPS Group, Germany
   \end{columns}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Optimizations helped by loop peeling}
+  \begin{itemize}
+      \item redundant guard removal
+      \item common subexpression elimination
+      \item heap optimizations
+      \item allocation removal
+  \end{itemize}
+\end{frame}
+
+
 \begin{frame}[fragile]
   \frametitle{Larger example}
     \begin{columns}
@@ -401,7 +429,7 @@ jump($L_1$, $p_{0}$, $i_{3}$, $i_8$)
   \frametitle{Conclusion}
   \begin{itemize}
       \item a simple preprocessing step on traces enables loop-aware optimizations for tracing JITs
-      \item no changes to the existing optimizations necessary
+      \item only minimal changes to the existing optimizations necessary
   \end{itemize}
 \end{frame}
 
