@@ -3,8 +3,11 @@ Things to do
 
 * Fix ctypes performnace for 2.0 beta
 * result-in-resop (maybe)
+* continuelet-jit-3
 * NumPy speed for 2.0 final
 * cffi on pypy on windows
 * raw malloc virtuals
 * bug tracker gardening
+ * 1292, 1090, 1294, 1282, 1289, 1282, 1286
+ * numpy: 1143, 1160, 1287
 * all green buildbots
