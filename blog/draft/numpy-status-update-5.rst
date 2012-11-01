@@ -7,12 +7,13 @@ I'm quite excited to inform that work on NumPy in PyPy has been restarted
 and there has been quite a bit of progress on the NumPy front in PyPy in the
 past two months. Things that happened:
 
-* **complex dtype support** - thanks to matti picus, NumPy on PyPy now supports
+* **complex dtype support** - thanks to Matti Picus, NumPy on PyPy now supports
   complex dtype (only complex128 so far, there is work on the other part)
 
 * **big refactoring** - probably the biggest issue we did was finishing
   a big refactoring that disabled some speedups (notably lazy computation
   of arrays), but lowered the barrier of implementing cool new features.
+  XXX: explain better why removing a speedup is a good thing, maybe?
 
 * **fancy indexing support** - all fancy indexing tricks should now work,
   including ``a[b]`` where ``b`` is an array of integers.
