@@ -30,8 +30,8 @@ Features that have active branches, but hasn't been merged:
 
 * **pickling support for numarray** - hasn't started yet, but next on the list
 
-More importantly, we're getting very close to able to import the python part
-of the original numpy with only import modifications and running it's tests.
+More importantly, we're getting very close to be able to import the python part
+of the original numpy with only import modifications, and running its tests.
 Most tests will fail at this point, however it'll be a good start for another
 chapter :-)
 
