@@ -1,0 +1,720 @@
+\documentclass[14pt]{beamer}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\def\PY@tok@gd{\def\PY@bc##1{\fcolorbox[rgb]{0.80,0.00,0.00}{1.00,0.80,0.80}{##1}}}
+\def\PY@tok@gu{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.00}{##1}}}
+\def\PY@tok@gt{\def\PY@tc##1{\textcolor[rgb]{0.60,0.80,0.40}{##1}}}
+\def\PY@tok@gs{\let\PY@bf=\textbf}
+\def\PY@tok@gr{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\def\PY@tok@cm{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@vg{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@m{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@mh{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@cs{\let\PY@bf=\textbf\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@ge{\let\PY@it=\textit}
+\def\PY@tok@vc{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@il{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@go{\def\PY@tc##1{\textcolor[rgb]{0.67,0.67,0.67}{##1}}}
+\def\PY@tok@cp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,0.60}{##1}}}
+\def\PY@tok@gi{\def\PY@bc##1{\fcolorbox[rgb]{0.00,0.80,0.00}{0.80,1.00,0.80}{##1}}}
+\def\PY@tok@gh{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.00}{##1}}}
+\def\PY@tok@ni{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\def\PY@tok@nl{\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,1.00}{##1}}}
+\def\PY@tok@nn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.80,1.00}{##1}}}
+\def\PY@tok@no{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.00}{##1}}}
+\def\PY@tok@na{\def\PY@tc##1{\textcolor[rgb]{0.20,0.00,0.60}{##1}}}
+\def\PY@tok@nb{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.40}{##1}}}
+\def\PY@tok@nc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.67,0.53}{##1}}}
+\def\PY@tok@nd{\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,1.00}{##1}}}
+\def\PY@tok@ne{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.00,0.00}{##1}}}
+\def\PY@tok@nf{\def\PY@tc##1{\textcolor[rgb]{0.80,0.00,1.00}{##1}}}
+\def\PY@tok@si{\def\PY@tc##1{\textcolor[rgb]{0.67,0.00,0.00}{##1}}}
+\def\PY@tok@s2{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@vi{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@nt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.20,0.00,0.60}{##1}}}
+\def\PY@tok@nv{\def\PY@tc##1{\textcolor[rgb]{0.00,0.20,0.20}{##1}}}
+\def\PY@tok@s1{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@gp{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.60}{##1}}}
+\def\PY@tok@sh{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@ow{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.00}{##1}}}
+\def\PY@tok@sx{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@bp{\def\PY@tc##1{\textcolor[rgb]{0.20,0.40,0.40}{##1}}}
+\def\PY@tok@c1{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@kc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@c{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.00,0.60,1.00}{##1}}}
+\def\PY@tok@mf{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@err{\def\PY@tc##1{\textcolor[rgb]{0.67,0.00,0.00}{##1}}\def\PY@bc##1{\colorbox[rgb]{1.00,0.67,0.67}{##1}}}
+\def\PY@tok@kd{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@ss{\def\PY@tc##1{\textcolor[rgb]{1.00,0.80,0.20}{##1}}}
+\def\PY@tok@sr{\def\PY@tc##1{\textcolor[rgb]{0.20,0.67,0.67}{##1}}}
+\def\PY@tok@mo{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@mi{\def\PY@tc##1{\textcolor[rgb]{1.00,0.40,0.00}{##1}}}
+\def\PY@tok@kn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@o{\def\PY@tc##1{\textcolor[rgb]{0.33,0.33,0.33}{##1}}}
+\def\PY@tok@kr{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@s{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@kp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@w{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\def\PY@tok@kt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.47,0.53}{##1}}}
+\def\PY@tok@sc{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@sb{\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@k{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.40,0.60}{##1}}}
+\def\PY@tok@se{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+\def\PY@tok@sd{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.80,0.20,0.00}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+\definecolor{rrblitbackground}{rgb}{0.55, 0.3, 0.1}
+
+\newenvironment{rtbliteral}{
+
+\begin{ttfamily}
+
+\color{rrblitbackground}
+
+}{
+
+\end{ttfamily}
+
+}
+
+% generated by Docutils <http://docutils.sourceforge.net/>
+\usepackage{fixltx2e} % LaTeX patches, \textsubscript
+\usepackage{cmap} % fix search and cut-and-paste in Acrobat
+\usepackage{ifthen}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+%%% Custom LaTeX preamble
+% PDF Standard Fonts
+\usepackage{mathptmx} % Times
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+
+%%% User specified packages and stylesheets
+\input{stylesheet.latex}
+
+%%% Fallback definitions for Docutils-specific commands
+
+% hyperlinks:
+\ifthenelse{\isundefined{\hypersetup}}{
+  \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+  \urlstyle{same} % normal text font (alternatives: tt, rm, sf)
+}{}
+\hypersetup{
+  pdftitle={Software Transactional Memory ``for real''},
+}
+
+%%% Title Data
+\title{\phantomsection%
+  Software Transactional Memory ``for real''%
+  \label{software-transactional-memory-for-real}}
+\author{}
+\input{author.latex}
+
+%%% Body
+\begin{document}
+\input{title.latex}
+
+% colors
+
+% ===========================
+
+% general useful commands
+
+% ===========================
+
+% closed bracket
+
+% ===========================
+
+% example block
+
+% ===========================
+
+% alert block
+
+% ===========================
+
+% columns
+
+% ===========================
+
+% nested blocks
+
+% ===========================
+\begin{frame}
+\frametitle{Introduction}
+
+%
+\begin{itemize}
+
+\item This talk is about programming multi- or many-core machines
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{About myself}
+
+%
+\begin{itemize}
+
+\item Armin Rigo
+
+\item ``Language implementation guy''
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item PyPy project
+%
+\begin{itemize}
+
+\item Python in Python
+
+\item includes a Just-in-Time Compiler ``Generator'' for Python
+and any other dynamic language
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Motivation}
+
+%
+\begin{itemize}
+
+\item A single-core program is getting exponentially slower than a multi-core one
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Using several processes exchanging data
+%
+\begin{itemize}
+
+\item works fine in some cases
+
+\item but becomes a large mess in others
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Using several threads
+%
+\begin{itemize}
+
+\item this talk!
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Common solution}
+
+%
+\begin{itemize}
+
+\item Organize your program in multiple threads
+
+\item Add synchronization when accessing shared, non-read-only data
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Synchronization with locks}
+
+%
+\begin{itemize}
+
+\item Carefully place locks around every access to shared data
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item How do you know if you missed a place?
+%
+\begin{itemize}
+
+\item hard to catch by writing tests
+
+\item instead you get obscure rare run-time crashes
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Issues when scaling to a large program
+%
+\begin{itemize}
+
+\item order of acquisition
+
+\item deadlocks
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}[containsverbatim,fragile]
+\frametitle{Synchronization with TM}
+
+%
+\begin{itemize}
+
+\item TM = Transactional Memory
+
+\end{itemize}
+
+\pause
+
+\begin{Verbatim}[commandchars=\\\{\}]
+----------------   --------------------
+Locks              Transactional Memory
+----------------   --------------------
+
+mylock.acquire();    atomic \PYZob{}
+x = list1.pop();       x = list1.pop();
+list2.append(x);       list2.append(x);
+mylock.release();    \PYZcb{}
+\end{Verbatim}
+
+\end{frame}
+\begin{frame}
+\frametitle{Locks versus TM}
+
+%
+\begin{itemize}
+
+\item Locks
+
+\end{itemize}
+
+\noindent\makebox[\textwidth][c]{\includegraphics[scale=0.700000]{withlock.png}}
+%
+\begin{itemize}
+
+\item TM
+
+\end{itemize}
+
+\noindent\makebox[\textwidth][c]{\includegraphics[scale=0.700000]{withstm0.png}}
+\end{frame}
+\begin{frame}
+\frametitle{Locks versus TM}
+
+%
+\begin{itemize}
+
+\item Locks
+
+\end{itemize}
+
+\noindent\makebox[\textwidth][c]{\includegraphics[scale=0.700000]{withlock.png}}
+%
+\begin{itemize}
+
+\item TM in case of conflict
+
+\end{itemize}
+
+\noindent\makebox[\textwidth][c]{\includegraphics[scale=0.700000]{withstm.png}}
+\end{frame}
+\begin{frame}
+\frametitle{Synchronization with TM}
+
+%
+\begin{itemize}
+
+\item ``Optimistic'' approach:
+%
+\begin{itemize}
+
+\item no lock to protect shared data in memory
+
+\item instead, track all memory accesses
+
+\item detect actual conflicts
+
+\item if conflict, restart the whole ``transaction''
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Easier to use
+%
+\begin{itemize}
+
+\item no need to name locks
+
+\item no deadlocks
+
+\item ``composability''
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{HTM versus STM}
+
+%
+\begin{itemize}
+
+\item HTM = Hardware Transactional Memory
+%
+\begin{itemize}
+
+\item Intel Haswell CPU, 2013
+
+\item and others
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item STM = Software Transactional Memory
+%
+\begin{itemize}
+
+\item various approaches
+
+\item large overhead (2x-10x), but getting faster
+
+\item experimental in PyPy: read/write barriers, as with GC
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{The catch}
+
+
+\pause
+%
+\begin{itemize}
+
+\item You Still Have To Use Threads
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Threads are hard to debug, non-reproductible
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Threads are Messy
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Issue with threads}
+
+%
+\begin{itemize}
+
+\item TM does not solve this problem:
+
+\item How do you know if you missed a place to put \texttt{atomic} around?
+%
+\begin{itemize}
+
+\item hard to catch by writing tests
+
+\item instead you get obscure rare run-time crashes
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item What if we put \texttt{atomic} everywhere?
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Analogy with Garbage Collection}
+
+%
+\begin{itemize}
+
+\item Explicit Memory Management:
+%
+\begin{itemize}
+
+\item messy, hard to debug rare leaks or corruptions
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Automatic GC solves it
+%
+\begin{itemize}
+
+\item common languages either have a GC or not
+
+\item if they have a GC, it controls almost \emph{all} objects
+
+\item not just a small part of them
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Proposed solution}
+
+%
+\begin{itemize}
+
+\item Put \texttt{atomic} everywhere...
+
+\item in other words, Run Everything with TM
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Proposed solution}
+
+%
+\begin{itemize}
+
+\item Really needs TM.  With locks, you'd get this:
+
+\end{itemize}
+
+\noindent\makebox[\textwidth][c]{\includegraphics[scale=0.700000]{GIL.png}}
+%
+\begin{itemize}
+
+\item With TM you can get this:
+
+\end{itemize}
+
+\noindent\makebox[\textwidth][c]{\includegraphics[scale=0.700000]{STM.png}}
+\end{frame}
+\begin{frame}
+\frametitle{In a few words}
+
+%
+\begin{itemize}
+
+\item Longer transactions
+
+\item Corresponding to larger parts of the program
+
+\item The underlying multi-threaded model becomes implicit
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Typical example}
+
+%
+\begin{itemize}
+
+\item You want to run \texttt{f1()} and \texttt{f2()} and \texttt{f3()}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Assume they are ``mostly independent''
+%
+\begin{itemize}
+
+\item i.e. we expect that we can run them in parallel
+
+\item but we cannot prove it, we just hope that in the common case we can
+
+\end{itemize}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item In case of conflicts, we don't want random behavior
+%
+\begin{itemize}
+
+\item i.e. we don't want thread-like non-determinism and crashes
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Pooling and atomic statements}
+
+%
+\begin{itemize}
+
+\item Solution: use a library that creates a pool of threads
+
+\item Each thread picks a function from the list and runs it
+with \texttt{atomic}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Results}
+
+%
+\begin{itemize}
+
+\item The behavior is ``as if'' we had run \texttt{f1()}, \texttt{f2()}
+and \texttt{f3()} sequentially
+
+\item The programmer chooses if he wants this fixed order,
+or if any order is fine
+
+\item Threads are hidden from the programmer
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{More generally}
+
+%
+\begin{itemize}
+
+\item This was an example only
+
+\item \textbf{TM gives various new ways to hide threads under a nice interface}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Not the Ultimate Solution}
+
+%
+\begin{itemize}
+
+\item Much easier for the programmer to get reproducible results
+
+\item But maybe too many conflicts
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item ``The right side'' of the problem
+%
+\begin{itemize}
+
+\item start with a working program, and improve performance
+
+\item as opposed to: with locks, start with a fast program, and debug crashes
+
+\item we will need new debugging tools
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{PyPy-STM}
+
+%
+\begin{itemize}
+
+\item PyPy-STM: a version of PyPy with Software Transactional Memory
+%
+\begin{itemize}
+
+\item in-progress, but basically working
+
+\end{itemize}
+
+\item \url{http://pypy.org/}
+
+\end{itemize}
+
+\pause
+%
+\begin{itemize}
+
+\item Thank you!
+
+\end{itemize}
+\end{frame}
+
+\end{document}
