@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Software Transactional Memory "for real"]{Software Transactional Memory{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }"for real"}
+\author[Armin Rigo]
+{Armin Rigo}
+
+\institute{FSCONS 2012}
+\date{November 10, 2012}
