@@ -1,10 +1,21 @@
 
-jit-guards.pdf: paper.tex paper.bib zotero.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/loop_bridge.pdf figures/guard_table.tex figures/resume_data_table.tex figures/failing_guards_table.tex
+jit-guards.pdf: paper.tex paper.bib zotero.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/resume_data.pdf figures/loop_bridge.pdf figures/guard_table.tex figures/resume_data_table.tex figures/failing_guards_table.tex
 	pdflatex paper
 	bibtex paper
 	pdflatex paper
 	pdflatex paper
 	mv paper.pdf jit-guards.pdf
+
+print: paper.tex paper.bib zotero.bib figures/log.tex figures/example.tex figures/benchmarks_table.tex figures/backend_table.tex figures/ops_count_table.tex figures/resume_data.eps figures/loop_bridge.eps figures/guard_table.tex figures/resume_data_table.tex figures/failing_guards_table.tex
+	latex paper
+	bibtex paper
+	latex paper
+	latex paper
+	dvips -t letter paper
+	ps2pdf -sPAPERSIZE=letter paper.ps	
+	mv paper.pdf vmil01-schneider.pdf
+	mv paper.ps vmil01-schneider.ps
+	@echo "Or run Adobe Distiller"	
 
 UNAME := $(shell "uname")
 view: jit-guards.pdf
@@ -48,4 +59,6 @@ slides:
 clean:
 	rm -f *.aux *.bbl *.blg *.log *.tdo
 	rm -f *.pdf
+	rm -f *.dvi
+	rm -f *.ps
 	rm -f figures/*table.tex figures/*table.aux
