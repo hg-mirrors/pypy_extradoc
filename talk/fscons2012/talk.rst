@@ -331,6 +331,8 @@ PyPy-STM
 
   - in-progress, but basically working
 
+  - solves the "GIL issue" but more importantly adds ``atomic``
+
 * http://pypy.org/
 
 |pause|
