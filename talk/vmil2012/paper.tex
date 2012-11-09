@@ -18,7 +18,6 @@
 \usepackage{amsfonts}
 \usepackage[utf8]{inputenc}
 \usepackage{setspace}
-\usepackage[pdfpagelabels=true]{hyperref}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{flafter}
 \usepackage{enumitem}
@@ -28,6 +27,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[scaled=0.81]{beramono}
+\usepackage{ifpdf}
 
 \newenvironment{zitemize}% zero - line spacing itemize environment
    {\begin{list}{--}{
@@ -56,16 +56,16 @@
   numbersep = -20pt,
 }
 
+\ifpdf
+\usepackage[pdfpagelabels=true,hidelinks]{hyperref}
 \hypersetup{%
   plainpages=false,%
-  %hyperfootnotes=false,%
-  colorlinks=true,%
-  urlcolor=black,%
-  citecolor=black,%
-  linkcolor=black,%
   pdftitle={The Efficient Handling of Guards in the Design of RPython's Tracing JIT},%
   pdfauthor={David Schneider},
 }
+\else
+\usepackage[hyphens]{url}
+\fi
 
 \newcommand{\bigtodo}[1]{\todo[inline,color=red!30]{#1}}
 
