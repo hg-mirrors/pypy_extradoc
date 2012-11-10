@@ -702,6 +702,8 @@ or if any order is fine
 
 \item in-progress, but basically working
 
+\item solves the ``GIL issue'' but more importantly adds \texttt{atomic}
+
 \end{itemize}
 
 \item \url{http://pypy.org/}
