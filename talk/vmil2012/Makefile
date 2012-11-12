@@ -12,6 +12,7 @@ print: paper.tex paper.bib zotero.bib figures/log.tex figures/example.tex figure
 	latex paper
 	latex paper
 	dvips -t letter paper
+	sed -i '' -e "s/paper.dvi/The Efficient Handling of Guards in the Design of RPython's Tracing JIT/g" paper.ps
 	ps2pdf -sPAPERSIZE=letter paper.ps	
 	mv paper.pdf vmil01-schneider.pdf
 	mv paper.ps vmil01-schneider.ps

@@ -190,9 +190,6 @@ and optimization of guards an important and non-trivial aspect of the constructi
 of a tracing just-in-time compiler.
 
 
-%Section~\ref{sec:Evaluation} presents Figures about the absolute number of
-%operations for each benchmark, and the overhead produced by the information
-%stored at the different levels for the guards
 In this paper we want to substantiate the aforementioned observations about guards and
 describe based on them the reasoning behind their implementation in
 RPython's tracing just-in-time compiler. The contributions of this paper are:
@@ -541,7 +538,6 @@ followed by a \lstinline{guard_false} from the trace in Figure~\ref{fig:trace-lo
 pseudo-assembler if the operation and the guard are compiled separated or if
 they are merged.
 
-%\todo{Figure needs better formatting}
 \begin{figure}[ht]
   \noindent
   \centering
@@ -1019,22 +1015,6 @@ Armin Rigo, Antonio Cuni, Maciej Fijałkowski, Samuele Pedroni, and countless
 others. Any remaining errors are our own.
 
 
-%\section*{Appendix}
-
-%\todo{remove this section and the figures}
-%\begin{figure*}
-%    \include{figures/ops_count_table}
-%    \caption{Relative numbers of operations in the traces generated for
-%    different benchmarks}
-%    \label{fig:ops_count}
-%\end{figure*}
-%\begin{figure*}
-%\centering
-%\includegraphics[width=\textwidth]{figures/ops_pie.pdf}
-%\caption{Relative frequency of operations before and after optimization}
-%\label{fig:ops_pie}
-%\end{figure*}
 \bibliographystyle{abbrv}
 \bibliography{zotero,paper}
-%\listoftodos
 \end{document}
