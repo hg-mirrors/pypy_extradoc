@@ -1,11 +1,16 @@
 ARM Backend News Update
 =======================
 
-Starting with the good news, we finally merged the ``arm-backend-2`` branch
-into PyPy's main development line. As described in previous_ posts_ the main
-goal of this branch was to add support for ARM processors to PyPY's JIT.  As a
-general byproduct PyPy should now do a better job supporting non-x86
+As announced in the previous release notes for the PyPy 2.0 beta the ARM JIT
+compiler backend branch ``arm-backend-2`` has been merged into the main
+development line and is going to be part of the upcomming release.
+As a general byproduct PyPy should now do a better job supporting non-x86
 architectures such as ARM and the in-progress support for PPC64.
+
+In this post I want to describe a bit more in detail the current state of
+PyPy's ARM support.  Currently we provide two versions of PyPy for ARM, one
+with and one without the JIT compiler.  Currently both target the ARM
+soft-float ABI. And in this post I'm going to focus on the JIT version.
 
 On ARM, the JIT requires an ARMv7 processor or newer with a VFP unit targeting
 the ARM application profile. Although this sounds like a strong restriction,
@@ -30,10 +35,12 @@ call standards and three ways of handling floats. Usually they are referred to
 as *softfp*, *soft-float* and *hard-float*. The first two use the core
 registers to pass floating point arguments and do not make any assumptions
 about a floating point unit. The first uses a software based
-float-implementation, while the second can use a floating point unit. The
-latter and incompatible one requires a floating point unit and uses the
-coprocessor registers to pass floating arguments to calls. A detailed
-comparison can be found `here`_.
+float-implementation, while the second can use a floating point unit to
+actually perform the floating point operations while still copying the
+arguments to and from core registers to perform calls. The latter and
+incompatible one requires a floating point unit and uses the coprocessor
+registers to pass floating arguments to calls. A detailed comparison can be
+found `here`_.
 
 At the time we started implementing the float support in the ARM backend of the
 JIT, the soft-float calling conventions were the most commonly supported ones
@@ -62,7 +69,7 @@ available in the `PyPy docs`_.
 We also have some hardware to run the subset of the PyPy test-suite relevant to
 the ARM-JIT backend and to run the tests suite that tests the translated ARM
 binaries. The nightly tests are run on a Beagleboard-xM_ and an i.MX53_
-versatile board (kindly provided by Michael Foord), both boards run the ARM port `Ubuntu
+versatile board (kindly provided by Michael Foord), both boards run the ARM port of `Ubuntu
 12.04 Precise Pangolin`_. The current results for the different builders can be
 seen on the `PyPy buildbot`_. As can be seen there are still some issues to be
 fixed, but we are getting there.
@@ -94,8 +101,9 @@ Done:
   a regular basis. A fully emulated approach using QEMU might still be worth trying.*
 * Improve the tools, i.e. integrate with jitviewer_.
 
-Long term on open topics/projects for ARM:
+Long term or open topics/projects for ARM:
 
+* Fully support the hard-float calling convention and have nightly builds and tests.
 * Review of the generated machine code the JIT generates on ARM to see if the
   instruction selection makes sense for ARM.
 * Build a version that runs on Android.
