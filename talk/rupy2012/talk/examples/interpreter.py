@@ -60,13 +60,3 @@ def interpret(bytecode, variables, constants):
             pos = arg0
             continue
         pos += 1
-
-
-def f(a, b):
-    return a + b
-
-stack.append(variables[arg0])
-stack.append(variables[arg0])
-right = stack.pop()
-left = stack.pop()
-stack.append(left.add(right))
