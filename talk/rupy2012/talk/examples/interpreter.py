@@ -18,6 +18,13 @@ class Long(BaseObject):
 class Integer(BaseObject):
     def __init__(self, v):
         self.intval = v
+
+
+    def compare(self, other):
+        if isinstance(other, Integer):
+            return cmp(self.intval, other.intval)
+        else:
+            ...
     
     def add(self, right):
         if isinstance(right, Integer):

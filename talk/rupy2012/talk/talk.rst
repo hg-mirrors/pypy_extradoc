@@ -7,7 +7,7 @@ Python performance characteristics
 Who am I?
 ---------
 
-* Maciej Fijałkowski (yes this is unicode)
+* Maciej Fijałkowski
 
 * PyPy core developer for I don't remember
 
@@ -25,6 +25,23 @@ What this talk is about?
 |pause|
 
 * how Python implementations work
+
+|pause|
+
+* also mostly applies to ruby, javascript, etc.
+
+Why does it matter?
+-------------------
+
+* if you want speed, you code in C/C++
+
+|pause|
+
+* I don't like the answer, I like Python
+
+|pause|
+
+* or a dynamic language of your choice
 
 How does CPython work?
 ----------------------
@@ -188,6 +205,11 @@ Questions?
 * http://pypy.org
 
 * http://baroquesoftware.com
+
+Extra slides
+------------
+
+* knowledge that will hopefully be not needed some time soon
 
 Few words about garbage collection
 ----------------------------------
