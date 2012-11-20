@@ -1,0 +1,69 @@
+
+* most Python benchmarks run much faster than with CPython or Psyco
+
+
+    what pypy-c is (project started in 2003, now 200KLoc + 150KLoc tests)
+    (2 years U.E. (~2005-2007) + 2 years Germany+Sweden (2010-running))
+
+    PyPy 1.4.1 supports Python 2.5; but we are almost done with support
+    for Python 2.7, which will be PyPy 1.5
+
+    boring demo (multi-line editing)
+
+    speeeeeeeeed
+
+    http://speed.pypy.org/
+
+    but underline *benchmarks* here: it's typically programs that repeatedly
+    do similar things for at least 10-20 seconds.
+
+    mention also memory usage
+
+
+* the real-world PyPy compiler toolchain itself (200 KLocs) runs twice as fast
+
+
+    "extreme" example: big program, very unfriendly to our approach of
+    tracing JITs
+
+
+* already supports 64bit and is in the process of supporting ARM
+
+
+    pypy-c on 64bits
+
+    (pypy-c on ARM -- jitted but slower so far (missing JIT+GC integration))
+
+
+* full compatibility with  CPython (more than Jython/IronPython)
+* new "cpyext" layer which integrates existing CPython C extensions
+
+
+    the main issue is that C extension modules don't all work out of the box
+
+    but some do (slowly (which may matter or not))
+
+    the core supports "the full language", which is CPython minus some
+    small number of issues; the most visible ones are related to refcounts
+    (ends up closer than Jython/IronPython)
+
+
+* full (and JIT-ed) ctypes support to call C libraries from Python
+* supports Stackless Python (in-progress)
+* an experimental super-fast JIT-compilation of calls to C++ libraries
+
+
+    this is all experimental
+
+
+* architecture
+
+
+    interpreter written in Python (actually RPython, a subset)
+
+    gets "translated" to C code
+
+    various "aspects" are added during translation to C, like
+    the GC and the JIT
+
+    it's a tracing JIT (expand...?)
