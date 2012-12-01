@@ -8,6 +8,6 @@ Things to do
 * cffi on pypy on windows
 * raw malloc virtuals
 * bug tracker gardening
- * 1292, 1090, 1294, 1282, 1289, 1282, 1286
+ * 1090, 1282, 1289, 1286
  * numpy: 1143, 1160, 1287
 * all green buildbots
