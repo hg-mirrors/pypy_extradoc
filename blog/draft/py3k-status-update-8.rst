@@ -15,10 +15,9 @@ has made significant progress on updating `CPyExt`_ for Python 3 this month.
 
 Some other highlights:
 
-* ``test_marshal`` now passes, and there's been significant progress on pickling
-  (thanks Kenny Levinsen and Amaury for implementing ``int.{to,from}_bytes``)
-
-XXX: should we put a link to Kenny's twitter/webpage?
+* ``test_marshal`` now passes, and there's been significant progress on
+  pickling (thanks `Kenny Levinsen`_ and Amaury for implementing
+  ``int.{to,from}_bytes``)
 
 * We now have a ``_posixsubprocess`` module
 
@@ -53,4 +52,5 @@ Philip&Antonio
 .. _`autoreds`: https://bitbucket.org/pypy/pypy/commits/all/tip/branch%28%22autoreds%22%29
 .. _`unicode-strategies`: https://bitbucket.org/pypy/pypy/commits/all/tip/branch%28%22unicode-strategies%22%29
 .. _`CPyExt`: http://morepypy.blogspot.com/2010/04/using-cpython-extension-modules-with.html
+.. _`Kenny Levinsen`: https://twitter.com/Joushou
 .. _`PEP 3134`: http://www.python.org/dev/peps/pep-3134/
