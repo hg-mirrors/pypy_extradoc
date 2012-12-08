@@ -469,11 +469,7 @@ Here is ``ValidateDuringTransaction``::
                     assert v != my_lock # we don't hold any lock
                     spin loop retry     # jump back to the "v = ..." line
                 else:
-                    if v == my_lock:    # locked by me: fine
-                        pass
-                    elif v < my_lock:   # spin loop OR abort, based on this
-                        spin loop retry #   arbitrary condition (see below)
-                    else:
+                    if v != my_lock:    # not locked by me: conflict
                         return False
         return True
 
@@ -484,12 +480,9 @@ Here is ``ValidateDuringTransaction``::
 
 Checking for ``my_lock`` is only useful when ``ValidateDuringTransaction``
 is called during commit, which is when we actually hold locks.  In that
-case, ``wait_if_locked`` is set to False, otherwise we might end up with
-two transactions that try to commit concurrently by first locking some
-objects and then waiting for the other transaction to release the
-objects it has locked.  This is a situation where one of the two
-transactions should proceed and the other abort.  This is what
-``v < my_lock`` attempts to do.
+case, detecting other already-locked objects causes a conflict.  Note that
+we should in general never spin-loop during commit; other threads might be
+blocked by the fact that we own locks already, causing a deadlock.
 
 
 Local garbage collection
