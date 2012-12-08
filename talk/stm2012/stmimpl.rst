@@ -149,6 +149,8 @@ their corresponding local objects.
 ``list_of_read_objects`` is a set of all global objects read from, in
 the revision that was used for reading.  It is actually implemented as a
 list, but the order or repetition of elements in the list is irrelevant.
+This list includes all objects that are keys in ``global_to_local``: we
+don't have the notion of "write-only object".
 
 ``recent_reads_cache`` is a fixed-size cache that remembers recent
 additions to the preceeding list, in order to avoid inserting too much
@@ -233,9 +235,7 @@ Pseudo-code::
         if v > start_time:                 # object too recent?
             if V >= LOCKED:                # object actually locked?
                 goto retry                 # spin-loop to start of func
-            start_time = GetGlobalCurTime()    # copy from the global time
-            if not ValidateDuringTransaction():# try to move start_time forward
-                AbortTransaction()
+            ValidateNow()                  # try to move start_time forward
             goto retry                     # restart searching from R
         PossiblyUpdateChain(G, R, ...)     # see below
         return R
@@ -294,6 +294,7 @@ don't need ``AddInReadSet`` again.  It gives this::
         L->h_revision = R          # back-reference to the original
         L->objectbody... = R->objectbody...
         global_to_local[R] = L
+        list_of_read_objects.append(R)
         return L
 
     def LocalizeReadReady(R):
@@ -445,47 +446,50 @@ and instead repeated the same update logic locally).
 Validation
 ------------------------------------
 
-``ValidateDuringTransaction`` is called during a transaction to update
-``start_time``.  It makes sure that none of the read objects have been
-modified since ``start_time``.  If one of these objects is modified by
-another commit in parallel, then we want this transaction to eventually
-fail.  More precisely, it will fail the next time one of the
-``ValidateDuring*`` functions is called.
+``ValidateDuringTransaction`` is called during a transaction just after
+``start_time`` has been updated.  It makes sure that none of the read
+objects have been modified since ``start_time``.  If one of these
+objects is modified by another commit in parallel, then we want this
+transaction to eventually fail.  More precisely, it will fail the next
+time ``ValidateDuringTransaction`` is called.
 
 Note a subtle point: if an object is currently locked, we have to wait
 until it gets unlocked, because it might turn out to point to a more
 recent version that is still older than the current global time.
 
-We also have to talk over both the ``list_of_read_objects`` and the
-keys of ``global_to_local``: neither of these two lists is included
-in the other.
-
 Here is ``ValidateDuringTransaction``::
 
-    def ValidateDuringTransaction():
-        for R in list_of_read_objects + global_to_local.keys():
+    def ValidateDuringTransaction(during_commit):
+        for R in list_of_read_objects:
             v = R->h_revision
             if not (v & 1):             # "is a pointer", i.e.
                 return False            #   "has a more recent revision"
             if v >= LOCKED:             # locked
-                spin loop retry         # jump back to the "v = ..." line
+                if not during_commit:
+                    assert v != my_lock # we don't hold any lock
+                    spin loop retry     # jump back to the "v = ..." line
+                else:
+                    if v == my_lock:    # locked by me: fine
+                        pass
+                    elif v < my_lock:   # spin loop OR abort, based on this
+                        spin loop retry #   arbitrary condition (see below)
+                    else:
+                        return False
         return True
 
-The last detection for inconsistency is during commit, when
-``ValidateDuringCommit`` is called.  It is a slightly more complex
-version than ``ValidateDuringTransaction`` because it has to handle
-"locks" correctly.  It can also ignore ``global_to_local``, because they
-are handled differently during commit.
+    def ValidateNow():
+        start_time = GetGlobalCurTime()      # copy from the global time
+        if not ValidateDuringTransaction(0): # do validation
+            AbortTransaction()               # if it fails, abort
 
-    def ValidateDuringCommit():
-        for R in list_of_read_objects:
-            v = R->h_revision
-            if not (v & 1):            # "is a pointer", i.e.
-                return False           #   "has a more recent revision"
-            if v >= LOCKED:            # locked
-                if v != my_lock:       # and not by me
-                    return False
-        return True
+Checking for ``my_lock`` is only useful when ``ValidateDuringTransaction``
+is called during commit, which is when we actually hold locks.  In that
+case, ``wait_if_locked`` is set to False, otherwise we might end up with
+two transactions that try to commit concurrently by first locking some
+objects and then waiting for the other transaction to release the
+objects it has locked.  This is a situation where one of the two
+transactions should proceed and the other abort.  This is what
+``v < my_lock`` attempts to do.
 
 
 Local garbage collection
@@ -589,8 +593,8 @@ In pseudo-code::
         while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
             cur_time = global_cur_time    # try again
         if cur_time != start_time:
-            if not ValidateDuringCommit():   # only call it if needed
-                AbortTransaction()           # last abort point
+            if not ValidateDuringTransaction(1): # only call it if needed
+                AbortTransaction()               # last abort point
         UpdateChainHeads(cur_time)
 
 Note the general style of usage of CMPXCHG: we first read normally the
@@ -633,7 +637,7 @@ lock is released (i.e.  another value is written in ``h_revision``).
 
 
 After this, ``CommitTransaction`` increases the global time and then
-calls ``ValidateDuringCommit`` defined above.  It may still abort.  In
+calls ``ValidateDuringTransaction`` defined above.  It may still abort.  In
 case ``AbortTransaction`` is called, it must release the locks.  This is
 done by writing back the original timestamps in the ``h_revision``
 fields::
@@ -713,7 +717,7 @@ the largest positive number (equal to the ``INEVITABLE`` constant).
             cur_time = global_cur_time    # try again
         if start_time != cur_time:
             start_time = cur_time
-            if not ValidateDuringTransaction():
+            if not ValidateDuringTransaction(0):
                 global_cur_time = cur_time     # must restore the value
                 inevitable_mutex.release()
                 AbortTransaction()
@@ -747,8 +751,8 @@ Then we extend ``CommitTransaction`` for inevitable support::
             while not CMPXCHG(&global_cur_time, cur_time, cur_time + 2):
                 cur_time = GetGlobalCurTimeInCommit()  # try again
             if cur_time != start_time:
-                if not ValidateDuringCommit():   # only call it if needed
-                    AbortTransaction()           # last abort point
+                if not ValidateDuringTransaction(1): # only call it if needed
+                    AbortTransaction()               # last abort point
         UpdateChainHeads(cur_time)
 
     def GetGlobalCurTimeInCommit():
