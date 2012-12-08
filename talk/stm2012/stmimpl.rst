@@ -233,7 +233,9 @@ Pseudo-code::
         if v > start_time:                 # object too recent?
             if V >= LOCKED:                # object actually locked?
                 goto retry                 # spin-loop to start of func
-            ValidateDuringTransaction()    # try to move start_time forward
+            start_time = GetGlobalCurTime()    # copy from the global time
+            if not ValidateDuringTransaction():# try to move start_time forward
+                AbortTransaction()
             goto retry                     # restart searching from R
         PossiblyUpdateChain(G, R, ...)     # see below
         return R
@@ -454,22 +456,26 @@ Note a subtle point: if an object is currently locked, we have to wait
 until it gets unlocked, because it might turn out to point to a more
 recent version that is still older than the current global time.
 
+We also have to talk over both the ``list_of_read_objects`` and the
+keys of ``global_to_local``: neither of these two lists is included
+in the other.
+
 Here is ``ValidateDuringTransaction``::
 
     def ValidateDuringTransaction():
-        start_time = GetGlobalCurTime() # copy from the global time
-        for R in list_of_read_objects:
+        for R in list_of_read_objects + global_to_local.keys():
             v = R->h_revision
             if not (v & 1):             # "is a pointer", i.e.
-                AbortTransaction()      #   "has a more recent revision"
+                return False            #   "has a more recent revision"
             if v >= LOCKED:             # locked
                 spin loop retry         # jump back to the "v = ..." line
+        return True
 
 The last detection for inconsistency is during commit, when
 ``ValidateDuringCommit`` is called.  It is a slightly more complex
 version than ``ValidateDuringTransaction`` because it has to handle
-"locks" correctly.  It also returns a True/False result instead of
-aborting::
+"locks" correctly.  It can also ignore ``global_to_local``, because they
+are handled differently during commit.
 
     def ValidateDuringCommit():
         for R in list_of_read_objects:
@@ -707,7 +713,7 @@ the largest positive number (equal to the ``INEVITABLE`` constant).
             cur_time = global_cur_time    # try again
         if start_time != cur_time:
             start_time = cur_time
-            if not ValidateDuringCommit():
+            if not ValidateDuringTransaction():
                 global_cur_time = cur_time     # must restore the value
                 inevitable_mutex.release()
                 AbortTransaction()
