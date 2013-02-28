@@ -34,5 +34,7 @@ Some facts from the PyPy timeline:
   optimizations --faassen. --no-faassen was added automatically doing nothing. Then we
   decided to grow up and renamed it to -O2 and -Ojit.
 
+* the first time the Python interpreter successfully compiled to C, it segfaulted because the code generator used signed chars instead of unsigned chars
+
 Cheers,
 fijal, arigo and the pypy team.
