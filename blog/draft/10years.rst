@@ -36,11 +36,18 @@ Some facts from the PyPy timeline:
 
 * The first time the Python interpreter successfully compiled to C, it segfaulted because the code generator used signed chars instead of unsigned chars...
 
+* To make it more likely to be accepted, the proposal for the EU project contained basically every feature under the sun a language could have. This proved to be annoying, because we had to actually implement all that stuff. Then we had to do a cleanup sprint where we deleted 30% of codebase and 70% of features.
+
+* At one sprint someone proposed a new software development methodology: 'Terminology-Driven Programming' means to pick a fancy name, then discuss what it could mean, then implement it. Examples: timeshifter, rainbow interpreter, meta-space bubble, hint annotations (all but one of these really existed).
+
+* There is a conspiracy theory that the reason why translation is so slow is because time is stored away during it, which is later retrieved when an actual program runs to make them appear faster
+
 Overall, it was a really long road.  However, 10 years later we are in
 good shape.  A quick look on the immediate future: we are approaching
-PyPy 2.0, the support for Python 3 is taking shape, non-standard
+PyPy 2.0 with stackless+JIT and cffi support,
+the support for Python 3 is taking shape, non-standard
 extensions like STM are slowly getting ready (more soon), and there are
-several non-Python interpreters around the corner (Topaz and more).
+several non-Python interpreters around the corner (Hippy, Topaz and more).
 
 Cheers,
 fijal, arigo, cfbolz and the pypy team.
