@@ -22,7 +22,7 @@ Some facts from the PyPy timeline:
 * We made N attempts to use LLVM.  Seriously, N is 4 or 5.  But we haven't fully given up yet :-)
   They all run into issues one way or another.
 
-* We were huge fans of ctypes from the beginning. Up to the point where we tried to make
+* We were huge fans of ctypes at the beginning. Up to the point where we tried to make
   a restricted subset with static types, called rctypes for RPython. Turned out to be horrible.
   Twice.
 
@@ -31,10 +31,16 @@ Some facts from the PyPy timeline:
   However, we managed to release a working JIT in 2010, against all odds.
 
 * Martijn Faassen used to ask us "how fast is PyPy" so we decided to name an option enabling all
-  optimizations --faassen. --no-faassen was added automatically doing nothing. Then we
-  decided to grow up and renamed it to -O2 and -Ojit.
+  optimizations "--faassen".  Then "--no-faassen" was naturally added too. Then we
+  decided to grow up and renamed it to "-O2", and now "-Ojit".
 
-* the first time the Python interpreter successfully compiled to C, it segfaulted because the code generator used signed chars instead of unsigned chars
+* the first time the Python interpreter successfully compiled to C, it segfaulted because the code generator used signed chars instead of unsigned chars...
+
+Overall, it was a really long road.  However, 10 years later we are in
+good shape.  A quick look on the immediate future: we are approaching
+PyPy 2.0, the support for Python 3 is taking shape, non-standard
+extensions like STM are slowly getting ready (more soon), and there are
+several non-Python interpreters around the corner (Topaz and more).
 
 Cheers,
 fijal, arigo, cfbolz and the pypy team.
