@@ -37,4 +37,4 @@ Some facts from the PyPy timeline:
 * the first time the Python interpreter successfully compiled to C, it segfaulted because the code generator used signed chars instead of unsigned chars
 
 Cheers,
-fijal, arigo and the pypy team.
+fijal, arigo, cfbolz and the pypy team.
