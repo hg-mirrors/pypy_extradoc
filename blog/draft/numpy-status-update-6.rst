@@ -1,12 +1,13 @@
 NumPy status update #6
 ----------------------
 
-This is status report on PyPy's NumPyPy project.
+An update, and some good news
 
 First the update:
 
-* **dtype support** - NumPy on PyPy now supports all the numeric dtypes in numpy,
-  including non-native storage formats, longdouble, clongdouble and friends.
+* **dtype support** - NumPy on PyPy now supports non-native storage formats.
+  Due to a lack of true support for longdoubles in rpython, we decided to back
+  out the support of longdouble-as-double which was misleading.
 
 * **missing ndarray attributes** - work has been made toward supporting the 
   complete set of attributes
@@ -18,14 +19,16 @@ First the update:
 
 * There has been some work on exposing FFI routines in numpypy.
 
-More importantly, we're closing on being able to run the pure-python part of
-numpy without modifications. This is not getting us close to passing all
-the tests, but it's a good start.
+* Brian Kearns has made progress in mapping translated _numpypy submodules to 
+  the numpy core c-based submodules, furthering the goal of being able to install
+  numpy as a pure-python module with few modifications. 
 
-The most important part is the funding. While we managed to get a significant
-amount of money in donations, we only managed to spend around $10 000 from it
-so far. We have issued a call for additional developers, and hope to be able to
-report on speedier progress soon.
+And now the good news:
+
+While our funding drive over 2012 did not reach our goal, we still managed to 
+raise a fair amount of money in donations. So far we only managed to spend around $10 000 of it.
+We issued a call for additional developers, and are glad to welcome ___________
+to the numpypy team. Hopefully we will be able to report on speedier progress soon.
 
 Cheers,
 Matti Picus, Maciej Fijalkowski
