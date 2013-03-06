@@ -17,11 +17,13 @@ First the update:
 
 * **pickling support for numarray** - hasn't started yet, but next on the list
 
-* There has been some work on exposing FFI routines in numpypy.
+* There has been some work on exposing **FFI routines** in numpypy.
 
-* Brian Kearns has made progress in mapping translated _numpypy submodules to 
-  the numpy core c-based submodules, furthering the goal of being able to install
-  numpy as a pure-python module with few modifications. 
+* Brian Kearns has made progress in improving the **numpypy namespace**.
+  The python numpypy submodules now more closely resemble their numpy 
+  counterparts. Also, translated _numpypy submodules are now more properly 
+  mapped to the numpy core c-based submodules, furthering the goal of being 
+  able to install numpy as a pure-python module with few modifications.
 
 And now the good news:
 
