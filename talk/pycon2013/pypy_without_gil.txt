@@ -9,7 +9,31 @@ Intro
 
 - thanks to contributors for STM
 
+Problem
+-------
 
+* a complex, large program that does stuff
+
+* stuff is mostly independent
+
+|pause|
+
+* ... but not quite
+
+* shared mutable state, however, not too much
+
+* we want to parallelize the problem
+
+Classic solutions
+-----------------
+
+* multithreading
+
+  * large shared state (tons of lock)
+
+  * no shared mutable state (copying, keeping in sync)
+
+* MPI - message passing, with limited shared state
 
 Demo
 ---------------------------
