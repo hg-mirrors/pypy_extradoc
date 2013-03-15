@@ -9,38 +9,101 @@ Intro
 
 - thanks to contributors for STM
 
+
 Problem
 -------
 
-* a complex, large program that does stuff
+* An existing complex, large program that does stuff
 
-* stuff is mostly independent
+* "stuff" consists of bits that are mostly independent from each other
 
 |pause|
 
 * ... but not quite
 
-* shared mutable state, however, not too much
 
-* we want to parallelize the problem
+Problem
+-------
+
+* We want to parallelize the program to use all these cores
+
+* We have some shared mutable state
+
+|pause|
+
+* Not too much of it --- otherwise, no chance for parallelism
+
+* But still some
+
 
 Classic solutions
 -----------------
 
-* multithreading
+Bare-metal multi-threading:
 
-  * large shared state (tons of lock)
+* large shared state
 
-  * no shared mutable state (copying, keeping in sync)
+* needs careful usage of locks
 
-* MPI - message passing, with limited shared state
+* mostly hindered by the GIL in CPython
+  (but not in Jython)
+
+
+Classic solutions
+-----------------
+
+Multi-processing:
+
+* no shared mutable state at all
+
+* copying, keeping in sync are your problem
+
+* memory usage is often multiplied (unless you're lucky with ``fork``)
+
+
+Classic solutions
+-----------------
+
+A range of intermediate solutions:
+
+* MPI: message passing, with limited shared state
+
+* etc.: tons of experiments that never caught on
+
+
+Classic solutions
+-----------------
+
+The typical solution for web servers:
+
+* run independent processes
+
+* share data only via the database
+
+* the database itself handles concurrency with transactions
+
 
 Demo
 ---------------------------
 
-- demo: ~/br/stm-thread-2/64compiled/pypy-c-r61735+-stm
+* ``pypy-stm``
 
-  * run some random multithreaded program
+* internally based on "transactions" (STM, HTM)
+
+
+Demo
+---------------------------
+
+- demo: 
+
+  * multithreading.py
+
+  * multithreading2.py
+
+  * message_passing.py
+
+  * transactions2.py
+
 
 
 - missing in pypy-stm:
@@ -102,6 +165,9 @@ Higher level: not threads
 ---------------------------
 
 
+- xxx memory usage good
+
+
 - based on (and fully compatible with) threads
 
   * existing multithreaded programs work
@@ -129,7 +195,7 @@ Higher level: not threads
 
   * The idea is that we fix only XX% of the bugs and we are done
 
-  * Maybe some new "performance debugger" tools might help us too
+  * Maybe some new "performance debugger" tools might help too
 
 
 - TigerQuoll, 1st March: same idea with JavaScript (for servers)
@@ -154,11 +220,4 @@ Higher level: not threads
   * the events are run with ``atomic``, so that they appear to run
     serially
 
-  * this tweaked event loop should work with just any existing program
-
-
-- Futures
-
-  * e.g. twisted's deferred
-
-  ...
+  * does not rely on any change to the user program
