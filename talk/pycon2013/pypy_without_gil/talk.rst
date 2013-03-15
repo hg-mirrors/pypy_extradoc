@@ -120,63 +120,52 @@ Status of the implementation
 
 * tons of optimizations possible
 
+How do I use it?
+----------------
 
+* just like with the GIL
 
+* ``__pypy__.thread.atomic``
 
-- __pypy__.thread.atomic
+::
+    with atomic:
+         print "hello", username
 
-  * with atomic:
-        print "hello", username
+* the illusion of serialization
 
-  * the illusion of serialization
+STM - low level
+---------------
 
+* STM = Software Transactional Memory
 
-Lower level: STM
----------------------------
-
-- pypy and not cpython?
-
-
-- STM = Software Transactional Memory
-
-
-- Basic idea: each thread runs in parallel, but everything it does is
+* Basic idea: each thread runs in parallel, but everything it does is
   in a series of "transactions"
 
-
-- A transaction keeps all changes to pre-existing memory "local"
-
-
-- The changes are made visible only when the transaction "commits"
+* A transaction keeps all changes to pre-existing memory "local"
 
 
-- The transaction will "abort" if a conflict is detected, and
+* The changes are made visible only when the transaction "commits"
+
+STM - low level (2)
+-------------------
+
+* The transaction will "abort" if a conflict is detected, and
   it will be transparently retried
 
 
-- Non-reversible operations like I/O turn the transaction "inevitable"
+* Non-reversible operations like I/O turn the transaction "inevitable"
   and stop progress in the other threads
 
 
-- __pypy__.thread.last_abort_info() -> traceback-like information
+* __pypy__.thread.last_abort_info() -> traceback-like information
 
+Alternative - HTM
+-----------------
 
-- (GC-supported structure: when we want to modify a pre-existing object,
-  we first copy it into "local" memory, and when we commit, it becomes
-  the newer version of the old pre-existing object; we end up with a
-  chained list of versions, and we have to make sure we always use the
-  latest one.  We rely on GC major collections to free them eventually.)
-
-
-- alternative: HTM...?
-
+XXX
 
 Higher level: not threads
 ---------------------------
-
-
-- xxx memory usage good
-
 
 - based on (and fully compatible with) threads
 
@@ -190,6 +179,13 @@ Higher level: not threads
   * with the GIL-based idea of ``atomic`` it doesn't make sense:
     we have multiple threads but they're all using ``atomic``, i.e.
     only one at a time will ever run...  except no :-)
+
+
+
+
+- xxx memory usage good
+
+
 
 
 - transaction.py
@@ -219,15 +215,32 @@ Higher level: not threads
     . map/reduce, scatter/gather
 
 
-- Event dispatchers
+Event dispatchers
+-----------------
 
-  * twisted, tulip, etc.
+* twisted, tulip, etc.
 
-  * run the event dispatcher in one thread (e.g. the main thread),
-    and schedule the actual events to run on a different thread from
-    a pool
+* run the event dispatcher in one thread (e.g. the main thread),
+  and schedule the actual events to run on a different thread from
+  a pool
 
-  * the events are run with ``atomic``, so that they appear to run
-    serially
+* the events are run with ``atomic``, so that they appear to run
+  serially
 
-  * does not rely on any change to the user program
+* does not rely on any change to the user program
+
+Donate!
+-------
+
+* STM is primarily funded by donations
+
+* We got quite far with $22k USD
+
+* Thanks to the PSF and all others!
+
+* We need your help too
+
+Q&A
+---
+
+* http://pypy.org
