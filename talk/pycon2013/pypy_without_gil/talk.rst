@@ -5,12 +5,11 @@ PyPy without the GIL
 ====================
 
 Intro
----------------------------
+-----
 
-- PyPy intro
+* PyPy is a Python interpreter with stuff (like JIT, STM, ...)
 
-- thanks to contributors for STM
-
+* No PyPy talk this year, find us around, come to BoF
 
 Problem
 -------
