@@ -7,9 +7,19 @@ PyPy without the GIL
 Intro
 -----
 
-* PyPy is a Python interpreter with stuff (like JIT, STM, ...)
+* PyPy is a Python interpreter with stuff
 
-* No PyPy talk this year, find us around, come to BoF
+* No general PyPy talk this year, find us around, come to the BoF (tomorrow 2pm)
+
+
+This is about...
+----------------
+
+* This talk is about using multiple cores to achieve better performance
+
+* in Python (or any other existing, non-trivial, non-functional,
+  non-designed-for-this-problem, language)
+
 
 Problem
 -------
@@ -126,9 +136,7 @@ How do I use it?
 
 * ``__pypy__.thread.atomic``
 
-::
-    with atomic:
-         print "hello", username
+* ``with atomic:`` ``print "hello",`` ``username``
 
 * the illusion of serialization
 
@@ -156,15 +164,20 @@ STM - low level (2)
   and stop progress in the other threads
 
 
-* __pypy__.thread.last_abort_info() -> traceback-like information
+* ``__pypy__.thread.last_abort_info()`` -> traceback-like information
 
 Alternative - HTM
 -----------------
 
-XXX
+* Intel Haswell (released soon) has got HTM
 
-Higher level: not threads
----------------------------
+* great for the "remove the GIL" part
+
+* not so great for large transactions, at least for now
+
+
+Higher level: Threads Are Bad
+-----------------------------
 
 - based on (and fully compatible with) threads
 
@@ -173,45 +186,56 @@ Higher level: not threads
 
 - but opens up unexpected alternatives
 
-  * we can run multiple threads but at the same time use ``atomic``
 
-  * with the GIL-based idea of ``atomic`` it doesn't make sense:
-    we have multiple threads but they're all using ``atomic``, i.e.
-    only one at a time will ever run...  except no :-)
+Higher level: Atomic
+--------------------
 
+* we can run multiple threads but at the same time use ``atomic``
 
+* with the GIL-based idea of ``atomic`` it wouldn't make sense
 
+  - multiple threads
+  
+  - but they're all using ``atomic``
 
-- xxx memory usage good
+  - i.e. only one at a time will ever run
 
-
-
-
-- transaction.py
-
-  * demo
-
-  * illusion of serial execution: can "sanely" reason about algorithms
-
-  * "Conflict tracebacks"
-
-  * Might need to debug them --- but they are performance bugs, not
-    correctness bugs
-
-  * The idea is that we fix only XX% of the bugs and we are done
-
-  * Maybe some new "performance debugger" tools might help too
+  - ...except no :-)
 
 
-- TigerQuoll, 1st March: same idea with JavaScript (for servers)
+Transactions
+------------
 
-  * various models possible:
+* ``transaction.py``: example of wrapper hiding threads
 
-    . events dispatchers
+* illusion of serial execution: can "sanely" reason about algorithms
 
-    . futures
 
-    . map/reduce, scatter/gather
+Transaction conflicts
+---------------------
+
+* "Conflict tracebacks"
+
+* Might need to debug them --- but they are performance bugs, not
+  correctness bugs
+
+* The idea is that we fix only XX% of the bugs and we are done
+
+* Maybe some new "performance debugger" tools might help too
+
+
+We're not the only ones
+-----------------------
+
+TigerQuoll, 1st March: same idea with JavaScript (for servers)
+
+Various models possible:
+
+* events dispatchers
+
+* futures
+
+* map/reduce, scatter/gather
 
 
 Event dispatchers
@@ -243,3 +267,5 @@ Q&A
 ---
 
 * http://pypy.org
+
+* http://bit.ly/pypystm
