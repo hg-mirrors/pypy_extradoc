@@ -1,3 +1,5 @@
+.. include:: beamerdefs.txt
+
 ====================
 PyPy without the GIL
 ====================
