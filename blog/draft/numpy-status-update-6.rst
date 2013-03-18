@@ -13,7 +13,7 @@ First the update:
   complete set of attributes
   on ndarrays. We are progressing alphabetically, and have made it to d.
   Unsupported attributes, and unsupported arguments to attribute calls
-  will raise a NotImplementedException.
+  will raise a NotImplementedError.
 
 * **pickling support for numarray** - hasn't started yet, but next on the list
 
@@ -29,7 +29,7 @@ And now the good news:
 
 While our funding drive over 2012 did not reach our goal, we still managed to 
 raise a fair amount of money in donations. So far we only managed to spend around $10 000 of it.
-We issued a call for additional developers, and are glad to welcome ___________
+We issued a call for additional developers, and are glad to welcome Romain Guillebert and Ronan Lamy
 to the numpypy team. Hopefully we will be able to report on speedier progress soon.
 
 Cheers,
