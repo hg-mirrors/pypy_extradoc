@@ -4,10 +4,13 @@
 
 
 talk.pdf: talk.rst author.latex stylesheet.latex
-	rst2beamer --input-encoding=utf8 --output-encoding=utf8 --stylesheet=stylesheet.latex --documentoptions=14pt talk.rst talk.latex || exit
+	rst2beamer --input-encoding=utf8 --output-encoding=utf8 --stylesheet=stylesheet.latex --overlaybullets=False --theme=Boadilla --documentoptions=14pt talk.rst talk.latex || exit
 	sed 's/\\date{}/\\input{author.latex}/' -i talk.latex || exit
-	#sed 's/\\maketitle/\\input{title.latex}/' -i talk.latex || exit
+	sed 's/\\maketitle/\\input{title.latex}/' -i talk.latex || exit
 	pdflatex talk.latex  || exit
+
+clean:
+	rm talk.pdf talk.latex
 
 view: talk.pdf
 	evince talk.pdf &
