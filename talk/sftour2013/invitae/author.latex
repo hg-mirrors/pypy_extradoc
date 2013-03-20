@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Writing fast Python programs]{Writing fast Python programs}
+\author[arigo, fijal]
+{Armin Rigo \\ Maciej Fijałkowski}
+
+\institute{InVitae 2013}
+\date{March 20 2013}
