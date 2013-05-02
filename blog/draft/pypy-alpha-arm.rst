@@ -40,10 +40,27 @@ and ``armhf`` builds are provided.
 Benchmarks
 ==========
 
-Everybody loves benchmarks. Here is a table of our benchmark suite (for ARM we don't
-provide it yet on http://speed.pypy.org, unfortunately).
+Everybody loves benchmarks. Here is a table of our benchmark suite
+(for ARM we don't provide it yet on http://speed.pypy.org,
+unfortunately).
 
-This is a comparison of Cortex A9 processor with 4M cache and Xeon XXX fill in
+This is a comparison of Cortex A9 processor with 4M cache and Xeon W3580 with
+8M of L3 cache. The set of benchmarks is a subset of what we run for
+http://speed.pypy.org that finishes in reasonable time. The ARM machine
+was provided by Calxeda.
+Columns are respectively:
+
+* benchmark name
+
+* PyPy speedup over CPython on ARM
+
+* PyPy speedup over CPython on x86
+
+* speedup on Xeon vs Cortex A9, as measured on CPython
+
+* speedup on Xeon vs Cortex A9, as measured on PyPy
+
+* relative speedup (how much bigger the x86 speedup is over ARM speedup)
 
 +--------------------+-----------------------+-----------------------+-------------------+----------------------+------------------+
 | Benchmark          | PyPy vs CPython (arm) | PyPy vs CPython (x86) | x86 vs arm (pypy) | x86 vs arm (cpython) | relative speedup |
@@ -111,7 +128,11 @@ This is a comparison of Cortex A9 processor with 4M cache and Xeon XXX fill in
 | twisted_pb         | 4.94                  | 3.02                  | 5.10              | 8.34                 | 0.61             | 
 +--------------------+-----------------------+-----------------------+-------------------+----------------------+------------------+
 
-XXX some stuff
+It seems that Cortex A9, while significantly slower than Xeon, has higher
+slowdowns with a large interpreter (CPython) than a JIT compiler (PyPy). This
+comes as a surprise to me, especially that our ARM assembler is not nearly
+as polished as our x86 assembler. As for the causes, various people mentioned
+branch predictor, but I would not like to speculate without actually knowing.
 
 How to use PyPy?
 ================
@@ -125,4 +146,8 @@ to proceed. This document also covers other `installation schemes`_.
 .. _`installation schemes`: http://doc.pypy.org/en/latest/getting-started.html#installing-pypy
 .. _`PyPy and pip`: http://doc.pypy.org/en/latest/getting-started.html#installing-pypy
 
-XXXX more
+We would not recommend using PyPy on ARM just quite yet, however the day
+of a stable PyPy ARM release is not far off.
+
+Cheers,
+fijal, bivab, arigo and the whole PyPy team
