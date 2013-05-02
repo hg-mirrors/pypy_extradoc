@@ -25,9 +25,9 @@ explain certain steps that might help. So here we go:
   since the introduction of `cffi`_, the ecosystem of PyPy-compatible software
   has been growing. Things I know are written with PyPy in mind:
 
-  * the new version of `PyOpenSSL`_ will support PyPy via cffi
+  * the new version of `pyOpenSSL`_ will support PyPy via cffi
 
-  * `pgsql2cffi`_ is the most actively maintained postgres binding for PyPy,
+  * `psycopg2cffi`_ is the most actively maintained postgres binding for PyPy,
     with pg8000 reported working
 
   * mysql has a `ctypes based implementation`_ (although a cffi-based one would
@@ -40,9 +40,23 @@ explain certain steps that might help. So here we go:
   * `uWSGI`_, while working, is almost certainly not the best choice. Try
     `tornado`_, `twisted.web`_, `cyclone.io`_, `gunicorn`_ or `gevent`_
     (note: gevent support for PyPy is not quite finished; will write about it
-    in a separate blog post)
+    in a separate blog post, but you can't just use the main branch of gevent)
 
-  * consult (and contribute to) `pypy compatibility wiki`_ for details
+  * consult (and contribute to) `pypy compatibility wiki`_ for details (note
+    that it's community maintained, might be out of date)
+
+.. _`pypy compatibility wiki`: https://bitbucket.org/pypy/compatibility/wiki/Home
+.. _`cffi`: http://cffi.readthedocs.org
+.. _`pyOpenSSL`: https://launchpad.net/pyopenssl
+.. _`psycopg2cffi`: https://github.com/chtd/psycopg2cffi
+.. _`ctypes based implementation`: https://github.com/quora/mysql-ctypes
+.. _`lxml-cffi`: https://github.com/amauryfa/lxml/tree/lxml-cffi
+.. _`uWSGI`: https://github.com/unbit/uwsgi-docs
+.. _`tornado`: http://www.tornadoweb.org/en/stable/
+.. _`twisted.web`: http://twistedmatrix.com/trac/wiki/TwistedWeb
+.. _`cyclone.io`: http://cyclone.io/
+.. _`gunicorn`: http://gunicorn.org/
+.. _`gevent`: http://www.gevent.org/
 
 * Have benchmarks. If you don't have benchmarks, then performance does not
   matter for you. Since PyPy's warm-up time is bad (and yes, we know, we're
@@ -86,3 +100,8 @@ in my hot loops for debugging" or "I used the ``logging`` module which uses
 
 Cheers,
 fijal
+
+.. _`pypy-dev`: http://mail.python.org/mailman/listinfo/pypy-dev
+.. _`jitviewer`: https://bitbucket.org/pypy/jitviewer
+.. _`valgrind`: http://valgrind.org/
+.. _`lsprofcalltree`: https://bitbucket.org/pypy/pypy/src/default/rpython/tool/lsprofcalltree.py?at=default
