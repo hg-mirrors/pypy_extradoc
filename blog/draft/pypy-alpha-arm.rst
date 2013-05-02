@@ -8,9 +8,9 @@ We're pleased to announce an alpha release of PyPy 2.0 for ARM. This is mostly
 a technology preview, as we know the JIT is not yet stable enough for the
 full release. However please try your stuff on ARM and report back.
 
-This is the first release that supports a range of ARM devices - anything
-with ARMv6 (that supports VFP, like raspberry pi) or ARMv7 (soft- or hard-float)
-should work.
+This is the first release that supports a range of ARM devices - anything with
+ARMv6 (like the Raspberry Pi) or ARMv7 (like Beagleboard, Chromebook,
+Cubieboard, etc) that supports VFPv3 should work.
 
 This release comes with a list of limitations, consider it alpha quality,
 not suitable for production:
@@ -40,7 +40,7 @@ and ``armhf`` builds are provided.
 Benchmarks
 ==========
 
-Everybody loves benchmarks. Here is a table of our benchmark suite (we don't
+Everybody loves benchmarks. Here is a table of our benchmark suite (for ARM we don't
 provide it yet on http://speed.pypy.org, unfortunately).
 
 This is a comparison of Cortex A9 processor with 4M cache and Xeon XXX fill in
