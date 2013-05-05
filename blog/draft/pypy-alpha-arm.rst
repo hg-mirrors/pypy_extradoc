@@ -10,15 +10,17 @@ full release. However please try your stuff on ARM and report back.
 
 This is the first release that supports a range of ARM devices - anything with
 ARMv6 (like the Raspberry Pi) or ARMv7 (like Beagleboard, Chromebook,
-Cubieboard, etc) that supports VFPv3 should work.
+Cubieboard, etc.) that supports VFPv3 should work. We provide builds with
+support for both ARM EABI variants, hard-float and for some older operating
+systems soft-float.
 
 This release comes with a list of limitations, consider it alpha quality,
 not suitable for production:
 
-* stackless support does not work
+* stackless support is missing.
 
 * assembler produced is not always correct, but we successfully managed to
-  run our extensive benchmark suite, so most stuff should work
+  run large parts of our extensive benchmark suite, so most stuff should work.
 
 You can download the PyPy 2.0 alpha ARM release here:
 
@@ -34,8 +36,16 @@ What is PyPy?
 PyPy is a very compliant Python interpreter, almost a drop-in replacement for
 CPython 2.7.3. It's fast due to its integrated tracing JIT compiler.
 
-This release supports ARM machines running Linux 32bit. Both ``armel``
-and ``armhf`` builds are provided.
+This release supports ARM machines running Linux 32bit. Both hard-float
+``armhf`` and soft-float ``armel`` builds are provided.  ``armhf`` builds are
+created using the Raspberry Pi custom `cross-compilation toolchain`_ based on
+gcc-arm-linux-gnueabihf and should work on ARMv6 and ARMv7 devices running at
+least debian or ubuntu. ``armel`` builds are built using gcc-arm-linux-gnuebi
+toolchain provided by ubuntu and currently target ARMv7.  If there is interest
+in other builds, such as gnueabi for ARMv6 or without requiring a VFP let us
+know in the comments or in IRC.
+
+.. _`cross-compilation custom toolchain`: https://github.com/raspberrypi
 
 Benchmarks
 ==========
