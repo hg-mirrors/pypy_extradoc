@@ -45,7 +45,7 @@ toolchain provided by ubuntu and currently target ARMv7.  If there is interest
 in other builds, such as gnueabi for ARMv6 or without requiring a VFP let us
 know in the comments or in IRC.
 
-.. _`cross-compilation custom toolchain`: https://github.com/raspberrypi
+.. _`cross-compilation toolchain`: https://github.com/raspberrypi
 
 Benchmarks
 ==========
