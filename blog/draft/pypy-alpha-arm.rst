@@ -11,7 +11,7 @@ full release. However please try your stuff on ARM and report back.
 This is the first release that supports a range of ARM devices - anything with
 ARMv6 (like the Raspberry Pi) or ARMv7 (like Beagleboard, Chromebook,
 Cubieboard, etc.) that supports VFPv3 should work. We provide builds with
-support for both ARM EABI variants, hard-float and for some older operating
+support for both ARM EABI variants: hard-float and some older operating
 systems soft-float.
 
 This release comes with a list of limitations, consider it alpha quality,
@@ -62,9 +62,9 @@ Columns are respectively:
 
 * benchmark name
 
-* PyPy speedup over CPython on ARM
+* PyPy speedup over CPython on ARM (Cortex A9)
 
-* PyPy speedup over CPython on x86
+* PyPy speedup over CPython on x86 (Xeon)
 
 * speedup on Xeon vs Cortex A9, as measured on CPython
 
@@ -156,8 +156,8 @@ to proceed. This document also covers other `installation schemes`_.
 .. _`installation schemes`: http://doc.pypy.org/en/latest/getting-started.html#installing-pypy
 .. _`PyPy and pip`: http://doc.pypy.org/en/latest/getting-started.html#installing-pypy
 
-We would not recommend using PyPy on ARM just quite yet, however the day
-of a stable PyPy ARM release is not far off.
+We would not recommend using in production PyPy on ARM just quite yet,
+however the day of a stable PyPy ARM release is not far off.
 
 Cheers,
 fijal, bivab, arigo and the whole PyPy team
