@@ -52,7 +52,7 @@ around PyCon, but having missed that we've put some more effort into the branch
 to provide a more fully-fledged initial release.
 
 Thanks to the following for their contributions: Manuel Jacob, Amaury Forgeot
-d'Arc, Karl Ramm, Jason Chu and Christian Hudson.
+d'Arc, Karl Ramm, Jason Chu and Christian Hudon.
 
 cheers,
 Phil
