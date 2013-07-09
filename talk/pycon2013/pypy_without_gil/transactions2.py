@@ -8,11 +8,12 @@ def do_stuff(x):
 
 
 def do_stuff_for_all(lst):
-    for x in lst:
-        do_stuff(x)
     #for x in lst:
-    #    transaction.add(do_stuff, x)
-    #transaction.run()
+    #    do_stuff(x)
+
+    for x in lst:
+        transaction.add(do_stuff, x)
+    transaction.run()
 
 
 do_stuff_for_all(range(20))

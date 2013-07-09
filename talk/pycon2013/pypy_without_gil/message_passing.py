@@ -24,5 +24,4 @@ while running_threads > 0:
         running_threads -= 1
     else:
         num += 1
-
 print num
