@@ -23,7 +23,9 @@ transaction system. All the demos are running without conflicts, which means
 there are no conflicting writes to global memory and hence the demos are very
 amenable to parallelization. They exercise:
 
-* arithmetics - ``demo/many_sqare_roots.duh``
+* arithmetics - ``demo/many_sqare_roots.duh``::
+
+  
 
 * read-only access to globals - ``demo/trees.duh``
 
@@ -33,3 +35,30 @@ With the latter ones being very similar to the classic gcbench. STM-aware
 Duhton can be found in `the stmgc repo`_, while the STM-less Duhton,
 that uses refcounting, can be found in `the duhton repo`_ under the ``base``
 branch.
+
+Below are some benchmarks. Note that this is a little comparing apples to
+oranges since the single-threaded duhton uses refcounting GC vs generational
+GC for STM version. Future pypy benchmarks will compare more apples to apples.
+Moreover none of the benchmarks has any conflicts. Time is the total time
+that the benchmark took (not the CPU time) and there was very little variation
+in the consecutive runs (definitely below 5%).
+
++-----------+---------------------+----------------+-----------+-----------+
+| benchmark | 1 thread (refcount) | 1 thread (stm) | 2 threads | 4 threads |
++-----------+---------------------+----------------+-----------+-----------+
+| square    | 1.9s                | 3.5s           | 1.8s      | 0.9s      |
++-----------+---------------------+----------------+-----------+-----------+
+| trees     | 0.6s                | 1.0s           | 0.54s     | 0.28s     |
++-----------+---------------------+----------------+-----------+-----------+
+| trees2    | 1.4s                | 2.2s           | 1.1s      | 0.57s     |
++-----------+---------------------+----------------+-----------+-----------+
+
+As you can see, the slowdown for STM vs single thread is significant
+(1.8x, 1.7x, 1.6x respectively), but still lower than 2x. However the speedup
+from running on multiple threads parallelizes the problem almost perfectly.
+
+While a significant milestone, we hope the next blog post will cover
+STM-enabled pypy that's fully working with JIT work ongoing.
+
+Cheers,
+fijal on behalf of Remi Meier and Armin Rigo
