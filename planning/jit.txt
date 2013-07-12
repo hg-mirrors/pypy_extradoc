@@ -83,6 +83,15 @@ Things we can do mostly by editing optimizeopt/:
 - p0 = call_pure(ConstClass(something), ConstPtr(2))
   guard_exception(SomeException)
 
+- f0 = convert_longlong_bytes_to_float(i0)
+  setarrayitem_gc(p0, 0, f0, descr=<ArrayF 8>)
+
+  This should be folded into:
+
+  setarrayitem_gc(p0, 0, i0, descr=<ArrayS 8>)
+
+  (This applies to the read direction as well)
+
 PYTHON EXAMPLES
 ---------------
 
