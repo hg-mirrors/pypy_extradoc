@@ -23,9 +23,7 @@ transaction system. All the demos are running without conflicts, which means
 there are no conflicting writes to global memory and hence the demos are very
 amenable to parallelization. They exercise:
 
-* arithmetics - ``demo/many_sqare_roots.duh``::
-
-  
+* arithmetics - ``demo/many_sqare_roots.duh``
 
 * read-only access to globals - ``demo/trees.duh``
 
@@ -62,3 +60,9 @@ STM-enabled pypy that's fully working with JIT work ongoing.
 
 Cheers,
 fijal on behalf of Remi Meier and Armin Rigo
+
+.. _`the previous blog post`: http://morepypy.blogspot.com/2013/06/stm-on-drawing-board.html
+.. _`lisp-like/scheme-like interpreter`: https://bitbucket.org/arigo/duhton
+.. _`the stmgc repo`: https://bitbucket.org/pypy/stmgc
+.. _`the duhton repo`: https://bitbucket.org/arigo/duhton
+
