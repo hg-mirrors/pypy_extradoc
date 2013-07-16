@@ -44,6 +44,9 @@ NEW TASKS
     subq    %rdx, %rax
     ret
 
+- ConstantFloat(0.0) should be generated with pxor %xmm, %xmm; instead of a
+  movabs.
+
 
 OPTIMIZATIONS
 -------------
