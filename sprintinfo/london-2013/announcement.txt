@@ -1,0 +1,64 @@
+=====================================================================
+         PyPy London Sprint (August 26 - September 1 2013)
+=====================================================================
+
+The next PyPy sprint will be in London, United Kingdom for the first
+time. This is a fully public sprint: newcomers and topics other than
+those proposed below are welcome.
+
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+* whatever attendands find interesting :-)
+
+* refactoring the JIT optimizations
+
+* STM and STM-related topics
+
+
+-----------
+Exact times
+-----------
+
+The work days should be August 26 - September 1 2013 (Monday-Sunday).
+The official plans are for people to arrive on the 26th, and
+to leave on the 2nd. There will be a break day in the middle.
+We'll typically start at 10:00 in the morning.
+
+
+------------
+Location
+------------
+
+The sprint will happen within a room of `King's College's`_ `Strand
+Campus`_ in Central London, UK.
+
+.. _`King's College`: http://www.kcl.ac.uk/
+.. _`Strand Campus`: http://goo.gl/maps/Qz0zz
+
+------------
+Demo Morning
+------------
+
+If you don't want to come to the full sprint, but still want to chat a
+bit, we are planning to have a demo morning on Tuesday August 27. We
+will announce this separately on the blog. If you are interested, please
+leave a comment.
+
+--------------
+Registration
+--------------
+
+If you want to attend, please register by adding yourself to the
+"people.txt" file in Mercurial::
+
+  https://bitbucket.org/pypy/extradoc/
+  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/london-2013
+
+or on the pypy-dev mailing list if you do not yet have check-in rights:
+
+  http://mail.python.org/mailman/listinfo/pypy-dev
+
+Remember that you may need a UK-to-(insert country here) power adapter.
