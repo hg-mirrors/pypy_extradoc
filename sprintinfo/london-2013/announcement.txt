@@ -11,12 +11,13 @@ those proposed below are welcome.
 Goals and topics of the sprint
 ------------------------------
 
-* whatever attendands find interesting :-)
+* porting applications or libraries to run on PyPy
 
 * refactoring the JIT optimizations
 
 * STM and STM-related topics
 
+* whatever attendands find interesting :-)
 
 -----------
 Exact times
