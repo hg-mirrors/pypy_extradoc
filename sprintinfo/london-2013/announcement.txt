@@ -3,21 +3,28 @@
 =====================================================================
 
 The next PyPy sprint will be in London, United Kingdom for the first
-time. This is a fully public sprint: newcomers and topics other than
-those proposed below are welcome.
+time. This is a fully public sprint. PyPy sprints are a very good way
+to get into PyPy development and no prior PyPy knowledge is necessary.
 
 
 ------------------------------
 Goals and topics of the sprint
 ------------------------------
 
-* porting applications or libraries to run on PyPy
+For newcomers:
+
+* bring your application/library and we'll help you port it to PyPy,
+  benchmark and profile
+
+* come and write your favorite missing numpy function
+
+* help us work on developer tools like jitviewer
+
+We'll also work on:
 
 * refactoring the JIT optimizations
 
 * STM and STM-related topics
-
-* whatever attendants find interesting :-)
 
 -----------
 Exact times
