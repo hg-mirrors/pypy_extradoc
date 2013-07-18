@@ -67,7 +67,7 @@ If you want to attend, please register by adding yourself to the
   https://bitbucket.org/pypy/extradoc/
   https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/london-2013
 
-or on the pypy-dev mailing list if you do not yet have check-in rights:
+or on the pypy-dev mailing list if you do not yet have check-in rights::
 
   http://mail.python.org/mailman/listinfo/pypy-dev
 
