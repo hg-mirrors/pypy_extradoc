@@ -17,7 +17,7 @@ Goals and topics of the sprint
 
 * STM and STM-related topics
 
-* whatever attendands find interesting :-)
+* whatever attendants find interesting :-)
 
 -----------
 Exact times
@@ -63,3 +63,5 @@ or on the pypy-dev mailing list if you do not yet have check-in rights:
   http://mail.python.org/mailman/listinfo/pypy-dev
 
 Remember that you may need a UK-to-(insert country here) power adapter.
+Please also note that UK is not within the Schengen zone, so you need
+to bring your passport if coming from any other country.
