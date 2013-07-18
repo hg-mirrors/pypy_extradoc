@@ -72,6 +72,6 @@ or on the pypy-dev mailing list if you do not yet have check-in rights::
   http://mail.python.org/mailman/listinfo/pypy-dev
 
 Remember that you may need a UK-to-(insert country here) power adapter.
-Please also note that UK is not within the Schengen zone, so you need
-to bring your passport if coming from any other country. Also, the UK does not
-have the Euro.
+Please also note that UK is not within the Schengen zone; EU citizens
+can usually enter without a passport (a photo ID is enough) but it is
+best to check.  Also, the UK does not have the Euro.
