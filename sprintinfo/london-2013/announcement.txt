@@ -26,6 +26,8 @@ We'll also work on:
 
 * STM and STM-related topics
 
+* anything else attendants are interested in
+
 -----------
 Exact times
 -----------
@@ -71,4 +73,5 @@ or on the pypy-dev mailing list if you do not yet have check-in rights:
 
 Remember that you may need a UK-to-(insert country here) power adapter.
 Please also note that UK is not within the Schengen zone, so you need
-to bring your passport if coming from any other country.
+to bring your passport if coming from any other country. Also, the UK does not
+have the Euro.
