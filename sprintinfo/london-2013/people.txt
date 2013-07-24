@@ -16,6 +16,7 @@ Romain Guillebert    ?              ?
 Laurence Tratt       lives there
 Edd Barrett          ?              ?
 Armin Rigo           ?              ?
+Richard Emslie       25/8-2/9       some hotel
 ==================== ============== =======================
 
 
