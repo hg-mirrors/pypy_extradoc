@@ -15,6 +15,7 @@ Lukas Diekmann       lives there
 Romain Guillebert    ?              ?
 Laurence Tratt       lives there
 Edd Barrett          ?              ?
+Armin Rigo           ?              ?
 ==================== ============== =======================
 
 
