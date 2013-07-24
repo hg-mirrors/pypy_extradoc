@@ -2,7 +2,8 @@ Tasks
 -----
 
 * fix the issue with the os.xyz attributes not showing up depending on
-  which host we use during translation
+  which host we use during translation.
+  Maybe revive branch 'missing-os-functions'.
 
 * cffi 1.0: think about how to separate compilation from execution of
   the script (e.g. a separate foo.c file, and "python -m cffi foo.c")
