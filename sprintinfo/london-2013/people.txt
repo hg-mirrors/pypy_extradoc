@@ -10,8 +10,11 @@ available from them.
 ==================== ============== =======================
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
-Carl Friedrich Bolz  ?              ?
+Carl Friedrich Bolz  ?              Lukas
+Lukas Diekmann       lives there
 Romain Guillebert    ?              ?
+Laurence Tratt       lives there
+Edd Barrett          ?              ?
 ==================== ============== =======================
 
 
@@ -53,5 +56,5 @@ Holger Krekel        ?              ?
 Guido Wesdorp        ?              ?
 Leonardo Santagada   ?              ?
 Alexandre Fayolle    ?              ?
-Sylvain Thénault     ?              ?
+Sylvain Thnault     ?              ?
 ==================== ============== =====================

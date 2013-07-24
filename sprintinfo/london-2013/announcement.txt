@@ -47,7 +47,7 @@ Campus`_ in `Central London, UK`_. There are some travel instructions `how to
 get there`_. We are being hosted by `Laurence Tratt`_ and the `Software
 Development Team`_.
 
-.. _`King's College`: http://www.kcl.ac.uk/
+.. _`King's College's`: http://www.kcl.ac.uk/
 .. _`Central London, UK`: http://goo.gl/maps/Qz0zz
 .. _`Strand Campus`: http://www.kcl.ac.uk/campuslife/campuses/strand/StrandCampusLocation.aspx
 .. _`how to get there`: http://www.kcl.ac.uk/campuslife/campuses/directions/strand.aspx
