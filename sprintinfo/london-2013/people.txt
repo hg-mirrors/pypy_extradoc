@@ -19,6 +19,7 @@ Armin Rigo           ?              ?
 Richard Emslie       25/8-2/9       some hotel
 Remi Meier           24/8-1/9       ?
 Marko Bencun         24/8-1/9       ?
+Maciej Fijalkowski   25/8-1/9       private
 ==================== ============== =======================
 
 
