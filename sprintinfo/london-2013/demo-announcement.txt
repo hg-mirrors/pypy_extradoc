@@ -1,0 +1,29 @@
+PyPy is a fast Python VM. Maybe you've never used PyPy and want to find out
+what use it might be for you? Or you and your organisation have been using it
+and you want to find out more about how it works under the hood? If so, this
+demo session is for you!
+
+Members of the PyPy team will give a series of lightning talks on PyPy: its
+benefits; how it works; research currently being undertaken to make it
+faster; and unusual uses it can be put to. Speakers will be available
+afterwards for informal discussions. This is the first time an event like
+this has been held in the UK, and is a unique opportunity to speak to core
+people. Speakers confirmed thus far include: Armin Rigo, `Maciej Fijałkowski`_,
+`Carl Friedrich Bolz`_, `Lukas Diekmann`_, `Laurence Tratt`__.
+
+.. __: http://tratt.net/laurie/
+
+.. _`Maciej Fijałkowski`: http://baroquesoftware.com/
+.. _`Carl Friedrich Bolz`: http://cfbolz.de
+.. _`Lukas Diekmann`: http://lukasdiekmann.com/
+
+The venue for this talk is the `Software Development Team`_, King's College
+London. The main entrance is on the Strand, from where the room for the event
+will be clearly signposted. Travel directions can be found at
+http://www.kcl.ac.uk/campuslife/campuses/directions/strand.aspx
+
+.. _`Software Development Team`: http://soft-dev.org/
+
+If you have any questions about the event, please contact `Laurence Tratt`_
+
+.. _`Laurence Tratt`: mailto:laurie@tratt.net
