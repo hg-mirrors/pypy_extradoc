@@ -12,10 +12,10 @@ available from them.
 ==================== ============== =======================
 Carl Friedrich Bolz  ?              Lukas
 Lukas Diekmann       lives there
-Romain Guillebert    ?              ?
+Romain Guillebert    ?              hotel LSE Northumberl.
 Laurence Tratt       lives there
 Edd Barrett          ?              ?
-Armin Rigo           ?              hotel I'd like to share
+Armin Rigo           25/8-2/9       hotel LSE Northumberl.
 Richard Emslie       25/8-2/9       some hotel
 Remi Meier           24/8-1/9       ?
 Marko Bencun         24/8-1/9       ?
