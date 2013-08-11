@@ -21,6 +21,7 @@ Marko Bencun         24/8-1/9       ?
 Maciej Fijalkowski   25/8-1/9       private
 Manuel Jacob         ?              sth. cheap, pref. share
 Ronan Lamy           25/8-?         ?
+Antonio Cuni         26/8-5/9       ?
 ==================== ============== =======================
 
 
@@ -29,7 +30,6 @@ People on the following list were present at previous sprints:
 ==================== ============== =====================
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
-Antonio Cuni         ?              ?
 Michael Foord        ?              ?
 Maciej Fijalkowski   ?              ?
 David Schneider      ?              ?
