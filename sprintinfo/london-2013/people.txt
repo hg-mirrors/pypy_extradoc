@@ -11,7 +11,7 @@ available from them.
 ==================== ============== =======================
 Carl Friedrich Bolz  ?              Lukas
 Lukas Diekmann       lives there
-Romain Guillebert    25/8-?         hotel LSE Northumberl.
+Romain Guillebert    25/8-1/9       hotel LSE Northumberl.
 Laurence Tratt       lives there
 Edd Barrett          ?              ?
 Armin Rigo           25/8-2/9       hotel LSE Northumberl.
