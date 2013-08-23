@@ -7,3 +7,5 @@ Tasks
 
 * cffi 1.0: think about how to separate compilation from execution of
   the script (e.g. a separate foo.c file, and "python -m cffi foo.c")
+
+* cffi: think about and collect which C-extensions we would like to bring to cffi
