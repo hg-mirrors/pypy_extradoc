@@ -9,7 +9,7 @@ available from them.
 ==================== ============== =======================
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
-Carl Friedrich Bolz  ?              Lukas
+Carl Friedrich Bolz  25/8-2/9       Lukas
 Lukas Diekmann       lives there
 Romain Guillebert    25/8-1/9       hotel LSE Northumberl.
 Laurence Tratt       lives there
@@ -22,6 +22,8 @@ Maciej Fijalkowski   25/8-1/9       private
 Manuel Jacob         24/8-3/9       sth. cheap, pref. share
 Ronan Lamy           25/8-1/9       hotel Strand Continent.
 Antonio Cuni         26/8-5/9       hotel LSE Northumberl.
+Russel Winder        ?              ?
+Rami Chowdhury       ?              ?
 ==================== ============== =======================
 
 
