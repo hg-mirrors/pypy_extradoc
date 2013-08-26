@@ -59,8 +59,6 @@ Tasks
 
 * progress on the documentation branch (Olmo, Manuel)
 
-* improve packaging on Mac to make sure non-technical users are able to use PyPy (Olmo, Manuel)
-
 * shave all the yaks
 
 * find the slow generator task (Marko, Romain)
