@@ -1,3 +1,30 @@
+People present
+---------------
+
+Carl Friedrich
+Laurie
+Remy
+Marko
+Olmo
+Romain
+Manuel
+Rami
+Lukas
+Richard
+Ronan
+Armin
+Tom
+Edd
+Maciej
+
+People not present
+-------------------
+
+Anto
+
+
+
+
 Tasks
 -----
 
@@ -13,3 +40,42 @@ Tasks
 * PYPYLOG output: they need to be disentangled when the process uses
   threads or greenlets, probably by adding a thread-or-greenlet number
   prefix (see branch stmgc-c4 where we already add a thread num prefix)
+
+* general STM things (Remy, Armin)
+
+* general Numpy things (Marko, Romain)
+
+* fix some of the RPython nits that Edd found (Ronan, Edd)
+
+* continue less-stringly-ops
+
+* better error messages (Ronan, Edd)
+
+* programming
+
+* JIT for dont-know-yet (Richard, Lukas)
+
+* explore Laurie's crazy scheme of persisting loop entry counts (Maciej, Laurie)
+
+* progress on the documentation branch (Olmo, Manuel)
+
+* improve installation instruction (Olmo, Manuel)
+
+* shave all the yaks
+
+* find the slow generator task (Marko, Romain)
+
+* general wizardry (Carl Friedrich; Armin)
+
+* general getting started (Rami, Carl Friedrich)
+
+
+Discussions planned
+--------------------
+
+* demo session Tuesday
+* STM dissemination round
+* JIT optimizer mess
+* roadmap planning
+* scientific computing roadmap
+* LuaJIT discussion TODAY (Tom, Armin, Maciek, Carl Friedrich, Laurie)
