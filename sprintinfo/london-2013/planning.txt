@@ -59,8 +59,6 @@ Tasks
 
 * progress on the documentation branch (Olmo, Manuel)
 
-* improve installation instruction (Olmo, Manuel)
-
 * shave all the yaks
 
 * find the slow generator task (Marko, Romain)
