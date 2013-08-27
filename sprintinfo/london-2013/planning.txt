@@ -2,28 +2,25 @@ People present
 ---------------
 
 Carl Friedrich
-Laurie
-Remy
+Anto
+Remi
 Marko
-Olmo
 Romain
-Manuel
-Rami
 Lukas
 Richard
-Ronan
+Richard2
 Armin
-Tom
 Edd
 Maciej
 
 People not present
 -------------------
 
-Anto
-
-
-
+Manuel
+Rami
+Olmo
+Tom
+Laurie
 
 Tasks
 -----
@@ -41,39 +38,50 @@ Tasks
   threads or greenlets, probably by adding a thread-or-greenlet number
   prefix (see branch stmgc-c4 where we already add a thread num prefix)
 
-* general STM things (Remy, Armin)
+* general STM things (Remy, Armin) GENERAL PROGRESS
 
-* general Numpy things (Marko, Romain)
+* general Numpy things (Romain) GENERAL PROGRESS
 
-* fix some of the RPython nits that Edd found (Ronan, Edd)
+* PyOpenCL (Marko)
 
-* continue less-stringly-ops
+* fix some of the RPython nits that Edd found SOME PROGRESS
 
-* better error messages (Ronan, Edd)
+* continue less-stringly-ops and other RPython cleanups (Ronan, Romain)
+
+* better error messages for union errors (Edd, Ronan) TO BE PUSHED
+
+* better error messages for moving attributes
 
 * programming
 
-* JIT for dont-know-yet (Richard, Lukas)
+* JIT for xlispx (Richard, Lukas, Carl Friedrich around) IN PROGRESS
 
-* explore Laurie's crazy scheme of persisting loop entry counts (Maciej, Laurie)
+* explore Laurie's crazy scheme of persisting loop entry counts (Maciej, Anto) IN PROGRESS
 
 * progress on the documentation branch (Olmo, Manuel)
 
+* Python 3 benchmarks (Richard2) SOME PROGRESS
+
+* meditate on benchmarking infrastructure (Richard2, Edd, Maciej around)
+
 * shave all the yaks
 
-* find the slow generator task (Marko, Romain)
+* find the slow generator task (Marko, Romain) INVALID
 
 * general wizardry (Carl Friedrich; Armin)
 
-* general getting started (Rami, Carl Friedrich)
+* general getting started (Rami, Carl Friedrich) GOT STARTED
 
 
 Discussions planned
 --------------------
 
 * demo session Tuesday
+* scientific computing roadmap TODAY, Maciek leads discussion
 * STM dissemination round
 * JIT optimizer mess
 * roadmap planning
-* scientific computing roadmap
-* LuaJIT discussion TODAY (Tom, Armin, Maciek, Carl Friedrich, Laurie)
+* do we want pip installed on downloadable pypys?
+* generalize jitviewer to other languages
+
+* LuaJIT discussion DONE (Tom, Armin, Maciek, Carl Friedrich, Laurie)
