@@ -13,11 +13,11 @@ Armin
 Edd
 Maciej
 Manuel
+Rami
 
 People not present
 -------------------
 
-Rami
 Olmo
 Tom
 Laurie
@@ -58,7 +58,7 @@ Tasks
 
 * explore Laurie's crazy scheme of persisting loop entry counts (Maciej, Anto) IN PROGRESS
 
-* progress on the documentation branch (Olmo, Manuel)
+* progress on the documentation branch (Manuel, Rami)
 
 * Python 3 benchmarks (Richard2) SOME PROGRESS
 
