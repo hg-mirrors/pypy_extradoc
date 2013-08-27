@@ -68,6 +68,8 @@ Tasks
 
 * find the slow generator task (Marko, Romain) INVALID
 
+* review the pypy-pyarray branch
+
 * general wizardry (Carl Friedrich; Armin)
 
 * general getting started (Rami, Carl Friedrich) GOT STARTED
