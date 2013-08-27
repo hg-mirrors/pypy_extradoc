@@ -30,7 +30,9 @@ PyPy-STM
 
 * Optimistically run multiple threads in parallel
 
-* The only new feature is ``atomic``::
+* The only new feature is ``atomic``:
+
+.. sourcecode:: python
 
     with atomic:
         piece of code...
@@ -39,11 +41,12 @@ PyPy-STM
 Example of higher-level API
 ---------------------------
 
-::
+.. sourcecode:: python
 
     def work(...):
         ...
-        several more calls to: transaction.add(work, ...)
+        several more calls to: 
+            transaction.add(work, ...)
         ...
 
 
