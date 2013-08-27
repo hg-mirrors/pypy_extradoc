@@ -57,6 +57,16 @@ Example of higher-level API
 * Multi-core, but as if all the `work()` are done sequentially
 
 
+Status
+------
+
+* Kind of working without the JIT
+
+* Roughly three times slower (you need four cores to see benefits)
+
+* Working on the JIT support
+
+
 Q&A
 ---
 
