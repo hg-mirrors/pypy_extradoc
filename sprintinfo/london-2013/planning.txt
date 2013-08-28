@@ -6,7 +6,6 @@ Anto
 Remi
 Marko
 Romain
-Lukas
 Richard
 Richard2
 Armin
@@ -21,6 +20,7 @@ People not present
 Olmo
 Tom
 Laurie
+Lukas
 
 Tasks
 -----
@@ -38,41 +38,39 @@ Tasks
   threads or greenlets, probably by adding a thread-or-greenlet number
   prefix (see branch stmgc-c4 where we already add a thread num prefix)
 
-* general STM things (Remy, Armin) GENERAL PROGRESS
+* general STM things (Remi, Armin) ONE BUG LESS
 
-* general Numpy things (Romain) GENERAL PROGRESS
+* general Numpy things TWO BUGS LESS, ONE BUG MORE
 
-* PyOpenCL (Marko)
+* track raw array out of bounds in lldebug builds
+
+* PyOpenCL (Marko) HARDER THAN WE THOUGHT, BUT PROGRESS
 
 * fix some of the RPython nits that Edd found SOME PROGRESS
 
-* continue less-stringly-ops and other RPython cleanups (Ronan, Romain)
+* continue less-stringly-ops and other RPython cleanups
 
-* better error messages for union errors (Edd, Ronan) TO BE PUSHED
+* better error messages for union errors TO BE MERGED
 
-* better error messages for moving attributes
+* better error messages for moving attributes (Edd, Ronan)
 
-* programming
+* programming (all)
 
-* JIT for xlispx (Richard, Lukas, Carl Friedrich around) IN PROGRESS
+* JIT for xlispx (Richard, Carl Friedrich) WE HAVE A JIT (NOT A GOOD ONE THOUGH)
 
-* explore Laurie's crazy scheme of persisting loop entry counts (Maciej, Anto) IN PROGRESS
+* explore Laurie's crazy scheme of persisting loop entry counts EXPERIMENTING
 
-* progress on the documentation branch (Manuel, Rami)
+* progress on refactoring resume data (Maciek, Anto)
 
-* Python 3 benchmarks (Richard2) SOME PROGRESS
+* progress on the documentation branch (Manuel, Rami) NICER GETTING STARTED/INTRODUCTION
 
-* meditate on benchmarking infrastructure (Richard2, Edd, Maciej around)
+* Python 3 benchmarks (Richard2) PULL REQUEST SENT
 
-* shave all the yaks
-
-* find the slow generator task (Marko, Romain) INVALID
+* meditate on benchmarking infrastructure (Richard2, Maciej around) 
 
 * review the pypy-pyarray branch
 
 * general wizardry (Carl Friedrich; Armin)
-
-* general getting started (Rami, Carl Friedrich) GOT STARTED
 
 
 Discussions planned
