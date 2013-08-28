@@ -68,20 +68,25 @@ Tasks
 
 * meditate on benchmarking infrastructure (Richard2, Maciej around) 
 
+* start branch for Python 3.3
+
 * review the pypy-pyarray branch
 
 * general wizardry (Carl Friedrich; Armin)
 
+* try going back to the empty strategy (Lukas)
+
+* look at this: https://bitbucket.org/pypy/pypy/pull-request/176/fixed-support-for-re-stdlib-274/diff
 
 Discussions planned
 --------------------
 
-* demo session Tuesday
-* scientific computing roadmap TODAY, Maciek leads discussion
+* demo session Tuesday DONE
+* scientific computing roadmap DONE
 * STM dissemination round
-* JIT optimizer mess
+* JIT optimizer mess DONE
 * roadmap planning
-* do we want pip installed on downloadable pypys?
+* do we want pip installed on downloadable pypys? TODAY after lunch
 * generalize jitviewer to other languages
 
 * LuaJIT discussion DONE (Tom, Armin, Maciek, Carl Friedrich, Laurie)
