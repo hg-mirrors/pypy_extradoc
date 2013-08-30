@@ -9,10 +9,8 @@ Romain
 Richard
 Richard2
 Armin
-Edd
 Maciej
-Manuel
-Rami
+Lukas
 
 People not present
 -------------------
@@ -20,7 +18,9 @@ People not present
 Olmo
 Tom
 Laurie
-Lukas
+Rami
+Edd
+Manuel
 
 Tasks
 -----
@@ -38,35 +38,41 @@ Tasks
   threads or greenlets, probably by adding a thread-or-greenlet number
   prefix (see branch stmgc-c4 where we already add a thread num prefix)
 
-* general STM things (Remi, Armin) ONE BUG LESS
+* general STM things (Remi, Armin) ONE MORE BUG BITES THE DUST
 
-* general Numpy things TWO BUGS LESS, ONE BUG MORE
+* don't release the GIL in random places IN PROGRESS 
 
-* track raw array out of bounds in lldebug builds
+* general Numpy things NO HARD BUGS IN TRACKER
 
-* PyOpenCL (Marko) HARDER THAN WE THOUGHT, BUT PROGRESS
+* make numpy.unicode_ not segfault (Romain, Ronan)
+
+* track raw array out of bounds in lldebug builds (Romain, Ronan)
+
+* PyOpenCL (Marko) MORE PROGRESS
 
 * fix some of the RPython nits that Edd found SOME PROGRESS
 
 * continue less-stringly-ops and other RPython cleanups
 
-* better error messages for union errors TO BE MERGED
+* better error messages for union errors DONE
 
-* better error messages for moving attributes (Edd, Ronan)
+* even better error messages for RPython A FEW FAILING TESTS LEFT (Edd, Ronan around)
 
 * programming (all)
 
-* JIT for xlispx (Richard, Carl Friedrich) WE HAVE A JIT (NOT A GOOD ONE THOUGH)
+* JIT for xlispx (Richard, Carl Friedrich) THE JIT IS GETTING BETTER
 
 * explore Laurie's crazy scheme of persisting loop entry counts EXPERIMENTING
 
-* progress on refactoring resume data (Maciek, Anto)
+* progress on refactoring resume data (Maciek, Anto) PROGRESS
 
 * progress on the documentation branch (Manuel, Rami) NICER GETTING STARTED/INTRODUCTION
 
 * Python 3 benchmarks (Richard2) PULL REQUEST SENT
 
-* meditate on benchmarking infrastructure (Richard2, Maciej around) 
+* meditate on benchmarking infrastructure (Richard2, Maciej around)
+
+* re-enabled benchmark groups (Richard2) DONE
 
 * start branch for Python 3.3
 
@@ -74,19 +80,19 @@ Tasks
 
 * general wizardry (Carl Friedrich; Armin)
 
-* try going back to the empty strategy (Lukas)
+* try going back to the empty strategy (Lukas) WAITING FOR BENCHMARKS
 
 * look at this: https://bitbucket.org/pypy/pypy/pull-request/176/fixed-support-for-re-stdlib-274/diff
+
+* document how to mark failed tests that we would like to pass at some point (Armin, Ronan)
 
 Discussions planned
 --------------------
 
-* demo session Tuesday DONE
-* scientific computing roadmap DONE
 * STM dissemination round
-* JIT optimizer mess DONE
 * roadmap planning
 * do we want pip installed on downloadable pypys? TODAY after lunch
-* generalize jitviewer to other languages
+* generalize jitviewer to other languages (Edd, Richard2, Maciek)
+* how to deal with really long-running processes (Anto)
 
-* LuaJIT discussion DONE (Tom, Armin, Maciek, Carl Friedrich, Laurie)
+
