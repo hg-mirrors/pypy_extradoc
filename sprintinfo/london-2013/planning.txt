@@ -6,11 +6,13 @@ Anto
 Remi
 Marko
 Romain
+Ronan
 Richard
-Richard2
 Armin
 Maciej
 Lukas
+Sarah
+Edd
 
 People not present
 -------------------
@@ -19,8 +21,8 @@ Olmo
 Tom
 Laurie
 Rami
-Edd
 Manuel
+Richard2
 
 Tasks
 -----
@@ -38,33 +40,31 @@ Tasks
   threads or greenlets, probably by adding a thread-or-greenlet number
   prefix (see branch stmgc-c4 where we already add a thread num prefix)
 
-* general STM things (Remi, Armin) ONE MORE BUG BITES THE DUST
+* general STM things (Remi, Armin) TINY BUG FIXED, PROGRESS
 
-* don't release the GIL in random places IN PROGRESS 
+* don't release the GIL in random places DONE
 
 * general Numpy things NO HARD BUGS IN TRACKER
 
-* make numpy.unicode_ not segfault (Romain, Ronan)
+* make numpy.unicode_ not segfault (Romain, Ronan) IN PROGRESS
 
-* track raw array out of bounds in lldebug builds (Romain, Ronan)
+* track raw array out of bounds in lldebug builds
 
-* PyOpenCL (Marko) MORE PROGRESS
+* PyOpenCL (Marko) FIRST DEMO RUNNING
 
 * fix some of the RPython nits that Edd found SOME PROGRESS
 
-* continue less-stringly-ops and other RPython cleanups
+* continue less-stringly-ops and other RPython cleanups (Ronan, Edd)
 
-* better error messages for union errors DONE
-
-* even better error messages for RPython A FEW FAILING TESTS LEFT (Edd, Ronan around)
+* even better error messages for RPython DONE
 
 * programming (all)
 
-* JIT for xlispx (Richard, Carl Friedrich) THE JIT IS GETTING BETTER
+* JIT for xlispx (Richard, Carl Friedrich around) MINOR PROGRESS
 
 * explore Laurie's crazy scheme of persisting loop entry counts EXPERIMENTING
 
-* progress on refactoring resume data (Maciek, Anto) PROGRESS
+* progress on refactoring resume data (Maciek, Carl Friedrich) FIGHTING
 
 * progress on the documentation branch (Manuel, Rami) NICER GETTING STARTED/INTRODUCTION
 
@@ -72,19 +72,23 @@ Tasks
 
 * meditate on benchmarking infrastructure (Richard2, Maciej around)
 
-* re-enabled benchmark groups (Richard2) DONE
-
 * start branch for Python 3.3
 
-* review the pypy-pyarray branch
+* review the pypy-pyarray branch (Anto, Romain)
 
 * general wizardry (Carl Friedrich; Armin)
 
-* try going back to the empty strategy (Lukas) WAITING FOR BENCHMARKS
+* try going back to the empty strategy (Lukas) BUG, RUN BENCHMARKS AGAIN
 
 * look at this: https://bitbucket.org/pypy/pypy/pull-request/176/fixed-support-for-re-stdlib-274/diff
 
 * document how to mark failed tests that we would like to pass at some point (Armin, Ronan)
+
+* some tuning of jitviewer (Richard2, Edd)
+
+* CSP integration with tiny language (Sarah, Armin)
+
+* refactoring PyPy's bytecode dispatch loop (Laurie, Carl Friedrich around)
 
 Discussions planned
 --------------------
@@ -94,5 +98,5 @@ Discussions planned
 * do we want pip installed on downloadable pypys? TODAY after lunch
 * generalize jitviewer to other languages (Edd, Richard2, Maciek)
 * how to deal with really long-running processes (Anto)
-
+* LLVM discussion DONE
 
