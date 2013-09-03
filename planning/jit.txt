@@ -35,6 +35,16 @@ NEW TASKS
 - ConstantFloat(0.0) should be generated with pxor %xmm, %xmm; instead of a
   movabs.
 
+- Unroll some more dict methods, right now:
+
+    d = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}
+
+  allocates a bunch of stuff just to call "dict_resize"
+
+- Heapcache in the metainterp needs to handle array of structs
+  (SETINTERIORFIELD, GETINTERIORFIELD). This is needed for the previous item to
+  fully work.
+
 
 OPTIMIZATIONS
 -------------
