@@ -29,22 +29,22 @@ applications, and how it differs from other solutions like the
 Detailed abstract
 -----------------
 
-pypy-stm is a special version of PyPy that runs on multiple cores
+'pypy-stm' is a special version of PyPy that runs on multiple cores
 without the infamous Global Interpreter Lock (GIL).  It means that it
 can run a single Python program using multiple cores, rather than being
-limited to one core, as is the case for CPU-intensive programs on
-CPython.
+limited to one core, as it is the case for CPU-intensive programs on
+CPython (or regular PyPy).
 
-But the point is not only that: it can give the programmer the illusion
-of single-threaded programming, even when he really wants the program to
-use multiple cores.  This naturally avoids a whole class of bugs.  I
-will give examples of what I mean exactly by that.  Starting from the
-usual multithreaded demos --with explicit threads-- I will move to other
-examples where the actual threads are hidden to the programmer.  I will
-explain how we can modify/have modified the core of async libraries
-(Twisted, Tornado, gevent, ...) to use multiples threads, without
-exposing any concurrency issues to the user of the library --- the
-existing Twisted/etc. programs still run mostly without change.
+But the point is not only that: this approach can give the programmer
+the illusion of single-threaded programming, even when he really wants
+the program to use multiple cores.  This naturally avoids a whole class
+of bugs.  I will give examples of what I mean exactly by that.  Starting
+from the usual multithreaded demos --with explicit threads-- I will move
+to other examples where the actual threads are hidden to the programmer.
+I will explain how we can modify/have modified the core of async
+libraries (Twisted, Tornado, gevent, ...) to use multiples threads,
+without exposing any concurrency issues to the user of the library ---
+the existing Twisted/etc. programs still run mostly without change.
 Depending on the status at the time of the presentation, I will give
 demos of this, explaining in detail what people can expect to have to
 change (very little), and how it performs on real applications.
@@ -64,8 +64,8 @@ Outline
 
 1. Intro (5 min): PyPy, STM
 
-2. Examples and demos (10 min): simple multithreading; atomic
-   multithreading; Twisted/etc. model; performance numbers.
+2. Examples and demos (10 min): simple multithreading; multithreading
+   with atomic sections; Twisted/etc. model; performance numbers.
 
 3. Comparison (5 min): independent processes; multiprocessing; custom
    solutions.
