@@ -35,25 +35,29 @@ can run a single Python program using multiple cores, rather than being
 limited to one core, as it is the case for CPU-intensive programs on
 CPython (or regular PyPy).
 
-But the point is not only that: this approach can give the programmer
-the illusion of single-threaded programming, even when he really wants
-the program to use multiple cores.  This naturally avoids a whole class
-of bugs.  I will give examples of what I mean exactly by that.  Starting
-from the usual multithreaded demos --with explicit threads-- I will move
-to other examples where the actual threads are hidden to the programmer.
-I will explain how we can modify/have modified the core of async
-libraries (Twisted, Tornado, gevent, ...) to use multiples threads,
-without exposing any concurrency issues to the user of the library ---
-the existing Twisted/etc. programs still run mostly without change.
-Depending on the status at the time of the presentation, I will give
-demos of this, explaining in detail what people can expect to have to
-change (very little), and how it performs on real applications.
+But the point is not only that: this approach can also give the
+programmer the illusion of single-threaded programming, even when he
+really wants the program to use multiple cores.  This naturally avoids a
+whole class of bugs.  I will give examples of what exactly I mean by
+that.  Starting from the usual multithreaded demos --with explicit
+threads-- I will move to other examples where the actual threads are
+hidden to the programmer.  I will explain how the core of async
+libraries (Twisted, Tornado, gevent, ...) can be/have been modified to
+use multiples threads, without exposing any concurrency issues to the
+user of the library --- existing Twisted/etc. programs still run
+correctly without change.  (They may need a few small changes to enable
+parallelism.)
 
-I will give a comparison with the alternative approaches: independent
-processes; the stdlib 'multiprocessing' package; or custom solutions.
+Depending on the status of pypy-stm at the time of the presentation, I
+will give demos of this, explaining in detail what people can expect to
+have to change (very little), and how it performs on real applications.
+
+I will then give a comparison with the alternative approaches:
+independent processes; the stdlib 'multiprocessing' package; or custom
+solutions.
 
 I will also give an overview of how things work under the cover: the
-10000-feet view is to create internally copies of objects and write
+10000-feet view is to internally create copies of objects and write
 changes into these copies.  This allows the originals to continue being
 used by other threads.  It is an adaptation of previous work on
 Software Transactional Memory (STM), notably RSTM.
