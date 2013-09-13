@@ -36,7 +36,7 @@ limited to one core, as it is the case for CPU-intensive programs on
 CPython (or regular PyPy).
 
 But the point is not only that: this approach can also give the
-programmer the illusion of single-threaded programming, even when he
+programmer the illusion of single-threaded programming, even when he or she
 really wants the program to use multiple cores.  This naturally avoids a
 whole class of bugs.  I will give examples of what exactly I mean by
 that.  Starting from the usual multithreaded demos --with explicit
