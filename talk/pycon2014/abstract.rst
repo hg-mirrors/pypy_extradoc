@@ -49,8 +49,9 @@ correctly without change.  (They may need a few small changes to enable
 parallelism.)
 
 Depending on the status of pypy-stm at the time of the presentation, I
-will give demos of this, explaining in detail what people can expect to
-have to change (very little), and how it performs on real applications.
+will give demos of this, explaining in detail which kinds of programs
+are amenable to parallelism and which are not; and for the ones that
+are, how pypy-stm performs.
 
 I will then give a comparison with the alternative approaches:
 independent processes; the stdlib 'multiprocessing' package; or custom
