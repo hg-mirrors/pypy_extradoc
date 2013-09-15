@@ -28,7 +28,7 @@ Detailed abstract
 Benchmarking is hard. This talk is a way to share my knowledge that I
 accumulated over the last few years while benchmarking various programs
 on top of the PyPy project. It'll include benchmarking general programs,
-using PyPy and CPython do get some data and postprocessing data. It'll also
+using PyPy and CPython to get some data and postprocessing data. It'll also
 include a brief guide of stuff I use for visualization.
 
 Outline
