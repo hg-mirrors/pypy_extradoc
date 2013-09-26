@@ -45,6 +45,9 @@ NEW TASKS
   (SETINTERIORFIELD, GETINTERIORFIELD). This is needed for the previous item to
   fully work.
 
+- {}.update({}) is not fully unrolled and constant folded because HeapCache
+  loses track of values in virtual-to-virtual ARRAY_COPY calls.
+
 
 OPTIMIZATIONS
 -------------
