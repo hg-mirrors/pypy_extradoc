@@ -1,7 +1,18 @@
+.. include:: beamerdefs.txt
 
 =======================================
 Software Transactional Memory with PyPy
 =======================================
+
+
+Software Transactional Memory with PyPy
+---------------------------------------
+
+* PyCon ZA 2013
+
+* talk by Armin Rigo
+
+* sponsored by crowdfunding (thanks!)
 
 
 Introduction
@@ -15,11 +26,13 @@ Introduction
 Introduction
 ------------
 
-.. image: speed.png
+.. image:: speed.png
+   :scale: 65%
+   :align: center
 
 
-SQL Databases by example
-------------------------
+SQL by example
+--------------
 
 ::
 
@@ -34,10 +47,10 @@ Python by example
 
 ::
 
-    ..
+    ...
     x = obj.value
     obj.value = x + 1
-    ..
+    ...
 
 
 Python by example
@@ -56,7 +69,18 @@ Python by example
 
 ::
 
-    with atomic:
+    the_lock.acquire()
+    x = obj.value
+    obj.value = x + 1
+    the_lock.release()
+
+
+Python by example
+-----------------
+
+::
+
+    with the_lock:
         x = obj.value
         obj.value = x + 1
 
@@ -66,7 +90,7 @@ Python by example
 
 ::
 
-    with the_lock:
+    with atomic:
         x = obj.value
         obj.value = x + 1
 
@@ -107,7 +131,7 @@ STM
 
 * Transactional Memory
 
-* advanced magic (but not more so than databases)
+* advanced but not magic (same as databases)
 
 
 STM versus HTM
@@ -152,6 +176,8 @@ Internally
 
 * each thread runs tasks in a `with atomic`
 
+* uses threads, but internally only
+
 
 Example 2
 ---------
@@ -172,13 +198,34 @@ Example 2
 
 ::
 
-  def compute(train):
+  def compute_time(train):
      ...
+     train.start_time = ...
 
   def next_iteration(all_trains):
      for train in all_trains:
-        add_task(compute, train)
+        add_task(compute_time, train)
      run_all_tasks()
+
+
+Conflicts
+---------
+
+* like database transactions
+
+* but with `objects` instead of `records`
+
+* the transaction aborts and automatically retries
+
+
+Inevitable
+----------
+
+* means "unavoidable"
+
+* handles I/O in a `with atomic`
+
+* cannot abort the transaction any more
 
 
 By the way
@@ -192,29 +239,110 @@ By the way
 Current status
 --------------
 
-* 
+* basics work, JIT compiler integration almost done
 
+* different executable called `pypy-stm`
 
+* slow-down: around 3x (in bad cases up to 10x)
 
-User feedback
--------------
+* speed-ups measured with 4 cores
 
-::
-
-  Detected conflict:
-    File "foo.py", line 17, in walk
-      if node.left not in seen:
-  Transaction aborted, 0.000047 seconds lost
+* Linux 64-bit only
 
 
 User feedback
 -------------
 
+* implemented:
+
 ::
 
-  Forced inevitable:
-    File "foo.py", line 19, in walk
-      print >> log, logentry
-  Transaction blocked others for 0.xx seconds
+    Detected conflict:
+      File "foo.py", line 17, in walk
+        if node.left not in seen:
+    Transaction aborted, 0.000047 seconds lost
 
-(not implemented yet)
+
+User feedback
+-------------
+
+* not implemented yet:
+
+::
+
+    Forced inevitable:
+      File "foo.py", line 19, in walk
+        print >> log, logentry
+    Transaction blocked others for 0.xx seconds
+
+
+Async libraries
+---------------
+
+* future work
+
+* tweak a Twisted reactor: run multithreaded,
+  but use `with atomic`
+
+* existing Twisted apps still work, but we need to
+  look at conflicts/inevitables
+
+* similar with Tornado, gevent, and so on
+
+
+Async libraries
+---------------
+
+::
+
+  while True:
+     events = epoll.poll()
+     for event in events:
+        queue.put(event)
+
+And in several threads::
+
+  while True:
+     event = queue.get()
+     with atomic:
+        handle(event)
+
+
+More future work
+----------------
+
+* look at many more examples
+
+* tweak data structures to avoid conflicts
+
+* reduce slow-down, port to other OS'es
+
+
+Under the cover
+---------------
+
+* 10'000-feet overview
+
+* every object can have multiple versions
+
+* the shared versions are immutable
+
+* the most recent version can belong to one thread
+
+* synchronization only when a thread "steals" another thread's most
+  recent version, to make it shared
+
+* integrated with a generational garbage collector, with one
+  nursery per thread
+
+
+Summary
+-------
+
+* transactions in Python
+
+* a big change under the cover
+
+* a small change for Python users
+
+* `Q & A`
