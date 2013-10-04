@@ -14,6 +14,8 @@
 Introduction
 ------------
 
+* me: Armin Rigo
+
 * what is PyPy: an alternative implementation of Python
 
 * very compatible
@@ -25,7 +27,7 @@ Introduction
 ------------
 
 .. image:: speed.png
-   :scale: 65%
+   :scale: 67%
    :align: center
 
 
@@ -138,9 +140,9 @@ Locks != Transactions
 
 ::
 
-    with the_lock:      with the_lock:        with ..
-      x = obj.val         x = obj.val           x =..
-      obj.val = x + 1     obj.val = x + 1       obj..
+    with the_lock:     with the_lock:        with ..
+      x = obj.val        x = obj.val           x =..
+      obj.val = x + 1    obj.val = x + 1       obj..
 
 
 Locks != Transactions
@@ -148,9 +150,9 @@ Locks != Transactions
 
 ::
 
-    with atomic:        with atomic:          with ..
-      x = obj.val         x = obj.val           x =..
-      obj.val = x + 1     obj.val = x + 1       obj..
+    with atomic:       with atomic:          with ..
+      x = obj.val        x = obj.val           x =..
+      obj.val = x + 1    obj.val = x + 1       obj..
 
 
 STM
@@ -192,9 +194,9 @@ So...
 
 * no, it would be quite hard to implement it in standard CPython
 
-* but not completely impossible
-
 * too bad for now, only in PyPy
+
+* but it would not be completely impossible
 
 
 But...
@@ -242,7 +244,7 @@ Example 1
 
   for account in all_accounts:
      add_task(account.apply_interest)
-  run_tasks()
+  run_all_tasks()
 
 
 Internally
