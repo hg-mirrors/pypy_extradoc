@@ -1,24 +1,22 @@
 .. include:: beamerdefs.txt
 
-=======================================
-Software Transactional Memory with PyPy
-=======================================
+.. raw:: latex
 
+   \title{Software Transactional Memory with PyPy}
+   \author[arigo]{Armin Rigo}
 
-Software Transactional Memory with PyPy
----------------------------------------
+   \institute{PyCon ZA 2013}
+   \date{4th October 2013}
 
-* PyCon ZA 2013
-
-* talk by Armin Rigo
-
-* sponsored by crowdfunding (thanks!)
+   \maketitle
 
 
 Introduction
 ------------
 
 * what is PyPy: an alternative implementation of Python
+
+* very compatible
 
 * main focus is on speed
 
@@ -34,12 +32,41 @@ Introduction
 SQL by example
 --------------
 
+.. raw:: latex
+
+   %empty
+
+
+SQL by example
+--------------
+
 ::
 
     BEGIN TRANSACTION;
     SELECT * FROM ...;
     UPDATE ...;
     COMMIT;
+
+
+Python by example
+-----------------
+
+::
+
+    ...
+    x = obj.value
+    obj.value = x + 1
+    ...
+
+
+Python by example
+-----------------
+
+::
+
+    ...
+    obj.value += 1
+    ...
 
 
 Python by example
@@ -100,10 +127,10 @@ Locks != Transactions
 
 ::
 
-    BEGIN TRANSACTION;    BEGIN TRANSACTION;    BEGIN..
-    SELECT * FROM ...;    SELECT * FROM ...;    SELEC..
-    UPDATE ...;           UPDATE ...;           UPDAT..
-    COMMIT;               COMMIT;               COMMI..
+    BEGIN TRANSACTION;  BEGIN TRANSACTION;    BEGIN..
+    SELECT * FROM ...;  SELECT * FROM ...;    SELEC..
+    UPDATE ...;         UPDATE ...;           UPDAT..
+    COMMIT;             COMMIT;               COMMI..
 
 
 Locks != Transactions
@@ -111,9 +138,9 @@ Locks != Transactions
 
 ::
 
-    with the_lock:        with the_lock:        with ..
-      x = obj.val           x = obj.val           x =..
-      obj.val = x + 1       obj.val = x + 1       obj..
+    with the_lock:      with the_lock:        with ..
+      x = obj.val         x = obj.val           x =..
+      obj.val = x + 1     obj.val = x + 1       obj..
 
 
 Locks != Transactions
@@ -121,9 +148,9 @@ Locks != Transactions
 
 ::
 
-    with atomic:          with atomic:          with ..
-      x = obj.val           x = obj.val           x =..
-      obj.val = x + 1       obj.val = x + 1       obj..
+    with atomic:        with atomic:          with ..
+      x = obj.val         x = obj.val           x =..
+      obj.val = x + 1     obj.val = x + 1       obj..
 
 
 STM
@@ -134,14 +161,46 @@ STM
 * advanced but not magic (same as databases)
 
 
-STM versus HTM
---------------
+By the way
+----------
 
-* Software versus Hardware
+* STM replaces the GIL (Global Interpreter Lock)
 
-* CPU hardware specially to avoid the high overhead
+* any existing multithreaded program runs on multiple cores
 
-* too limited for now
+
+By the way
+----------
+
+* the GIL is necessary and very hard to avoid,
+  but if you look at it like a lock around every single
+  subexpression, then it can be replaced with `with atomic` too
+
+
+So...
+-----
+
+* yes, any existing multithreaded program runs on multiple cores
+
+* yes, we solved the GIL
+
+* great
+
+
+So...
+-----
+
+* no, it would be quite hard to implement it in standard CPython
+
+* but not completely impossible
+
+* too bad for now, only in PyPy
+
+
+But...
+------
+
+* but only half of the story in my opinion `:-)`
 
 
 Example 1
@@ -149,11 +208,13 @@ Example 1
 
 ::
 
-  def apply_interest_rate(self):
+  def apply_interest(self):
      self.balance *= 1.05
 
+
   for account in all_accounts:
-     account.apply_interest_rate()
+     account.apply_interest()
+                                                 .
 
 
 Example 1
@@ -161,11 +222,26 @@ Example 1
 
 ::
 
-  def apply_interest_rate(self):
+  def apply_interest(self):
      self.balance *= 1.05
 
+
   for account in all_accounts:
-     add_task(account.apply_interest_rate)
+     account.apply_interest()
+     ^^^ run this loop multithreaded
+
+
+Example 1
+---------
+
+::
+
+  def apply_interest(self):
+     #with atomic: --- automatic
+        self.balance *= 1.05
+
+  for account in all_accounts:
+     add_task(account.apply_interest)
   run_tasks()
 
 
@@ -178,6 +254,8 @@ Internally
 
 * uses threads, but internally only
 
+* very simple, pure Python
+
 
 Example 2
 ---------
@@ -187,7 +265,7 @@ Example 2
   def next_iteration(all_trains):
      for train in all_trains:
         start_time = ...
-        for othertrain in train.dependencies:
+        for othertrain in train.deps:
            if ...:
               start_time = ...
         train.start_time = start_time
@@ -215,25 +293,17 @@ Conflicts
 
 * but with `objects` instead of `records`
 
-* the transaction aborts and automatically retries
+* the transaction aborts and retries automatically
 
 
 Inevitable
 ----------
 
-* means "unavoidable"
+* "inevitable" (means "unavoidable")
 
 * handles I/O in a `with atomic`
 
 * cannot abort the transaction any more
-
-
-By the way
-----------
-
-* STM replaces the GIL
-
-* any existing multithreaded program runs on multiple cores
 
 
 Current status
@@ -241,11 +311,11 @@ Current status
 
 * basics work, JIT compiler integration almost done
 
-* different executable called `pypy-stm`
+* different executable (`pypy-stm` instead of `pypy`)
 
 * slow-down: around 3x (in bad cases up to 10x)
 
-* speed-ups measured with 4 cores
+* real time speed-ups measured with 4 or 8 cores
 
 * Linux 64-bit only
 
@@ -258,9 +328,11 @@ User feedback
 ::
 
     Detected conflict:
+      File "foo.py", line 58, in wtree
+        walk(root)
       File "foo.py", line 17, in walk
         if node.left not in seen:
-    Transaction aborted, 0.000047 seconds lost
+    Transaction aborted, 0.047 sec lost
 
 
 User feedback
@@ -273,11 +345,11 @@ User feedback
     Forced inevitable:
       File "foo.py", line 19, in walk
         print >> log, logentry
-    Transaction blocked others for 0.xx seconds
+    Transaction blocked others for XX s
 
 
-Async libraries
----------------
+Asynchronous libraries
+----------------------
 
 * future work
 
@@ -287,11 +359,11 @@ Async libraries
 * existing Twisted apps still work, but we need to
   look at conflicts/inevitables
 
-* similar with Tornado, gevent, and so on
+* similar with Tornado, eventlib, and so on
 
 
-Async libraries
----------------
+Asynchronous libraries
+----------------------
 
 ::
 
@@ -318,6 +390,16 @@ More future work
 * reduce slow-down, port to other OS'es
 
 
+STM versus HTM
+--------------
+
+* Software versus Hardware
+
+* CPU hardware specially to avoid the high overhead (Intel Haswell processor)
+
+* too limited for now
+
+
 Under the cover
 ---------------
 
@@ -329,8 +411,8 @@ Under the cover
 
 * the most recent version can belong to one thread
 
-* synchronization only when a thread "steals" another thread's most
-  recent version, to make it shared
+* synchronization only at the point where one thread "steals"
+  another thread's most recent version, to make it shared
 
 * integrated with a generational garbage collector, with one
   nursery per thread
@@ -344,5 +426,9 @@ Summary
 * a big change under the cover
 
 * a small change for Python users
+
+* (and the GIL is gone)
+
+* this work is sponsored by crownfunding (thanks!)
 
 * `Q & A`

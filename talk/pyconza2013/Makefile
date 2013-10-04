@@ -1,13 +1,13 @@
 
 
 view: talk.pdf
-	xpdf talk.pdf
+	evince talk.pdf
 
 talk.pdf: talk.tex
 	64bit pdflatex talk.tex
 
-talk.tex: talk1.tex fix.py
-	python fix.py < talk1.tex > talk.tex
+talk.tex: talk.rst
+	rst2beamer --stylesheet=stylesheet.latex --documentoptions=14pt --input-encoding=utf8 --output-encoding=utf8 --overlaybullets=false $< > talk.tex
 
-talk1.tex: talk.rst
-	rst2beamer $< > talk1.tex
+clean:
+	rm -f talk.tex talk.pdf
