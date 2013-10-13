@@ -45,9 +45,6 @@ NEW TASKS
   (SETINTERIORFIELD, GETINTERIORFIELD). This is needed for the previous item to
   fully work.
 
-- {}.update({}) is not fully unrolled and constant folded because HeapCache
-  loses track of values in virtual-to-virtual ARRAY_COPY calls.
-
 - ovfcheck(a << b) will do ``result >> b`` and check that the result is equal
   to ``a``, instead of looking at the x86 flags.
 
