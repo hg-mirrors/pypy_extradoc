@@ -9,6 +9,7 @@ the default PyPy comes with a GC that has much smaller pauses than yesterday.
 Let's start with explaining roughly what GC pauses are. In CPython each
 object has a reference count, which is incremented each time we create
 references and decremented each time we forget them. This means that objects
+(XXX also, very long chains of objects cause unbounded pauses in CPython)
 are freed each time they become unreachable. That is only half of the story
 though. Consider code like this::
 
