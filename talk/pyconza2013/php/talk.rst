@@ -11,16 +11,18 @@
 
    \maketitle
 
-introduction
+Introduction
 ------------
 
-* me - Maciej Fijałkowski, PyPy core developer
+* Maciej Fijałkowski, PyPy core developer
 
-* technology - PyPy
+* PHP interpreter
 
-* project - PHP interpreter
+* PyPy technology
 
-Wait, what???!!!1
+* if you have a question, feel free to interrupt me
+
+PHP - the problem
 -----------------
 
 * PHP - by far the most popular language on the web
