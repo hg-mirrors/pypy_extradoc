@@ -29,45 +29,50 @@ minimize the effect of JIT warm-up in the benchmark results.
 
 
 **Raytracer** from `stm-benchmarks <https://bitbucket.org/Raemi/stm-benchmarks/src>`_:
-Render times in seconds for a 1024x1024 image using 8 threads:
+Render times in seconds for a 1024x1024 image:
 
-+-------------+----------------------+
-| Interpeter  | Time (no-JIT / JIT)  |
-+=============+======================+
-| PyPy-2.1    | 148 / 2.56           |
-+-------------+----------------------+
-| CPython     | 73.4 / -             |
-+-------------+----------------------+
-| PyPy-STM    | 87.0 / 10.8          |
-+-------------+----------------------+
++-------------+----------------------+-------------------+
+| Interpreter | Base time: 1 thread  | 8 threads         |
++=============+======================+===================+
+| PyPy-2.1    |    2.47              |     2.56          |
++-------------+----------------------+-------------------+
+| CPython     |    81.1              |     73.4          |
++-------------+----------------------+-------------------+
+| PyPy-STM    |    50.2              |     10.8          |
++-------------+----------------------+-------------------+
 
-For comparison, the 3 interpreters in their best settings running
-single-threaded: 2.47, 81.1, 50.2
+For comparison, disabling the JIT gives 148ms on PyPy-2.1 and 87ms on
+PyPy-STM (with 8 threads).
 
 **Richards** from `PyPy repository on the stmgc-c4
 branch <https://bitbucket.org/pypy/pypy/commits/branch/stmgc-c4>`_:
 Average time per iteration in milliseconds using 8 threads:
 
-+-------------+----------------------+
-| Interpeter  | Time (no-JIT / JIT)  |
-+=============+======================+
-| PyPy-2.1    | 492 / 15.4           |
-+-------------+----------------------+
-| CPython     | 237 / -              |
-+-------------+----------------------+
-| PyPy-STM    | 538 / 116            |
-+-------------+----------------------+
++-------------+----------------------+-------------------+
+| Interpreter | Base time: 1 thread  | 8 threads         |
++=============+======================+===================+
+| PyPy-2.1    |   15.6               |  15.4             |
++-------------+----------------------+-------------------+
+| CPython     |   239                |  237              |
++-------------+----------------------+-------------------+
+| PyPy-STM    |   371                |  116              |
++-------------+----------------------+-------------------+
 
-For comparison, the 3 interpreters in their best settings running
-single-threaded: 15.6, 239, 371
+For comparison, disabling the JIT gives 492ms on PyPy-2.1 and 538ms on
+PyPy-STM.
 
 All this can be found in the `PyPy repository on the stmgc-c4
 branch <https://bitbucket.org/pypy/pypy/commits/branch/stmgc-c4>`_.
 Try it for yourself, but keep in mind that this is still experimental
 with a lot of things yet to come.
 
-You can also download a prebuilt binary frome here: **XXX**
+You can also download a prebuilt binary from here: **XXX**
 
-
-
-
+As a summary, what the numbers tell us is that PyPy-STM is, as expected,
+the only of the three interpreters where multithreading gives a large
+improvement in speed.  What they also tell us is that, obviously, the
+result is not good enough *yet:* it still takes longer on a 8-threaded
+PyPy-STM than on a regular single-threaded PyPy-2.1.  As you should know
+by now, we are good at promizing speed and delivering it years later.
+It has been two years already since PyPy-STM started, so we're in the
+fast-progressing step right now :-)
