@@ -33,36 +33,39 @@ Our set of STM benchmarks is very small unfortunately
 not representative of real-world performance. We tried to
 minimize the effect of JIT warm-up in the benchmark results.
 
+The machine these benchmarks were executed on has 4 physical
+cores with Hyper-Threading (8 hardware threads).
+
 
 **Raytracer** from `stm-benchmarks <https://bitbucket.org/Raemi/stm-benchmarks/src>`_:
 Render times in seconds for a 1024x1024 image:
 
-+-------------+----------------------+-------------------+
-| Interpreter | Base time: 1 thread  | 8 threads         |
-+=============+======================+===================+
-| PyPy-2.1    |    2.47              |     2.56          |
-+-------------+----------------------+-------------------+
-| CPython     |    81.1              |     73.4          |
-+-------------+----------------------+-------------------+
-| PyPy-STM    |    50.2              |     10.8          |
-+-------------+----------------------+-------------------+
++-------------+----------------------+---------------------+
+| Interpreter | Base time: 1 thread  | 8 threads (speedup) |
++=============+======================+=====================+
+| PyPy-2.1    |    2.47              |     2.56 (0.96x)    |
++-------------+----------------------+---------------------+
+| CPython     |    81.1              |     73.4 (1.1x)     |
++-------------+----------------------+---------------------+
+| PyPy-STM    |    50.2              |     10.8 (4.6x)     |
++-------------+----------------------+---------------------+
 
-For comparison, disabling the JIT gives 148ms on PyPy-2.1 and 87ms on
+For comparison, disabling the JIT gives 148s on PyPy-2.1 and 87s on
 PyPy-STM (with 8 threads).
 
 **Richards** from `PyPy repository on the stmgc-c4
 branch <https://bitbucket.org/pypy/pypy/commits/branch/stmgc-c4>`_:
 Average time per iteration in milliseconds using 8 threads:
 
-+-------------+----------------------+-------------------+
-| Interpreter | Base time: 1 thread  | 8 threads         |
-+=============+======================+===================+
-| PyPy-2.1    |   15.6               |  15.4             |
-+-------------+----------------------+-------------------+
-| CPython     |   239                |  237              |
-+-------------+----------------------+-------------------+
-| PyPy-STM    |   371                |  116              |
-+-------------+----------------------+-------------------+
++-------------+----------------------+---------------------+
+| Interpreter | Base time: 1 thread  | 8 threads (speedup) |
++=============+======================+=====================+
+| PyPy-2.1    |   15.6               |  15.4 (1.01x)       |
++-------------+----------------------+---------------------+
+| CPython     |   239                |  237 (1.01x)        |
++-------------+----------------------+---------------------+
+| PyPy-STM    |   371                |  116 (3.2x)         |
++-------------+----------------------+---------------------+
 
 For comparison, disabling the JIT gives 492ms on PyPy-2.1 and 538ms on
 PyPy-STM.
