@@ -9,9 +9,12 @@ the default PyPy comes with a GC that has much smaller pauses than yesterday.
 Let's start with explaining roughly what GC pauses are. In CPython each
 object has a reference count, which is incremented each time we create
 references and decremented each time we forget them. This means that objects
-(XXX also, very long chains of objects cause unbounded pauses in CPython)
 are freed each time they become unreachable. That is only half of the story
-though. Consider code like this::
+though. First note that when the last reference to a large tree of
+objects goes away, you have a pause: all the objects are freed. Your
+program is not progressing at all during this pause, and this pause's
+duration can be arbitrarily large. This occurs at deterministic times,
+though. But consider code like this::
 
    class A(object):
         pass
@@ -29,8 +32,8 @@ because they point to each other, even though the whole group has no references
 from the outside. CPython employs a cyclic garbage collector which is used to
 find such cycles. It walks over all objects in memory, starting from some known
 roots, such as ``type`` objects, variables on the stack, etc. This solves the
-problem, but can create noticable GC pauses as the heap becomes large and
-convoluted.
+problem, but can create noticable, undeterministic GC pauses as the heap
+becomes large and convoluted.
 
 PyPy essentially has only the cycle finder - it does not bother with reference
 counting, instead it walks alive objects every now and then (this is a big
