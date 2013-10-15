@@ -44,10 +44,82 @@ by Andrew Chambers and finished by Armin Rigo and Maciej Fijałkowski.
 Benchmarks
 ==========
 
+Everyone loves benchmarks. We did not measure any significant speed difference
+on our quite extensive benchmark suite on speed.pypy.org. The main
+benchmark that we used for other comparisons was translating `topaz`_
+ruby interpreter using various versions of PyPy and CPython. The exact
+command was ``python <pypy-checkout>/bin/rpython -O2 --rtype targettopaz.py``.
+Versions:
 
+* topaz - dce3eef7b1910fc5600a4cd0afd6220543104823
+* pypy source - defb5119e3c6
+* pypy compiled with minimark (non-incremental GC) - d1a0c07b6586
+* pypy compiled with incminimark (new, incremental GC) - 417a7117f8d7
+* CPython - 2.7.3
+
+The memory usage of CPython, PyPy with minimark and PyPy with incminimark is
+shown here. Note that this benchmark is quite bad for PyPy in general, the
+memory usage is higher and the amount of time taken is longer. This is due
+to JIT warmup being both memory hungry and inefficient. We'll work on it next.
+But first, the new GC is not worst than the old one.
+
+.. image:: memusage.png
+
+The image was obtained by graphing the output of `memusage.py`_.
+
+.. _`topaz`: http://http://docs.topazruby.com/en/latest/
+.. _`memusage.py`: https://bitbucket.org/pypy/pypy/src/default/pypy/tool/memusage/memusage.py?at=default
+
+However, the GC pauses are significantly smaller. For PyPy the way to
+get GC pauses is to measure time between start and stop while running stuff
+with ``PYPYLOG=gc-collect:log pypy program.py``, for CPython, the magic
+incantation is ``gc.set_debug(gc.DEBUG_STATS)`` and parsing the output.
+For what is worth, the average and total for CPython, as well as the total
+number of events are not directly comparable since it only shows the cyclic
+collector, not the reference counts. The only comparable thing is the
+amount of long pauses and their duration. In the table below, pause duration
+is sorted into 8 buckets, each meaning "below or equal the threshold".
+The output is generated using `gcanalyze`_ tool.
+
+.. _`gcanalyze`: https://bitbucket.org/pypy/pypy/src/default/rpython/tool/gcanalyze.py?at=default
+
+CPython:
+
++-------+-------+-------+-------+-------+-------+--------+--------+
+|150.1ms|300.2ms|450.3ms|600.5ms|750.6ms|900.7ms|1050.8ms|1200.9ms|
++-------+-------+-------+-------+-------+-------+--------+--------+
+|5417   |5      |3      |2      |1      |1      |0       |1       |
++-------+-------+-------+-------+-------+-------+--------+--------+
+
+
+PyPy minimark (non-incremental GC):
+
++-------+-------+-------+-------+--------+--------+--------+--------+
+|216.4ms|432.8ms|649.2ms|865.6ms|1082.0ms|1298.4ms|1514.8ms|1731.2ms|
++-------+-------+-------+-------+--------+--------+--------+--------+
+|27     |14     |6      |4      |6       |5       |3       |3       |
++-------+-------+-------+-------+--------+--------+--------+--------+
+
+PyPy incminimark (new incremental GC):
+
++------+------+------+------+------+------+-------+-------+
+|15.7ms|31.4ms|47.1ms|62.8ms|78.6ms|94.3ms|110.0ms|125.7ms|
++------+------+------+------+------+------+-------+-------+
+|25512 |122   |4     |1     |0     |0     |0      |2      |
++------+------+------+------+------+------+-------+-------+
+
+As we can see, while there is still work to be done (the 100ms ones could
+be split among several steps), we did improve the situation quite drastically
+without any actual performance difference.
+
+Note about the benchmark - we know it's a pretty extreme case of a JIT
+warmup, we know we suck on it, we're working on it and we're not afraid of
+showing PyPy is not always the best ;-)
 
 Nitty gritty details
 ====================
+
+XXX insert some links where you can read about terms used
 
 This was done as a patch to "minimark", our current GC, and called
 "incminimark" for now.  The former is a generational stop-the-world GC.
@@ -59,7 +131,7 @@ objects that survive --- usually a small fraction of all young objects.
 From time to time, this minor collection is followed by a "major
 collection": in that step, we walk *all* objects to classify which ones
 are still alive and which ones are now dead (*marking*) and free the
-memory occupied by the dead ones (*speeding*).
+memory occupied by the dead ones (*sweeping*).
 
 This "major collection" is what gives the long GC pauses.  To fix this
 problem we made the GC incremental: instead of running one complete
