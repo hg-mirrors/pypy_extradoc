@@ -54,7 +54,7 @@ Benchmarks
 
 Everyone loves benchmarks. We did not measure any significant speed difference
 on our quite extensive benchmark suite on speed.pypy.org. The main
-benchmark that we used for other comparisons was translating `topaz`_
+benchmark that we used for other comparisons was translating the `topaz`_
 ruby interpreter using various versions of PyPy and CPython. The exact
 command was ``python <pypy-checkout>/bin/rpython -O2 --rtype targettopaz.py``.
 Versions:
@@ -68,7 +68,7 @@ Versions:
 The memory usage of CPython, PyPy with minimark and PyPy with incminimark is
 shown here. Note that this benchmark is quite bad for PyPy in general, the
 memory usage is higher and the amount of time taken is longer. This is due
-to JIT warmup being both memory hungry and inefficient. We'll work on it next.
+to the JIT warmup being both memory hungry and inefficient (see below).
 But first, the new GC is not worst than the old one.
 
 .. image:: memusage.png
@@ -86,8 +86,8 @@ For what is worth, the average and total for CPython, as well as the total
 number of events are not directly comparable since it only shows the cyclic
 collector, not the reference counts. The only comparable thing is the
 amount of long pauses and their duration. In the table below, pause duration
-is sorted into 8 buckets, each meaning "below or equal the threshold".
-The output is generated using `gcanalyze`_ tool.
+is sorted into 8 buckets, each meaning "below that or equal to the threshold".
+The output is generated using the `gcanalyze`_ tool.
 
 .. _`gcanalyze`: https://bitbucket.org/pypy/pypy/src/default/rpython/tool/gcanalyze.py?at=default
 
@@ -120,9 +120,9 @@ As we can see, while there is still work to be done (the 100ms ones could
 be split among several steps), we did improve the situation quite drastically
 without any actual performance difference.
 
-Note about the benchmark - we know it's a pretty extreme case of a JIT
+Note about the benchmark - we know it's a pretty extreme case of JIT
 warmup, we know we suck on it, we're working on it and we're not afraid of
-showing PyPy is not always the best ;-)
+showing PyPy is not always the best ``;-)``
 
 Nitty gritty details
 ====================
