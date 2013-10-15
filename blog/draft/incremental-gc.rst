@@ -32,7 +32,7 @@ because they point to each other, even though the whole group has no references
 from the outside. CPython employs a cyclic garbage collector which is used to
 find such cycles. It walks over all objects in memory, starting from some known
 roots, such as ``type`` objects, variables on the stack, etc. This solves the
-problem, but can create noticable, undeterministic GC pauses as the heap
+problem, but can create noticeable, nondeterministic GC pauses as the heap
 becomes large and convoluted.
 
 PyPy essentially has only the cycle finder - it does not bother with reference
