@@ -3,7 +3,7 @@ Update on STM
 
 Hi all,
 
-the sprint in London was a lot of fun and very fruitful. In the last
+The sprint in London was a lot of fun and very fruitful. In the last
 update on STM, Armin was working on improving and specializing the 
 automatic barrier placement. There is still a lot to do in that area, 
 but that work is merged now. Specializing and improving barrier placement
