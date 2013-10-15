@@ -79,6 +79,7 @@ Try it for yourself, but keep in mind that this is still experimental
 with a lot of things yet to come.
 
 You can also download a prebuilt binary from here: **XXX**
+(Linux x64 only for now)
 
 Summary
 -------
@@ -88,7 +89,7 @@ the only of the three interpreters where multithreading gives a large
 improvement in speed.  What they also tell us is that, obviously, the
 result is not good enough *yet:* it still takes longer on a 8-threaded
 PyPy-STM than on a regular single-threaded PyPy-2.1.  As you should know
-by now, we are good at promizing speed and delivering it years later.
+by now, we are good at promising speed and delivering it years later.
 It has been two years already since PyPy-STM started, so we're in the
 fast-progressing step right now :-)
 
