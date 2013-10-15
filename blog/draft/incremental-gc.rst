@@ -34,8 +34,13 @@ convoluted.
 
 PyPy essentially has only the cycle finder - it does not bother with reference
 counting, instead it walks alive objects every now and then (this is a big
-simplification, PyPy's GC is much more complex than this). As a result it also
-has the problem of GC pauses. To alleviate this problem, which is essential for
+simplification, PyPy's GC is much more complex than this). Although this might
+sound like a missing feature, it is really one of the reasons why PyPy is so
+fast, because at the end of the day the total time spent in managing the
+memory is lower in PyPy than CPython. However, as a result, PyPy also has the
+problem of GC pauses.
+
+To alleviate this problem, which is essential for
 applications like games, we started to work on incremental GC, which spreads
 the walking of objects and cleaning them across the execution time in smaller
 intervals. The work was sponsored by the Raspberry Pi foundation, started
