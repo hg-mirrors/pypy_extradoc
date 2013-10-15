@@ -165,7 +165,7 @@ reached.
 The trick we used in PyPy is to consider minor collections as part of
 the whole, rather than focus only on major collections.  The existing
 minimark GC had always used a "write barrier" (a piece of code run every time
-you set or get from an object or array) to do its job, like any
+you set or get a pointer from an object or array) to do its job, like any
 generational GC.  This write barrier is used to detect when an old
 object (outside the nursery) is modified to point to a young object
 (inside the nursery), which is essential information for minor
