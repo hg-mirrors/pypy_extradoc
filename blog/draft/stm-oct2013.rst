@@ -21,7 +21,7 @@ to be completely accurate, we update them non-transactionally now with
 a chance of small errors.
 
 There are still many such performance issues of various complexity left
-to tackle. So stay tuned or contribute :)
+to tackle: we are nowhere near done. So stay tuned or contribute :)
 
 Performance
 -----------
@@ -55,7 +55,7 @@ PyPy-STM (with 8 threads).
 
 **Richards** from `PyPy repository on the stmgc-c4
 branch <https://bitbucket.org/pypy/pypy/commits/branch/stmgc-c4>`_:
-Average time per iteration in milliseconds using 8 threads:
+Average time per iteration in milliseconds:
 
 +-------------+----------------------+---------------------+
 | Interpreter | Base time: 1 thread  | 8 threads (speedup) |
@@ -76,11 +76,12 @@ Try it!
 All this can be found in the `PyPy repository on the stmgc-c4
 branch <https://bitbucket.org/pypy/pypy/commits/branch/stmgc-c4>`_.
 Try it for yourself, but keep in mind that this is still experimental
-with a lot of things yet to come.
+with a lot of things yet to come. Only Linux x64 is supported right
+now, but contributions are welcome.
 
-You can also download a prebuilt binary from here:
+You can download a prebuilt binary from here:
 https://bitbucket.org/pypy/pypy/downloads/pypy-oct13-stm.tar.bz2
-(Linux x64 only for now, Ubuntu >= 12.04)
+(Linux x64 Ubuntu >= 12.04).
 
 Summary
 -------
@@ -89,10 +90,10 @@ What the numbers tell us is that PyPy-STM is, as expected,
 the only of the three interpreters where multithreading gives a large
 improvement in speed.  What they also tell us is that, obviously, the
 result is not good enough *yet:* it still takes longer on a 8-threaded
-PyPy-STM than on a regular single-threaded PyPy-2.1.  As you should know
-by now, we are good at promising speed and delivering it years later.
-It has been two years already since PyPy-STM started, so we're in the
-fast-progressing step right now :-)
+PyPy-STM than on a regular single-threaded PyPy-2.1.  However, as you
+should know by now, we are good at promising speed and delivering it...
+years later ``:-)``  But it has been two years already since PyPy-STM
+started, and things look good now.  Expect major improvements soon.
 
 
 Cheers
