@@ -78,8 +78,9 @@ branch <https://bitbucket.org/pypy/pypy/commits/branch/stmgc-c4>`_.
 Try it for yourself, but keep in mind that this is still experimental
 with a lot of things yet to come.
 
-You can also download a prebuilt binary from here: **XXX**
-(Linux x64 only for now)
+You can also download a prebuilt binary from here:
+https://bitbucket.org/pypy/pypy/downloads/pypy-oct13-stm.tar.bz2
+(Linux x64 only for now, Ubuntu >= 12.04)
 
 Summary
 -------
