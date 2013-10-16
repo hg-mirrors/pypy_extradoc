@@ -92,8 +92,13 @@ improvement in speed.  What they also tell us is that, obviously, the
 result is not good enough *yet:* it still takes longer on a 8-threaded
 PyPy-STM than on a regular single-threaded PyPy-2.1.  However, as you
 should know by now, we are good at promising speed and delivering it...
-years later ``:-)``  But it has been two years already since PyPy-STM
-started, and things look good now.  Expect major improvements soon.
+years later ``:-)``
+
+But it has been two years already since PyPy-STM started, and this is
+our first preview of the JIT integration.  Expect major improvements
+soon: with STM, the JIT generates code that is completely suboptimal in
+many cases (barriers, allocation, and more).  Once we improve this, the
+performance of the STM-JITted code should come much closer to PyPy 2.1.
 
 
 Cheers
