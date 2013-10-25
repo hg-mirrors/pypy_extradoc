@@ -64,11 +64,12 @@ end, but tracing is still incredibly slow. But we never actually got to the
 but then we'd abort, and reap none of the benefits.
 
 To fix this, we adjusted some of the heuristics in the JIT, to better show it
-how ``sys.settrace()`` works. Previously the JIT saw "here's an opaque function
-which gets the frame object, I wonder if it messes with the frame!" Now we let
-the JIT look inside the trace function, so it's able to see that
-``coverage.py`` isn't messing with the frame in any weird ways, it's just
-reading the line number and file path out of it.
+how ``sys.settrace(<tracefunc>)`` works. Previously the JIT saw it as an opaque
+function which gets the frame object, and couldn't tell whether or not it
+messed with the frame object. Now we let the JIT look inside the
+``<tracefunc>`` function, so it's able to see that ``coverage.py`` isn't
+messing with the frame in any weird ways, it's just reading the line number and
+file path out of it.
 
 I asked several friends in the VM implementation and research field if they
 were aware of any other research into making VMs stay fast when debugging tools
