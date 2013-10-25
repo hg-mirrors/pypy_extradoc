@@ -52,7 +52,7 @@ Technical details
 
 So how'd we do it? Previously, using ``sys.settrace()`` (which ``coverage.py``
 uses under the hood) disabled the JIT. Except it didn't just disable the JIT,
-it did it in a particularly insidious way, the JIT had no idea it was being
+it did it in a particularly insidious way — the JIT had no idea it was being
 disabled!
 
 Instead, every time PyPy discovered one of your functions was a hotspot, it
