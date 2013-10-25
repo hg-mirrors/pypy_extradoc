@@ -72,10 +72,11 @@ reading the line number and file path out of it.
 
 I asked several friends in the VM implementation and research field if they
 were aware of any other research into making VMs stay fast when debugging tools
-like ``coverage.py`` are running. No one I spoke to was aware of any, so I'm
-pleased to say that PyPy is quite possibly the first VM to work on optimizing
-code in debugging mode! This is possible because of our years spent investing
-in meta-tracing research.
+like ``coverage.py`` are running. No one I spoke to was aware of any (but I
+didn't do a particularly exhaustive review of the literature, I just tweeted at
+a few people), so I'm pleased to say that PyPy is quite possibly the first VM
+to work on optimizing code in debugging mode! This is possible because of our
+years spent investing in meta-tracing research.
 
 Happy testing,
 Alex
