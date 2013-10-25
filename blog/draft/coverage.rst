@@ -21,7 +21,7 @@ program:
 Running ``time coverage.py run test.py`` five times, and looking at the best
 run, here's how PyPy 2.1 stacks up against CPython 2.7.5:
 
-+-------------------------------------------------+
++---------------+---------+-----------------------+
 | Python        | Time    | Normalized to CPython |
 +===============+=========+=======================+
 | CPython 2.7.5 | 3.879s  | 1.0x                  |
@@ -35,7 +35,7 @@ bot, but PyPy takes 8-10 minutes.
 
 So I sat down to address it. And the results:
 
-+-------------------------------------------------+
++---------------+---------+-----------------------+
 | Python        | Time    | Normalized to CPython |
 +===============+=========+=======================+
 | CPython 2.7.5 | 3.879s  | 1.0x                  |
