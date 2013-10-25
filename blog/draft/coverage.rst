@@ -55,13 +55,13 @@ uses under the hood) disabled the JIT. Except it didn't just disable the JIT,
 it did it in a particularly insidious way — the JIT had no idea it was being
 disabled!
 
-Instead, every time PyPy discovered one of your functions was a hotspot, it
-would start tracing, to observe what the program was doing, and right when it
-was about to finish, ``coverage`` would run, and it would cause the JIT to
-abort. Tracing is a slow process, it makes up for it by generating fast machine
-code at the end, but tracing is still incredibly slow. But we never actually
-got to the "generate fast machine code" stage. Instead we'd pay all the cost of
-tracing, but then we'd abort, and reap none of the benefits.
+Instead, every time PyPy discovered that one of your functions was a hotspot,
+it would start tracing to observe what the program was doing, and right when it
+was about to finish, ``coverage`` would run and cause the JIT to abort. Tracing
+is a slow process, it makes up for it by generating fast machine code at the
+end, but tracing is still incredibly slow. But we never actually got to the
+"generate fast machine code" stage. Instead we'd pay all the cost of tracing,
+but then we'd abort, and reap none of the benefits.
 
 To fix this, we adjusted some of the heuristics in the JIT, to better show it
 how ``sys.settrace()`` works. Previously the JIT saw "here's an opaque function
