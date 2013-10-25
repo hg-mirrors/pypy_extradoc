@@ -50,7 +50,7 @@ Not bad.
 Technical details
 -----------------
 
-So how'd we do it? Previous, using ``sys.settrace()`` (which ``coverage.py``
+So how'd we do it? Previously, using ``sys.settrace()`` (which ``coverage.py``
 uses under the hood) disabled the JIT. Except it didn't just disable the JIT,
 it did it in a particularly insidious way, the JIT had no idea it was being
 disabled!
@@ -64,7 +64,7 @@ got to the "generate fast machine code" stage. Instead we'd pay all the cost of
 tracing, but then we'd abort, and reap none of the benefits.
 
 To fix this, we adjusted some of the heuristics in the JIT, to better show it
-how ``sys.settrace()`` works. Previous the JIT saw "here's an opaque function
+how ``sys.settrace()`` works. Previously the JIT saw "here's an opaque function
 which gets the frame object, I wonder if it messes with the frame!" Now we let
 the JIT look inside the trace function, so it's able to see that
 ``coverage.py`` isn't messing with the frame in any weird ways, it's just
