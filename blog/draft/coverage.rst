@@ -5,7 +5,7 @@ If you've ever tried to run your programs with ``coverage.py`` under PyPy,
 you've probably experienced some incredible slowness. Take this simple
 program:
 
-.. source-code:: python
+.. code-block:: python
 
     def f():
         return 1
