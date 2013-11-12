@@ -31,8 +31,7 @@ However PyPy's JIT is capable of heavily optimizing these machine sized integer
 operations, so this came with a regression in performance in this area.
 
 We're now in the process of solving this. Part of this work also involves some
-house cleaning on these numeric types which will also benefit the default
-branch.
+house cleaning on these numeric types which also benefits the default branch.
 
 cheers,
 Phil
