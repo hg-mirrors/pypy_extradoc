@@ -12,6 +12,7 @@ available yet from them.
 ==================== ============== =======================
 Armin Rigo                          private
 Romain Guillebert    11-19          Ermina
+Christian Clauss     11-12 & 18-19  I live nearby
 ==================== ============== =======================
 
 
