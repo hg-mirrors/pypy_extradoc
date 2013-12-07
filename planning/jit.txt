@@ -48,6 +48,18 @@ NEW TASKS
 - ovfcheck(a << b) will do ``result >> b`` and check that the result is equal
   to ``a``, instead of looking at the x86 flags.
 
+- Track whether floats in the JIT could possibly have overflowed into
+  ``inf``/``nan``
+
+  f81 = cast_int_to_float(i79)
+  f82 = float_add(f81, 11235582092889474423308157442431404585112356118389416079589380072358292237843810195794279832650471001320007117491962084853674360550901038905802964414967132773610493339054092829768888725077880882465817684505312860552384417646403930092119569408801702322709406917786643639996702871154982269052209770601514008576.000000)
+  i83 = float_eq(f82, f81)
+  guard_false(i83, descr=<Guard0x104d2c6b0>)
+
+  For example, here this is the test for ``isinf(i81)``, but it's impossible
+  for  ``i81`` to be ``inf`` because ``float(sys.maxint)`` is a finite value.
+
+
 
 OPTIMIZATIONS
 -------------
