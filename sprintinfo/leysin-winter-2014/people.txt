@@ -13,6 +13,7 @@ available yet from them.
 Armin Rigo                          private
 Romain Guillebert    11-19          Ermina
 Christian Clauss     11-12 & 18-19  I live nearby
+Maciej Fijalkowski   11-18          Ermina
 ==================== ============== =======================
 
 
@@ -24,7 +25,6 @@ People on the following list were present at previous sprints:
 Romain Guillebert    ?              ?
 Antonio Cuni         ?              ?
 Michael Foord        ?              ?
-Maciej Fijalkowski   ?              ?
 David Schneider      ?              ?
 Jacob Hallen         ?              ?
 Laura Creighton      ?              ?
