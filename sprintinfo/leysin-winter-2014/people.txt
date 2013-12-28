@@ -16,6 +16,7 @@ Christian Clauss     11-12 & 18-19  I live nearby
 Maciej Fijalkowski   11-18          Ermina
 Remi Meier           11-19          Ermina
 Johan Råde           11-18          Ermina
+Antonio Cuni         14-18          Ermina
 ==================== ============== =======================
 
 
@@ -25,7 +26,6 @@ People on the following list were present at previous sprints:
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
 Romain Guillebert    ?              ?
-Antonio Cuni         ?              ?
 Michael Foord        ?              ?
 David Schneider      ?              ?
 Jacob Hallen         ?              ?
