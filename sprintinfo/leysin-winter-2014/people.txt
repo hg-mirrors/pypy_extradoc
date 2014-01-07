@@ -17,6 +17,7 @@ Maciej Fijalkowski   11-18          Ermina
 Remi Meier           11-19          Ermina
 Johan Råde           11-18          Ermina
 Antonio Cuni         14-18          Ermina
+Manuel Jacob         12-19          private
 ==================== ============== =======================
 
 
