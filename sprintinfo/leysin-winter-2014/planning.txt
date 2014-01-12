@@ -1,0 +1,32 @@
+
+People
+------
+
+Johan Rade
+Remi Meier
+Maciej Fijalkowski
+Romain Guillebert
+Armin Rigo
+
+
+Topics
+------
+
+* numpy stuff, fix bugs from bug tracker (rguillebert, ?)
+
+* look at codespeed2
+
+* resume-refactor branch (rguillebert, fijal)
+
+* GC pinning
+
+* asmgcc bug with greenlets and --shared
+
+* think about --shared by default
+
+* CFFI 1.0
+
+* STM (remi)
+
+* discuss about C++ / cppyy (johan, ?)
+
