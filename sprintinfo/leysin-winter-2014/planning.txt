@@ -30,3 +30,4 @@ Topics
 
 * discuss about C++ / cppyy (johan, ?)
 
+* ctypes: "array_of_char.value = string": speed up this case
