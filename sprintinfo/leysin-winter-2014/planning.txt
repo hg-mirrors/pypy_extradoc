@@ -6,7 +6,8 @@ Johan Rade
 Remi Meier
 Maciej Fijalkowski
 Romain Guillebert
-Armin Rigo
+Armin Rigo (late)
+Manuel Jacob
 
 
 Topics
@@ -16,22 +17,24 @@ Topics
 
 * look at codespeed2
 
-* resume-refactor branch (rguillebert, fijal)
+* resume-refactor branch (rguillebert, fijal) (PROGRESS)
 
 * GC pinning
 
-* asmgcc bug with greenlets and --shared
+* asmgcc bug with greenlets and --shared (FIXED)
 
 * think about --shared by default
 
 * CFFI 1.0
 
-* STM (remi)
+* STM (remi, armin) SOME PROGRESS in transaction breaks
 
-* discuss about C++ / cppyy (johan, ?)
+* discuss about C++ / cppyy, look into importing pyshiboken (johan pessimistic, ?)
 
 * ctypes: "array_of_char.value = string": speed up this case
 
 * ctypes: https://bugs.pypy.org/issue1671
 
 * longs multiplication: patch at https://bugs.pypy.org/issue892
+
+* look into merging refactor-str-types (johan, mjacob)
