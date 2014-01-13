@@ -38,3 +38,5 @@ Topics
 * longs multiplication: patch at https://bugs.pypy.org/issue892
 
 * look into merging refactor-str-types (johan, mjacob)
+
+* tweaking ast classes: https://bugs.pypy.org/issue1673
