@@ -6,7 +6,7 @@ Johan Rade
 Remi Meier
 Maciej Fijalkowski
 Romain Guillebert
-Armin Rigo (late)
+Armin Rigo
 Manuel Jacob
 
 
