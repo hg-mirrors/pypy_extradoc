@@ -31,8 +31,6 @@ Topics
 
 * discuss about C++ / cppyy, look into importing pyshiboken (johan pessimistic, ?)
 
-* ctypes: "array_of_char.value = string": speed up this case
-
 * ctypes: https://bugs.pypy.org/issue1671
 
 * longs multiplication: patch at https://bugs.pypy.org/issue892
