@@ -8,16 +8,16 @@ Maciej Fijalkowski
 Romain Guillebert
 Armin Rigo
 Manuel Jacob
-
+Antonio Cuni
 
 Topics
 ------
 
-* numpy stuff, fix bugs from bug tracker (rguillebert, ?)
+* numpy stuff, fix bugs from bug tracker (rguillebert, antocuni around)
 
 * look at codespeed2
 
-* resume-refactor branch (rguillebert, fijal) (PROGRESS)
+* resume-refactor branch (MORE PROGRESS)
 
 * GC pinning
 
@@ -27,14 +27,18 @@ Topics
 
 * CFFI 1.0
 
-* STM (remi, armin) SOME PROGRESS in transaction breaks
+* STM (remi, armin) DONE in transaction breaks, started c7
 
 * discuss about C++ / cppyy, look into importing pyshiboken (johan pessimistic, ?)
 
-* ctypes: https://bugs.pypy.org/issue1671
+* try cppyy to run on windows (johan) IN PROGRESS
+
+* ctypes: https://bugs.pypy.org/issue1671 DONE
 
 * longs multiplication: patch at https://bugs.pypy.org/issue892
 
-* look into merging refactor-str-types (johan, mjacob)
+* look into merging refactor-str-types (johan, mjacob, antocuni) FIX TRANSLATION
 
-* tweaking ast classes: https://bugs.pypy.org/issue1673
+* tweaking ast classes: https://bugs.pypy.org/issue1673 (mjacob)
+
+* skiing (fijal)
