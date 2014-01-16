@@ -17,7 +17,7 @@ Topics
 
 * look at codespeed2
 
-* resume-refactor branch (MORE PROGRESS)
+* resume-refactor branch (fijal, rguillebert) MORE PROGRESS
 
 * GC pinning
 
@@ -37,8 +37,10 @@ Topics
 
 * longs multiplication: patch at https://bugs.pypy.org/issue892
 
-* look into merging refactor-str-types (johan, mjacob, antocuni) FIX TRANSLATION
+* look into merging refactor-str-types (mjacob, antocuni) FIX TRANSLATION
 
 * tweaking ast classes: https://bugs.pypy.org/issue1673 (mjacob)
 
-* skiing (fijal)
+* skiing (fijal, DONE)
+
+* add jit_merge_point to tuple_contains (anybody)
