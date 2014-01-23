@@ -158,7 +158,7 @@ Behind-the-scene threads
 Summary (optimistic)
 ====================
 
-* If you are a Twisted developer...
+* If you are using Twisted...
 
 * Just wait and your program will run on multiple cores ``:-)``
 
@@ -170,8 +170,10 @@ Conflicts
   out of the box
 
 * ...Because of "conflicts": each event should be "often" independent,
-  but may not be (e.g. because they each incrementing a global counter
-  or similar)
+  but may not be
+  
+* Example: incrementing a global counter, or otherwise changing some
+  global object systematically
 
 
 Some work left for you to do
@@ -182,6 +184,17 @@ Some work left for you to do
 * Maybe using some debugger-like tools that report conflicts
 
 * Then you need (hopefully small) rewrites to avoid them
+
+
+Some work left for us to do, first
+==================================
+
+* Additional conflicts come from Twisted itself
+
+* Example: the logging system, which may need to use queues
+
+* This means that some of the core Python data structures (dicts,
+  queues...) may need refactorings too
 
 
 What is the point?
