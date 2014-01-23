@@ -23,6 +23,8 @@ Introduction
 
 * PyPy dev, CPython dev
 
+* This talk applies to Python or any similar language
+
 
 Problem
 =======
@@ -61,24 +63,24 @@ The GIL
 Transactional Memory
 ====================
 
-* Recent research
+* Recent research (past ~10 years)
 
 * Optimistically runs multiple threads even if they
   are supposed to be waiting on the same lock
 
-* High overheads (but working on it)
+* Usually, high overheads
 
 
 Expected results
 ================
 
-* Runs multiple threads despite having a single GIL
+* Runs multiple threads despite a single GIL
 
 * Does not remove the GIL, but solves the original problem anyway
 
 
-Kinds of Transactional Memory
-=============================
+Transactional Memory
+====================
 
 * STM: Software Transactional Memory
 
@@ -90,16 +92,17 @@ Kinds of Transactional Memory
 Status
 ======
 
-* STM is still at least 2x slower (speed on a single core)
+* STM is still at least 2x slower (on one core)
 
-* HTM in Ruby with Intel Haswell CPUs: not bad but
+* HTM: tested in Ruby with Intel Haswell CPUs, not bad but
   still disappointing (imo)
 
 
 STM C7
 ======
 
-* Our group's research
+* c7 is our group's research (there were a lot of previous
+  research that failed to give good results)
 
 * Hope: much less than 2x slower for "PyPy-like" usages
 
@@ -113,13 +116,18 @@ Atomic sections
 
 * One bytecode?  Obscure for the regular Python programmer
 
-* Larger atomic sections: ``with atomic:``
+* Larger atomic sections:
+
+::
+
+   with atomic:
+      ...
 
 
-So...
-=====
+Larger atomic sections
+======================
 
-* New way to synchronize multiple threads: ``with atomic:``
+* New way to synchronize multiple threads
 
 * All ``atomic`` blocks appear to run serialized
 
@@ -131,8 +139,8 @@ No threads?
 
 * Works even if you don't use threads!
 
-* If the Twisted reactor was modified to start a pool of threads,
-  and to run all events in ``with atomic:``
+* If the Twisted reactor (say) was modified to start a pool of threads,
+  and to run all events in "``with atomic:``"
 
 * ...Then the end result is the same, for any Twisted program
 
@@ -143,7 +151,7 @@ Behind-the-scene threads
 * The thread pool added behind the scene lets a STM/HTM-enabled
   Python run on several cores
 
-* The ``with atomic:`` means that the semantics of the Twisted
+* The "``with atomic:``" means that the semantics of the Twisted
   program didn't change
 
 
@@ -171,9 +179,9 @@ Some work left for you to do
 
 * You need to figure out where the conficts are
 
-* Maybe using some debugger-like tool that reports conflicts
+* Maybe using some debugger-like tools that report conflicts
 
-* Then you need small rewrites to avoid them
+* Then you need (hopefully small) rewrites to avoid them
 
 
 What is the point?
@@ -214,6 +222,12 @@ Conclusion
 ==========
 
 * Mostly theoretical for now: there is a risk it won't work in
-  practice (I bet it will ``:-)``)
+  practice [1]
 
 * Expect progress in the following months: http://morepypy.blogspot.com/
+
+::
+
+    -
+  
+[1] I bet it will, eventually ``:-)``
