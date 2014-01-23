@@ -19,9 +19,9 @@ Using All These Cores: Transactional Memory under the hood
 Introduction
 ============
 
-* Armin Rigo
+* Armin Rigo, PyPy dev, CPython dev
 
-* PyPy dev, CPython dev
+* Co-author: Remi Meier, ETHZ
 
 * This talk applies to Python or any similar language
 
