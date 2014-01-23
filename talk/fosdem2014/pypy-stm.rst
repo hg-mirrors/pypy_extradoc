@@ -35,7 +35,7 @@ Problem
 Multithread programming
 =======================
 
-* C, C++, Java, .NET
+* C, C++, Java, .NET, ...
 
 * Jython, IronPython
 
@@ -66,7 +66,7 @@ Transactional Memory
 * Optimistically runs multiple threads even if they
   are supposed to be waiting on the same lock
 
-* High overheads, working on it
+* High overheads (but working on it)
 
 
 Expected results
@@ -90,7 +90,7 @@ Kinds of Transactional Memory
 Status
 ======
 
-* STM is still at least 2x slower
+* STM is still at least 2x slower (speed on a single core)
 
 * HTM in Ruby with Intel Haswell CPUs: not bad but
   still disappointing (imo)
@@ -103,7 +103,7 @@ STM C7
 
 * Hope: much less than 2x slower for "PyPy-like" usages
 
-* (description)
+* (insert description here)
 
 
 Atomic sections
@@ -131,10 +131,10 @@ No threads?
 
 * Works even if you don't use threads!
 
-* Modify the Twisted reactor to start a pool of threads,
+* If the Twisted reactor was modified to start a pool of threads,
   and to run all events in ``with atomic:``
 
-* The end result is the same, for any Twisted program
+* ...Then the end result is the same, for any Twisted program
 
 
 Behind-the-scene threads
@@ -147,10 +147,10 @@ Behind-the-scene threads
   program didn't change
 
 
-Optimistic summary
-==================
+Summary (optimistic)
+====================
 
-* If you are a (Twisted / Eventlet / Stackless / etc.) developer
+* If you are a Twisted developer...
 
 * Just wait and your program will run on multiple cores ``:-)``
 
@@ -158,30 +158,44 @@ Optimistic summary
 Conflicts
 =========
 
-* Your program will likely fail to use multiple cores out of
-  the box
+* Actually, your program will likely fail to use multiple cores
+  out of the box
 
-* Because of "conflicts": events that should be independent but
-  are not (e.g. incrementing a global counter, etc.)
+* ...Because of "conflicts": each event should be "often" independent,
+  but may not be (e.g. because they each incrementing a global counter
+  or similar)
 
 
 Some work left for you to do
 ============================
 
-* You need to figure out where the conficts are, and trim them
+* You need to figure out where the conficts are
 
 * Maybe using some debugger-like tool that reports conflicts
+
+* Then you need small rewrites to avoid them
+
+
+What is the point?
+==================
+
+* The point is that with STM/HTM your program is always *correct*
+  (as much as the single-core version is)
+
+* You need to work in order to fix the most obvious conflicts
+
+* If you don't, it won't be faster than the single-core original
 
 
 What did we win?
 ================
 
-* The point is that your program is always *correct*
+* Regular approach to multithreading: your program is always *fast*
 
-* You need to work in order to fix the most obvious conflicts
+* You need to work in order to fix the bugs (races, deadlocks...)
 
-* Regular approach to multithreading: your program is always *fast*,
-  but you need to work in order to fix all the bugs (races, deadlocks...)
+* You need to find and fix *all* bugs -- as opposed to the STM/HTM
+  version where you only fix *some* issues until it is fast enough
 
 
 Scope
@@ -200,8 +214,6 @@ Conclusion
 ==========
 
 * Mostly theoretical for now: there is a risk it won't work in
-  practice
-
-* I bet it will ``:-)``
+  practice (I bet it will ``:-)``)
 
 * Expect progress in the following months: http://morepypy.blogspot.com/
