@@ -31,14 +31,14 @@ AOT
 
 * GCC
 
-* You can optimize only on what you know before running the program
+* Can optimize only on what it knows before running the program
 
 Interpreter
 ===========
 
 * CPython, PyPy
 
-* Do everything at runtime
+* Executes an abstract representation of the program
 
 * Not very smart
 
