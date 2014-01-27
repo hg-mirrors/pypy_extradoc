@@ -51,6 +51,17 @@ JIT
 
 * Produces optimized machine code
 
+RPython
+=======
+
+* Statically typed subset of Python
+
+* The RPython compiler automatically generates the JIT from the annotated RPython code
+
+* The JIT can be added with just one line of code
+
+* More hints are needed to have an efficient JIT
+
 Tracing JIT
 ===========
 
@@ -59,6 +70,8 @@ Tracing JIT
 * Traces one iteration of a loop
 
 * Produces a linear trace of execution
+
+* Inlines almost everything
 
 * The trace is then optimized and compiled
 
@@ -77,6 +90,15 @@ Bridge
 ======
 
 * After a guard has failed X times, the other path is traced, compiled and attached to the trace
+
+Optimizations
+=============
+
+* Virtuals
+
+* Virtualizables
+
+* Promotion
 
 Jitviewer
 =========
