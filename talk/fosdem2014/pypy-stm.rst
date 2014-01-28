@@ -142,7 +142,7 @@ No threads?
 * If the Twisted reactor (say) was modified to start a pool of threads,
   and to run all events in "``with atomic:``"
 
-* ...Then the end result is the same, for any Twisted program
+* ...Then the end result is the same, for any Twisted application
 
 
 Behind-the-scene threads
@@ -152,7 +152,7 @@ Behind-the-scene threads
   Python run on several cores
 
 * The "``with atomic:``" means that the semantics of the Twisted
-  program didn't change
+  application didn't change
 
 
 Summary (optimistic)
@@ -160,7 +160,7 @@ Summary (optimistic)
 
 * If you are using Twisted...
 
-* Just wait and your program will run on multiple cores ``:-)``
+* ...Your program will run on multiple cores ``:-)``
 
 
 Conflicts
@@ -222,7 +222,7 @@ What did we win?
 Scope
 =====
 
-* Twisted / Eventlet / Stackless / etc.: event-driven programming
+* Twisted / Tornado / Eventlet / Stackless / etc.: event-driven programming
 
 * Any program computing something complicated, e.g. over all items in
   a dictionary, occasionally updating a shared state, etc.
