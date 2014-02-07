@@ -1,0 +1,10 @@
+\usetheme{Warsaw}
+\usecolortheme{whale}
+\setbeamercovered{transparent}
+\definecolor{darkgreen}{rgb}{0, 0.5, 0.0}
+\newcommand{\docutilsrolegreen}[1]{\color{darkgreen}#1\normalcolor}
+\newcommand{\docutilsrolered}[1]{\color{red}#1\normalcolor}
+\addtobeamertemplate{block begin}{}{\setlength{\parskip}{35pt plus 1pt minus 1pt}}
+
+\newcommand{\green}[1]{\color{darkgreen}#1\normalcolor}
+\newcommand{\red}[1]{\color{red}#1\normalcolor}

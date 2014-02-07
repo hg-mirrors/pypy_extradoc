@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[How PyPy makes your code run fast]{How PyPy makes your code run fast}
+\author[rguillebert]
+{Romain Guillebert}
+
+\institute{FOSDEM}
+\date{February 2nd, 2014}
