@@ -23,14 +23,14 @@ Interpreter Lock (GIL).
 The current research is based on a recent new insight that promises to
 give really good performance.  The speed of STM is generally measured by
 two factors: the ability to scale with the number of CPUs, and the
-amount of overhead when compared with other approach in a single CPU (in
-this case, with the regular PyPy with the GIL).  Scaling is not really a
-problem here, but single-CPU performance is --- or used to be.  This new
-approach gives a single-threaded overhead that should be very low ---
-maybe 20%, which would definitely be news for STM systems.  Right now
-(February 2014) we are still implementing it, so we cannot give final
-numbers yet, but early results on a small interpreter for a custom
-language are around 15%.  This might be a deal-changer for STM.
+amount of overhead when compared with other approaches in a single CPU
+(in this case, with the regular PyPy with the GIL).  Scaling is not
+really a problem here, but single-CPU performance is --or used to be.
+This new approach gives a single-threaded overhead that should be very
+low, maybe 20%, which would definitely be news for STM systems.  Right
+now (February 2014) we are still implementing it, so we cannot give
+final numbers yet, but early results on a small interpreter for a custom
+language are around 15%.  This looks like a deal-changer for STM.
 
 In the talk, I will describe our progress, hopefully along with real
 numbers and demos.  I will then dive under the hood of PyPy to give an
