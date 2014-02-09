@@ -10,7 +10,11 @@ because it means <i>again</i> that we have to rewrite from scratch the C
 library handling STM.  This is currently work in progress.  Once this is
 done, we should be able to adapt the existing pypy-stm to run on top of
 it without much rewriting efforts; in fact it should simplify the
-difficult issues we ran into for the JIT.
+difficult issues we ran into for the JIT.  So while this is basically
+yet another restart similar to <a
+href="http://morepypy.blogspot.com/2013/06/stm-on-drawing-board.html">last
+June's</a>, the difference is that the work that we have put in the PyPy
+part (as opposed to the C library) remains.
 
 You can read about the basic ideas of this new C library <a
 href="https://bitbucket.org/pypy/stmgc/raw/c7/c7/README.txt">here</a>.
@@ -28,9 +32,10 @@ results in running <a
 href="http://morepypy.blogspot.com/2013/07/software-transactional-memory-lisp.html">duhton</a>,
 the interpreter for a minimal language created for the purpose of
 testing STM.  Good results means we brough down the slow-downs from
-60-80% to around 15%, from the non-STM-enabled to the STM-enabled
-version on one thread (of course, the idea is that the STM version
-scales when using more than one CPU core).
+60-80% (previous version) to around 15% (current version).  This number
+measures the slow-down from the non-STM-enabled to the STM-enabled
+version, on one CPU core; of course, the idea is that the STM version
+scales up when using more than one core.
 
 This means that we are looking forward to a result that is much better
 than originally predicted.  The pypy-stm has chances to run at a
@@ -38,7 +43,7 @@ one-thread speed that is only "n%" slower than the regular pypy-jit, for
 a value of "n" that is optimistically 15 --- but more likely some number
 around 25 or 50.  This is seriously better than the original estimate,
 which was "between 2x and 5x".  It would mean that using pypy-stm is
-worthwhile even with two cores already.
+quite worthwhile even with just two cores.
 
 More updates later...
 
