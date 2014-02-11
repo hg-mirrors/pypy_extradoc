@@ -13,8 +13,8 @@ it without much rewriting efforts; in fact it should simplify the
 difficult issues we ran into for the JIT.  So while this is basically
 yet another restart similar to <a
 href="http://morepypy.blogspot.com/2013/06/stm-on-drawing-board.html">last
-June's</a>, the difference is that the work that we have put in the PyPy
-part (as opposed to the C library) remains.
+June's</a>, the difference is that the work that we have already put in
+the PyPy part (as opposed to the C library) remains.
 
 You can read about the basic ideas of this new C library <a
 href="https://bitbucket.org/pypy/stmgc/raw/c7/c7/README.txt">here</a>.
