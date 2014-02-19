@@ -16,6 +16,9 @@ How to install NumPy on PyPy
       cd numpy
       sudo pypy setup.py install
 
+  or download https://bitbucket.org/pypy/numpy/get/pypy-compat.zip,
+  extract it, and run the last line above.
+
 * If you get a permission error when importing NumPy, you need to
   import NumPy once as root::
 
