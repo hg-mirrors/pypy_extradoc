@@ -1,9 +1,23 @@
 How to install NumPy on PyPy
 ============================
 
-* apt-get install pypy-dev
+* Debian, Ubuntu and maybe others: make sure to run
+  ``apt-get install pypy-dev``.  The Debian package is, as usual, split
+  into more pieces than we'd like.  You get it all in one go if you
+  installed PyPy any other way.
 
-* git clone https://bitbucket.org/pypy/numpy.git; cd numpy;
-  sudo pypy setup.py install
+* Windows: you may or may not need to edit the file ``include/Python.h``
+  from your PyPy installation to add this line at the end:
+  ``#include <sys/types.h>``
 
-* sudo pypy -c 'import numpy'       # only once
+* Run::
+
+      git clone https://bitbucket.org/pypy/numpy.git
+      cd numpy
+      sudo pypy setup.py install
+
+* If you get a permission error when importing NumPy, you need to
+  import NumPy once as root::
+
+      cd somewhere_else_unrelated
+      sudo pypy -c 'import numpy'
