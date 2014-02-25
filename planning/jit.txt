@@ -201,3 +201,14 @@ Random ideas from hakanardo
 
   - Movinging loop-invariant setitems out of the loops entierly.
 
+
+Bugs (bug tracker is down right now)
+------------------------------------
+
+@jit.elidable annotations are completely ignored if the function has
+"random side-effects".  In 040f3ac28afb we display a warning, at least.
+In order to turn the warning into an error, we need to review the
+numerous places in PyPy where the warning occurs.  The initial list:
+
+    http://bpaste.net/show/182628/
+
