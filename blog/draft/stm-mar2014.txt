@@ -17,7 +17,7 @@ Feel free to try it!  It is not actually useful so far, because it is
 limited to two cores and CPython is something like 2.5x faster.  One of
 the important next steps is to re-enable the JIT.  Based on our <a
 href="https://bitbucket.org/pypy/pypy/raw/stmgc-c7/TODO">current
-understanding</a> the "40%" figure, we can probably reduce it with
+understanding</a> of the "40%" figure, we can probably reduce it with
 enough efforts; but also, the JIT should be able to easily produce
 machine code that suffers a bit less than the interpreter from these
 effects.  This seems to mean that we're looking at 20%-ish slow-downs
@@ -25,5 +25,15 @@ for the future PyPy-STM-JIT.
 
 Interesting times :-)
 
+For reference, this is what you get by downloading <a
+href="http://cobra.cs.uni-duesseldorf.de/~buildmaster/misc/pypy-c-r69967+-stm-1d0b870195e7.tbz2">the
+PyPy binary linked above</a>: a Linux 64 binary (Ubuntu 12.04) that
+should behave mostly like a regular PyPy.  (One main missing feature is
+that destructors are never called.)  It uses two cores, but obviously
+only if the Python program you run is multithreaded.  The only new
+built-in feature is <code>with __pypy__.thread.atomic:</code> this gives
+you a way to enforce that a block of code runs "atomically", which means
+without any operation from any other thread randomly interleaved.
 
-Armin (as well as Remi for the work)
+
+Armin & Remi
