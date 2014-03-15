@@ -35,5 +35,7 @@ built-in feature is <code>with __pypy__.thread.atomic:</code> this gives
 you a way to enforce that a block of code runs "atomically", which means
 without any operation from any other thread randomly interleaved.
 
+Stay tuned for more!
+
 
 Armin & Remi
