@@ -1,0 +1,60 @@
+---
+layout: page
+title: 2nd Call for donations - Transactional Memory in PyPy
+---
+
+==============================
+Transactional Memory, 2nd Call
+==============================
+
+
+This is the second call for donations on the topic of Transactional
+Memory (TM) in PyPy, a way to run CPU-hungry Python programs in
+multithreaded mode.  It is a follow-up on our `first call`_.  Two years
+ago we suggested a single-threaded slow-down of somewhere between 2x and
+5x.  Our aim now is closer to 1.25x, i.e. running only 25% slower than
+the regular PyPy.
+
+We achieved --or overachieved-- most goals laid out in the first call by
+a large margin, while at the same time raising only about half the
+money.  The present proposal is thus about development of the second
+half: starting from the various missing low-level optimizations, it will
+most importantly focus on development of the Python-facing interface.
+This includes both internal things (e.g. do dictionaries need to be more
+TM-friendly in general?) as well as directly visible things (e.g. some
+debugger-like interface to explore common conflicts in a program).  It
+also includes exploring and tweaking some existing libraries
+(e.g. Twisted) to improve their TM-friendliness.
+
+See also the `update on HTM`_ below.
+
+
+
+Introduction
+============
+
+
+
+
+
+In more details
+===============
+
+
+Hardware Transactional Memory
+-----------------------------
+
+More readings
+-------------
+
+
+
+
+Work plan
+=========
+
+
+
+
+Benefits of This Work to the Python Community and the General Public
+====================================================================
