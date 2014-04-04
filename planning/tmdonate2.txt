@@ -16,7 +16,7 @@ single-threaded slow-down of somewhere between 2x and 5x.  The aim that
 seems now within reach is rather closer to 1.25x, i.e.  running only 25%
 slower than the regular PyPy.
 
-We achieved --or overachieved-- most goals laid out in the first call by
+We achieved – or overachieved – most goals laid out in the first call by
 a large margin, while at the same time raising only about half the
 money.  The result of this first step is `described in the documentation
 of PyPy`__.
@@ -58,7 +58,7 @@ The aim of this series of proposals is to research and implement
 Transactional Memory in PyPy.  This is a technique that recently came to
 the front of the multi-core scene.  It promises to offer multi-core CPU
 usage without requiring to fall back to the multi-process solutions
-described above, and also without using the ``threading`` module ---
+described above, and also without using the ``threading`` module —
 just as a small, local extension of the programming language that would
 be used only in the core of the event loops.
 
@@ -120,7 +120,7 @@ multicore performance even if they are using threads.
 What is Transactional Memory?
 -----------------------------
 
-`Transactional Memory`_ --- TM --- is a technique imported from
+`Transactional Memory`_ (TM) is a technique imported from
 databases: every time we want to do a change to the processors' main
 memory, we do it in a "transaction".  Multiple transactions can be
 executed in parallel by multiple cores.  When a transaction is complete,
@@ -247,7 +247,7 @@ estimates here, but we do agree to report regularly to the community, so
 our progress can be followed publicly.
 
 Paid work will be at $60/hour, but at least one developer who will work
-on the project --- Armin Rigo --- has committed to 2 hours of volunteer
+on the project – Armin Rigo – has committed to 2 hours of volunteer
 work per paid hour (so the total amount of money that we ask is divided
 by three).  A 10% general donation will go to the `Software Freedom
 Conservancy`_ itself, the non-profit organization of which the PyPy
@@ -392,7 +392,7 @@ introduction: developers that really need to use multiple CPUs are
 constrained to select and use one of the multi-process solutions that
 are all in some way or another hacks requiring extra knowledge and
 efforts to use.  The focus of the work described in this proposal is to
-offer an alternative in the core of the Python language --- an
+offer an alternative in the core of the Python language — an
 alternative that can naturally integrate with the rest of the program.
 This alternative is implemented in PyPy.
 
