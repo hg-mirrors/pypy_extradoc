@@ -10,25 +10,30 @@ Transactional Memory, 2nd Call
 
 This is the second call for donations on the topic of Transactional
 Memory (TM) in PyPy, a way to run CPU-hungry Python programs in
-multithreaded mode.  It is a follow-up on our `first call`_.  Two years
-ago we suggested a single-threaded slow-down of somewhere between 2x and
-5x.  The aim that seems now within reach is rather closer to 1.25x, i.e.
-running only 25% slower than the regular PyPy.
+multithreaded mode.  It is a follow-up on our `first call for
+donations`_ from two years ago.  At that time, we suggested a
+single-threaded slow-down of somewhere between 2x and 5x.  The aim that
+seems now within reach is rather closer to 1.25x, i.e.  running only 25%
+slower than the regular PyPy.
 
 We achieved --or overachieved-- most goals laid out in the first call by
 a large margin, while at the same time raising only about half the
-money.  The result is described `in our docs`_.  The present proposal is
-about development of the second half: starting from the various missing
-low-level optimizations, it will most importantly focus on development
-of the Python-facing interface.  This includes both internal things
-(e.g. do dictionaries need to be more TM-friendly in general?) as well
-as directly visible things (e.g. some debugger-like interface to explore
-common conflicts in a program).  It also includes exploring and tweaking
-some existing libraries to improve their TM-friendliness (e.g. Twisted).
+money.  The result of this first step is `described in the documentation
+of PyPy`__.
+
+The present proposal is about development of the second half: starting
+from the various missing low-level optimizations, it will most
+importantly focus on developping the Python-facing interface.  This
+includes both internal things (e.g. do dictionaries need to be more
+TM-friendly in general?) as well as directly visible things (e.g. some
+debugger-like interface to explore common conflicts in a program).  It
+also includes exploring and tweaking some existing libraries to improve
+their TM-friendliness (e.g. Twisted and Stackless).
 
 See also the `update on HTM`_ below.
 
-.. _`in our docs`: https://pypy.readthedocs.org/en/latest/stm.html
+.. _`first call for donations`: http://pypy.org/tmdonate.html
+.. __: https://pypy.readthedocs.org/en/latest/stm.html
 
 
 
@@ -59,16 +64,16 @@ be used only in the core of the event loops.
 
 The first proposal was launched near the start of 2012 and has covered
 the fundamental research part, up to the point of getting a first
-version of PyPy working in a reasonable state (after collecting about
-USD$27'000, which is little more than half of the money that would have
-been required to do it more swiftly).
+version of PyPy working in a very roughly reasonable state (after
+collecting about USD$27'000, which is little more than half of the money
+that was asked; hence the present second call for donations).
 
 This second proposal aims at fixing the remaining issues until we get a
 really good GIL-free PyPy (described in `goal 1`_ below); and then we
 will focus on the various new features needed to actually use multiple
 cores without explicitly using multithreading (`goal 2`_ below), up to
-and including adapting some existing framework libraries like Twisted,
-Tornado, and possibly Stackless and gevent (`goal 3`_ below).
+and including adapting some existing framework libraries like for
+example Twisted, Tornado, Stackless and gevent (`goal 3`_ below).
 
 
 
@@ -132,6 +137,8 @@ think HTM is, so far, still not suitable for our goals.
 .. _Haswell: http://en.wikipedia.org/wiki/Haswell_%28microarchitecture%29
 
 
+.. _`update on HTM`:
+
 Hardware vs Software Transactional Memory
 -----------------------------------------
 
@@ -170,7 +177,7 @@ Why do it with PyPy instead of CPython?
 While there have been early experiments on Hardware Transactional Memory
 with CPython (`Riley and Zilles (2006)`__, `Tabba (2010)`__), there has
 been no recent one.  The closest is an attempt using `Haswell on the
-Ruby interpreter`_.  None of these attempts tries to do the same using
+Ruby interpreter`__.  None of these attempts tries to do the same using
 Software Transactional Memory.  We would nowadays consider it possible
 to adapt our stmgc-c7 library for CPython, but it would be a lot of
 work, starting from changing the reference-counting scheme.  PyPy is
@@ -323,6 +330,7 @@ control of the application, to do things like append an item to a list
 in a "delayed" manner, to avoid conflicts.
 
 .. __: https://pypy.readthedocs.org/en/latest/stm.html
+.. _OpenMP: http://en.wikipedia.org/wiki/OpenMP
 
 Similarly, we might need a way to delay some I/O: doing it only at the
 end of the transaction rather than immediately, in order to prevent the
@@ -356,7 +364,7 @@ We forecast that goal 1 and a good chunk of goal 2 should be reached in
 around 4 months of work.  The remaining parts of goal 2 as well as goal
 3 are likely to be more open-ended jobs.  We will go with a total
 estimate of 8 months, corresponding to roughly the second half of the
-`original call for proposal`_ which was not covered so far.  This
+`first call for donations`_ which was not covered so far.  This
 corresponds to USD$80640.  The amount sought by this fundraising
 campaign, considering the 2 volunteer hours per paid hour is thus
 USD$26880.
