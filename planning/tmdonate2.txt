@@ -211,24 +211,35 @@ programs, because it only requires local changes to some dispatcher; the
 rest of the program should work without changes.
 
 
-Other non-Linux platforms
--------------------------
+Other platforms than the x86-64 Linux
+-------------------------------------
 
-The current work relies heavily on Linux-, clang-, and 64-bit only
-features.  We believe it is a suitable restriction: a lot of multi- and
-many-core servers commonly available are nowadays x86-64 machines
-running Linux.  (If PyPy gets a 64-bit ARMv8 JIT backend, adapting it
-for STM should be easy).  Nevertheless, non-Linux solutions appear to be
-possible as well.  OS/X (and likely the various BSDs) seems to handle
-``mmap()`` better than Linux does, and can remap individual pages of an
-existing mapping to various pages without hitting a limit of 65536 like
-Linux.  Windows might also have a way, although we didn't measure yet;
-but the first issue with Windows would be to support Win64, which the
-regular PyPy doesn't.
+The first thing to note is that the current solution depends on having a
+huge address space available.  If it were to be ported to any 32-bit
+architecture, the limitation to 2GB or 4GB of address space would become
+very restrictive: the way it works right now would further divide this
+limit by N+1, where N is the number of segments.  It might be possible
+to create partially different memory views for multiple threads that
+each access the same range of addresses; this would require extensions
+that are very OS-specific.  We didn't investigate so far.
+
+The current version, which thus only works on 64-bit, still relies
+heavily on Linux- and clang-only features.  We believe it is a suitable
+restriction: a lot of multi- and many-core servers commonly available
+are nowadays x86-64 machines running Linux.  Nevertheless, non-Linux
+solutions appear to be possible as well.  OS/X (and likely the various
+BSDs) seems to handle ``mmap()`` better than Linux does, and can remap
+individual pages of an existing mapping to various pages without hitting
+a limit of 65536 like Linux.  Windows might also have a way, although we
+didn't measure yet; but the first issue with Windows would be to support
+Win64, which the regular PyPy doesn't.
 
 We will likely explore the OS/X way (as well as the Windows way if Win64
 support grows in PyPy), but this is not included in the scope of this
 proposal.
+
+It might be possible to adapt the work done on x86-64 to the 64-bit
+ARMv8 as well, but we didn't investigate so far.
 
 
 More readings
