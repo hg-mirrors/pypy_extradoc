@@ -58,9 +58,9 @@ The aim of this series of proposals is to research and implement
 Transactional Memory in PyPy.  This is a technique that recently came to
 the front of the multi-core scene.  It promises to offer multi-core CPU
 usage without requiring to fall back to the multi-process solutions
-described above, and also without using the ``threading`` module —
-just as a small, local extension of the programming language that would
-be used only in the core of the event loops.
+described above, and also should allow to change the core of the event systems
+mentioned above to enable the use of multiple cores without the use of the
+``threading`` module.
 
 The first proposal was launched near the start of 2012 and has covered
 the fundamental research part, up to the point of getting a first
