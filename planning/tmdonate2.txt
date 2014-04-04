@@ -253,7 +253,7 @@ donations, payments, and tax-exempt status.
 Goal 1
 ------
 
-The PyPy-STM that we have in the end of March 2014 is good enough in
+The PyPy-TM that we have in the end of March 2014 is good enough in
 some cases to run existing multithreaded code without a GIL, but not in
 all of them.  There are a number of caveats for the user and missing
 optimizations.  The goal #1 is to improve this case and address
@@ -279,7 +279,7 @@ are:
 * Forking the process is slow.
 
 Fixing all these issues is required before we can confidently say that
-PyPy-STM is an out-of-the-box replacement of a regular PyPy which gives
+PyPy-TM is an out-of-the-box replacement of a regular PyPy which gives
 speed-ups over the regular PyPy independently of the Python program it
 runs, as long as it is using at least two threads.
 
@@ -292,46 +292,111 @@ without explicitly using multithreading; in other words, the new APIs
 and libraries accessible from Python programs that want to make use of
 this benefit.
 
-XXX improve from here
+This goal requires good support for very-long-running transactions,
+started with the ``with atomic`` construct documented here__.  This
+approach hides the notion of threads from the end programmer, including
+all the hard multithreading-related issues.  This is not the first
+alternative approach to explicit threads; for example, OpenMP_ is one.
+However, it is one of the first ones which does not require the code to
+be organized in a particular fashion.  Instead, it works on any Python
+program which has got latent, imperfect parallelism.  Ideally, it only
+requires that the end programmer identifies where this parallelism is
+likely to be found, and communicates it to the system, using some
+lightweight library on top of ``with atomic``.
 
-The goal is to improve the existing atomic sections, but the most
-visible missing thing is that you don't get reports about the
-"conflicts" you get.  This would be the first thing that you need in
-order to start using atomic sections more extensively.  Also, for now:
-for better results, try to explicitly force a transaction break just
-before (and possibly after) each large atomic section, with
-``time.sleep(0)``.
+This introduces new issues.  At the very least, we need a way to get
+feedback about what conflicts we get in these long-running transactions,
+and where they are produced.  A first step will be to implement getting
+"tracebacks" that point to the places where the most time is lost.  This
+could be later integrated into some "debugger"-like variant where we can
+navigate the conflicts, either in a live program or based on data logs.
 
-This approach hides the notion of threads from the end programmer,
-including all the hard multithreading-related issues.  This is not the
-first alternative approach to explicit threads; for example, OpenMP_ is
-one.  However, it is one of the first ones which does not require the
-code to be organized in a particular fashion.  Instead, it works on any
-Python program which has got latent, imperfect parallelism.  Ideally, it
-only requires that the end programmer identifies where this parallelism
-is likely to be found, and communicates it to the system, using for
-example the ``transaction.add()`` scheme.
+Some of these conflicts can be solved by improving PyPy-TM directly.
+The system works on the granularity of objects and doesn't generate
+false conflicts, but some conflicts may be regarded as "false" anyway:
+these involve most importantly the built-in dictionary type, for which
+we would like accesses and writes using independent keys to be truly
+independent.  Other built-in data structures we a similar issue are
+lists: ideally, writes to different indexes should not cause conflicts;
+but more generally, we would need a mechanism, possibly under the
+control of the application, to do things like append an item to a list
+in a "delayed" manner, to avoid conflicts.
 
-XXX Talk also about dict- or list-specific conflict avoidance;
-delaying some updates or I/O; etc. etc.
+.. __: https://pypy.readthedocs.org/en/latest/stm.html
+
+Similarly, we might need a way to delay some I/O: doing it only at the
+end of the transaction rather than immediately, in order to prevent the
+whole transaction from turning inevitable.
+
+The goal 2 is thus the development of tools to inspect and fix the
+causes of conflicts, as well as fixing the ones that are apparent inside
+PyPy-TM directly.
 
 
 Goal 3
 ------
 
-XXX
+The third goal is to look at some existing event-based frameworks (for
+example Twisted, Tornado, Stackless, gevent, ...) and attempt to make
+them use threads and atomic sections internally.  We would appreciate
+help and feedback from people more involved in these frameworks, of
+course.
+
+The idea is to apply the techniques described in the `goal 2`_ until we
+get a version of framework X which can transparently parallelize the
+dispatching of multiple events.  This might require some slight
+reorganization of the core in order to split the I/O and the actual
+logic into separate transactions.
 
 
----------
+Funding
+-------
 
-XXX fix
-Total: 5 months for the initial version; at least 8 additional months
-for the fast version.  We will go with a total estimate of 15 months,
-corresponding to USD$151200.  The amount sought by this fundraising
-campaign,  considering the 2 volunteer hours per paid hour is thus USD$50400.
+We forecast that goal 1 and a good chunk of goal 2 should be reached in
+around 4 months of work.  The remaining parts of goal 2 as well as goal
+3 are likely to be more open-ended jobs.  We will go with a total
+estimate of 8 months, corresponding to roughly the second half of the
+`original call for proposal`_ which was not covered so far.  This
+corresponds to USD$80640.  The amount sought by this fundraising
+campaign, considering the 2 volunteer hours per paid hour is thus
+USD$26880.
 
 
 Benefits of This Work to the Python Community and the General Public
 ====================================================================
 
-XXX
+Python has become one of the most popular dynamic programming languages in
+the world.  Web developers, educators, and scientific programmers alike
+all value Python because Python code is often more readable and because
+Python often increases programmer productivity.
+
+Traditionally, languages like Python ran more slowly than static, compiled
+languages; Python developers chose to sacrifice execution speed for ease
+of programming.  The PyPy project created a substantially improved Python
+language implementation, including a fast Just-in-time (JIT) compiler.
+The increased execution speed that PyPy provides has attracted many users,
+who now find their Python code runs up to four times faster under PyPy
+than under the reference implementation written in C.
+
+However, in the presence of today's machines with multiple processors,
+Python progress lags behind.  The issue has been described in the
+introduction: developers that really need to use multiple CPUs are
+constrained to select and use one of the multi-process solutions that
+are all in some way or another hacks requiring extra knowledge and
+efforts to use.  The focus of the work described in this proposal is to
+offer an alternative in the core of the Python language --- an
+alternative that can naturally integrate with the rest of the program.
+This alternative is implemented in PyPy.
+
+PyPy's developers make all PyPy software available to the public without
+charge, under PyPy's Open Source copyright license, the permissive MIT
+License.  PyPy's license assures that PyPy is equally available to
+everyone freely on terms that allow both non-commercial and commercial
+activity.  This license allows for academics, for-profit software
+developers, volunteers and enthusiasts alike to collaborate together to
+make a better Python implementation for everyone.
+
+PyPy-TM is and continues to be available under the same license.  Being
+licensed freely to the general public means that opportunities to use,
+improve and learn about how Transactional Memory works itself will be
+generally available to everyone.
