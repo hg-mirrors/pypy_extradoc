@@ -50,9 +50,9 @@ they can use the existing ``threading`` module, with its associated GIL
 and the complexities of real multi-threaded programming (locks,
 deadlocks, races, etc.), which make this solution less attractive.  The
 big alternative is for them to rely on one of various multi-process
-solutions that are outside the scope of the core language; all of them
-in some way or another are hacks that require extra knowledge and time
-to use and that have an impact on the structure of the whole program.
+solutions that are outside the scope of the core language. All of them require a
+big restructuring of the program to and often need extreme care and extra
+knowledge to use them.
 
 The aim of this series of proposals is to research and implement
 Transactional Memory in PyPy.  This is a technique that recently came to
