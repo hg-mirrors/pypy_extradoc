@@ -261,7 +261,8 @@ our progress can be followed publicly.
 Paid work will be at $60/hour, but at least one developer who will work
 on the project – Armin Rigo – has committed to 2 hours of volunteer
 work per paid hour (so the total amount of money that we ask is divided
-by three).  A 10% general donation will go to the `Software Freedom
+by three).  (XXX check with Remi Meier)
+A 10% general donation will go to the `Software Freedom
 Conservancy`_ itself, the non-profit organization of which the PyPy
 project is a member and which manages all the issues related to
 donations, payments, and tax-exempt status.
