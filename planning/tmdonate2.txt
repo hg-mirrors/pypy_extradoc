@@ -96,8 +96,6 @@ of processors.  This means that starting with two cores, such
 applications should perform better than in a regular PyPy.  (All numbers
 presented here are comparing different versions of PyPy which all have
 the JIT enabled.)
-XXX I wonder whether we need to add a caveat like "for applications that don't
-conflict too much" somewhere
 
 You will find below a sketch of the `work plan`_.  If more money than
 requested is collected, then the excess will be entered into the general
@@ -300,6 +298,10 @@ are:
 
 * Forking the process is slow.
 
+* We don't foresee particularly high conflict rates in regular
+  multithreaded programs, but this assertion needs to be checked
+  and possibly some heuristics improved.
+
 Fixing all these issues is required before we can confidently say that
 PyPy-TM is an out-of-the-box replacement of a regular PyPy which gives
 speed-ups over the regular PyPy independently of the Python program it
@@ -326,7 +328,12 @@ requires that the end programmer identifies where this parallelism is
 likely to be found, and communicates it to the system, using some
 lightweight library on top of ``with atomic``.
 
-This introduces new issues.  At the very least, we need a way to get
+However, this introduces new issues.  The main one is that by forcing
+transactions to be longer, "conflicts" will become more common, up to
+the point of partially or completely offsetting the benefit of using
+PyPy-TM in the first place.
+
+So the programmer using PyPy-TM needs a way to get
 feedback about what conflicts we get in these long-running transactions,
 and where they are produced.  A first step will be to implement getting
 "tracebacks" that point to the places where the most time is lost.  This
