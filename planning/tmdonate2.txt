@@ -23,10 +23,10 @@ of PyPy`__.
 
 The present proposal is about development of the second half: starting
 from the various missing low-level optimizations, it will most
-importantly focus on developping the Python-facing interface.  This
+importantly focus on developing the Python-facing interface.  This
 includes both internal things (e.g. do dictionaries need to be more
 TM-friendly in general?) as well as directly visible things (e.g. some
-debugger-like interface to explore common conflicts in a program).  It
+profiler-like interface to explore common conflicts in a program).  It
 also includes exploring and tweaking some existing libraries to improve
 their TM-friendliness (e.g. Twisted and Stackless).
 
@@ -315,7 +315,7 @@ This introduces new issues.  At the very least, we need a way to get
 feedback about what conflicts we get in these long-running transactions,
 and where they are produced.  A first step will be to implement getting
 "tracebacks" that point to the places where the most time is lost.  This
-could be later integrated into some "debugger"-like variant where we can
+could be later integrated into some "profiler"-like variant where we can
 navigate the conflicts, either in a live program or based on data logs.
 
 Some of these conflicts can be solved by improving PyPy-TM directly.
