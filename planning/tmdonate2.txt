@@ -51,7 +51,7 @@ and the complexities of real multi-threaded programming (locks,
 deadlocks, races, etc.), which make this solution less attractive.  The
 big alternative is for them to rely on one of various multi-process
 solutions that are outside the scope of the core language. All of them require a
-big restructuring of the program to and often need extreme care and extra
+big restructuring of the program and often need extreme care and extra
 knowledge to use them.
 
 The aim of this series of proposals is to research and implement
@@ -59,8 +59,8 @@ Transactional Memory in PyPy.  This is a technique that recently came to
 the front of the multi-core scene.  It promises to offer multi-core CPU
 usage without requiring to fall back to the multi-process solutions
 described above, and also should allow to change the core of the event systems
-mentioned above to enable the use of multiple cores without the use of the
-``threading`` module.
+mentioned above to enable the use of multiple cores without the explicit use of
+the ``threading`` module by the user.
 
 The first proposal was launched near the start of 2012 and has covered
 the fundamental research part, up to the point of getting a first
@@ -82,7 +82,7 @@ In more details
 
 This is a call for financial help in implementing a version of PyPy able
 to use multiple processors in a single process, called PyPy-TM; and
-developping the APIs and libraries needed as well as enhancing commonly
+developing the APIs and libraries needed as well as enhancing commonly
 available frameworks to use the new feature.  The developers will be
 Armin Rigo and Remi Meier and possibly others.
 
@@ -90,12 +90,14 @@ We currently estimate the final performance goal at 25% to 50% of the
 speed of the regular PyPy in fully serial applications.  (This goal has
 been reached already in some cases, but we need to make this result more
 broadly applicable.)  We feel confident that it can work, in the
-following sense: the performance of PyPy-TM running any suited
+following sense: the performance of PyPy-TM running any suitable
 application should scale linearly or close-to-linearly with the number
 of processors.  This means that starting with two cores, such
 applications should perform better than in a regular PyPy.  (All numbers
 presented here are comparing different versions of PyPy which all have
 the JIT enabled.)
+XXX I wonder whether we need to add a caveat like "for applications that don't
+conflict too much" somewhere
 
 You will find below a sketch of the `work plan`_.  If more money than
 requested is collected, then the excess will be entered into the general
