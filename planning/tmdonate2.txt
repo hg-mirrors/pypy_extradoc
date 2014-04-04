@@ -148,7 +148,7 @@ Software Transactional Memory (STM) library currently used inside PyPy
 with a much smaller Hardware Transactional Memory (HTM) library based on
 hardware features and running on Haswell-generation processors.  This
 has been attempted by Remi Meier recently.  However, it seems that we
-see problems as we expected them: the current generation of HTM
+see scaling problems (as we expected them): the current generation of HTM
 processors is limited to run small-scale transactions.  Even the default
 transaction size used in PyPy-STM is often too much for HTM; and
 reducing this size increases overhead without completely solving the
@@ -161,12 +161,12 @@ describes the limits that we're running into and how to solve them more
 generally.  A CPU with support for the virtual memory described in this
 paper would certainly be better for running PyPy-HTM.
 
-None of the papers we found discusses the issue of sub-cache-line false
-conflicts, though (conflicts caused by two independent objects that
-happens to live in the same cache line, which is usually 64 bytes).
-This is in contrast with the current PyPy-STM, which doesn't have false
-conflicts of this kind at all and might thus be ultimately better for
-very-long-running transactions.
+Another issue is sub-cache-line false conflicts (conflicts caused by two
+independent objects that happens to live in the same cache line, which
+is usually 64 bytes).  This is in contrast with the current PyPy-STM,
+which doesn't have false conflicts of this kind at all and might thus be
+ultimately better for very-long-running transactions.  None of the
+papers we know of discusses this issue.
 
 .. _`Virtualizing Transactional Memory`: http://pages.cs.wisc.edu/~isca2005/papers/08A-02.PDF
 
@@ -215,13 +215,14 @@ Other non-Linux platforms
 The current work relies heavily on Linux-, clang-, and 64-bit only
 features.  We believe it is a suitable restriction: a lot of multi- and
 many-core servers commonly available are nowadays x86-64 machines
-running Linux.  Nevertheless, non-Linux solutions appear to be possible
-as well.  OS/X (and likely the various BSDs) seems to handle ``mmap()``
-better than Linux does, and can remap individual pages of an existing
-mapping to various pages without hitting a limit of 65536 like Linux.
-Windows might also have a way, although we didn't measure yet; but the
-first issue with Windows would be to support Win64, which the regular
-PyPy doesn't.
+running Linux.  (If PyPy gets a 64-bit ARMv8 JIT backend, adapting it
+for STM should be easy).  Nevertheless, non-Linux solutions appear to be
+possible as well.  OS/X (and likely the various BSDs) seems to handle
+``mmap()`` better than Linux does, and can remap individual pages of an
+existing mapping to various pages without hitting a limit of 65536 like
+Linux.  Windows might also have a way, although we didn't measure yet;
+but the first issue with Windows would be to support Win64, which the
+regular PyPy doesn't.
 
 We will likely explore the OS/X way (as well as the Windows way if Win64
 support grows in PyPy), but this is not included in the scope of this
