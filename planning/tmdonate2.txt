@@ -86,8 +86,9 @@ developing the APIs and libraries needed as well as enhancing commonly
 available frameworks to use the new feature.  The developers will be
 Armin Rigo and Remi Meier and possibly others.
 
-We currently estimate the final performance goal at 25% to 50% of the
-speed of the regular PyPy in fully serial applications.  (This goal has
+We currently estimate the final performance goal to be a slow-down of
+25% to 40%, i.e. running a fully serial application would take between
+1.25 and 1.40x the time it takes in a regular PyPy.  (This goal has
 been reached already in some cases, but we need to make this result more
 broadly applicable.)  We feel confident that it can work, in the
 following sense: the performance of PyPy-TM running any suitable
