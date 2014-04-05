@@ -168,6 +168,13 @@ which doesn't have false conflicts of this kind at all and might thus be
 ultimately better for very-long-running transactions.  None of the
 papers we know of discusses this issue.
 
+Note that right now PyPy-STM has false conflicts within the same object,
+e.g. within a list or a dictionary; but we can more easily do something
+about it (see `goal 2_`).  Also, it might be possible in PyPy-HTM to
+arrange objects in memory ahead of time so that such conflicts are very
+rare; but we will never get a rate of exactly 0%, which might be
+required for very-long-running transactions.
+
 .. _`Virtualizing Transactional Memory`: http://pages.cs.wisc.edu/~isca2005/papers/08A-02.PDF
 
 
@@ -261,7 +268,8 @@ our progress can be followed publicly.
 Paid work will be at $60/hour, but at least one developer who will work
 on the project – Armin Rigo – has committed to 2 hours of volunteer
 work per paid hour (so the total amount of money that we ask is divided
-by three).  (XXX check with Remi Meier)
+by three); and another developer – Remi Meier – is a Ph.D. student
+and gets paid from another source already.
 A 10% general donation will go to the `Software Freedom
 Conservancy`_ itself, the non-profit organization of which the PyPy
 project is a member and which manages all the issues related to
