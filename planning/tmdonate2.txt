@@ -354,7 +354,7 @@ The system works on the granularity of objects and doesn't generate
 false conflicts, but some conflicts may be regarded as "false" anyway:
 these involve most importantly the built-in dictionary type, for which
 we would like accesses and writes using independent keys to be truly
-independent.  Other built-in data structures we a similar issue are
+independent.  Other built-in data structures have a similar issue, like
 lists: ideally, writes to different indexes should not cause conflicts;
 but more generally, we would need a mechanism, possibly under the
 control of the application, to do things like append an item to a list
