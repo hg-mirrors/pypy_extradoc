@@ -414,7 +414,7 @@ languages; Python developers chose to sacrifice execution speed for ease
 of programming.  The PyPy project created a substantially improved Python
 language implementation, including a fast Just-in-time (JIT) compiler.
 The increased execution speed that PyPy provides has attracted many users,
-who now find their Python code runs up to four times faster under PyPy
+who now find their Python code runs between 2 and 50 times faster under PyPy
 than under the reference implementation written in C.
 
 However, in the presence of today's machines with multiple processors,
