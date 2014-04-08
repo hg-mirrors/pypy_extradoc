@@ -54,13 +54,13 @@ solutions that are outside the scope of the core Python language. All of them re
 major restructuring of the program and often need extreme care and extra
 knowledge to use them.
 
-We propose implemention of
+We propose an implemention of
 Transactional Memory in PyPy.  This is a technique that recently came to
 the forefront of the multi-core scene.  It promises to offer multi-core CPU
-usage without the explicit multiprocessing or event techniques above, 
-and also should allow modifying the core of the event systems
-mentioned above to enable the use of multiple cores without the explicit use of
-the ``threading`` module by the user.
+usage in a single process.
+In particular, by modifying the core of the event systems
+mentioned above, we will enable the use of multiple cores, without the
+user needing to use explicitly the ``threading`` module.
 
 The first proposal was launched near the start of 2012 and has covered
 much of the fundamental research, up to the point of getting a first
@@ -88,15 +88,16 @@ Armin Rigo and Remi Meier and possibly others.
 
 We currently estimate the final performance goal to be a slow-down of
 25% to 40% from the current non-TM PyPy; i.e. running a fully serial application would take between
-1.25 and 1.40x the time it takes in a regular PyPy.  (This goal has
+1.25 and 1.40x the time it takes in a regular PyPy.  This goal has
 been reached already in some cases, but we need to make this result more
-broadly applicable.)  We feel confident that the performance of PyPy-TM will
-running any suitable
+broadly applicable.  We feel confident that we can reach this goal more
+generally: the performance of PyPy-TM running any suitable
 application should scale linearly or close-to-linearly with the number
 of processors.  This means that starting with two cores, such
 applications should perform better than a non-TM PyPy.  (All numbers
 presented here are comparing different versions of PyPy which all have
-the JIT enabled.)
+the JIT enabled.  A "suitable application" is one without many conflicts;
+see `goal 2`_.)
 
 You will find below a sketch of the `work plan`_.  If more money than
 requested is collected, then the excess will be entered into the general
@@ -148,8 +149,8 @@ Haswell_ processor (released in 2013).  We could replace most of the
 Software Transactional Memory (STM) library currently used inside PyPy
 with a much smaller Hardware Transactional Memory (HTM) library based on
 hardware features and running on Haswell-generation processors.  This
-has been attempted by Remi Meier recently.  However, it seems that we
-see the scaling problems as expected: the current generation of HTM
+has been attempted by Remi Meier recently.  However, it seems that it
+fails to scale as we would expect it to: the current generation of HTM
 processors is limited to run small-scale transactions.  Even the default
 transaction size used in PyPy-STM is often too much for HTM; and
 reducing this size increases overhead without completely solving the
@@ -166,8 +167,8 @@ Another issue in HTM is sub-cache-line false conflicts (conflicts caused by two
 independent objects that happens to live in the same cache line, which
 is usually 64 bytes).  This is in contrast with the current PyPy-STM,
 which doesn't have false conflicts of this kind at all and might thus be
-ultimately better for very-long-running transactions. We are not aware of  
-published research discussing issues of very-long-running transactions.
+ultimately better for very-long-running transactions.  We are not aware of
+published research discussing issues of sub-cache-line false conflicts.
 
 Note that right now PyPy-STM has false conflicts within the same object,
 e.g. within a list or a dictionary; but we can easily do something
@@ -184,17 +185,18 @@ Why do TM with PyPy instead of CPython?
 
 While there have been early experiments on Hardware Transactional Memory
 with CPython (`Riley and Zilles (2006)`__, `Tabba (2010)`__), there has
-been none in the past few years.  The closest is an attempt using `Haswell on the
+been none in the past few years.  To the best of our knowledge,
+the closest is an attempt using `Haswell on the
 Ruby interpreter`__.  None of these attempts tries to do the same using
 Software Transactional Memory.  We would nowadays consider it possible
 to adapt our stmgc-c7 library for CPython, but it would be a lot of
-work, starting from changing the reference-counting garbage colleciton scheme.  PyPy is
+work, starting from changing the reference-counting garbage collection scheme.  PyPy is
 better designed to be open to this kind of research.
 
-However, the best argument from an objective point of view is probably that
-PyPy has already implemented a JIT.  It is thus starting from a better
-position in terms of performance, particularly for the long-running kind
-of programs that we target here.
+However, the best argument from an objective point of view is probably
+that PyPy has already implemented a Just-in-Time compiler.  It is thus
+starting from a better position in terms of performance, particularly
+for the long-running kind of programs that we target here.
 
 .. __: http://sabi.net/nriley/pubs/dls6-riley.pdf
 .. __: http://www.cs.auckland.ac.nz/~fuad/parpycan.pdf
@@ -207,7 +209,7 @@ Alternatives
 PyPy-TM will be slower than judicious usage of existing alternatives,
 based on multiple processes that communicate with each other in one way
 or another.  The counter-argument is that TM is not only a cleaner
-solution: there are cases in which it is not possilbe to organize (or
+solution: there are cases in which it is not really possible to organize (or
 retrofit) an existing program into the particular format needed for the
 alternatives.  In particular, small quickly-written programs don't need
 the additional baggage of cross-process communication; and large
@@ -226,8 +228,8 @@ architecture would quickly run into the limitation of a 2GB or 4GB of address sp
 The way TM works right now would further divide this
 limit by N+1, where N is the number of segments.  It might be possible
 to create partially different memory views for multiple threads that
-each access the same range of addresses; this would require extensions
-that are very OS-specific.  We didn't investigate so far.
+each access the same range of addresses; but this would likely require
+changes inside the OS.  We didn't investigate so far.
 
 The current 64-bit version relies
 heavily on Linux- and clang-only features.  We believe it is a suitable
