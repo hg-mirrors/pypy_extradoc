@@ -109,6 +109,8 @@ SO always translates to the right version
    no “right version” check
    no find_right_version()
 
+Still need to set a flag "this object was read"
+
 
 C7: Write Barriers
 ==================
