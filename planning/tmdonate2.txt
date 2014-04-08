@@ -99,14 +99,7 @@ presented here are comparing different versions of PyPy which all have
 the JIT enabled.  A "suitable application" is one without many conflicts;
 see `goal 2`_.)
 
-You will find below a sketch of the `work plan`_.  If more money than
-requested is collected, then the excess will be entered into the general
-PyPy pot, used for example to finance sprint travel costs to students.
-
-**Note** For donations higher than $1,000, we can arrange for an invoice
-and a different payment method to avoid the high Paypal fees.  Please
-contact pypy at sfconservancy.org if you want to know details on how
-to donate via other means.
+You will find below a sketch of the `work plan`_.  We start with a Q&A.
 
 
 What is the Global Interpreter Lock?
@@ -266,17 +259,29 @@ This is an very rough estimate of the amount of work it would take to
 complete the steps for an experienced developer who is already familiar
 with the PyPy codebase.  As before, we cannot guarantee the time
 estimates here, but we do agree to report regularly to the community, so
-our progress can be followed publicly.
+our progress can be followed publicly.  We currently expect the duration
+of the whole project to be up to two years starting from April 2014.
 
 Paid work will be at $60/hour, but at least one developer who will work
-on the project – Armin Rigo – has committed to 2 hours of volunteer
-work per paid hour (so the total amount of money that we ask is divided
-by three); and another developer – Remi Meier – is a Ph.D. student
-and gets paid from another source already.
+on the project – Armin Rigo – has committed to one hour of volunteer
+work per paid hour; and another developer – Remi Meier – is a Ph.D. student
+and gets paid from another source already.  The total amount of money
+that we ask below corresponds roughly to one half-time job.
+
 A 10% general donation will go to the `Software Freedom
 Conservancy`_ itself, the non-profit organization of which the PyPy
 project is a member and which manages all the issues related to
 donations, payments, and tax-exempt status.
+An extra fraction of the money collected will be entered into the
+general PyPy pot, used for example to finance sprint travel costs to
+students.  This fraction is 10% maximum, unless more money than
+requested is collected, in which case the whole excess will go to
+the general PyPy pot.
+
+**Note** For donations higher than $1,000, we can arrange for an invoice
+and a different payment method to avoid the high Paypal fees.  Please
+contact pypy at sfconservancy.org if you want to know details on how
+to donate via other means.
 
 .. _`Software Freedom Conservancy`: http://sfconservancy.org/
 
@@ -394,13 +399,12 @@ Funding
 -------
 
 We forecast that goal 1 and a good chunk of goal 2 should be reached in
-around 4 months of work.  The remaining parts of goal 2 as well as goal
+around 6 months of work.  The remaining parts of goal 2 as well as goal
 3 are likely to be more open-ended jobs.  We will go with a total
-estimate of 8 months, corresponding to roughly the second half of the
-`first call for donations`_ which was not covered so far.  This
-corresponds to USD$80640.  The amount sought by this fundraising
-campaign, considering the 2 volunteer hours per paid hour is thus
-USD$26880.
+estimate of two years in order to get a final, well-tested PyPy-STM with
+stable performance.  The amount sought by this fundraising campaign is
+USD$80'000, corresponding to one half-time job for 16 months (1200 hours
+at $60/hour plus 10% overhead).
 
 
 Benefits of This Work to the Python Community and the General Public
