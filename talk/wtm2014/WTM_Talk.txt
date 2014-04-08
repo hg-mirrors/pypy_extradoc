@@ -1,0 +1,206 @@
+STMGC-C7	
+
+Fast Software Transactional Memory for Dynamic Languages
+Remi Meier
+
+Department of Computer Science
+ETH Zürich
+Armin Rigo
+
+www.pypy.org
+
+Current Situation
+Dynamic languages popular
+(Python, Ruby, PHP, JavaScript)
+Parallelization is a problem: GIL
+Atomicity & isolation for bytecode instructions
+
+→ Transactional Memory
+Concurrency, but no parallelism
+
+Background: Current TM systems
+TM implemented in hardware: HTM
+(e.g. Intel Haswell CPU)
+Limited size of transactions
+Not so flexible (e.g. less runtime feedback)
+Fast
+TM implemented in software: STM
+No limits
+Much more flexible
+A lot of overhead (2-10x) ← we want to change that
+
+Background: STM Overhead
+Major source of STM overhead in barriers
+All over the place
+Isolation (Copy-On-Write, Locking, …)
+Validation
+Reference resolution (for COW)
+
+
+
+
+O = read(O)
+return O
+return find_right_version(O)
+right version
+slowpath
+
+Our Goal
+We don’t want to resolve references:
+no “right version” check
+no find_right_version()
+We want
+Copy-on-write (easy & efficient)
+An object has always only one unique reference
+Threads automatically see their version of an obj
+Not to lose the flexibility of STM
+Big part of the STM overhead
+
+C7: Implementation
+How can two copies of an object share the same reference?
+
+Or
+
+How can one reference point to two different locations in memory if used in different 
+threads?
+
+C7: Segmentation
+Partition virtual memory into segments
+1 segment per thread
+Each segment is a copy    → same contents in all segments
+All copies of an object are at the same segment offset (SO) in each segment
+Segment 0
+Segment 1
+Virtual Memory Pages
+SO
+SO
+
+C7: Memory segmentation
+Use SO as object reference
+Need to translate to linear address (LA):    LA = segment address + SO
+Hardware supported ⇒ fast!
+%gs holds a thread’s segment address
+%gs::SO translated to different LAs by CPU
+SO
+SO
+%gs for a thread
+%gs for another thread
+LA: %gs::SO
+LA: %gs::SO
+LA: NULL
+
+C7: Segment Offset
+One SO → multiple LAs
+Extremely inefficient:
+N-times the memory
+1 allocation ⇒ N allocations
+1 write ⇒ N writes
+SO
+SO
+%gs for a thread
+%gs for another thread
+LA: %gs::SO
+LA: %gs::SO
+LA: NULL
+✓
+How to share memory?
+
+C7: Page Sharing
+Partition virtual memory into segments: each segment is backed by different memory
+a
+b
+c
+d
+e
+f
+a’
+b’
+c’
+d’
+e’
+f’
+Segment 0
+Segment 1
+Virtual Memory Pages
+Virtual File Pages
+1:1 mapping
+
+C7: Page Sharing
+Remap segment 1: Both segments share the same memory
+
+
+a
+b
+c
+d
+e
+f
+Segment 0
+Segment 1
+Virtual Memory Pages
+Virtual File Pages
+N:1 mapping
+
+C7: Page Sharing
+We can unshare / privatize pages
+a
+b
+c
+d
+e
+f
+c’
+Segment 0
+Segment 1
+Virtual Memory Pages
+Virtual File Pages
+copy…
+mixed mapping
+
+C7: Copy-On-Write
+2-step address translation:
+%gs + SO → LA
+LA → memory location
+Memory location can be shared or private
+Initially fully shared memory
+Copy-on-write ⇒ switch to private memory:each thread has a private copy
+
+SO never changes
+
+C7: Barriers
+SO always translates to the right version→ no “right version” check→ no find_right_version()
+COW check for writing to non-local object
+
+
+C7: Summary
+Very cheap barriers
+Hardware accelerated address translation
+Page-level COW
+Object-level conflict detection
+
+Limitations
+Huge address space needed (64bit)
+configurable static max. amount of memory
+Optimized for low #segments
+
+Evaluation
+PyPy Python interpreter
+GIL version vs. STM version
+Overhead compared to sequential execution
+System:
+Intel Core i7-4770, 3.4GHz, 4 cores & HT
+16 GB RAM
+
+Evaluation
+Some benchmarks (Richards, Raytrace, …?)
+scaling to 4 cores
+GIL vs. STM
+
+Evaluation: Overhead
+Overhead-Breakdown
+
+Summary
+Optimized for low #CPUs
+Optimized for dynamic language VMs
+Overhead < 50%
+Still STM, not HTM → flexibility
