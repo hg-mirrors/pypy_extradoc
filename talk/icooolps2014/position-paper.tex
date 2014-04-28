@@ -1,0 +1,163 @@
+
+\documentclass{sigplanconf}
+
+% The following \documentclass options may be useful:
+
+% preprint      Remove this option only once the paper is in final form.
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% authoryear    To obtain author/year citation style instead of numeric.
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\conferenceinfo{ICOOOLPS workshop 2014}{July 28th, 2014, Uppsala, Sweden}
+\copyrightyear{2014}
+\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
+\doi{nnnnnnn.nnnnnnn}
+
+% Uncomment one of the following two, if you are not going for the
+% traditional copyright transfer agreement.
+
+%\exclusivelicense                % ACM gets exclusive license to publish,
+                                  % you retain copyright
+
+%\permissiontopublish             % ACM gets nonexclusive license to publish
+                                  % (paid open-access papers,
+                                  % short abstracts)
+
+%% \titlebanner{banner above paper title}        % These are ignored unless
+%% \preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{Title Text}
+\subtitle{Position Paper, ICOOOLPS'14}
+
+\authorinfo{Remi Meier}
+           {Department of Computer Science\\ ETH Zürich}
+           {remi.meier@inf.ethz.ch}
+\authorinfo{Armin Rigo}
+           {www.pypy.org}
+           {arigo@tunes.org}
+
+\maketitle
+
+\begin{abstract}
+This is the text of the abstract.
+\end{abstract}
+
+\category{CR-number}{subcategory}{third-level}
+
+% general terms are not compulsory anymore,
+% you may leave them out
+%% \terms
+%% term1, term2
+
+\keywords
+transactional memory, dynamic languages, parallelism, global interpreter lock
+
+\section{Introduction}
+
+\subsection*{Issue}
+efficiently supporting multi-CPU usage on dynamic languages that were designed with GIL semantics in
+mind
+
+(supporting (large) atomic blocks for synchronization)
+
+\subsection*{Our Position}
+Current solutions for replacing the GIL include STM, HTM, and
+fine-grained locking. STM is usually too slow, HTM very limited, and
+locking suffers from complexity that makes it hard to implement
+correctly. We argue that the best way forward is still STM and that
+its performance problem can be solved.
+
+%% Current solutions like STM, HTM, and fine-grained locking are slow, hard
+%% to implement correctly, and don't fit the specific problems of dynamic
+%% language.  STM is the best way forward but has bad performance, so we
+%% fix that.
+
+\section{Discussion}
+\paragraph{dynamic language VM problems}
+
+- high allocation rate (short lived objects)\\
+- (don't know anything about the program that runs until it actually runs: arbitrary atomic block size)
+
+\paragraph{GIL}
+
+- nice semantics\\
+- easy support of atomic blocks\\
+- no parallelism
+
+\paragraph{fine-grained locking}
+
+- support of atomic blocks?\\
+- hard to get right (deadlocks, performance, lock-granularity)\\
+- very hard to get right for a large language\\
+- hard to retro-fit, as all existing code assumes GIL semantics\\
+- (there are some semantic differences, right? not given perfect lock-placement, but well)
+( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
+
+\paragraph{multiprocessing / no-sharing models}
+
+- often needs major restructuring of programs (explicit data exchange)\\
+- sometimes communication overhead is too large\\
+- shared memory is a problem, copies of memory are too expensive
+
+\paragraph{HTM}
+
+- false-sharing on cache-line level\\
+- limited capacity (caches, undocumented)\\
+- random aborts (haswell)\\
+- generally: transaction-length limited (no atomic blocks)
+
+\paragraph{STM}
+
+- overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
+(FastLane: low overhead, not much gain)\\
+- unlimited transaction length (easy atomic blocks)
+
+\section{Potential Approach}
+possible solution:\\
+- use virtual memory paging to somehow lower the STM overhead\\
+- tight integration with GC and jit?
+
+
+\appendix
+\section{Appendix Title}
+
+This is the text of the appendix, if you need one.
+
+\acks
+
+Acknowledgments, if needed.
+
+% We recommend abbrvnat bibliography style.
+
+\bibliographystyle{abbrvnat}
+
+% The bibliography should be embedded for final submission.
+
+\begin{thebibliography}{}
+\softraggedright
+
+\bibitem[Smith et~al.(2009)Smith, Jones]{smith02}
+P. Q. Smith, and X. Y. Jones. ...reference text...
+
+\end{thebibliography}
+
+
+\end{document}
+
+%                       Revision History
+%                       -------- -------
+%  Date         Person  Ver.    Change
+%  ----         ------  ----    ------
+
+%  2013.06.29   TU      0.1--4  comments on permission/copyright notices
