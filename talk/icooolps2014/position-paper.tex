@@ -73,8 +73,8 @@ use a single, global interpreter lock (GIL) to synchronize the
 execution of code in multiple threads. While this is a
 straight-forward way to eliminate synchronization issues in the
 interpreter, it prevents parallel execution. Code executed in multiple
-threads will be serialized over this GIL so only one thread executes
-at a time.
+threads will be serialized over this GIL so that only one thread can
+execute at a time.
 
 There exist several solutions and work-arounds to remove or avoid the
 GIL in order to benefit from multiple cores. We are going to discuss
@@ -96,7 +96,7 @@ the interpreter itself.
 These requirements are not easy to meet. We argue that STM is the
 overall winner. While it has a big performance problem currently, it
 gets more points in all the other categories. We think that it is the
-only solution that also enables a better synchronization mechanism to
+only solution that also provides a better synchronization mechanism to
 the application in the form of atomic blocks.
 
 %% \subsection{Issue}
@@ -122,6 +122,13 @@ the application in the form of atomic blocks.
 %% fix that.
 
 \section{Discussion}
+
+\paragraph{dynamic language VM problems}
+
+- high allocation rate (short lived objects)\\
+- (don't know anything about the program that runs until it actually runs: arbitrary atomic block size)
+
+
 \subsection{Why is there a GIL?}
 The GIL is a very simple synchronization mechanism for supporting
 multi-threading in the interpreter. The basic guarantee is that the
@@ -168,18 +175,16 @@ preferable.
 
 \subsection{Potential Solutions}
 
-\paragraph{dynamic language VM problems}
+The list of criterias for evaluating potential solutions is as follows:
+\begin{itemize}
+\item Performance
+\item Changes required to existing applications
+\item Better synchronization options for applications (e.g. atomic blocks)
+\item Ease of implementation (interpreter-level)
+\item Integration with external libraries
+\end{itemize}
 
-- high allocation rate (short lived objects)\\
-- (don't know anything about the program that runs until it actually runs: arbitrary atomic block size)
-
-\paragraph{GIL}
-
-- nice semantics\\
-- easy support of atomic blocks\\
-- no parallelism
-
-\paragraph{fine-grained locking}
+\subsubsection*{fine-grained locking}
 
 - support of atomic blocks?\\
 - hard to get right (deadlocks, performance, lock-granularity)\\
@@ -188,12 +193,13 @@ preferable.
 - (there are some semantic differences, right? not given perfect lock-placement, but well)
 ( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
 
-\paragraph{multiprocessing / no-sharing models}
+\subsubsection*{Shared-nothing / multiple processes}
 
 - often needs major restructuring of programs (explicit data exchange)\\
 - sometimes communication overhead is too large\\
 - shared memory is a problem, copies of memory are too expensive
 
+\subsubsection*{Transactional Memory}
 \paragraph{HTM}
 
 - false-sharing on cache-line level\\
@@ -207,7 +213,7 @@ preferable.
 (FastLane: low overhead, not much gain)\\
 - unlimited transaction length (easy atomic blocks)
 
-\section{Potential Approach}
+\section{The Way Forward}
 possible solution:\\
 - use virtual memory paging to somehow lower the STM overhead\\
 - tight integration with GC and jit?
