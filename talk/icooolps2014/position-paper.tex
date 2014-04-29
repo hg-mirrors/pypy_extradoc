@@ -139,6 +139,8 @@ operations to be atomic. While this is probably not a good idea,
 it is used in practice. A solution replacing the GIL should therefore
 uphold these guarantees, while preferably also be as easily
 implementable as a GIL for the interpreter.
+[xxx mention that the interpreter is typically very large and maintained
+by open-source communities]
 
 The GIL also allows for easy integration with external C libraries that
 do not need to be thread-safe. For the duration of the calls, we
