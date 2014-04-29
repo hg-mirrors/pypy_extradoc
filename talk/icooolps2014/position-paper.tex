@@ -122,9 +122,51 @@ the application in the form of atomic blocks.
 %% fix that.
 
 \section{Discussion}
-(why do we have the GIL? it makes the interpreter thread-safe)
-(now there is code relying on the semantics (atomicity of bytecode instructions))
-(synchronization with locks for application-level synchronization is still needed. So GIL is useless for that)
+\subsection{Why is there a GIL?}
+The GIL is a very simple synchronization mechanism for supporting
+multi-threading in the interpreter. The basic guarantee is that the
+GIL may only be released in-between bytecode instructions. The
+interpreter can thus rely on complete isolation and atomicity of these
+instructions. As a consequence, applications can rely on certain
+operations to be atomic. While this is probably not a good idea,
+it is used in practice. A solution replacing the GIL should therefore
+uphold these guarantees, while preferably also be as easily
+implementable as a GIL for the interpreter.
+
+The GIL also allows for easy integration with external C libraries that
+do not need to be thread-safe. For the duration of the calls, we
+simply do not release the GIL. External libraries that are explicitly
+thread-safe can voluntarily release the GIL themselves in order to
+still provide some parallelism. This is done for example for
+potentially long I/O operations. Consequently, I/O-bound,
+multi-threaded applications can actually parallelize to some
+degree. Again, a potential solution should be able to integrate with
+external libraries with similar ease. We will however focus our
+argumentation more on running code in the interpreted language in
+parallel, not the external C calls.
+
+Since the GIL is mostly an implementation detail of the interpreter,
+it is not exposed to the application running on top of it. To
+synchronize memory accesses in applications using threads, the
+state-of-the-art still means explicit locking everywhere. It is well
+known that using locks for synchronization is not easy.  They are
+non-composable, have overhead, may deadlock, limit scalability, and
+overall add a lot of complexity. For a better parallel programming
+model for dynamic languages, we propose another, well-known
+synchronization mechanism called \emph{atomic blocks}.
+
+Atomic blocks are composable, deadlock-free, higher-level and expose
+useful atomicity and isolation guarantees to the application for a
+series of instructions.  Interpreters using using a GIL can simply
+guarantee that the GIL is not released during the execution of the
+atomic block. Of course, this still means that no two atomic blocks
+can execute in parallel or even concurrently. Potential solutions
+that provide a good way to implement atomic blocks are therefore
+preferable.
+
+
+
+\subsection{Potential Solutions}
 
 \paragraph{dynamic language VM problems}
 
