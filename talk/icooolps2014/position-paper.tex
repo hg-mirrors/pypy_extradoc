@@ -177,16 +177,31 @@ preferable.
 
 \subsection{Potential Solutions}
 
-The list of criterias for evaluating potential solutions is as follows:
-\begin{itemize}
-\item Performance
-\item Changes required to existing applications
-\item Better synchronization options for applications (e.g. atomic blocks)
-\item Ease of implementation (interpreter-level)
-\item Integration with external libraries
-\end{itemize}
+For the discussion we define a set of criteria to evaluate the
+multiple potential solutions for removing or avoiding the GIL and its
+limitations:
 
-\subsubsection*{fine-grained locking}
+\begin{description}
+\item[Performance:] How well does the approach perform compared to the
+  GIL on single and multiple threads?
+\item[Existing applications:] How big are the changes required to
+  integrate with and parallelize existing applications?
+\item[Better synchronization:] Does the approach enable better
+  synchronization mechanisms for applications (e.g. atomic blocks)?
+\item[Implementation:] How difficult is it to implement the approach
+  in the interpreter?
+\item[External libraries:] Does the approach allow for easy
+  integration of external libraries?
+\end{description}
+
+
+\subsubsection{Fine-Grained Locking}
+
+The first obvious candidate to replace the GIL is to use multiple
+locks instead of a single global lock. By refining the granularity
+of the locking approach, we gain the ability to run code that does
+not access the same objects in parallel.
+
 
 - support of atomic blocks?\\
 - hard to get right (deadlocks, performance, lock-granularity)\\
@@ -195,13 +210,13 @@ The list of criterias for evaluating potential solutions is as follows:
 - (there are some semantic differences, right? not given perfect lock-placement, but well)
 ( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
 
-\subsubsection*{Shared-nothing / multiple processes}
+\subsubsection{Shared-Nothing / multiple processes}
 
 - often needs major restructuring of programs (explicit data exchange)\\
 - sometimes communication overhead is too large\\
 - shared memory is a problem, copies of memory are too expensive
 
-\subsubsection*{Transactional Memory}
+\subsubsection{Transactional Memory}
 \paragraph{HTM}
 
 - false-sharing on cache-line level\\
@@ -221,10 +236,10 @@ possible solution:\\
 - tight integration with GC and jit?
 
 
-\appendix
-\section{Appendix Title}
+%% \appendix
+%% \section{Appendix Title}
 
-This is the text of the appendix, if you need one.
+%% This is the text of the appendix, if you need one.
 
 \acks
 
