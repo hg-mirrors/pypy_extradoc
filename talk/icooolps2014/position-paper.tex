@@ -37,7 +37,7 @@
 %% \titlebanner{banner above paper title}        % These are ignored unless
 %% \preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{Title Text}
+\title{The Way Forward in Parallelizing Dynamic Languages}
 \subtitle{Position Paper, ICOOOLPS'14}
 
 \authorinfo{Remi Meier}
@@ -64,19 +64,57 @@ This is the text of the abstract.
 transactional memory, dynamic languages, parallelism, global interpreter lock
 
 \section{Introduction}
+In a world where computers get more and more cores and single-thread
+performance increases less and less every year, many dynamic languages
+have a problem. While there is certainly a lot of popularity around
+languages like Python and Ruby, their ability to make use of multiple
+cores is somewhat limited. For ease of implementation they chose to
+use a single, global interpreter lock (GIL) to synchronize the
+execution of code in multiple threads. While this is a
+straight-forward way to eliminate synchronization issues in the
+interpreter, it prevents parallel execution. Code executed in multiple
+threads will be serialized over this GIL so only one thread executes
+at a time.
 
-\subsection*{Issue}
-efficiently supporting multi-CPU usage on dynamic languages that were designed with GIL semantics in
-mind
+There exist several solutions and work-arounds to remove or avoid the
+GIL in order to benefit from multiple cores. We are going to discuss
+several of them and try to find the best way forward. The first
+approach uses fine-grained locking to replace the single GIL. Then
+there are shared-nothing models that use for example multiple
+processes with multiple interpreters and explicit message
+passing. Finally, one can also directly replace the GIL with
+transactional memory (TM), either software-based (STM) or
+hardware-based (HTM).
 
-(supporting (large) atomic blocks for synchronization)
+The approach that wins in the end should perform similarly for
+single-threaded execution as compared to the GIL and be able to
+execute code in parallel on multiple cores. Furthermore, we will also
+take into account the compatibility to existing code that already uses
+threads for concurrency, as well as the changes that are required to
+the interpreter itself.
 
-\subsection*{Our Position}
-Current solutions for replacing the GIL include STM, HTM, and
-fine-grained locking. STM is usually too slow, HTM very limited, and
-locking suffers from complexity that makes it hard to implement
-correctly. We argue that the best way forward is still STM and that
-its performance problem can be solved.
+These requirements are not easy to meet. We argue that STM is the
+overall winner. While it has a big performance problem currently, it
+gets more points in all the other categories. We think that it is the
+only solution that also enables a better synchronization mechanism to
+the application in the form of atomic blocks.
+
+%% \subsection{Issue}
+%% The issue that we want to discuss is how to efficiently support
+%% multi-core parallel execution of code in dynamic languages that were
+%% designed with GIL semantics in mind.
+
+%% Furthermore, a solution to this problem should also bring better
+%% synchronization mechanism with it...
+
+%% (supporting (large) atomic blocks for synchronization)
+
+%% \subsection{Our Position}
+%% Current solutions for replacing the GIL include STM, HTM, and
+%% fine-grained locking. STM is usually too slow, HTM very limited, and
+%% locking suffers from complexity that makes it hard to implement
+%% correctly. We argue that the best way forward is still STM and that
+%% its performance problem can be solved.
 
 %% Current solutions like STM, HTM, and fine-grained locking are slow, hard
 %% to implement correctly, and don't fit the specific problems of dynamic
@@ -84,6 +122,10 @@ its performance problem can be solved.
 %% fix that.
 
 \section{Discussion}
+(why do we have the GIL? it makes the interpreter thread-safe)
+(now there is code relying on the semantics (atomicity of bytecode instructions))
+(synchronization with locks for application-level synchronization is still needed. So GIL is useless for that)
+
 \paragraph{dynamic language VM problems}
 
 - high allocation rate (short lived objects)\\
