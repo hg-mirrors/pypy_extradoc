@@ -69,14 +69,14 @@ performance increases less and less every year, many dynamic languages
 have a problem. While there is certainly a lot of popularity around
 languages like Python and Ruby, their ability to make use of multiple
 cores is somewhat limited. For ease of implementation they chose to
-use a single, global interpreter lock (GIL) to synchronize the
+use a single, global interpreter lock (GIL) to synchronise the
 execution of code in multiple threads. While this is a
-straight-forward way to eliminate synchronization issues in the
+straight-forward way to eliminate synchronisation issues in the
 interpreter, it prevents parallel execution. Code executed in multiple
-threads will be serialized over this GIL so that only one thread can
+threads will be serialised over this GIL so that only one thread can
 execute at a time.
 
-There exist several solutions and work-arounds to remove or avoid the
+There exist several solutions and workarounds to remove or avoid the
 GIL in order to benefit from multiple cores. We are going to discuss
 several of them and try to find the best way forward. The first
 approach uses fine-grained locking to replace the single GIL. Then
@@ -96,7 +96,7 @@ the interpreter itself.
 These requirements are not easy to meet. We argue that STM is the
 overall winner. While it has a big performance problem currently, it
 gets more points in all the other categories. We think that it is the
-only solution that also provides a better synchronization mechanism to
+only solution that also provides a better synchronisation mechanism to
 the application in the form of atomic blocks.
 
 %% \subsection{Issue}
@@ -124,13 +124,13 @@ the application in the form of atomic blocks.
 \section{Discussion}
 
 \paragraph{dynamic language VM problems}
-
+XXX:
 - high allocation rate (short lived objects)\\
 - (don't know anything about the program that runs until it actually runs: arbitrary atomic block size)
 
 
 \subsection{Why is there a GIL?}
-The GIL is a very simple synchronization mechanism for supporting
+The GIL is a very simple synchronisation mechanism for supporting
 multi-threading in the interpreter. The basic guarantee is that the
 GIL may only be released in-between bytecode instructions. The
 interpreter can thus rely on complete isolation and atomicity of these
@@ -151,7 +151,7 @@ simply do not release the GIL. External libraries that are explicitly
 thread-safe can voluntarily release the GIL themselves in order to
 still provide some parallelism. This is done for example for
 potentially long I/O operations. Consequently, I/O-bound,
-multi-threaded applications can actually parallelize to some
+multi-threaded applications can actually parallelise to some
 degree. Again, a potential solution should be able to integrate with
 external libraries with similar ease. We will however focus our
 argumentation more on running code in the interpreted language in
@@ -159,21 +159,21 @@ parallel, not the external C calls.
 
 Since the GIL is mostly an implementation detail of the interpreter,
 it is not exposed to the application running on top of it. To
-synchronize memory accesses in applications using threads, the
+synchronise memory accesses in applications using threads, the
 state-of-the-art still means explicit locking everywhere. It is well
-known that using locks for synchronization is not easy.  They are
+known that using locks for synchronisation is not easy.  They are
 non-composable, have overhead, may deadlock, limit scalability, and
 overall add a lot of complexity. For a better parallel programming
 model for dynamic languages, we propose another, well-known
-synchronization mechanism called \emph{atomic blocks}.
+synchronisation mechanism called \emph{atomic blocks}.
 
 Atomic blocks are composable, deadlock-free, higher-level and expose
 useful atomicity and isolation guarantees to the application for a
-series of instructions.  Interpreters using using a GIL can simply
-guarantee that the GIL is not released during the execution of the
-atomic block. Of course, this still means that no two atomic blocks
-can execute in parallel or even concurrently. Potential solutions
-that provide a good way to implement atomic blocks are therefore
+series of instructions.  Interpreters using a GIL can simply guarantee
+that the GIL is not released during the execution of the atomic
+block. Of course, this still means that no two atomic blocks can
+execute in parallel or even concurrently. Potential solutions that
+provide a good way to implement atomic blocks are therefore
 preferable.
 
 
@@ -188,9 +188,9 @@ limitations:
 \item[Performance:] How well does the approach perform compared to the
   GIL on single and multiple threads?
 \item[Existing applications:] How big are the changes required to
-  integrate with and parallelize existing applications?
-\item[Better synchronization:] Does the approach enable better
-  synchronization mechanisms for applications (e.g. atomic blocks)?
+  integrate with and parallelise existing applications?
+\item[Better synchronisation:] Does the approach enable better
+  synchronisation mechanisms for applications (e.g. atomic blocks)?
 \item[Implementation:] How difficult is it to implement the approach
   in the interpreter?
 \item[External libraries:] Does the approach allow for easy
@@ -210,7 +210,7 @@ and releasing locks produces.
 
 Jython\footnote{www.jython.org} is one project that implements an
 interpreter for Python on the JVM\footnote{Java Virtual Machine} and
-that uses fine-grained locking to correctly synchronize the
+that uses fine-grained locking to correctly synchronise the
 interpreter. For a language like Python, one needs quite a few,
 carefully placed locks. Since there is no central location, the
 complexity of the implementation is quite a bit greater compared to
@@ -219,8 +219,8 @@ however be very simple too.  One could simply use one lock per library
 to avoid this issue.
 
 In the end, fine-grained locking can transparently replace the GIL
-and therefore parallelize existing applications without any
-changes. It does however not provide a better synchronization
+and therefore parallelise existing applications without any
+changes. It does however not provide a better synchronisation
 mechanism to the application like e.g. atomic blocks.
 
 %% - support of atomic blocks?\\
@@ -248,13 +248,13 @@ applicability is therefore quite limited. Performance is good as
 long as the application does not need to communicate a lot, because
 inter-process communication is relatively expensive. Also the
 implementation of this approach is very cheap since one can
-actually take an unmodfied GIL-supported interpreter and run
+actually take an unmodified GIL-supported interpreter and run
 multiple of them in parallel. That way, we also inherit the
 easy integration of external libraries without any changes.
 While the model of explicit communication is often seen as a
-superior way to synchronize concurrent applications because
+superior way to synchronise concurrent applications because
 of its explicitness, it does not actually introduce a better
-synchronization mechanism for applications.
+synchronisation mechanism for applications.
 
 %% - often needs major restructuring of programs (explicit data exchange)\\
 %% - sometimes communication overhead is too large\\
@@ -292,16 +292,16 @@ a transaction. This transaction-length limitation makes it necessary
 to have a fallback in place in case this limit is reached. In recent
 attempts, the usual fallback is the GIL (XXX: cite). The current
 generation of HTM hits this limit very often for our use case (XXX:
-cite ruby GIL paper) and therefore does not parallelize that well.
+cite ruby GIL paper) and therefore does not parallelise that well.
 
 The performance of HTM is pretty good (XXX: cite again...) as it does
-not introduce much overhead. And it can transparently parallelize
+not introduce much overhead. And it can transparently parallelise
 existing applications to some degree. The implementation is very
 straight-forward because it directly replaces the GIL in a central
 place. HTM is also directly compatible with any external library that
-needs to be integrated and synchronized for use in multiple
+needs to be integrated and synchronised for use in multiple
 threads. The one thing that is missing is support for a better
-synchronization mechanism for the application. It is not possible
+synchronisation mechanism for the application. It is not possible
 in general to expose the hardware-transactions to the application
 in the form of atomic blocks because that would require much
 longer transactions. 
@@ -326,9 +326,9 @@ However, STM compared to HTM does not suffer from the same restricting
 limitations. Transactions can be arbitrarily long.  This makes it
 possible to actually expose transactions to the application in the
 form of atomic blocks. This is the only approach that enables a better
-synchronization mechanism than locks for applications \emph{and} still
-parallelizes when using it. We think this is a very important point
-because it not only gives dynamic languages the ability to parallelize
+synchronisation mechanism than locks for applications \emph{and} still
+parallelises when using it. We think this is a very important point
+because it not only gives dynamic languages the ability to parallelise
 (already commonplace in most other languages), but also pushes
 parallel programming forward. Together with sequential consistency it
 provides a lot of simplification for parallel applications.
@@ -337,35 +337,59 @@ provides a lot of simplification for parallel applications.
 %% (FastLane: low overhead, not much gain)\\
 %% - unlimited transaction length (easy atomic blocks)
 
+
 \section{The Way Forward}
-\begin{table}[]
+
+\begin{table*}[!ht]
   \centering
-  \begin{tabular}{|p{2cm}|c|c|c|c|c|}
+  \begin{tabular}{|l|c|c|c|c|c|}
     \hline
-    & \textbf{GIL} & \parbox[t]{1cm}{\textbf{Fine-grained locking}}
-    & \parbox[t]{1cm}{\textbf{Shared-nothing}} & \textbf{HTM} & \textbf{STM}\\
+    & \textbf{GIL} & \textbf{Fine-grained locking}
+    & \textbf{Shared-nothing} & \textbf{HTM} & \textbf{STM}\\
     \hline
-    Performance            & 0  & +  & ++   & +  & -{-} \\
+    Performance (single-threaded) & ++   & +  & ++   & ++ & -{-} \\
     \hline
-    Existing applications  & ++ & ++ & -{-} & ++ & ++   \\
+    Performance (multi-threaded)  & -{-} & +  & +    & +  & +    \\
     \hline
-    Better synchronization & 0  & 0  & -    & -  & ++   \\
+    Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
     \hline
-    Implementation         & ++ & -  & ++   & ++ & ++   \\
+    Better synchronisation        & -    & -  & -    & -  & ++   \\
     \hline
-    External libraries     & ++ & ++ & ++   & ++ & ++   \\
+    Implementation                & ++   & -  & ++   & ++ & ++   \\
+    \hline
+    External libra\-ries          & ++   & ++ & ++   & ++ & ++   \\
     \hline
   \end{tabular}
-  \caption{Comparison (--/-/0/+/++)}
+  \caption{Comparison between the approaches (-{-}/-/o/+/++)}
   \label{tab:comparison}
-\end{table}
-
-Comparison in Table \ref{tab:comparison}
+\end{table*}
 
 
-possible solution:\\
-- use virtual memory paging to somehow lower the STM overhead\\
-- tight integration with GC and jit?
+Following the above argumentation for each approach we assembled a
+general overview in Table \ref{tab:comparison}. The general picture is
+everything else than clear. It looks like HTM may be a good solution
+to replace the GIL in the future. Current implementations are however
+far too limiting and do not provide good scaling.
+
+Just allowing for parallel execution only means that dynamic languages
+catch up to all other languages that already provide real
+parallelism. This is why we think that only the STM approach is a
+viable solution in the long-term. It provides the application with a
+simple memory model (sequential consistency) and a composable way to
+synchronise memory accesses using atomic blocks.
+
+STM has a big performance problem. We believe that further work
+to reduce the overhead by closely working together with the
+hardware should be the focus of research. Hybrid approaches that
+combine STM and HTM for performance may be able to overcome this
+obstacle.
+
+
+
+
+%% possible solution:\\
+%% - use virtual memory paging to somehow lower the STM overhead\\
+%% - tight integration with GC and jit?
 
 
 %% \appendix
@@ -375,7 +399,7 @@ possible solution:\\
 
 \acks
 
-Acknowledgments, if needed.
+Acknowledgments...
 
 % We recommend abbrvnat bibliography style.
 
