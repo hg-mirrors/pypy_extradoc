@@ -198,17 +198,34 @@ limitations:
 \subsubsection{Fine-Grained Locking}
 
 The first obvious candidate to replace the GIL is to use multiple
-locks instead of a single global lock. By refining the granularity
-of the locking approach, we gain the ability to run code that does
-not access the same objects in parallel.
+locks instead of a single global lock. By refining the granularity of
+the locking approach, we gain the ability to run code that does not
+access the same objects in parallel. What we lose instead is the
+simplicity of the GIL approach. With every additional lock, the
+likeliness of deadlocks grows, as well as the overhead that acquiring
+and releasing locks produces.
 
+Jython\footnote{www.jython.org} is one project that implements an
+interpreter for Python on the JVM\footnote{Java Virtual Machine} and
+that uses fine-grained locking to correctly synchronize the
+interpreter. For a language like Python, one needs quite a few,
+carefully placed locks. Since there is no central location, the
+complexity of the implementation is quite a bit greater compared to
+using a GIL. Integrating external, non-thread-safe libraries should
+however be very simple too.  One could simply use one lock per library
+to avoid this issue.
 
-- support of atomic blocks?\\
-- hard to get right (deadlocks, performance, lock-granularity)\\
-- very hard to get right for a large language\\
-- hard to retro-fit, as all existing code assumes GIL semantics\\
-- (there are some semantic differences, right? not given perfect lock-placement, but well)
-( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
+In the end, fine-grained locking can transparently replace the GIL
+and therefore parallelize existing applications without any
+changes. It does however not provide a better synchronization
+mechanism to the application like e.g. atomic blocks.
+
+%% - support of atomic blocks?\\
+%% - hard to get right (deadlocks, performance, lock-granularity)\\
+%% - very hard to get right for a large language\\
+%% - hard to retro-fit, as all existing code assumes GIL semantics\\
+%% - (there are some semantic differences, right? not given perfect lock-placement, but well)
+%% ( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
 
 \subsubsection{Shared-Nothing / multiple processes}
 
