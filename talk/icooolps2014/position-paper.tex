@@ -9,7 +9,7 @@
 % authoryear    To obtain author/year citation style instead of numeric.
 
 \usepackage[utf8]{inputenc}
-
+\usepackage{array}
 \usepackage{amsmath}
 
 
@@ -338,6 +338,31 @@ provides a lot of simplification for parallel applications.
 %% - unlimited transaction length (easy atomic blocks)
 
 \section{The Way Forward}
+\begin{table}[]
+  \centering
+  \begin{tabular}{|p{2cm}|c|c|c|c|c|}
+    \hline
+    & \textbf{GIL} & \parbox[t]{1cm}{\textbf{Fine-grained locking}}
+    & \parbox[t]{1cm}{\textbf{Shared-nothing}} & \textbf{HTM} & \textbf{STM}\\
+    \hline
+    Performance            & 0  & +  & ++   & +  & -{-} \\
+    \hline
+    Existing applications  & ++ & ++ & -{-} & ++ & ++   \\
+    \hline
+    Better synchronization & 0  & 0  & -    & -  & ++   \\
+    \hline
+    Implementation         & ++ & -  & ++   & ++ & ++   \\
+    \hline
+    External libraries     & ++ & ++ & ++   & ++ & ++   \\
+    \hline
+  \end{tabular}
+  \caption{Comparison (--/-/0/+/++)}
+  \label{tab:comparison}
+\end{table}
+
+Comparison in Table \ref{tab:comparison}
+
+
 possible solution:\\
 - use virtual memory paging to somehow lower the STM overhead\\
 - tight integration with GC and jit?
