@@ -229,9 +229,34 @@ mechanism to the application like e.g. atomic blocks.
 
 \subsubsection{Shared-Nothing / multiple processes}
 
-- often needs major restructuring of programs (explicit data exchange)\\
-- sometimes communication overhead is too large\\
-- shared memory is a problem, copies of memory are too expensive
+There are also approaches that work around the GIL instead of trying
+to replace it. If an application can be split into completely
+independent parts that only very rarely need to share anything, or
+only do so via an external program like a database, then it is
+sensible to have one GIL per independent part. As an example of such
+an approach we look at the
+\emph{multiprocessing}\footnote{https://docs.python.org/2/library/multiprocessing.html}
+module of Python. In essence, it uses process-forking to provide the
+application with multiple interpreters that can run in parallel.
+Communication is then done explicitly through pipes.
+
+Obviously not every application fits well into this model and its
+applicability is therefore quite limited. Performance is good as
+long as the application does not need to communicate a lot, because
+inter-process communication is relatively expensive. Also the
+implementation of this approach is very cheap since one can
+actually take an unmodfied GIL-supported interpreter and run
+multiple of them in parallel. That way, we also inherit the
+easy integration of external libraries without any changes.
+While the model of explicit communication is often seen as a
+superior way to synchronize concurrent applications because
+of its explicitness, it does not actually introduce a better
+synchronization mechanism for applications.
+
+
+%% - often needs major restructuring of programs (explicit data exchange)\\
+%% - sometimes communication overhead is too large\\
+%% - shared memory is a problem, copies of memory are too expensive
 
 \subsubsection{Transactional Memory}
 \paragraph{HTM}
