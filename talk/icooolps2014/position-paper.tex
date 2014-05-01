@@ -134,11 +134,14 @@ The GIL is a very simple synchronization mechanism for supporting
 multi-threading in the interpreter. The basic guarantee is that the
 GIL may only be released in-between bytecode instructions. The
 interpreter can thus rely on complete isolation and atomicity of these
-instructions. As a consequence, applications can rely on certain
-operations to be atomic. While this is probably not a good idea,
-it is used in practice. A solution replacing the GIL should therefore
-uphold these guarantees, while preferably also be as easily
-implementable as a GIL for the interpreter.
+instructions. Additionally, it provides the application with a
+sequential consistency model. As a consequence, applications can rely
+on certain operations to be atomic and that they will always be
+executed in the order in which they appear in the code. While
+depending on this may not always be a good idea, it is done in
+practice. A solution replacing the GIL should therefore uphold these
+guarantees, while preferably also be as easily implementable as a GIL
+for the interpreter.
 [xxx mention that the interpreter is typically very large and maintained
 by open-source communities]
 
@@ -253,24 +256,86 @@ superior way to synchronize concurrent applications because
 of its explicitness, it does not actually introduce a better
 synchronization mechanism for applications.
 
-
 %% - often needs major restructuring of programs (explicit data exchange)\\
 %% - sometimes communication overhead is too large\\
 %% - shared memory is a problem, copies of memory are too expensive
 
+
 \subsubsection{Transactional Memory}
+Transactional memory (TM) can be used as a direct replacement for a
+single global lock. Transactions provide the same atomicity and
+isolation guarantees as the GIL provides for the execution of bytecode
+instructions. So instead of acquiring and releasing the GIL between
+these instructions, this approach runs the protected instructions
+inside transactions.
+
+TM can be implemented in software (STM) or in hardware (HTM. There are
+also some hybrid approaches that combine the two. We count these
+hybrid approaches as STM, since they usually provide the same
+capabilities as software-only approaches but with different
+performance characteristics. We will now first look at HTM that
+recently gained a lot of popularity by its introduction in common
+desktop CPUs from Intel (Haswell generation).
+
 \paragraph{HTM}
 
-- false-sharing on cache-line level\\
-- limited capacity (caches, undocumented)\\
-- random aborts (haswell)\\
-- generally: transaction-length limited (no atomic blocks)
+HTM provides us with transactions like any TM system does. It can
+be used as a direct replacement for the GIL. However, as is common
+with hardware-only solutions, there are quite a few limitations
+that can not be lifted easily. For this comparison, we look at
+the implementation of Intel in recent Haswell generation CPUs.
+
+HTM in these CPUs works on the level of caches. This has a few
+consequences like false-sharing on the cache-line level, and most
+importantly it limits the amount of memory that can be accessed within
+a transaction. This transaction-length limitation makes it necessary
+to have a fallback in place in case this limit is reached. In recent
+attempts, the usual fallback is the GIL (XXX: cite). The current
+generation of HTM hits this limit very often for our use case (XXX:
+cite ruby GIL paper) and therefore does not parallelize that well.
+
+The performance of HTM is pretty good (XXX: cite again...) as it does
+not introduce much overhead. And it can transparently parallelize
+existing applications to some degree. The implementation is very
+straight-forward because it directly replaces the GIL in a central
+place. HTM is also directly compatible with any external library that
+needs to be integrated and synchronized for use in multiple
+threads. The one thing that is missing is support for a better
+synchronization mechanism for the application. It is not possible
+in general to expose the hardware-transactions to the application
+in the form of atomic blocks because that would require much
+longer transactions. 
+
+%% - false-sharing on cache-line level\\
+%% - limited capacity (caches, undocumented)\\
+%% - random aborts (haswell)\\
+%% - generally: transaction-length limited (no atomic blocks)
 
 \paragraph{STM}
 
-- overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
-(FastLane: low overhead, not much gain)\\
-- unlimited transaction length (easy atomic blocks)
+STM provides all the same benefits as HTM except for its performance.
+It is not unusual for the overhead introduced by STM to be between
+100\% to even 1000\%. While STM systems often scale very well to a big
+number of threads and eventually overtake the single-threaded
+execution, they often provide no benefits at all for low numbers of
+threads (1-8). There are some attempts (XXX: cite fastlane) that can
+reduce the overhead a lot, but also scale very badly so that their
+benefit on more than one thread is little.
+
+However, STM compared to HTM does not suffer from the same restricting
+limitations. Transactions can be arbitrarily long.  This makes it
+possible to actually expose transactions to the application in the
+form of atomic blocks. This is the only approach that enables a better
+synchronization mechanism than locks for applications \emph{and} still
+parallelizes when using it. We think this is a very important point
+because it not only gives dynamic languages the ability to parallelize
+(already commonplace in most other languages), but also pushes
+parallel programming forward. Together with sequential consistency it
+provides a lot of simplification for parallel applications.
+
+%% - overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
+%% (FastLane: low overhead, not much gain)\\
+%% - unlimited transaction length (easy atomic blocks)
 
 \section{The Way Forward}
 possible solution:\\
@@ -304,9 +369,3 @@ P. Q. Smith, and X. Y. Jones. ...reference text...
 
 \end{document}
 
-%                       Revision History
-%                       -------- -------
-%  Date         Person  Ver.    Change
-%  ----         ------  ----    ------
-
-%  2013.06.29   TU      0.1--4  comments on permission/copyright notices
