@@ -146,7 +146,7 @@ for the interpreter.
 by open-source communities]
 
 The GIL also allows for easy integration with external C libraries that
-do not need to be thread-safe. For the duration of the calls, we
+may not be thread-safe. For the duration of the calls, we
 simply do not release the GIL. External libraries that are explicitly
 thread-safe can voluntarily release the GIL themselves in order to
 still provide some parallelism. This is done for example for
@@ -269,11 +269,11 @@ instructions. So instead of acquiring and releasing the GIL between
 these instructions, this approach runs the protected instructions
 inside transactions.
 
-TM can be implemented in software (STM) or in hardware (HTM. There are
-also some hybrid approaches that combine the two. We count these
+TM can be implemented in software (STM) or in hardware (HTM). There
+are also hybrid approaches, which combine the two. We count these
 hybrid approaches as STM, since they usually provide the same
 capabilities as software-only approaches but with different
-performance characteristics. We will now first look at HTM that
+performance characteristics. We will now first look at HTM, which
 recently gained a lot of popularity by its introduction in common
 desktop CPUs from Intel (Haswell generation).
 
@@ -368,21 +368,27 @@ provides a lot of simplification for parallel applications.
 Following the above argumentation for each approach we assembled a
 general overview in Table \ref{tab:comparison}. The general picture is
 everything else than clear. It looks like HTM may be a good solution
-to replace the GIL in the future. Current implementations are however
-far too limiting and do not provide good scaling.
+to replace the GIL in the near future. Current implementations are
+however far too limiting and do not provide good scaling.
 
-Just allowing for parallel execution only means that dynamic languages
+Allowing for parallel execution just means that dynamic languages
 catch up to all other languages that already provide real
 parallelism. This is why we think that only the STM approach is a
 viable solution in the long-term. It provides the application with a
 simple memory model (sequential consistency) and a composable way to
 synchronise memory accesses using atomic blocks.
 
-STM has a big performance problem. We believe that further work
-to reduce the overhead by closely working together with the
-hardware should be the focus of research. Hybrid approaches that
-combine STM and HTM for performance may be able to overcome this
-obstacle.
+Unfortunately, STM has a big performance problem. One way to approach
+this problem is to make STM systems that use the available hardware
+better. We are currently working on a STM system that makes use of
+several hardware features like virtual memory and memory segmentation.
+We further tailor the system to the discussed use case which gives us
+an advantage over other STM systems that are more general.  With this
+approach, initial results suggest that we can keep the overhead of STM
+already below 50\%. A hybrid TM system, which also uses HTM to
+accelerate certain tasks, looks like a very promising direction of
+research too. In general we believe that further work to reduce the
+overhead of STM is very worthwhile.
 
 
 
