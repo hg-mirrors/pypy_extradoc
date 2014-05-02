@@ -390,13 +390,18 @@ viable solution in the long-term. It provides the application with a
 simple memory model (sequential consistency) and a composable way to
 synchronise memory accesses using atomic blocks.
 
-Unfortunately, STM has a big performance problem. One way to approach
-this problem is to make STM systems that make better use of low-level
-features in existing OS kernels.
-We are currently working on a STM system that makes use of
-several such features like virtual memory and memory segmentation.
-We further tailor the system to the discussed use case which gives us
-an advantage over other STM systems that are more general. With this
+Unfortunately, STM has a big performance problem. Particularly, for
+our use case there is not much static information available since we
+are executing a program only known at runtime. Additionally, replacing
+the GIL means running everything in transactions, so there is not much
+code that can run outside and be optimized better.
+
+One way to get more performance is to make STM systems that make
+better use of low-level features in existing OS kernels.  We are
+currently working on a STM system that makes use of several such
+features like virtual memory and memory segmentation.  We further
+tailor the system to the discussed use case which gives us an
+advantage over other STM systems that are more general. With this
 approach, initial results suggest that we can keep the overhead of STM
 below 50\%. A hybrid TM system, which also uses HTM to accelerate
 certain tasks, looks like a very promising direction of research
