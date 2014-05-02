@@ -13,7 +13,6 @@
 \usepackage{hyperref}
 \usepackage{amsmath}
 
-
 \begin{document}
 
 \special{papersize=8.5in,11in}
@@ -132,19 +131,19 @@ the application in the form of atomic blocks.
 
 \subsection{Why is there a GIL?}
 The GIL is a very simple synchronisation mechanism for supporting
-multithreading in the interpreter. The basic guarantee is that the
-GIL may only be released in-between bytecode instructions. The
-interpreter can thus rely on complete isolation and atomicity of these
+multithreading in the interpreter. The basic guarantee is that the GIL
+may only be released in-between bytecode instructions. The interpreter
+can thus rely on complete isolation and atomicity of these
 instructions. Additionally, it provides the application with a
-sequential consistency model. As a consequence, applications can rely
-on certain operations to be atomic and that they will always be
-executed in the order in which they appear in the code. While
-depending on this may not always be a good idea, it is done in
-practice. A GIL-replacement should therefore uphold these
+sequential consistency model\cite{lamport79}. As a consequence,
+applications can rely on certain operations to be atomic and that they
+will always be executed in the order in which they appear in the
+code. While depending on this may not always be a good idea, it is
+done in practice. A GIL-replacement should therefore uphold these
 guarantees, while preferably also be as easily implementable as a GIL
 for the interpreter.
-[xxx mention that the interpreter is typically very large and maintained
-by open-source communities]
+[xxx mention that the interpreter is typically
+  very large and maintained by open-source communities]
 
 The GIL also allows for easy integration with external C libraries that
 may not be thread-safe. For the duration of the calls, we
@@ -350,9 +349,10 @@ use case.
 %% - unlimited transaction length (easy atomic blocks)
 
 
+
 \section{The Way Forward}
 
-\begin{table*}[!ht]
+\begin{table*}[h]
   \centering
   \begin{tabular}{|l|c|c|c|c|c|}
     \hline
@@ -422,9 +422,9 @@ very worthwhile.
 
 %% This is the text of the appendix, if you need one.
 
-\acks
+%% \acks
 
-Acknowledgements...
+%% Acknowledgements...
 
 % We recommend abbrvnat bibliography style.
 
@@ -484,6 +484,12 @@ Acknowledgements...
 \bibitem{spear09}
   Spear, Michael F., et al. "Transactional mutex locks." \emph{SIGPLAN
     Workshop on Transactional Computing.} 2009.
+
+\bibitem{lamport79}
+  Lamport, Leslie. "How to make a multiprocessor computer that
+  correctly executes multiprocess programs." \emph{Computers, IEEE
+    Transactions} on 100.9 (1979): 690-691.
+
 
 \end{thebibliography}
 
