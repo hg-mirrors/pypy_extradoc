@@ -343,6 +343,10 @@ to do the same for fine-grained locking\cite{bill06} but they require
 a whole program analysis since locks are inherently non-composable.
 The effectiveness of these approaches still has to be proven for our
 use case.
+[xxx or maybe: "The effectiveness of these approaches is doubtful in our
+use case --- for example, it makes it close to impossible to order the
+locks consistently or to know in advance which locks a transaction will
+need.]
 
 %% - overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
 %% (FastLane: low overhead, not much gain)\\
