@@ -337,6 +337,14 @@ because it not only gives dynamic languages the ability to parallelise
 parallel programming forward. Together with sequential consistency it
 provides a lot of simplification for parallel applications.
 
+While one can argue that STM requires the insertion of read and write
+barriers in the whole program, this can be done automatically and
+locally by a program transformation\cite{felber07}. There are attempts
+to do the same for fine-grained locking\cite{bill06} but they require
+a whole program analysis since locks are inherently non-composable.
+The effectiveness of these approaches still has to be proven for our
+use case.
+
 %% - overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
 %% (FastLane: low overhead, not much gain)\\
 %% - unlimited transaction length (easy atomic blocks)
@@ -455,6 +463,17 @@ Acknowledgements...
   Fuad Tabba. 2010. Adding concurrency in python using a commercial
   processor's hardware transactional memory support. \emph{SIGARCH
   Comput. Archit. News 38}, 5 (April 2010)
+
+\bibitem{felber07}
+  Felber, Pascal, et al. "Transactifying applications using an open
+  compiler framework." \emph{TRANSACT}, August (2007): 4-6.
+
+\bibitem{bill06}
+  Bill McCloskey, Feng Zhou, David Gay, and Eric
+  Brewer. 2006. Autolocker: synchronization inference for atomic
+  sections. \emph{In Conference record of the 33rd ACM SIGPLAN-SIGACT
+  symposium on Principles of programming languages (POPL '06)}. ACM,
+  New York, NY, USA
 
 \end{thebibliography}
 
