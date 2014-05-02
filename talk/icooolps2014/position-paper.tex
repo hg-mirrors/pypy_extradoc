@@ -322,9 +322,9 @@ be between 100\% to even 1000\% \cite{cascaval08,drago11}. While STM
 systems often scale very well to a big number of threads and
 eventually overtake the single-threaded execution, they often provide
 no benefits at all for low numbers of threads (1-8). There are some
-attempts \cite{warmhoff13} that can reduce the overhead a lot, but
-also scale very badly so that their benefit on more than one thread is
-little.
+attempts \cite{warmhoff13,spear09} that can reduce the overhead a lot,
+but scale badly or only for certain workloads. Often the benefits
+on more than one thread are too little in real world applications.
 
 However, STM compared to HTM does not suffer from the same restricting
 limitations. Transactions can be arbitrarily long.  This makes it
@@ -480,6 +480,10 @@ Acknowledgements...
   sections. \emph{In Conference record of the 33rd ACM SIGPLAN-SIGACT
   symposium on Principles of programming languages (POPL '06)}. ACM,
   New York, NY, USA
+
+\bibitem{spear09}
+  Spear, Michael F., et al. "Transactional mutex locks." \emph{SIGPLAN
+    Workshop on Transactional Computing.} 2009.
 
 \end{thebibliography}
 
