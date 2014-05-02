@@ -10,6 +10,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{array}
+\usepackage{hyperref}
 \usepackage{amsmath}
 
 
@@ -213,7 +214,7 @@ The latter means that we lose a bit of performance in the
 single-threaded case compared to the GIL, which requires much less
 acquire-release operations.
 
-Jython\footnote{www.jython.org} is one project that implements an
+Jython\cite{webjython} is one project that implements an
 interpreter for Python on the JVM\footnote{Java Virtual Machine} and
 that uses fine-grained locking to correctly synchronise the
 interpreter. For a language like Python, one needs quite a few,
@@ -282,46 +283,48 @@ performance characteristics. We will now first look at HTM, which
 recently gained a lot of popularity by its introduction in common
 desktop CPUs from Intel (Haswell generation).
 
-\paragraph{HTM} provides us with transactions like any TM system does. It can
-be used as a direct replacement for the GIL. However, as is common
-with hardware-only solutions, there are quite a few limitations
-that can not be lifted easily. For this comparison, we look at
-the implementation of Intel in recent Haswell generation CPUs.
+\paragraph{HTM} provides us with transactions like any TM system does.
+It can be used as a direct replacement for the GIL. However, as is
+common with hardware-only solutions, there are quite a few limitations
+that can not be lifted easily. For this comparison, we look at the
+implementation of Intel in recent Haswell generation CPUs.
 
 HTM in these CPUs works on the level of caches. This has a few
 consequences like false-sharing on the cache-line level, and most
 importantly it limits the amount of memory that can be accessed within
 a transaction. This transaction-length limitation makes it necessary
 to have a fallback in place in case this limit is reached. In recent
-attempts, the usual fallback is the GIL (XXX: cite). The current
-generation of HTM hits this limit very often for our use case (XXX:
-cite ruby GIL paper) and therefore does not parallelise that well.
+attempts, the usual fallback is the GIL\cite{odaira14}. In our
+experiments, the current generation of HTM proved to be very fragile
+and thus needing the fallback very often. Consequently, scalability
+suffered a lot from this.
 
-The performance of HTM is pretty good (XXX: cite again...) as it does
-not introduce much overhead. And it can transparently parallelise
-existing applications to some degree. The implementation is very
-straight-forward because it directly replaces the GIL in a central
-place. HTM is also directly compatible with any external library that
-needs to be integrated and synchronised for use in multiple
-threads. The one thing that is missing is support for a better
-synchronisation mechanism for the application. It is not possible
-in general to expose the hardware-transactions to the application
-in the form of atomic blocks because that would require much
-longer transactions.
+The performance of HTM is pretty good as it does not introduce much
+overhead ($<40\%$ overhead\cite{odaira14}). And it can transparently
+parallelise existing applications to some degree. The implementation
+is very straight-forward because it directly replaces the GIL in a
+central place. HTM is also directly compatible with any external
+library that needs to be integrated and synchronised for use in
+multiple threads. The one thing that is missing is support for a
+better synchronisation mechanism for the application. It is not
+possible in general to expose the hardware-transactions to the
+application in the form of atomic blocks because that would require
+much longer transactions.
 
 %% - false-sharing on cache-line level\\
 %% - limited capacity (caches, undocumented)\\
 %% - random aborts (haswell)\\
 %% - generally: transaction-length limited (no atomic blocks)
 
-\paragraph{STM} provides all the same benefits as HTM except for its performance.
-It is not unusual for the overhead introduced by STM to be between
-100\% to even 1000\%. While STM systems often scale very well to a big
-number of threads and eventually overtake the single-threaded
-execution, they often provide no benefits at all for low numbers of
-threads (1-8). There are some attempts (XXX: cite fastlane) that can
-reduce the overhead a lot, but also scale very badly so that their
-benefit on more than one thread is little.
+\paragraph{STM} provides all the same benefits as HTM except for its
+performance.  It is not unusual for the overhead introduced by STM to
+be between 100\% to even 1000\% \cite{cascaval08,drago11}. While STM
+systems often scale very well to a big number of threads and
+eventually overtake the single-threaded execution, they often provide
+no benefits at all for low numbers of threads (1-8). There are some
+attempts \cite{warmhoff13} that can reduce the overhead a lot, but
+also scale very badly so that their benefit on more than one thread is
+little.
 
 However, STM compared to HTM does not suffer from the same restricting
 limitations. Transactions can be arbitrarily long.  This makes it
@@ -418,7 +421,30 @@ Acknowledgements...
 \softraggedright
 
 \bibitem[Smith et~al.(2009)Smith, Jones]{smith02}
-P. Q. Smith, and X. Y. Jones. ...reference text...
+  P. Q. Smith, and X. Y. Jones. ...reference text...
+
+\bibitem{webjython}
+  The Jython Project, \url{www.jython.org}
+
+\bibitem{odaira14}
+  Odaira, Rei, Jose G. Castanos, and Hisanobu Tomari.  "Eliminating
+  global interpreter locks in Ruby through hardware transactional
+  memory."  \emph{Proceedings of the 19th ACM SIGPLAN symposium on
+    Principles and practice of parallel programming.} ACM, 2014.
+
+\bibitem{warmhoff13}
+  Wamhoff, Jons-Tobias, et al. "FastLane: improving performance of
+  software transactional memory for low thread counts."
+  \emph{Proceedings of the 18th ACM SIGPLAN symposium on Principles
+    and practice of parallel programming.} ACM, 2013.
+
+\bibitem{drago11}
+  Dragojević, Aleksandar, et al. "Why STM can be more than a research
+  toy." \emph{Communications of the ACM} 54.4 (2011): 70-77.
+
+\bibitem{cascaval08}
+  Cascaval, Calin, et al. "Software transactional memory: Why is it
+  only a research toy?." \emph{Queue} 6.5 (2008): 40.
 
 \end{thebibliography}
 
