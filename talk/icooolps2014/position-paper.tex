@@ -284,7 +284,7 @@ recently gained a lot of popularity by its introduction in common
 desktop CPUs from Intel (Haswell generation).
 
 \paragraph{HTM} provides us with transactions like any TM system does.
-It can be used as a direct replacement for the GIL. However, as is
+It can be used as a direct replacement for the GIL\cite{nicholas06,odaira14,fuad10}. However, as is
 common with hardware-only solutions, there are quite a few limitations
 that can not be lifted easily. For this comparison, we look at the
 implementation of Intel in recent Haswell generation CPUs.
@@ -294,7 +294,7 @@ consequences like false-sharing on the cache-line level, and most
 importantly it limits the amount of memory that can be accessed within
 a transaction. This transaction-length limitation makes it necessary
 to have a fallback in place in case this limit is reached. In recent
-attempts, the usual fallback is the GIL\cite{odaira14}. In our
+attempts, the usual fallback is the GIL\cite{odaira14,fuad10}. In our
 experiments, the current generation of HTM proved to be very fragile
 and thus needing the fallback very often. Consequently, scalability
 suffered a lot from this.
@@ -387,12 +387,12 @@ this problem is to make STM systems that use the available hardware
 better. We are currently working on a STM system that makes use of
 several hardware features like virtual memory and memory segmentation.
 We further tailor the system to the discussed use case which gives us
-an advantage over other STM systems that are more general.  With this
+an advantage over other STM systems that are more general. With this
 approach, initial results suggest that we can keep the overhead of STM
-already below 50\%. A hybrid TM system, which also uses HTM to
-accelerate certain tasks, looks like a very promising direction of
-research too. In general we believe that further work to reduce the
-overhead of STM is very worthwhile.
+below 50\%. A hybrid TM system, which also uses HTM to accelerate
+certain tasks, looks like a very promising direction of research
+too. In general we believe that further work to reduce the overhead of
+STM is very worthwhile.
 
 
 
@@ -445,6 +445,18 @@ Acknowledgements...
 \bibitem{cascaval08}
   Cascaval, Calin, et al. "Software transactional memory: Why is it
   only a research toy?." \emph{Queue} 6.5 (2008): 40.
+
+\bibitem{nicholas06}
+  Nicholas Riley and Craig Zilles. 2006. Hardware tansactional memory
+  support for lightweight dynamic language evolution. \emph{In
+    Companion to the 21st ACM SIGPLAN symposium on Object-oriented
+    programming systems, languages, and applications} (OOPSLA
+  '06). ACM, New York, NY, USA
+
+\bibitem{fuad10}
+  Fuad Tabba. 2010. Adding concurrency in python using a commercial
+  processor's hardware transactional memory support. \emph{SIGARCH
+  Comput. Archit. News 38}, 5 (April 2010)
 
 \end{thebibliography}
 
