@@ -393,10 +393,11 @@ synchronise memory accesses using atomic blocks.
 Unfortunately, STM has a big performance problem. Particularly, for
 our use case there is not much static information available since we
 are executing a program only known at runtime. Additionally, replacing
-the GIL means running everything in transactions, so there is not much
-code that can run outside and be optimized better.
+the GIL means running every part of the application in transactions,
+so there is not much code that can run outside and that can be
+optimized better. The performance of the TM system is vital.
 
-One way to get more performance is to make STM systems that make
+One way to get more performance is to develop STM systems that make
 better use of low-level features in existing OS kernels.  We are
 currently working on a STM system that makes use of several such
 features like virtual memory and memory segmentation.  We further
@@ -405,8 +406,8 @@ advantage over other STM systems that are more general. With this
 approach, initial results suggest that we can keep the overhead of STM
 below 50\%. A hybrid TM system, which also uses HTM to accelerate
 certain tasks, looks like a very promising direction of research
-too. In general we believe that further work to reduce the overhead of
-STM is very worthwhile.
+too. We believe that further work to reduce the overhead of STM is
+very worthwhile.
 
 
 
