@@ -206,7 +206,12 @@ the locking approach, we gain the ability to run code that does not
 access the same objects in parallel. What we lose instead is the
 simplicity of the GIL approach. With every additional lock, the
 likeliness of deadlocks grows, as well as the overhead that acquiring
-and releasing locks produces.
+and releasing locks produces. The former means that sometimes it is
+necessary to fall back to less fine-grained locking, preventing some
+potential parallelism in order to keep the complexity manageable.
+The latter means that we lose a bit of performance in the
+single-threaded case compared to the GIL, which requires much less
+acquire-release operations.
 
 Jython\footnote{www.jython.org} is one project that implements an
 interpreter for Python on the JVM\footnote{Java Virtual Machine} and
@@ -215,7 +220,7 @@ interpreter. For a language like Python, one needs quite a few,
 carefully placed locks. Since there is no central location, the
 complexity of the implementation is quite a bit greater compared to
 using a GIL. Integrating external, non-thread-safe libraries should
-however be very simple too.  One could simply use one lock per library
+however be very simple too. One could simply use one lock per library
 to avoid this issue.
 
 In the end, fine-grained locking can transparently replace the GIL
@@ -230,7 +235,7 @@ mechanism to the application like e.g. atomic blocks.
 %% - (there are some semantic differences, right? not given perfect lock-placement, but well)
 %% ( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
 
-\subsubsection{Shared-Nothing / multiple processes}
+\subsubsection{Shared-Nothing}
 
 There are also approaches that work around the GIL instead of trying
 to replace it. If an application can be split into completely
