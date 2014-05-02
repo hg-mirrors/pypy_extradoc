@@ -383,9 +383,10 @@ simple memory model (sequential consistency) and a composable way to
 synchronise memory accesses using atomic blocks.
 
 Unfortunately, STM has a big performance problem. One way to approach
-this problem is to make STM systems that use the available hardware
-better. We are currently working on a STM system that makes use of
-several hardware features like virtual memory and memory segmentation.
+this problem is to make STM systems that make better use of low-level
+features in existing OS kernels.
+We are currently working on a STM system that makes use of
+several such features like virtual memory and memory segmentation.
 We further tailor the system to the discussed use case which gives us
 an advantage over other STM systems that are more general.  With this
 approach, initial results suggest that we can keep the overhead of STM
