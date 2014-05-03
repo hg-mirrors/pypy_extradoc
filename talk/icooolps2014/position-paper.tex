@@ -224,8 +224,10 @@ however be very simple too. One could simply use one lock per library
 to avoid this issue.
 
 In the end, fine-grained locking can transparently replace the GIL
-and therefore parallelise existing applications without any
-changes. It does however not provide a better synchronisation
+and therefore parallelise existing applications, generally without any
+changes\footnote{There are rare cases where not having atomic
+bytecodes actually changes the semantics.}
+It does however not provide a better synchronisation
 mechanism to the application like e.g. atomic blocks.
 
 %% - support of atomic blocks?\\
