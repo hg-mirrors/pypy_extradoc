@@ -72,7 +72,8 @@
   fine-grained locking, shared-nothing, and transactional memory (TM)
   approaches. We argue that software-based TM systems are the most
   promising, especially since they also enable the introduction of
-  atomic blocks as a better synchronisation mechanism in the language.
+  large, parallelisable atomic blocks as a better synchronisation
+  mechanism in the language.
 \end{abstract}
 
 %\category{CR-number}{subcategory}{third-level}
@@ -111,7 +112,7 @@ hardware-based (HTM).
 The approach that wins in the end should perform similarly for
 single-threaded execution as compared to the GIL and be able to
 execute code in parallel on multiple cores. Furthermore, we will also
-take into account the compatibility to existing code that already uses
+take into account the compatibility with existing code that may already use
 threads for concurrency, as well as the changes that are required to
 the interpreter itself.
 
@@ -119,7 +120,7 @@ These requirements are not easy to meet. We argue that STM is the
 overall winner. While it has a big performance problem currently, it
 gets more points in all the other categories. We think that it is the
 only solution that also provides a better synchronisation mechanism to
-the application in the form of paralleliseable atomic blocks.
+the application in the form of parallelisable atomic blocks.
 
 %% \subsection{Issue}
 %% The issue that we want to discuss is how to efficiently support
@@ -157,7 +158,7 @@ the application in the form of paralleliseable atomic blocks.
     \hline
     Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
     \hline
-    Better synchronisation        & o    & o  & o    & o  & ++   \\
+    Better synchronisation        & o    & o  &      & o  & ++   \\
     \hline
     Implementation                & ++   & -  & ++   & ++ & ++   \\
     \hline
@@ -265,11 +266,13 @@ single-threaded case compared to the GIL, which requires much less
 acquire-release operations.
 
 Jython~\cite{webjython} is one project that implements an
-interpreter for Python on the JVM\footnote{Java Virtual Machine} and
-that uses fine-grained locking to correctly synchronise the
+interpreter for Python on the Java Virtual Machine (JVM) and
+that uses fine-grained locking\footnote{The performance impact of
+fine-grained locking is milder in Java than it would be in a typical piece
+of C code; see e.g.~\cite{biased}.} to correctly synchronise the
 interpreter. For a language like Python, one needs quite a few,
 carefully placed locks. Since there is no central location, the
-complexity of the implementation is quite a bit greater compared to
+complexity of the implementation is quite a bit larger compared to
 using a GIL. Integrating external, non-thread-safe libraries should
 however be very simple too. One could simply use one lock per library
 to avoid this issue.
@@ -296,25 +299,25 @@ There are also approaches that work around the GIL instead of trying
 to replace it. If an application can be split into completely
 independent parts that only very rarely need to share anything, or
 only do so via an external program like a database, then it is
-sensible to have one GIL per independent part. As an example of such
-an approach we look at the
+sensible to have one GIL per independent part. At the extreme, there
+are applications that parallelise perfectly simply by running
+independent processes; some web servers and some numeric computations
+do. We will consider here a slightly more general approach: the
 \emph{multiprocessing}\footnote{https://docs.python.org/2/library/multiprocessing.html}
 module of Python. In essence, it uses process-forking to provide the
 application with multiple interpreters that can run in parallel.
 Communication is then done explicitly through pipes.
 
-Obviously not every application fits well into this model and its
-applicability is therefore quite limited. Performance is good as
+The model of explicit communication is sometimes seen as a superior
+way to synchronise concurrent applications because of its explicitness.
+However, not every application fits well into this model and its
+applicability is therefore limited. Performance is good as
 long as the application does not need to communicate a lot, because
 inter-process communication is relatively expensive. Also the
 implementation of this approach is very cheap since one can
 actually take an unmodified GIL-supported interpreter and run
-multiple of them in parallel. That way, we also inherit the
+several of them in parallel. That way, we also inherit the
 easy integration of external libraries without any changes.
-While the model of explicit communication is often seen as a
-superior way to synchronise concurrent applications because
-of its explicitness, it does not actually introduce a better
-synchronisation mechanism for applications.
 
 %% - often needs major restructuring of programs (explicit data exchange)\\
 %% - sometimes communication overhead is too large\\
@@ -361,9 +364,9 @@ central place. HTM is also directly compatible with any external
 library that needs to be integrated and synchronised for use in
 multiple threads. The one thing that is missing is support for a
 better synchronisation mechanism for the application. It is not
-possible in general to expose the hardware-transactions to the
-application in the form of atomic blocks, because that would require
-much longer transactions.
+reasonable in general to expose the hardware-transactions to the
+application in the form of atomic blocks, because doing so would
+require the system to support much longer transactions.
 
 %% - false-sharing on cache-line level\\
 %% - limited capacity (caches, undocumented)\\
@@ -378,7 +381,7 @@ eventually overtake the single-threaded execution, they often provide
 no benefits at all for low numbers of threads (1-8). There are some
 attempts ~\cite{warmhoff13,spear09} that can reduce the overhead a lot,
 but scale badly or only for certain workloads. Often the benefits
-on more than one thread are too little in real world applications.
+on more than one thread are too small in real world applications.
 
 However, STM compared to HTM does not suffer from the same restricting
 limitations. Transactions can in principle be arbitrarily long.  This makes it
@@ -391,12 +394,13 @@ because it not only gives dynamic languages the ability to parallelise
 parallel programming forward. Together with sequential consistency it
 provides a lot of simplification for parallel applications.
 
-While one can argue that STM requires the insertion of read and write
-barriers in the whole program, this can be done automatically and
+On the implementation level,
+while one can argue that STM requires the insertion of read and write
+barriers in the whole interpreter, this can be done automatically and
 locally by a program transformation~\cite{felber07}. There are attempts
 to do the same for fine-grained locking~\cite{bill06} but they require
-a whole program analysis since locks are inherently non-composable.
-The effectiveness of these approaches is doubtful in our use case,
+a whole program analysis since locks are inherently non-composable
+--- and their effectiveness is doubtful in our use case,
 since we execute bytecode instructions in any order defined by a
 script only known at runtime. This makes it close to impossible to
 order locks consistently or to know in advance which locks a
@@ -438,7 +442,7 @@ features like virtual memory and memory segmentation.  We further
 tailor the system to the discussed use case which gives us an
 advantage over other STM systems that are more general. With this
 approach, initial results suggest that we can keep the overhead of STM
-below 50\%. A hybrid TM system, which also uses HTM to accelerate
+well below 50\%. A hybrid TM system, which also uses HTM to accelerate
 certain tasks, looks like a very promising direction of research
 too. We believe that further work to reduce the overhead of STM is
 very worthwhile.
@@ -557,6 +561,13 @@ their valuable inputs and the many fruitful discussions.
   Leis, Viktor, Alfons Kemper, and Thomas Neumann. "Exploiting
   Hardware Transactional Memory in Main-Memory Databases."
   \emph{Proc. of ICDE}. 2014.
+
+\bibitem{biased}
+  Kenneth Russell and David Detlefs. 2006. Eliminating
+  synchronization-related atomic operations with biased locking and
+  bulk rebiasing. \emph{In Proceedings of the 21st annual ACM SIGPLAN
+    conference on Object-oriented programing, systems, languages, and
+    applications} (OOPSLA '06).
 
 \end{thebibliography}
 
