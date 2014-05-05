@@ -157,7 +157,7 @@ the application in the form of atomic blocks.
     \hline
     Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
     \hline
-    Better synchronisation        & -    & -  & -    & -  & ++   \\
+    Better synchronisation        & o    & o  & o    & -  & ++   \\
     \hline
     Implementation                & ++   & -  & ++   & ++ & ++   \\
     \hline
@@ -210,12 +210,13 @@ Since the GIL is mostly an implementation detail of the interpreter,
 it is not exposed to the application running on top of it. To
 synchronise memory accesses in applications using threads, the
 state-of-the-art still means explicit locking everywhere. It is well
-known that using locks for synchronisation is not easy\cfbolz{citation needed
-:-). would be cool if you could find something}.  They are
-non-composable, have overhead, may deadlock, limit scalability, and
-overall add a lot of complexity\cfbolz{same here, really}. For a better parallel programming
+known that using locks for synchronisation is not
+easy~\cite{christopher10,victor11,shan08}. They are non-composable,
+have overhead, may deadlock, limit scalability, and add to the overall
+complexity of the program logic. For a better parallel programming
 model for dynamic languages, we propose another, well-known
-synchronisation mechanism called \emph{atomic blocks}\cfbolz{and here}.
+synchronisation mechanism called \emph{atomic
+  blocks}~\cite{tim03,tim05}.
 
 Atomic blocks are composable, deadlock-free, higher-level and expose
 useful atomicity and isolation guarantees to the application for a
@@ -522,6 +523,34 @@ their valuable inputs and the many fruitful discussions.
   correctly executes multiprocess programs." \emph{Computers, IEEE
     Transactions} on 100.9 (1979): 690-691.
 
+\bibitem{victor11}
+  Victor Pankratius and Ali-Reza Adl-Tabatabai. 2011. A study of
+  transactional memory vs. locks in practice. In \emph{Proceedings of
+    the twenty-third annual ACM symposium on Parallelism in algorithms
+    and architectures} (SPAA '11). ACM, New York, NY, USA
+
+\bibitem{christopher10}
+  Christopher J. Rossbach, Owen S. Hofmann, and Emmett
+  Witchel. 2010. Is transactional programming actually
+  easier?. \emph{SIGPLAN} Not. 45, 5 (January 2010), 47-56.
+
+\bibitem{tim03}
+  Tim Harris and Keir Fraser. 2003. Language support for lightweight
+  transactions. \emph{In Proceedings of the 18th annual ACM SIGPLAN
+    conference on Object-oriented programing, systems, languages, and
+    applications} (OOPSLA '03).
+
+\bibitem{tim05}
+  Tim Harris, Simon Marlow, Simon Peyton-Jones, and Maurice
+  Herlihy. 2005. Composable memory transactions. \emph{In Proceedings
+    of the tenth ACM SIGPLAN symposium on Principles and practice of
+    parallel programming} (PPoPP '05).
+
+\bibitem{shan08}
+  Shan Lu, Soyeon Park, Eunsoo Seo, and Yuanyuan Zhou. 2008. Learning
+  from mistakes: a comprehensive study on real world concurrency bug
+  characteristics. \emph{SIGARCH Comput. Archit. News} 36, 1 (March 2008),
+  329-339.
 
 \end{thebibliography}
 
