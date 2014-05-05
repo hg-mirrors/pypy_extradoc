@@ -119,7 +119,7 @@ These requirements are not easy to meet. We argue that STM is the
 overall winner. While it has a big performance problem currently, it
 gets more points in all the other categories. We think that it is the
 only solution that also provides a better synchronisation mechanism to
-the application in the form of atomic blocks.
+the application in the form of paralleliseable atomic blocks.
 
 %% \subsection{Issue}
 %% The issue that we want to discuss is how to efficiently support
@@ -209,9 +209,9 @@ parallel, not the external C calls.
 Since the GIL is mostly an implementation detail of the interpreter,
 it is not exposed to the application running on top of it. To
 synchronise memory accesses in applications using threads, the
-state-of-the-art still means explicit locking everywhere. It is well
-known that using locks for synchronisation is not
-easy~\cite{christopher10,victor11,shan08}. They are non-composable,
+state-of-the-art still means explicit locking everywhere. It is
+known that using locks for synchronisation can be hard at
+times~\cite{christopher10,victor11,shan08}. They are non-composable,
 have overhead, may deadlock, limit scalability, and add to the overall
 complexity of the program logic. For a better parallel programming
 model for dynamic languages, we propose another, well-known
@@ -220,12 +220,12 @@ synchronisation mechanism called \emph{atomic
 
 Atomic blocks are composable, deadlock-free, higher-level and expose
 useful atomicity and isolation guarantees to the application for a
-series of instructions.  Interpreters using a GIL can simply guarantee
+series of instructions. Interpreters using a GIL can simply guarantee
 that the GIL is not released during the execution of the atomic
 block. Of course, this still means that no two atomic blocks can
-execute in parallel or even concurrently. Potential solutions that
-provide a good way to implement atomic blocks are therefore
-preferable.
+execute in parallel or even concurrently.  Potential solutions are
+preferable if they provide a good way to implement atomic blocks that
+are also able to be executed in parallel.
 
 
 
@@ -240,7 +240,7 @@ limitations:
   GIL on a single and on multiple threads?
 \item[Existing applications:] How big are the changes required to
   integrate with and parallelise existing applications?
-\item[Better synchronisation:] Does the approach enable better
+\item[Better synchronisation:] Does the approach enable better, paralleliseable
   synchronisation mechanisms for applications (e.g. atomic blocks)?
 \item[Implementation:] How difficult is it to implement the approach
   in the interpreter?
@@ -362,7 +362,7 @@ library that needs to be integrated and synchronised for use in
 multiple threads. The one thing that is missing is support for a
 better synchronisation mechanism for the application. It is not
 possible in general to expose the hardware-transactions to the
-application in the form of atomic blocks because that would require
+application in the form of atomic blocks, because that would require
 much longer transactions.
 
 %% - false-sharing on cache-line level\\
