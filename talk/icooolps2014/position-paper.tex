@@ -21,7 +21,7 @@
 
 \conferenceinfo{ICOOOLPS workshop 2014}{July 28th, 2014, Uppsala, Sweden}
 \copyrightyear{2014}
-\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
+%\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \doi{nnnnnnn.nnnnnnn}
 
 % Uncomment one of the following two, if you are not going for the
@@ -37,7 +37,7 @@
 %% \titlebanner{banner above paper title}        % These are ignored unless
 %% \preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{The Way Forward in Parallelizing Dynamic Languages}
+\title{The Way Forward in Parallelising Dynamic Languages}
 \subtitle{Position Paper, ICOOOLPS'14}
 
 \authorinfo{Remigius Meier}
@@ -50,10 +50,21 @@
 \maketitle
 
 \begin{abstract}
-This is the text of the abstract.
+  Dynamic languages became very popular in recent years. At some
+  point, the need for concurrency arised, and many of them made the
+  choice to use a single global interpreter lock (GIL) to synchronize
+  the interpreter in a multithreading scenario. This choice however
+  makes it impossible to actually run code in parallel.
+
+  Here we want to compare different approaches to replacing the GIL
+  with a technology that allows parallel execution. We look at
+  fine-grained locking, shared-nothing, and transactional memory (TM)
+  approaches. We argue that software-based TM systems are the most
+  promising, especially since they also enable the introduction of
+  atomic blocks as a better synchronization mechanism in the language.
 \end{abstract}
 
-\category{CR-number}{subcategory}{third-level}
+%\category{CR-number}{subcategory}{third-level}
 
 % general terms are not compulsory anymore,
 % you may leave them out
@@ -123,6 +134,8 @@ the application in the form of atomic blocks.
 
 \section{Discussion}
 
+In this section we examine the approaches and highlight their
+advantages and disadvantages.
 %% \paragraph{dynamic language VM problems}
 %% XXX:
 %% - high allocation rate (short lived objects)\\
@@ -141,9 +154,9 @@ will always be executed in the order in which they appear in the
 code. While depending on this may not always be a good idea, it is
 done in practice. A GIL-replacement should therefore uphold these
 guarantees, while preferably also be as easily implementable as a GIL
-for the interpreter.
-[xxx mention that the interpreter is typically
-  very large and maintained by open-source communities]
+for the interpreter. The latter can be especially important since
+many of these languages are developed and maintained by very large
+open-source communities, which are not easy to coordinate.
 
 The GIL also allows for easy integration with external C libraries that
 may not be thread-safe. For the duration of the calls, we
@@ -343,12 +356,11 @@ barriers in the whole program, this can be done automatically and
 locally by a program transformation\cite{felber07}. There are attempts
 to do the same for fine-grained locking\cite{bill06} but they require
 a whole program analysis since locks are inherently non-composable.
-The effectiveness of these approaches still has to be proven for our
-use case.
-[xxx or maybe: "The effectiveness of these approaches is doubtful in our
-use case --- for example, it makes it close to impossible to order the
-locks consistently or to know in advance which locks a transaction will
-need.]
+The effectiveness of these approaches is doubtful in our use case,
+since we execute bytecode instructions in any order defined by a
+script only known at runtime. This makes it close to impossible to
+order locks consistently or to know in advance which locks a
+transaction will need.
 
 %% - overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
 %% (FastLane: low overhead, not much gain)\\
