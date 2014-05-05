@@ -51,8 +51,8 @@
 
 \begin{abstract}
   Dynamic languages became very popular in recent years. At some
-  point, the need for concurrency arised, and many of them made the
-  choice to use a single global interpreter lock (GIL) to synchronize
+  point, the need for concurrency arose, and many of them made the
+  choice to use a single global interpreter lock (GIL) to synchronise
   the interpreter in a multithreading scenario. This choice however
   makes it impossible to actually run code in parallel.
 
@@ -61,7 +61,7 @@
   fine-grained locking, shared-nothing, and transactional memory (TM)
   approaches. We argue that software-based TM systems are the most
   promising, especially since they also enable the introduction of
-  atomic blocks as a better synchronization mechanism in the language.
+  atomic blocks as a better synchronisation mechanism in the language.
 \end{abstract}
 
 %\category{CR-number}{subcategory}{third-level}
@@ -116,9 +116,9 @@ the application in the form of atomic blocks.
 %% designed with GIL semantics in mind.
 
 %% Furthermore, a solution to this problem should also bring better
-%% synchronization mechanism with it...
+%% synchronisation mechanism with it...
 
-%% (supporting (large) atomic blocks for synchronization)
+%% (supporting (large) atomic blocks for synchronisation)
 
 %% \subsection{Our Position}
 %% Current solutions for replacing the GIL include STM, HTM, and
@@ -144,8 +144,8 @@ advantages and disadvantages.
 
 \subsection{Why is there a GIL?}
 The GIL is a very simple synchronisation mechanism for supporting
-multithreading in the interpreter. The basic guarantee is that the GIL
-may only be released in-between bytecode instructions. The interpreter
+multithreading in an interpreter. The basic guarantee is that the GIL
+may only be released in between bytecode instructions. The interpreter
 can thus rely on complete isolation and atomicity of these
 instructions. Additionally, it provides the application with a
 sequential consistency model\cite{lamport79}. As a consequence,
@@ -413,7 +413,7 @@ our use case there is not much static information available since we
 are executing a program only known at runtime. Additionally, replacing
 the GIL means running every part of the application in transactions,
 so there is not much code that can run outside and that can be
-optimized better. The performance of the TM system is vital.
+optimised better. The performance of the TM system is vital.
 
 One way to get more performance is to develop STM systems that make
 better use of low-level features in existing OS kernels.  We are
