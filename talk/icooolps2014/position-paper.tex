@@ -148,7 +148,7 @@ multithreading in an interpreter. The basic guarantee is that the GIL
 may only be released in between bytecode instructions. The interpreter
 can thus rely on complete isolation and atomicity of these
 instructions. Additionally, it provides the application with a
-sequential consistency model\cite{lamport79}. As a consequence,
+sequential consistency model~\cite{lamport79}. As a consequence,
 applications can rely on certain operations to be atomic and that they
 will always be executed in the order in which they appear in the
 code. While depending on this may not always be a good idea, it is
@@ -226,7 +226,7 @@ The latter means that we lose a bit of performance in the
 single-threaded case compared to the GIL, which requires much less
 acquire-release operations.
 
-Jython\cite{webjython} is one project that implements an
+Jython~\cite{webjython} is one project that implements an
 interpreter for Python on the JVM\footnote{Java Virtual Machine} and
 that uses fine-grained locking to correctly synchronise the
 interpreter. For a language like Python, one needs quite a few,
@@ -298,7 +298,7 @@ recently gained a lot of popularity by its introduction in common
 desktop CPUs from Intel (Haswell generation).
 
 \paragraph{HTM} provides us with transactions like any TM system does.
-It can be used as a direct replacement for the GIL\cite{nicholas06,odaira14,fuad10}. However, as is
+It can be used as a direct replacement for the GIL~\cite{nicholas06,odaira14,fuad10}. However, as is
 common with hardware-only solutions, there are quite a few limitations
 that can not be lifted easily. For this comparison, we look at the
 implementation of Intel in recent Haswell generation CPUs.
@@ -308,13 +308,13 @@ consequences like false-sharing on the cache-line level, and most
 importantly it limits the amount of memory that can be accessed within
 a transaction. This transaction-length limitation makes it necessary
 to have a fallback in place in case this limit is reached. In recent
-attempts, the usual fallback is the GIL\cite{odaira14,fuad10}. In our
+attempts, the usual fallback is the GIL~\cite{odaira14,fuad10}. In our
 experiments, the current generation of HTM proved to be very fragile
 and thus needing the fallback very often. Consequently, scalability
 suffered a lot from this.
 
 The performance of HTM is pretty good as it does not introduce much
-overhead ($<40\%$ overhead\cite{odaira14}). And it can transparently
+overhead ($<40\%$ overhead~\cite{odaira14}). And it can transparently
 parallelise existing applications to some degree. The implementation
 is very straight-forward because it directly replaces the GIL in a
 central place. HTM is also directly compatible with any external
@@ -332,11 +332,11 @@ much longer transactions.
 
 \paragraph{STM} provides all the same benefits as HTM except for its
 performance.  It is not unusual for the overhead introduced by STM to
-be between 100\% to even 1000\% \cite{cascaval08,drago11}. While STM
+be between 100\% to even 1000\% ~\cite{cascaval08,drago11}. While STM
 systems often scale very well to a big number of threads and
 eventually overtake the single-threaded execution, they often provide
 no benefits at all for low numbers of threads (1-8). There are some
-attempts \cite{warmhoff13,spear09} that can reduce the overhead a lot,
+attempts ~\cite{warmhoff13,spear09} that can reduce the overhead a lot,
 but scale badly or only for certain workloads. Often the benefits
 on more than one thread are too little in real world applications.
 
@@ -353,8 +353,8 @@ provides a lot of simplification for parallel applications.
 
 While one can argue that STM requires the insertion of read and write
 barriers in the whole program, this can be done automatically and
-locally by a program transformation\cite{felber07}. There are attempts
-to do the same for fine-grained locking\cite{bill06} but they require
+locally by a program transformation~\cite{felber07}. There are attempts
+to do the same for fine-grained locking~\cite{bill06} but they require
 a whole program analysis since locks are inherently non-composable.
 The effectiveness of these approaches is doubtful in our use case,
 since we execute bytecode instructions in any order defined by a
