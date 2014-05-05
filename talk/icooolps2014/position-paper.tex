@@ -10,8 +10,19 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{array}
+\usepackage{color}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{amssymb}
+
+\newcommand{\mynote}[2]{%
+  \textcolor{red}{%
+    \fbox{\bfseries\sffamily\scriptsize#1}%
+    {\small$\blacktriangleright$\textsf{\emph{#2}}$\blacktriangleleft$}%
+  }%
+}
+
+\newcommand\cfbolz[1]{\mynote{Carl Friedrich}{#1}}
 
 \begin{document}
 
@@ -174,11 +185,12 @@ Since the GIL is mostly an implementation detail of the interpreter,
 it is not exposed to the application running on top of it. To
 synchronise memory accesses in applications using threads, the
 state-of-the-art still means explicit locking everywhere. It is well
-known that using locks for synchronisation is not easy.  They are
+known that using locks for synchronisation is not easy\cfbolz{citation needed
+:-). would be cool if you could find something}.  They are
 non-composable, have overhead, may deadlock, limit scalability, and
-overall add a lot of complexity. For a better parallel programming
+overall add a lot of complexity\cfbolz{same here, really}. For a better parallel programming
 model for dynamic languages, we propose another, well-known
-synchronisation mechanism called \emph{atomic blocks}.
+synchronisation mechanism called \emph{atomic blocks}\cfbolz{and here}.
 
 Atomic blocks are composable, deadlock-free, higher-level and expose
 useful atomicity and isolation guarantees to the application for a
@@ -199,7 +211,7 @@ limitations:
 
 \begin{description}
 \item[Performance:] How well does the approach perform compared to the
-  GIL on single and multiple threads?
+  GIL on a single and on multiple threads?
 \item[Existing applications:] How big are the changes required to
   integrate with and parallelise existing applications?
 \item[Better synchronisation:] Does the approach enable better
@@ -243,6 +255,7 @@ bytecodes actually changes the semantics.}
 It does however not provide a better synchronisation
 mechanism to the application like e.g. atomic blocks.
 
+\cfbolz{I think you should mention the commented out point below, that a lot of existing code contains latent races / deadlocks that are just not exposed in a GIL-full world}
 %% - support of atomic blocks?\\
 %% - hard to get right (deadlocks, performance, lock-granularity)\\
 %% - very hard to get right for a large language\\
@@ -295,7 +308,7 @@ hybrid approaches as STM, since they usually provide the same
 capabilities as software-only approaches but with different
 performance characteristics. We will now first look at HTM, which
 recently gained a lot of popularity by its introduction in common
-desktop CPUs from Intel (Haswell generation).
+desktop CPUs from Intel (Haswell generation).\cfbolz{citation}
 
 \paragraph{HTM} provides us with transactions like any TM system does.
 It can be used as a direct replacement for the GIL~\cite{nicholas06,odaira14,fuad10}. However, as is
@@ -341,7 +354,7 @@ but scale badly or only for certain workloads. Often the benefits
 on more than one thread are too little in real world applications.
 
 However, STM compared to HTM does not suffer from the same restricting
-limitations. Transactions can be arbitrarily long.  This makes it
+limitations. Transactions can in principle be arbitrarily long.  This makes it
 possible to actually expose transactions to the application in the
 form of atomic blocks. This is the only approach that enables a better
 synchronisation mechanism than locks for applications \emph{and} still
