@@ -145,30 +145,6 @@ the application in the form of parallelisable atomic blocks.
 %% fix that.
 
 
-\begin{table*}[ht]
-  \centering
-  \begin{tabular}{|l|c|c|c|c|c|}
-    \hline
-    & \textbf{GIL} & \textbf{Fine-grained locking}
-    & \textbf{Shared-nothing} & \textbf{HTM} & \textbf{STM}\\
-    \hline
-    Performance (single threaded) & ++   & +  & ++   & ++ & -{-} \\
-    \hline
-    Performance (multithreaded)   & -{-} & +  & +    & +  & +    \\
-    \hline
-    Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
-    \hline
-    Better synchronisation        & o    & o  &      & o  & ++   \\
-    \hline
-    Implementation                & ++   & -  & ++   & ++ & ++   \\
-    \hline
-    External libraries            & ++   & ++ & ++   & ++ & ++   \\
-    \hline
-  \end{tabular}
-  \caption{Comparison between the approaches (-{-}/-/o/+/++)}
-  \label{tab:comparison}
-\end{table*}
-
 \section{Discussion}
 
 In this section we examine the approaches and highlight their
@@ -227,6 +203,32 @@ block. Of course, this still means that no two atomic blocks can
 execute in parallel or even concurrently.  Potential solutions are
 preferable if they provide a good way to implement atomic blocks that
 are also able to be executed in parallel.
+
+
+
+\begin{table*}[ht]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+    & \textbf{GIL} & \textbf{Fine-grained locking}
+    & \textbf{Shared-nothing} & \textbf{HTM} & \textbf{STM}\\
+    \hline
+    Performance (single threaded) & ++   & +  & ++   & ++ & -{-} \\
+    \hline
+    Performance (multithreaded)   & -{-} & +  & +    & +  & +    \\
+    \hline
+    Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
+    \hline
+    Better synchronisation        & o    & o  &      & o  & ++   \\
+    \hline
+    Implementation                & ++   & -  & ++   & ++ & ++   \\
+    \hline
+    External libraries            & ++   & ++ & ++   & ++ & ++   \\
+    \hline
+  \end{tabular}
+  \caption{Comparison between the approaches (-{-}/-/o/+/++)}
+  \label{tab:comparison}
+\end{table*}
 
 
 
