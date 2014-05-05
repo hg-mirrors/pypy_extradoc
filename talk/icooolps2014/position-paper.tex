@@ -417,7 +417,7 @@ transaction will need.
 \section{The Way Forward}
 
 
-Following the above argumentation for each approach we assembled a
+Following the above argumentation for each approach, we assembled a
 general overview in Table \ref{tab:comparison}. The general picture is
 everything else than clear. It looks like HTM may be a good solution
 to replace the GIL in the near future. Current implementations are
@@ -446,10 +446,15 @@ advantage over other STM systems that are more general. With this
 approach, initial results suggest that we can keep the overhead of STM
 well below 50\%. A hybrid TM system, which also uses HTM to accelerate
 certain tasks, looks like a very promising direction of research
-too. We believe that further work to reduce the overhead of STM is
-very worthwhile.
+too.
 
-
+We believe that further work to reduce the overhead of STM is
+very worthwhile. In fact, considering some analogies that have been
+drawn between garbage collection and transactional memory \cite{dan07},
+we believe that it is worthwhile to focus the STM research more
+specifically on the context shown in this paper --- for use in
+implementations of high-level languages, rather than as a tool
+directly used by the programmer.
 
 
 %% possible solution:\\
@@ -474,6 +479,12 @@ their valuable inputs and the many fruitful discussions.
 
 \begin{thebibliography}{}
 \softraggedright
+
+\bibitem{dan07}
+  Dan Grossman. 2007. The transactional memory / garbage collection
+  analogy. \emph{In Proceedings of the 22nd annual ACM SIGPLAN
+    conference on Object-oriented programming systems and
+    applications} (OOPSLA '07).
 
 \bibitem{webjython}
   The Jython Project, \url{www.jython.org}
