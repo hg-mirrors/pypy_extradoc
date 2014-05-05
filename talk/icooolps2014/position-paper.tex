@@ -143,6 +143,31 @@ the application in the form of atomic blocks.
 %% language.  STM is the best way forward but has bad performance, so we
 %% fix that.
 
+
+\begin{table*}[ht]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+    & \textbf{GIL} & \textbf{Fine-grained locking}
+    & \textbf{Shared-nothing} & \textbf{HTM} & \textbf{STM}\\
+    \hline
+    Performance (single threaded) & ++   & +  & ++   & ++ & -{-} \\
+    \hline
+    Performance (multithreaded)   & -{-} & +  & +    & +  & +    \\
+    \hline
+    Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
+    \hline
+    Better synchronisation        & -    & -  & -    & -  & ++   \\
+    \hline
+    Implementation                & ++   & -  & ++   & ++ & ++   \\
+    \hline
+    External libraries            & ++   & ++ & ++   & ++ & ++   \\
+    \hline
+  \end{tabular}
+  \caption{Comparison between the approaches (-{-}/-/o/+/++)}
+  \label{tab:comparison}
+\end{table*}
+
 \section{Discussion}
 
 In this section we examine the approaches and highlight their
@@ -382,30 +407,6 @@ transaction will need.
 
 
 \section{The Way Forward}
-
-\begin{table*}[h]
-  \centering
-  \begin{tabular}{|l|c|c|c|c|c|}
-    \hline
-    & \textbf{GIL} & \textbf{Fine-grained locking}
-    & \textbf{Shared-nothing} & \textbf{HTM} & \textbf{STM}\\
-    \hline
-    Performance (single threaded) & ++   & +  & ++   & ++ & -{-} \\
-    \hline
-    Performance (multithreaded)   & -{-} & +  & +    & +  & +    \\
-    \hline
-    Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
-    \hline
-    Better synchronisation        & -    & -  & -    & -  & ++   \\
-    \hline
-    Implementation                & ++   & -  & ++   & ++ & ++   \\
-    \hline
-    External libraries            & ++   & ++ & ++   & ++ & ++   \\
-    \hline
-  \end{tabular}
-  \caption{Comparison between the approaches (-{-}/-/o/+/++)}
-  \label{tab:comparison}
-\end{table*}
 
 
 Following the above argumentation for each approach we assembled a
