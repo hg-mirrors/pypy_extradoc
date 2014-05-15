@@ -1,0 +1,206 @@
+
+\documentclass{sigplanconf}
+
+% The following \documentclass options may be useful:
+
+% preprint      Remove this option only once the paper is in final form.
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% authoryear    To obtain author/year citation style instead of numeric.
+
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\newcommand{\mynote}[2]{%
+  \textcolor{red}{%
+    \fbox{\bfseries\sffamily\scriptsize#1}%
+    {\small$\blacktriangleright$\textsf{\emph{#2}}$\blacktriangleleft$}%
+  }%
+}
+
+\newcommand\cfbolz[1]{\mynote{Carl Friedrich}{#1}}
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\conferenceinfo{ICOOOLPS workshop 2014}{July 28th, 2014, Uppsala, Sweden}
+\copyrightyear{2014}
+%\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
+\doi{nnnnnnn.nnnnnnn}
+
+% Uncomment one of the following two, if you are not going for the
+% traditional copyright transfer agreement.
+
+%\exclusivelicense                % ACM gets exclusive license to publish,
+                                  % you retain copyright
+
+%\permissiontopublish             % ACM gets nonexclusive license to publish
+                                  % (paid open-access papers,
+                                  % short abstracts)
+
+%% \titlebanner{banner above paper title}        % These are ignored unless
+%% \preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{A Way Forward in Parallelising Dynamic Languages}
+\subtitle{Position Paper, ICOOOLPS'14}
+
+\authorinfo{Remigius Meier}
+           {Department of Computer Science\\ ETH Zürich}
+           {remi.meier@inf.ethz.ch}
+\authorinfo{Armin Rigo}
+           {www.pypy.org}
+           {arigo@tunes.org}
+
+\maketitle
+
+\begin{abstract}
+....
+\end{abstract}
+
+%\category{CR-number}{subcategory}{third-level}
+
+% general terms are not compulsory anymore,
+% you may leave them out
+%% \terms
+%% term1, term2
+
+\keywords
+...
+
+\section{Introduction}
+...
+
+
+\section{Conclusion}
+
+
+%% \appendix
+%% \section{Appendix Title}
+
+%% This is the text of the appendix, if you need one.
+
+\acks
+...
+
+% We recommend abbrvnat bibliography style.
+
+\bibliographystyle{abbrvnat}
+
+% The bibliography should be embedded for final submission.
+
+\begin{thebibliography}{}
+\softraggedright
+
+\bibitem{dan07}
+  Dan Grossman. 2007. The transactional memory / garbage collection
+  analogy. \emph{In Proceedings of the 22nd annual ACM SIGPLAN
+    conference on Object-oriented programming systems and
+    applications} (OOPSLA '07).
+
+\bibitem{webjython}
+  The Jython Project, \url{www.jython.org}
+
+\bibitem{odaira14}
+  Odaira, Rei, Jose G. Castanos, and Hisanobu Tomari.  "Eliminating
+  global interpreter locks in Ruby through hardware transactional
+  memory."  \emph{Proceedings of the 19th ACM SIGPLAN symposium on
+    Principles and practice of parallel programming.} ACM, 2014.
+
+\bibitem{warmhoff13}
+  Wamhoff, Jons-Tobias, et al. "FastLane: improving performance of
+  software transactional memory for low thread counts."
+  \emph{Proceedings of the 18th ACM SIGPLAN symposium on Principles
+    and practice of parallel programming.} ACM, 2013.
+
+\bibitem{drago11}
+  Dragojević, Aleksandar, et al. "Why STM can be more than a research
+  toy." \emph{Communications of the ACM} 54.4 (2011): 70-77.
+
+\bibitem{cascaval08}
+  Cascaval, Calin, et al. "Software transactional memory: Why is it
+  only a research toy?." \emph{Queue} 6.5 (2008): 40.
+
+\bibitem{nicholas06}
+  Nicholas Riley and Craig Zilles. 2006. Hardware transactional memory
+  support for lightweight dynamic language evolution. \emph{In
+    Companion to the 21st ACM SIGPLAN symposium on Object-oriented
+    programming systems, languages, and applications} (OOPSLA
+  '06). ACM, New York, NY, USA
+
+\bibitem{fuad10}
+  Fuad Tabba. 2010. Adding concurrency in python using a commercial
+  processor's hardware transactional memory support. \emph{SIGARCH
+  Comput. Archit. News 38}, 5 (April 2010)
+
+\bibitem{felber07}
+  Felber, Pascal, et al. "Transactifying applications using an open
+  compiler framework." \emph{TRANSACT}, August (2007): 4-6.
+
+\bibitem{bill06}
+  Bill McCloskey, Feng Zhou, David Gay, and Eric
+  Brewer. 2006. Autolocker: synchronization inference for atomic
+  sections. \emph{In Conference record of the 33rd ACM SIGPLAN-SIGACT
+  symposium on Principles of programming languages (POPL '06)}. ACM,
+  New York, NY, USA
+
+\bibitem{spear09}
+  Spear, Michael F., et al. "Transactional mutex locks." \emph{SIGPLAN
+    Workshop on Transactional Computing.} 2009.
+
+\bibitem{lamport79}
+  Lamport, Leslie. "How to make a multiprocessor computer that
+  correctly executes multiprocess programs." \emph{Computers, IEEE
+    Transactions} on 100.9 (1979): 690-691.
+
+\bibitem{victor11}
+  Victor Pankratius and Ali-Reza Adl-Tabatabai. 2011. A study of
+  transactional memory vs. locks in practice. In \emph{Proceedings of
+    the twenty-third annual ACM symposium on Parallelism in algorithms
+    and architectures} (SPAA '11). ACM, New York, NY, USA
+
+\bibitem{christopher10}
+  Christopher J. Rossbach, Owen S. Hofmann, and Emmett
+  Witchel. 2010. Is transactional programming actually
+  easier?. \emph{SIGPLAN} Not. 45, 5 (January 2010), 47-56.
+
+\bibitem{tim03}
+  Tim Harris and Keir Fraser. 2003. Language support for lightweight
+  transactions. \emph{In Proceedings of the 18th annual ACM SIGPLAN
+    conference on Object-oriented programing, systems, languages, and
+    applications} (OOPSLA '03).
+
+\bibitem{tim05}
+  Tim Harris, Simon Marlow, Simon Peyton-Jones, and Maurice
+  Herlihy. 2005. Composable memory transactions. \emph{In Proceedings
+    of the tenth ACM SIGPLAN symposium on Principles and practice of
+    parallel programming} (PPoPP '05).
+
+\bibitem{shan08}
+  Shan Lu, Soyeon Park, Eunsoo Seo, and Yuanyuan Zhou. 2008. Learning
+  from mistakes: a comprehensive study on real world concurrency bug
+  characteristics. \emph{SIGARCH Comput. Archit. News} 36, 1 (March 2008),
+  329-339.
+
+\bibitem{leis14}
+  Leis, Viktor, Alfons Kemper, and Thomas Neumann. "Exploiting
+  Hardware Transactional Memory in Main-Memory Databases."
+  \emph{Proc. of ICDE}. 2014.
+
+\bibitem{biased}
+  Kenneth Russell and David Detlefs. 2006. Eliminating
+  synchronization-related atomic operations with biased locking and
+  bulk rebiasing. \emph{In Proceedings of the 21st annual ACM SIGPLAN
+    conference on Object-oriented programing, systems, languages, and
+    applications} (OOPSLA '06).
+
+\end{thebibliography}
+
+
+\end{document}
