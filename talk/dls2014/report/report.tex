@@ -117,6 +117,7 @@
 
 \section{Introduction}
 
+
 Dynamic languages like Python, PHP, Ruby, and JavaScript are usually
 regarded as very expressive but also very slow. In recent years, the
 introduction of just-in-time compilers (JIT) for these languages (e.g.
@@ -190,7 +191,7 @@ transformation to the translation process of the interpreter.
 
 Over the years, Python added multiple ways to provide concurrency and
 parallelism to its applications. We want to highlight two of them,
-namely \emph{threading }and \emph{multiprocessing}.
+namely \emph{threading} and \emph{multiprocessing}.
 
 \emph{Threading} employs operating system (OS) threads to provide
 concurrency. It is, however, limited by the GIL and thus does not
@@ -206,12 +207,12 @@ interpreter, but of course we have the overhead of multiple processes
 / interpreters and also need to exchange data between them explicitly
 and expensively.
 
-We focus on the \emph{threading }approach. This requires us to remove
+We focus on the \emph{threading} approach. This requires us to remove
 the GIL from our interpreter in order to run code in parallel on
 multiple threads. One approach to this is fine-grained locking instead
 of a single global lock. Jython and IronPython are implementations of
 this. It requires great care in order to avoid deadlocks, which is why
-we follow the TM approach that provides a \emph{direct }replacement
+we follow the TM approach that provides a \emph{direct} replacement
 for the GIL. It does not require careful placing of locks in the right
 spots. We will compare our work with Jython for evaluation.
 
@@ -248,12 +249,12 @@ the literature.
 \subsubsection{Conflict Handling}
 
 Our conflict detection works with \emph{object
-  granularity}. Conceptually, it is based on \emph{read }and
-\emph{write sets }of transactions.  Two transactions conflict if they
+  granularity}. Conceptually, it is based on \emph{read} and
+\emph{write sets} of transactions.  Two transactions conflict if they
 have accessed a common object that is now in the write set of at least
 one of them.
 
-The \emph{concurrency control }works partly \emph{optimistically} for
+The \emph{concurrency control} works partly \emph{optimistically} for
 reading of objects, where conflicts caused by just reading an object
 in transactions are detected only when the transaction that writes the
 object actually commits. For write-write conflicts we are currently
@@ -261,7 +262,7 @@ object actually commits. For write-write conflicts we are currently
 its write set at any point in time, others trying to write to it will
 have to wait or abort.
 
-We use \emph{lazy version management }to ensure that modifications by
+We use \emph{lazy version management} to ensure that modifications by
 a transaction are not visible to another transaction before the former
 commits.
 
@@ -271,11 +272,11 @@ commits.
 \subsubsection{Semantics}
 
 As required for TM systems, we guarantee complete \emph{isolation
-}and \emph{atomicity }for transactions at all times. Furthermore,
-the isolation provides full \emph{opacity }to always guarantee a consistent
+}and \emph{atomicity} for transactions at all times. Furthermore,
+the isolation provides full \emph{opacity} to always guarantee a consistent
 read set.
 
-We support the notion of \emph{inevitable transactions }that are always
+We support the notion of \emph{inevitable transactions} that are always
 guaranteed to commit. There is always at most one such transaction
 running in the system. We use this kind of transaction to provide
 \emph{strong isolation} by running non-transactional code in the context
@@ -296,7 +297,7 @@ older transaction wins. Different schemes are possible.
 
 Generally speaking, the system is fully implemented in
 software. However, we exploit some more advanced features of current
-CPUs, especially \emph{memory segmentation, virtual memory, }and the
+CPUs, especially \emph{memory segmentation, virtual memory,} and the
 64-bit address space.
 
 
@@ -417,7 +418,7 @@ isolation memory efficient again.
 \subsubsection{Isolation: Copy-On-Write}
 
 We now use these mechanisms to provide isolation for transactions.
-Using write barriers, we implement a \emph{Copy-On-Write (COW) }on the
+Using write barriers, we implement a \emph{Copy-On-Write (COW)} on the
 level of pages. Starting from the initial fully-shared configuration
 (Figure \ref{fig:Page-Remapping}, (II)), when we need to modify an
 object without other threads seeing the changes immediately, we ensure
@@ -507,7 +508,7 @@ Our TM system is designed as a library that covers all aspects around
 transactions and object management. The library consists of two parts:
 (I) It provides a simple interface to starting and committing
 transactions, as well as the required read and write barriers. (II) It
-also includes a \emph{garbage collector (GC) }that is closely
+also includes a \emph{garbage collector (GC)} that is closely
 integrated with the TM part (e.g. it shares the write barrier). The
 close integration helps in order to know more about the lifetime of an
 object, as will be explained in the following sections.
@@ -556,7 +557,7 @@ reference to the right version of the object.
 On startup, we reserve a big range of virtual memory with a call to
 \lstinline!mmap()! and partition this space into $N+1$ segments. We
 want to run $N$ threads in parallel while segment 0 is designated as
-the \emph{sharing-segment }that is never assigned to a thread.
+the \emph{sharing-segment} that is never assigned to a thread.
 
 The next step involves using \lstinline!remap_file_pages()!, a Linux
 system call, to establish the fully-shared configuration.  All pages
@@ -624,7 +625,7 @@ Garbage collection plays a big role in our TM system. The GC is
 generational and has two generations.
 
 The \textbf{first generation}, where objects are considered to be
-\emph{young }and reside in the \emph{Nursery}, is collected by
+\emph{young} and reside in the \emph{Nursery}, is collected by
 \emph{minor collections}. These collections move the surviving objects
 out of the nursery into the old object space, which can be done
 without stopping other threads. This is done either if the nursery has
@@ -643,7 +644,7 @@ medium-fast path inside barriers that the object still belongs to the
 current transaction.
 
 The \textbf{second generation}, where objects are considered to be
-\emph{old }and never move again, is collected by \emph{major
+\emph{old} and never move again, is collected by \emph{major
   collections}.  These collections are implemented in a stop-the-world
 kind of way and first force minor collections in all threads. The
 major goal is to free objects in the old objects space. Furthermore,
