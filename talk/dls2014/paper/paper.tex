@@ -350,15 +350,15 @@ In order to reference these objects, we need references that are valid
 in all threads and automatically point to the private copies. Since
 an object's offset inside a segment is the same in all segments, we
 can use this offset to reference objects. Because all segments are
-copies of each other, this \emph{Segment Offset (SO)} points to the
+copies of each other, this \emph{Segment Offset ($SO$)} points to the
 private version of an object in all threads\,/\,segments. To then
-translate this SO to a real virtual memory address when used inside a
+translate this $SO$ to a real virtual memory address when used inside a
 thread, we need to add the thread's segment start address to the
-SO. The result of this operation is called a \emph{Linear Address
+$SO$. The result of this operation is called a \emph{Linear Address
   (LA)}. This is illustrated in Figure \ref{fig:Segment-Addressing}.
 
 x86-CPUs provide a feature called \emph{memory segmentation}. It
-performs this translation from a SO to a LA directly in hardware.  We
+performs this translation from a $SO$ to a LA directly in hardware.  We
 can use the segment register $\%gs$, which is mostly unused in current
 applications. When this register points to a thread's segment start
 address, we can instruct the CPU to perform the above translation from
@@ -366,7 +366,7 @@ a reference of the form $\%gs{::}SO$ to the right LA on its own. This
 process is efficient enough that we can do it on every access to an
 object.
 
-In summary, we can use a single SO to reference the same object in all
+In summary, we can use a single $SO$ to reference the same object in all
 threads, and it will be translated by the CPU to a LA that always
 points to the thread's private version of this object. Thereby,
 threads are fully isolated from each other. However, $N$ segments
@@ -461,7 +461,7 @@ write. When the barrier detects that the object is not in a private
 page (or any pages that belong to the object), we remap and copy the
 pages to the thread's segment. From now on, the translation of
 $\%gs{::}SO$ in this particular segment will resolve to the private
-version of the object. Note, the SO used to reference the object does
+version of the object. Note, the $SO$ used to reference the object does
 not change during that process.
 
 
@@ -609,7 +609,7 @@ Figure \ref{fig:Segment-Layout} and explained here:
   segmentation violation when accessed. We use this to detect
   erroneous dereferencing of \lstinline!NULL! references.  All
   $\%gs{::}SO$ translated to linear addresses will point to NULL pages
-  if SO is set to \lstinline!NULL!.
+  if $SO$ is set to \lstinline!NULL!.
 \item [{Segment-local~data:}] Some area private to the segment that
   contains segment-local information.
 \item [{Read~markers:}] These are pages that store information about
@@ -712,18 +712,19 @@ barrier.
 
 To add the object to the read set, for us it is enough to mark it as
 read. Since this information needs to be local to the segment, we need
-to store it in private pages. The area is called \emph{read markers
-}and already mentioned in section \ref{sub:Setup}. This area can be
-seen as a continuous array of bytes that is indexed from the start of
-the segment by an object's reference ($SO$) divided by 16 (this
-requires objects of at least 16 bytes in size). Instead of just
-setting the byte to \lstinline!true!  if the corresponding object was
-read, we set it to a \lstinline!read_version!  belonging to the
-transaction, which will be incremented on each commit.  Thereby, we
-can avoid resetting the bytes to \lstinline!false!  on commit and only
-need to do this every 255 transactions. The whole code for the barrier
-is easily optimisable for compilers as well as perfectly predictable
-for CPUs:
+to store it in private pages. The area is called \emph{read markers}
+and already mentioned in section \ref{sub:Setup}.
+
+This area can be seen as a continuous array of bytes that is indexed
+from the start of the segment by an object's reference ($SO$) divided
+by 16 (this is where the requirement of objects to be of at least 16
+bytes in size comes from). Instead of just setting the byte to
+\lstinline!true!  if the corresponding object was read, we set it to a
+\lstinline!read_version!  belonging to the transaction, which will be
+incremented on each commit.  Thereby, we can avoid resetting the bytes
+to \lstinline!false!  on commit and only need to do this every 255
+transactions. The whole code for the barrier is easily optimisable for
+compilers as well as perfectly predictable for CPUs:
 
 \begin{lstlisting}
 void stm_read(SO):
@@ -796,7 +797,7 @@ these ``old'' objects.
 
 For TM, we first perform a read barrier on the object. We then try to
 acquire its write lock. \lstinline!write_locks!  again is a simple
-global array of bytes that is indexed with the SO of the object
+global array of bytes that is indexed with the $SO$ of the object
 divided by 16. If we already own the lock, we are done.  If someone
 else owns the lock, we will do a write-write contention management
 that will abort either us or the current owner of the object.  If we
@@ -914,10 +915,37 @@ committed read anymore.
 
 
 
+\section{Evaluation}
 
-\section{Experimental Results}
+\subsection{Memory Requirements}
 
-compare some programs between
+\begin{itemize}
+\item stm\_flags per object
+\item read markers and other sections
+\item private pages
+\end{itemize}
+
+maybe some memory usage graph over time
+
+
+\subsection{Overhead Breakdown}
+
+\begin{itemize}
+\item time taken by read \& write barriers
+\item time spent committing \& aborting (maybe with different numbers
+  of threads)
+\item time in GC
+\end{itemize}
+
+
+\subsection{Scaling}
+
+maybe some simple micro benchmarks with adaptable conflict rate
+
+
+\subsection{Real-World Benchmarks}
+
+more real benchmarks comparing multiple implementations:
 \begin{itemize}[noitemsep]
 \item pypy
 \item pypy-jit
@@ -926,7 +954,6 @@ compare some programs between
 \item cpython
 \item jython
 \end{itemize}
-
 
 
 \section{Related Work}
