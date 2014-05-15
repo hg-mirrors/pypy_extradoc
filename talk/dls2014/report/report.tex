@@ -42,7 +42,7 @@
 
 % Title.
 % ------
-\title{C7: Fast software transactional memory for dynamic languages}
+\title{Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 %
 % Single address.
 % ---------------
@@ -225,7 +225,7 @@ spots. We will compare our work with Jython for evaluation.
 
 \subsection{Synchronization}
 
- cfbolz{citation again needed for the whole subsection}
+\cfbolz{citation again needed for the whole subsection}
 
 It is well known that using locks to synchronize multiple threads is
 hard. They are non-composable, have overhead, may deadlock, limit
@@ -250,7 +250,7 @@ transaction.
 \subsection{Transactional Memory Model}
 
 In this section, we describe the general model of our TM system. This
-should clarify the general semantics using commonly used terms from
+should clarify the general semantics in commonly used terms from
 the literature.
 
 \cfbolz{there is an overview paragraph of the idea missing, maybe in the introduction}
@@ -283,21 +283,20 @@ commits.
 
 \subsubsection{Semantics}
 
-As required for TM systems, we guarantee complete \emph{isolation
-}and \emph{atomicity} for transactions at all times. Furthermore,
+As required for TM systems, we guarantee complete \emph{isolation}
+and \emph{atomicity} for transactions at all times. Furthermore,
 the isolation provides full \emph{opacity} to always guarantee a consistent
 read set.
 
-\cfbolz{this paragraph is hard to understand without giving an example (eg console printing) when it is useful}
-
-We support the notion of \emph{inevitable transactions} that are always
-guaranteed to commit. There is always at most one such transaction
-running in the system. We use this kind of transaction to provide
-\emph{strong isolation} by running non-transactional code in the context
-of inevitable transactions and to still provide the \emph{serializability}
-of all transaction schedules.
-
-
+To support irreversible operations that cannot be undone when we abort
+a transaction (e.g. I/O, syscalls, and non-transactional code in
+general), we employ \emph{irrevocable} or \emph{inevitable
+transactions}. These transactions are always guaranteed to
+commit. There is always at most one such transaction running in the
+system, thus their execution is serialised. With this guarantee,
+providing \emph{strong isolation} and \emph{serializability} between
+non-transactional code is possible by making the current transaction
+inevitable right before running irreversible operations.
 
 
 \subsubsection{Contention Management}
@@ -334,21 +333,25 @@ the program. Thus, each thread automatically has a private copy of
 every object that it can modify in complete isolation from other
 threads.
 
-To get references to objects that are valid in all threads, we will
-use \cfbolz{use for what?} the object's offset inside the segment. Since all segments are
-copies of each other, the \emph{Segment Offset (SO)} will point to the
-private version of an object in all threads/segments. To then
+In order to reference these objects, we need references that are valid
+in all threads and automatically point to the private copies. Since
+an object's offset inside a segment is the same in all segments, we
+can use this offset to reference objects. Because all segments are
+copies of each other, this \emph{Segment Offset (SO)} points to the
+private version of an object in all threads\,/\,segments. To then
 translate this SO to a real virtual memory address when used inside a
 thread, we need to add the thread's segment start address to the
 SO. The result of this operation is called a \emph{Linear Address
   (LA)}. This is illustrated in Figure \ref{fig:Segment-Addressing}.
 
-\cfbolz{here it needs to say that this is x86 specific}
-
-To make this address translation efficient, we use the segment
-register $\%gs$. When this register points to a thread's segment start
+x86-CPUs provide a feature called \emph{memory segmentation}. It
+performs this translation from a SO to a LA directly in hardware.  We
+can use the segment register $\%gs$, which is mostly unused in current
+applications. When this register points to a thread's segment start
 address, we can instruct the CPU to perform the above translation from
-a reference of the form $\%gs{::}SO$ to the right LA on its own.
+a reference of the form $\%gs{::}SO$ to the right LA on its own. This
+process is efficient enough that we can do it on every access to an
+object.
 
 In summary, we can use a single SO to reference the same object in all
 threads, and it will be translated by the CPU to a LA that always
@@ -489,12 +492,16 @@ transaction without a trace, like it never happened.
   transaction waiting or aborting.\\
   We then push all changes of modified objects in private pages to all
   the pages in other segments, including the sharing-segment (segment
-  0). \cfbolz{can it really happen that you push pages to other segments? I thought it's always just back to the sharing segment}
+  0).
 \item [{Abort:}] On abort the transaction will forget about all the
   changes it has done. All objects in the write set are reset by
   copying their previous version from the sharing-segment into the
-  private pages of the aborting transaction.
-  \cfbolz{why doing any copying? aren't the pages re-shared instead?}
+  private pages of the aborting transaction.\\
+  Re-sharing these pages instead of resetting the changes would not
+  only be slower because it involves a system call, it is also very
+  likely the page would get privatised again immediately after re-trying
+  the transaction.  Since this again involves a full page copy,
+  resetting should be faster than re-sharing.
 \end{description}
 
 \cfbolz{random question: did we investigate the extra memory requirements? we should characterize memory overhead somewhere, eg at least one byte per object for the read markers}
@@ -639,11 +646,10 @@ again if possible.
 \subsubsection{Garbage Collection}
 
 Garbage collection plays a big role in our TM system. The GC is
-generational and has two generations.
+generational and has two generations: the \emph{young} and the
+\emph{old} generation.
 
-\cfbolz{maybe use "young" and "old" generation, if there are only two}
-
-The \textbf{first generation}, where objects are considered to be
+The \textbf{young generation}, where objects are considered to be
 \emph{young} and reside in the \emph{Nursery}, is collected by
 \emph{minor collections}. These collections move the surviving objects
 out of the nursery into the old object space, which can be done
@@ -662,7 +668,7 @@ unique to the current transaction. That way we can still detect in a
 medium-fast path inside barriers that the object still belongs to the
 current transaction.
 
-The \textbf{second generation}, where objects are considered to be
+The \textbf{old generation}, where objects are considered to be
 \emph{old} and never move again, is collected by \emph{major
   collections}.  These collections are implemented in a stop-the-world
 kind of way and first force minor collections in all threads. The
@@ -816,11 +822,11 @@ the others are waiting in a safe point. We then go through the write
 set (\lstinline!modified_old_objects!)  and check the corresponding
 \lstinline!read_markers!  in other threads/segments. If we detect a
 read-write conflict, we do contention management to either abort us or
-the other transaction, or to simply wait a bit. \cfbolz{why does waiting help?}
+the other transaction, or to simply wait a bit (see \ref{subsub:contentionmanagement}).
 
 After verifying that there are no conflicts anymore, we copy all our
 changes done to the objects in the write set to all other segments,
-including the sharing-segment. This is safe since we synchronized all
+including the sharing-segment. This is safe since we synchronised all
 threads. We also need to push overflow objects generated by minor
 collections to other segments, since they may reside partially in
 private pages. At that point we also get a new
@@ -831,10 +837,7 @@ transaction.
 
 
 
-
 \subsubsection{Thread Synchronization}
-
-
 
 A requirement for performing a commit is to synchronize all threads so
 that we can safely update objects in other segments. To make this
@@ -879,7 +882,7 @@ For other synchronization requirements, for example:
 we use a set of condition variables to wait or signal other threads.
 
 
-\subsubsection{Contention Management}
+\subsubsection{Contention Management\label{subsub:contentionmanagement}}
 
 On encountering conflicts, we employ contention management to solve
 the problem as well as we can. The general rules are:
