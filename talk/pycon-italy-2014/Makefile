@@ -5,9 +5,9 @@
 # https://sourceforge.net/tracker/?func=detail&atid=422032&aid=1459707&group_id=38414
 
 talk.pdf: talk.txt author.latex title.latex stylesheet.latex
-	rst2beamer.py --stylesheet=stylesheet.latex --documentoptions=14pt talk.txt talk.latex || exit
+	/home/antocuni/.virtualenvs/rst2beamer/bin/python `which rst2beamer.py` --stylesheet=stylesheet.latex --documentoptions=14pt talk.txt talk.latex || exit
 	sed 's/\\date{}/\\input{author.latex}/' -i talk.latex || exit
-	sed 's/\\maketitle/\\input{title.latex}/' -i talk.latex || exit
+	#sed 's/\\maketitle/\\input{title.latex}/' -i talk.latex || exit
 	pdflatex talk.latex  || exit
 
 view: talk.pdf
