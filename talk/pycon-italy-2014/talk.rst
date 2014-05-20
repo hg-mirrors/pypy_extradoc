@@ -105,13 +105,39 @@ More PyPy-powered languages
   * http://hippyvm.com/
 
 
-Current status: speed
----------------------
+Current status
+---------------
+
+- Python code: "it just works"
+
+- C code: better than ever!
+
+  * cpyext: more complete, but still slow
+
+  * CFFI: the future
+
+  * Native PyPy C API for embedding
+
+- Lots of CFFI modules around:
+
+  * pygame_cffi, psycopg2_cffi, lxml (in-progress)
+
+- numpy: in-progress, tons of code works out of the box
+
+  * no scipy yet :-/
+
+
+Speed: 6.3x faster than CPython
+--------------------------------
+
+.. image:: speed.png
+   :scale: 47%
 
 
 
 
-
+xxx
+----
 
 - future: STM
 
