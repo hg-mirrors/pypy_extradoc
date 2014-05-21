@@ -98,6 +98,8 @@ More PyPy-powered languages
 
 - Topaz: implementing Ruby
 
+  * most of the language implemented, "definitely faster than MRI"
+
   * https://github.com/topazproject/topaz
 
 - HippyVM: implementing PHP
@@ -120,7 +122,7 @@ Current status
 
 - Lots of CFFI modules around:
 
-  * pygame_cffi, psycopg2_cffi, lxml (in-progress)
+  * pygame_cffi, psycopg2_cffi, lxml
 
 - numpy: in-progress, tons of code works out of the box
 
@@ -134,6 +136,16 @@ Speed: 6.3x faster than CPython
    :scale: 47%
 
 
+Current status
+---------------
+
+- ARM
+
+- CFFI
+
+- numpy
+
+- py3k
 
 
 xxx
