@@ -79,6 +79,7 @@
 
 \newcommand\remi[1]{\mynote{Remi}{#1}}
 \newcommand\cfbolz[1]{\mynote{cfbolz}{#1}}
+\newcommand\arigo[1]{\mynote{arigo}{#1}}
 
 
 
@@ -173,7 +174,9 @@ Our contributions include:
 \begin{itemize}[noitemsep]
 \item We introduce a new software transactional memory (STM) system
   that performs well even on low numbers of CPUs. It uses a novel
-  combination of hardware features and garbage collector (GC)
+  combination of hardware features\arigo{"OS-level feature" maybe.
+  "Hardware feature" implies it only works on custom chips}
+  and garbage collector (GC)
   integration in order to keep the overhead of STM very low.
 \item This new STM system is used to replace the GIL in Python and is
   then evaluated extensively.
