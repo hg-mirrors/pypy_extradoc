@@ -27,6 +27,11 @@ PyPy is not dead
 
 - PyPy is healthy and alive
 
+|pause|
+
+- WARNING: This talk is boring
+
+  * "it just works"
 
 What is PyPy?
 --------------
@@ -63,7 +68,7 @@ PyPy: past two years (1)
 
 - PyPy 2.1 (July 2013)
 
-  * stable ARM (thanks to Raspberry Pi foundation)
+  * stable ARM
 
   * py3k (3.2.3), numpy, general improvements, bugfixes
 
@@ -76,6 +81,7 @@ PyPy: past two years (1)
   * more JIT, more py3k
 
   * more numpy, numpy C API
+
 
 PyPy: past two years (2)
 -------------------------
@@ -98,14 +104,34 @@ More PyPy-powered languages
 
 - Topaz: implementing Ruby
 
-  * most of the language implemented, "definitely faster than MRI"
+  * most of the language implemented
+
+  * "definitely faster than MRI"
 
   * https://github.com/topazproject/topaz
 
 - HippyVM: implementing PHP
 
+  * ~7x faster than standard PHP
+
   * http://hippyvm.com/
 
+
+
+Fundraising campaign
+---------------------
+
+- py3k: 50'852 $ of 105'000 $ (48.4%)
+
+- numpy: 48'121 $ of 60'000 $ (80.2%)
+
+- STM, 1st call: 25'000 $
+
+- STM, 2nd call: 2'097 $ of 80'000 $ (2.6%)
+
+  * more on STM later
+
+- thank to all donors!
 
 Current status
 ---------------
@@ -120,13 +146,13 @@ Current status
 
   * Native PyPy C API for embedding
 
+  * cppyy for C++
+
 - Lots of CFFI modules around:
 
   * pygame_cffi, psycopg2_cffi, lxml
 
-- numpy: in-progress, tons of code works out of the box
-
-  * no scipy yet :-/
+- numpy: in-progress (more later)
 
 
 Speed: 6.3x faster than CPython
@@ -136,21 +162,88 @@ Speed: 6.3x faster than CPython
    :scale: 47%
 
 
-Current status
----------------
-
-- ARM
-
-- CFFI
-
-- numpy
-
-- py3k
-
-
-xxx
+ARM
 ----
 
-- future: STM
+- Official support since PyPy 2.1
 
-- Q&A
+- "it just works"
+
+- ~7.5x faster than CPython on ARM
+
+- thanks to Raspberry-Pi foundation
+
+- distributed as part of Raspbian OS
+
+
+numpy
+-----
+
+- as usual, in-progress
+
+- ~80% of numpy implemented
+
+  * http://buildbot.pypy.org/numpy-status/latest.html
+
+- just try it
+
+- no scipy :-/
+
+
+py3k
+----
+
+- 3.2: stable
+
+- 3.3: branch started, in-progress
+
+- some missing optimizations
+
+  * getting better
+
+
+CFFI
+-----
+
+- Python <-> C interfacing done right
+
+  * existing shared libraries
+
+  * custom C code
+
+- Inspired by LuaJIT's FFI
+
+- Alternative to C-API, ctypes, Cython, etc.
+
+- Fast on CPython, super-fast on PyPy
+
+
+cppyy
+------
+
+- Interface to C++
+
+- Based on reflection, no need to write wrappers
+
+- PyPy-only, similar to PyCintex for CPython
+
+- Main use case: ROOT
+
+  * http://root.cern.ch
+
+  * "a set of OO frameworks with all the functionality needed to handle and
+    analyze large amounts of data in a very efficient way"
+
+- 3x faster than CPython
+
+
+STM
+---
+
+TODO
+
+Q&A
+---
+
+Any question?
+
