@@ -339,14 +339,20 @@ Current status
 - Lots of polishing needed
 
 
-Thank you
----------
+Contacts, Q&A
+--------------
 
 - http://pypy.org
 
 - http://morepypy.blogspot.com/
 
-- http://antocuni.eu
+- twitter: @antocuni
+
+- Available for consultancy & training:
+
+  * http://antocuni.eu
+
+  * info@antocuni.eu
 
 - Any question?
 
