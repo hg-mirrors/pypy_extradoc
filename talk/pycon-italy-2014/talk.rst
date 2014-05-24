@@ -325,7 +325,7 @@ Implementation
 
 - Current goal (2014): 25% slower than PyPy without STM
 
-- Yes, that's 800x faster than original goal
+- Yes, that's 10x less overhead than original goal
 
 - mmap black magic
 
