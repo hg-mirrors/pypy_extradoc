@@ -183,6 +183,8 @@ numpy
 
 - ~80% of numpy implemented
 
+  * 2336 passing tests out of 3265
+
   * http://buildbot.pypy.org/numpy-status/latest.html
 
 - just try it
@@ -237,13 +239,114 @@ cppyy
 - 3x faster than CPython
 
 
-STM
----
+The future: STM
+----------------
 
-TODO
+- Software Transactional Memory
 
-Q&A
----
+- Strategy to solve race conditions
 
-Any question?
+- "Finger crossed", rollback in case of conflicts
+
+- On-going research project
+
+  * by Armin Rigo and Remi Meier
+
+STM semantics
+-------------
+
+- N threads
+
+- Each thread split into atomic blocks
+
+- Sequential execution in some arbitrary order
+
+- In practice:
+
+- Parallel execution, conflicts solved by STM
+
+
+Unit of execution (1)
+---------------------
+
+- Atomic blocks == 1 Python bytecode
+
+- Threads are executed in arbitrary order, but bytecodes are atomic
+
+- ==> Same semantics as GIL
+
+- "and this will solve the GIL problem" (A. Rigo, EuroPython 2011 lighting talk)
+
+Unit of execution (2)
+----------------------
+
+- Larger atomic blocks
+
+- ``with atomic:``
+
+- Much easier to use than explicit locks
+
+- Can be hidden by libraries to provide even higher level paradigms
+
+  * e.g.: Twisted apps made parallel out of the box
+
+Race conditions
+---------------
+
+- They don't magically disappear
+
+- With explicit locks
+
+  * ==> BOOM
+
+  * you fix bugs by preventing race conditions
+
+- With atomic blocks
+
+  * ==> Rollaback
+
+  * Performance penalty
+
+  * You optimize by preventing race conditions
+
+- Fast&broken vs. Slower&correct
+
+
+Implementation
+---------------
+
+- Conflicts detection, commit and rollaback is costly
+
+- Original goal (2011): 2x-5x slower than PyPy without STM
+
+  * But parallelizable!
+
+|pause|
+
+- Current goal (2014): 25% slower than PyPy without STM
+
+- Yes, that's 800x faster than original goal
+
+- mmap black magic
+
+Current status
+---------------
+
+- Preliminary versions of pypy-jit-stm available
+
+- The JIT overhead is still a bit too high
+
+- Lots of polishing needed
+
+
+Thank you
+---------
+
+- http://pypy.org
+
+- http://morepypy.blogspot.com/
+
+- http://antocuni.eu
+
+- Any question?
 
