@@ -1,0 +1,14 @@
+* measure things
+** memory: residual & GC-numbers
+** overhead: breakdown (maybe also with multiple threads)
+** scaling: microbenchmark
+** real-world: our benchmarks on all working interpreters (& Jython)
+* explain better the GC-STM integration and its benefits
+
+Finalize
+========
+
+* check "claims" in discussion.txt
+* re-check the benchmark results (any unexplained weirdness?)
+* find references / citations / related work
+* check abstract and conclusion, acks & authors
