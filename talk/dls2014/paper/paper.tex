@@ -983,6 +983,25 @@ on the capabilities of the JIT in these experiments.
 
 \subsection{Memory Requirements}
 
+There are several sources of extra memory requirements in our
+STM system. First, we need to keep track of the state an object
+is in. We do this using flags and an overflow number. Both currently
+fit in an additional header of 4~bytes per object.
+
+Second, there are areas in memory private to each segment (see
+section \ref{sub:Setup}). The Nursery for example is 4~MiB in
+size. Additionally, the area used for the read markers is lazily
+mapped by the kernel and only needed for objects in the old object
+space. Thus, it can be at most the total size of memory used by
+old objects divided by 16.
+
+Third, since we do copy on write, if all objects were to be
+written to at the same time, all pages would need to be privatised
+for all objects in the old object space. In that case we would
+need the total amount of memory required by old objects multiplied
+by $N+1$ (incl. the sharing segment).
+\remi{maybe collect some statistics about pages privatised per segment}
+
 \begin{itemize}
 \item stm\_flags per object
 \item read markers and other sections
