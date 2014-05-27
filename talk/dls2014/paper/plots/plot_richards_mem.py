@@ -44,7 +44,8 @@ y2s = map(lambda x: x / 1024., y2s)
 
 
 def plot_mems(ax):
-    ax.plot(xs, y1s, '-+', label="Memory")
+    ax.plot(xs, y1s, '-o', label="GC managed memory",
+            ms=2)
     ax.plot(x2s, y2s, '-x', label="Resident Set Size (RSS)")
 
 
@@ -74,7 +75,7 @@ def main():
     # axs[0].xaxis.set_major_formatter(major_formatter)
 
     legend = ax.legend(loc=5)
-    ax.set_title("Memory Usage in Richards")
+    #ax.set_title("Memory Usage in Richards")
 
     plt.draw()
     #plt.show()
