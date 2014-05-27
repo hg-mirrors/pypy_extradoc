@@ -1,9 +1,7 @@
 #!/usr/bin/python
 
-# obtained log-file with
-#   pypy-c --jit off ~/pypy/benchmarks/multithread/multithread-richards.py 60 4 2>richards_mem.log
-# rss using measure_memusage.sh
-
+# obtained with time on
+#   pypy-c --jit off bench_scaling.py [1-4]
 
 
 import matplotlib
@@ -21,37 +19,30 @@ args = None
 import matplotlib.pyplot as plt
 # import pprint - slow as hell
 
-with open('richards_mem.log') as f:
-    xs = []
-    y1s = []
-    y2s = []
-    first_time = None
-    for line in f.readlines():
-        line = line.strip().strip("{").strip("}")
-        time, mems = line.split(":")
-        if not first_time:
-            first_time = float(time)
-        xs.append(float(time) - first_time)
-        real_mem, max_rss, page_util = mems.split("/")
-        y1s.append(int(real_mem) / 1024. / 1024)
-        y2s.append(float(page_util))
-
-# RSS:
-# x2s = range(12)
-# y2s = [152304, 180060, 180428,
-#        180448, 180460, 180696,
-#        180124, 180552, 180584,
-#        180588, 180544, 180252]
-# y2s = map(lambda x: x / 1024., y2s)
+xs = range(1,5)
+ys = [[1.73, 1.74, 1.73, 1.73, 1.74],
+      [1.75, 1.77, 1.78, 1.75, 1.75],
+      [1.8, 1.79, 1.76, 1.76, 1.79],
+      [1.82, 2.1, 1.84, 1.9, 2.13]]
 
 
-def plot_mems(ax, ax2):
-    print sum(y1s) / len(xs)
-    print sum(y2s) / len(xs)
-    a, = ax.plot(xs, y1s, 'b-o', ms=3)
-    b, = ax2.plot(xs, y2s, 'r-x', ms=3)
-    return ax.legend((a, b),
-                     ('GC managed memory', 'Page privatisation'))
+
+def plot_mems(ax):
+    import numpy as np
+    y = []
+    yerr = []
+    opt_y = [1.0] * len(xs)
+    first_time = np.mean(ys[0])
+    for x, d in zip(xs, ys):
+        normalized = map(lambda x:x/first_time, d)
+        y.append(np.mean(normalized))
+        yerr.append(np.std(normalized))
+
+    print y
+    ax.errorbar(xs, y, yerr=yerr,
+                label="STM")
+    ax.plot(xs, opt_y, label="optimal")
+    return ax.legend(loc=4)
 
 
 def main():
@@ -62,16 +53,12 @@ def main():
 
     ax = fig.add_subplot(111)
 
-    ax.set_ylabel("Memory [MiB]", color='b')
-    ax.set_xlabel("Runtime [s]")
-    ax.set_ylim(0, 50)
+    ax.set_ylabel("Runtime normalized to 1 thread")
+    ax.set_xlabel("Threads")
+    ax.set_ylim(0, 1.5)
+    ax.set_xlim(0, 5)
 
-    ax2 = ax.twinx()
-    ax.set_xlim(-0.5, 9.8)
-    ax2.set_ylim(0, 1.5)
-    ax2.set_ylabel("Ratio = ${private~pages}\over{shared~pages}$",
-                   color='r')
-    legend = plot_mems(ax, ax2)
+    legend = plot_mems(ax)
 
 
     #axs[0].set_ylim(0, len(x))
@@ -90,7 +77,7 @@ def main():
     #plt.show()
     print "Drawn."
 
-    file_name = "richards_mem.pdf"
+    file_name = "scaling.pdf"
     plt.savefig(file_name, format='pdf',
                 bbox_extra_artists=(legend,),
                 bbox_inches='tight', pad_inches=0)

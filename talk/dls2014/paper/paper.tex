@@ -1019,14 +1019,14 @@ shared page. In the worst case described above, this number would
 reach $N$ and means we need $N\times$ the memory for the private
 pages alone. In this benchmark, we see the same spikes as the memory
 usage. These come directly from re-sharing the pages. The maximum page
-privatisation is around $0.5$ between major collections, thus the
-private pages are responsible for a $50\%$ increase in the required
+privatisation is around $0.9$ between major collections, thus the
+private pages are responsible for a $90\%$ increase in the required
 memory. Since the spikes in the GC managed memory line actually
-show increases by $~80\%$, it means that the rest comes from actual
+show increases by $~100\%$, it means that the rest comes from actual
 garbage objects that were collected.
 
-For PyPy-STM the average memory requirement is 29~MiB and there are
-$\sim 11$ major collections during the runtime. Normal PyPy with a GIL
+For PyPy-STM the average memory requirement is 21~MiB and there are
+$\sim 10$ major collections during the runtime. Normal PyPy with a GIL
 grows its memory up to just 7~MiB and does not do a single major
 collection in that time. Compared to normal PyPy, we are missing a
 memory optimisation to store small objects in a more compact
@@ -1034,6 +1034,8 @@ way. Additionally, since normal PyPy uses a GIL, it does not need to
 duplicate any data structures like e.g. the Nursery for each
 thread. This, the missing optimisation, and the additional memory
 requirements for STM explained above account for this difference.
+We expect to improve this aspect in the future, in this paper we
+want to focus first on performance.
 \remi{I don't know how much sense it makes to go deeper. We will
 improve this in the future, but right now this is the overall picture.}
 
@@ -1062,7 +1064,29 @@ improve this in the future, but right now this is the overall picture.}
 
 \subsection{Scaling}
 
-maybe some simple micro benchmarks with adaptable conflict rate
+To asses how well the STM system scales on its own (without any real
+workload), we execute the following loop on 1 to 4 threads:
+\begin{lstlisting}
+def workload():
+    i = 20000000
+    while i:
+        i -= 1
+\end{lstlisting}
+
+For the results in figure \ref{fig:scaling}, we averaged
+over 5 runs and normalised the average runtimes to the
+time it took on a single thread. From this we see that there
+is additional overhead introduced by each thread ($13\%$
+for all 4 threads together).
+
+\remi{what we don't show is by how much this overhead is influenced
+by allocations}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\columnwidth]{plots/scaling.pdf}
+  \caption{Scalability of the STM system\label{fig:scaling}}
+\end{figure}
 
 
 \subsection{Real-World Benchmarks\label{sec:real-world-bench}}

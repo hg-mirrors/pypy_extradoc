@@ -1,3 +1,4 @@
+* discuss removal GIL ruby paper
 * measure things
 ** memory: residual & GC-numbers
 ** overhead: breakdown (maybe also with multiple threads)
