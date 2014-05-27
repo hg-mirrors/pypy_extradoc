@@ -938,21 +938,22 @@ committed read anymore.
 \section{Evaluation}
 
 We evaluate our system in a Python interpreter called
-PyPy\footnote{www.pypy.org}. PyPy is an implementation of an
+PyPy\footnote{www.pypy.org} (version 2.3). PyPy is an implementation of an
 interpreter for the Python language. It has a special focus on speed,
 as it provides a just-in-time (JIT) compiler to speed up applications
-running on top of it. For comparison, we also do evaluation on other
-Python interpreters:
+running on top of it. For comparison, we compare between normal PyPy
+using a GIL and a PyPy with STM, as well as between other Python interpreters:
 \begin{description}
-\item[CPython] is the reference implementation of the Python
+\item[CPython] (version 2.7.6) is the reference implementation of the Python
   language. It is the most widely used interpreter for this language.
   The implementation uses a GIL for synchronisation in multi-threaded
   execution and it does not feature a JIT compiler.
-\item[Jython] is an implementation of Python on top of the Java Virtual
-  Machine (JVM). Instead of a GIL, this interpreter uses fine-grained
-  locking for synchronisation. This enables true parallelism when
-  executing code on multiple threads. In addition, its integration
-  with the JVM provides it with a JIT compiler for faster execution.
+\item[Jython] (version 2.7b1) is an implementation of Python on top of
+  the Java Virtual Machine (JVM). Instead of a GIL, this interpreter
+  uses fine-grained locking for synchronisation. This enables true
+  parallelism when executing code on multiple threads. In addition, its
+  integration with the JVM provides it with a JIT compiler for faster
+  execution.
 \end{description}
 
 Here, we will not go into detail about the integration of our STM
@@ -973,6 +974,13 @@ real-world benchmarks in section \ref{sec:real-world-bench} is better
 because we can minimise non-determinism. We also do not want to depend
 on the capabilities of the JIT in these experiments.
 
+We performed all benchmarks on a machine with a Intel Core i7-4770
+CPU~@3.40GHz (4 cores, 8 threads).  There are 16~GiB of memory
+available and we ran them under Ubuntu 14.04 with a Linux 3.13.0
+kernel. The STM system was compiled with a number of segments $N=4$
+and a maximum amount of memory of 1.5~GiB (both are configurable at
+compile time).
+
 % benchmarks with: pypy-c--Ojit-d1454093dd48+-14-05-26-17:16
 % that's with stmgc 70c403598485
 
@@ -986,7 +994,7 @@ on the capabilities of the JIT in these experiments.
 There are several sources of extra memory requirements in our
 STM system. First, we need to keep track of the state an object
 is in. We do this using flags and an overflow number. Both currently
-fit in an additional header of 4~bytes per object.
+fit in a single additional header of 4~bytes per object.
 
 Second, there are areas in memory private to each segment (see
 section \ref{sub:Setup}). The Nursery for example is 4~MiB in
@@ -999,16 +1007,43 @@ Third, since we do copy on write, if all objects were to be
 written to at the same time, all pages would need to be privatised
 for all objects in the old object space. In that case we would
 need the total amount of memory required by old objects multiplied
-by $N+1$ (incl. the sharing segment).
+by $N+1$ (incl. the sharing segment). Pages get re-shared during
+major collections if possible.
 \remi{maybe collect some statistics about pages privatised per segment}
 
-\begin{itemize}
-\item stm\_flags per object
-\item read markers and other sections
-\item private pages
-\end{itemize}
+\remi{The following discussion about richards mem usage does not
+say that much... Also, RSS is not a good measure but it's hard to
+get something better.}
+In figure \ref{fig:richards_mem} we look at the memory usage of
+one of our benchmarks called Richards\footnote{OS kernel simulation
+benchmark}. The \emph{Resident Set Size} (RSS) shows the physical memory
+assigned to the process. From it, we see that the process' memory
+usage does not explode during the benchmark but actually stays pretty
+much the same after start-up. Since it is the job of the OS to map
+physical memory, this RSS number should be seen as a maximum. It is
+possible that some of the memory is not required any more but still
+assigned to our process.
 
-maybe some memory usage graph over time
+The \emph{GC managed memory} counts all memory used in the old object
+space including the memory required for private pages. The sharp drops
+in memory usage come from major collections that free old objects and
+re-share pages. Again the overall memory usage stays the same and
+we see that in this benchmark we have around 1 major collection every
+second.
+
+For PyPy-STM the average memory requirement is 29~MiB and there are
+$\sim 11$ major collections during the runtime. Normal PyPy with a GIL
+grows its memory up to just 7~MiB and does not do a single major
+collection in that time.
+
+We are missing a memory optimisation to store small objects in a more
+compact way, which is done by a normal PyPy not using STM.
+Additionally, since normal PyPy uses a GIL, it does not need to
+duplicate any data structures like e.g. the Nursery for each
+thread. This, the missing optimisation, and the additional memory
+requirements for STM explained above account for this difference.
+\remi{I don't know how much sense it makes to go deeper. We will
+improve this in the future, but right now this is the overall picture.}
 
 \begin{figure}[h]
   \centering
@@ -1020,10 +1055,13 @@ maybe some memory usage graph over time
 
 \subsection{Overhead Breakdown}
 
+\remi{gs:segment prefix overhead is virtually none (maybe instruction cache)}
+\remi{update numbers in pypy/TODO}
+
 \begin{itemize}
 \item time taken by read \& write barriers
 \item time spent committing \& aborting (maybe with different numbers
-  of threads)
+  of threads; maybe split conflict detection and obj sync on commit)
 \item time in GC
 \end{itemize}
 
