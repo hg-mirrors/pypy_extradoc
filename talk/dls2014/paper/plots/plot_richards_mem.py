@@ -32,21 +32,26 @@ with open('richards_mem.log') as f:
         if not first_time:
             first_time = float(time)
         xs.append(float(time) - first_time)
-        real_mem, max_rss = mems.split("/")
+        real_mem, max_rss, page_util = mems.split("/")
         y1s.append(int(real_mem) / 1024. / 1024)
+        y2s.append(float(page_util) * 100)
 
-x2s = range(12)
-y2s = [152304, 180060, 180428,
-       180448, 180460, 180696,
-       180124, 180552, 180584,
-       180588, 180544, 180252]
-y2s = map(lambda x: x / 1024., y2s)
+# RSS:
+# x2s = range(12)
+# y2s = [152304, 180060, 180428,
+#        180448, 180460, 180696,
+#        180124, 180552, 180584,
+#        180588, 180544, 180252]
+# y2s = map(lambda x: x / 1024., y2s)
 
 
-def plot_mems(ax):
-    ax.plot(xs, y1s, '-o', label="GC managed memory",
-            ms=2)
-    ax.plot(x2s, y2s, '-x', label="Resident Set Size (RSS)")
+def plot_mems(ax, ax2):
+    print sum(y1s) / len(xs)
+    print sum(y2s) / len(xs)
+    a, = ax.plot(xs, y1s, 'b-')
+    b, = ax2.plot(xs, y2s, 'r-')
+    return ax.legend((a, b),
+                     ('GC managed memory', 'Page privatisation'))
 
 
 def main():
@@ -57,12 +62,17 @@ def main():
 
     ax = fig.add_subplot(111)
 
-    plot_mems(ax)
-
-    ax.set_ylabel("Memory [MiB]")
+    ax.set_ylabel("Memory [MiB]", color='b')
     ax.set_xlabel("Runtime [s]")
     ax.set_xlim(-0.5, 11.5)
-    ax.set_ylim(0, 200)
+    ax.set_ylim(0, 50)
+
+    ax2 = ax.twinx()
+    ax2.set_ylim(0, 100)
+    ax2.set_ylabel("\% of pages with $>1$ private copy",
+                   color='r')
+    legend = plot_mems(ax, ax2)
+
 
     #axs[0].set_ylim(0, len(x))
     #ax.set_yticks([r+0.5 for r in range(len(logs))])
@@ -74,7 +84,6 @@ def main():
     # major_formatter = matplotlib.ticker.FuncFormatter(label_format)
     # axs[0].xaxis.set_major_formatter(major_formatter)
 
-    legend = ax.legend(loc=5)
     #ax.set_title("Memory Usage in Richards")
 
     plt.draw()

@@ -1009,36 +1009,27 @@ for all objects in the old object space. In that case we would
 need the total amount of memory required by old objects multiplied
 by $N+1$ (incl. the sharing segment). Pages get re-shared during
 major collections if possible.
-\remi{maybe collect some statistics about pages privatised per segment}
 
-\remi{The following discussion about richards mem usage does not
-say that much... Also, RSS is not a good measure but it's hard to
-get something better.}
-In figure \ref{fig:richards_mem} we look at the memory usage of
-one of our benchmarks called Richards\footnote{OS kernel simulation
-benchmark}. The \emph{Resident Set Size} (RSS) shows the physical memory
-assigned to the process. From it, we see that the process' memory
-usage does not explode during the benchmark but actually stays pretty
-much the same after start-up. Since it is the job of the OS to map
-physical memory, this RSS number should be seen as a maximum. It is
-possible that some of the memory is not required any more but still
-assigned to our process.
-
-The \emph{GC managed memory} counts all memory used in the old object
-space including the memory required for private pages. The sharp drops
-in memory usage come from major collections that free old objects and
-re-share pages. Again the overall memory usage stays the same and
-we see that in this benchmark we have around 1 major collection every
-second.
+In figure \ref{fig:richards_mem} we look at the memory usage of one of
+our benchmarks called Richards\footnote{OS kernel simulation
+benchmark}. The \emph{GC managed memory} counts all memory used in the
+old object space including the memory required for private pages. The
+sharp drops in memory usage come from major collections that free old
+objects and re-share pages. The average memory usage stays around
+29~MiB and we see that in this benchmark we have around 1 major
+collection every second. The \emph{page privatisation}, which
+represents the percentage of used pages with at least one private
+copy, shows the same spikes as the memory usage. These come directly from
+re-sharing the pages. The maximum page privatisation is around $20\%$
+between major collections. Thus we can say that $~20\%$ of the old
+objects get modified between collections in this benchmark.
 
 For PyPy-STM the average memory requirement is 29~MiB and there are
 $\sim 11$ major collections during the runtime. Normal PyPy with a GIL
 grows its memory up to just 7~MiB and does not do a single major
-collection in that time.
-
-We are missing a memory optimisation to store small objects in a more
-compact way, which is done by a normal PyPy not using STM.
-Additionally, since normal PyPy uses a GIL, it does not need to
+collection in that time. Compared to normal PyPy, we are missing a
+memory optimisation to store small objects in a more compact
+way. Additionally, since normal PyPy uses a GIL, it does not need to
 duplicate any data structures like e.g. the Nursery for each
 thread. This, the missing optimisation, and the additional memory
 requirements for STM explained above account for this difference.
@@ -1048,13 +1039,14 @@ improve this in the future, but right now this is the overall picture.}
 \begin{figure}[h]
   \centering
   \includegraphics[width=1\columnwidth]{plots/richards_mem.pdf}
-  \caption{Actual memory managed by the GC and resident set size
+  \caption{Actual memory managed by the GC and the page privatisation
     over time in Richards benchmark\label{fig:richards_mem}}
 \end{figure}
 
 
 \subsection{Overhead Breakdown}
 
+\remi{do it on a non-jit build (see reason above)}
 \remi{gs:segment prefix overhead is virtually none (maybe instruction cache)}
 \remi{update numbers in pypy/TODO}
 
