@@ -937,6 +937,50 @@ committed read anymore.
 
 \section{Evaluation}
 
+We evaluate our system in a Python interpreter called
+PyPy\footnote{www.pypy.org}. PyPy is an implementation of an
+interpreter for the Python language. It has a special focus on speed,
+as it provides a just-in-time (JIT) compiler to speed up applications
+running on top of it. For comparison, we also do evaluation on other
+Python interpreters:
+\begin{description}
+\item[CPython] is the reference implementation of the Python
+  language. It is the most widely used interpreter for this language.
+  The implementation uses a GIL for synchronisation in multi-threaded
+  execution and it does not feature a JIT compiler.
+\item[Jython] is an implementation of Python on top of the Java Virtual
+  Machine (JVM). Instead of a GIL, this interpreter uses fine-grained
+  locking for synchronisation. This enables true parallelism when
+  executing code on multiple threads. In addition, its integration
+  with the JVM provides it with a JIT compiler for faster execution.
+\end{description}
+
+Here, we will not go into detail about the integration of our STM
+system with PyPy's JIT. In fact, we will disable it for all benchmarks
+except those in section \ref{sec:real-world-bench}. We would like to
+regard it as a simple performance enhancement, but that is not what
+happens in reality. First, since the JIT is a tracing
+JIT\remi{explain?}  running in multiple threads, it may compile
+different things in each run because of the non-deterministic
+thread-scheduling of the operating system (OS). Second, it is able to
+remove some allocations in some cases. Because compilation is already
+non-deterministic, so is this allocation-removal. And third, we did
+not have enough time to optimise integration with STM so that the JIT
+exposes the overhead of STM more by speeding up all the rest.
+
+Overall, we believe that disabling it on all benchmarks except the
+real-world benchmarks in section \ref{sec:real-world-bench} is better
+because we can minimise non-determinism. We also do not want to depend
+on the capabilities of the JIT in these experiments.
+
+% benchmarks with: pypy-c--Ojit-d1454093dd48+-14-05-26-17:16
+% that's with stmgc 70c403598485
+
+% Sometimes with JIT, sometimes without.
+% For scaling & memory w/o jit, since the jit can optimize away
+% many allocations and exposes the overhead more.
+
+
 \subsection{Memory Requirements}
 
 \begin{itemize}
@@ -963,7 +1007,7 @@ maybe some memory usage graph over time
 maybe some simple micro benchmarks with adaptable conflict rate
 
 
-\subsection{Real-World Benchmarks}
+\subsection{Real-World Benchmarks\label{sec:real-world-bench}}
 
 more real benchmarks comparing multiple implementations:
 \begin{itemize}[noitemsep]
