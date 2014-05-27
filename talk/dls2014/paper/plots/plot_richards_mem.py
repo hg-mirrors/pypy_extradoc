@@ -34,7 +34,7 @@ with open('richards_mem.log') as f:
         xs.append(float(time) - first_time)
         real_mem, max_rss, page_util = mems.split("/")
         y1s.append(int(real_mem) / 1024. / 1024)
-        y2s.append(float(page_util) * 100)
+        y2s.append(float(page_util))
 
 # RSS:
 # x2s = range(12)
@@ -48,8 +48,8 @@ with open('richards_mem.log') as f:
 def plot_mems(ax, ax2):
     print sum(y1s) / len(xs)
     print sum(y2s) / len(xs)
-    a, = ax.plot(xs, y1s, 'b-')
-    b, = ax2.plot(xs, y2s, 'r-')
+    a, = ax.plot(xs, y1s, 'b-o', ms=3)
+    b, = ax2.plot(xs, y2s, 'r-x', ms=3)
     return ax.legend((a, b),
                      ('GC managed memory', 'Page privatisation'))
 
@@ -64,12 +64,12 @@ def main():
 
     ax.set_ylabel("Memory [MiB]", color='b')
     ax.set_xlabel("Runtime [s]")
-    ax.set_xlim(-0.5, 11.5)
     ax.set_ylim(0, 50)
 
     ax2 = ax.twinx()
-    ax2.set_ylim(0, 100)
-    ax2.set_ylabel("\% of pages with $>1$ private copy",
+    ax.set_xlim(-0.5, 11.8)
+    ax2.set_ylim(0, 1)
+    ax2.set_ylabel("Ratio = ${private~pages}\over{shared~pages}$",
                    color='r')
     legend = plot_mems(ax, ax2)
 

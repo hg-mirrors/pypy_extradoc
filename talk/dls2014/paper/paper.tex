@@ -377,11 +377,9 @@ require $N$-times the memory and modifications on an object need to be
 propagated to all segments.
 
 \begin{figure*}[t]
-  \begin{centering}
-    \includegraphics[scale=0.8]{\string"segment addressing\string".pdf}
-    \par\end{centering}
-
-    \protect\caption{Segment Addressing\label{fig:Segment-Addressing}}
+  \centering
+  \includegraphics[scale=0.8]{\string"segment addressing\string".pdf}
+  \caption{Segment Addressing\label{fig:Segment-Addressing}}
 \end{figure*}
 
 
@@ -404,11 +402,9 @@ we use to share memory between the segments, since we then only
 require one page of physical memory for all of them.
 
 \begin{figure}[h]
-  \begin{centering}
-    \includegraphics[scale=0.8]{\string"mmap pages\string".pdf}
-    \par\end{centering}
-
-    \protect\caption{\texttt{mmap()} Page Mapping\label{fig:mmap()-Page-Mapping}}
+  \centering
+  \includegraphics[scale=0.8]{\string"mmap pages\string".pdf}
+  \caption{\texttt{mmap()} Page Mapping\label{fig:mmap()-Page-Mapping}}
 \end{figure}
 
 
@@ -445,13 +441,11 @@ thread. Page sharing makes the memory segmentation model for isolation
 memory efficient again.
 
 \begin{figure}[h]
-  \begin{centering}
-    \includegraphics[width=1\columnwidth]{\string"page remapping\string".pdf}
-    \par\end{centering}
-
-    \protect\caption{Page Remapping: (I) after \texttt{mmap()}. (II) remap all pages to
-      segment~0, fully shared memory configuration. (III) privatise single
-      pages.\label{fig:Page-Remapping}}
+  \centering
+  \includegraphics[width=1\columnwidth]{\string"page remapping\string".pdf}
+  \caption{Page Remapping: (I) after \texttt{mmap()}. (II) remap all pages to
+    segment~0, fully shared memory configuration. (III) privatise single
+    pages.\label{fig:Page-Remapping}}
 \end{figure}
 
 
@@ -641,11 +635,9 @@ Figure \ref{fig:Segment-Layout} and explained here:
 
 
 \begin{figure*}[t]
-  \begin{centering}
-    \includegraphics[scale=0.8]{\string"segment layout\string".pdf}
-    \par\end{centering}
-
-    \protect\caption{Segment Layout\label{fig:Segment-Layout}}
+  \centering
+  \includegraphics[scale=0.8]{\string"segment layout\string".pdf}
+  \caption{Segment Layout\label{fig:Segment-Layout}}
 \end{figure*}
 
 
@@ -1003,12 +995,12 @@ mapped by the kernel and only needed for objects in the old object
 space. Thus, it can be at most the total size of memory used by
 old objects divided by 16.
 
-Third, since we do copy on write, if all objects were to be
-written to at the same time, all pages would need to be privatised
-for all objects in the old object space. In that case we would
-need the total amount of memory required by old objects multiplied
-by $N+1$ (incl. the sharing segment). Pages get re-shared during
-major collections if possible.
+Third, since we do copy on write, if all objects were to be written to
+at the same time, all pages would need to be privatised for all
+objects in the old object space. In that case we would need the total
+amount of memory required by old objects multiplied by $N+1$
+(incl. the sharing segment). During major collections we re-share the
+pages if possible.
 
 In figure \ref{fig:richards_mem} we look at the memory usage of one of
 our benchmarks called Richards\footnote{OS kernel simulation
@@ -1017,12 +1009,21 @@ old object space including the memory required for private pages. The
 sharp drops in memory usage come from major collections that free old
 objects and re-share pages. The average memory usage stays around
 29~MiB and we see that in this benchmark we have around 1 major
-collection every second. The \emph{page privatisation}, which
-represents the percentage of used pages with at least one private
-copy, shows the same spikes as the memory usage. These come directly from
-re-sharing the pages. The maximum page privatisation is around $20\%$
-between major collections. Thus we can say that $~20\%$ of the old
-objects get modified between collections in this benchmark.
+collection every second.
+
+The \emph{page privatisation}, which represents the ratio between
+private pages and shared pages, gives us an idea about how many
+private copies exist for each shared page. If the ratio is $>1.0$, it
+means that on average we have more than one private copy for each
+shared page. In the worst case described above, this number would
+reach $N$ and means we need $N\times$ the memory for the private
+pages alone. In this benchmark, we see the same spikes as the memory
+usage. These come directly from re-sharing the pages. The maximum page
+privatisation is around $0.5$ between major collections, thus the
+private pages are responsible for a $50\%$ increase in the required
+memory. Since the spikes in the GC managed memory line actually
+show increases by $~80\%$, it means that the rest comes from actual
+garbage objects that were collected.
 
 For PyPy-STM the average memory requirement is 29~MiB and there are
 $\sim 11$ major collections during the runtime. Normal PyPy with a GIL
@@ -1042,6 +1043,7 @@ improve this in the future, but right now this is the overall picture.}
   \caption{Actual memory managed by the GC and the page privatisation
     over time in Richards benchmark\label{fig:richards_mem}}
 \end{figure}
+
 
 
 \subsection{Overhead Breakdown}
