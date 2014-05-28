@@ -1095,20 +1095,17 @@ by allocations}
 we cannot compete well even with CPython, we later show JIT benchmarks
 where we see the unstable performance but also that we can still scale.
 (with more work we can use our STM system to parallelise jitted code
-too)}
+too)} See figure \ref{fig:performance-nojit}
 
-more real benchmarks comparing multiple implementations:
-\begin{itemize}[noitemsep]
-\item pypy
-\item pypy-jit
-\item pypy-stm
-\item pypy-stm-jit
-\item cpython
-\item jython
-\end{itemize}
+% TODO: pypy-nostm, Jython?
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\columnwidth]{plots/performance_nojit.pdf}
+  \caption{Comparing runtime between interpreters without a JIT\label{fig:performance-nojit}}
+\end{figure}
 
 
-% TODO: Jython
+% TODO: Jython, compare to cpython? or just jython as common baseline with no-jit?
 \remi{Some benchmarks (figure \ref{fig:performance-jit} with enabled
 JIT show that we can be competitive with the other solutions. It also
 shows that more work is needed in that area to make performance more

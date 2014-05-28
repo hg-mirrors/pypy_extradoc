@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 # import pprint - slow as hell
 
 # threads
-ts = range(1,5)
+
 
 interps_styles = {
     "pypy-stm-jit": 'r-',
@@ -126,13 +126,13 @@ benchs = {
 
 
 
-def plot_speedups(plt):
+def plot_speedups(plt, w, h, benchs, interps_styles):
     import numpy as np
     from collections import OrderedDict
     fig = plt.figure()
 
+    ts = range(1,5) # threads
     legend = OrderedDict()
-    w, h = 2, 3
     axs = {}
     for i, (name, contestants) in enumerate(benchs.items()):
         if i >= w:
@@ -180,7 +180,7 @@ def main():
     global fig
 
     print "Draw..."
-    legend = plot_speedups(plt)
+    legend = plot_speedups(plt, 2, 3, benchs, interps_styles)
 
     #axs[0].set_ylim(0, len(x))
     #ax.set_yticks([r+0.5 for r in range(len(logs))])
