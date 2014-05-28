@@ -32,9 +32,10 @@ import matplotlib.pyplot as plt
 
 
 interps_styles = {
-    "pypy-stm-jit": 'r-',
-    "pypy-jit": 'b--',
-    "best": "k:"
+    "pypy-stm-jit": {'fmt':'r-'},
+    "pypy-jit": {'fmt':'b', 'dashes':(1,1)},
+    "jython": {'fmt':'m', 'dashes':(2, 5)},
+    "best": {'fmt':"k:"}        # only fmt allowed
 }
 
 benchs = {
@@ -156,12 +157,12 @@ def plot_speedups(plt, w, h, benchs, interps_styles):
                     best_y = new_y
 
             artist = ax.errorbar(ts, y, yerr=yerr,
-                                 fmt=interps_styles[interp])
+                                 **interps_styles[interp])
             if interp not in legend:
                 legend[interp] = artist
 
         legend["best"], = ax.plot(ts, [best_y] * len(ts),
-                                  interps_styles["best"])
+                                  interps_styles["best"]['fmt'])
 
         if i // w == h-1:
             ax.set_xlim(0, 5)
@@ -172,7 +173,7 @@ def plot_speedups(plt, w, h, benchs, interps_styles):
         ax.set_title(name)
 
     return axs[w*(h-1)].legend(tuple(legend.values()), tuple(legend.keys()),
-                               ncol=3,
+                               ncol=4,
                                loc=(0,-0.4))
 
 

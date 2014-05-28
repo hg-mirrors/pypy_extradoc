@@ -1091,6 +1091,16 @@ by allocations}
 
 \subsection{Performance Benchmarks\label{sec:performance-bench}}
 
+% To isolate factors we look at performance w/o JIT and perf w JIT.
+% w/o JIT:
+%  - it scales
+%  - slower than reference CPython
+%  - gil scales negatively
+% w JIT:
+%  - it sometimes still scales (more work needed)
+%  - changed working set size because generally ~50x faster
+%  - competing w our own JIT on non-stm a challenge
+%  - gil scales negatively
 \remi{For performance we first look at no-JIT behaviour of STM. Since
 we cannot compete well even with CPython, we later show JIT benchmarks
 where we see the unstable performance but also that we can still scale.
