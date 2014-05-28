@@ -950,7 +950,7 @@ using a GIL and a PyPy with STM, as well as between other Python interpreters:
 
 Here, we will not go into detail about the integration of our STM
 system with PyPy's JIT. In fact, we will disable it for all benchmarks
-except those in section \ref{sec:real-world-bench}. We would like to
+except those in section \ref{sec:performance-bench}. We would like to
 regard it as a simple performance enhancement, but that is not what
 happens in reality. First, since the JIT is a tracing
 JIT\remi{explain?}  running in multiple threads, it may compile
@@ -962,7 +962,7 @@ not have enough time to optimise integration with STM so that the JIT
 exposes the overhead of STM more by speeding up all the rest.
 
 Overall, we believe that disabling it on all benchmarks except the
-real-world benchmarks in section \ref{sec:real-world-bench} is better
+performance benchmarks in section \ref{sec:performance-bench} is better
 because we can minimise non-determinism. We also do not want to depend
 on the capabilities of the JIT in these experiments.
 
@@ -1089,7 +1089,13 @@ by allocations}
 \end{figure}
 
 
-\subsection{Real-World Benchmarks\label{sec:real-world-bench}}
+\subsection{Performance Benchmarks\label{sec:performance-bench}}
+
+\remi{For performance we first look at no-JIT behaviour of STM. Since
+we cannot compete well even with CPython, we later show JIT benchmarks
+where we see the unstable performance but also that we can still scale.
+(with more work we can use our STM system to parallelise jitted code
+too)}
 
 more real benchmarks comparing multiple implementations:
 \begin{itemize}[noitemsep]
@@ -1101,6 +1107,18 @@ more real benchmarks comparing multiple implementations:
 \item jython
 \end{itemize}
 
+
+% TODO: Jython
+\remi{Some benchmarks (figure \ref{fig:performance-jit} with enabled
+JIT show that we can be competitive with the other solutions. It also
+shows that more work is needed in that area to make performance more
+stable.}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\columnwidth]{plots/performance.pdf}
+  \caption{Comparing runtime between interpreters with JIT\label{fig:performance-jit}}
+\end{figure}
 
 \section{Related Work}
 
