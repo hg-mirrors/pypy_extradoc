@@ -1091,6 +1091,30 @@ by allocations}
 
 \subsection{Performance Benchmarks\label{sec:performance-bench}}
 
+In this section we want to look at the general performance of our
+system. As explained above, the JIT does not simply speed up the
+performance by a certain factor. In order to better understand the
+behaviour of our system, we therefore split this section into two
+parts. We first look at how it behaves without the JIT, and then with
+the JIT. We look at six benchmarks:
+
+\begin{itemize}
+\item \emph{btree} and \emph{skiplist}, which are both inserting,
+  removing, and finding elements in a data structure
+\item \emph{threadworms}, which simulates worms walking on a grid in
+  parallel and checking for collisions with each other
+\item \emph{mandelbrot}, \emph{raytrace}, and \emph{richards}, which
+  all perform simple, independent computations in parallel
+\end{itemize}
+
+We use coarse-grained locking for the first three benchmarks and no
+locking for the last three. This is important because Jython, which
+uses fine-grained locking instead of a GIL, is only expected to scale
+with the number of threads for the latter group. It is not able to
+scale when using coarse-grained locking. STM, however, uses atomic
+blocks instead, so it may still be able to scale since they are
+implemented as simple transactions.
+
 % To isolate factors we look at performance w/o JIT and perf w JIT.
 % w/o JIT:
 %  - it scales
@@ -1101,13 +1125,27 @@ by allocations}
 %  - changed working set size because generally ~50x faster
 %  - competing w our own JIT on non-stm a challenge
 %  - gil scales negatively
-\remi{For performance we first look at no-JIT behaviour of STM. Since
-we cannot compete well even with CPython, we later show JIT benchmarks
-where we see the unstable performance but also that we can still scale.
-(with more work we can use our STM system to parallelise jitted code
-too)} See figure \ref{fig:performance-nojit}
 
-% TODO: pypy-nostm, Jython?
+\paragraph{Non-JIT benchmarks:} First we run our benchmarks on four
+different interpreters: Jython (fine-grained locking), CPython (GIL),
+and PyPy with STM and with the GIL (both without the JIT). The results
+are shown in \ref{fig:performance-nojit}.
+
+As expected, all interpreters with a GIL do not scale with the number
+of threads. They even become slower because of the overhead of
+thread-switching and GIL handling. We also see Jython scale when we
+expect it to (mandelbrot, raytrace, richards), and behave similar to
+the GIL interpreters in the other cases.
+
+PyPy using our STM system (pypy-stm-nojit) scales in all benchmarks to
+a certain degree. We see that the average overhead from switching from
+GIL to STM is \remi{$35.5\%$}, the maximum in richards is
+\remi{$63\%$}. pypy-stm-nojit beats pypy-nojit already on two threads;
+however, it never even beats CPython, the reference implementation of
+Python. This means that without the JIT, our performance is not
+competitive. We now look at how well our system works when we enable
+the JIT.
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=1\columnwidth]{plots/performance_nojit.pdf}
@@ -1115,17 +1153,34 @@ too)} See figure \ref{fig:performance-nojit}
 \end{figure}
 
 
-% TODO: Jython, compare to cpython? or just jython as common baseline with no-jit?
-\remi{Some benchmarks (figure \ref{fig:performance-jit} with enabled
-JIT show that we can be competitive with the other solutions. It also
-shows that more work is needed in that area to make performance more
-stable.}
+\paragraph{JIT benchmarks:} The speedups from enabling the JIT in
+these benchmarks range from $10-50\times$. This is why we had to do
+without Jython and CPython here, since they would be much further up
+in the plots. Also, in order to get more stable results, we increased
+the input size of all benchmarks to get reasonable execution times.
+
+The results are shown in \ref{fig:performance-nojit}. We see that the
+performance is much less stable. There is certainly more work required
+in this area. In general, we see that the group of non-locked
+benchmarks certainly scales best. The other three scale barely or not
+at all with the number of threads. The slowdown factor from GIL to STM
+ranges around \remi{$1-2.4\times$} and we beat GIL performance in half
+of the benchmarks.
+
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=1\columnwidth]{plots/performance.pdf}
   \caption{Comparing runtime between interpreters with JIT\label{fig:performance-jit}}
 \end{figure}
+
+
+Overall PyPy needs the JIT in order for its performance to be
+competitive.  It would be interesting to see how using our STM system
+in CPython would perform, but it is a lot of work. On its own, our
+system scales well so we hope to also see that with the JIT in the
+future.
+
 
 \section{Related Work}
 

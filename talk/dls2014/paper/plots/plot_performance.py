@@ -32,7 +32,7 @@ import matplotlib.pyplot as plt
 
 
 interps_styles = {
-    "pypy-stm-jit": {'fmt':'r-'},
+    "pypy-stm-jit": {'fmt':'r-', 'linewidth':2},
     "pypy-jit": {'fmt':'b', 'dashes':(1,1)},
     "jython": {'fmt':'m', 'dashes':(2, 5)},
     "best": {'fmt':"k:"}        # only fmt allowed
@@ -161,8 +161,8 @@ def plot_speedups(plt, w, h, benchs, interps_styles):
             if interp not in legend:
                 legend[interp] = artist
 
-        legend["best"], = ax.plot(ts, [best_y] * len(ts),
-                                  interps_styles["best"]['fmt'])
+        # legend["best"], = ax.plot(ts, [best_y] * len(ts),
+        #                           interps_styles["best"]['fmt'])
 
         if i // w == h-1:
             ax.set_xlim(0, 5)
@@ -174,7 +174,7 @@ def plot_speedups(plt, w, h, benchs, interps_styles):
 
     return axs[w*(h-1)].legend(tuple(legend.values()), tuple(legend.keys()),
                                ncol=4,
-                               loc=(0,-0.4))
+                               loc=(-0.15,-0.5))
 
 
 def main():
