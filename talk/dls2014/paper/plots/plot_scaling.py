@@ -40,9 +40,9 @@ def plot_mems(ax):
 
     print y
     ax.errorbar(xs, y, yerr=yerr,
-                label="STM")
+                label="pypy-stm-nojit")
     ax.plot(xs, opt_y, label="optimal")
-    return ax.legend(loc=4)
+    return ax.legend(loc=0)
 
 
 def main():
@@ -55,7 +55,7 @@ def main():
 
     ax.set_ylabel("Runtime normalized to 1 thread")
     ax.set_xlabel("Threads")
-    ax.set_ylim(0, 1.5)
+    ax.set_ylim(0.9, 1.3)
     ax.set_xlim(0, 5)
 
     legend = plot_mems(ax)
@@ -87,7 +87,7 @@ def main():
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Plot stm log files')
-    parser.add_argument('--figure-size', default='6x4',
+    parser.add_argument('--figure-size', default='6x3',
                         help='set figure size in inches: format=6x4')
     parser.add_argument('--font-size', default='10.0',
                         help='set font size in pts: 10.0')

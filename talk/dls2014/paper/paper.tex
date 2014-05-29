@@ -966,7 +966,7 @@ performance benchmarks in section \ref{sec:performance-bench} is better
 because we can minimise non-determinism. We also do not want to depend
 on the capabilities of the JIT in these experiments.
 
-We performed all benchmarks on a machine with a Intel Core i7-4770
+We performed all benchmarks on a machine with an Intel Core i7-4770
 CPU~@3.40GHz (4 cores, 8 threads).  There are 16~GiB of memory
 available and we ran them under Ubuntu 14.04 with a Linux 3.13.0
 kernel. The STM system was compiled with a number of segments $N=4$
@@ -1002,6 +1002,13 @@ amount of memory required by old objects multiplied by $N+1$
 (incl. the sharing segment). During major collections we re-share the
 pages if possible.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\columnwidth]{plots/richards_mem.pdf}
+  \caption{Actual memory managed by the GC and the page privatisation
+    over time in Richards benchmark\label{fig:richards_mem}}
+\end{figure}
+
 In figure \ref{fig:richards_mem} we look at the memory usage of one of
 our benchmarks called Richards\footnote{OS kernel simulation
 benchmark}. The \emph{GC managed memory} counts all memory used in the
@@ -1034,17 +1041,10 @@ way. Additionally, since normal PyPy uses a GIL, it does not need to
 duplicate any data structures like e.g. the Nursery for each
 thread. This, the missing optimisation, and the additional memory
 requirements for STM explained above account for this difference.
-We expect to improve this aspect in the future, in this paper we
+We expect to improve this aspect in the future; in this paper we
 want to focus first on performance.
 \remi{I don't know how much sense it makes to go deeper. We will
 improve this in the future, but right now this is the overall picture.}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=1\columnwidth]{plots/richards_mem.pdf}
-  \caption{Actual memory managed by the GC and the page privatisation
-    over time in Richards benchmark\label{fig:richards_mem}}
-\end{figure}
 
 
 
@@ -1065,7 +1065,8 @@ improve this in the future, but right now this is the overall picture.}
 \subsection{Scaling}
 
 To asses how well the STM system scales on its own (without any real
-workload), we execute the following loop on 1 to 4 threads:
+workload), we execute the following loop on 1 to 4 threads on our
+Python interpreter with STM:
 \begin{lstlisting}
 def workload():
     i = 20000000
@@ -1073,11 +1074,13 @@ def workload():
         i -= 1
 \end{lstlisting}
 
-For the results in figure \ref{fig:scaling}, we averaged
-over 5 runs and normalised the average runtimes to the
-time it took on a single thread. From this we see that there
-is additional overhead introduced by each thread ($13\%$
-for all 4 threads together).
+For the results in figure \ref{fig:scaling}, we averaged over 5 runs
+and normalised the average runtimes to the time it took on a single
+thread. From this we see that there is additional overhead introduced
+by each thread (\remi{$13\%$} for all 4 threads together). While this
+is not ideal, we think that \remi{$13\%$} are acceptable on four
+threads. In terms of throughput, 4 threads have \remi{$3.53\times$}
+more iterations per second than a single thread.
 
 \remi{what we don't show is by how much this overhead is influenced
 by allocations}
