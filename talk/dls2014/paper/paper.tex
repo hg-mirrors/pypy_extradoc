@@ -167,7 +167,7 @@ blocks}~\cite{tim03,tim05}, we give dynamic languages a new
 synchronisation mechanism that avoids several of the problems of locks
 as they are used now.
 
-TM systems come in can be broadly categorised as hardware based (HTM),
+TM systems come in\arigo{typo?} can be broadly categorised as hardware based (HTM),
 software based (STM), or hybrid systems (HyTM). HTM systems are limited
 by hardware constraints~\cite{odaira14,fuad10}, while STM systems have
 a lot of overhead~\cite{cascaval08,drago11}. In \cite{wayforward14},
@@ -184,8 +184,8 @@ Our contributions include:
   that performs well even on low numbers of CPUs. It uses a novel
   combination of long-existing CPU features and garbage collector (GC)
   integration in order to keep the overhead of STM very low.
-\item This new STM system is used to replace the GIL in Python and is
-  then evaluated extensively.
+\item This new STM system is used to replace the GIL in one implementation
+  of Python and is then evaluated extensively.
 \item We introduce atomic blocks to the Python language to provide a
   backwards compatible, composable synchronisation mechanism for
   threads.
@@ -445,9 +445,8 @@ translated to different linear addresses in different threads by the
 CPU. Then, depending on the current mapping of virtual pages to file
 pages, these LAs can map to a single file page in the sharing-segment,
 or to privatised file pages in the corresponding segments. This
-mapping is also performed efficiently by CPUs that have a Memory
-Management Unit (MMU) and can easily be done on every access to an
-object.
+mapping is cost-free: it is part of the normal operations done by the
+Memory Management Unit (MMU) of the CPU on every memory access.
 
 In summary, $\%gs{::}SO$ is translated efficiently by the CPU to
 either a physical memory location which is shared between several
@@ -469,15 +468,18 @@ memory efficient again.
 
 We now use these mechanisms to provide isolation for transactions.
 Using write barriers, we implement a \emph{Copy-On-Write (COW)} on the
-level of pages. Starting from the initial fully-shared configuration
+level of pages~\footnote{Conflict detection still occurs on the level
+of objects.}. Starting from the initial fully-shared configuration
 (figure \ref{fig:Page-Remapping}, (II)), when we need to modify an
 object without other threads seeing the changes immediately, we ensure
 that all pages belonging to the object are private to our segment.
 
-To detect when to privatise pages, we use write barriers before every
-write to an object. When the barrier detects that the object is not in
-a private page (or any pages that belong to the object), we remap and
-copy the pages to the thread's segment. From now on, the translation
+More precisely, this is done by a write barrier that detects that we are
+about to write to an old (pre-transaction) object that we did not record
+in the write-set yet.  When this occurs, the slow-path of the write barrier
+will also check if the page (or pages) containing the object is still
+shared, and if so, privatise it.  This is done by remapping and copying
+the page to the thread's own segment. From now on, the translation
 of $\%gs{::}SO$ in this particular thread will resolve to a private
 version of the object automatically. Note that the $SO$ used to reference
 the object does not change during that process.
