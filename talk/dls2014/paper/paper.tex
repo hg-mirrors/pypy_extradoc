@@ -291,7 +291,7 @@ the GIL works, what properties it has, and how it is implemented.
 In this section, we characterise the model of our TM system and its
 guarantees as well as some of the design choices we made. This should
 clarify the general semantics in commonly used terms from the
-literature.\remi{cite Transactional Memory 2nd edition}
+literature~\cite{harris10}.
 
 Our TM system is fully implemented in software. However, we do exploit
 some more advanced features of current CPUs, particularly \emph{memory
@@ -328,14 +328,14 @@ As required for TM systems, we guarantee complete \emph{isolation} and
 \emph{atomicity} for transactions at all times. Our method of choice
 is \emph{lazy version management}. Modifications by a transaction are
 not visible to another transaction before the former commits.
-Furthermore, the isolation provides full \emph{opacity} to always
-guarantee a consistent read set even for non-committed transactions.
-\remi{cite On the Correctness of Transactional Memory}
+Furthermore, the isolation provides full
+\emph{opacity}~\cite{guerraoui08} to always guarantee a consistent
+read set even for non-committed transactions.
 
 To also support these properties for irreversible operations that
 cannot be undone when we abort a transaction (e.g. I/O, syscalls, and
 non-transactional code in general), we use \emph{irrevocable} or
-\emph{inevitable transactions}. These transactions are always
+\emph{inevitable transactions}~\cite{blundell06,spear08}. These transactions are always
 guaranteed to commit, which is why they always have to win in case
 there is a conflict with another, normal transaction. There is always
 at most one such transaction running in the system, thus their
@@ -373,7 +373,7 @@ private version of an object in all threads~/ segments. To then
 translate this $SO$ to a real virtual memory address when used inside a
 thread, we need to add the thread's segment start address to the
 $SO$. The result of this operation is called a \emph{Linear Address
-  (LA)}. This is illustrated in Figure \ref{fig:Segment-Addressing}.
+  (LA)}. This is illustrated in figure \ref{fig:Segment-Addressing}.
 
 x86-CPUs provide a feature called \emph{memory segmentation}. It
 performs this translation from a $SO$ to a LA directly in hardware.  We
@@ -404,7 +404,7 @@ propagated to all segments.
 In order to eliminate the prohibitive memory requirements of keeping
 around $N$ segment copies, we share memory between them. The segments
 are initially allocated in a single range of virtual memory by a call
-to \lstinline!mmap()!.  As illustrated in Figure
+to \lstinline!mmap()!.  As illustrated in figure
 \ref{fig:mmap()-Page-Mapping}, \lstinline!mmap()! creates a mapping
 between a range of virtual memory pages and virtual file pages. The
 virtual file pages are then mapped lazily by the kernel to real
@@ -423,7 +423,7 @@ require one page of physical memory for all of them.
 \end{figure}
 
 
-As illustrated in Figure \ref{fig:Page-Remapping}, in our initial
+As illustrated in figure \ref{fig:Page-Remapping}, in our initial
 configuration (I) all segments are backed by their own range of
 virtual file pages. This is the share-nothing configuration where
 all threads have private versions of all objects.
@@ -470,7 +470,7 @@ memory efficient again.
 We now use these mechanisms to provide isolation for transactions.
 Using write barriers, we implement a \emph{Copy-On-Write (COW)} on the
 level of pages. Starting from the initial fully-shared configuration
-(Figure \ref{fig:Page-Remapping}, (II)), when we need to modify an
+(figure \ref{fig:Page-Remapping}, (II)), when we need to modify an
 object without other threads seeing the changes immediately, we ensure
 that all pages belonging to the object are private to our segment.
 
@@ -538,7 +538,6 @@ transaction without a trace, like it never happened.
   resetting should be faster than re-sharing.
 \end{description}
 
-\cfbolz{random question: did we investigate the extra memory requirements? we should characterise memory overhead somewhere, eg at least one byte per object for the read markers}
 
 \subsubsection{Summary}
 
@@ -600,7 +599,7 @@ allocates a new object with the specified size.
 and pop objects on the shadow stack~\footnote{A stack for pointers to
   GC objects that allows for precise garbage collection. All objects
   on that stack are never seen as garbage and are thus always kept
-  alive.}.  Objects have to be saved using this stack around calls
+  alive.~\cite{fergus02}}.  Objects have to be saved using this stack around calls
 that may cause a GC cycle to happen, and also while there is no
 transaction running. In this simplified API, only
 \lstinline!stm_allocate()!  and \lstinline!stm_commit_transaction()!
@@ -627,7 +626,7 @@ of segments $>0$ map to the pages of the sharing-segment.
 
 However, the layout of a segment is not uniform and we actually
 privatise a few areas again right away. These areas are illustrated in
-Figure \ref{fig:Segment-Layout} and explained here:
+figure \ref{fig:Segment-Layout} and explained here:
 \begin{description}[noitemsep]
 \item [{NULL~page:}] This page is unmapped and will produce a
   segmentation violation when accessed. We use this to detect
@@ -714,14 +713,13 @@ we optimistically re-share pages that do not need to be private
 anymore.
 
 As seen in the API (section~\ref{sub:Application-Programming-Interfac}),
-we use a \emph{shadow stack} in order to provide precise garbage
+we use a \emph{shadow stack}~\cite{fergus02} in order to provide precise garbage
 collection.  Any time we call a function that possibly triggers a
 collection, we need to save the objects that we need afterwards on the
 shadow stack using \lstinline!STM_PUSH_ROOT()!.  That way, they will
 not be freed. And in case they were young, we get their new location
 in the old object space when getting them back from the stack using
-\lstinline!STM_POP_ROOT()!. \remi{cite something which explains
-shadowstacks in more detail}
+\lstinline!STM_POP_ROOT()!.
 
 
 
@@ -930,7 +928,7 @@ the problem as well as we can. The general rules are:
 \begin{itemize}[noitemsep]
 \item prefer transactions that started earlier to younger transactions
 \item to support \emph{inevitable} transactions, we always prefer them
-  to others since they cannot abort
+  to others since they cannot abort (similar to \cite{blundell06})
 \end{itemize}
 We can either simply abort a transaction to let the other one succeed,
 or we can also wait until the other transaction committed. The latter
@@ -1151,9 +1149,10 @@ are shown in figure \ref{fig:performance-nojit}.
 
 As expected, all interpreters with a GIL do not scale with the number
 of threads. They even become slower because of the overhead of
-thread-switching and GIL handling. We also see Jython scale when we
-expect it to (mandelbrot, raytrace, richards), and behave similar to
-the GIL interpreters in the other cases.
+thread-switching and GIL handling (see \cite{beazley10} for a detailed
+analysis). We also see Jython scale when we expect it to (mandelbrot,
+raytrace, richards), and behave similar to the GIL interpreters in the
+other cases.
 
 PyPy using our STM system (pypy-stm-nojit) scales in all benchmarks to
 a certain degree. We see that the average overhead from switching from
@@ -1206,6 +1205,27 @@ future.
 
 \section{Related Work}
 
+Eliminate GIL:
+\begin{itemize}
+\item Previous attempts with HTM: \cite{nicholas06,odaira14,fuad10}
+\item Previous attempts with STM: \cite{stmupdate13}
+\end{itemize}
+
+Similar STMs:
+\begin{itemize}
+\item FastLane: \cite{warmhoff13}
+\item TML: \cite{spear09}
+\item Virtualizing HTM: \cite{rajwar05}
+\item Page-based virtualizing HyTM: \cite{chung06} (XTM can be
+  implemented either in the OS as part of the virtual memory manager or
+  between underlying TM systems and the OS, like virtual machines;
+  Conflicts for overflowed transactions are tracked at page granularity;
+  XTM-e allows conflict detection at cache line granu-
+  larity, even for overflowed data in virtual memory)
+\item using mmap(): Memory-Mapped Transactions
+\item mem-protected conflict detection: \cite{martin09}
+\end{itemize}
+
 
 \section{Conclusions}
 
@@ -1246,6 +1266,47 @@ future.
 \bibitem{cpython} CPython. \url{www.python.org}
 \bibitem{webjython} The Jython Project, \url{www.jython.org}
 \bibitem{ironpython} IronPython. \url{www.ironpython.net}
+
+\bibitem{beazley10} Beazley, David. "Understanding the python gil."
+  \emph{PyCON Python Conference}. Atlanta, Georgia. 2010.
+
+\bibitem{harris10} Harris, Tim, James Larus, and Ravi
+  Rajwar. "Transactional memory." \emph{Synthesis Lectures on Computer
+  Architecture 5.1} (2010): 1-263.
+
+\bibitem{guerraoui08} Guerraoui, Rachid, and Michal Kapalka. "On the
+  correctness of transactional memory." \emph{Proceedings of the 13th
+    ACM SIGPLAN Symposium on Principles and practice of parallel
+    programming.} ACM, 2008.
+
+\bibitem{blundell06} Blundell, Colin, E. Christopher Lewis, and Milo
+  Martin. "Unrestricted transactional memory: Supporting I/O and system
+  calls within transactions." (2006).
+\bibitem{spear08} Spear, Michael F., et al. "Implementing and
+  exploiting inevitability in software transactional memory."
+  \emph{Parallel Processing, 2008}. ICPP'08. 37th International
+  Conference on. IEEE, 2008.
+
+\bibitem{fergus02} Fergus Henderson. 2002. Accurate garbage collection
+  in an uncooperative environment. \emph{In Proceedings of the 3rd
+    international symposium on Memory management} (ISMM '02).
+
+\bibitem{stmupdate13} Armin Rigo, Remigius Meier. Update on
+  STM. \url{morepypy.blogspot.ch/2013/10/update-on-stm.html}
+
+\bibitem{rajwar05} Rajwar, Ravi, Maurice Herlihy, and Konrad
+  Lai. "Virtualizing transactional memory." \emph{Computer
+    Architecture}, 2005. ISCA'05. Proceedings. 32nd International
+  Symposium on. IEEE, 2005.
+
+\bibitem{chung06} Chung, JaeWoong, et al. "Tradeoffs in transactional
+  memory virtualization." \emph{ACM SIGARCH Computer Architecture
+  News}. Vol. 34. No. 5. ACM, 2006.
+
+\bibitem{martin09} Martín Abadi, Tim Harris, and Mojtaba
+  Mehrara. 2009. Transactional memory with strong atomicity using
+  off-the-shelf memory protection hardware. SIGPLAN Not. 44, 4 (February
+  2009), 185-196.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
