@@ -154,8 +154,7 @@ in-between such instructions, it provides perfect isolation and
 atomicity between multiple threads for a series of
 instructions. Additionally, it provides the application with a
 sequential consistency model~\cite{lamport79}. Another technology that
-can provide the same guarantees is transactional memory
-(TM). \remi{cite our position paper}
+can provide the same guarantees is transactional memory (TM).
 
 There have been several attempts at replacing the GIL with
 TM~\cite{nicholas06,odaira14,fuad10}. Using transactions to enclose
@@ -167,7 +166,7 @@ blocks}~\cite{tim03,tim05}, we give dynamic languages a new
 synchronisation mechanism that avoids several of the problems of locks
 as they are used now.
 
-TM systems come in\arigo{typo?} can be broadly categorised as hardware based (HTM),
+TM systems can be broadly categorised as hardware based (HTM),
 software based (STM), or hybrid systems (HyTM). HTM systems are limited
 by hardware constraints~\cite{odaira14,fuad10}, while STM systems have
 a lot of overhead~\cite{cascaval08,drago11}. In \cite{wayforward14},
@@ -466,16 +465,16 @@ memory efficient again.
 
 \subsubsection{Isolation: Copy-On-Write}
 
-We now use these mechanisms to provide isolation for transactions.
-Using write barriers, we implement a \emph{Copy-On-Write (COW)} on the
-level of pages~\footnote{Conflict detection still occurs on the level
-of objects.}. Starting from the initial fully-shared configuration
+We now use these mechanisms to provide isolation for transactions.  We
+implement a \emph{Copy-On-Write (COW)} on the level of
+pages~\footnote{Conflict detection still occurs on the level of
+objects.}. Starting from the initial fully-shared configuration
 (figure \ref{fig:Page-Remapping}, (II)), when we need to modify an
 object without other threads seeing the changes immediately, we ensure
 that all pages belonging to the object are private to our segment.
 
-More precisely, this is done by a write barrier that detects that we are
-about to write to an old (pre-transaction) object that we did not record
+More precisely, this is done with a write barrier that detects that we are
+about to write to an object that we did not record
 in the write-set yet.  When this occurs, the slow-path of the write barrier
 will also check if the page (or pages) containing the object is still
 shared, and if so, privatise it.  This is done by remapping and copying
@@ -1130,8 +1129,11 @@ locking for the last three. This is important because Jython, which
 uses fine-grained locking instead of a GIL, is only expected to scale
 with the number of threads for the latter group. It is not able to
 scale when using coarse-grained locking. STM, however, uses atomic
-blocks instead, so it may still be able to scale since they are
-implemented as simple transactions.
+blocks instead of a single lock to synchronise accesses to the
+shared data structures. Since atomic blocks map to transactions,
+our STM system may still be able to get a speedup on more than one
+thread by running transactions in parallel.
+
 
 % To isolate factors we look at performance w/o JIT and perf w JIT.
 % w/o JIT:
@@ -1152,18 +1154,27 @@ are shown in figure \ref{fig:performance-nojit}.
 As expected, all interpreters with a GIL do not scale with the number
 of threads. They even become slower because of the overhead of
 thread-switching and GIL handling (see \cite{beazley10} for a detailed
-analysis). We also see Jython scale when we expect it to (mandelbrot,
-raytrace, richards), and behave similar to the GIL interpreters in the
-other cases.
+analysis). We also see Jython scale when we expect it to (\emph{mandelbrot,
+raytrace, richards}), and behave similar to the GIL interpreters in the
+other cases. The reason again being the coarse grained locking.
 
-PyPy using our STM system (pypy-stm-nojit) scales in all benchmarks to
-a certain degree. We see that the average overhead from switching from
-GIL to STM is \remi{$35.5\%$}, the maximum in richards is
-\remi{$63\%$}. pypy-stm-nojit beats pypy-nojit already on two threads;
+PyPy using our STM system (\emph{pypy-stm-nojit}) scales in all
+benchmarks to a certain degree. It scales best in the ones where
+Jython scales as well and a little less in the others. The reason
+for that is that in the former group there are no real, logical
+conflicts -- all threads do independent calculations. In the latter
+case, the threads work on a common data structure and therefore
+create much more conflicts, which limits the scalability.
+
+Looking at the average overhead from switching from GIL to STM, we see
+that it is \remi{$\approx 35.5\%$}. The maximum in richards is
+\remi{$63\%$}.
+
+\emph{pypy-stm-nojit} beats \emph{pypy-nojit} already on two threads;
 however, it never even beats CPython, the reference implementation of
 Python. This means that without the JIT, our performance is not
-competitive. We now look at how well our system works when we enable
-the JIT.
+competitive. So we will now look at how well our system works when we
+enable the JIT.
 
 \begin{figure}[h]
   \centering
@@ -1180,15 +1191,23 @@ the input size of all benchmarks to get reasonable execution times.
 
 The results are presented in figure \ref{fig:performance-nojit}. We
 see that the performance is much less stable. There is certainly more
-work required in this area. In general, we see that the group of
-non-locked benchmarks certainly scales best. The other three scale
-barely or not at all with the number of threads. The slowdown factor
-from GIL to STM ranges around \remi{$1-2.4\times$} and we beat GIL
-performance in half of the benchmarks.
+work required in this area. The slowdown factor for switching from GIL
+to STM ranges around \remi{$1-2.4\times$}, and we beat GIL performance
+in half of the benchmarks.
 
-\remi{Reason for bad scaling: acceleration of code that produces
-conflicts $-->$ more iterations $-->$ more conflicts. The overhead
-doesn't get accelerated by the JIT.}
+We see that generally, the group of non-locked benchmarks scales
+best. The other three scale barely or not at all with the number of
+threads. The reason for this is likely again the conflicts in the
+latter group. Since the JIT accelerates all code but not the STM
+overhead, we do more work per transaction. And this increases the
+likelihood of conflicts between them and therefore limits scalability
+even more than in the no-JIT benchmarks.
+
+Overall PyPy needs the JIT in order for its performance to be
+competitive. It would be interesting to see how using our STM system
+in CPython would turn out, but it is a lot of work. On its own, our
+system scales well, so we hope to also see that with the JIT in the
+future.
 
 
 \begin{figure}[h]
@@ -1196,13 +1215,6 @@ doesn't get accelerated by the JIT.}
   \includegraphics[width=1\columnwidth]{plots/performance.pdf}
   \caption{Comparing runtime between interpreters with JIT\label{fig:performance-jit}}
 \end{figure}
-
-
-Overall PyPy needs the JIT in order for its performance to be
-competitive.  It would be interesting to see how using our STM system
-in CPython would perform, but it is a lot of work. On its own, our
-system scales well so we hope to also see that with the JIT in the
-future.
 
 
 \section{Related Work}
@@ -1218,7 +1230,13 @@ Similar STMs:
 \item FastLane: \cite{warmhoff13}
 \item TML: \cite{spear09}
 \item Virtualizing HTM: \cite{rajwar05}
-\item Page-based virtualizing HyTM: \cite{chung06} (XTM can be
+\item Page-based virtualizing HyTM: \cite{chung06}: page-level conflict
+  detection, otherwise hardware extensions required; assumes most
+  transactions fit HTM capacities (not so true here); COW using page-faults;
+  they assume OS-level access to page-tables (maybe not inherent to their
+  design); eval on simulator; value-based confl detection;
+
+ (XTM can be
   implemented either in the OS as part of the virtual memory manager or
   between underlying TM systems and the OS, like virtual machines;
   Conflicts for overflowed transactions are tracked at page granularity;
