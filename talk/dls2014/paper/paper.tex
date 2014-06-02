@@ -139,7 +139,8 @@
 Dynamic languages like Python, PHP, Ruby, and JavaScript are usually
 regarded as very expressive but also very slow. In recent years, the
 introduction of just-in-time compilers (JIT) for these languages (e.g.
-PyPy, V8, Tracemonkey) started to change this perception by delivering
+PyPy~\cite{cfbolz09}, V8~\cite{kevin10}, IonMonkey~\cite{ionmonkey})
+started to change this perception by delivering
 good performance that enables new applications. However, a parallel
 programming model was not part of the design of those languages. Thus,
 the reference implementations of e.g. Python and Ruby use a single,
@@ -151,22 +152,29 @@ provides some useful guarantees. Since this lock is always acquired
 while executing bytecode instructions and it may only be released
 in-between such instructions, it provides perfect isolation and
 atomicity between multiple threads for a series of
-instructions. Another technology that can provide the same guarantees
-is transactional memory (TM). \remi{cite our position paper}
+instructions. Additionally, it provides the application with a
+sequential consistency model~\cite{lamport79}. Another technology that
+can provide the same guarantees is transactional memory
+(TM). \remi{cite our position paper}
 
-There have been several attempts at replacing the GIL with TM. Using
-transactions to enclose multiple bytecode instructions, we can get the
-very same semantics as the GIL while possibly executing several
-transactions in parallel. Furthermore, by exposing these
-interpreter-level transactions to the application in the form of
-\emph{atomic blocks}, we give dynamic languages a new synchronisation
-mechanism that avoids several of the problems of locks as they are
-used now.
+There have been several attempts at replacing the GIL with
+TM~\cite{nicholas06,odaira14,fuad10}. Using transactions to enclose
+multiple bytecode instructions, we can get the very same semantics as
+the GIL while possibly executing several transactions in
+parallel. Furthermore, by exposing these interpreter-level
+transactions to the application in the form of \emph{atomic
+blocks}~\cite{tim03,tim05}, we give dynamic languages a new
+synchronisation mechanism that avoids several of the problems of locks
+as they are used now.
 
-\remi{cite and extract from (our pos. paper):}
 TM systems come in can be broadly categorised as hardware based (HTM),
 software based (STM), or hybrid systems (HyTM). HTM systems are limited
-by hardware constraints, while STM systems have a lot of overhead.
+by hardware constraints~\cite{odaira14,fuad10}, while STM systems have
+a lot of overhead~\cite{cascaval08,drago11}. In \cite{wayforward14},
+we argue that STM is still the best way forward, especially since it
+supports large atomic blocks as a new way for synchronising multiple
+threads. There have been several attempts at lowering the overhead
+of STM~\cite{warmhoff13,spear09} - sometimes at the cost of scalability.
 In this paper, we describe how we manage to lower the overhead of our
 STM system so that it can be seen as a viable replacement for the GIL.
 
@@ -174,9 +182,7 @@ Our contributions include:
 \begin{itemize}[noitemsep]
 \item We introduce a new software transactional memory (STM) system
   that performs well even on low numbers of CPUs. It uses a novel
-  combination of hardware features\arigo{"OS-level feature" maybe.
-  "Hardware feature" implies it only works on custom chips}
-  and garbage collector (GC)
+  combination of long-existing CPU features and garbage collector (GC)
   integration in order to keep the overhead of STM very low.
 \item This new STM system is used to replace the GIL in Python and is
   then evaluated extensively.
@@ -189,36 +195,46 @@ Our contributions include:
 
 \section{Background}
 
+\subsection{Global Interpreter Lock}
+
+The GIL is a very simple synchronisation mechanism for supporting
+multithreading in an interpreter. The basic guarantee is that the GIL
+may only be released in between bytecode instructions. Thus, these
+instructions are always executed atomically and in complete isolation
+from others running in other threads. \emph{Atomicity} means that each
+instruction and its effects seem to happen at one, indivisible point
+in time. Other instructions never see inconsistent state of a
+partially executed instruction (\emph{isolation}).
+
+In addition to these guarantees, instructions are executed in a
+sequential consistency model~\cite{lamport79}. This means that
+the outcome of any execution of instructions in multiple threads is
+equal to \emph{some} sequential execution of them.
+
 
 \subsection{Transactional Memory}
 
 Transactional memory (TM) is a concurrency control mechanism that
 comes from database systems. Using transactions, we can group a series
 of instructions performing operations on memory and make them happen
-atomically and in complete isolation from other
-transactions. \emph{Atomicity} means that all these instructions in
-the transaction and their effects seem to happen at one, indivisible
-point in time. Other transactions never see inconsistent state of a
-partially executed transaction which is called \emph{isolation}.
+atomically and in complete isolation from other transactions.
+Atomicity and isolation are basic properties of transactions.
 
 If we start multiple such transactions in multiple threads, the TM
 system guarantees that the outcome of running the transactions is
 \emph{serialisable}. Meaning, the outcome is equal to some sequential
-execution of these transactions. This means that the approach provides the same
-semantics as using the GIL
-while still allowing the TM system to
-run transactions in parallel as an optimisation.
-\remi{maybe some more explanation of how exactly TM replaces the GIL}
+execution of these transactions. By that, we can again provide a
+sequentially consistent model for programming in multiple threads. We
+can therefore use TM to directly replace the GIL. Instead of releasing
+and acquiring the GIL between bytecode instructions, we commit and
+start the transactions our instructions are running in.
 
 \subsection{Python}
 
-\cfbolz{a pypy introduction needs to go somewhere, a paragraph or so. maybe in the evaluation section}
-
-We implement and evaluate our system for the Python language. For the
-actual implementation, we chose the PyPy interpreter because replacing
-the GIL there with a TM system is just a matter of adding a new
-transformation to the translation process of the interpreter.
-
+We implement and evaluate our system for the Python language. Python
+is a dynamic programming language that was designed with GIL semantics
+in mind. Its reference implementation, CPython~\cite{cpython}, uses a
+GIL to synchronise instructions in multiple threads.
 Over the years, Python added multiple ways to provide concurrency and
 parallelism to its applications. We want to highlight two of them,
 namely \emph{threading} and \emph{multiprocessing}.
@@ -240,36 +256,35 @@ and expensively.
 We focus on the \emph{threading} approach. This requires us to remove
 the GIL from our interpreter in order to run code in parallel on
 multiple threads. One approach to this is fine-grained locking instead
-of a single global lock. Jython and IronPython are implementations of
-this. It requires great care in order to avoid deadlocks, which is why
-we follow the TM approach that provides a \emph{direct} replacement
-for the GIL. It does not require careful placing of locks in the right
-spots. We will compare our work with Jython for evaluation.
+of a single global lock. Jython~\cite{webjython} and
+IronPython~\cite{ironpython} are implementations of this. It requires
+great care in order to avoid deadlocks, which is why we follow the TM
+approach that provides a \emph{direct} replacement for the GIL. It
+does not require careful placing of locks in the right spots. We will
+compare our work with Jython for evaluation.
 
 
 \subsection{Synchronisation}
 
-\cfbolz{citation again needed for the whole subsection}
-
-It is well known that using locks to synchronise multiple threads is
-hard. They are non-composable, have overhead, may deadlock, limit
-scalability, and overall add a lot of complexity. For a better
-parallel programming model for dynamic languages, we want to implement
-another, well-known synchronisation mechanism: \emph{atomic blocks}.
+In Python, since the GIL is not directly exposed to the interpreter,
+applications still need to synchronise memory accesses from multiple
+threads using locks. Locks can be very hard to get
+right~\cite{christopher10,victor11,shan08}.  They are non-composable,
+have overhead, may deadlock, limit scalability, and add to the overall
+complexity of the program logic. We think that \emph{atomic
+blocks}~\cite{tim03,tim05} provide a better way for synchronisation.
 
 Atomic blocks are composable, deadlock-free, higher-level and expose
 useful atomicity and isolation guarantees to the application for a
-series of instructions. An implementation using a GIL would simply
-guarantee that the GIL is not released during the execution of the
-atomic block. Using TM, we have the same effect by guaranteeing that
-all instructions in an atomic block are executed inside a single
-transaction.
-
-
-\remi{STM, how atomicity \& isolation; reasons for overhead}
+series of instructions. This is why we think that the introduction
+of atomic blocks to Python is a valuable contribution. Since atomicity
+is a property of transactions, TM and atomic blocks are a natural fit.
 
 
 \section{Method}
+
+We now take a closer look at how our TM system that we use to replace
+the GIL works, what properties it has, and how it is implemented.
 
 \subsection{Transactional Memory Model}
 
@@ -1132,7 +1147,7 @@ implemented as simple transactions.
 \paragraph{Non-JIT benchmarks:} First we run our benchmarks on four
 different interpreters: Jython (fine-grained locking), CPython (GIL),
 and PyPy with STM and with the GIL (both without the JIT). The results
-are shown in \ref{fig:performance-nojit}.
+are shown in figure \ref{fig:performance-nojit}.
 
 As expected, all interpreters with a GIL do not scale with the number
 of threads. They even become slower because of the overhead of
@@ -1162,13 +1177,17 @@ without Jython and CPython here, since they would be much further up
 in the plots. Also, in order to get more stable results, we increased
 the input size of all benchmarks to get reasonable execution times.
 
-The results are shown in \ref{fig:performance-nojit}. We see that the
-performance is much less stable. There is certainly more work required
-in this area. In general, we see that the group of non-locked
-benchmarks certainly scales best. The other three scale barely or not
-at all with the number of threads. The slowdown factor from GIL to STM
-ranges around \remi{$1-2.4\times$} and we beat GIL performance in half
-of the benchmarks.
+The results are presented in figure \ref{fig:performance-nojit}. We
+see that the performance is much less stable. There is certainly more
+work required in this area. In general, we see that the group of
+non-locked benchmarks certainly scales best. The other three scale
+barely or not at all with the number of threads. The slowdown factor
+from GIL to STM ranges around \remi{$1-2.4\times$} and we beat GIL
+performance in half of the benchmarks.
+
+\remi{Reason for bad scaling: acceleration of code that produces
+conflicts $-->$ more iterations $-->$ more conflicts. The overhead
+doesn't get accelerated by the JIT.}
 
 
 \begin{figure}[h]
@@ -1208,14 +1227,34 @@ future.
 \begin{thebibliography}{}
 \softraggedright
 
+\bibitem{cfbolz09} Carl Friedrich Bolz, Antonio Cuni, Maciej
+  Fijalkowski, and Armin Rigo. 2009. Tracing the meta-level: PyPy's
+  tracing JIT compiler.  \emph{In Proceedings of the 4th workshop on the
+    Implementation, Compilation, Optimization of Object-Oriented Languages
+    and Programming Systems} (ICOOOLPS '09).
+
+\bibitem{kevin10} Kevin Millikin, Florian Schneider. 2010.  A New
+  Crankshaft for V8.
+  \url{http://blog.chromium.org/2010/12/new-crankshaft-for-v8.html}
+
+\bibitem{ionmonkey} IonMonkey from Mozilla. 2014.
+  \url{https://wiki.mozilla.org/IonMonkey/Overview}
+
+\bibitem{wayforward14} Remigius Meier, Armin Rigo. 2014. A Way Forward
+  in Parallelising Dynamic Languages. Under review in ICOOOLPS'14.
+
+\bibitem{cpython} CPython. \url{www.python.org}
+\bibitem{webjython} The Jython Project, \url{www.jython.org}
+\bibitem{ironpython} IronPython. \url{www.ironpython.net}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \bibitem{dan07}
   Dan Grossman. 2007. The transactional memory / garbage collection
   analogy. \emph{In Proceedings of the 22nd annual ACM SIGPLAN
     conference on Object-oriented programming systems and
     applications} (OOPSLA '07).
 
-\bibitem{webjython}
-  The Jython Project, \url{www.jython.org}
 
 \bibitem{odaira14}
   Odaira, Rei, Jose G. Castanos, and Hisanobu Tomari.  "Eliminating
