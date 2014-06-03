@@ -381,7 +381,7 @@ because most pages are shared with their copies in most other segments.
 \begin{figure}[h]
   \centering
   \includegraphics[width=1\columnwidth]{\string"page remapping\string".pdf}
-  \caption{Page Remapping: (I) after \texttt{mmap()}. (II) remap all pages to
+  \caption{Page Remapping: (I) initial setting. (II) remap all pages to
     segment~0, fully shared memory configuration. (III) privatise single
     pages.\label{fig:Page-Remapping}}
 \end{figure}
@@ -567,10 +567,11 @@ reference to the right version of the object.
 On startup, we reserve a big range of virtual memory with a call to
 \lstinline!mmap()! and partition this space into $N+1$ segments. We
 want to run $N$ threads in parallel while segment~0 is designated as
-the \emph{sharing-segment} that is never assigned to a thread.
+the \emph{sharing-segment} that is never assigned to a thread. The
+sharing-segment is essentially read-only except during commit.
 
 The next step involves using \lstinline!remap_file_pages()!, a Linux
-system call, to establish the fully-shared configuration.  All pages
+system call, to establish the \emph{fully-shared configuration}.  All pages
 of segments $>0$ map to the pages of the sharing-segment.
 
 However, the layout of a segment is not uniform and we actually
@@ -1288,7 +1289,7 @@ superficial similarities between our approach and theirs.
   \url{https://wiki.mozilla.org/IonMonkey/Overview}
 
 \bibitem{wayforward14} Remigius Meier, Armin Rigo. 2014. A Way Forward
-  in Parallelising Dynamic Languages. Under review in ICOOOLPS'14.
+  in Parallelising Dynamic Languages. ICOOOLPS'14.
 
 \bibitem{cpython} CPython. \url{www.python.org}
 \bibitem{webjython} The Jython Project, \url{www.jython.org}
