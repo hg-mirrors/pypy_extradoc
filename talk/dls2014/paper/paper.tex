@@ -1005,7 +1005,9 @@ pages if possible.
 In Figure~\ref{fig:richards_mem} we look at the memory usage of one of
 our benchmarks called Richards.\footnote{Richards is a OS kernel simulation
 benchmark.} The \emph{GC managed memory} counts all memory used in the
-old object space including the memory required for private pages. The
+old object space including the memory required for private pages. Note,
+it does not measure the memory required for the segment-private areas
+like the nursery and read markers. The
 sharp drops in memory usage come from major collections that free old
 objects and re-share pages. The average memory usage stays around
 29~MiB and we see that in this benchmark we have around 1 major
@@ -1334,7 +1336,7 @@ superficial similarities between our approach and theirs.
   in an uncooperative environment. \emph{In Proceedings of the 3rd
     international symposium on Memory management} (ISMM '02).
 
-\bibitem{stmupdate13} Armin Rigo, Remigius Meier. Update on
+\bibitem{stmupdate13} Armin Rigo, Remigius Meier. 2013. Update on
   STM. \url{morepypy.blogspot.ch/2013/10/update-on-stm.html}
 
 \bibitem{rajwar05} Rajwar, Ravi, Maurice Herlihy, and Konrad
