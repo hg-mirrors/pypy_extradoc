@@ -461,7 +461,7 @@ protocol in consequence.
   restriction.}  This slow path is also responsible for privatising
   pages,\footnote{The write set contains objects, not pages.} as
   described above.  Interestingly, we are using a generational garbage
-  collector (not described here) which requires a similar write barrier
+  collector (described below) which requires a similar write barrier
   anyway -- so the same header flag is used for both cases.  The flag
   means ``something needs to be done before writing to this object'',
   and the slow path logic determines what it is.
