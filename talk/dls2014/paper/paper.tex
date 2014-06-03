@@ -138,12 +138,12 @@
 
 Dynamic languages like Python, PHP, Ruby, and JavaScript are usually
 regarded as very expressive but also very slow. In recent years, the
-introduction of just-in-time compilers (JIT) for these languages (e.g.
-PyPy~\cite{cfbolz09}, V8~\cite{kevin10}, IonMonkey~\cite{ionmonkey})
+introduction of just-in-time compilers (JIT) for these languages
+(e.g.\ PyPy~\cite{cfbolz09}, V8~\cite{kevin10}, IonMonkey~\cite{ionmonkey})
 started to change this perception by delivering
 good performance that enables new applications. However, a parallel
 programming model was not part of the design of those languages. Thus,
-the reference implementations of e.g. Python and Ruby use a single,
+the reference implementations of e.g.\ Python and Ruby use a single,
 global interpreter lock (GIL) to serialise the execution of code in
 threads.
 
@@ -174,7 +174,7 @@ a lot of overhead~\cite{cascaval08,drago11}. In \cite{wayforward14},
 we argue that STM is still the best way forward, especially since it
 supports large atomic blocks as a new way for synchronising multiple
 threads. There have been several attempts at lowering the overhead
-of STM~\cite{warmhoff13,spear09} - sometimes at the cost of scalability.
+of STM~\cite{warmhoff13,spear09} -- sometimes at the cost of scalability.
 In this paper, we describe how we manage to lower the overhead of our
 STM system so that it can be seen as a viable replacement for the GIL.
 
@@ -333,7 +333,7 @@ Furthermore, the isolation provides full
 read set even for non-committed transactions.
 
 To also support these properties for irreversible operations that
-cannot be undone when we abort a transaction (e.g. I/O, syscalls, and
+cannot be undone when we abort a transaction (e.g.\ I/O, syscalls, and
 non-transactional code in general), we use \emph{irrevocable} or
 \emph{inevitable transactions}~\cite{blundell06,spear08}. These transactions are always
 guaranteed to commit, which is why they always have to win in case
@@ -572,7 +572,7 @@ dynamic language VMs as a replacement for the GIL.
 The library consists of two parts: (I) It provides a simple interface
 to starting and committing transactions, as well as the required read
 and write barriers. (II) It also includes a \emph{garbage collector
-(GC)} that is closely integrated with the TM part (e.g. it shares the
+(GC)} that is closely integrated with the TM part (e.g.\ it shares the
 write barrier). The close integration helps in order to know more
 about the lifetime of an object, as will be explained in the following
 sections.
@@ -629,7 +629,7 @@ of segments $>0$ map to the pages of the sharing-segment.
 
 However, the layout of a segment is not uniform and we actually
 privatise a few areas again right away. These areas are illustrated in
-figure \ref{fig:Segment-Layout} and explained here:
+figure~\ref{fig:Segment-Layout} and explained here:
 \begin{description}[noitemsep]
 \item [{NULL~page:}] This page is unmapped and will produce a
   segmentation violation when accessed. We use this to detect
@@ -739,7 +739,7 @@ barrier.
 To add the object to the read set, for us it is enough to mark it as
 read. Since this information needs to be local to the segment, we need
 to store it in private pages. The area is called \emph{read markers}
-and already mentioned in section \ref{sub:Setup}.
+and already mentioned in section~\ref{sub:Setup}.
 
 This area can be seen as a continuous array of bytes that is indexed
 from the start of the segment by an object's reference ($SO$) divided
@@ -864,7 +864,7 @@ the others are waiting in safe points. We then go through the write
 set (\lstinline!modified_old_objects!)  and check the corresponding
 \lstinline!read_markers!  in other threads~/ segments. If we detect a
 read-write conflict, we do contention management to either abort us or
-the other transaction, or to simply wait a bit (see \ref{subsub:contentionmanagement}).
+the other transaction, or to simply wait a bit (see~\ref{subsub:contentionmanagement}).
 
 After verifying that there are no conflicts anymore, we copy all our
 changes done to the objects in the write set to all other segments,
@@ -966,7 +966,7 @@ using a GIL and a PyPy with STM, as well as between other Python interpreters:
 
 Here, we will not go into detail about the integration of our STM
 system with PyPy's JIT. In fact, we will disable it for all benchmarks
-except those in section \ref{sec:performance-bench}. We would like to
+except those in section~\ref{sec:performance-bench}. We would like to
 regard it as a simple performance enhancement, but that is not what
 happens in reality. First, since the JIT is a tracing
 JIT\remi{explain?}  running in multiple threads, it may compile
@@ -978,7 +978,7 @@ not have enough time to optimise integration with STM so that the JIT
 exposes the overhead of STM more by speeding up all the rest.
 
 Overall, we believe that disabling it on all benchmarks except the
-performance benchmarks in section \ref{sec:performance-bench} is better
+performance benchmarks in section~\ref{sec:performance-bench} is better
 because we can minimise non-determinism. We also do not want to depend
 on the capabilities of the JIT in these experiments.
 
@@ -1005,7 +1005,7 @@ is in. We do this using flags and an overflow number. Both currently
 fit in a single additional header of 4~bytes per object.
 
 Second, there are areas in memory private to each segment (see
-section \ref{sub:Setup}). The Nursery for example is 4~MiB in
+section~\ref{sub:Setup}). The Nursery for example is 4~MiB in
 size. Additionally, the area used for the read markers is lazily
 mapped by the kernel and only needed for objects in the old object
 space. Thus, it can be at most the total size of memory used by
@@ -1025,7 +1025,7 @@ pages if possible.
     over time in Richards benchmark\label{fig:richards_mem}}
 \end{figure}
 
-In figure \ref{fig:richards_mem} we look at the memory usage of one of
+In figure~\ref{fig:richards_mem} we look at the memory usage of one of
 our benchmarks called Richards\footnote{OS kernel simulation
 benchmark}. The \emph{GC managed memory} counts all memory used in the
 old object space including the memory required for private pages. The
@@ -1054,7 +1054,7 @@ grows its memory up to just 7~MiB and does not do a single major
 collection in that time. Compared to normal PyPy, we are missing a
 memory optimisation to store small objects in a more compact
 way. Additionally, since normal PyPy uses a GIL, it does not need to
-duplicate any data structures like e.g. the Nursery for each
+duplicate any data structures like e.g.\ the Nursery for each
 thread. This, the missing optimisation, and the additional memory
 requirements for STM explained above account for this difference.
 We expect to improve this aspect in the future; in this paper we
@@ -1090,7 +1090,7 @@ def workload():
         i -= 1
 \end{lstlisting}
 
-For the results in figure \ref{fig:scaling}, we averaged over 5 runs
+For the results in figure~\ref{fig:scaling}, we averaged over 5 runs
 and normalised the average runtimes to the time it took on a single
 thread. From this we see that there is additional overhead introduced
 by each thread (\remi{$13\%$} for all 4 threads together). While this
@@ -1148,7 +1148,7 @@ implemented as simple transactions.
 \paragraph{Non-JIT benchmarks:} First we run our benchmarks on four
 different interpreters: Jython (fine-grained locking), CPython (GIL),
 and PyPy with STM and with the GIL (both without the JIT). The results
-are shown in figure \ref{fig:performance-nojit}.
+are shown in figure~\ref{fig:performance-nojit}.
 
 As expected, all interpreters with a GIL do not scale with the number
 of threads. They even become slower because of the overhead of
@@ -1179,7 +1179,7 @@ without Jython and CPython here, since they would be much further up
 in the plots. Also, in order to get more stable results, we increased
 the input size of all benchmarks to get reasonable execution times.
 
-The results are presented in figure \ref{fig:performance-nojit}. We
+The results are presented in figure~\ref{fig:performance-nojit}. We
 see that the performance is much less stable. There is certainly more
 work required in this area. In general, we see that the group of
 non-locked benchmarks certainly scales best. The other three scale
