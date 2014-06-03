@@ -169,7 +169,7 @@ as they are used now.
 TM systems can be broadly categorised as hardware based (HTM),
 software based (STM), or hybrid systems (HyTM). HTM systems are limited
 by hardware constraints~\cite{odaira14,fuad10}, while STM systems have
-a lot of overhead~\cite{cascaval08,drago11}. In \cite{wayforward14},
+a lot of overhead~\cite{cascaval08,drago11}. In~\cite{wayforward14},
 we argue that STM is still the best way forward, especially since it
 supports large atomic blocks as a new way for synchronising multiple
 threads. There have been several attempts at lowering the overhead
@@ -883,7 +883,7 @@ the problem as well as we can. The general rules are:
 \begin{itemize}[noitemsep]
 \item prefer transactions that started earlier to younger transactions
 \item to support \emph{inevitable} transactions, we always prefer them
-  to others since they cannot abort (similar to \cite{blundell06})
+  to others since they cannot abort (similar to~\cite{blundell06})
 \end{itemize}
 We can either simply abort a transaction to let the other one succeed,
 or we can also wait until the other transaction committed. The latter
@@ -920,7 +920,7 @@ Here, we will not go into detail about the integration of our STM
 system with PyPy's JIT. In fact, we will disable it for all benchmarks
 except those in Section~\ref{sec:performance-bench}. We would like to
 regard it as a simple performance enhancement, but that is not what
-happens in reality. First, since the JIT is a tracing JIT\cite{cfbolz09}
+happens in reality. First, since the JIT is a tracing JIT~\cite{cfbolz09}
 \remi{explain?}  running in multiple threads, it may compile
 different things in each run because of the non-deterministic
 thread-scheduling of the operating system (OS). Second, it is able to
@@ -1107,7 +1107,7 @@ are shown in Figure~\ref{fig:performance-nojit}.
 
 As expected, all interpreters with a GIL do not scale with the number
 of threads. They even become slower because of the overhead of
-thread-switching and GIL handling (see \cite{beazley10} for a detailed
+thread-switching and GIL handling (see~\cite{beazley10} for a detailed
 analysis). We also see Jython scale when we expect it to (\emph{mandelbrot,
 raytrace, richards}), and behave similar to the GIL interpreters in the
 other cases. The reason again being the coarse grained locking.
@@ -1181,7 +1181,7 @@ Since this could be considered the main operating conditions of
 dynamic languages, it was never as useful as we wanted it to be.
 
 Other attempts using HTM~\cite{nicholas06,odaira14,fuad10} show
-promising results, especially the very recent \cite{odaira14} that
+promising results, especially the very recent~\cite{odaira14} that
 examines the current generation of Intel CPUs. However, they did a
 simplification by essentially disabling the GC during the
 benchmarks. This may be valid for the hand-tuned allocations in their
@@ -1194,7 +1194,7 @@ us to believe that STM is the right choice at the moment.
 There are multiple attempts at removing the limits of HTM by means of
 \emph{virtualising} HTM~\cite{rajwar05,chung06}. Indeed this may also
 be the future direction of our research. So far, some of them depend
-on additional hardware features. Or in the case of \cite{chung06},
+on additional hardware features. Or in the case of~\cite{chung06},
 they have the assumption that most transactions fit the HTM capacity
 and that virtualisation is only a fallback. Our use case, however,
 features arbitrarily long transactions, which is why this assumption
