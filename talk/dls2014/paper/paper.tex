@@ -177,6 +177,8 @@ of STM~\cite{warmhoff13,spear09} -- sometimes at the cost of scalability.
 In this paper, we describe how we manage to lower the overhead of our
 STM system so that it can be seen as a viable replacement for the GIL.
 
+\cfbolz{both the introduction and the contributions need to stress the co-design of GC and STM}
+
 Our contributions include:
 \begin{itemize}[noitemsep]
 \item We introduce a new software transactional memory (STM) system
@@ -389,7 +391,7 @@ because most pages are shared with their copies in most other segments.
 
 When we need to store into our objects pointers to other objects, we
 need to be careful: if we were to directly store regular addresses valid
-in the local segment, then the objects' binary content would differ
+in the local segment, then the objects' binary content would have to differ
 between segments.  This would prevent any sharing.  Instead, we store
 pointers as \emph{Segment Offsets ($SO$)}, i.e.\ offsets from the start
 of the segment.  A $SO$ can then be interpreted from any segment by
@@ -491,7 +493,7 @@ succeeds, we copy the changes to modified objects so that they become
 visible in other segments.  Note that this only includes objects that
 existed before the transaction and have been modified by it.  It does
 not includes all the new objects created by the current transaction
-(there is typically a very high turn-around rate in dynamic languages).
+(there is typically a very high rate of object churn in dynamic languages).
 Our garbage collector allocates new objects in pages that are shared in
 the first place, so that they do not need to be copied -- and moreover,
 such objects will commonly never be modified any more.
@@ -553,8 +555,8 @@ transaction running. In this simplified API, only
 require saving object references.
 
 The type \lstinline!object_t!  is special as it causes the
-compiler\footnote{Clang 3.5 with some patches to fix bugs in its address-space
- 256 feature} to make all accesses through it relative to the $\%gs$
+compiler\footnote{We use Clang 3.5 with some patches to fix bugs in its address-space
+ 256 feature.} to make all accesses through it relative to the $\%gs$
 register.  With exceptions, nearly all accesses to objects managed by
 the TM system should use this type so that the CPU will translate the
 reference to the right version of the object.
@@ -650,6 +652,7 @@ unique to the current transaction. That way we can still detect in a
 medium-fast path inside barriers that the object still belongs to the
 current transaction. \remi{so this is where we mention how the GC-STM
 integration is useful. highlight more or move to own section?}
+\cfbolz{definitely its own section listing all the benefits}
 
 The \textbf{old generation}, where objects are considered to be
 \emph{old} and never move again, is collected by \emph{major
@@ -701,6 +704,8 @@ void stm_read(SO):
     *(SO >> 4) = read_version
 \end{lstlisting}
 
+\cfbolz{maybe it's worth explicitly pointing out here that this is one of the
+    few places where the \%gs translation must not be used}
 
 
 \subsection{Write Barrier}
@@ -717,13 +722,15 @@ was a minor collection which will add the flag again on all
 objects. It is never set on freshly allocated objects that still
 reside in the nursery.
 
+\cfbolz{is \%s translation used here? I guess yes, currently it's possible to misunderstand that}
+
 \begin{lstlisting}
 void stm_write(SO):
 	if SO->flags & WRITE_BARRIER:
 		write_slowpath(SO)
 \end{lstlisting}
 
-
+\cfbolz{put the slow path into a figure, if it straddles a page it's too hard figuring out indentation}
 The \textbf{slow path} is shown here:
 
 \begin{lstlisting}
@@ -779,6 +786,9 @@ object.  If we succeed in acquiring the lock using an atomic
 \lstinline!cmp_and_swap!, we need to add the object to the write set
 (a simple list called \lstinline!modified_old_objects!)  and privatise
 all pages belonging to it (copy-on-write).
+
+\cfbolz{at this point I kind of had the need for a diagram of the various
+states an object can be in, and the transitions between them.}
 
 In all cases, we remove the \lstinline!WRITE_BARRIER!  flag from the
 object before we return. Thus, we never trigger the slow path again
