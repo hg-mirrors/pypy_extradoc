@@ -415,6 +415,13 @@ before any CPU instruction that reads or writes memory using a $SO$
 address.  This is very efficient and some compilers support it natively
 (e.g.\ clang).
 
+If support for this is not available (due to the compiler or on a
+different architecture), there are other optimizations possible.  For
+example, using gcc, a regular register can be globally reserved and
+all ``simple enough'' memory accesses will still resolve to a single
+instruction.  More complicated accesses, e.g.\ those involving array
+indexing, will need an extra explicit addition.
+
 \begin{figure*}[t]
   \centering
   \includegraphics[scale=0.8]{\string"segment addressing\string".pdf}
