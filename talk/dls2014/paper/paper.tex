@@ -89,7 +89,7 @@
 \setlength{\pdfpageheight}{\paperheight}
 \setlength{\pdfpagewidth}{\paperwidth}
 
-\conferenceinfo{ICOOOLPS workshop 2014}{July 28th, 2014, Uppsala, Sweden}
+\conferenceinfo{DLS 2014}{to be supplied}
 \copyrightyear{2014}
 %\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \doi{nnnnnnn.nnnnnnn}
@@ -569,7 +569,7 @@ of segments $>0$ map to the pages of the sharing-segment.
 
 However, the layout of a segment is not uniform and we actually
 privatise a few areas again right away. These areas are illustrated in
-figure~\ref{fig:Segment-Layout} and explained here:
+Figure~\ref{fig:Segment-Layout} and explained here:
 \begin{description}[noitemsep]
 \item [{NULL~page:}] This page is unmapped and will produce a
   segmentation violation when accessed. We use this to detect
@@ -975,7 +975,7 @@ pages if possible.
     over time in Richards benchmark\label{fig:richards_mem}}
 \end{figure}
 
-In figure~\ref{fig:richards_mem} we look at the memory usage of one of
+In Figure~\ref{fig:richards_mem} we look at the memory usage of one of
 our benchmarks called Richards\footnote{OS kernel simulation
 benchmark}. The \emph{GC managed memory} counts all memory used in the
 old object space including the memory required for private pages. The
@@ -1040,7 +1040,7 @@ def workload():
         i -= 1
 \end{lstlisting}
 
-For the results in figure~\ref{fig:scaling}, we averaged over 5 runs
+For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
 and normalised the average runtimes to the time it took on a single
 thread. From this we see that there is additional overhead introduced
 by each thread (\remi{$13\%$} for all 4 threads together). While this
@@ -1101,7 +1101,7 @@ thread by running transactions in parallel.
 \paragraph{Non-JIT benchmarks:} First we run our benchmarks on four
 different interpreters: Jython (fine-grained locking), CPython (GIL),
 and PyPy with STM and with the GIL (both without the JIT). The results
-are shown in figure~\ref{fig:performance-nojit}.
+are shown in Figure~\ref{fig:performance-nojit}.
 
 As expected, all interpreters with a GIL do not scale with the number
 of threads. They even become slower because of the overhead of
@@ -1141,7 +1141,7 @@ without Jython and CPython here, since they would be much further up
 in the plots. Also, in order to get more stable results, we increased
 the input size of all benchmarks to get reasonable execution times.
 
-The results are presented in figure~\ref{fig:performance-nojit}. We
+The results are presented in Figure~\ref{fig:performance-nojit}. We
 see that the performance is much less stable. There is certainly more
 work required in this area. The slowdown factor for switching from GIL
 to STM ranges around \remi{$1-2.4\times$}, and we beat GIL performance
