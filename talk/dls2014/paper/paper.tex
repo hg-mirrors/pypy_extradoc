@@ -541,17 +541,17 @@ transaction. \lstinline!stm_read()!, \lstinline!stm_write()!  perform
 a read or a write barrier on an object and \lstinline!stm_allocate()!
 allocates a new object with the specified size.
  \lstinline!STM_PUSH_ROOT()!  and \lstinline!STM_POP_ROOT()!  push
-and pop objects on the shadow stack~\footnote{A stack for pointers to
+and pop objects on the shadow stack.\footnote{A stack for pointers to
   GC objects that allows for precise garbage collection. All objects
   on that stack are never seen as garbage and are thus always kept
-  alive.~\cite{fergus02}}.  Objects have to be saved using this stack around calls
+  alive.~\cite{fergus02}}  Objects have to be saved using this stack around calls
 that may cause a GC cycle to happen, and also while there is no
 transaction running. In this simplified API, only
 \lstinline!stm_allocate()!  and \lstinline!stm_commit_transaction()!
 require saving object references.
 
 The type \lstinline!object_t!  is special as it causes the
-compiler~\footnote{Clang 3.5 with some patches to its address-space
+compiler\footnote{Clang 3.5 with some patches to fix bugs in its address-space
  256 feature} to make all accesses through it relative to the $\%gs$
 register.  With exceptions, nearly all accesses to objects managed by
 the TM system should use this type so that the CPU will translate the
@@ -781,7 +781,7 @@ all pages belonging to it (copy-on-write).
 In all cases, we remove the \lstinline!WRITE_BARRIER!  flag from the
 object before we return. Thus, we never trigger the slow path again
 before we do the next minor collection or we start the next
-transaction~\footnote{We always do a minor collection during a commit.}.
+transaction.\footnote{We always do a minor collection during a commit.}
 
 Note that we have three kinds of objects: \emph{young, overflow} and
 \emph{old} objects. Young and overflow objects were created in the
@@ -978,8 +978,8 @@ pages if possible.
 \end{figure}
 
 In Figure~\ref{fig:richards_mem} we look at the memory usage of one of
-our benchmarks called Richards\footnote{OS kernel simulation
-benchmark}. The \emph{GC managed memory} counts all memory used in the
+our benchmarks called Richards.\footnote{Richards is a OS kernel simulation
+benchmark.} The \emph{GC managed memory} counts all memory used in the
 old object space including the memory required for private pages. The
 sharp drops in memory usage come from major collections that free old
 objects and re-share pages. The average memory usage stays around
