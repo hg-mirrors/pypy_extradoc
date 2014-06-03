@@ -282,14 +282,8 @@ of atomic blocks to Python is a valuable contribution. Since atomicity
 is a property of transactions, TM and atomic blocks are a natural fit.
 
 
-\section{Method}
 
-\cfbolz{this needs a better section title. "Transactional Memory Implementation"?}
-
-We now take a closer look at how our TM system that we use to replace
-the GIL works, what properties it has, and how it is implemented.
-
-\subsection{Transactional Memory Model}
+\section{Transactional Memory Model}
 
 In this section, we characterise the model of our TM system and its
 guarantees as well as some of the design choices we made. This should
@@ -302,7 +296,7 @@ segmentation, virtual memory,} and the 64-bit address space. Still,
 it cannot be classified as a hybrid TM system since it currently
 makes no use of any HTM present in the CPU.
 
-\subsubsection{Conflict Handling}
+\subsection{Conflict Handling}
 
 We implement an object-based TM system, thus it makes sense to detect
 conflicts with \emph{object granularity}. With this choice, if two
@@ -325,7 +319,7 @@ in the future.
 When a conflict is detected, we perform some simple contention
 management that generally prefers the older transaction to the younger.
 
-\subsubsection{Semantics}
+\subsection{Semantics}
 
 As required for TM systems, we guarantee complete \emph{isolation} and
 \emph{atomicity} for transactions at all times. Our method of choice
@@ -348,13 +342,14 @@ is possible by making the current transaction inevitable right before
 running irreversible operations.
 
 
-\subsection{Implementation}
+
+\section{High-level overview}
 
 In this section, we will present the general idea of how the TM model is
 implemented.  The later section~\ref{sub:Low-level-Implementation} will
 discuss it with more technical details.
 
-\subsubsection{Memory Segmentation and Page Sharing}
+\subsection{Memory Segmentation and Page Sharing}
 
 A naive approach to providing complete isolation between threads is to
 partition the virtual memory of a process into $N$ segments, one per
@@ -390,7 +385,7 @@ because most pages are shared with their copies in most other segments.
 \end{figure}
 
 
-\subsubsection{Memory Segmentation on the x86}
+\subsection{Memory Segmentation on the x86}
 
 When we need to store into our objects pointers to other objects, we
 need to be careful: if we were to directly store regular addresses valid
@@ -427,7 +422,7 @@ address.  This is very efficient and some compilers support it natively
 \end{figure*}
 
 
-\subsubsection{Conflict detection}
+\subsection{Conflict detection}
 
 What we described so far has no mesurable performance impact by itself,
 but is missing conflict detection to be part of a full-fledged STM
@@ -498,14 +493,14 @@ Privatised pages are re-shared during major collection cycles.
 
 
 
-\subsection{Low-level Implementation\label{sub:Low-level-Implementation}}
+\section{Low-level Implementation\label{sub:Low-level-Implementation}}
 
 In this section, we will provide details about the actual
 implementation of the system and discuss some of the issues that we
 encountered.
 
 
-\subsubsection{Architecture}
+\subsection{Architecture}
 
 Our TM system is designed as a library that covers all aspects around
 transactions and object management. It is designed for object-oriented
@@ -520,7 +515,7 @@ about the lifetime of an object, as will be explained in the following
 sections.
 
 
-\subsubsection{Application Programming Interface\label{sub:Application-Programming-Interfac}}
+\subsection{Application Programming Interface\label{sub:Application-Programming-Interfac}}
 
 \begin{lstlisting}
 void stm_start_transaction(tl, jmpbuf)
@@ -558,7 +553,7 @@ the TM system should use this type so that the CPU will translate the
 reference to the right version of the object.
 
 
-\subsubsection{Setup\label{sub:Setup}}
+\subsection{Setup\label{sub:Setup}}
 
 On startup, we reserve a big range of virtual memory with a call to
 \lstinline!mmap()! and partition this space into $N+1$ segments. We
@@ -601,7 +596,7 @@ Figure~\ref{fig:Segment-Layout} and explained here:
 
 
 
-\subsubsection{Assigning Segments}
+\subsection{Assigning Segments}
 
 From the above setup it is clear that the number of segments is
 statically set to some $N$. That means that at any point in time, a
@@ -622,7 +617,7 @@ again if possible.
 
 
 
-\subsubsection{Garbage Collection}
+\subsection{Garbage Collection}
 
 Garbage collection plays a big role in our TM system. The GC is
 generational and has two generations: the \emph{young} and the
@@ -669,7 +664,7 @@ in the old object space when getting them back from the stack using
 
 
 
-\subsubsection{Read Barrier}
+\subsection{Read Barrier}
 
 The point of the read barrier is to add the object to the read set of
 the transaction. This information is needed to detect conflicts
@@ -701,7 +696,7 @@ void stm_read(SO):
 
 
 
-\subsubsection{Write Barrier}
+\subsection{Write Barrier}
 
 The job of the write barrier is twofold: first, it serves as a write
 barrier for the garbage collector and second, it supports COW and adds
@@ -794,7 +789,7 @@ to be handled by the TM part once per transaction. This keeps the
 overhead of the write barrier very low.
 
 
-\subsubsection{Abort}
+\subsection{Abort}
 
 Aborting a transaction is rather easy. The first step is to reset the
 nursery and all associated data structures. The second step is to go
@@ -808,7 +803,7 @@ back to the location initialised by a \lstinline!setjmp()!  in
 
 
 
-\subsubsection{Commit}
+\subsection{Commit}
 
 Committing a transaction needs a bit more work. First, we synchronise
 all threads so that the committing one is the only one running and all
@@ -831,7 +826,7 @@ transaction.
 
 
 
-\subsubsection{Thread Synchronisation}
+\subsection{Thread Synchronisation}
 
 A requirement for performing a commit is to synchronise all threads so
 that we can safely update objects in other segments. To make this
@@ -876,7 +871,7 @@ For other synchronisation requirements, for example:
 we use a set of condition variables to wait or signal other threads.
 
 
-\subsubsection{Contention Management\label{subsub:contentionmanagement}}
+\subsection{Contention Management\label{subsub:contentionmanagement}}
 
 On encountering conflicts, we employ contention management to solve
 the problem as well as we can. The general rules are:
