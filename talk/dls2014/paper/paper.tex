@@ -521,7 +521,8 @@ visible on commit. We also need to be able to completely abort a
 transaction without a trace, like it never happened.
 \begin{description}
 \item [{Commit:}] If a transaction commits, we synchronise all threads
-  so that all of them are waiting in a safe point. In the committing
+  so that all of them are waiting in a safe point.\arigo{Explain why it's
+  not completely horribly slow here} In the committing
   transaction, we go through all objects in the write set and check if
   another transaction in a different segment read the same object.
   Conflicts are resolved again by either the committing or the other
