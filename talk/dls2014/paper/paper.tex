@@ -589,7 +589,7 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   segment.
 \item [{Nursery:}] This area contains all the freshly allocated
   objects (\emph{young objects}) of the current transaction. The GC
-  uses pointer-bump allocation in this area to allocate objects in the
+  uses bump-pointer allocation in this area to allocate objects in the
   first generation.
 \item [{Old~object~space:}] These pages are the ones that are really
   shared between segments. They mostly contain old objects but also
@@ -841,6 +841,7 @@ stays globally unique for each transaction. Increasing the
 \lstinline!read_version!  is then done at the start of a new
 transaction.
 
+\cfbolz{you need to describe when and how to re-share pages}
 
 
 \subsection{Thread Synchronisation}
@@ -864,7 +865,7 @@ object_t *stm_allocate(ssize_t size_rounded):
 \end{lstlisting}
 
 
-This code does simple pointer-bump allocation in the nursery. If there
+This code does simple bump-pointer allocation in the nursery. If there
 is still space left in the nursery, we return
 \lstinline!nursery_current!  and bump it up by
 \lstinline!size_rounded!.  The interesting part is the check
