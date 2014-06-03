@@ -372,7 +372,7 @@ committed the object.  So we use a trick of the Memory Management Unit
 bytes), we use remappings so that, in general, pages within segments are
 \emph{shared} with each other if they would contain a fully identical
 copy.  Conversely, when one segment needs to write to one object
-contained in a page, the complete page is first \emph{privatised}: it is
+contained in a page, the complete page is first \emph{privatised:} it is
 duplicated and the copy is remapped so that it will be visible in this
 segment (only).  This process is illustrated in
 figure~\ref{fig:Page-Remapping}.
@@ -685,7 +685,7 @@ and already mentioned in Section~\ref{sub:Setup}.
 
 This area can be seen as a continuous array of bytes that is indexed
 from the start of the segment by an object's reference ($SO$) divided
-by 16 (this requires objects to have a size which is dividable by 16).
+by 16 (to avoid false conflicts, all objects have a size of at least 16 bytes).
 Instead of just setting the byte to \lstinline!true!  if the
 corresponding object was read, we set it to a \lstinline!read_version!
 belonging to the transaction, which will be incremented on each
