@@ -180,11 +180,13 @@ STM system so that it can be seen as a viable replacement for the GIL.
 Our contributions include:
 \begin{itemize}[noitemsep]
 \item We introduce a new software transactional memory (STM) system
-  that performs well even on low numbers of CPUs. It uses a novel
-  combination of long-existing CPU features and garbage collector (GC)
-  integration in order to keep the overhead of STM very low.
-\item This new STM system is used to replace the GIL in one implementation
-  of Python and is then evaluated extensively.
+  that performs well on low numbers of CPUs.
+\item We make novel use of the memory management capabilities of
+  off-the-shelf CPUs, e.g. memory segmentation and 64bit address space.
+\item We integrate our STM system closely with a garbage collector
+  (GC) in order to lower the overhead of STM.
+\item This new STM system is used to replace the GIL in one
+  implementation of Python and is then evaluated extensively.
 \item We introduce atomic blocks to the Python language to provide a
   backwards compatible, composable synchronisation mechanism for
   threads.
@@ -1219,32 +1221,68 @@ future.
 
 \section{Related Work}
 
-Eliminate GIL:
-\begin{itemize}
-\item Previous attempts with HTM: \cite{nicholas06,odaira14,fuad10}
-\item Previous attempts with STM: \cite{stmupdate13}
-\end{itemize}
+There have been several attempts at removing the GIL using TM. We
+ourselves did a few earlier attempts with more conventional STM
+systems~\cite{stmupdate13}. Because of the huge overhead we
+encountered, the result was mostly useless on $\le 4$ CPU cores.
+Since this could be considered the main operating conditions of
+dynamic languages, it was never as useful as we wanted it to be.
 
-Similar STMs:
-\begin{itemize}
-\item FastLane: \cite{warmhoff13}
-\item TML: \cite{spear09}
-\item Virtualizing HTM: \cite{rajwar05}
-\item Page-based virtualizing HyTM: \cite{chung06}: page-level conflict
-  detection, otherwise hardware extensions required; assumes most
-  transactions fit HTM capacities (not so true here); COW using page-faults;
-  they assume OS-level access to page-tables (maybe not inherent to their
-  design); eval on simulator; value-based confl detection;
+Other attempts using HTM~\cite{nicholas06,odaira14,fuad10} show
+promising results, especially the very recent \cite{odaira14} that
+examines the current generation of Intel CPUs. However, they did a
+simplification by essentially disabling the GC during the
+benchmarks. This may be valid for the hand-tuned allocations in their
+interpreter. For us the GC is essential, and because it is a moving
+GC, it unfortunately touches a lot more memory and thereby reaches the
+HTM capacity much faster.  This, and the fact that HTM's capacity
+limits do not allow the implementation of arbitrary atomic blocks, let
+us to believe that STM is the right choice at the moment.
 
- (XTM can be
-  implemented either in the OS as part of the virtual memory manager or
-  between underlying TM systems and the OS, like virtual machines;
-  Conflicts for overflowed transactions are tracked at page granularity;
-  XTM-e allows conflict detection at cache line granu-
-  larity, even for overflowed data in virtual memory)
-\item using mmap(): Memory-Mapped Transactions
-\item mem-protected conflict detection: \cite{martin09}
-\end{itemize}
+There are multiple attempts at removing the limits of HTM by means of
+\emph{virtualising} HTM~\cite{rajwar05,chung06}. Indeed this may also
+be the future direction of our research. So far, some of them depend
+on additional hardware features. Or in the case of \cite{chung06},
+they have the assumption that most transactions fit the HTM capacity
+and that virtualisation is only a fallback. Our use case, however,
+features arbitrarily long transactions, which is why this assumption
+first has to be verified in our case.
+
+From the other end, there also have been attempts at lowering the
+overhead of STM~\cite{warmhoff13,spear09} especially for a low number
+of CPU cores. They have completely different approaches and it would
+be interesting to see how well they work for our specific use
+case. \remi{enough?}
+
+Similarly to us, \cite{martin09} use memory management techniques to
+provide isolation between transactions. They focus on providing strong
+atomicity between transactional and non-transactional code.  We,
+however, use inevitable transactions to provide strong atomicity.
+Additionally, while they use page fault handlers to detect conflicts,
+we use traditional write barriers. Again, there are only some
+superficial similarities between our approach and theirs.
+
+
+% Similar STMs:
+% \begin{itemize}
+% \item FastLane: \cite{warmhoff13}
+% \item TML: \cite{spear09}
+% \item Virtualizing HTM: \cite{rajwar05}
+% \item Page-based virtualizing HyTM: \cite{chung06}: page-level conflict
+%   detection, otherwise hardware extensions required; assumes most
+%   transactions fit HTM capacities (not so true here); COW using page-faults;
+%   they assume OS-level access to page-tables (maybe not inherent to their
+%   design); eval on simulator; value-based confl detection;
+
+%  (XTM can be
+%   implemented either in the OS as part of the virtual memory manager or
+%   between underlying TM systems and the OS, like virtual machines;
+%   Conflicts for overflowed transactions are tracked at page granularity;
+%   XTM-e allows conflict detection at cache line granu-
+%   larity, even for overflowed data in virtual memory)
+% \item using mmap(): Memory-Mapped Transactions
+% \item mem-protected conflict detection: \cite{martin09}
+% \end{itemize}
 
 
 \section{Conclusions}
