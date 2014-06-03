@@ -839,7 +839,17 @@ all pages belonging to it (copy-on-write).
 In all cases, we remove the \lstinline!WRITE_BARRIER!  flag from the
 object before we return. Thus, we never trigger the slow path again
 before we do the next minor collection or we start the next
-transaction (we always do a minor collection during a commit).
+transaction~\footnote{We always do a minor collection during a commit.}.
+
+Note that we have three kinds of objects: \emph{young, overflow} and
+\emph{old} objects. Young and overflow objects were created in the
+same transaction; old objects always come from previous transactions.
+The close integration between STM and the GC allows us to use this
+information effectively: young objects do not trigger the slow path at
+all, overflow objects only need to be handled by the GC part of the
+write barrier once between collections, and only the old objects need
+to be handled by the TM part once per transaction. This keeps the
+overhead of the write barrier very low.
 
 
 \subsubsection{Abort}
@@ -968,8 +978,8 @@ Here, we will not go into detail about the integration of our STM
 system with PyPy's JIT. In fact, we will disable it for all benchmarks
 except those in section \ref{sec:performance-bench}. We would like to
 regard it as a simple performance enhancement, but that is not what
-happens in reality. First, since the JIT is a tracing
-JIT\remi{explain?}  running in multiple threads, it may compile
+happens in reality. First, since the JIT is a tracing JIT\cite{cfbolz09}
+\remi{explain?}  running in multiple threads, it may compile
 different things in each run because of the non-deterministic
 thread-scheduling of the operating system (OS). Second, it is able to
 remove some allocations in some cases. Because compilation is already
@@ -1250,9 +1260,13 @@ first has to be verified in our case.
 
 From the other end, there also have been attempts at lowering the
 overhead of STM~\cite{warmhoff13,spear09} especially for a low number
-of CPU cores. They have completely different approaches and it would
-be interesting to see how well they work for our specific use
-case. \remi{enough?}
+of CPU cores. \cite{spear09} works well for some workloads, in the
+case of a dynamic language VM, we have to assume any possible
+workload.  \cite{warmhoff13} uses a compile-time approach to select
+from multiple optimised STMs. Their partitioned FastLane STM seems to
+provide good performance already on two threads using master and
+helper threads. It would be interesting to see if its design also
+performs well in our use case.
 
 Similarly to us, \cite{martin09} use memory management techniques to
 provide isolation between transactions. They focus on providing strong
