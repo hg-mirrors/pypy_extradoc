@@ -571,7 +571,9 @@ the \emph{sharing-segment} that is never assigned to a thread. The
 sharing-segment is essentially read-only except during commit.
 
 The next step involves using \lstinline!remap_file_pages()!, a Linux
-system call, to establish the \emph{fully-shared configuration}.  All pages
+system call\footnote{remap\_file\_pages() can also be done with more mmap()
+calls in a roughly portable way, but the former is more efficient on Linux.},
+to establish the \emph{fully-shared configuration}.  All pages
 of segments $>0$ map to the pages of the sharing-segment.
 
 However, the layout of a segment is not uniform and we actually
