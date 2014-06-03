@@ -681,7 +681,7 @@ barrier.
 To add the object to the read set, for us it is enough to mark it as
 read. Since this information needs to be local to the segment, we need
 to store it in private pages. The area is called \emph{read markers}
-and already mentioned in section~\ref{sub:Setup}.
+and already mentioned in Section~\ref{sub:Setup}.
 
 This area can be seen as a continuous array of bytes that is indexed
 from the start of the segment by an object's reference ($SO$) divided
@@ -816,7 +816,7 @@ the others are waiting in safe points. We then go through the write
 set (\lstinline!modified_old_objects!)  and check the corresponding
 \lstinline!read_markers!  in other threads~/ segments. If we detect a
 read-write conflict, we do contention management to either abort us or
-the other transaction, or to simply wait a bit (see~\ref{subsub:contentionmanagement}).
+the other transaction, or to simply wait a bit (see Section~\ref{subsub:contentionmanagement}).
 
 After verifying that there are no conflicts anymore, we copy all our
 changes done to the objects in the write set to all other segments,
@@ -918,7 +918,7 @@ using a GIL and a PyPy with STM, as well as between other Python interpreters:
 
 Here, we will not go into detail about the integration of our STM
 system with PyPy's JIT. In fact, we will disable it for all benchmarks
-except those in section~\ref{sec:performance-bench}. We would like to
+except those in Section~\ref{sec:performance-bench}. We would like to
 regard it as a simple performance enhancement, but that is not what
 happens in reality. First, since the JIT is a tracing JIT\cite{cfbolz09}
 \remi{explain?}  running in multiple threads, it may compile
@@ -930,7 +930,7 @@ not have enough time to optimise integration with STM so that the JIT
 exposes the overhead of STM more by speeding up all the rest.
 
 Overall, we believe that disabling it on all benchmarks except the
-performance benchmarks in section~\ref{sec:performance-bench} is better
+performance benchmarks in Section~\ref{sec:performance-bench} is better
 because we can minimise non-determinism. We also do not want to depend
 on the capabilities of the JIT in these experiments.
 
@@ -957,7 +957,7 @@ is in. We do this using flags and an overflow number. Both currently
 fit in a single additional header of 4~bytes per object.
 
 Second, there are areas in memory private to each segment (see
-section~\ref{sub:Setup}). The Nursery for example is 4~MiB in
+Section~\ref{sub:Setup}). The Nursery for example is 4~MiB in
 size. Additionally, the area used for the read markers is lazily
 mapped by the kernel and only needed for objects in the old object
 space. Thus, it can be at most the total size of memory used by
