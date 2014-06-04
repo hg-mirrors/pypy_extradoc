@@ -31,7 +31,7 @@ def plot_mems(ax):
     import numpy as np
     y = []
     yerr = []
-    opt_y = [1.0] * len(xs)
+    # opt_y = [1.0] * len(xs)
     first_time = np.mean(ys[0])
     for x, d in zip(xs, ys):
         normalized = map(lambda x:x/first_time, d)
@@ -41,8 +41,8 @@ def plot_mems(ax):
     print y
     ax.errorbar(xs, y, yerr=yerr,
                 label="pypy-stm-nojit")
-    ax.plot(xs, opt_y, label="optimal")
-    return ax.legend(loc=0)
+    # ax.plot(xs, opt_y, label="optimal")
+    return ax.legend(loc=4)
 
 
 def main():
@@ -55,7 +55,7 @@ def main():
 
     ax.set_ylabel("Runtime normalized to 1 thread")
     ax.set_xlabel("Threads")
-    ax.set_ylim(0.9, 1.3)
+    ax.set_ylim(0, 1.3)
     ax.set_xlim(0, 5)
 
     legend = plot_mems(ax)
