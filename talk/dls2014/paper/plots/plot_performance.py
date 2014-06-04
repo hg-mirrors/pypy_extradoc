@@ -39,7 +39,7 @@ interps_styles = {
 }
 
 benchs = {
-    "raytrace":{
+    "raytrace (large)":{
         "pypy-stm-jit":[
             [3.91, 3.87],
             [2.53, 2.52],
@@ -53,7 +53,7 @@ benchs = {
             [4.16]
         ]},
 
-    "btree":{
+    "btree (large)":{
         "pypy-stm-jit":[
             [1.68],
             [1.3],
@@ -67,7 +67,7 @@ benchs = {
             [5.8]
         ]},
 
-    "skiplist":{
+    "skiplist (large)":{
         "pypy-stm-jit":[
             [2.9],
             [3.0],
@@ -81,7 +81,7 @@ benchs = {
             [6.58]
         ]},
 
-    "threadworms":{
+    "threadworms (large)":{
         "pypy-stm-jit":[
             [4.23,4.33],
             [3.4,3.34,3.39],
@@ -95,7 +95,7 @@ benchs = {
             [20]
         ]},
 
-    "mandelbrot":{
+    "mandelbrot (large)":{
         "pypy-stm-jit":[
             [17.87,17.88,17.88],
             [9.4,9.42,9.34],
@@ -109,7 +109,7 @@ benchs = {
             [14.1]
         ]},
 
-    "richards":{
+    "richards (large)":{
         "pypy-stm-jit":[
             [63.4],
             [33.1],

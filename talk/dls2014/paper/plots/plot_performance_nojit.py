@@ -1,15 +1,9 @@
 #!/usr/bin/python
 
-# benchmarks-repo at 0d81c9b1ec8e
+# benchmarks-repo at a26f2fb58413
 
 # for now: avg & stddev of the best
 
-#    pypy-c-paper-nojit bench.py -k5 raytrace/raytrace.py 1-4 256 256
-#    pypy-c-paper-nojit bench.py -k5 btree/btree.py 1-4 500000
-#    pypy-c-paper-nojit bench.py -k5 skiplist/skiplist.py 1-4 200000
-#    pypy-c-paper-nojit bench.py -k5 threadworms/threadworms.py 1-4 500000
-#    pypy-c-paper-nojit bench.py -k5 mandelbrot/mandelbrot.py 1-4 64 512 512
-#    pypy-c-paper-nojit multithread-richards.py 30 1-4 # report runtime
 
 
 from plot_performance import plot_speedups
@@ -38,9 +32,15 @@ interps_styles = {
 }
 
 
+#    pypy-c-paper-nojit bench.py -k5 raytrace/raytrace.py 1-4 256 256
+#    pypy-c-paper-nojit bench.py -k5 btree/btree.py 1-4 500000
+#    pypy-c-paper-nojit bench.py -k5 skiplist/skiplist.py 1-4 200000
+#    pypy-c-paper-nojit bench.py -k5 threadworms/threadworms.py 1-4 500000
+#    pypy-c-paper-nojit bench.py -k5 mandelbrot/mandelbrot.py 1-4 64 512 512
+#    pypy-c-paper-nojit multithread-richards.py 30 1-4 # report runtime
 
 benchs = {
-    "raytrace":{
+    "raytrace (small)":{
         "pypy-stm-nojit":[
             [8.3],
             [4.33],
@@ -53,12 +53,12 @@ benchs = {
             [2.75],
             [2.84]
         ],
-        "jython":[
-            [2.95,2.95,2.96],
-            [1.65,1.68,1.54],
-            [1.2,1.15,1.3,1.3],
-            [1.09,0.9,0.97,0.99,1.03]
-        ],
+        # "jython":[
+        #     [2.95,2.95,2.96],
+        #     [1.65,1.68,1.54],
+        #     [1.2,1.15,1.3,1.3],
+        #     [1.09,0.9,0.97,0.99,1.03]
+        # ],
         "pypy-nojit":[
             [5.5,5.7,5.8],
             [7,6.97],
@@ -66,7 +66,7 @@ benchs = {
             [6.4,6.4]
         ]},
 
-    "btree":{
+    "btree (small)":{
         "pypy-stm-nojit":[
             [8.3],
             [4.9],
@@ -79,12 +79,12 @@ benchs = {
             [5.91],
             [6.03]
         ],
-        "jython":[
-            [1.76,1.84],
-            [2.60,2.46,2.6],
-            [2.56,2.6,2.51],
-            [2.57,2.52,2.48]
-        ],
+        # "jython":[
+        #     [1.76,1.84],
+        #     [2.60,2.46,2.6],
+        #     [2.56,2.6,2.51],
+        #     [2.57,2.52,2.48]
+        # ],
         "pypy-nojit":[
             [6.63,6.73],
             [10.6,10.5],
@@ -92,7 +92,7 @@ benchs = {
             [12.0,12.3]
         ]},
 
-    "skiplist":{
+    "skiplist (small)":{
         "pypy-stm-nojit":[
             [5.8],
             [3.9],
@@ -105,12 +105,12 @@ benchs = {
             [5.0],
             [5.1]
         ],
-        "jython":[
-            [1.38,1.33,1.47,1.40],
-            [1.8,1.77,1.81],
-            [1.81,1.79,1.88],
-            [1.99,1.92,1.74,1.84]
-        ],
+        # "jython":[
+        #     [1.38,1.33,1.47,1.40],
+        #     [1.8,1.77,1.81],
+        #     [1.81,1.79,1.88],
+        #     [1.99,1.92,1.74,1.84]
+        # ],
         "pypy-nojit":[
             [4.9,4.8,4.6,4.7],
             [6.87,7.53,6.64],
@@ -118,7 +118,7 @@ benchs = {
             [7.38,7.28,7.31,7.54]
         ]},
 
-    "threadworms":{
+    "threadworms (small)":{
         "pypy-stm-nojit":[
             [4.8],
             [2.7],
@@ -131,12 +131,12 @@ benchs = {
             [5.2],
             [5.37]
         ],
-        "jython":[
-            [2.73,2.38,2.63,2.4],
-            [3.0,2.87,3.3,3.1],
-            [3.35,3.22,3.19],
-            [3.19,3.37,3.26,3.36]
-        ],
+        # "jython":[
+        #     [2.73,2.38,2.63,2.4],
+        #     [3.0,2.87,3.3,3.1],
+        #     [3.35,3.22,3.19],
+        #     [3.19,3.37,3.26,3.36]
+        # ],
         "pypy-nojit":[
             [4.49,4.36],
             [7.86,7.81],
@@ -144,7 +144,7 @@ benchs = {
             [9.23,9.27]
         ]},
 
-    "mandelbrot":{
+    "mandelbrot (small)":{
         "pypy-stm-nojit":[
             [5.35],
             [2.8],
@@ -157,12 +157,12 @@ benchs = {
             [2.4],
             [2.5]
         ],
-        "jython":[
-            [5.56,5.61,5.59,5.55],
-            [2.84,3,2.8,2.96],
-            [2.13,2.03,2.04,2.11],
-            [1.8,1.74,1.8,1.88]
-        ],
+        # "jython":[
+        #     [5.56,5.61,5.59,5.55],
+        #     [2.84,3,2.8,2.96],
+        #     [2.13,2.03,2.04,2.11],
+        #     [1.8,1.74,1.8,1.88]
+        # ],
         "pypy-nojit":[
             [3.67,3.54],
             [4.53,4.82,4.75],
@@ -170,7 +170,7 @@ benchs = {
             [4.38,4.23]
         ]},
 
-    "richards":{
+    "richards (small)":{
         "pypy-stm-nojit":[
             [10.7],
             [6.1],
@@ -183,12 +183,12 @@ benchs = {
             [4.02],
             [4.13]
         ],
-        "jython":[
-            [3.39,3.31,3.7],
-            [2.32,1.95,2.18],
-            [1.86,1.66],
-            [1.49,1.63,1.59]
-        ],
+        # "jython":[
+        #     [3.39,3.31,3.7],
+        #     [2.32,1.95,2.18],
+        #     [1.86,1.66],
+        #     [1.49,1.63,1.59]
+        # ],
         "pypy-nojit":[
             [6.6,6.5],
             [7.98,7.98],
