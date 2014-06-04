@@ -406,7 +406,7 @@ figure~\ref{fig:Segment-Addressing}.
 The x86 CPUs provide a feature which is precisely called \emph{memory
 segmentation}.  On the modern x86-64, this is enough to perform the
 addition described above very efficiently.  We use the segment register
-$\%gs$, which is mostly unused in current applications, to point to the
+$\%gs$, which is available to applications, to point to the
 thread's segment start address.\footnote{The other segment register
 $\%fs$ is typically used by the threading library to provide access to
 thread-local data.  One point of view is that we are using $\%gs$ for a
@@ -491,7 +491,7 @@ some cases by pausing one of them until the other commits.  If a commit
 succeeds, we copy the changes to modified objects so that they become
 visible in other segments.  Note that this only includes objects that
 existed before the transaction and have been modified by it.  It does
-not includes all the new objects created by the current transaction
+not include all the new objects created by the current transaction
 (there is typically a very high rate of object churn in dynamic languages).
 Our garbage collector allocates new objects in pages that are shared in
 the first place, so that they do not need to be copied -- and moreover,
@@ -526,39 +526,43 @@ sections.
 \subsection{Application Programming Interface\label{sub:Application-Programming-Interfac}}
 
 \begin{lstlisting}
-void stm_start_transaction(tl, jmpbuf)
+void stm_start_transaction()
 void stm_commit_transaction()
 void stm_read(object_t *obj)
 void stm_write(object_t *obj)
 object_t *stm_allocate(ssize_t size_rounded)
-STM_PUSH_ROOT(tl, obj)
-STM_POP_ROOT(tl, obj)
+STM_PUSH_ROOT(obj)
+STM_POP_ROOT(obj)
 \end{lstlisting}
 
 
-\lstinline!stm_start_transaction()!  starts a transaction. It requires
-two arguments, the first being a thread-local data structure and the
-second a buffer for use by \lstinline!setjmp()!.
-\lstinline!stm_commit_transaction()!  tries to commit the current
+\lstinline!stm_start_transaction()!  starts a transaction in the
+current thread. Internally, it uses \lstinline!setjmp()! to remember
+where the transaction started in case of an abort.
+\lstinline!stm_commit_transaction()! tries to commit the current
 transaction. \lstinline!stm_read()!, \lstinline!stm_write()!  perform
-a read or a write barrier on an object and \lstinline!stm_allocate()!
-allocates a new object with the specified size.
- \lstinline!STM_PUSH_ROOT()!  and \lstinline!STM_POP_ROOT()!  push
-and pop objects on the shadow stack.\footnote{A stack for pointers to
-  GC objects that allows for precise garbage collection. All objects
+a read or a write barrier on the object given as the argument, and
+\lstinline!stm_allocate()!  allocates a new object with the specified
+size.  \lstinline!STM_PUSH_ROOT()! and \lstinline!STM_POP_ROOT()!
+push and pop objects onto the shadow stack\footnote{A stack for pointers
+  to GC objects that allows for precise garbage collection. All objects
   on that stack are never seen as garbage and are thus always kept
-  alive.~\cite{fergus02}}  Objects have to be saved using this stack around calls
-that may cause a GC cycle to happen, and also while there is no
-transaction running. In this simplified API, only
+  alive.~\cite{fergus02}} of the current thread.  References to objects
+have to be saved using this stack around calls that may cause a GC
+cycle to happen, and also while there is no transaction
+running. Otherwise these references may not be valid any more because
+the object moved or was seen as garbage. In this simplified API, only
 \lstinline!stm_allocate()!  and \lstinline!stm_commit_transaction()!
 require saving object references.
 
-The type \lstinline!object_t!  is special as it causes the
-compiler\footnote{We use Clang 3.5 with some patches to fix bugs in its address-space
- 256 feature.} to make all accesses through it relative to the $\%gs$
-register.  With exceptions, nearly all accesses to objects managed by
-the TM system should use this type so that the CPU will translate the
-reference to the right version of the object.
+The type \lstinline!object_t! is special as it causes the
+compiler\footnote{We use Clang 3.5 with patches to deal with bugs in
+its ``address-space 256'' feature. Patches are available from authors
+until inclusion into the official clang.} to make all accesses through
+it relative to the $\%gs$ register.  With exceptions, nearly all
+accesses to objects managed by the TM system should use this type so
+that the CPU will translate the reference to the right version of the
+object.
 
 
 \medskip   % why, Latex, why??
@@ -639,7 +643,7 @@ high allocation rates.
 The \textbf{young generation}, where objects are considered to be
 \emph{young} and reside in the \emph{Nursery}, is collected by
 \emph{minor collections}. These collections move the surviving objects
-out of the nursery into the old object space, which can be done
+out of a thread's nursery into the old object space, which can be done
 without stopping other threads. This is done either if the nursery has
 no space left anymore or if we are committing the current
 transaction. Consequently, all objects are old and the nursery empty
@@ -941,8 +945,8 @@ Section~\ref{sec:performance-bench}. here just write "because the integration
 with the JIT is incomplete"}
 We would like to
 regard it as a simple performance enhancement, but that is not what
-happens in reality. First, since the JIT is a tracing JIT~\cite{cfbolz09}
-\remi{explain?}  running in multiple threads, it may compile
+happens in reality. First, since the JIT~\cite{cfbolz09} bases its decision what to
+compile on runtime profiling, running in multiple threads, it may compile
 different things in each run because of the non-deterministic
 thread-scheduling of the operating system (OS). Second, it is able to
 remove some allocations in some cases. Because compilation is already
@@ -1043,19 +1047,19 @@ improve this in the future, but right now this is the overall picture.}
 \cfbolz{you can't kill it, otherwise a reviewer will ask. also, the pypy-no-stm numbers are meaningless as long as the options are different}
 
 
+%%% TODO: if time permits
+% \subsection{Overhead Breakdown}
 
-\subsection{Overhead Breakdown}
+% \remi{do it on a non-jit build (see reason above)}
+% \remi{gs:segment prefix overhead is virtually none (maybe instruction cache)}
+% \remi{update numbers in pypy/TODO}
 
-\remi{do it on a non-jit build (see reason above)}
-\remi{gs:segment prefix overhead is virtually none (maybe instruction cache)}
-\remi{update numbers in pypy/TODO}
-
-\begin{itemize}
-\item time taken by read \& write barriers
-\item time spent committing \& aborting (maybe with different numbers
-  of threads; maybe split conflict detection and obj sync on commit)
-\item time in GC
-\end{itemize}
+% \begin{itemize}
+% \item time taken by read \& write barriers
+% \item time spent committing \& aborting (maybe with different numbers
+%   of threads; maybe split conflict detection and obj sync on commit)
+% \item time in GC
+% \end{itemize}
 
 
 \subsection{Scaling}
@@ -1090,7 +1094,7 @@ by allocations}
 \end{figure}
 
 
-\subsection{Performance Benchmarks\label{sec:performance-bench}}
+\subsection{Small-Scale Benchmarks\label{sec:performance-bench}}
 
 In this section we want to look at the general performance of our
 system. As explained above, the JIT does not simply speed up the
@@ -1130,7 +1134,8 @@ thread by optimistically running transactions in parallel.
 %  - competing w our own JIT on non-stm a challenge
 %  - gil scales negatively
 
-\paragraph{Non-JIT benchmarks:} First we run our benchmarks on four
+\subsection{Non-JIT Benchmarks}
+First we run our benchmarks on four
 different interpreters: Jython (fine-grained locking), CPython (GIL),
 and PyPy with STM and with the GIL (both without the JIT). The results
 are shown in Figure~\ref{fig:performance-nojit}.
@@ -1167,8 +1172,9 @@ enable the JIT.
 \end{figure}
 
 
-\cfbolz{I suggest making the rest a new section}
-\paragraph{JIT benchmarks:} The speedups from enabling the JIT in
+
+\subsection{JIT Benchmarks}
+The speedups from enabling the JIT in
 these benchmarks range from $10-50\times$. This is why we had to do
 without Jython and CPython here, since they would be much further up
 in the plots. Also, in order to get more stable results, we increased
