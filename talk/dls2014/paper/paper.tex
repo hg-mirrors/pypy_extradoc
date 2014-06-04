@@ -916,6 +916,9 @@ waiting, there is now no conflict between our write and the already
 committed read anymore.
 
 \subsection{Memory Requirements\label{sub:memoryreq}}
+\remi{maybe its own ``limitations'' section? also about
+  static segmentation and limited scaling }
+
 
 There are several sources of extra memory requirements in our
 STM system. First, we need to keep track of the state an object
@@ -937,7 +940,8 @@ objects in the old object space. In that case we would need the total
 amount of memory required by old objects multiplied by $N+1$
 (incl. the sharing segment). This is certainly the worst case and
 so far not observed in practice. During major collections we re-share
-privatised pages that are currently not modified by any transaction.
+privatised pages that are currently not modified by any transaction,
+thereby reclaiming some of this memory.
 
 
 \section{Evaluation}
@@ -947,41 +951,21 @@ PyPy\footnote{www.pypy.org} (version 2.3). PyPy is an implementation of an
 interpreter for the Python language. It has a special focus on speed,
 as it provides a just-in-time (JIT) compiler to speed up applications
 running on top of it. For comparison, we compare between normal PyPy
-using a GIL and a PyPy with STM, as well as between other Python interpreters:
+using a GIL and a PyPy with STM, as well as to CPython.
 \begin{description}
 \item[CPython] (version 2.7.6) is the reference implementation of the Python
   language. It is the most widely used interpreter for this language.
   The implementation uses a GIL for synchronisation in multi-threaded
   execution and it does not feature a JIT compiler.
-\item[Jython] (version 2.7b1) is an implementation of Python on top of
-  the Java Virtual Machine (JVM). Instead of a GIL, this interpreter
-  uses fine-grained locking for synchronisation. This enables true
-  parallelism when executing code on multiple threads. In addition, its
-  integration with the JVM provides it with a JIT compiler for faster
-  execution.
 \end{description}
 
 Here, we will not go into detail about the integration of our STM
 system with PyPy's JIT. In fact, we will disable it for all benchmarks
-except those in Section~\ref{sec:performance-bench}.
-\cfbolz{the details about why the JIT confuses everything should go into
-Section~\ref{sec:performance-bench}. here just write "because the integration
-with the JIT is incomplete"}
-We would like to
-regard it as a simple performance enhancement, but that is not what
-happens in reality. First, since the JIT~\cite{cfbolz09} bases its decision what to
-compile on runtime profiling, running in multiple threads, it may compile
-different things in each run because of the non-deterministic
-thread-scheduling of the operating system (OS). Second, it is able to
-remove some allocations in some cases. Because compilation is already
-non-deterministic, so is this allocation-removal. And third, we did
-not have enough time to optimise integration with STM so that the JIT
-exposes the overhead of STM more by speeding up all the rest.
+except those in Section~\ref{subsec:jit-benchs}. The STM-JIT
+integration is currently still incomplete and not tested much. The
+JIT-less interpreter provides a much more consistent environment for
+the STM system, so we remove some unknown variables by disabling it.
 
-Overall, we believe that disabling it on all benchmarks except the
-performance benchmarks in Section~\ref{sec:performance-bench} is better
-because we can minimise non-determinism. We also do not want to depend
-on the capabilities of the JIT in these experiments.
 
 We performed all benchmarks on a machine with an Intel Core i7-4770
 CPU~@3.40GHz (4 cores, 8 threads).  There are 16~GiB of memory
@@ -990,7 +974,10 @@ kernel. The STM system was compiled with a number of segments $N=4$
 and a maximum amount of memory of 1.5~GiB (both are configurable at
 compile time).
 
-\cfbolz{can you explain how you measure the errors?}
+For each point in the plots, we took 5 measurements and report the
+average and the standard deviation as error bars. For the JIT
+benchmarks, we first let warm up the JIT by doing a few
+additional iterations to get a single measurement.
 
 % benchmarks with: pypy-c--Ojit-d1454093dd48+-14-05-26-17:16
 % that's with stmgc 70c403598485
@@ -998,6 +985,62 @@ compile time).
 % Sometimes with JIT, sometimes without.
 % For scaling & memory w/o jit, since the jit can optimize away
 % many allocations and exposes the overhead more.
+
+\subsection{Scaling}
+
+To asses how well the STM system scales on its own (without any real
+workload), we execute the following loop on 1 to 4 threads on our
+Python interpreter with STM:
+\begin{lstlisting}
+def workload():
+    i = 20000000
+    while i:
+        i -= 1
+\end{lstlisting}
+
+For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
+and normalised the average runtimes to the time it took on a single
+thread. From this we see that there is additional overhead introduced
+by each thread (\remi{$13\%$} for all 4 threads together). While this
+is not ideal, we think that \remi{$13\%$} are acceptable on four
+threads. In terms of throughput, 4 threads have \remi{$3.53\times$}
+more iterations per second than a single thread.
+
+\remi{what we don't show is by how much this overhead is influenced
+by allocations}
+
+\cfbolz{why is the error so big with 4 threads?}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\columnwidth]{plots/scaling.pdf}
+  \caption{Scalability of the STM system\label{fig:scaling}}
+\end{figure}
+
+
+\subsection{Small-Scale Benchmarks\label{sec:performance-bench}}
+
+For the following sections we use a set of six small benchmarks
+available on \cite{pypybenchs}:
+
+\begin{itemize}
+\item \emph{btree} and \emph{skiplist}, which are both inserting,
+  removing, and finding elements in a data structure from multiple
+  threads
+\item \emph{threadworms}, which simulates worms walking on a grid in
+  parallel and checking for collisions with each other
+\item \emph{mandelbrot}, \emph{raytrace}, and \emph{richards}, which
+  all perform some independent computations in parallel (embarrassingly
+  parallel)
+\end{itemize}
+
+We use atomic blocks in order to easily synchronise access to shared
+data structures in the first three benchmarks. For the embarrassingly
+parallel benchmarks, we do not need any explicit synchronisation at
+all. These atomic blocks are simulated with a single global lock
+when running on top of GIL-supported interpreters. With our STM
+system, they map to transactions that will execute optimistically
+in parallel.
 
 
 \subsection{Memory Requirements}
@@ -1069,108 +1112,43 @@ improve this in the future, but right now this is the overall picture.}
 % \end{itemize}
 
 
-\subsection{Scaling}
-
-To asses how well the STM system scales on its own (without any real
-workload), we execute the following loop on 1 to 4 threads on our
-Python interpreter with STM:
-\begin{lstlisting}
-def workload():
-    i = 20000000
-    while i:
-        i -= 1
-\end{lstlisting}
-
-For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
-and normalised the average runtimes to the time it took on a single
-thread. From this we see that there is additional overhead introduced
-by each thread (\remi{$13\%$} for all 4 threads together). While this
-is not ideal, we think that \remi{$13\%$} are acceptable on four
-threads. In terms of throughput, 4 threads have \remi{$3.53\times$}
-more iterations per second than a single thread.
-
-\remi{what we don't show is by how much this overhead is influenced
-by allocations}
-
-\cfbolz{why is the error so big with 4 threads?}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=1\columnwidth]{plots/scaling.pdf}
-  \caption{Scalability of the STM system\label{fig:scaling}}
-\end{figure}
 
 
-\subsection{Small-Scale Benchmarks\label{sec:performance-bench}}
-
-In this section we want to look at the general performance of our
-system. As explained above, the JIT does not simply speed up the
-performance by a certain factor. In order to better understand the
-behaviour of our system, we therefore split this section into two
-parts. We first look at how it behaves without the JIT, and then with
-the JIT. We look at six benchmarks:
-
-\begin{itemize}
-\item \emph{btree} and \emph{skiplist}, which are both inserting,
-  removing, and finding elements in a data structure
-\item \emph{threadworms}, which simulates worms walking on a grid in
-  parallel and checking for collisions with each other
-\item \emph{mandelbrot}, \emph{raytrace}, and \emph{richards}, which
-  all perform simple, independent computations in parallel
-\end{itemize}
-
-We use coarse-grained locking for the first three benchmarks and no
-locking for the last three. This is important because Jython, which
-uses fine-grained locking instead of a GIL, is only expected to scale
-with the number of threads for the latter group. It is not able to
-scale when using coarse-grained locking. STM, however, uses atomic
-blocks instead of a single lock to synchronise accesses to the
-shared data structures. Since atomic blocks map to transactions,
-our STM system may still be able to get a speedup on more than one
-thread by optimistically running transactions in parallel.
-
-
-% To isolate factors we look at performance w/o JIT and perf w JIT.
-% w/o JIT:
-%  - it scales
-%  - slower than reference CPython
-%  - gil scales negatively
-% w JIT:
-%  - it sometimes still scales (more work needed)
-%  - changed working set size because generally ~50x faster
-%  - competing w our own JIT on non-stm a challenge
-%  - gil scales negatively
 
 \subsection{Non-JIT Benchmarks}
-First we run our benchmarks on four
-different interpreters: Jython (fine-grained locking), CPython (GIL),
-and PyPy with STM and with the GIL (both without the JIT). The results
-are shown in Figure~\ref{fig:performance-nojit}.
+First we run our benchmarks on three different interpreters: CPython
+(GIL), and PyPy with STM and with the GIL (both without the JIT). The
+results are shown in Figure~\ref{fig:performance-nojit}.
 
-As expected, all interpreters with a GIL do not scale with the number
+As expected, GIL-supported interpreters do not scale with the number
 of threads. They even become slower because of the overhead of
 thread-switching and GIL handling (see~\cite{beazley10} for a detailed
-analysis). We also see Jython scale when we expect it to (\emph{mandelbrot,
-raytrace, richards}), and behave similar to the GIL interpreters in the
-other cases. The reason again being the coarse grained locking.
+analysis).
 
 PyPy using our STM system (\emph{pypy-stm-nojit}) scales in all
-benchmarks to a certain degree. It scales best in the ones where
-Jython scales as well and a little less in the others. The reason
+benchmarks to a certain degree. It scales best for the embarrassingly
+parallel ones and a little less in the others. The reason
 for that is that in the former group there are no real, logical
-conflicts -- all threads do independent calculations. In the latter
-case, the threads work on a common data structure and therefore
-create much more conflicts, which limits the scalability.
+conflicts -- all threads do independent calculations. STM simply
+replaces the GIL in those programs. In the latter group,
+the threads work on a common data structure and therefore
+create much more conflicts, which limits the scalability. Here
+we make active use of the STM-supported atomic blocks that
+provide a scalable synchronisation mechanism.
 
 Looking at the average overhead from switching from GIL to STM, we see
 that it is \remi{$\approx 35.5\%$}. The maximum in richards is
 \remi{$63\%$}.
 
 \emph{pypy-stm-nojit} beats \emph{pypy-nojit} already on two threads;
-however, it does not consistently beat CPython, the reference implementation of
-Python. This means that without the JIT, our performance is not
-competitive. So we will now look at how well our system works when we
-enable the JIT.
+however, it rarely beats CPython's single-thread performance.  For
+programs that need concurrency in CPython and that use threads to
+achieve this, it also makes sense to look at the overhead induced by
+the GIL on multiple threads. From this perspective, the STM
+implementation beats CPython's performance in all but two benchmarks.
+
+Since PyPy comes with a JIT to make its overhead compared to CPython
+go away, we will now look at how well STM works together with it.
 
 \begin{figure}[h]
   \centering
@@ -1180,12 +1158,37 @@ enable the JIT.
 
 
 
-\subsection{JIT Benchmarks}
-The speedups from enabling the JIT in
-these benchmarks range from $10-50\times$. This is why we had to do
-without Jython and CPython here, since they would be much further up
-in the plots. Also, in order to get more stable results, we increased
-the input size of all benchmarks to get reasonable execution times.
+\subsection{JIT Benchmarks\label{subsec:jit-benchs}}
+
+We would like to regard enabling the JIT as a simple performance
+enhancement, but that is not what happens in reality. First, since the
+JIT~\cite{cfbolz09} bases its decision of what to compile on runtime
+profiling, running in multiple threads, it may compile different
+things in each run because of the non-deterministic thread-scheduling
+of the operating system (OS). Second, it is able to remove some
+allocations in some cases. Because compilation is already
+non-deterministic, so is this allocation-removal. And third, we did
+not have enough time to optimise integration with STM so that the JIT
+exposes the overhead of STM more by speeding up all the rest.
+For these reasons, the following results have to be taken with a grain
+of salt.
+
+The speedups from enabling the JIT in these benchmarks range from
+$10-50\times$. This is why we had to do without CPython here, since it
+would be much further up in the plots. Also, in order to make jitting
+code worthwhile, we increased the input size of all benchmarks to get
+reasonable execution times.
+
+We also ran these benchmarks on Jython\footnote{version
+2.7b1~\cite{webjython}}, an implementation of Python on top of the
+Java Virtual Machine (JVM).  Instead of a GIL, this interpreter uses
+fine-grained locking for synchronisation. Even though it can use the
+JVM's JIT compiler, its performance in these benchmarks is behind
+PyPy's by a factor of \remi{$5-10\times$}. Because of that it does not
+make sense to include it in this evaluation. In the future, we would
+like to do an extensive comparison between the STM approach and
+fine-grained locking. It is out of the scope of this paper to do
+this thoroughly.
 
 The results are presented in Figure~\ref{fig:performance-jit}. We
 see that the performance is much less stable. There is certainly more
@@ -1193,19 +1196,19 @@ work required in this area. The slowdown factor for switching from GIL
 to STM ranges around \remi{$1-2.4\times$}, and we beat GIL performance
 in half of the benchmarks.
 
-We see that generally, the group of non-locked benchmarks scales
+We see that generally, the group of embarrassingly parallel benchmarks scales
 best. The other three scale barely or not at all with the number of
 threads. The reason for this is likely again the conflicts in the
 latter group. Since the JIT accelerates all code but not the STM
-overhead, we do more work per transaction. And this increases the
+overhead, we do more work per transaction. This increases the
 likelihood of conflicts between them and therefore limits scalability
 even more than in the no-JIT benchmarks.
 
 Overall PyPy needs the JIT in order for its performance to be
-competitive. It would be interesting to see how using our STM system
-in CPython would turn out, but it is a lot of work. On its own, our
-system scales well, so we hope to also see that with the JIT in the
-future.
+competitive with CPython's. It would be interesting to see how using
+our STM system in CPython would turn out, but it is a lot of work. On
+its own, our system scales well, so we hope to also see that with the
+JIT in the future.
 
 
 \begin{figure}[h]
@@ -1302,6 +1305,8 @@ superficial similarities between our approach and theirs.
 
 % The bibliography should be embedded for final submission.
 
+%%% TODO: fix all citation to follow common format (always page numbers; no 'et al', etc)
+
 \begin{thebibliography}{}
 \softraggedright
 
@@ -1319,7 +1324,7 @@ superficial similarities between our approach and theirs.
   \url{https://wiki.mozilla.org/IonMonkey/Overview}
 
 \bibitem{wayforward14} Remigius Meier, Armin Rigo. 2014. A Way Forward
-  in Parallelising Dynamic Languages. ICOOOLPS'14.
+  in Parallelising Dynamic Languages. To appear in ICOOOLPS'14.
 
 \bibitem{cpython} CPython. \url{www.python.org}
 \bibitem{webjython} The Jython Project, \url{www.jython.org}
@@ -1365,6 +1370,10 @@ superficial similarities between our approach and theirs.
   Mehrara. 2009. Transactional memory with strong atomicity using
   off-the-shelf memory protection hardware. SIGPLAN Not. 44, 4 (February
   2009), 185-196.
+
+\bibitem{pypybenchs} PyPy benchmarks repository. 2014. Revision
+  a26f2fb58413. \url{bitbucket.org/pypy/benchmarks}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
