@@ -604,6 +604,7 @@ Figure~\ref{fig:Segment-Layout} and explained here:
 \end{description}
 
 
+
 \begin{figure*}[t]
   \centering
   \includegraphics[scale=0.8]{\string"segment layout\string".pdf}
@@ -914,6 +915,29 @@ other transaction to commit as soon as possible and wait. After
 waiting, there is now no conflict between our write and the already
 committed read anymore.
 
+\subsection{Memory Requirements\label{sub:memoryreq}}
+
+There are several sources of extra memory requirements in our
+STM system. First, we need to keep track of the state an object
+is in. We do this using flags and an overflow number. Both currently
+fit in a single additional header of 4~bytes per object.
+
+Second, there are areas in memory private to each segment (see
+Section~\ref{sub:Setup}). The Nursery for example is 4~MiB in
+size\footnote{Configurable value taken from experience with our
+non-STM reference interpreter}. Additionally, the area used for the
+read markers is lazily mapped by the kernel and only needed for
+objects in the old object space. Thus, it can be at most the total
+size of memory used by old objects divided by 16, adding up to
+$6.3\%$ to the total memory requirements.
+
+Third, since we do copy on write, if all objects were to be written to
+at the same time, all pages would need to be privatised for all
+objects in the old object space. In that case we would need the total
+amount of memory required by old objects multiplied by $N+1$
+(incl. the sharing segment). This is certainly the worst case and
+so far not observed in practice. During major collections we re-share
+privatised pages that are currently not modified by any transaction.
 
 
 \section{Evaluation}
@@ -978,58 +1002,41 @@ compile time).
 
 \subsection{Memory Requirements}
 
-\cfbolz{part of this section is wrong here. maybe in the low-level section? here you should only measure}
+\remi{reference \ref{sub:memoryreq}}
 
-There are several sources of extra memory requirements in our
-STM system. First, we need to keep track of the state an object
-is in. We do this using flags and an overflow number. Both currently
-fit in a single additional header of 4~bytes per object.
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=1\columnwidth]{plots/richards_mem.pdf}
+%   \caption{Actual memory managed by the GC and the page privatisation
+%     over time in Richards benchmark\label{fig:richards_mem}}
+% \end{figure}
 
-Second, there are areas in memory private to each segment (see
-Section~\ref{sub:Setup}). The Nursery for example is 4~MiB in
-size. Additionally, the area used for the read markers is lazily
-mapped by the kernel and only needed for objects in the old object
-space. Thus, it can be at most the total size of memory used by
-old objects divided by 16.
+% In Figure~\ref{fig:richards_mem} we look at the memory usage of one of
+% our benchmarks called Richards.\footnote{Richards is a OS kernel simulation
+% benchmark.} The \emph{GC managed memory} counts all memory used in the
+% old object space including the memory required for private pages. Note,
+% it does not measure the memory required for the segment-private areas
+% like the nursery and read markers. The
+% sharp drops in memory usage come from major collections that free old
+% objects and re-share pages. The average memory usage stays around
+% 29~MiB and we see that in this benchmark we have around 1 major
+% collection every second.
 
-Third, since we do copy on write, if all objects were to be written to
-at the same time, all pages would need to be privatised for all
-objects in the old object space. In that case we would need the total
-amount of memory required by old objects multiplied by $N+1$
-(incl. the sharing segment). During major collections we re-share the
-pages if possible.
+% The \emph{page privatisation}, which represents the ratio between
+% private pages and shared pages, gives us an idea about how many
+% private copies exist for each shared page. If the ratio is $>1.0$, it
+% means that on average we have more than one private copy for each
+% shared page. In the worst case described above, this number would
+% reach $N$ and means we need $N\times$ the memory for the private
+% pages alone. In this benchmark, we see the same spikes as the memory
+% usage. These come directly from re-sharing the pages. The maximum page
+% privatisation is around $0.9$ between major collections, thus the
+% private pages are responsible for a $90\%$ increase in the required
+% memory. Since the spikes in the GC managed memory line actually
+% show increases by $~100\%$, it means that the rest comes from actual
+% garbage objects that were collected.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=1\columnwidth]{plots/richards_mem.pdf}
-  \caption{Actual memory managed by the GC and the page privatisation
-    over time in Richards benchmark\label{fig:richards_mem}}
-\end{figure}
-
-In Figure~\ref{fig:richards_mem} we look at the memory usage of one of
-our benchmarks called Richards.\footnote{Richards is a OS kernel simulation
-benchmark.} The \emph{GC managed memory} counts all memory used in the
-old object space including the memory required for private pages. Note,
-it does not measure the memory required for the segment-private areas
-like the nursery and read markers. The
-sharp drops in memory usage come from major collections that free old
-objects and re-share pages. The average memory usage stays around
-29~MiB and we see that in this benchmark we have around 1 major
-collection every second.
-
-The \emph{page privatisation}, which represents the ratio between
-private pages and shared pages, gives us an idea about how many
-private copies exist for each shared page. If the ratio is $>1.0$, it
-means that on average we have more than one private copy for each
-shared page. In the worst case described above, this number would
-reach $N$ and means we need $N\times$ the memory for the private
-pages alone. In this benchmark, we see the same spikes as the memory
-usage. These come directly from re-sharing the pages. The maximum page
-privatisation is around $0.9$ between major collections, thus the
-private pages are responsible for a $90\%$ increase in the required
-memory. Since the spikes in the GC managed memory line actually
-show increases by $~100\%$, it means that the rest comes from actual
-garbage objects that were collected.
+\remi{do this and RSS numbers for pypy-stm-nojit and normal pypy-nojit:}
 
 For PyPy-STM the average memory requirement is 21~MiB and there are
 $\sim 10$ major collections during the runtime. Normal PyPy with a GIL
