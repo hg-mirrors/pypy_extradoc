@@ -24,6 +24,7 @@
 \makeatletter
 \usepackage{enumitem}
 \usepackage{multicol}
+\usepackage{tabularx}
 
 % nice listings
 \usepackage{xcolor}
@@ -1046,6 +1047,31 @@ in parallel.
 \subsection{Memory Requirements}
 
 \remi{reference \ref{sub:memoryreq}}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill} }|p{2cm}|c|c|c|}
+    \hline
+                        & pypy-nojit  & pypy-stm-nojit & Overhead  \\
+    \hline
+    btree (small)       & 3.2 /  23.8 & 23.8 / 106     & 7.4 / 4.5 $\times$ \\
+    \hline
+    skiplist (small)    & 3.4 / 19.1  & 23.5 / 103     & 6.9 / 5.4 $\times$ \\
+    \hline
+    threadworms (small) & 13.6 / 28.6 & 30.1 / 150     & 2.2 / 5.2 $\times$ \\
+    \hline
+    mandelbrot (small)  & 3.7 / 16.6  & 21.2 / 101     & 5.7 / 6.1 $\times$ \\
+    \hline
+    raytrace (small)    & 9.0 / 67.0  & 22.9 / 141     & 2.5 / 2.1 $\times$ \\
+    \hline
+    richards (small)    & 3.7 / 16.6  & 24.4 / 116     & 6.6 / 7.0 $\times$ \\
+    \hline
+  \end{tabular*}
+  \caption{Memory requirements reported as average GC-memory / RSS in MiB}
+\end{table}
+
+\remi{We cut off the first second of run time to not include startup.
+We run on 4 threads in order to see some privatisation of pages in STM.}
 
 % \begin{figure}[h]
 %   \centering
