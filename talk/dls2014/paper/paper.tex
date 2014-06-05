@@ -90,6 +90,7 @@
 \newcommand\cfbolz[1]{\mynote{cfbolz}{#1}}
 \newcommand\arigo[1]{\mynote{arigo}{#1}}
 
+\newcommand{\comment}[1]{}
 
 
 \begin{document}
@@ -116,8 +117,24 @@
 %% \titlebanner{banner above paper title}        % These are ignored unless
 %% \preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{Virtual Memory Assisted Transactional Memory for Dynamic Languages}
-\subtitle{DLS'14}
+\title{
+}
+%\subtitle{DLS'14}
+
+\comment{
+A Platform for Parallelism in Dynamic languages
+Parallelism for Python
+A TM Implementation for Python
+Transactional Memory as a foundation for parallel Python
+Transactional Memory as a foundation for parallelism in Python
+Parallel Python based on VM-assisted TM
+Parallel Python based on VM-assisted Transactional Memory
+A Platform for parallel Python
+A TM Platform for parallel Python
+A Transactional Memory Platform for parallel Python
+A Transactional Memory system for parallel Python
+
+Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 
 \authorinfo{Remigius Meier}
            {Department of Computer Science\\ ETH Zürich}
@@ -145,65 +162,92 @@
 \section{Introduction}
 
 
-Dynamic languages like Python, PHP, Ruby, and JavaScript are usually
-regarded as very expressive but also very slow. In recent years, the
-introduction of just-in-time compilers (JIT) for these languages
-(e.g.\ PyPy~\cite{cfbolz09}, V8~\cite{kevin10}, IonMonkey~\cite{ionmonkey})
-started to change this perception by delivering
-good performance that enables new applications. However, a parallel
-programming model was not part of the design of those languages. Thus,
-the reference implementations of e.g.\ Python and Ruby use a single,
-global interpreter lock (GIL) to serialise the execution of code in
-threads.
+Dynamic languages like Python, PHP, Ruby, and JavaScript receive a lot of attention but
+have not yet embraced parallelism. A parallel programming model was not part of the design
+of those languages. Thus, the reference implementations of, e.g., Python and Ruby use a
+single, global interpreter lock (GIL) to serialise the execution of code in threads. The
+use of a single global lock causes several disadvantages, and as multicore processors
+become the de-facto standard in platfroms ranging from smart phones to datacenters, the
+issue of parallel execution must be addressed by these dynamic languages.
 
-While this GIL prevents any parallelism from occurring, it also
-provides some useful guarantees. Since this lock is always acquired
-while executing bytecode instructions and it may only be released
-in-between such instructions, it provides perfect isolation and
-atomicity between multiple threads for a series of
-instructions. Additionally, it provides the application with a
-sequential consistency model~\cite{lamport79}. Another technology that
-can provide the same guarantees is transactional memory (TM).
+Unfortunately the GIL plays a central role in current implementations. Even
+recent just-in-time compilers (JIT) for these languages
+(e.g., PyPy~\cite{cfbolz09}, V8~\cite{kevin10}, IonMonkey~\cite{ionmonkey})
+are based on the GIL; Jython (an implementation of Python that is based on the JVM) is a
+notable exception.
+
+The standard model employed in these systems is fairly straightforward: there can be
+multiple threads, but each acquires the GIL, then performs a single instruction, and
+subsequently releases the lock.
+While this setup limits the benefits due to parallelism
+%% not clear we must say so TRG
+% -- parallelism is limited to I/O or other activities external to the interpreter
+the use of a GIL also provides some crucial guarantees. Since this lock is always acquired
+while executing bytecode instructions and may be released only in-between such
+instructions, the GIL ensures perfect isolation between multiple threads for a series of
+instructions, which are executed atomically.  In addition, the GIL provides the
+application with a sequential consistency model~\cite{lamport79}.
+
+A global interpreter lock assures the atomic execution of individual instructions but
+offers the programmer no help in managing concurrent data structures. Many parallel
+programs must maintain invariants involving multiple objects (or even multiple fields of a
+single object).  So to enable Python programs for parallel execution, we need a way to
+identify which blocks of data must be executed atomically and hardware or software support
+to effect this atomic execution.
+
+
+\emph{Atomic
+blocks}~\cite{tim03,tim05} allow dynamic languages to indicate
+the units of computation that must be executed atomically to ensure correct concurrent
+execution.  Atomic blocks map nicely to transactional memory, which provide a convenient
+mechansim to replace the GIL.
+ Using transactions to enclose
+multiple bytecode instructions, we can get the very same semantics as
+provided by the GIL while possibly executing several transactions in
+parallel. And by exposing these interpreter-level
+transactions to the application, we
+avoid the well-known problems caused by locks as applications use atomic blocks instead
+of explicit acquire/release operations on locks.
 
 There have been several attempts at replacing the GIL with
-TM~\cite{nicholas06,odaira14,fuad10}. Using transactions to enclose
-multiple bytecode instructions, we can get the very same semantics as
-the GIL while possibly executing several transactions in
-parallel. Furthermore, by exposing these interpreter-level
-transactions to the application in the form of \emph{atomic
-blocks}~\cite{tim03,tim05}, we give dynamic languages a new
-synchronisation mechanism that avoids several of the problems of locks
-as they are used now.
+TM~\cite{nicholas06,odaira14,fuad10}.
+We focuse here on
+software based transactional memory (STM)
+because they provide the unique opportunity to consider the issues of atomicity,
+synchronization, and memory management (resp. garbage collection) together.
+STM systems impose no a-priori bound on the size of an atomic block and provide therefore
+a flexibility that is absent from current hardware-based TM systems~\cite{wayforward14}.
+The downside of STM systems is runtime overhead~\cite{cascaval08,drago11}, which can
+be substantial despite recent efforts to lower the overhead~\cite{warmhoff13,spear09}.
+In this paper, we describe how we manage to lower the overhead of an
+STM system so that it can serve as a viable replacement for the GIL by leveraging the
+demands of a dynamic language like Python to integrate the STM system with the garbage
+collector.
 
-TM systems can be broadly categorised as hardware based (HTM),
-software based (STM), or hybrid systems (HyTM). HTM systems are limited
-by hardware constraints~\cite{odaira14,fuad10}, while STM systems have
-a lot of overhead~\cite{cascaval08,drago11}. In~\cite{wayforward14},
-we argue that STM is still the best way forward, especially since it
-supports large atomic blocks as a new way for synchronising multiple
-threads. There have been several attempts at lowering the overhead
-of STM~\cite{warmhoff13,spear09} -- sometimes at the cost of scalability.
-In this paper, we describe how we manage to lower the overhead of our
-STM system so that it can be seen as a viable replacement for the GIL.
+
 
 \cfbolz{both the introduction and the contributions need to stress the co-design of GC and STM}
+% agree trg
 
-Our contributions include:
+This paper makes the following contributions:
 \begin{itemize}[noitemsep]
 \item We introduce a new software transactional memory (STM) system
-  that performs well on low numbers of CPUs.
-\item We make novel use of the memory management capabilities of
-  off-the-shelf CPUs, e.g. memory segmentation and 64bit address space.
-\item We integrate our STM system closely with a garbage collector
-  (GC) in order to lower the overhead of STM.
+  that performs well for Python programs.
+\item We integrate the  system closely with a garbage collector
+  (GC) to lower the overhead of STM.
 \item This new STM system is used to replace the GIL in one
   implementation of Python and is then evaluated.
-\item We introduce atomic blocks to the Python language to provide a
-  backwards compatible, composable synchronisation mechanism for
-  threads.
 \end{itemize}
+The STM described here is efficient and has low overhead and is therefore beneficial also
+for environments with a small number of threads or cores. The paper describes also
+%% can be dropped, not the core topic
+how to introduce atomic blocks into the Python language to provide a
+  backwards compatible, composable synchronization mechanism for
+  threads.
 
 
+%% What is really needed from this section?? Maybe the subsection on Python can be moved
+%%  to the intro -- the rest is questionable.  TRG
 
 \section{Background}
 
