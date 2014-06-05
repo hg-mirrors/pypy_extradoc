@@ -657,7 +657,7 @@ The \textbf{young generation}, where objects are considered to be
 \emph{young} and reside in the \emph{Nursery}, is collected by
 \emph{minor collections}. These collections move the surviving objects
 out of a thread's nursery into the old object space, which can be done
-without stopping other threads. This is done either if the nursery has
+without stopping other threads. This is happens either if the nursery has
 no space left anymore or if we are committing the current
 transaction. Consequently, all objects are old and the nursery empty
 after a transaction commits.  Furthermore, all objects in the nursery
@@ -727,19 +727,30 @@ void stm_read(SO):
 \end{lstlisting}
 
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\columnwidth]{object_states.pdf}
+  \caption{Objects states handled by the write barrier\label{fig:obj_states}}
+\end{figure}
+
+
 \subsection{Write Barrier}
 
 The job of the write barrier is twofold: first, it serves as a write
 barrier for the garbage collector and second, it supports COW and adds
-objects to the write set of the transaction.
+objects to the write set of the transaction. These two jobs are
+depicted in Figure~\ref{fig:obj_states}.
 
 The \textbf{fast path} of the write barrier is very simple. We only
-need to check for the flag \lstinline!WRITE_BARRIER!  in the object's
+need to check for the flag \lstinline!WRITE_BARRIER! in the object's
 header through its $SO$ and call the slow path if it is set. This flag
 is set either if the object is old and comes from an earlier
 transaction, or if there was a minor collection which will add the
-flag again on all objects. It is never set on freshly allocated
-objects that still reside in the nursery.
+flag again on all objects and may produce overflow objects. The flag
+is never set on freshly allocated objects, because they do not need
+to be traced by the GC or handled by the STM system. This fast path
+covers all cases for the GC and for the STM system.
+
 
 \begin{lstlisting}
 void stm_write(SO):
@@ -777,7 +788,8 @@ void write_slowpath(SO):
 \caption{Slow path of the write barrier\label{lst:w_slow}}
 \end{code}
 
-The \textbf{slow path} is shown here in Listing~\ref{lst:w_slow}.
+
+The \textbf{slow path} is shown in Listing~\ref{lst:w_slow}.
 First comes the \emph{GC part}: In any case, the object will be added
 to the list of objects that need tracing in the next minor collection
 (\lstinline!to_trace!).  This is necessary in case we write a
@@ -789,12 +801,16 @@ to.
 The check for \lstinline!is_overflow_obj()! looks at the
 \lstinline!overflow_number!  and tells us if the object was actually
 created in this transaction. In that case, we do not need to execute
-the following \emph{TM part}.  We especially do not need to privatise
+the following \emph{STM part}.  We especially do not need to privatise
 its pages since no other transaction knows about these overflow
 objects. Even if they reside in non-private pages, it is guaranteed
 that no other transaction can have a reference to them.
 
-For the \emph{TM part}, we first perform a read barrier on the
+Up to here, we see that all cases of the GC shown in
+Figure~\ref{fig:obj_states} are handled. What is left is to handle the
+cases of the STM system that need to make old objects writable.
+
+For the \emph{STM part}, we first perform a read barrier on the
 object. We then try to acquire its write lock. \lstinline!write_locks!
 is a simple, \textbf{global} array of bytes that is indexed with the
 $SO$ of the object divided by 16. Note, ``global'' here really means
@@ -807,9 +823,6 @@ object.  If we succeed in acquiring the lock using an atomic
 \lstinline!cmp_and_swap!, we need to add the object to the write set
 (a simple list called \lstinline!modified_old_objects!)  and privatise
 all pages belonging to it (copy-on-write).
-
-\cfbolz{at this point I kind of had the need for a diagram of the various
-states an object can be in, and the transitions between them.}
 
 In all cases, we remove the \lstinline!WRITE_BARRIER!  flag from the
 object before we return. Thus, we never trigger the slow path again
@@ -1154,6 +1167,7 @@ JIT in the future.
 \section{Future Work}
 
 \arigo{what else than memory usage goes here?}
+\remi{limited scalability; static segmentation?}
 
 We are still working on a number of optimizations in the
 implementation.  We want to mention notably that memory usage has not
