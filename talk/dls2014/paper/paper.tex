@@ -1066,21 +1066,25 @@ analysis).
 
 PyPy using our STM system (\emph{pypy-stm-nojit}) scales in all
 benchmarks to a certain degree. It scales best for the embarrassingly
-parallel ones and a little less in the others. The reason
-for that is that in the former group there are no real, logical
-conflicts -- all threads do independent calculations. STM simply
-replaces the GIL in those programs. In the latter group,
-the threads work on a common data structure and therefore
-create much more conflicts, which limits the scalability. Here
-we make active use of the STM-supported atomic blocks that
-provide a scalable synchronisation mechanism.
+parallel ones (\remi{$avg=2.5\times$} speedup) and a little less for
+the others (\remi{$avg=1.9\times$} speedup). The reason for that is
+that in the former group there are no real, logical conflicts -- all
+threads do independent calculations. STM simply replaces the GIL in
+those programs. In the latter group, the threads work on a common data
+structure and therefore create much more conflicts, which limits the
+scalability. Here we make active use of the STM-supported atomic
+blocks in order do synchronise access to the data structure. The hope
+is that the STM system is still able to parallelise, even if we use
+the atomic blocks in a coarse-grained way. While less than the other
+benchmarks, we indeed see some speedup going from 1 to 3 threads.
+There is no visible benefit from 3 to 4 threads, even a slight
+regression.
 
 Looking at the average overhead from switching from GIL to STM, we see
 that it is \remi{$\approx 35.5\%$}. The maximum in richards is
-\remi{$63\%$}.
-
-\emph{pypy-stm-nojit} beats \emph{pypy-nojit} already on two threads;
-however, it rarely beats CPython's single-thread performance.  For
+\remi{$63\%$}. In all benchmarks \emph{pypy-stm-nojit} beats
+\emph{pypy-nojit} already on two threads despite of this overhead.
+However, it rarely beats CPython's single-thread performance.  For
 programs that need concurrency in CPython and that use threads to
 achieve this, it also makes sense to look at the overhead induced by
 the GIL on multiple threads. From this perspective, the STM
@@ -1269,6 +1273,22 @@ superficial similarities between our approach and theirs.
 
 
 \section{Conclusions}
+
+First results promising; a lot to understand yet; a lot to improve
+
+
+contributions:
+\begin{itemize}
+\item memory segmentation, page mapping $\rightarrow$ performance
+\item STM \& GC: high allocation rate of dynlangs; shared write barrier;
+  page privatisation and re-sharing by GC; used to synchronise threads;
+  used to classify objects (transaction owned / not)
+\item GIL replaced successfully in embarrassingly parallel benchs;
+  avg overhead of $35\%$; beating GIL at 2 threads (2.5x speedup)
+\item atomic blocks introduced as a scalable sync mechanism (1.9x speedup)
+\item JIT needs work
+\end{itemize}
+
 
 
 %% \appendix
