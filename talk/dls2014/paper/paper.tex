@@ -1164,46 +1164,6 @@ JIT in the future.
 
 
 
-
-\section{Future Work}
-
-\arigo{what else than memory usage goes here?}
-\remi{limited scalability; static segmentation?}
-
-We are still working on a number of optimizations in the
-implementation.  We want to mention notably that memory usage has not
-been optimized so far.  There are several sources of extra memory
-requirements in our STM system.  The multiple nurseries add
-4~MiB\footnote{Configurable value taken from experience with our
-  non-STM reference interpreter.} per segment.  Additionally, the area
-used for the read markers uses, per segment, up to 1/16th of the
-memory used by the old objects.  With four segments, this can add
-as much as $25\%$ to the total memory requirements.
-
-One of the most important sources of additional memory usage is the
-presence of privatised pages.  It is hard to predict and control.
-Right now, if a program creates a large number of privatised pages,
-major garbage collections will occur more frequently in the hope of
-resharing some of these pages.  More advanced techniques might be
-useful.
-
-Overall, early measures seem to show that a four-segment version of
-pypy-stm-nojit consumes between 2 and 7 times as much memory as a
-plain pypy-nojit.  The high part of this spectrum seems to occur only
-if the total memory usage is rather low (less than 20~MiB): it might
-simply mean that our approach has a high constant memory usage
-overhead.  The low part, i.e.\ a factor 2, can approximately be
-attributed to the reasons described above.  It is future work to
-investigate in more details.
-
-Besides memory usage, we also want to mention scalability. We
-think that current desktop machines with up to 8 cores should
-be seen as the main area of applications of dynamic languages.
-This is why our evaluation was performed on an off-the-shelf
-desktop CPU with only 4 cores. In the future, we will look
-at how far this STM system can really scale.
-
-
 \section{Related Work}
 
 There have been several attempts at removing the GIL using TM. We
