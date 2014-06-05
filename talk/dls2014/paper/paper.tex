@@ -916,33 +916,6 @@ other transaction to commit as soon as possible and wait. After
 waiting, there is now no conflict between our write and the already
 committed read anymore.
 
-\subsection{Memory Requirements\label{sub:memoryreq}}
-\remi{maybe its own ``limitations'' section? also about
-  static segmentation and limited scaling }
-
-
-There are several sources of extra memory requirements in our
-STM system. First, we need to keep track of the state an object
-is in. We do this using flags and an overflow number. Both currently
-fit in a single additional header of 4~bytes per object.
-
-Second, there are areas in memory private to each segment (see
-Section~\ref{sub:Setup}). The Nursery for example is 4~MiB in
-size\footnote{Configurable value taken from experience with our
-non-STM reference interpreter}. Additionally, the area used for the
-read markers is lazily mapped by the kernel and only needed for
-objects in the old object space. Thus, it can be at most the total
-size of memory used by old objects divided by 16, adding up to
-$6.3\%$ to the total memory requirements.
-
-Third, since we do copy on write, if all objects were to be written to
-at the same time, all pages would need to be privatised for all
-objects in the old object space. In that case we would need the total
-amount of memory required by old objects multiplied by $N+1$
-(incl. the sharing segment). This is certainly the worst case and
-so far not observed in practice. During major collections we re-share
-privatised pages that are currently not modified by any transaction,
-thereby reclaiming some of this memory.
 
 
 \section{Evaluation}
@@ -1042,85 +1015,6 @@ all. These atomic blocks are simulated with a single global lock
 when running on top of GIL-supported interpreters. With our STM
 system, they map to transactions that will execute optimistically
 in parallel.
-
-
-\subsection{Memory Requirements}
-
-\remi{reference \ref{sub:memoryreq}}
-
-\begin{table}[h]
-  \centering
-  \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill} }|p{2cm}|c|c|c|}
-    \hline
-                        & pypy-nojit  & pypy-stm-nojit & Overhead  \\
-    \hline
-    btree (small)       & 3.2 /  23.8 & 23.8 / 106     & 7.4 / 4.5 $\times$ \\
-    \hline
-    skiplist (small)    & 3.4 / 19.1  & 23.5 / 103     & 6.9 / 5.4 $\times$ \\
-    \hline
-    threadworms (small) & 13.6 / 28.6 & 30.1 / 150     & 2.2 / 5.2 $\times$ \\
-    \hline
-    mandelbrot (small)  & 3.7 / 16.6  & 21.2 / 101     & 5.7 / 6.1 $\times$ \\
-    \hline
-    raytrace (small)    & 9.0 / 67.0  & 22.9 / 141     & 2.5 / 2.1 $\times$ \\
-    \hline
-    richards (small)    & 3.7 / 16.6  & 24.4 / 116     & 6.6 / 7.0 $\times$ \\
-    \hline
-  \end{tabular*}
-  \caption{Memory requirements reported as average GC-memory / RSS in MiB}
-\end{table}
-
-\remi{We cut off the first second of run time to not include startup.
-We run on 4 threads in order to see some privatisation of pages in STM.}
-
-% \begin{figure}[h]
-%   \centering
-%   \includegraphics[width=1\columnwidth]{plots/richards_mem.pdf}
-%   \caption{Actual memory managed by the GC and the page privatisation
-%     over time in Richards benchmark\label{fig:richards_mem}}
-% \end{figure}
-
-% In Figure~\ref{fig:richards_mem} we look at the memory usage of one of
-% our benchmarks called Richards.\footnote{Richards is a OS kernel simulation
-% benchmark.} The \emph{GC managed memory} counts all memory used in the
-% old object space including the memory required for private pages. Note,
-% it does not measure the memory required for the segment-private areas
-% like the nursery and read markers. The
-% sharp drops in memory usage come from major collections that free old
-% objects and re-share pages. The average memory usage stays around
-% 29~MiB and we see that in this benchmark we have around 1 major
-% collection every second.
-
-% The \emph{page privatisation}, which represents the ratio between
-% private pages and shared pages, gives us an idea about how many
-% private copies exist for each shared page. If the ratio is $>1.0$, it
-% means that on average we have more than one private copy for each
-% shared page. In the worst case described above, this number would
-% reach $N$ and means we need $N\times$ the memory for the private
-% pages alone. In this benchmark, we see the same spikes as the memory
-% usage. These come directly from re-sharing the pages. The maximum page
-% privatisation is around $0.9$ between major collections, thus the
-% private pages are responsible for a $90\%$ increase in the required
-% memory. Since the spikes in the GC managed memory line actually
-% show increases by $~100\%$, it means that the rest comes from actual
-% garbage objects that were collected.
-
-\remi{do this and RSS numbers for pypy-stm-nojit and normal pypy-nojit:}
-
-For PyPy-STM the average memory requirement is 21~MiB and there are
-$\sim 10$ major collections during the runtime. Normal PyPy with a GIL
-grows its memory up to just 7~MiB and does not do a single major
-collection in that time. Compared to normal PyPy, we are missing a
-memory optimisation to store small objects in a more compact
-way. Additionally, since normal PyPy uses a GIL, it does not need to
-duplicate any data structures like e.g.\ the Nursery for each
-thread. This, the missing optimisation, and the additional memory
-requirements for STM explained above account for this difference.
-We expect to improve this aspect in the future; in this paper we
-want to focus first on performance.
-\remi{I don't know how much sense it makes to go deeper. We will
-improve this in the future, but right now this is the overall picture.}
-\cfbolz{you can't kill it, otherwise a reviewer will ask. also, the pypy-no-stm numbers are meaningless as long as the options are different}
 
 
 %%% TODO: if time permits
@@ -1242,6 +1136,40 @@ JIT in the future.
   \includegraphics[width=1\columnwidth]{plots/performance.pdf}
   \caption{Comparing execution time between interpreters with JIT\label{fig:performance-jit}}
 \end{figure}
+
+
+
+
+\section{Future Work}
+
+\arigo{what else than memory usage goes here?}
+
+We are still working on a number of optimizations in the
+implementation.  We want to mention notably that memory usage has not
+been optimized so far.  There are several sources of extra memory
+requirements in our STM system.  The multiple nurseries add
+4~MiB\footnote{Configurable value taken from experience with our
+  non-STM reference interpreter.} per segment.  Additionally, the area
+used for the read markers uses, per segment, up to 1/16th of the
+memory used by the old objects.  With four segments, this adds $25\%$
+to the total memory requirements.
+
+One of the most important sources of additional memory usage is the
+presence of privatised pages.  It is hard to predict and control.
+Right now, if a program creates a large number of privatised pages,
+major garbage collections will occur more frequently in the hope of
+resharing some of these pages.  More advanced techniques might be
+useful.
+
+Overall, early measures seem to show that a four-segment version of
+pypy-stm-nojit consumes between 2 and 7 times as much memory as a
+plain pypy-nojit.  The high part of this spectrum seems to occur only
+if the total memory usage is rather low (less than 20~MiB): it might
+simply mean that our approach has a high constant memory usage
+overhead.  The low part, i.e.\ a factor 2, can approximately be
+attributed to the reasons described above.  It is future work to
+investigate in more details.
+
 
 
 \section{Related Work}
