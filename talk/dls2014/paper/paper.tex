@@ -353,7 +353,7 @@ running irreversible operations.
 
 
 
-\section{High-level overview}
+\section{High-Level Overview}
 
 In this section, we will present the general idea of how the TM model is
 implemented.  The later section~\ref{sub:Low-level-Implementation} will
@@ -361,30 +361,40 @@ discuss it with more technical details.
 
 \subsection{Memory Segmentation and Page Sharing}
 
-A naive approach to providing complete isolation between threads is to
-partition the virtual memory of a process into $N$ segments, one per
-thread.  Each segment then holds a complete copy of the memory logically
-seen by the program.  All threads read and write data inside their own
-segment; exchanges between segments occur only at commit-time.  So far,
-this is a model that would also work for distributed transactional
-memory.
+Our STM system fundamentally builds on threads. Transactions run in
+their context, and there can be only one transaction per thread at a
+time. Transactions run in parallel because these threads can run in
+parallel. In order to isolate transactions from each other, we look
+at isolating the memory accesses from threads.
 
-Obviously, if we are in a shared-memory setting, this model is extremely
-wasteful: at a given time, most objects are identical in all, or most,
-segments.  They differ only in segments that have modified but not yet
-committed the object.  So we use a trick of the Memory Management Unit
-(MMU) of the CPU.  At the coarse unit of one page of memory (4096
-bytes), we use remappings so that, in general, pages within segments are
-\emph{shared} with each other if they would contain a fully identical
-copy.  Conversely, when one segment needs to write to one object
-contained in a page, the complete page is first \emph{privatised:} it is
-duplicated and the copy is remapped so that it will be visible in this
-segment (only).  This process is illustrated in
-Figure~\ref{fig:Page-Remapping}.
+A naive approach to providing this complete isolation between threads
+is to partition the virtual memory of a process into $N$ segments, one
+for each thread currently executing.  Each segment then holds a
+complete copy of the memory logically seen by the program.  All
+threads read and write data inside their own segment; exchanges
+between segments occur only when transactions commit.  So far, this is a
+model that would also work for distributed transactional memory.
 
-The result that we get is that the virtual address space of the process
-is bloated -- by a factor $N$ -- but the real memory usage is not --
-because most pages are shared with their copies in most other segments.
+Clearly, if we are in a shared-memory setting, this model is extremely
+wasteful: at any given time, most objects are identical in all, or
+most, segments.  They differ only in segments that have modified but
+not yet committed these objects.  So we use a trick of the Memory
+Management Unit (MMU) of the CPU.  The MMU maps pages of virtual to
+physical memory.  By changing this page mapping, at the coarse unit of
+one page of memory (4096 bytes), we can share memory that would
+otherwise exist as identical copies in all segments.
+
+In the common case, where objects are identical in all segments, we
+can thus make these pages \emph{shared}. Conversely, when one thread~/
+segment wants to modify an object, all pages of this object need to be
+\emph{privatised} for this segment. This involves duplicating the
+pages and changing the page mapping so that the private pages are only
+accessible by this segment and full isolation is guaranteed.  This
+process is illustrated in Figure~\ref{fig:Page-Remapping}.
+
+The result is that the virtual address space of the process is bloated
+by a factor $N$ -- but the real memory usage is not, because most
+pages are shared with their identical copies in other segments.
 
 \begin{figure}[h]
   \centering
@@ -444,7 +454,7 @@ indexing, will need an extra explicit addition.
 What we described so far has no mesurable performance impact by
 itself, and it is missing conflict detection to be considered a
 full-fledged STM system.  This requires adding \emph{barriers} to the
-program to register the objects into the read or write set before
+program to register the objects in the read or write set before
 reading or writing to them\footnote{Barriers added by an automatic and
 local program transformation~\cite{felber07}}.  Furthermore, we need
 to describe the commit protocol.
@@ -454,7 +464,10 @@ to describe the commit protocol.
 \item [{Read~Barrier:}] A major contribution to our performance results
   is the simplicity of the read barrier: a large program (like an
   interpreter for a complex language) contains a number of reads that
-  typically exceeds many times the number of writes.  We managed to
+  typically exceeds many times the number of writes.  The described
+  approach allows the read barrier to be a single, unconditional memory
+  write into segment-local memory.
+ We managed to
   design the read barrier so that it is done by one memory write
   (setting a flag) into non-shared memory.  This is done with a
   segment-local array of flags indexed by a number derived from the $SO$
