@@ -197,7 +197,7 @@ Our contributions include:
 \item We integrate our STM system closely with a garbage collector
   (GC) in order to lower the overhead of STM.
 \item This new STM system is used to replace the GIL in one
-  implementation of Python and is then evaluated extensively.
+  implementation of Python and is then evaluated.
 \item We introduce atomic blocks to the Python language to provide a
   backwards compatible, composable synchronisation mechanism for
   threads.
@@ -441,11 +441,13 @@ indexing, will need an extra explicit addition.
 
 \subsection{Conflict detection}
 
-What we described so far has no mesurable performance impact by itself,
-but is missing conflict detection to be part of a full-fledged STM
-system.  This requires adding \emph{barriers} to the program to register
-the objects into the read or write set, and adapting the commit
-protocol in consequence.
+What we described so far has no mesurable performance impact by
+itself, and it is missing conflict detection to be considered a
+full-fledged STM system.  This requires adding \emph{barriers} to the
+program to register the objects into the read or write set before
+reading or writing to them\footnote{Barriers added by an automatic and
+local program transformation~\cite{felber07}}.  Furthermore, we need
+to describe the commit protocol.
 
 \begin{description}
 
@@ -1416,9 +1418,9 @@ contributions:
   processor's hardware transactional memory support. \emph{SIGARCH
   Comput. Archit. News 38}, 5 (April 2010)
 
-% \bibitem{felber07}
-%   Felber, Pascal, et al. "Transactifying applications using an open
-%   compiler framework." \emph{TRANSACT}, August (2007): 4-6.
+\bibitem{felber07}
+  Felber, Pascal, et al. "Transactifying applications using an open
+  compiler framework." \emph{TRANSACT}, August (2007): 4-6.
 
 % \bibitem{bill06}
 %   Bill McCloskey, Feng Zhou, David Gay, and Eric
