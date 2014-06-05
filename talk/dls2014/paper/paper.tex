@@ -999,15 +999,10 @@ def workload():
 For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
 and normalised the average runtimes to the time it took on a single
 thread. From this we see that there is additional overhead introduced
-by each thread (\remi{$13\%$} for all 4 threads together). While this
-is not ideal, we think that \remi{$13\%$} are acceptable on four
-threads. In terms of throughput, 4 threads have \remi{$3.53\times$}
+by each thread (\remi{$12.3\%$} for all 4 threads together). While this
+is not ideal, we think that \remi{$12.3\%$} are acceptable on four
+threads. In terms of throughput, 4 threads have \remi{$3.54\times$}
 more iterations per second than a single thread.
-
-\remi{what we don't show is by how much this overhead is influenced
-by allocations}
-
-\cfbolz{why is the error so big with 4 threads?}
 
 \begin{figure}[h]
   \centering
@@ -1176,8 +1171,8 @@ requirements in our STM system.  The multiple nurseries add
 4~MiB\footnote{Configurable value taken from experience with our
   non-STM reference interpreter.} per segment.  Additionally, the area
 used for the read markers uses, per segment, up to 1/16th of the
-memory used by the old objects.  With four segments, this adds $25\%$
-to the total memory requirements.
+memory used by the old objects.  With four segments, this can add
+as much as $25\%$ to the total memory requirements.
 
 One of the most important sources of additional memory usage is the
 presence of privatised pages.  It is hard to predict and control.
@@ -1195,6 +1190,12 @@ overhead.  The low part, i.e.\ a factor 2, can approximately be
 attributed to the reasons described above.  It is future work to
 investigate in more details.
 
+Besides memory usage, we also want to mention scalability. We
+think that current desktop machines with up to 8 cores should
+be seen as the main area of applications of dynamic languages.
+This is why our evaluation was performed on an off-the-shelf
+desktop CPU with only 4 cores. In the future, we will look
+at how far this STM system can really scale.
 
 
 \section{Related Work}
