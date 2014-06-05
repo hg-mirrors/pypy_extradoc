@@ -371,9 +371,10 @@ A naive approach to providing this complete isolation between threads
 is to partition the virtual memory of a process into $N$ segments, one
 for each thread currently executing.  Each segment then holds a
 complete copy of the memory logically seen by the program.  All
-threads read and write data inside their own segment; exchanges
-between segments occur only when transactions commit.  So far, this is a
-model that would also work for distributed transactional memory.
+threads read and write data inside their own segment; and this data
+gets copied to other segments in an atomic fashion only when a
+transaction commits.  So far, this is a model that would also work for
+distributed transactional memory.
 
 Clearly, if we are in a shared-memory setting, this model is extremely
 wasteful: at any given time, most objects are identical in all, or
@@ -407,40 +408,50 @@ pages are shared with their identical copies in other segments.
 
 \subsection{Memory Segmentation on the x86}
 
-When we need to store into our objects pointers to other objects, we
-need to be careful: if we were to directly store regular addresses valid
-in the local segment, then the objects' binary content would have to differ
-between segments.  This would prevent any sharing.  Instead, we store
-pointers as \emph{Segment Offsets ($SO$)}, i.e.\ offsets from the start
-of the segment.  A $SO$ can then be interpreted from any segment by
-adding it to the base address of that segment.\footnote{An alternative
-model would be to simulate threads using several independent processes
-in which all segments are at the same address.  This might work well for
+When we store into our objects the references to other objects, we
+need to be careful: addresses that are valid in one segment are not
+valid in another, because they would break isolation by pointing to
+the copy of the object in another segment.  Consequently, we would
+need to adapt these addresses to the segment they live in, which would
+prevent completely any page sharing.  Instead, we store pointers as
+\emph{Segment Offsets ($SO$)}, i.e.\ offsets from the start of the
+segment.  A $SO$ can then be interpreted in any segment by adding to
+it the start address of that segment.\footnote{An alternative model
+would be to simulate threads using several independent processes in
+which all segments are at the same address.  This might work well for
 demonstration purposes, but it is not really suitable for implementing
-an existing programming language: programs assume that most of the state
-(file descriptors, external libraries, ...) is shared.} The result is
-called a \emph{Linear Address (LA)}. This is illustrated in
+an existing programming language: programs assume that most of the
+state (file descriptors, external libraries, ...) is shared.} The
+result is called a \emph{Linear Address (LA)}. This is illustrated in
 Figure~\ref{fig:Segment-Addressing}.
 
-The x86 CPUs provide a feature which is precisely called \emph{memory
+The x86 CPUs provide a feature which is called \emph{memory
 segmentation}.  On the modern x86-64, this is enough to perform the
-addition described above very efficiently.  We use the segment register
-$\%gs$, which is available to applications, to point to the
-thread's segment start address.\footnote{The other segment register
-$\%fs$ is typically used by the threading library to provide access to
-thread-local data.  One point of view is that we are using $\%gs$ for a
-similar purpose: thread-local data -- but a lot of it.}  The translation
-from a $SO$ to a LA is done for us by using the ``$\%gs\colon$'' prefix
-before any CPU instruction that reads or writes memory using a $SO$
-address.  This is very efficient and some compilers support it natively
-(e.g.\ clang).
+addition described above very efficiently.  We use the segment
+register $\%gs$\footnote{The other segment register $\%fs$ is
+typically used by the threading library to provide access to
+thread-local data.  One point of view is that we are using $\%gs$ for
+a similar purpose: thread-local data -- but a lot of it.}, which is
+available to applications, to point to the current thread's segment
+start address.  The translation from a $SO$ to a LA is done for us by
+using the ``$\%gs\colon$'' prefix before any CPU instruction that
+reads or writes memory using a $SO$ address.  This is very efficient
+(we can do it on every object access) and some compilers support it
+natively (e.g.\ clang).
 
-If support for this is not available (due to the compiler or on a
-different architecture), there are other optimizations possible.  For
-example, using gcc, a regular register can be globally reserved and
-all ``simple enough'' memory accesses will still resolve to a single
-instruction.  More complicated accesses, e.g.\ those involving array
-indexing, will need an extra explicit addition.
+In summary, translating a $\%gs:SO$ to a physical address is a
+two-step process: First the memory segmentation feature of the CPU
+constructs a linear address. Then, this LA gets mapped by the MMU to
+some place in the physical memory. This makes the $SO$ a valid reference
+to an object in all segments.
+
+
+% If support for this is not available (due to the compiler or a
+% different CPU architecture), there are other optimisations possible.
+% For example, using gcc, a regular register can be globally reserved
+% and all ``simple enough'' memory accesses will still resolve to a
+% single instruction.  More complicated accesses, e.g.\ those involving
+% array indexing, will need an extra explicit addition.
 
 \begin{figure*}[t]
   \centering
@@ -451,77 +462,79 @@ indexing, will need an extra explicit addition.
 
 \subsection{Conflict detection}
 
-What we described so far has no mesurable performance impact by
-itself, and it is missing conflict detection to be considered a
+What we described so far has no measurable performance overhead by
+itself, but it is missing conflict detection to be considered a
 full-fledged STM system.  This requires adding \emph{barriers} to the
 program to register the objects in the read or write set before
 reading or writing to them\footnote{Barriers added by an automatic and
-local program transformation~\cite{felber07}}.  Furthermore, we need
-to describe the commit protocol.
+local program transformation~\cite{felber07}}.  Furthermore, we still
+need to describe the commit protocol.
 
 \begin{description}
 
-\item [{Read~Barrier:}] A major contribution to our performance results
+\item [{Read~Barrier:}] A major contribution to our performance
   is the simplicity of the read barrier: a large program (like an
   interpreter for a complex language) contains a number of reads that
   typically exceeds many times the number of writes.  The described
-  approach allows the read barrier to be a single, unconditional memory
-  write into segment-local memory.
- We managed to
-  design the read barrier so that it is done by one memory write
-  (setting a flag) into non-shared memory.  This is done with a
-  segment-local array of flags indexed by a number derived from the $SO$
-  of the object.  Unlike other STM systems, the read barrier does not
-  have to find the private version of some object -- our two-step
-  address translation automatically resolves the reference to the
-  private version on every access anyway.  This means the read barrier
-  is not constrained to execute before the actual read -- both the
-  compiler and the CPU are free to reorder them.
+  approach allows the read barrier to be a single, unconditional
+  write into segment-local memory. We only need to mark an object
+  as read by the current transaction. The mark is stored in an
+  segment-local array indexed by a number derived from the $SO$
+  of the object.
 
-\item [{Write~Barrier:}] This is triggered by checking a flag in the
-  header of the object.  When the flag is set, we call the slow path,
-  which adds the object into the write set and unconditionally resets
-  the flag.  We eagerly detect write-write conflicts by allowing only
-  one transaction modifying an object at a time (by acquiring a write
+  Unlike other STM systems, the read barrier does not have to find the
+  private version of the object -- our two-step address translation
+  automatically resolves the reference to the private version on every
+  access anyway\footnote{Additional benefit: The read barrier is not
+    constrained to execute before the actual read -- both the compiler and
+    the CPU are free to reorder them.}.
+
+\item [{Write~Barrier:}] This barrier is triggered by checking a flag
+  on the object that signifies if we did not already execute the write
+  barrier on this object before.  When the flag is set, we call the slow
+  path, which adds the object into the write set and unconditionally
+  resets the flag.
+
+  Here, we eagerly detect write-write conflicts by allowing only one
+  transaction modifying an object at a time (by acquiring a write
   lock).\footnote{Eager write-write detection is not inherent to our
-  approach; future experiments may show that we want to lift this
-  restriction.}  This slow path is also responsible for privatising
-  pages,\footnote{The write set contains objects, not pages.} as
-  described above.  Interestingly, we are using a generational garbage
-  collector (described below) which requires a similar write barrier
-  anyway -- so the same header flag is used for both cases.  The flag
-  means ``something needs to be done before writing to this object'',
-  and the slow path logic determines what it is.
+    approach; we may lift this restriction in the future.}  Part of making
+  the object write-ready is also the privatisation of all pages the
+  object belongs to as described above.
+
+  Described below, we also need a write barrier for our generational
+  garbage collector (GC). Interestingly, we are able to share the same
+  barrier and flag for both use cases. Since the GC is an integral
+  part of many dynamic languages, we actually do not incur any additional
+  overhead here since the barriers are already there.
 
 \item [{Commit:}] When we want to commit a transaction, we need to check
   for read-write conflicts.  Such conflicts cannot be detected in the
-  minimal read barrier, but can be detected during commit: the case to
-  look for is that the committing transaction wrote to an object that
-  another transaction has already read.\footnote{Which is why the read
-  sets can be just sparsely populated arrays of flags: we never walk the
-  whole read set.} A priori, checking other transactions' read sets
-  would involve reading concurrently modified memory: a different thread
-  could be issuing a read barrier in parallel with an unprotected
-  commit.  To prevent this from occurring, we must suspend all other
-  threads at known safe points.  This is a trade-off for the simplicity
-  of our read barriers -- which is well worth it in our case, due to the
-  very high number of read barriers when compared to the number of
-  commits and the (low) total number of threads.
+  minimal read barrier, but can be detected during commit: we check
+  if any of the objects in our write set was already read by another
+  transaction. We never walk the read set, but just check if the objects
+  are marked in other segments.
+
+  Checking other transactions' read marks would involve reading
+  concurrently modified memory: another thread could be issuing a read
+  barrier in parallel with a commit.  To prevent this from occurring, we
+  must suspend all other threads at known safe points.  This is a
+  trade-off for the simplicity of our read barrier -- which is well
+  worth it in our case, due to the very high number of read barriers
+  when compared to the number of commits.
 
 \end{description}
 
-Conflicts can be resolved by aborting one of the two transactions, or in
-some cases by pausing one of them until the other commits.  If a commit
-succeeds, we copy the changes to modified objects so that they become
-visible in other segments.  Note that this only includes objects that
-existed before the transaction and have been modified by it.  It does
-not include all the new objects created by the current transaction
-(there is typically a very high rate of object churn in dynamic languages).
-Our garbage collector allocates new objects in pages that are shared in
-the first place, so that they do not need to be copied -- and moreover,
-such objects will commonly never be modified any more.
-
-Privatised pages are re-shared during major collection cycles.
+Conflicts can be resolved by aborting one of the two transactions, or
+in some cases by pausing one of them until the other commits.  If a
+commit succeeds, we copy the changes made to the objects in the write
+set so that they become visible in other segments.  Note that this
+only includes objects that existed before the transaction and have
+been modified by it.  It does not include all the new objects created
+by the current transaction, which typically outnumber modified objects
+by far in dynamic languages.  We allocate these new objects in pages
+that are still shared, so that they do not need to be copied to other
+segments at all.
 
 
 
