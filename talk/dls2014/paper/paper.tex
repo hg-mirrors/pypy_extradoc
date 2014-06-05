@@ -26,6 +26,14 @@
 \usepackage{multicol}
 \usepackage{tabularx}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\usepackage{float}
+\floatstyle{ruled}
+\newfloat{code}{tbp}{loa}
+\providecommand{\codename}{Listing}
+\floatname{code}{\protect\codename}
+
+
 % nice listings
 \usepackage{xcolor}
 \usepackage{newverbs}
@@ -372,7 +380,7 @@ copy.  Conversely, when one segment needs to write to one object
 contained in a page, the complete page is first \emph{privatised:} it is
 duplicated and the copy is remapped so that it will be visible in this
 segment (only).  This process is illustrated in
-figure~\ref{fig:Page-Remapping}.
+Figure~\ref{fig:Page-Remapping}.
 
 The result that we get is that the virtual address space of the process
 is bloated -- by a factor $N$ -- but the real memory usage is not --
@@ -402,7 +410,7 @@ demonstration purposes, but it is not really suitable for implementing
 an existing programming language: programs assume that most of the state
 (file descriptors, external libraries, ...) is shared.} The result is
 called a \emph{Linear Address (LA)}. This is illustrated in
-figure~\ref{fig:Segment-Addressing}.
+Figure~\ref{fig:Segment-Addressing}.
 
 The x86 CPUs provide a feature which is precisely called \emph{memory
 segmentation}.  On the modern x86-64, this is enough to perform the
@@ -529,11 +537,11 @@ sections.
 \begin{lstlisting}
 void stm_start_transaction()
 void stm_commit_transaction()
-void stm_read(object_t *obj)
-void stm_write(object_t *obj)
+void stm_read(object_t *SO)
+void stm_write(object_t *SO)
 object_t *stm_allocate(ssize_t size_rounded)
-STM_PUSH_ROOT(obj)
-STM_POP_ROOT(obj)
+STM_PUSH_ROOT(object_t *SO)
+STM_POP_ROOT(object_t *SO)
 \end{lstlisting}
 
 
@@ -556,7 +564,10 @@ the object moved or was seen as garbage. In this simplified API, only
 \lstinline!stm_allocate()!  and \lstinline!stm_commit_transaction()!
 require saving object references.
 
-The type \lstinline!object_t! is special as it causes the
+In the following sections, whenever we use $SO$, we go through the
+address translation to get to the actual contents of an object. This
+is also signified by the type \lstinline!object_t!.  This type is
+special as it causes the
 compiler\footnote{We use Clang 3.5 with patches to deal with bugs in
 its ``address-space 256'' feature. Patches are available from authors
 until inclusion into the official clang.} to make all accesses through
@@ -697,9 +708,11 @@ read. Since this information needs to be local to the segment, we need
 to store it in private pages. The area is called \emph{read markers}
 and already mentioned in Section~\ref{sub:Setup}.
 
-This area can be seen as a continuous array of bytes that is indexed
-from the start of the segment by an object's reference ($SO$) divided
-by 16 (to avoid false conflicts, all objects have a size of at least 16 bytes).
+This area can be seen as a continuous, segment-local array of bytes
+that is indexed with an object's reference ($SO$) divided by 16. So
+that each object has its own read marker, all objects have a size of
+at least 16 bytes. Otherwise there would be false conflicts when
+reading from two adjacent objects that share a single marker.
 Instead of just setting the byte to \lstinline!true!  if the
 corresponding object was read, we set it to a \lstinline!read_version!
 belonging to the transaction, which will be incremented on each
@@ -713,10 +726,6 @@ void stm_read(SO):
     *(SO >> 4) = read_version
 \end{lstlisting}
 
-\cfbolz{maybe it's worth explicitly pointing out here that this is one of the
-    few places where the \%gs translation must not be used}
-\arigo{wrong, it is used.  maybe describe a bit more why}
-
 
 \subsection{Write Barrier}
 
@@ -726,13 +735,11 @@ objects to the write set of the transaction.
 
 The \textbf{fast path} of the write barrier is very simple. We only
 need to check for the flag \lstinline!WRITE_BARRIER!  in the object's
-header and call the slow path if it is set. This flag is set either if
-the object is old and comes from an earlier transaction, or if there
-was a minor collection which will add the flag again on all
-objects. It is never set on freshly allocated objects that still
-reside in the nursery.
-
-\cfbolz{is \%s translation used here? I guess yes, currently it's possible to misunderstand that}
+header through its $SO$ and call the slow path if it is set. This flag
+is set either if the object is old and comes from an earlier
+transaction, or if there was a minor collection which will add the
+flag again on all objects. It is never set on freshly allocated
+objects that still reside in the nursery.
 
 \begin{lstlisting}
 void stm_write(SO):
@@ -740,9 +747,7 @@ void stm_write(SO):
 		write_slowpath(SO)
 \end{lstlisting}
 
-\cfbolz{put the slow path into a figure, if it straddles a page it's too hard figuring out indentation}
-The \textbf{slow path} is shown here:
-
+\begin{code}[h]
 \begin{lstlisting}
 void write_slowpath(SO):
 	// GC part:
@@ -769,7 +774,10 @@ void write_slowpath(SO):
 	SO->flags &= ~WRITE_BARRIER
 \end{lstlisting}
 
+\caption{Slow path of the write barrier\label{lst:w_slow}}
+\end{code}
 
+The \textbf{slow path} is shown here in Listing~\ref{lst:w_slow}.
 First comes the \emph{GC part}: In any case, the object will be added
 to the list of objects that need tracing in the next minor collection
 (\lstinline!to_trace!).  This is necessary in case we write a
@@ -788,8 +796,11 @@ that no other transaction can have a reference to them.
 
 For the \emph{TM part}, we first perform a read barrier on the
 object. We then try to acquire its write lock. \lstinline!write_locks!
-again is a simple global array of bytes that is indexed with the $SO$
-of the object divided by 16. If we already own the lock, we are done.
+is a simple, \textbf{global} array of bytes that is indexed with the
+$SO$ of the object divided by 16. Note, ``global'' here really means
+it is a single array with data for all segments, there is no address
+translation going on to access its elements contrary to e.g.\ the
+read markers array.  If we already own the lock, we are done.
 If someone else owns the lock, we will do a write-write contention
 management that will abort either us or the current owner of the
 object.  If we succeed in acquiring the lock using an atomic
