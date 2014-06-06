@@ -148,7 +148,26 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 \maketitle
 
 \begin{abstract}
-\remi{missing abstract}
+
+Since some years, the popularity of dynamic languages is on the rise.
+A common trait of many of these language implementations is the use of
+a single global interpreter lock (GIL) to synchronise the interpreter
+in a multithreading scenario. Since this lock effectively serialises
+the execution, they can not make use of the increasing parallelism in
+current hardware.
+
+In this paper, we present a software transactional memory (STM) system
+specifically designed for the purpose of replacing the GIL in dynamic
+language interpreters. The key idea is a close integration of STM with
+the garbage collector to provide atomicity, synchronisation, and
+memory management in a unified way.  As a user abstraction for a
+scalable synchronisation mechanism, we implement atomic blocks by
+exposing part of the STM system to applications.  The described STM
+uses a combination of features present in current CPUs to lower its
+overhead so that it can beat the performance of a GIL supported Python
+interpreter already on 2 threads.
+
+
 \end{abstract}
 
 %\category{CR-number}{subcategory}{third-level}
@@ -243,7 +262,7 @@ This paper makes the following contributions:
 \end{itemize}
 The STM described here is efficient and has low overhead and is
 therefore beneficial also for environments with a small number of
-threads or cores. It is also used to implement atomic blocks into the
+threads or cores. It is also used to implement atomic blocks for the
 Python language to provide a backwards compatible, composable
 synchronisation mechanism for threads.
 
@@ -1307,7 +1326,7 @@ best-performing Python systems (Jython, PyPy), integration of the
 STM-based approach with a JIT compiler is necessary. Once this
 integration matures, the approach outlined here serves not only as a
 simple GIL replacement but also provides a way forward towards
-parallelizing Python.
+parallelising Python.
 
 %% \appendix
 %% \section{Appendix Title}
