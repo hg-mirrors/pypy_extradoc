@@ -141,9 +141,6 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 \authorinfo{Armin Rigo}
            {www.pypy.org}
            {arigo@tunes.org}
-\authorinfo{Carl Friedrich Bolz}
-           {King's College London}
-           {http://cfbolz.de}
 \authorinfo{Thomas Gross}
            {Department of Computer Science\\ ETH Zürich}
            {thomas.gross@inf.ethz.ch}
@@ -167,66 +164,71 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 \section{Introduction}
 
 
-Dynamic languages like Python, PHP, Ruby, and JavaScript receive a lot of attention but
-have not yet embraced parallelism. A parallel programming model was not part of the design
-of those languages. Thus, the reference implementations of, e.g., Python and Ruby use a
-single, global interpreter lock (GIL) to serialise the execution of code in threads. The
-use of a single global lock causes several disadvantages, and as multicore processors
-become the de-facto standard in platfroms ranging from smart phones to datacenters, the
-issue of parallel execution must be addressed by these dynamic languages.
+Dynamic languages like Python, PHP, Ruby, and JavaScript receive a lot
+of attention but have not yet embraced parallelism. A parallel
+programming model was not part of the design of those languages. Thus,
+the reference implementations of, e.g., Python and Ruby use a single,
+global interpreter lock (GIL) to serialise the execution of code in
+threads. The use of a single global lock causes several disadvantages,
+and as multicore processors become the de-facto standard in platfroms
+ranging from smart phones to datacenters, the issue of parallel
+execution must be addressed by these dynamic languages.
 
-Unfortunately the GIL plays a central role in current implementations. Even
-recent just-in-time compilers (JIT) for these languages
-(e.g., PyPy~\cite{cfbolz09}, V8~\cite{kevin10}, IonMonkey~\cite{ionmonkey})
-are based on the GIL; Jython (an implementation of Python that is based on the JVM) is a
-notable exception.
+Unfortunately the GIL plays a central role in current
+implementations. Even recent just-in-time compilers (JIT) for these
+languages (e.g., PyPy~\cite{cfbolz09}, V8~\cite{kevin10},
+IonMonkey~\cite{ionmonkey}) are based on the GIL; Jython (an
+implementation of Python that is based on the JVM) is a notable
+exception.
 
-The standard model employed in these systems is fairly straightforward: there can be
-multiple threads, but each acquires the GIL, then performs a single instruction, and
-subsequently releases the lock.
-While this setup limits the benefits due to parallelism
-%% not clear we must say so TRG
-% -- parallelism is limited to I/O or other activities external to the interpreter
-the use of a GIL also provides some crucial guarantees. Since this lock is always acquired
-while executing bytecode instructions and may be released only in-between such
-instructions, the GIL ensures perfect isolation between multiple threads for a series of
-instructions, which are executed atomically.  In addition, the GIL provides the
-application with a sequential consistency model~\cite{lamport79}.
+The standard model employed in these systems is fairly
+straightforward: there can be multiple threads, but each acquires the
+GIL, then performs a single instruction, and subsequently releases the
+lock.  While this setup limits the benefits due to parallelism %% not
+clear we must say so TRG % -- parallelism is limited to I/O or other
+activities external to the interpreter the use of a GIL also provides
+some crucial guarantees. Since this lock is always acquired while
+executing bytecode instructions and may be released only in-between
+such instructions, the GIL ensures perfect isolation between multiple
+threads for a series of instructions, which are executed atomically.
+In addition, the GIL provides the application with a sequential
+consistency model~\cite{lamport79}.
 
-A global interpreter lock assures the atomic execution of individual instructions but
-offers the programmer no help in managing concurrent data structures. Many parallel
-programs must maintain invariants involving multiple objects (or even multiple fields of a
-single object).  So to enable Python programs for parallel execution, we need a way to
-identify which blocks of data must be executed atomically and hardware or software support
-to effect this atomic execution.
+A global interpreter lock assures the atomic execution of individual
+instructions but offers the programmer no help in managing concurrent
+data structures. Many parallel programs must maintain invariants
+involving multiple objects (or even multiple fields of a single
+object).  So to enable Python programs for parallel execution, we need
+a way to identify which blocks of data must be executed atomically and
+hardware or software support to effect this atomic execution.
 
 
-\emph{Atomic
-blocks}~\cite{tim03,tim05} allow dynamic languages to indicate
-the units of computation that must be executed atomically to ensure correct concurrent
-execution.  Atomic blocks map nicely to transactional memory, which provide a convenient
-mechansim to replace the GIL.
- Using transactions to enclose
-multiple bytecode instructions, we can get the very same semantics as
-provided by the GIL while possibly executing several transactions in
-parallel. And by exposing these interpreter-level
-transactions to the application, we
-avoid the well-known problems caused by locks as applications use atomic blocks instead
-of explicit acquire/release operations on locks~\cite{christopher10,victor11,shan08}.
+\emph{Atomic blocks}~\cite{tim03,tim05} allow dynamic languages to
+indicate the units of computation that must be executed atomically to
+ensure correct concurrent execution.  Atomic blocks map nicely to
+transactional memory, which provide a convenient mechansim to replace
+the GIL.  Using transactions to enclose multiple bytecode
+instructions, we can get the very same semantics as provided by the
+GIL while possibly executing several transactions in parallel. And by
+exposing these interpreter-level transactions to the application, we
+avoid the well-known problems caused by locks as applications use
+atomic blocks instead of explicit acquire/release operations on
+locks~\cite{christopher10,victor11,shan08}.
 
 There have been several attempts at replacing the GIL with
 TM~\cite{nicholas06,odaira14,fuad10}.  We focus here on software based
-transactional memory (STM) systems,
-because they provide the unique opportunity to consider the issues of atomicity,
-synchronization, and memory management (resp. garbage collection) together.
-STM systems impose no a-priori bound on the size of an atomic block and provide therefore
-a flexibility that is absent from current hardware-based TM systems~\cite{wayforward14}.
-The downside of STM systems is runtime overhead~\cite{cascaval08,drago11}, which can
-be substantial despite recent efforts to lower the overhead~\cite{warmhoff13,spear09}.
-In this paper, we describe how we manage to lower the overhead of an
-STM system so that it can serve as a viable replacement for the GIL by leveraging the
-demands of a dynamic language like Python to integrate the STM system with the garbage
-collector.
+transactional memory (STM) systems, because they provide the unique
+opportunity to consider the issues of atomicity, synchronization, and
+memory management (resp. garbage collection) together.  STM systems
+impose no a-priori bound on the size of an atomic block and provide
+therefore a flexibility that is absent from current hardware-based TM
+systems~\cite{wayforward14}.  The downside of STM systems is runtime
+overhead~\cite{cascaval08,drago11}, which can be substantial despite
+recent efforts to lower the overhead~\cite{warmhoff13,spear09}.  In
+this paper, we describe how we manage to lower the overhead of an STM
+system so that it can serve as a viable replacement for the GIL by
+leveraging the demands of a dynamic language like Python to integrate
+the STM system with the garbage collector.
 
 
 
