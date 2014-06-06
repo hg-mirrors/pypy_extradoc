@@ -1023,9 +1023,9 @@ def workload():
 For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
 and normalised the average runtimes to the time it took on a single
 thread. From this we see that there is additional overhead introduced
-by each thread (\remi{$12.3\%$} for all 4 threads together). While this
-is not ideal, we think that \remi{$12.3\%$} are acceptable on four
-threads. In terms of throughput, 4 threads have \remi{$3.54\times$}
+by each thread ($12.3\%$ for all 4 threads together). While this
+is not ideal, we think that $12.3\%$ are acceptable on four
+threads. In terms of throughput, 4 threads have $3.54\times$
 more iterations per second than a single thread.
 
 \begin{figure}[h]
@@ -1090,8 +1090,8 @@ analysis).
 
 PyPy using our STM system (\emph{pypy-stm-nojit}) scales in all
 benchmarks to a certain degree. It scales best for the embarrassingly
-parallel ones (\remi{$avg=2.5\times$} speedup) and a little less for
-the others (\remi{$avg=1.9\times$} speedup). The reason for that is
+parallel ones ($avg=2.6\times$ speedup) and a little less for
+the others ($avg=2.0\times$ speedup). The reason for that is
 that in the former group there are no real, logical conflicts -- all
 threads do independent calculations. STM simply replaces the GIL in
 those programs. In the latter group, the threads work on a common data
@@ -1105,8 +1105,8 @@ There is no visible benefit from 3 to 4 threads, even a slight
 regression.
 
 Looking at the average overhead from switching from GIL to STM, we see
-that it is \remi{$\approx 35.5\%$}. The maximum in richards is
-\remi{$63\%$}. In all benchmarks \emph{pypy-stm-nojit} beats
+that it is $\approx 43.3\%$. The maximum in richards is
+$71\%$. In all benchmarks \emph{pypy-stm-nojit} beats
 \emph{pypy-nojit} already on two threads despite of this overhead.
 However, it rarely beats CPython's single-thread performance.  For
 programs that need concurrency in CPython and that use threads to
@@ -1152,7 +1152,7 @@ We also ran these benchmarks on Jython\footnote{version
 Java Virtual Machine (JVM).  Instead of a GIL, this interpreter uses
 fine-grained locking for synchronisation. Even though it can use the
 JVM's JIT compiler, its performance in these benchmarks is behind
-PyPy's by a factor of \remi{$5-10\times$}. Because of that it does not
+PyPy's by a factor of $5-10\times$. Because of that it does not
 make sense to include it in this evaluation. In the future, we would
 like to do an extensive comparison between the STM approach and
 fine-grained locking. It is out of the scope of this paper to do
@@ -1161,7 +1161,7 @@ this thoroughly.
 The results are presented in Figure~\ref{fig:performance-jit}. We
 see that the performance is much less stable. There is certainly more
 work required in this area. The slowdown factor for switching from GIL
-to STM ranges around \remi{$1-2.4\times$}, and we beat GIL performance
+to STM ranges around $1-2.4\times$, and we beat GIL performance
 in half of the benchmarks.
 
 We see that generally, the group of embarrassingly parallel benchmarks scales
@@ -1175,8 +1175,8 @@ even more than in the no-JIT benchmarks.
 Overall PyPy needs the JIT  for its performance to be
 competitive with CPython's. It would be interesting to see how using
 our STM system in CPython would turn out, but an in-depth evaluation is
-beyond the scope of this paper. On
-its own, our system scales well, so we expect to also see this trend in the presence of a
+beyond the scope of this paper. On its own, our system scales well,
+so we expect to also see this trend in the presence of a
 JIT in the future.
 
 
@@ -1297,10 +1297,10 @@ has also been expressed by other researchers (see also
 
 % results, outlook
 The early results presented here are very encouraging. STM as a simple
-GIL replacement yields an average speedup of \remi{$2.5\times$} for
+GIL replacement yields an average speedup of $2.6\times$ for
 embarrassingly parallel workloads on 4 threads.  When also used for
 synchronisation in the form of atomic blocks, the average speedup
-still reaches \remi{$1.9\times$}.
+still reaches $2.0\times$.
 
 To obtain an overall performance that is competitive with the
 best-performing Python systems (Jython, PyPy), integration of the
