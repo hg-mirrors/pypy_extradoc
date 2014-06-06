@@ -170,8 +170,8 @@ programming model was not part of the design of those languages. Thus,
 the reference implementations of, e.g., Python and Ruby use a single,
 global interpreter lock (GIL) to serialise the execution of code in
 threads. The use of a single global lock causes several disadvantages,
-and as multicore processors become the de-facto standard in platfroms
-ranging from smart phones to datacenters, the issue of parallel
+and as multi-core processors become the de facto standard in platforms
+ranging from smart phones to data centres, the issue of parallel
 execution must be addressed by these dynamic languages.
 
 Unfortunately the GIL plays a central role in current
@@ -184,9 +184,8 @@ exception.
 The standard model employed in these systems is fairly
 straightforward: there can be multiple threads, but each acquires the
 GIL, then performs a single instruction, and subsequently releases the
-lock.  While this setup limits the benefits due to parallelism %% not
-clear we must say so TRG % -- parallelism is limited to I/O or other
-activities external to the interpreter the use of a GIL also provides
+lock.  While this setup limits the benefits due to parallelism,
+the use of a GIL also provides
 some crucial guarantees. Since this lock is always acquired while
 executing bytecode instructions and may be released only in-between
 such instructions, the GIL ensures perfect isolation between multiple
@@ -206,7 +205,7 @@ hardware or software support to effect this atomic execution.
 \emph{Atomic blocks}~\cite{tim03,tim05} allow dynamic languages to
 indicate the units of computation that must be executed atomically to
 ensure correct concurrent execution.  Atomic blocks map nicely to
-transactional memory, which provide a convenient mechansim to replace
+transactional memory, which in turn provides a convenient mechanism to replace
 the GIL.  Using transactions to enclose multiple bytecode
 instructions, we can get the very same semantics as provided by the
 GIL while possibly executing several transactions in parallel. And by
@@ -224,82 +223,37 @@ impose no a-priori bound on the size of an atomic block and provide
 therefore a flexibility that is absent from current hardware-based TM
 systems~\cite{wayforward14}.  The downside of STM systems is runtime
 overhead~\cite{cascaval08,drago11}, which can be substantial despite
-recent efforts to lower the overhead~\cite{warmhoff13,spear09}.  In
+recent efforts to lower it~\cite{warmhoff13,spear09}.  In
 this paper, we describe how we manage to lower the overhead of an STM
 system so that it can serve as a viable replacement for the GIL by
 leveraging the demands of a dynamic language like Python to integrate
 the STM system with the garbage collector.
 
 
-
-\cfbolz{both the introduction and the contributions need to stress the co-design of GC and STM}
-% agree trg
-
 This paper makes the following contributions:
 \begin{itemize}[noitemsep]
-\item We introduce a new software transactional memory (STM) system
-  that performs well for Python virtual machines.
-\item We integrate the  system closely with a garbage collector
+\item We introduce a new STM system that performs well for dynamic
+  language interpreters.
+\item We integrate the system closely with a garbage collector
   (GC) to lower the overhead of STM.
 \item This new STM system is used to replace the GIL in one
   implementation of Python and is then evaluated.
 \end{itemize}
-The STM described here is efficient and has low overhead and is therefore beneficial also
-for environments with a small number of threads or cores. The paper describes also
-%% can be dropped, not the core topic
-how to introduce atomic blocks into the Python language to provide a
-  backwards compatible, composable synchronization mechanism for
-  threads.
+The STM described here is efficient and has low overhead and is
+therefore beneficial also for environments with a small number of
+threads or cores. It is also used to implement atomic blocks into the
+Python language to provide a backwards compatible, composable
+synchronisation mechanism for threads.
 
 
-%% What is really needed from this section?? Maybe the subsection on Python can be moved
-%%  to the intro -- the rest is questionable.  TRG
-
-\section{Background}
-
-% \subsection{Global Interpreter Lock}
-
-% The GIL is a very simple synchronisation mechanism for supporting
-% multithreading in an interpreter. The basic guarantee is that the GIL
-% may only be released in between bytecode instructions. Thus, these
-% instructions are always executed atomically and in complete isolation
-% from others running in other threads. \emph{Atomicity} means that each
-% instruction and its effects seem to happen at one, indivisible point
-% in time. Other instructions never see inconsistent state of a
-% partially executed instruction (\emph{isolation}).
-
-% In addition to these guarantees, instructions are executed in a
-% sequential consistency model~\cite{lamport79}. This means that
-% the outcome of any execution of instructions in multiple threads is
-% equal to \emph{some} sequential execution of them.
-
-
-% \subsection{Transactional Memory}
-
-% Transactional memory (TM) is a concurrency control mechanism that
-% comes from database systems. Using transactions, we can group a series
-% of instructions performing operations on memory and make them happen
-% atomically and in complete isolation from other transactions.
-% Atomicity and isolation are basic properties of transactions.
-
-% If we start multiple such transactions in multiple threads, the TM
-% system guarantees that the outcome of running the transactions is
-% \emph{serialisable}. Meaning, the outcome is equal to some sequential
-% execution of these transactions. By that, we can again provide a
-% sequentially consistent model for programming in multiple threads. We
-% can therefore use TM to directly replace the GIL. Instead of releasing
-% and acquiring the GIL between bytecode instructions, we commit and
-% start the transactions our instructions are running in.
-
-\subsection{Python}
+\subsection{Application View}
 \remi{possibly adapt to application view \& benefits (atomic blocks)}
 \remi{XXX: Also, make own section or integrate with introduction}
 
 We implement and evaluate our system for the Python language. Python
 is a dynamic programming language that was designed with GIL semantics
 in mind. Its reference implementation, CPython~\cite{cpython}, uses a
-GIL to synchronise instructions in multiple threads.
-Over the years, Python added multiple ways to provide concurrency and
+GIL. Over the years, Python added multiple ways to provide concurrency and
 parallelism to its applications. We want to highlight two of them,
 namely \emph{threading} and \emph{multiprocessing}.
 
@@ -318,31 +272,14 @@ interpreters and also need to exchange data between them explicitly
 and expensively.
 
 We focus on the \emph{threading} approach. This requires us to remove
-the GIL from our interpreter in order to run code in parallel on
+the GIL from the interpreter in order to run code in parallel on
 multiple threads. One approach to this is fine-grained locking instead
 of a single global lock. Jython~\cite{webjython} and
-IronPython~\cite{ironpython} are implementations of this. It requires
-great care in order to avoid deadlocks, which is why we follow the TM
-approach that provides a \emph{direct} replacement for the GIL. It
-does not require careful placing of locks in the right spots.
-
-
-% \subsection{Synchronisation}
-
-% In Python, since the GIL is not directly exposed to the interpreter,
-% applications still need to synchronise memory accesses from multiple
-% threads using locks. Locks can be very hard to get
-% right~\cite{christopher10,victor11,shan08}.  They are non-composable,
-% have overhead, may deadlock, limit scalability, and add to the overall
-% complexity of the program logic. We think that \emph{atomic
-% blocks}~\cite{tim03,tim05} provide a better way for synchronisation.
-
-% Atomic blocks are composable, deadlock-free, higher-level and expose
-% useful atomicity and isolation guarantees to the application for a
-% series of instructions. This is why we think that the introduction
-% of atomic blocks to Python is a valuable contribution. Since atomicity
-% is a property of transactions, TM and atomic blocks are a natural fit.
-
+IronPython~\cite{ironpython} follow this approach. Fine-grained
+locking is, however, not a \emph{direct} replacement for the GIL. It
+requires multiple locks in multiple places, not only in a central
+location. We follow the direct approach of using TM instead of the
+GIL.
 
 
 \section{Transactional Memory Model}
@@ -1360,22 +1297,6 @@ integration matures, we believe our approach to not only serve as a
 simple GIL replacement, but also as a way forward in parallelising
 languages -- making atomicity and synchronisation the language's
 instead of the programmer's problem.
-
-
-% First results promising; a lot to understand yet; a lot to improve
-
-% contributions:
-% \begin{itemize}
-% \item memory segmentation, page mapping $\rightarrow$ performance
-% \item STM \& GC: high allocation rate of dynlangs; shared write barrier;
-%   page privatisation and re-sharing by GC; used to synchronise threads;
-%   used to classify objects (transaction owned / not)
-% \item GIL replaced successfully in embarrassingly parallel benchs;
-%   avg overhead of $35\%$; beating GIL at 2 threads (2.5x speedup)
-% \item atomic blocks introduced as a scalable sync mechanism (1.9x speedup)
-% \item JIT needs work
-% \end{itemize}
-
 
 
 %% \appendix
