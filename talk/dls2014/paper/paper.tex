@@ -159,7 +159,9 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 %% term1, term2
 
 \keywords
-\remi{missing keywords}
+transactional memory, global interpreter lock, dynamic language,
+python, virtual machine
+
 
 \section{Introduction}
 
@@ -898,8 +900,6 @@ stays globally unique for each transaction. Increasing the
 \lstinline!read_version!  is then done at the start of a new
 transaction.
 
-\cfbolz{you need to describe when and how to re-share pages}
-
 
 \subsection{Thread Synchronisation}
 
@@ -1315,7 +1315,9 @@ parallelizing Python.
 %% This is the text of the appendix, if you need one.
 
 \acks
-\remi{cfbolz, felber, marlier, fäs, mastoras}
+We would like to thank the following people for their valuable
+inputs and the many fruitful discussions: Carl F. Bolz, Michael Faes,
+Pascal Felber, Patrick Marlier, and Aristeidis Mastoras.
 
 % We recommend abbrvnat bibliography style.
 
