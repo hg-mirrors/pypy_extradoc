@@ -217,8 +217,8 @@ locks~\cite{christopher10,victor11,shan08}.
 
 There have been several attempts at replacing the GIL with
 TM~\cite{nicholas06,odaira14,fuad10}.  We focus here on software based
-transactional memory (STM) systems, because they provide the unique
-opportunity to consider the issues of atomicity, synchronization, and
+transactional memory (STM) because that provides the unique
+opportunity to consider the issues of atomicity, synchronisation, and
 memory management (resp. garbage collection) together.  STM systems
 impose no a-priori bound on the size of an atomic block and provide
 therefore a flexibility that is absent from current hardware-based TM
@@ -238,7 +238,7 @@ the STM system with the garbage collector.
 This paper makes the following contributions:
 \begin{itemize}[noitemsep]
 \item We introduce a new software transactional memory (STM) system
-  that performs well for Python programs.
+  that performs well for Python virtual machines.
 \item We integrate the  system closely with a garbage collector
   (GC) to lower the overhead of STM.
 \item This new STM system is used to replace the GIL in one
@@ -1327,20 +1327,54 @@ theirs.
 
 \section{Conclusions}
 
-First results promising; a lot to understand yet; a lot to improve
+% review of paper
+We set out to resolve the issue of parallelism in Python by replacing
+the GIL with TM. In particular we deemed a close integration of STM
+and the GC best as a way to attack the issues of atomicity,
+synchronisation, and memory management in a unified way. While the
+interplay of STM and the GC gives us some important performance
+benefits, we also implemented atomic blocks backed by STM for Python
+as a scalable synchronisation mechanism.
+
+% STM needs good performance:
+Since in our approach, STM becomes a vital part of the interpreter,
+good performance is essential. We found an interesting way to combine
+the existing memory segmentation and virtual memory features of
+current CPUs to lower the overhead of STM. We want to stress the
+importance of memory segmentation to our approach, because it seems
+rather unvalued. In the move from the x86 to the x86{-}64
+architecture, they already removed 4 out of 6 segment registers.  We
+want to make the point that there are still valid and interesting uses
+for them (see also \cite{bennet10}).
+
+% results, outlook
+The early results presented here are very encouraging. STM as a simple
+GIL replacement yields an average speedup of \remi{$2.5\times$} for
+embarrassingly parallel workloads on 4 threads.  When also used for
+synchronisation in the form of atomic blocks, the average speedup
+still reached \remi{$1.9\times$}.
+
+For the overall performance compared to our baseline interpreter
+CPython, integration with our JIT compiler is necessary. Once this
+integration matures, we believe our approach to not only serve as a
+simple GIL replacement, but also as a way forward in parallelising
+languages -- making atomicity and synchronisation the language's
+instead of the programmer's problem.
 
 
-contributions:
-\begin{itemize}
-\item memory segmentation, page mapping $\rightarrow$ performance
-\item STM \& GC: high allocation rate of dynlangs; shared write barrier;
-  page privatisation and re-sharing by GC; used to synchronise threads;
-  used to classify objects (transaction owned / not)
-\item GIL replaced successfully in embarrassingly parallel benchs;
-  avg overhead of $35\%$; beating GIL at 2 threads (2.5x speedup)
-\item atomic blocks introduced as a scalable sync mechanism (1.9x speedup)
-\item JIT needs work
-\end{itemize}
+% First results promising; a lot to understand yet; a lot to improve
+
+% contributions:
+% \begin{itemize}
+% \item memory segmentation, page mapping $\rightarrow$ performance
+% \item STM \& GC: high allocation rate of dynlangs; shared write barrier;
+%   page privatisation and re-sharing by GC; used to synchronise threads;
+%   used to classify objects (transaction owned / not)
+% \item GIL replaced successfully in embarrassingly parallel benchs;
+%   avg overhead of $35\%$; beating GIL at 2 threads (2.5x speedup)
+% \item atomic blocks introduced as a scalable sync mechanism (1.9x speedup)
+% \item JIT needs work
+% \end{itemize}
 
 
 
@@ -1518,6 +1552,12 @@ contributions:
   from mistakes: a comprehensive study on real world concurrency bug
   characteristics. \emph{SIGARCH Comput. Archit. News} 36, 1 (March 2008),
   329-339.
+
+\bibitem{bennet10}
+  Bennet Yee, David Sehr, Gregory Dardyk, J. Bradley Chen, Robert
+  Muth, Tavis Ormandy, Shiki Okasaka, Neha Narula, and Nicholas
+  Fullagar. 2010. Native Client: a sandbox for portable, untrusted x86
+  native code. \emph{Commun. ACM} 53, 1 (January 2010), 91-99.
 
 % \bibitem{leis14}
 %   Leis, Viktor, Alfons Kemper, and Thomas Neumann. "Exploiting
