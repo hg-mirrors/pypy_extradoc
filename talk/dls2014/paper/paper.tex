@@ -148,7 +148,7 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 \maketitle
 
 \begin{abstract}
-....
+\remi{missing abstract}
 \end{abstract}
 
 %\category{CR-number}{subcategory}{third-level}
@@ -159,7 +159,7 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 %% term1, term2
 
 \keywords
-...
+\remi{missing keywords}
 
 \section{Introduction}
 
@@ -247,8 +247,6 @@ synchronisation mechanism for threads.
 
 
 \subsection{Application View}
-\remi{possibly adapt to application view \& benefits (atomic blocks)}
-\remi{XXX: Also, make own section or integrate with introduction}
 
 We implement and evaluate our system for the Python language. Python
 is a dynamic programming language that was designed with GIL semantics
@@ -272,7 +270,7 @@ interpreters and also need to exchange data between them explicitly
 and expensively.
 
 We focus on the \emph{threading} approach. This requires us to remove
-the GIL from the interpreter in order to run code in parallel on
+the GIL from the interpreter to run code in parallel on
 multiple threads. One approach to this is fine-grained locking instead
 of a single global lock. Jython~\cite{webjython} and
 IronPython~\cite{ironpython} follow this approach. Fine-grained
@@ -289,7 +287,7 @@ guarantees as well as some of the design choices we made. This should
 clarify the general semantics in commonly used terms from the
 literature~\cite{harris10}.
 
-Our TM system is fully implemented in software. However, we do exploit
+Our TM system is fully implemented in software. However, we exploit
 some more advanced features of current CPUs, particularly \emph{memory
 segmentation, virtual memory,} and the 64-bit address space. Still,
 it cannot be classified as a hybrid TM system since it currently
@@ -354,7 +352,7 @@ discuss it with more technical details.
 Our STM system fundamentally builds on threads. Transactions run in
 their context, and there can be only one transaction per thread at a
 time. Transactions run in parallel because these threads can run in
-parallel. In order to isolate transactions from each other, we look
+parallel. To isolate transactions from each other, we look
 at isolating the memory accesses from threads.
 
 A naive approach to providing this complete isolation between threads
@@ -706,7 +704,7 @@ private pages that do not currently contain an object in some
 transaction's  write set.
 
 As seen in the API (section~\ref{sub:Application-Programming-Interfac}),
-we use a \emph{shadow stack}~\cite{fergus02} in order to provide precise garbage
+we use a \emph{shadow stack}~\cite{fergus02} to provide precise garbage
 collection.  Any time we call a function that possibly triggers a
 collection, we need to save the objects that we need afterwards on the
 shadow stack using \lstinline!STM_PUSH_ROOT()!.  That way, they will
@@ -819,7 +817,7 @@ First comes the \emph{GC part}: In any case, the object will be added
 to the list of objects that need tracing in the next minor collection
 (\lstinline!to_trace!).  This is necessary in case we write a
 reference to it that points to a young object. We then need to trace
-it during the next minor collection in order to mark the young object
+it during the next minor collection to mark the young object
 alive and to update its reference to the new location it gets moved
 to.
 
@@ -842,8 +840,8 @@ $SO$ of the object divided by 16. Note, ``global'' here really means
 it is a single array with data for all segments, there is no address
 translation going on to access its elements contrary to e.g.\ the
 read markers array.  If we already own the lock, we are done.
-If someone else owns the lock, we will do a write-write contention
-management that will abort either us or the current owner of the
+If someone else owns the lock, we perform  write-write contention
+management that aborts either us or the current owner of the
 object.  If we succeed in acquiring the lock using an atomic
 \lstinline!cmp_and_swap!, we need to add the object to the write set
 (a simple list called \lstinline!modified_old_objects!)  and privatise
@@ -886,7 +884,7 @@ all threads so that the committing one is the only one running and all
 the others are waiting in safe points. We then go through the write
 set (\lstinline!modified_old_objects!)  and check the corresponding
 \lstinline!read_markers!  in other threads~/ segments. If we detect a
-read-write conflict, we do contention management to either abort us or
+read-write conflict, we perform contention management to either abort us or
 the other transaction, or to simply wait a bit (see Section~\ref{subsub:contentionmanagement}).
 
 After verifying that there are no conflicts anymore, we copy all our
@@ -908,7 +906,7 @@ transaction.
 A requirement for performing a commit is to synchronise all threads so
 that we can safely update objects in other segments. To make this
 synchronisation fast and cheap, we do not want to insert an additional
-check regularly in order to see if synchronisation is requested. We
+check regularly to see if synchronisation is requested. We
 use a trick relying on the fact that dynamic languages are usually
 very high-level and thus allocate a lot of objects very regularly.
 This is done through the function \lstinline!stm_allocate!  shown
@@ -929,7 +927,7 @@ is still space left in the nursery, we return
 \lstinline!nursery_current!  and bump it up by
 \lstinline!size_rounded!.  The interesting part is the check
 \lstinline!nursery_current > nursery_end!  which will trigger the slow
-path of the function to possibly perform a minor collection in order
+path of the function to possibly perform a minor collection
 to free up space in the nursery.
 
 If we want to synchronise all threads, we can rely on this check being
@@ -954,7 +952,7 @@ On encountering conflicts, we employ contention management to solve
 the problem as well as we can. The general rules are:
 \begin{itemize}[noitemsep]
 \item prefer transactions that started earlier to younger transactions
-  in order to let long transactions succeed more often
+  to let long transactions succeed more often
 \item to support \emph{inevitable} transactions, we always prefer them
   to others since they cannot abort (similar to~\cite{blundell06})
 \end{itemize}
@@ -1053,7 +1051,7 @@ available at~\cite{pypybenchs}:
   parallel)
 \end{itemize}
 
-We use atomic blocks in order to easily synchronise access to shared
+We use atomic blocks to easily synchronise access to shared
 data structures in the first three benchmarks. For the embarrassingly
 parallel benchmarks, we do not need any explicit synchronisation at
 all. These atomic blocks are simulated with a single global lock
@@ -1099,7 +1097,7 @@ threads do independent calculations. STM simply replaces the GIL in
 those programs. In the latter group, the threads work on a common data
 structure and therefore create much more conflicts, which limits the
 scalability. Here we make active use of the STM-supported atomic
-blocks in order do synchronise access to the data structure. The hope
+blocks to synchronise access to the data structure. The hope
 is that the STM system is still able to parallelise, even if we use
 the atomic blocks in a coarse-grained way. While less than the other
 benchmarks, we indeed see some speedup going from 1 to 3 threads.
@@ -1145,7 +1143,7 @@ of salt.
 
 The speedups from enabling the JIT in these benchmarks range from
 $10-50\times$. This is why we had to do without CPython here, since it
-would be much further up in the plots. Also, in order to make jitting
+would be much further up in the plots. Also, to make jitting
 code worthwhile, we increased the input size of all benchmarks to get
 reasonable execution times (denoted with ``(large)'' in benchmark names).
 
@@ -1174,10 +1172,11 @@ overhead, we do more work per transaction. This increases the
 likelihood of conflicts between them and therefore limits scalability
 even more than in the no-JIT benchmarks.
 
-Overall PyPy needs the JIT in order for its performance to be
+Overall PyPy needs the JIT  for its performance to be
 competitive with CPython's. It would be interesting to see how using
-our STM system in CPython would turn out, but it is a lot of work. On
-its own, our system scales well, so we hope to also see that with the
+our STM system in CPython would turn out, but an in-depth evaluation is
+beyond the scope of this paper. On
+its own, our system scales well, so we expect to also see this trend in the presence of a
 JIT in the future.
 
 
@@ -1265,39 +1264,50 @@ theirs.
 \section{Conclusions}
 
 % review of paper
-We set out to resolve the issue of parallelism in Python by replacing
-the GIL with TM. In particular we deemed a close integration of STM
-and the GC best as a way to attack the issues of atomicity,
-synchronisation, and memory management in a unified way. While the
-interplay of STM and the GC gives us some important performance
-benefits, we also implemented atomic blocks backed by STM for Python
-as a scalable synchronisation mechanism.
+As multi-core processors continue to increase the number of cores per
+processor, it is important that dynamic languages like Python embrace
+parallelism.  We report here an effort to replace the Global
+Interpreter Lock (GIL) used in many Python implementations with
+transactional memory (TM). The key factor for success is a close
+integration of a software TM (STM) and the garbage collector to
+provide atomicity, synchronisation, and memory management in a unified
+way.  The STM system supports atomic blocks as a user abstraction and
+thereby provides a scalable synchronisation mechanism to Python
+applications.
+
 
 % STM needs good performance:
-Since in our approach, STM becomes a vital part of the interpreter,
-good performance is essential. We found an interesting way to combine
-the existing memory segmentation and virtual memory features of
-current CPUs to lower the overhead of STM. We want to stress the
-importance of memory segmentation to our approach, because it seems
-rather unvalued. In the move from the x86 to the x86{-}64
-architecture, they already removed 4 out of 6 segment registers.  We
-want to make the point that there are still valid and interesting uses
-for them (see also \cite{bennet10}).
+The solution presented here is based on a software TM system.  As the
+STM is a vital part of the interpreter, good performance is
+essential. We present an interesting way to combine the existing
+memory segmentation and virtual memory features of current CPUs to
+lower the overhead of STM. This software implementation reduces
+dramatically the cost of transactional memory and at the same time
+provides an opportunity to integrate the STM system with garbage
+collection.  This implementation leverages the processor's memory
+segmentation hardware, which has lately played only a minor role in
+our operating system.  Unfortunately, processor architects seem to
+undervalue this hardware resource -- in the evolution from the x86 to
+the x86{-}64 architecture, 4 out of 6 segment registers have been
+removed. This development potentially threatens the STM strategy
+outlined here and we want to remind the architecture community that
+this unit can support interesting implementations -- a viewpoint that
+has also been expressed by other researchers (see also
+\cite{bennet10}).
 
 % results, outlook
 The early results presented here are very encouraging. STM as a simple
 GIL replacement yields an average speedup of \remi{$2.5\times$} for
 embarrassingly parallel workloads on 4 threads.  When also used for
 synchronisation in the form of atomic blocks, the average speedup
-still reached \remi{$1.9\times$}.
+still reaches \remi{$1.9\times$}.
 
-For the overall performance compared to our baseline interpreter
-CPython, integration with our JIT compiler is necessary. Once this
-integration matures, we believe our approach to not only serve as a
-simple GIL replacement, but also as a way forward in parallelising
-languages -- making atomicity and synchronisation the language's
-instead of the programmer's problem.
-
+To obtain an overall performance that is competitive with the
+best-performing Python systems (Jython, PyPy), integration of the
+STM-based approach with a JIT compiler is necessary. Once this
+integration matures, the approach outlined here serves not only as a
+simple GIL replacement but also provides a way forward towards
+parallelizing Python.
 
 %% \appendix
 %% \section{Appendix Title}
@@ -1305,7 +1315,7 @@ instead of the programmer's problem.
 %% This is the text of the appendix, if you need one.
 
 \acks
-...
+\remi{cfbolz, felber, marlier, fäs, mastoras}
 
 % We recommend abbrvnat bibliography style.
 
@@ -1339,7 +1349,7 @@ instead of the programmer's problem.
 \bibitem{ironpython} IronPython. \url{www.ironpython.net}
 \bibitem{pypy} PyPy Project. \url{www.pypy.org}
 
-\bibitem{beazley10} Beazley, David. "Understanding the python gil."
+\bibitem{beazley10} Beazley, David. "Understanding the Python GIL."
   \emph{PyCON Python Conference}. Atlanta, Georgia. 2010.
 
 \bibitem{harris10} Harris, Tim, James Larus, and Ravi
@@ -1401,8 +1411,8 @@ instead of the programmer's problem.
 \bibitem{odaira14}
   Rei Odaira, Jose G. Castanos, and Hisanobu Tomari. 2014. Eliminating
   global interpreter locks in ruby through hardware transactional
-  memory. In \emph{Proceedings of the 19th ACM SIGPLAN symposium on
-    Principles and practice of parallel programming} (PPoPP '14).
+  memory. In \emph{Proc. 19th ACM SIGPLAN Symposium on
+    Principles and Practice of Parallel Programming} (PPoPP '14).
 
 \bibitem{warmhoff13}
   Jons-Tobias Wamhoff, Christof Fetzer, Pascal Felber, Etienne Rivière,
@@ -1428,7 +1438,7 @@ instead of the programmer's problem.
   '06).
 
 \bibitem{fuad10}
-  Fuad Tabba. 2010. Adding concurrency in python using a commercial
+  Fuad Tabba. 2010. Adding concurrency in Python using a commercial
   processor's hardware transactional memory support. \emph{SIGARCH
   Comput. Archit. News 38}, 5 (April 2010), 12-19.
 
@@ -1459,14 +1469,16 @@ instead of the programmer's problem.
 
 \bibitem{victor11}
   Victor Pankratius and Ali-Reza Adl-Tabatabai. 2011. A study of
-  transactional memory vs. locks in practice. In \emph{Proceedings of
-    the twenty-third annual ACM symposium on Parallelism in algorithms
-    and architectures} (SPAA '11).
+  transactional memory vs. locks in practice. In \emph{Proc.
+     twenty-third annual ACM Symposium on Parallelism in Algorithms
+    and Architectures} (SPAA '11).
 
 \bibitem{christopher10}
   Christopher J. Rossbach, Owen S. Hofmann, and Emmett
   Witchel. 2010. Is transactional programming actually
-  easier?. \emph{SIGPLAN} Not. 45, 5 (January 2010), 47-56.
+  easier?. \emph{Proc. 15th ACM SIGPLAN Symposium on
+    Principles and Practice of Parallel Programming} (PPoPP '10).
+
 
 \bibitem{tim03}
   Tim Harris and Keir Fraser. 2003. Language support for lightweight
