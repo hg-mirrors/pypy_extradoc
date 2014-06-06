@@ -117,8 +117,7 @@
 %% \titlebanner{banner above paper title}        % These are ignored unless
 %% \preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{
-}
+\title{A Transactional Memory System for Parallel Python}
 %\subtitle{DLS'14}
 
 \comment{
@@ -142,6 +141,12 @@ Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 \authorinfo{Armin Rigo}
            {www.pypy.org}
            {arigo@tunes.org}
+\authorinfo{Carl Friedrich Bolz}
+           {King's College London}
+           {http://cfbolz.de}
+\authorinfo{Thomas Gross}
+           {Department of Computer Science\\ ETH Zürich}
+           {thomas.gross@inf.ethz.ch}
 
 \maketitle
 
@@ -207,12 +212,11 @@ provided by the GIL while possibly executing several transactions in
 parallel. And by exposing these interpreter-level
 transactions to the application, we
 avoid the well-known problems caused by locks as applications use atomic blocks instead
-of explicit acquire/release operations on locks.
+of explicit acquire/release operations on locks~\cite{christopher10,victor11,shan08}.
 
 There have been several attempts at replacing the GIL with
-TM~\cite{nicholas06,odaira14,fuad10}.
-We focuse here on
-software based transactional memory (STM)
+TM~\cite{nicholas06,odaira14,fuad10}.  We focus here on software based
+transactional memory (STM) systems,
 because they provide the unique opportunity to consider the issues of atomicity,
 synchronization, and memory management (resp. garbage collection) together.
 STM systems impose no a-priori bound on the size of an atomic block and provide therefore
@@ -251,41 +255,43 @@ how to introduce atomic blocks into the Python language to provide a
 
 \section{Background}
 
-\subsection{Global Interpreter Lock}
+% \subsection{Global Interpreter Lock}
 
-The GIL is a very simple synchronisation mechanism for supporting
-multithreading in an interpreter. The basic guarantee is that the GIL
-may only be released in between bytecode instructions. Thus, these
-instructions are always executed atomically and in complete isolation
-from others running in other threads. \emph{Atomicity} means that each
-instruction and its effects seem to happen at one, indivisible point
-in time. Other instructions never see inconsistent state of a
-partially executed instruction (\emph{isolation}).
+% The GIL is a very simple synchronisation mechanism for supporting
+% multithreading in an interpreter. The basic guarantee is that the GIL
+% may only be released in between bytecode instructions. Thus, these
+% instructions are always executed atomically and in complete isolation
+% from others running in other threads. \emph{Atomicity} means that each
+% instruction and its effects seem to happen at one, indivisible point
+% in time. Other instructions never see inconsistent state of a
+% partially executed instruction (\emph{isolation}).
 
-In addition to these guarantees, instructions are executed in a
-sequential consistency model~\cite{lamport79}. This means that
-the outcome of any execution of instructions in multiple threads is
-equal to \emph{some} sequential execution of them.
+% In addition to these guarantees, instructions are executed in a
+% sequential consistency model~\cite{lamport79}. This means that
+% the outcome of any execution of instructions in multiple threads is
+% equal to \emph{some} sequential execution of them.
 
 
-\subsection{Transactional Memory}
+% \subsection{Transactional Memory}
 
-Transactional memory (TM) is a concurrency control mechanism that
-comes from database systems. Using transactions, we can group a series
-of instructions performing operations on memory and make them happen
-atomically and in complete isolation from other transactions.
-Atomicity and isolation are basic properties of transactions.
+% Transactional memory (TM) is a concurrency control mechanism that
+% comes from database systems. Using transactions, we can group a series
+% of instructions performing operations on memory and make them happen
+% atomically and in complete isolation from other transactions.
+% Atomicity and isolation are basic properties of transactions.
 
-If we start multiple such transactions in multiple threads, the TM
-system guarantees that the outcome of running the transactions is
-\emph{serialisable}. Meaning, the outcome is equal to some sequential
-execution of these transactions. By that, we can again provide a
-sequentially consistent model for programming in multiple threads. We
-can therefore use TM to directly replace the GIL. Instead of releasing
-and acquiring the GIL between bytecode instructions, we commit and
-start the transactions our instructions are running in.
+% If we start multiple such transactions in multiple threads, the TM
+% system guarantees that the outcome of running the transactions is
+% \emph{serialisable}. Meaning, the outcome is equal to some sequential
+% execution of these transactions. By that, we can again provide a
+% sequentially consistent model for programming in multiple threads. We
+% can therefore use TM to directly replace the GIL. Instead of releasing
+% and acquiring the GIL between bytecode instructions, we commit and
+% start the transactions our instructions are running in.
 
 \subsection{Python}
+\remi{possibly adapt to application view \& benefits (atomic blocks)}
+\remi{XXX: Also, make own section or integrate with introduction}
 
 We implement and evaluate our system for the Python language. Python
 is a dynamic programming language that was designed with GIL semantics
@@ -319,21 +325,21 @@ approach that provides a \emph{direct} replacement for the GIL. It
 does not require careful placing of locks in the right spots.
 
 
-\subsection{Synchronisation}
+% \subsection{Synchronisation}
 
-In Python, since the GIL is not directly exposed to the interpreter,
-applications still need to synchronise memory accesses from multiple
-threads using locks. Locks can be very hard to get
-right~\cite{christopher10,victor11,shan08}.  They are non-composable,
-have overhead, may deadlock, limit scalability, and add to the overall
-complexity of the program logic. We think that \emph{atomic
-blocks}~\cite{tim03,tim05} provide a better way for synchronisation.
+% In Python, since the GIL is not directly exposed to the interpreter,
+% applications still need to synchronise memory accesses from multiple
+% threads using locks. Locks can be very hard to get
+% right~\cite{christopher10,victor11,shan08}.  They are non-composable,
+% have overhead, may deadlock, limit scalability, and add to the overall
+% complexity of the program logic. We think that \emph{atomic
+% blocks}~\cite{tim03,tim05} provide a better way for synchronisation.
 
-Atomic blocks are composable, deadlock-free, higher-level and expose
-useful atomicity and isolation guarantees to the application for a
-series of instructions. This is why we think that the introduction
-of atomic blocks to Python is a valuable contribution. Since atomicity
-is a property of transactions, TM and atomic blocks are a natural fit.
+% Atomic blocks are composable, deadlock-free, higher-level and expose
+% useful atomicity and isolation guarantees to the application for a
+% series of instructions. This is why we think that the introduction
+% of atomic blocks to Python is a valuable contribution. Since atomicity
+% is a property of transactions, TM and atomic blocks are a natural fit.
 
 
 
@@ -372,6 +378,7 @@ in the future.
 
 When a conflict is detected, we perform some simple contention
 management that generally prefers the older transaction to the younger.
+This gives long transactions a better chance to succeed.
 
 \subsection{Semantics}
 
@@ -454,12 +461,13 @@ pages are shared with their identical copies in other segments.
 
 When we store into our objects the references to other objects, we
 need to be careful: addresses that are valid in one segment are not
-valid in another, because they would break isolation by pointing to
+valid in another, because they would break isolation by possibly pointing to
 the copy of the object in another segment.  Consequently, we would
 need to adapt these addresses to the segment they live in, which would
-prevent completely any page sharing.  Instead, we store pointers as
+prevent completely any page sharing because then the binary contents
+differ between segments.  Instead, we store pointers as
 \emph{Segment Offsets ($SO$)}, i.e.\ offsets from the start of the
-segment.  A $SO$ can then be interpreted in any segment by adding to
+segment.  An $SO$ can then be interpreted in any segment by adding to
 it the start address of that segment.\footnote{An alternative model
 would be to simulate threads using several independent processes in
 which all segments are at the same address.  This might work well for
@@ -477,13 +485,13 @@ typically used by the threading library to provide access to
 thread-local data.  One point of view is that we are using $\%gs$ for
 a similar purpose: thread-local data -- but a lot of it.}, which is
 available to applications, to point to the current thread's segment
-start address.  The translation from a $SO$ to a LA is done for us by
+start address.  The translation from an $SO$ to an LA is done for us by
 using the ``$\%gs\colon$'' prefix before any CPU instruction that
-reads or writes memory using a $SO$ address.  This is very efficient
-(we can do it on every object access) and some compilers support it
+reads or writes memory using an $SO$ address.  This is very efficient
+-- we can do it on every object access -- and some compilers support it
 natively (e.g.\ clang).
 
-In summary, translating a $\%gs:SO$ to a physical address is a
+In summary, translating an $\%gs:SO$ to a physical address is a
 two-step process: First the memory segmentation feature of the CPU
 constructs a linear address. Then, this LA gets mapped by the MMU to
 some place in the physical memory. This makes the $SO$ a valid reference
@@ -517,21 +525,19 @@ need to describe the commit protocol.
 \begin{description}
 
 \item [{Read~Barrier:}] A major contribution to our performance
-  is the simplicity of the read barrier: a large program (like an
-  interpreter for a complex language) contains a number of reads that
-  typically exceeds many times the number of writes.  The described
+  is the simplicity of the read barrier: a large program, like an
+  interpreter for a complex language, contains a number of reads that
+  typically vastly exceeds the number of writes.  The described
   approach allows the read barrier to be a single, unconditional
-  write into segment-local memory. We only need to mark an object
-  as read by the current transaction. The mark is stored in an
+  write into segment-local memory. We only need to \emph{mark} an object
+  as read by the current transaction. The mark is stored in a
   segment-local array indexed by a number derived from the $SO$
   of the object.
 
   Unlike other STM systems, the read barrier does not have to find the
   private version of the object -- our two-step address translation
   automatically resolves the reference to the private version on every
-  access anyway\footnote{Additional benefit: The read barrier is not
-    constrained to execute before the actual read -- both the compiler and
-    the CPU are free to reorder them.}.
+  access anyway.
 
 \item [{Write~Barrier:}] This barrier is triggered by checking a flag
   on the object that signifies if we did not already execute the write
@@ -540,11 +546,11 @@ need to describe the commit protocol.
   resets the flag.
 
   Here, we eagerly detect write-write conflicts by allowing only one
-  transaction modifying an object at a time (by acquiring a write
-  lock).\footnote{Eager write-write detection is not inherent to our
+  transaction modifying an object at a time using write
+  locks.\footnote{Eager write-write detection is not inherent to our
     approach; we may lift this restriction in the future.}  Part of making
   the object write-ready is also the privatisation of all pages the
-  object belongs to as described above.
+  object belongs to, as described above.
 
   Described below, we also need a write barrier for our generational
   garbage collector (GC). Interestingly, we are able to share the same
@@ -570,7 +576,7 @@ need to describe the commit protocol.
 \end{description}
 
 Conflicts can be resolved by aborting one of the two transactions, or
-in some cases by pausing one of them until the other commits.  If a
+in some cases by pausing the writing one until the reader commits.  If a
 commit succeeds, we copy the changes made to the objects in the write
 set so that they become visible in other segments.  Note that this
 only includes objects that existed before the transaction and have
@@ -599,9 +605,7 @@ The library consists of two parts: (I) It provides a simple interface
 to starting and committing transactions, as well as the required read
 and write barriers. (II) It also includes a \emph{garbage collector
 (GC)} that is closely integrated with the TM part (e.g.\ it shares the
-write barrier). The close integration helps in order to know more
-about the lifetime of an object, as will be explained in the following
-sections.
+write barrier).
 
 
 \subsection{Application Programming Interface\label{sub:Application-Programming-Interfac}}
@@ -611,7 +615,7 @@ void stm_start_transaction()
 void stm_commit_transaction()
 void stm_read(object_t *SO)
 void stm_write(object_t *SO)
-object_t *stm_allocate(ssize_t size_rounded)
+object_t *stm_allocate(size_t size_rounded)
 STM_PUSH_ROOT(object_t *SO)
 STM_POP_ROOT(object_t *SO)
 \end{lstlisting}
@@ -621,7 +625,8 @@ STM_POP_ROOT(object_t *SO)
 current thread. Internally, it uses \lstinline!setjmp()! to remember
 where the transaction started in case of an abort.
 \lstinline!stm_commit_transaction()! tries to commit the current
-transaction. \lstinline!stm_read()!, \lstinline!stm_write()!  perform
+transaction, aborting it otherwise. \lstinline!stm_read()!,
+\lstinline!stm_write()!  perform
 a read or a write barrier on the object given as the argument, and
 \lstinline!stm_allocate()!  allocates a new object with the specified
 size.  \lstinline!STM_PUSH_ROOT()! and \lstinline!STM_POP_ROOT()!
@@ -629,7 +634,7 @@ push and pop objects onto the shadow stack\footnote{A stack for pointers
   to GC objects that allows for precise garbage collection. All objects
   on that stack are never seen as garbage and are thus always kept
   alive.~\cite{fergus02}} of the current thread.  References to objects
-have to be saved using this stack around calls that may cause a GC
+have to be saved using this stack locally around calls that may cause a GC
 cycle to happen, and also while there is no transaction
 running. Otherwise these references may not be valid any more because
 the object moved or was seen as garbage. In this simplified API, only
@@ -656,7 +661,7 @@ On startup, we reserve a big range of virtual memory with a call to
 \lstinline!mmap()! and partition this space into $N+1$ segments. We
 want to run $N$ threads in parallel while segment~0 is designated as
 the \emph{sharing-segment} that is never assigned to a thread. The
-sharing-segment is essentially read-only except during commit.
+sharing-segment is essentially read-only, except during commit.
 
 The next step involves using \lstinline!remap_file_pages()!, a Linux
 system call\footnote{remap\_file\_pages() can also be done with more mmap()
@@ -674,11 +679,11 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   $\%gs{::}SO$ translated to linear addresses will point to NULL pages
   if $SO$ is set to \lstinline!NULL!.
 \item [{Segment-local~data:}] Some area private to the segment that
-  contains segment-local information.
-\item [{Read~markers:}] These are pages that store information about
+  contains segment-local information for bookkeeping.
+\item [{Read~markers:}] These are private pages that store information about
   which objects were read in the current transaction running in this
   segment.
-\item [{Nursery:}] This area contains all the freshly allocated
+\item [{Nursery:}] This private area contains all the freshly allocated
   objects (\emph{young objects}) of the current transaction. The GC
   uses bump-pointer allocation in this area to allocate objects in the
   first generation.
@@ -705,16 +710,16 @@ maximum of $N$ threads and their transactions can be running in
 parallel.  To support an unlimited number of threads in applications
 that use this TM system, we assign segments dynamically to threads.
 
-At the start of a transaction, the thread it is running in acquires a
+At the start of a transaction, the thread needs to acquire a
 segment. It may have to wait until another thread finishes its
-transaction and releases a segment. Fairness is not guaranteed yet, as
+transaction and releases its segment. Fairness is not guaranteed yet, as
 we simply assume a fair scheduling policy in the operating system when
 waiting on a condition variable.
 
 Therefore, a thread may be assigned to different segments each time it
 starts a transaction. Although, we try to assign it the same segment
-again if possible.
-
+again if possible to maximise the effectiveness of caches and the
+page privatisation.
 
 
 
@@ -729,9 +734,9 @@ The \textbf{young generation}, where objects are considered to be
 \emph{young} and reside in the \emph{Nursery}, is collected by
 \emph{minor collections}. These collections move the surviving objects
 out of a thread's nursery into the old object space, which can be done
-without stopping other threads. This is happens either if the nursery has
+without stopping other threads. This happens either if the nursery has
 no space left anymore or if we are committing the current
-transaction. Consequently, all objects are old and the nursery empty
+transaction. Consequently, all objects are \emph{old} and the nursery empty
 after a transaction commits.  Furthermore, all objects in the nursery
 were always created in the current transaction. This fact is useful
 since we do not need to call any barrier on this kind of objects.
@@ -742,17 +747,24 @@ transaction, we empty the nursery and mark each surviving object in
 the old object space with an \lstinline!overflow_number!  globally
 unique to the current transaction. That way we can still detect in a
 medium-fast path inside barriers that the object still belongs to the
-current transaction. \remi{so this is where we mention how the GC-STM
-integration is useful. highlight more or move to own section?}
-\cfbolz{definitely its own section listing all the benefits}
+current transaction. Other and later transactions will treat them
+like regular \emph{old} objects.
 
 The \textbf{old generation}, where objects are considered to be
 \emph{old} and never move again, is collected by \emph{major
   collections}.  These collections are implemented in a stop-the-world
 kind of way and first force minor collections in all threads. The
-major goal is to free objects in the old objects space. Furthermore,
-we optimistically re-share pages that do not need to be private
-anymore.
+major goal is to free objects in the old objects space.
+
+Furthermore, we optimistically re-share pages during major collections.
+This is another example where the STM-GC cooperation makes sense. We
+regard private pages as additional memory that may be collected.
+Pages should usually stay private for some time, but at some regular
+intervals, we still want to try to re-share pages in case they actually
+stay unmodified in the future. Major collections are allowed to do
+that because all threads are synchronised, and we can re-share all
+private pages that do not currently contain an object in some
+transaction's  write set.
 
 As seen in the API (section~\ref{sub:Application-Programming-Interfac}),
 we use a \emph{shadow stack}~\cite{fergus02} in order to provide precise garbage
@@ -772,8 +784,7 @@ The point of the read barrier is to add the object to the read set of
 the transaction. This information is needed to detect conflicts
 between transactions. In other STM systems, it also resolves an object reference to
 a private copy, but since the CPU performs our address translation on
-every object access efficiently, we do not need to do that in our
-barrier.
+every object access efficiently, we can avoid this extra overhead.
 
 To add the object to the read set, for us it is enough to mark it as
 read. Since this information needs to be local to the segment, we need
@@ -783,7 +794,7 @@ and already mentioned in Section~\ref{sub:Setup}.
 This area can be seen as a continuous, segment-local array of bytes
 that is indexed with an object's reference ($SO$) divided by 16. So
 that each object has its own read marker, all objects have a size of
-at least 16 bytes. Otherwise there would be false conflicts when
+at least 16 bytes. Otherwise there could be false conflicts when
 reading from two adjacent objects that share a single marker.
 Instead of just setting the byte to \lstinline!true!  if the
 corresponding object was read, we set it to a \lstinline!read_version!
@@ -791,7 +802,10 @@ belonging to the transaction, which will be incremented on each
 commit.  Thereby, we can avoid resetting the bytes to
 \lstinline!false!  on commit and only need to do this every 255
 transactions. The whole code for the barrier is easily optimisable for
-compilers as well as perfectly predictable for CPUs:
+compilers as well as perfectly predictable for
+CPUs\footnote{Additional benefit: The read barrier is not constrained
+to execute before the actual read -- both the compiler and the CPU are
+free to reorder or group them.}:
 
 \begin{lstlisting}
 void stm_read(SO):
@@ -908,7 +922,7 @@ The close integration between STM and the GC allows us to use this
 information effectively: young objects do not trigger the slow path at
 all, overflow objects only need to be handled by the GC part of the
 write barrier once between collections, and only the old objects need
-to be handled by the TM part once per transaction. This keeps the
+to be handled by the STM part \textbf{once per transaction}. This keeps the
 overhead of the write barrier very low.
 
 
@@ -986,13 +1000,13 @@ want to synchronise. The mentioned check will then fail in those
 segments and call the slow path. In \lstinline!allocate_slowpath!
 they can simply check for this condition and enter a safe point.
 
-For other synchronisation requirements, for example:
-\begin{itemize}[noitemsep]
-\item waiting for a segment to be released,
-\item waiting for a transaction to abort or commit,
-\item waiting for all threads to reach their safe points,
-\end{itemize}
-we use a set of condition variables to wait or signal other threads.
+% For other synchronisation requirements, for example:
+% \begin{itemize}[noitemsep]
+% \item waiting for a segment to be released,
+% \item waiting for a transaction to abort or commit,
+% \item waiting for all threads to reach their safe points,
+% \end{itemize}
+% we use a set of condition variables to wait or signal other threads.
 
 
 \subsection{Contention Management\label{subsub:contentionmanagement}}
@@ -1001,6 +1015,7 @@ On encountering conflicts, we employ contention management to solve
 the problem as well as we can. The general rules are:
 \begin{itemize}[noitemsep]
 \item prefer transactions that started earlier to younger transactions
+  in order to let long transactions succeed more often
 \item to support \emph{inevitable} transactions, we always prefer them
   to others since they cannot abort (similar to~\cite{blundell06})
 \end{itemize}
@@ -1017,9 +1032,9 @@ committed read anymore.
 \section{Evaluation}
 
 We evaluate our system in a Python interpreter called
-PyPy\footnote{www.pypy.org} (version 2.3). PyPy is an implementation of an
-interpreter for the Python language. It has a special focus on speed,
-as it provides a just-in-time (JIT) compiler to speed up applications
+PyPy~\cite{pypy} (version 2.3). PyPy is an implementation of an
+interpreter for the Python language. It has a special focus on speed
+and provides a just-in-time (JIT) compiler to speed up applications
 running on top of it. For comparison, we compare between normal PyPy
 using a GIL and a PyPy with STM, as well as to CPython.
 \begin{description}
@@ -1046,7 +1061,7 @@ compile time).
 
 For each point in the plots, we took 5 measurements and report the
 average and the standard deviation as error bars. For the JIT
-benchmarks, we first let warm up the JIT by doing a few
+benchmarks, we first let the JIT warm up by doing a few
 additional iterations to get a single measurement.
 
 % benchmarks with: pypy-c--Ojit-d1454093dd48+-14-05-26-17:16
@@ -1086,7 +1101,7 @@ more iterations per second than a single thread.
 \subsection{Small-Scale Benchmarks\label{sec:performance-bench}}
 
 For the following sections we use a set of six small benchmarks
-available on \cite{pypybenchs}:
+available at~\cite{pypybenchs}:
 
 \begin{itemize}
 \item \emph{btree} and \emph{skiplist}, which are both inserting,
@@ -1168,7 +1183,8 @@ go away, we will now look at how well STM works together with it.
 \begin{figure}[h]
   \centering
   \includegraphics[width=1\columnwidth]{plots/performance_nojit.pdf}
-  \caption{Comparing execution time between interpreters without a JIT\label{fig:performance-nojit}}
+  \caption{Comparing execution time between interpreters without a JIT
+    and using small input sizes\label{fig:performance-nojit}}
 \end{figure}
 
 
@@ -1192,7 +1208,7 @@ The speedups from enabling the JIT in these benchmarks range from
 $10-50\times$. This is why we had to do without CPython here, since it
 would be much further up in the plots. Also, in order to make jitting
 code worthwhile, we increased the input size of all benchmarks to get
-reasonable execution times.
+reasonable execution times (denoted with ``(large)'' in benchmark names).
 
 We also ran these benchmarks on Jython\footnote{version
 2.7b1~\cite{webjython}}, an implementation of Python on top of the
@@ -1229,7 +1245,8 @@ JIT in the future.
 \begin{figure}[h]
   \centering
   \includegraphics[width=1\columnwidth]{plots/performance.pdf}
-  \caption{Comparing execution time between interpreters with JIT\label{fig:performance-jit}}
+  \caption{Comparing execution time between interpreters with JIT
+    and large input sizes\label{fig:performance-jit}}
 \end{figure}
 
 
@@ -1251,7 +1268,7 @@ benchmarks. This may be valid for the hand-tuned allocations in their
 interpreter. For us the GC is essential, and because it is a moving
 GC, it unfortunately touches a lot more memory and thereby reaches the
 HTM capacity much faster.  This, and the fact that HTM's capacity
-limits do not allow the implementation of arbitrary atomic blocks, let
+limits do not allow the implementation of arbitrary-sized atomic blocks, let
 us to believe that STM is the right choice at the moment.
 
 There are multiple attempts at removing the limits of HTM by means of
@@ -1266,7 +1283,7 @@ first has to be verified in our case.
 From the other end, there also have been attempts at lowering the
 overhead of STM~\cite{warmhoff13,spear09} especially for a low number
 of CPU cores. \cite{spear09} works well for some workloads, in the
-case of a dynamic language VM, we have to assume any possible
+case of a dynamic language VM, however, we have to assume any possible
 workload.  \cite{warmhoff13} uses a compile-time approach to select
 from multiple optimised STMs. Their partitioned FastLane STM seems to
 provide good performance already on two threads using master and
@@ -1276,10 +1293,12 @@ performs well in our use case.
 Similarly to us, \cite{martin09} use memory management techniques to
 provide isolation between transactions. They focus on providing strong
 atomicity between transactional and non-transactional code.  We,
-however, use inevitable transactions to provide strong atomicity.
-Additionally, while they use page fault handlers to detect conflicts,
-we use traditional write barriers. Again, there are only some
-superficial similarities between our approach and theirs.
+however, use inevitable transactions to provide strong atomicity
+for non-reversible operations and otherwise do not have to deal
+with non-transactional code.  Additionally, while they use page fault
+handlers to detect conflicts, we use traditional write barriers. There
+are only some superficial similarities between our approach and
+theirs.
 
 
 % Similar STMs:
@@ -1361,6 +1380,7 @@ contributions:
 \bibitem{cpython} CPython. \url{www.python.org}
 \bibitem{webjython} The Jython Project, \url{www.jython.org}
 \bibitem{ironpython} IronPython. \url{www.ironpython.net}
+\bibitem{pypy} PyPy Project. \url{www.pypy.org}
 
 \bibitem{beazley10} Beazley, David. "Understanding the python gil."
   \emph{PyCON Python Conference}. Atlanta, Georgia. 2010.
