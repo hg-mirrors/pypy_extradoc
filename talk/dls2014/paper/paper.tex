@@ -153,19 +153,19 @@ Since some years, the popularity of dynamic languages is on the rise.
 A common trait of many of these language implementations is the use of
 a single global interpreter lock (GIL) to synchronise the interpreter
 in a multithreading scenario. Since this lock effectively serialises
-the execution, they can not make use of the increasing parallelism in
+the execution, applications can not make use of the increasing parallelism in
 current hardware.
 
 In this paper, we present a software transactional memory (STM) system
 specifically designed for the purpose of replacing the GIL in dynamic
 language interpreters. The key idea is a close integration of STM with
-the garbage collector to provide atomicity, synchronisation, and
+the garbage collector to approach atomicity, synchronisation, and
 memory management in a unified way.  As a user abstraction for a
 scalable synchronisation mechanism, we implement atomic blocks by
 exposing part of the STM system to applications.  The described STM
-uses a combination of features present in current CPUs to lower its
-overhead so that it can beat the performance of a GIL supported Python
-interpreter already on 2 threads.
+uses a combination of features present in current CPUs, so that the
+parallelisation benefits outweigh the system's overhead already on 2
+threads when comparing to a GIL supported Python interpreter.
 
 
 \end{abstract}
@@ -262,10 +262,7 @@ This paper makes the following contributions:
 \end{itemize}
 The STM described here is efficient and has low overhead and is
 therefore beneficial also for environments with a small number of
-threads or cores. It is also used to implement atomic blocks for the
-Python language to provide a backwards compatible, composable
-synchronisation mechanism for threads.
-
+threads or cores.
 
 \subsection{Application View}
 
@@ -278,27 +275,37 @@ namely \emph{threading} and \emph{multiprocessing}.
 
 \emph{Threading} employs operating system (OS) threads to provide
 concurrency. It is, however, limited by the GIL and thus does not
-provide parallelism. At this point we should mention that it is indeed
+provide parallelism\footnote{At this point we should mention that it is indeed
 possible to run external functions written in C instead of Python in
 parallel. Our work focuses on Python itself and ignores this aspect as
-it requires writing in a different language.
+it requires writing in a different language.}. Because the GIL is only
+seen as an implementation detail of the interpreter, applications are
+required to coordinate concurrent accesses to data structures using
+conventional methods -- locks being the most common way.
 
 The second approach, \emph{multiprocessing}, uses multiple instances
 of the interpreter itself and runs them in separate OS processes.
-Here we actually get parallelism because we have one GIL per
+Here we actually get parallelism because there is one GIL per
 interpreter, but of course we have the overhead of multiple processes~/
 interpreters and also need to exchange data between them explicitly
 and expensively.
 
 We focus on the \emph{threading} approach. This requires us to remove
-the GIL from the interpreter to run code in parallel on
-multiple threads. One approach to this is fine-grained locking instead
-of a single global lock. Jython~\cite{webjython} and
+the GIL from the interpreter to run code in parallel on multiple
+threads. One approach to this is fine-grained locking instead of a
+single global lock. Jython~\cite{webjython} and
 IronPython~\cite{ironpython} follow this approach. Fine-grained
 locking is, however, not a \emph{direct} replacement for the GIL. It
 requires multiple locks in multiple places, not only in a central
-location. We follow the direct approach of using TM instead of the
-GIL.
+location. We on the other side follow the direct approach of using TM
+instead of the GIL. There, GIL acquisition and release operations
+conceptually directly map to starting and committing transactions.
+
+TM also allows us to attack the issue of application-level
+synchronisation and atomicity. We introduce atomic blocks to the
+Python language by mapping them directly to the underlying
+transactions -- providing the application with the guarantee of
+atomicity for the enclosed instructions.
 
 
 \section{Transactional Memory Model}
@@ -308,11 +315,11 @@ guarantees as well as some of the design choices we made. This should
 clarify the general semantics in commonly used terms from the
 literature~\cite{harris10}.
 
-Our TM system is fully implemented in software. However, we exploit
+The described TM system is fully implemented in software. However, we exploit
 some more advanced features of current CPUs, particularly \emph{memory
 segmentation, virtual memory,} and the 64-bit address space. Still,
 it cannot be classified as a hybrid TM system since it currently
-makes no use of any HTM present in the CPU.
+makes no use of any hardware TM (HTM) present in the CPU.
 
 \subsection{Conflict Handling}
 
@@ -388,7 +395,7 @@ distributed transactional memory.
 Clearly, if we are in a shared-memory setting, this model is extremely
 wasteful: at any given time, most objects are identical in all, or
 most, segments.  They differ only in segments that have modified but
-not yet committed these objects.  So we use a trick of the Memory
+not yet committed these objects.  So we make use of the Memory
 Management Unit (MMU) of the CPU.  The MMU maps pages of virtual to
 physical memory.  By changing this page mapping, at the coarse unit of
 one page of memory (4096 bytes), we can share memory that would
@@ -403,7 +410,7 @@ accessible by this segment and full isolation is guaranteed.  This
 process is illustrated in Figure~\ref{fig:Page-Remapping}.
 
 The result is that the virtual address space of the process is bloated
-by a factor $N$ -- but the real memory usage is not, because most
+by a factor $N$ -- but the real, physical memory usage is not, because most
 pages are shared with their identical copies in other segments.
 
 \begin{figure}[h]
@@ -453,7 +460,8 @@ In summary, translating an $\%gs:SO$ to a physical address is a
 two-step process: First the memory segmentation feature of the CPU
 constructs a linear address. Then, this LA gets mapped by the MMU to
 some place in the physical memory. This makes the $SO$ a valid reference
-to an object in all segments.
+to an object in all segments, automatically resolving either to a
+shared or a private version.
 
 
 % If support for this is not available (due to the compiler or a
@@ -525,7 +533,7 @@ need to describe the commit protocol.
 
   Checking other transactions' read marks would involve reading
   concurrently modified memory: another thread could be issuing a read
-  barrier in parallel with a commit.  To prevent this from occurring, we
+  barrier in parallel to a commit.  To prevent this from occurring, we
   must suspend all other threads at known safe points.  This is a
   trade-off for the simplicity of our read barrier -- which is well
   worth it in our case, due to the very high number of read barriers
@@ -534,7 +542,8 @@ need to describe the commit protocol.
 \end{description}
 
 Conflicts can be resolved by aborting one of the two transactions, or
-in some cases by pausing the writing one until the reader commits.  If a
+in some cases by pausing the writing one until the reader commits --
+serialising the write after the read.  If a
 commit succeeds, we copy the changes made to the objects in the write
 set so that they become visible in other segments.  Note that this
 only includes objects that existed before the transaction and have
@@ -548,7 +557,7 @@ segments at all.
 
 \section{Low-level Implementation\label{sub:Low-level-Implementation}}
 
-In this section, we will provide details about the actual
+In this section, we will provide more details about the actual
 implementation of the system and discuss some of the issues that we
 encountered.
 
@@ -562,8 +571,7 @@ dynamic language VMs as a replacement for the GIL.
 The library consists of two parts: (I) It provides a simple interface
 to starting and committing transactions, as well as the required read
 and write barriers. (II) It also includes a \emph{garbage collector
-(GC)} that is closely integrated with the TM part (e.g.\ it shares the
-write barrier).
+(GC)} that is closely integrated with the TM part.
 
 
 \subsection{Application Programming Interface\label{sub:Application-Programming-Interfac}}
@@ -571,6 +579,7 @@ write barrier).
 \begin{lstlisting}
 void stm_start_transaction()
 void stm_commit_transaction()
+void stm_become_inevitable()
 void stm_read(object_t *SO)
 void stm_write(object_t *SO)
 object_t *stm_allocate(size_t size_rounded)
@@ -583,8 +592,11 @@ STM_POP_ROOT(object_t *SO)
 current thread. Internally, it uses \lstinline!setjmp()! to remember
 where the transaction started in case of an abort.
 \lstinline!stm_commit_transaction()! tries to commit the current
-transaction, aborting it otherwise. \lstinline!stm_read()!,
-\lstinline!stm_write()!  perform
+transaction, aborting it otherwise. Similarly,
+\lstinline!stm_become_inevitable()!  tries to make the current
+transaction inevitable, possibly aborting the current one if not
+possible.
+ \lstinline!stm_read()!, \lstinline!stm_write()!  perform
 a read or a write barrier on the object given as the argument, and
 \lstinline!stm_allocate()!  allocates a new object with the specified
 size.  \lstinline!STM_PUSH_ROOT()! and \lstinline!STM_POP_ROOT()!
@@ -595,9 +607,11 @@ push and pop objects onto the shadow stack\footnote{A stack for pointers
 have to be saved using this stack locally around calls that may cause a GC
 cycle to happen, and also while there is no transaction
 running. Otherwise these references may not be valid any more because
-the object moved or was seen as garbage. In this simplified API, only
-\lstinline!stm_allocate()!  and \lstinline!stm_commit_transaction()!
-require saving object references.
+the object moved or was seen as garbage. In this simplified Application
+Programming Interface (API), only \lstinline!stm_allocate()!,
+\lstinline!stm_become_inevitable()! and
+\lstinline!stm_commit_transaction()!  require saving object
+references.
 
 In the following sections, whenever we use $SO$, we go through the
 address translation to get to the actual contents of an object. This
@@ -607,12 +621,37 @@ compiler\footnote{We use Clang 3.5 with patches to deal with bugs in
 its ``address-space 256'' feature. Patches are available from authors
 until inclusion into the official clang.} to make all accesses through
 it relative to the $\%gs$ register.  With exceptions, nearly all
-accesses to objects managed by the TM system should use this type so
+accesses to objects managed by the TM system use this type so
 that the CPU will translate the reference to the right version of the
 object.
-
-
 \medskip   % why, Latex, why??
+
+
+\subsection{Replacing the GIL}
+
+With this simple API, replacing the GIL is just a matter of starting a
+new transaction when we would usually acquire the GIL, and committing
+the current transaction when we normally release the GIL.  It would be
+wasteful to do this between every single bytecode instruction.  We
+thus depend on a simple heuristic that estimates how expensive
+aborting and retrying the current transaction is based on how much
+memory was allocated in the current transaction. If we deem it
+expensive enough, we commit and start a new transaction \emph{as soon
+as possible}. Deciding on the length of a transaction is an
+interesting challenge in and of itself.
+
+It may not be possible to immediately break the transaction, as we
+could be executing an atomic block. Atomic blocks are currently
+implemented as guaranteeing that the whole block's execution takes
+place in a single transaction. Another issue is the support of
+irreversible operations, like calls to external functions or general
+input~/ output. If we are allowed to, we simply commit the transaction
+before and start a new one after these operations. Within an atomic
+block, however, we turn the transaction inevitable so that the
+transaction cannot abort and strong isolation is guaranteed.
+
+
+
 \subsection{Setup\label{sub:Setup}}
 
 On startup, we reserve a big range of virtual memory with a call to
