@@ -203,17 +203,22 @@ def geom_mean(xs):
 import numpy as np
 sls = []
 spds = []
+totals = []
 for bench_name, interps in benchs.items():
     slowdown = np.mean(interps["pypy-stm-nojit"][0]) / np.mean(interps["pypy-nojit"][0])
     speedup = np.mean(interps["pypy-stm-nojit"][0]) / np.mean(interps["pypy-stm-nojit"][3])
+    total = np.mean(interps["pypy-nojit"][0]) / np.mean(interps["pypy-stm-nojit"][3])
     print "overhead", bench_name, ":", slowdown
     print "stm speedup", bench_name, ":", speedup
+    print "totals", bench_name, ":", total
     sls.append(slowdown)
     spds.append(speedup)
+    totals.append(total)
 
 
 print "geom,max slowdown of STM", geom_mean(sls), np.max(sls)
 print "geom,max speedup of STM", geom_mean(spds), np.max(spds)
+print "geom,max total speedup", geom_mean(totals), np.max(totals)
 
 
 

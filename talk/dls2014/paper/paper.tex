@@ -77,20 +77,24 @@
     interface,new,true,false,null,return}}
 \renewcommand{\lstlistingname}{Listing}
 
+% Keine "Schusterjungen"
+\clubpenalty = 10000
+% Keine "Hurenkinder"
+\widowpenalty = 10000 \displaywidowpenalty = 10000
 
 
-\newcommand{\mynote}[2]{%
-  \textcolor{red}{%
-    \fbox{\bfseries\sffamily\scriptsize#1}%
-    {\small$\blacktriangleright$\textsf{\emph{#2}}$\blacktriangleleft$}%
-  }%
-}
+% \newcommand{\mynote}[2]{%
+%   \textcolor{red}{%
+%     \fbox{\bfseries\sffamily\scriptsize#1}%
+%     {\small$\blacktriangleright$\textsf{\emph{#2}}$\blacktriangleleft$}%
+%   }%
+% }
 
-\newcommand\remi[1]{\mynote{Remi}{#1}}
-\newcommand\cfbolz[1]{\mynote{cfbolz}{#1}}
-\newcommand\arigo[1]{\mynote{arigo}{#1}}
+% \newcommand\remi[1]{\mynote{Remi}{#1}}
+% \newcommand\cfbolz[1]{\mynote{cfbolz}{#1}}
+% \newcommand\arigo[1]{\mynote{arigo}{#1}}
 
-\newcommand{\comment}[1]{}
+% \newcommand{\comment}[1]{}
 
 
 \begin{document}
@@ -120,20 +124,20 @@
 \title{A Transactional Memory System for Parallel Python}
 %\subtitle{DLS'14}
 
-\comment{
-A Platform for Parallelism in Dynamic languages
-Parallelism for Python
-A TM Implementation for Python
-Transactional Memory as a foundation for parallel Python
-Transactional Memory as a foundation for parallelism in Python
-Parallel Python based on VM-assisted TM
-Parallel Python based on VM-assisted Transactional Memory
-A Platform for parallel Python
-A TM Platform for parallel Python
-A Transactional Memory Platform for parallel Python
-A Transactional Memory system for parallel Python
+% \comment{
+% A Platform for Parallelism in Dynamic languages
+% Parallelism for Python
+% A TM Implementation for Python
+% Transactional Memory as a foundation for parallel Python
+% Transactional Memory as a foundation for parallelism in Python
+% Parallel Python based on VM-assisted TM
+% Parallel Python based on VM-assisted Transactional Memory
+% A Platform for parallel Python
+% A TM Platform for parallel Python
+% A Transactional Memory Platform for parallel Python
+% A Transactional Memory system for parallel Python
 
-Virtual Memory Assisted Transactional Memory for Dynamic Languages}
+% Virtual Memory Assisted Transactional Memory for Dynamic Languages}
 
 \authorinfo{Remigius Meier}
            {Department of Computer Science\\ ETH Zürich}
@@ -252,7 +256,8 @@ the STM system with the garbage collector.
 
 
 This paper makes the following contributions:
-\begin{itemize}[noitemsep]
+\vspace{-\topsep}               % XXX:HACK:TODO
+\begin{itemize}
 \item We introduce a new STM system that performs well for dynamic
   language interpreters.
 \item We integrate the system closely with a garbage collector
@@ -260,6 +265,7 @@ This paper makes the following contributions:
 \item This new STM system is used to replace the GIL in one
   implementation of Python and is then evaluated.
 \end{itemize}
+
 The STM described here is efficient and has low overhead and is
 therefore beneficial also for environments with a small number of
 threads or cores.
@@ -562,20 +568,9 @@ implementation of the system and discuss some of the issues that we
 encountered.
 
 
-\subsection{Architecture}
-
-Our TM system is designed as a library that covers all aspects around
-transactions and object management. It is designed for object-oriented
-dynamic language VMs as a replacement for the GIL.
-
-The library consists of two parts: (I) It provides a simple interface
-to starting and committing transactions, as well as the required read
-and write barriers. (II) It also includes a \emph{garbage collector
-(GC)} that is closely integrated with the TM part.
-
-
 \subsection{Application Programming Interface\label{sub:Application-Programming-Interfac}}
 
+\begin{code}[h]
 \begin{lstlisting}
 void stm_start_transaction()
 void stm_commit_transaction()
@@ -586,7 +581,14 @@ object_t *stm_allocate(size_t size_rounded)
 STM_PUSH_ROOT(object_t *SO)
 STM_POP_ROOT(object_t *SO)
 \end{lstlisting}
+\caption{Application programming interface\label{lst:api}}
+\end{code}
 
+Our TM system is designed as a library that covers all aspects around
+transactions and object memory management. It is designed for
+object-oriented dynamic language VMs as a replacement for the GIL.
+The library exposes the functions in Listing~\ref{lst:api} as its
+interface for use by a dynamic language interpreter.
 
 \lstinline!stm_start_transaction()!  starts a transaction in the
 current thread. Internally, it uses \lstinline!setjmp()! to remember
@@ -665,11 +667,11 @@ system call\footnote{remap\_file\_pages() can also be done with more mmap()
 calls in a roughly portable way, but the former is more efficient on Linux.},
 to establish the \emph{fully-shared configuration}.  All pages
 of segments $>0$ map to the pages of the sharing-segment.
-
 However, the layout of a segment is not uniform and we actually
 privatise a few areas again right away. These areas are illustrated in
 Figure~\ref{fig:Segment-Layout} and explained here:
-\begin{description}[noitemsep]
+
+\begin{description}
 \item [{NULL~page:}] This page is unmapped and will produce a
   segmentation violation when accessed. We use this to detect
   erroneous dereferencing of \lstinline!NULL! references.  All
@@ -689,6 +691,10 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   some young ones that were too big to be allocated in the nursery.
 \end{description}
 
+Note, these areas are at offsets inside the segments known at
+compile time. This makes some checks very efficient, e.g.\ checking
+if an object resides in the nursery only requires comparing its $SO$
+to the boundaries of the nursery.
 
 
 \begin{figure*}[t]
@@ -711,7 +717,7 @@ At the start of a transaction, the thread needs to acquire a
 segment. It may have to wait until another thread finishes its
 transaction and releases its segment. Fairness is not guaranteed yet, as
 we simply assume a fair scheduling policy in the operating system when
-waiting on a condition variable.
+waiting on a lock.
 
 Therefore, a thread may be assigned to different segments each time it
 starts a transaction. Although, we try to assign it the same segment
@@ -743,7 +749,7 @@ To improve this situation even more, we introduce the concept of
 transaction, we empty the nursery and mark each surviving object in
 the old object space with an \lstinline!overflow_number!  globally
 unique to the current transaction. That way we can still detect in a
-medium-fast path inside barriers that the object still belongs to the
+medium-fast path inside the write barrier that the object still belongs to the
 current transaction. Other and later transactions will treat them
 like regular \emph{old} objects.
 
@@ -798,17 +804,19 @@ corresponding object was read, we set it to a \lstinline!read_version!
 belonging to the transaction, which will be incremented on each
 commit.  Thereby, we can avoid resetting the bytes to
 \lstinline!false!  on commit and only need to do this every 255
-transactions. The whole code for the barrier is easily optimisable for
-compilers as well as perfectly predictable for
-CPUs\footnote{Additional benefit: The read barrier is not constrained
-to execute before the actual read -- both the compiler and the CPU are
-free to reorder or group them.}:
+transactions. The whole code for the barrier shown in
+Listing~\ref{lst:rb} is easily optimisable for compilers as well as
+perfectly predictable for CPUs\footnote{Additional benefit: The read
+barrier is not constrained to execute before the actual read -- both
+the compiler and the CPU are free to reorder or group them.}.
 
+\begin{code}[h]
 \begin{lstlisting}
 void stm_read(SO):
     *(SO >> 4) = read_version
 \end{lstlisting}
-
+\caption{The complete read barrier\label{lst:rb}}
+\end{code}
 
 \begin{figure}[h]
   \centering
@@ -819,27 +827,37 @@ void stm_read(SO):
 
 \subsection{Write Barrier}
 
-The job of the write barrier is twofold: first, it serves as a write
-barrier for the garbage collector and second, it supports COW and adds
-objects to the write set of the transaction. These two jobs are
-depicted in Figure~\ref{fig:obj_states}.
+The job of the write barrier is twofold: it serves as a write barrier
+for the garbage collector (GC) and the STM system. These two jobs are
+depicted in Figure~\ref{fig:obj_states}. The GC needs to keep track of
+objects that may contain references to young, movable objects. These
+objects need to be traced during minor collections to update
+references to moved objects. Young objects automatically get traced if
+the GC ascertains that they survive the collection by being reachable
+from traced objects. The STM system needs to record objects in the
+write set, acquire write locks, and privatise their pages
+(copy-on-write). It only needs to do this for old objects from
+previous transactions, as the others are not known to other
+transactions anyway.
 
 The \textbf{fast path} of the write barrier is very simple. We only
 need to check for the flag \lstinline!WRITE_BARRIER! in the object's
 header through its $SO$ and call the slow path if it is set. This flag
 is set either if the object is old and comes from an earlier
 transaction, or if there was a minor collection which will add the
-flag again on all objects and may produce overflow objects. The flag
-is never set on freshly allocated objects, because they do not need
-to be traced by the GC or handled by the STM system. This fast path
-covers all cases for the GC and for the STM system.
+flag again on all objects, including new overflow objects. The flag
+is never set on young, freshly allocated objects. This fast path
+covers all cases for the GC and for the STM system (see
+Listing~\ref{lst:w_fast}).
 
-
+\begin{code}[h]
 \begin{lstlisting}
 void stm_write(SO):
 	if SO->flags & WRITE_BARRIER:
 		write_slowpath(SO)
 \end{lstlisting}
+\caption{Write barrier fast path\label{lst:w_fast}}
+\end{code}
 
 \begin{code}[h]
 \begin{lstlisting}
@@ -875,11 +893,8 @@ void write_slowpath(SO):
 The \textbf{slow path} is shown in Listing~\ref{lst:w_slow}.
 First comes the \emph{GC part}: In any case, the object will be added
 to the list of objects that need tracing in the next minor collection
-(\lstinline!to_trace!).  This is necessary in case we write a
-reference to it that points to a young object. We then need to trace
-it during the next minor collection to mark the young object
-alive and to update its reference to the new location it gets moved
-to.
+(\lstinline!to_trace!). Any reference we write to this object will
+be kept alive and up-to-date during minor collections.
 
 The check for \lstinline!is_overflow_obj()! looks at the
 \lstinline!overflow_number!  and tells us if the object was actually
@@ -895,7 +910,7 @@ cases of the STM system that need to make old objects writable.
 
 For the \emph{STM part}, we first perform a read barrier on the
 object. We then try to acquire its write lock. \lstinline!write_locks!
-is a simple, \textbf{global} array of bytes that is indexed with the
+is a simple, \emph{global} array of bytes that is indexed with the
 $SO$ of the object divided by 16. Note, ``global'' here really means
 it is a single array with data for all segments, there is no address
 translation going on to access its elements contrary to e.g.\ the
@@ -919,7 +934,7 @@ The close integration between STM and the GC allows us to use this
 information effectively: young objects do not trigger the slow path at
 all, overflow objects only need to be handled by the GC part of the
 write barrier once between collections, and only the old objects need
-to be handled by the STM part \textbf{once per transaction}. This keeps the
+to be handled by the STM part \emph{once per transaction}. This keeps the
 overhead of the write barrier very low.
 
 
@@ -968,8 +983,9 @@ check regularly to see if synchronisation is requested. We
 use a trick relying on the fact that dynamic languages are usually
 very high-level and thus allocate a lot of objects very regularly.
 This is done through the function \lstinline!stm_allocate!  shown
-below:
+in Listing~\ref{lst:alloc_func}.
 
+\begin{code}[h]
 \begin{lstlisting}
 object_t *stm_allocate(ssize_t size_rounded):
     result = nursery_current
@@ -978,7 +994,8 @@ object_t *stm_allocate(ssize_t size_rounded):
 		return allocate_slowpath(size_rounded)
 	return result
 \end{lstlisting}
-
+\caption{Function to allocate objects\label{lst:alloc_func}}
+\end{code}
 
 This code does simple bump-pointer allocation in the nursery. If there
 is still space left in the nursery, we return
@@ -1008,12 +1025,14 @@ they can simply check for this condition and enter a safe point.
 
 On encountering conflicts, we employ contention management to solve
 the problem as well as we can. The general rules are:
-\begin{itemize}[noitemsep]
+
+\begin{itemize}
 \item prefer transactions that started earlier to younger transactions
-  to let long transactions succeed more often
+  to increase the chance of long transactions succeeding
 \item to support \emph{inevitable} transactions, we always prefer them
   to others since they cannot abort (similar to~\cite{blundell06})
 \end{itemize}
+
 We can either simply abort a transaction to let the other one succeed,
 or we can also wait until the other transaction committed. The latter
 is an interesting option if we are trying to commit a write and
@@ -1030,7 +1049,7 @@ We evaluate our system in a Python interpreter called
 PyPy~\cite{pypy} (version 2.3). PyPy is an implementation of an
 interpreter for the Python language. It has a special focus on speed
 and provides a just-in-time (JIT) compiler to speed up applications
-running on top of it. For comparison, we compare between normal PyPy
+running on top of it. We compare between normal PyPy
 using a GIL and a PyPy with STM, as well as to CPython.
 \begin{description}
 \item[CPython] (version 2.7.6) is the reference implementation of the Python
@@ -1055,9 +1074,10 @@ and a maximum amount of memory of 1.5~GiB (both are configurable at
 compile time).
 
 For each point in the plots, we took 5 measurements and report the
-average and the standard deviation as error bars. For the JIT
-benchmarks, we first let the JIT warm up by doing a few
-additional iterations to get a single measurement.
+arithmetic mean with the standard deviation as error bars. Average
+speedup numbers are calculated using the geometric mean. For the JIT
+benchmarks, we first let the JIT warm up by doing a few additional
+iterations to get a single measurement.
 
 % benchmarks with: pypy-c--Ojit-d1454093dd48+-14-05-26-17:16
 % that's with stmgc 70c403598485
@@ -1069,20 +1089,28 @@ additional iterations to get a single measurement.
 \subsection{Scaling}
 
 To asses how well the STM system scales on its own (without any real
-workload), we execute the following loop on 1 to 4 threads on our
-Python interpreter with STM:
+workload), we execute the loop in Listing~\ref{lst:scaling_workload}
+on 1 to 4 threads on the PyPy interpreter with STM.
+
+\begin{code}[h]
 \begin{lstlisting}
 def workload():
     i = 20000000
     while i:
         i -= 1
 \end{lstlisting}
+\caption{Dummy workload\label{lst:scaling_workload}}
+\end{code}
 
 For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
 and normalised the average runtimes to the time it took on a single
 thread. From this we see that there is additional overhead introduced
-by each thread ($12.3\%$ for all 4 threads together). While this
-is not ideal, we think that $12.3\%$ are acceptable on four
+by each thread ($12.3\%$ for all 4 threads together). Every thread
+adds some overhead because during a commit, there is one more thread
+which has to reach a safe point. Additionally, conflict detection
+during commit needs to check in all concurrently running transactions.
+
+While not ideal, we think that $12.3\%$ is acceptable on four
 threads. In terms of throughput, 4 threads have $3.54\times$
 more iterations per second than a single thread.
 
@@ -1163,10 +1191,12 @@ There is no visible benefit from 3 to 4 threads, even a slight
 regression.
 
 Looking at the average overhead from switching from GIL to STM, we see
-that it is $\approx 43.3\%$. The maximum in richards is
-$71\%$. In all benchmarks \emph{pypy-stm-nojit} beats
-\emph{pypy-nojit} already on two threads despite of this overhead.
-However, it rarely beats CPython's single-thread performance.  For
+that it is $\approx 43.3\%$. The maximum in richards is $71\%$. In all
+benchmarks \emph{pypy-stm-nojit} beats \emph{pypy-nojit} already on
+two threads despite of this overhead.  The achieved speedup comparing
+STM to the GIL is between $1.14\times$ and $1.94\times$.
+
+Still, STM rarely beats CPython's single-thread performance. However, for
 programs that need concurrency in CPython and that use threads to
 achieve this, it also makes sense to look at the overhead induced by
 the GIL on multiple threads. From this perspective, the STM
@@ -1222,8 +1252,10 @@ work required in this area. The slowdown factor for switching from GIL
 to STM ranges around $1-2.4\times$, and we beat GIL performance
 in half of the benchmarks.
 
-We see that generally, the group of embarrassingly parallel benchmarks scales
-best. The other three scale barely or not at all with the number of
+We see that generally, the group of embarrassingly parallel benchmarks
+scales best. (There is a notable performance stability problem in the
+\emph{richards} benchmark. This is a bug we will fix in the future.)
+The other three benchmarks scale barely or not at all with the number of
 threads. The reason for this is likely again the conflicts in the
 latter group. Since the JIT accelerates all code but not the STM
 overhead, we do more work per transaction. This increases the
@@ -1293,8 +1325,8 @@ however, use inevitable transactions to provide strong atomicity
 for non-reversible operations and otherwise do not have to deal
 with non-transactional code.  Additionally, while they use page fault
 handlers to detect conflicts, we use traditional write barriers. There
-are only some superficial similarities between our approach and
-theirs.
+are only some superficial similarities between the approach presented
+here and theirs.
 
 
 % Similar STMs:
@@ -1375,7 +1407,7 @@ parallelising Python.
 \acks
 We would like to thank the following people for their valuable
 inputs and the many fruitful discussions: Carl F. Bolz, Michael Faes,
-Pascal Felber, Patrick Marlier, and Aristeidis Mastoras.
+Pascal Felber, Maciej Fijalkowski, Patrick Marlier, and Aristeidis Mastoras.
 
 % We recommend abbrvnat bibliography style.
 
@@ -1383,7 +1415,7 @@ Pascal Felber, Patrick Marlier, and Aristeidis Mastoras.
 
 % The bibliography should be embedded for final submission.
 
-%%% TODO: fix all citation to follow common format (always page numbers; no 'et al', etc)
+
 
 \begin{thebibliography}{}
 \softraggedright
