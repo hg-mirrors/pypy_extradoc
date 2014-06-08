@@ -208,7 +208,7 @@ exception.
 
 The standard model employed in these systems is fairly
 straightforward: there can be multiple threads, but each acquires the
-GIL, then performs a single instruction, and subsequently releases the
+GIL, then performs one (or several) instruction, and subsequently releases the
 lock.  While this setup limits the benefits due to parallelism,
 the use of a GIL also provides
 some crucial guarantees. Since this lock is always acquired while
@@ -225,9 +225,9 @@ involving multiple objects (or even multiple fields of a single
 object).  So to enable Python programs for parallel execution, we need
 a way to identify which blocks of data must be executed atomically and
 hardware or software support to effect this atomic execution.
+This is traditionally done with locks.
 
-
-\emph{Atomic blocks}~\cite{tim03,tim05} allow dynamic languages to
+\emph{Atomic blocks}~\cite{tim03,tim05} would allow dynamic languages to
 indicate the units of computation that must be executed atomically to
 ensure correct concurrent execution.  Atomic blocks map nicely to
 transactional memory, which in turn provides a convenient mechanism to replace
@@ -256,7 +256,7 @@ the STM system with the garbage collector.
 
 
 This paper makes the following contributions:
-\vspace{-\topsep}               % XXX:HACK:TODO
+%\vspace{-\topsep}               % XXX:HACK:TODO
 \begin{itemize}
 \item We introduce a new STM system that performs well for dynamic
   language interpreters.
@@ -273,8 +273,9 @@ threads or cores.
 \subsection{Application View}
 
 We implement and evaluate our system for the Python language. Python
-is a dynamic programming language that was designed with GIL semantics
-in mind. Its reference implementation, CPython~\cite{cpython}, uses a
+is a dynamic programming language that was originally designed without
+concurrency in mind.
+Its reference implementation, CPython~\cite{cpython}, uses a
 GIL. Over the years, Python added multiple ways to provide concurrency and
 parallelism to its applications. We want to highlight two of them,
 namely \emph{threading} and \emph{multiprocessing}.
@@ -284,8 +285,8 @@ concurrency. It is, however, limited by the GIL and thus does not
 provide parallelism\footnote{At this point we should mention that it is indeed
 possible to run external functions written in C instead of Python in
 parallel. Our work focuses on Python itself and ignores this aspect as
-it requires writing in a different language.}. Because the GIL is only
-seen as an implementation detail of the interpreter, applications are
+it requires writing in a different language.}.  Moreover, the GIL can
+only ensure correctness of the interpreter itself: applications are
 required to coordinate concurrent accesses to data structures using
 conventional methods -- locks being the most common way.
 
@@ -303,7 +304,7 @@ single global lock. Jython~\cite{webjython} and
 IronPython~\cite{ironpython} follow this approach. Fine-grained
 locking is, however, not a \emph{direct} replacement for the GIL. It
 requires multiple locks in multiple places, not only in a central
-location. We on the other side follow the direct approach of using TM
+location. We on the other hand follow the direct approach of using TM
 instead of the GIL. There, GIL acquisition and release operations
 conceptually directly map to starting and committing transactions.
 
@@ -462,7 +463,7 @@ reads or writes memory using an $SO$ address.  This is very efficient
 -- we can do it on every object access -- and some compilers support it
 natively (e.g.\ clang).
 
-In summary, translating an $\%gs:SO$ to a physical address is a
+In summary, translating a $\%gs:SO$ to a physical address is a
 two-step process: First the memory segmentation feature of the CPU
 constructs a linear address. Then, this LA gets mapped by the MMU to
 some place in the physical memory. This makes the $SO$ a valid reference
@@ -584,7 +585,7 @@ STM_POP_ROOT(object_t *SO)
 \caption{Application programming interface\label{lst:api}}
 \end{code}
 
-Our TM system is designed as a library that covers all aspects around
+Our TM system is designed as a C library that covers all aspects around
 transactions and object memory management. It is designed for
 object-oriented dynamic language VMs as a replacement for the GIL.
 The library exposes the functions in Listing~\ref{lst:api} as its
@@ -834,18 +835,19 @@ objects that may contain references to young, movable objects. These
 objects need to be traced during minor collections to update
 references to moved objects. Young objects automatically get traced if
 the GC ascertains that they survive the collection by being reachable
-from traced objects. The STM system needs to record objects in the
+from traced objects. So far, this is how generational GCs generally
+work. But the STM system also needs to record objects in the
 write set, acquire write locks, and privatise their pages
 (copy-on-write). It only needs to do this for old objects from
-previous transactions, as the others are not known to other
+previous transactions, as any other object is not known to other
 transactions anyway.
 
 The \textbf{fast path} of the write barrier is very simple. We only
 need to check for the flag \lstinline!WRITE_BARRIER! in the object's
 header through its $SO$ and call the slow path if it is set. This flag
 is set either if the object is old and comes from an earlier
-transaction, or if there was a minor collection which will add the
-flag again on all objects, including new overflow objects. The flag
+transaction, or if there was a minor collection (in this case, the flag
+is added again on all objects, including new overflow objects). The flag
 is never set on young, freshly allocated objects. This fast path
 covers all cases for the GC and for the STM system (see
 Listing~\ref{lst:w_fast}).
@@ -890,7 +892,8 @@ void write_slowpath(SO):
 \end{code}
 
 
-The \textbf{slow path} is shown in Listing~\ref{lst:w_slow}.
+The \textbf{slow path} is shown in Listing~\ref{lst:w_slow}.  For
+each object, this code is called at most once per minor collection.
 First comes the \emph{GC part}: In any case, the object will be added
 to the list of objects that need tracing in the next minor collection
 (\lstinline!to_trace!). Any reference we write to this object will
@@ -917,10 +920,11 @@ translation going on to access its elements contrary to e.g.\ the
 read markers array.  If we already own the lock, we are done.
 If someone else owns the lock, we perform  write-write contention
 management that aborts either us or the current owner of the
-object.  If we succeed in acquiring the lock using an atomic
+object.  If the lock is not owned so far, and if we succeed in
+acquiring it using an atomic
 \lstinline!cmp_and_swap!, we need to add the object to the write set
-(a simple list called \lstinline!modified_old_objects!)  and privatise
-all pages belonging to it (copy-on-write).
+(a simple list called \lstinline!modified_old_objects!).  We then
+privatise the page or pages where it resides (copy-on-write).
 
 In all cases, we remove the \lstinline!WRITE_BARRIER!  flag from the
 object before we return. Thus, we never trigger the slow path again
@@ -956,25 +960,29 @@ back to the location initialised by a \lstinline!setjmp()!  in
 
 Committing a transaction needs a bit more work. First, we synchronise
 all threads so that the committing one is the only one running and all
-the others are waiting in safe points. We then go through the write
+the others are waiting in safe points.\footnote{This design choice is
+important to support our very cheap barriers. It is a trade-off that
+works best if the number of concurrent threads is small.
+See section~\ref{subsub:sync} for how we mitigate the costs.}
+We then go through the write
 set (\lstinline!modified_old_objects!)  and check the corresponding
 \lstinline!read_markers!  in other threads~/ segments. If we detect a
 read-write conflict, we perform contention management to either abort us or
 the other transaction, or to simply wait a bit (see Section~\ref{subsub:contentionmanagement}).
 
 After verifying that there are no conflicts anymore, we copy all our
-changes done to the objects in the write set to all other segments,
+changes (i.e.\ objects in our write set) to all other segments,
 including the sharing-segment. This is safe since we synchronised all
 threads. We also need to push overflow objects generated by minor
 collections to other segments, since they may reside partially in
 private pages. At that point we also get a new
-\lstinline!overflow_number! by increasing a global one, so that it
-stays globally unique for each transaction. Increasing the
+\lstinline!overflow_number! by increasing a global counter, so that it
+stays globally unique for each transaction. Increasing the (local)
 \lstinline!read_version!  is then done at the start of a new
 transaction.
 
 
-\subsection{Thread Synchronisation}
+\subsection{Thread Synchronisation\label{subsub:sync}}
 
 A requirement for performing a commit is to synchronise all threads so
 that we can safely update objects in other segments. To make this
@@ -1046,12 +1054,13 @@ committed read anymore.
 \section{Evaluation}
 
 We evaluate our system in a Python interpreter called
-PyPy~\cite{pypy} (version 2.3). PyPy is an implementation of an
-interpreter for the Python language. It has a special focus on speed
-and provides a just-in-time (JIT) compiler to speed up applications
-running on top of it. We compare between normal PyPy
-using a GIL and a PyPy with STM, as well as to CPython.
+PyPy~\cite{pypy}.
 \begin{description}
+\item[PyPy] (version 2.3) is an implementation of an
+  interpreter for the Python language. It has a special focus on speed
+  and provides a just-in-time (JIT) compiler to speed up applications
+  running on top of it. We compare between normal PyPy
+  using a GIL and a PyPy with STM, as well as to CPython.
 \item[CPython] (version 2.7.6) is the reference implementation of the Python
   language. It is the most widely used interpreter for this language.
   The implementation uses a GIL for synchronisation in multi-threaded
@@ -1077,7 +1086,7 @@ For each point in the plots, we took 5 measurements and report the
 arithmetic mean with the standard deviation as error bars. Average
 speedup numbers are calculated using the geometric mean. For the JIT
 benchmarks, we first let the JIT warm up by doing a few additional
-iterations to get a single measurement.
+iterations before the actual measurement.
 
 % benchmarks with: pypy-c--Ojit-d1454093dd48+-14-05-26-17:16
 % that's with stmgc 70c403598485
@@ -1166,7 +1175,7 @@ in parallel.
 
 \subsection{Non-JIT Benchmarks}
 First we run our benchmarks on three different interpreters: CPython
-(GIL), and PyPy with STM and with the GIL (both without the JIT). The
+(GIL), PyPy with STM, and PyPy with the GIL (all without the JIT). The
 results are shown in Figure~\ref{fig:performance-nojit}.
 
 As expected, GIL-supported interpreters do not scale with the number
@@ -1257,8 +1266,9 @@ scales best. (There is a notable performance stability problem in the
 \emph{richards} benchmark. This is a bug we will fix in the future.)
 The other three benchmarks scale barely or not at all with the number of
 threads. The reason for this is likely again the conflicts in the
-latter group. Since the JIT accelerates all code but not the STM
-overhead, we do more work per transaction. This increases the
+latter group. Right now, because the code runs much more quickly with
+the JIT than without, it has the effect of making the transactions
+logically longer.  This increases the
 likelihood of conflicts between them and therefore limits scalability
 even more than in the no-JIT benchmarks.
 
@@ -1376,7 +1386,7 @@ dramatically the cost of transactional memory and at the same time
 provides an opportunity to integrate the STM system with garbage
 collection.  This implementation leverages the processor's memory
 segmentation hardware, which has lately played only a minor role in
-our operating system.  Unfortunately, processor architects seem to
+our operating systems.  Unfortunately, processor architects seem to
 undervalue this hardware resource -- in the evolution from the x86 to
 the x86{-}64 architecture, 4 out of 6 segment registers have been
 removed. This development potentially threatens the STM strategy
