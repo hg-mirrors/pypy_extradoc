@@ -154,7 +154,7 @@
 \begin{abstract}
 
 Since some years, the popularity of dynamic languages is on the rise.
-A common trait of many of these language implementations is the use of
+A common trait of many of these language's implementations is the use of
 a single global interpreter lock (GIL) to synchronise the interpreter
 in a multithreading scenario. Since this lock effectively serialises
 the execution, applications can not make use of the increasing parallelism in
@@ -162,14 +162,17 @@ current hardware.
 
 In this paper, we present a software transactional memory (STM) system
 specifically designed for the purpose of replacing the GIL in dynamic
-language interpreters. The key idea is a close integration of STM with
-the garbage collector to approach atomicity, synchronisation, and
-memory management in a unified way.  As a user abstraction for a
-scalable synchronisation mechanism, we implement atomic blocks by
-exposing part of the STM system to applications.  The described STM
-uses a combination of features present in current CPUs, so that the
-parallelisation benefits outweigh the system's overhead already on 2
-threads when comparing to a GIL supported Python interpreter.
+language interpreters while keeping the semantics. The key idea is a
+close integration of STM with the garbage collector to approach
+atomicity, synchronisation, and memory management in a unified
+way. Additionally, we implement atomic blocks as a scalable
+synchronisation mechanism by exposing part of this STM system to
+applications.
+
+The described system uses a combination of features present in current
+CPUs, so that the parallelisation benefits outweigh the system's
+overhead already on 2 threads when comparing two Python interpreters
+-- one with STM and one with a GIL.
 
 
 \end{abstract}
@@ -200,9 +203,10 @@ ranging from smart phones to data centres, the issue of parallel
 execution must be addressed by these dynamic languages.
 
 Unfortunately the GIL plays a central role in current
-implementations. Even recent just-in-time compilers (JIT) for these
-languages (e.g., PyPy~\cite{cfbolz09}, V8~\cite{kevin10},
-IonMonkey~\cite{ionmonkey}) are based on the GIL; Jython (an
+implementations. Even recent efforts to address the performance problems
+of dynamic languages with just-in-time compilers (JIT)
+(e.g., PyPy~\cite{cfbolz09}, V8~\cite{kevin10},
+IonMonkey~\cite{ionmonkey}) keep the GIL; Jython (an
 implementation of Python that is based on the JVM) is a notable
 exception.
 
@@ -214,20 +218,20 @@ the use of a GIL also provides
 some crucial guarantees. Since this lock is always acquired while
 executing bytecode instructions and may be released only in-between
 such instructions, the GIL ensures perfect isolation between multiple
-threads for a series of instructions, which are executed atomically.
+threads for a series of instructions -- executing them atomically.
 In addition, the GIL provides the application with a sequential
 consistency model~\cite{lamport79}.
 
 A global interpreter lock assures the atomic execution of individual
 instructions but offers the programmer no help in managing concurrent
 data structures. Many parallel programs must maintain invariants
-involving multiple objects (or even multiple fields of a single
+involving multiple objects (or multiple fields of a single
 object).  So to enable Python programs for parallel execution, we need
 a way to identify which blocks of data must be executed atomically and
 hardware or software support to effect this atomic execution.
 This is traditionally done with locks.
 
-\emph{Atomic blocks}~\cite{tim03,tim05} would allow dynamic languages to
+\emph{Atomic blocks}~\cite{tim03,tim05} allow languages to
 indicate the units of computation that must be executed atomically to
 ensure correct concurrent execution.  Atomic blocks map nicely to
 transactional memory, which in turn provides a convenient mechanism to replace
@@ -260,6 +264,7 @@ This paper makes the following contributions:
 \begin{itemize}
 \item We introduce a new STM system that performs well for dynamic
   language interpreters.
+\vspace{3mm}               % XXX:HACK:TODO
 \item We integrate the system closely with a garbage collector
   (GC) to lower the overhead of STM.
 \item This new STM system is used to replace the GIL in one
@@ -311,8 +316,8 @@ conceptually directly map to starting and committing transactions.
 TM also allows us to attack the issue of application-level
 synchronisation and atomicity. We introduce atomic blocks to the
 Python language by mapping them directly to the underlying
-transactions -- providing the application with the guarantee of
-atomicity for the enclosed instructions.
+transactions -- providing the application with the guarantees of
+atomicity and isolation for the enclosed instructions.
 
 
 \section{Transactional Memory Model}
@@ -404,7 +409,7 @@ wasteful: at any given time, most objects are identical in all, or
 most, segments.  They differ only in segments that have modified but
 not yet committed these objects.  So we make use of the Memory
 Management Unit (MMU) of the CPU.  The MMU maps pages of virtual to
-physical memory.  By changing this page mapping, at the coarse unit of
+physical memory.  By changing this page mapping at the coarse unit of
 one page of memory (4096 bytes), we can share memory that would
 otherwise exist as identical copies in all segments.
 
@@ -429,7 +434,7 @@ pages are shared with their identical copies in other segments.
 \end{figure}
 
 
-\subsection{Memory Segmentation on the x86}
+\subsection{Memory Segmentation on x86 CPUs}
 
 When we store into our objects the references to other objects, we
 need to be careful: addresses that are valid in one segment are not
@@ -491,7 +496,7 @@ What we described so far has no measurable performance overhead by
 itself, but it is missing conflict detection to be considered a
 full-fledged STM system.  This requires adding \emph{barriers} to the
 program to register the objects in the read or write set before
-reading or writing to them\footnote{Barriers added by an automatic and
+reading or writing to them\footnote{Barriers added by an automatic, conservative, and
 local program transformation~\cite{felber07}}.  Furthermore, we still
 need to describe the commit protocol.
 
@@ -597,20 +602,22 @@ where the transaction started in case of an abort.
 \lstinline!stm_commit_transaction()! tries to commit the current
 transaction, aborting it otherwise. Similarly,
 \lstinline!stm_become_inevitable()!  tries to make the current
-transaction inevitable, possibly aborting the current one if not
-possible.
+transaction inevitable, waiting or aborting the current one if there
+is already an inevitable transaction.
  \lstinline!stm_read()!, \lstinline!stm_write()!  perform
 a read or a write barrier on the object given as the argument, and
 \lstinline!stm_allocate()!  allocates a new object with the specified
-size.  \lstinline!STM_PUSH_ROOT()! and \lstinline!STM_POP_ROOT()!
+size.
+
+\lstinline!STM_PUSH_ROOT()! and \lstinline!STM_POP_ROOT()!
 push and pop objects onto the shadow stack\footnote{A stack for pointers
   to GC objects that allows for precise garbage collection. All objects
   on that stack are never seen as garbage and are thus always kept
   alive.~\cite{fergus02}} of the current thread.  References to objects
-have to be saved using this stack locally around calls that may cause a GC
+have to be saved using this stack locally, and conservatively around calls that may cause a GC
 cycle to happen, and also while there is no transaction
 running. Otherwise these references may not be valid any more because
-the object moved or was seen as garbage. In this simplified Application
+the object moved or was discarded as garbage. In this simplified Application
 Programming Interface (API), only \lstinline!stm_allocate()!,
 \lstinline!stm_become_inevitable()! and
 \lstinline!stm_commit_transaction()!  require saving object
@@ -646,22 +653,27 @@ interesting challenge in and of itself.
 It may not be possible to immediately break the transaction, as we
 could be executing an atomic block. Atomic blocks are currently
 implemented as guaranteeing that the whole block's execution takes
-place in a single transaction. Another issue is the support of
+place in a single transaction.
+
+Another issue is the support of
 irreversible operations, like calls to external functions or general
-input~/ output. If we are allowed to, we simply commit the transaction
-before and start a new one after these operations. Within an atomic
-block, however, we turn the transaction inevitable so that the
-transaction cannot abort and strong isolation is guaranteed.
+input~/ output. If we are allowed to, we commit the transaction
+before and start a new one after these operations\footnote{The language
+specification needs to specify if this is allowed.}. Within an atomic
+block, however, the transaction is unbreakable, and we need to turn
+the transaction inevitable so that it
+cannot abort and strong isolation is guaranteed.
 
 
 
 \subsection{Setup\label{sub:Setup}}
 
 On startup, we reserve a big range of virtual memory with a call to
-\lstinline!mmap()! and partition this space into $N+1$ segments. We
-want to run $N$ threads in parallel while segment~0 is designated as
+\lstinline!mmap()! and partition this space into $N+1$ segments.
+We want to run $N$ threads in parallel while segment~0 is designated as
 the \emph{sharing-segment} that is never assigned to a thread. The
-sharing-segment is essentially read-only, except during commit.
+sharing-segment is essentially read-only (except during commit) and
+holds all pages shared between the other segments.
 
 The next step involves using \lstinline!remap_file_pages()!, a Linux
 system call\footnote{remap\_file\_pages() can also be done with more mmap()
@@ -692,10 +704,11 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   some young ones that were too big to be allocated in the nursery.
 \end{description}
 
-Note, these areas are at offsets inside the segments known at
-compile time. This makes some checks very efficient, e.g.\ checking
+Note, since the above configuration is specified at compile time,
+all these areas are at offsets inside the segments known to the
+compiler. This makes some checks very efficient, e.g.\ checking
 if an object resides in the nursery only requires comparing its $SO$
-to the boundaries of the nursery.
+to the static boundaries of the nursery.
 
 
 \begin{figure*}[t]
@@ -764,7 +777,7 @@ Furthermore, we optimistically re-share pages during major collections.
 This is another example where the STM-GC cooperation makes sense. We
 regard private pages as additional memory that may be collected.
 Pages should usually stay private for some time, but at some regular
-intervals, we still want to try to re-share pages in case they actually
+intervals, we still want to optimistically re-share pages in case they actually
 stay unmodified in the future. Major collections are allowed to do
 that because all threads are synchronised, and we can re-share all
 private pages that do not currently contain an object in some
@@ -893,7 +906,7 @@ void write_slowpath(SO):
 
 
 The \textbf{slow path} is shown in Listing~\ref{lst:w_slow}.  For
-each object, this code is called at most once per minor collection.
+each object, this code is called at most once between two minor collections.
 First comes the \emph{GC part}: In any case, the object will be added
 to the list of objects that need tracing in the next minor collection
 (\lstinline!to_trace!). Any reference we write to this object will
@@ -1054,13 +1067,13 @@ committed read anymore.
 \section{Evaluation}
 
 We evaluate our system in a Python interpreter called
-PyPy~\cite{pypy}.
+PyPy and compare to CPython.
 \begin{description}
 \item[PyPy] (version 2.3) is an implementation of an
   interpreter for the Python language. It has a special focus on speed
   and provides a just-in-time (JIT) compiler to speed up applications
   running on top of it. We compare between normal PyPy
-  using a GIL and a PyPy with STM, as well as to CPython.
+  using a GIL and a PyPy with STM. All code is available at~\cite{pypy}.
 \item[CPython] (version 2.7.6) is the reference implementation of the Python
   language. It is the most widely used interpreter for this language.
   The implementation uses a GIL for synchronisation in multi-threaded
@@ -1111,13 +1124,13 @@ def workload():
 \caption{Dummy workload\label{lst:scaling_workload}}
 \end{code}
 
-For the results in Figure~\ref{fig:scaling}, we averaged over 5 runs
-and normalised the average runtimes to the time it took on a single
+For the results in Figure~\ref{fig:scaling}, we
+normalised the average runtimes to the time it took on a single
 thread. From this we see that there is additional overhead introduced
 by each thread ($12.3\%$ for all 4 threads together). Every thread
 adds some overhead because during a commit, there is one more thread
 which has to reach a safe point. Additionally, conflict detection
-during commit needs to check in all concurrently running transactions.
+needs to check for conflicts in all concurrently running transactions.
 
 While not ideal, we think that $12.3\%$ is acceptable on four
 threads. In terms of throughput, 4 threads have $3.54\times$
@@ -1175,7 +1188,7 @@ in parallel.
 
 \subsection{Non-JIT Benchmarks}
 First we run our benchmarks on three different interpreters: CPython
-(GIL), PyPy with STM, and PyPy with the GIL (all without the JIT). The
+(GIL), PyPy with STM, and PyPy with the GIL (all without a JIT). The
 results are shown in Figure~\ref{fig:performance-nojit}.
 
 As expected, GIL-supported interpreters do not scale with the number
@@ -1186,7 +1199,7 @@ analysis).
 PyPy using our STM system (\emph{pypy-stm-nojit}) scales in all
 benchmarks to a certain degree. It scales best for the embarrassingly
 parallel ones ($avg=2.6\times$ speedup) and a little less for
-the others ($avg=2.0\times$ speedup). The reason for that is
+the others ($avg=2.0\times$ speedup). The reason for this difference is
 that in the former group there are no real, logical conflicts -- all
 threads do independent calculations. STM simply replaces the GIL in
 those programs. In the latter group, the threads work on a common data
@@ -1211,7 +1224,7 @@ achieve this, it also makes sense to look at the overhead induced by
 the GIL on multiple threads. From this perspective, the STM
 implementation beats CPython's performance in all but two benchmarks.
 
-Since PyPy comes with a JIT to make its overhead compared to CPython
+Since PyPy comes with a JIT~\cite{cfbolz09} to make its overhead compared to CPython
 go away, we will now look at how well STM works together with it.
 
 \begin{figure}[h]
@@ -1230,9 +1243,9 @@ enhancement, but that is not what happens in reality. First, since the
 JIT~\cite{cfbolz09} bases its decision of what to compile on runtime
 profiling, running in multiple threads, it may compile different
 things in each run because of the non-deterministic thread-scheduling
-of the operating system (OS). Second, it is able to remove some
-allocations in some cases. Because compilation is already
-non-deterministic, so is this allocation-removal. And third, we did
+of the operating system (OS). Second, it is able to perform some
+advanced optimisations. Because compilation is already non-deterministic,
+so are these optimisations. And third, we did
 not have enough time to optimise integration with STM so that the JIT
 exposes the overhead of STM more by speeding up all the rest.
 For these reasons, the following results have to be taken with a grain
@@ -1316,7 +1329,7 @@ on additional hardware features. Or in the case of~\cite{chung06},
 they have the assumption that most transactions fit the HTM capacity
 and that virtualisation is only a fallback. Our use case, however,
 features arbitrarily long transactions, which is why this assumption
-first has to be verified in our case.
+first has to be verified again in this setting.
 
 From the other end, there also have been attempts at lowering the
 overhead of STM~\cite{warmhoff13,spear09} especially for a low number
@@ -1385,8 +1398,8 @@ lower the overhead of STM. This software implementation reduces
 dramatically the cost of transactional memory and at the same time
 provides an opportunity to integrate the STM system with garbage
 collection.  This implementation leverages the processor's memory
-segmentation hardware, which has lately played only a minor role in
-our operating systems.  Unfortunately, processor architects seem to
+segmentation hardware, which has lately not received much attention.
+Unfortunately, processor architects seem to
 undervalue this hardware resource -- in the evolution from the x86 to
 the x86{-}64 architecture, 4 out of 6 segment registers have been
 removed. This development potentially threatens the STM strategy
@@ -1397,7 +1410,7 @@ has also been expressed by other researchers (see also
 
 % results, outlook
 The early results presented here are very encouraging. STM as a simple
-GIL replacement yields an average speedup of $2.6\times$ for
+GIL replacement scales well and yields an average speedup of $2.6\times$ for
 embarrassingly parallel workloads on 4 threads.  When also used for
 synchronisation in the form of atomic blocks, the average speedup
 still reaches $2.0\times$.
@@ -1407,7 +1420,7 @@ best-performing Python systems (Jython, PyPy), integration of the
 STM-based approach with a JIT compiler is necessary. Once this
 integration matures, the approach outlined here serves not only as a
 simple GIL replacement but also provides a way forward towards
-parallelising Python.
+a parallel programming model for Python.
 
 %% \appendix
 %% \section{Appendix Title}
@@ -1416,7 +1429,7 @@ parallelising Python.
 
 \acks
 We would like to thank the following people for their valuable
-inputs and the many fruitful discussions: Carl F. Bolz, Michael Faes,
+input and the many fruitful discussions: Carl F. Bolz, Michael Faes,
 Pascal Felber, Maciej Fijalkowski, Patrick Marlier, and Aristeidis Mastoras.
 
 % We recommend abbrvnat bibliography style.
