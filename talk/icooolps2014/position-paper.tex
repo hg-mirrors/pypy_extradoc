@@ -229,13 +229,13 @@ may enter the critical section at the same time.
   \begin{center}
     \begin{tabular}{|l|l|}
       \hline
-      Thread 1 & Thread 2 \\
+      Thread 1                      & Thread 2                      \\
       \hline
-      \multicolumn{2}{|l|}{\texttt{A = B = 0}} \\
+      \multicolumn{2}{|l|}{\texttt{A = B = 0}}                      \\
       \hline
-      \texttt{A = 1} & \texttt{B = 1}\\
-      \texttt{if B == 0:} & \texttt{if A == 0:}\\
-      \texttt{    critical section} & \texttt{    critical section}\\
+      \texttt{A = 1}                & \texttt{B = 1}                \\
+      \texttt{if B == 0:}           & \texttt{if A == 0:}           \\
+      \texttt{    critical section} & \texttt{    critical section} \\
       \hline
     \end{tabular}
     \caption{Critical section with a sequential consistency model.}
@@ -275,7 +275,8 @@ have overhead, may deadlock, limit scalability, and add to the overall
 complexity of the program logic. For a better parallel programming
 model for dynamic languages, we propose another, well-known
 synchronisation mechanism called \emph{atomic
-  blocks}~\cite{tim03,tim05}.
+  blocks}~\cite{tim03,tim05}. This is also suggested by
+\cite{christopher10,victor11} as an easier mechanism than locks.
 
 Atomic blocks are composable, deadlock-free, higher-level and expose
 useful atomicity and isolation guarantees to the application for a
@@ -301,7 +302,7 @@ are also able to be executed in parallel.
     \hline
     Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
     \hline
-    Better synchronisation        & o    & o  &      & o  & ++   \\
+    Better synchronisation        & o    & o  & +    & o  & ++   \\
     \hline
     Implementation                & ++   & -  & ++   & ++ & ++   \\
     \hline
@@ -315,6 +316,7 @@ are also able to be executed in parallel.
 
 
 \subsection{Potential Solutions}
+\label{sec:pot_solutions}
 
 For the discussion we define a set of criteria to evaluate the
 multiple potential solutions for removing or avoiding the GIL and its
@@ -379,14 +381,9 @@ changes\footnote{There are rare cases where not having atomic
 closely, otherwise it may expose some latent data races in existing
 applications which are just not exposed with a GIL. This approach does
 however not provide a better parallelising synchronisation mechanism
-to the application like e.g. atomic blocks.
+to the application like e.g.\ atomic blocks.
 
-%% - support of atomic blocks?\\
-%% - hard to get right (deadlocks, performance, lock-granularity)\\
-%% - very hard to get right for a large language\\
-%% - hard to retro-fit, as all existing code assumes GIL semantics\\
-%% - (there are some semantic differences, right? not given perfect lock-placement, but well)
-%% ( http://www.jython.org/jythonbook/en/1.0/Concurrency.html )
+
 
 \subsubsection{Shared-Nothing}
 
@@ -397,11 +394,16 @@ only do so via an external program like a database, then it is
 sensible to have one GIL per independent part. At the extreme, there
 are applications that parallelise perfectly simply by running
 independent processes; some web servers and some numeric computations
-do. We will consider here a slightly more general approach: the
-\emph{multiprocessing}\footnote{https://docs.python.org/2/library/multiprocessing.html}
+do.
+
+We will consider here a slightly more general approach: the
+\emph{multiprocessing}~\cite{multiprocessing}
 module of Python. In essence, it uses process-forking to provide the
 application with multiple interpreters that can run in parallel.
-Communication is then done explicitly through pipes.
+Communication is then done explicitly through pipes.\footnote{There
+are multiple alternative designs like e.g.\ actors or tuple spaces.
+Since they are similar and do not replace the GIL directly, we
+focus on the example of \emph{multiprocessing}.}
 
 The model of explicit communication is sometimes seen as a superior
 way to synchronise concurrent applications because of its explicitness.
@@ -413,10 +415,6 @@ implementation of this approach is very cheap since one can
 actually take an unmodified GIL-supported interpreter and run
 several of them in parallel. That way, we also inherit the
 easy integration of external libraries without any changes.
-
-%% - often needs major restructuring of programs (explicit data exchange)\\
-%% - sometimes communication overhead is too large\\
-%% - shared memory is a problem, copies of memory are too expensive
 
 
 \subsubsection{Transactional Memory}
@@ -511,17 +509,24 @@ transaction will need.
 
 
 Following the above argumentation for each approach, we assembled a
-general overview in Table \ref{tab:comparison}. The general picture is
-everything else than clear. It looks like HTM may be a good solution
-to replace the GIL in the near future. Current implementations are
-however far too limiting and do not provide good scaling.
+general overview in Table \ref{tab:comparison}. The points were assigned
+according to the criteria described in \ref{sec:pot_solutions}. Since
+the criteria are defined intuitively, there are no formal justifications
+for the assigned points. The reader is thus advised to take them with a
+grain of salt.
+
+The general picture is everything else than clear. It looks like HTM
+may be a good solution to replace the GIL in the near future. Current
+implementations are however far too limiting, not widely available,
+and do not provide good scaling.
 
 Allowing for parallel execution just means that dynamic languages
 catch up to all other languages that already provide real
 parallelism. This is why we think that only the STM approach is a
-viable solution in the long-term. It provides the application with a
-simple memory model (sequential consistency) and a composable way to
-synchronise memory accesses using atomic blocks.
+viable solution in the long-term. It unifies both, the simple memory
+model (sequential consistency) and the synchronisation of memory accesses
+using composable atomic blocks. It is not \emph{only} a simple GIL
+replacement.
 
 Unfortunately, STM has a big performance problem. Particularly, for
 our use case there is not much static information available since we
@@ -541,10 +546,10 @@ well below 50\%. A hybrid TM system, which also uses HTM to accelerate
 certain tasks, looks like a very promising direction of research
 too.
 
-We believe that further work to reduce the overhead of STM is
+We think that further work to reduce the overhead of STM is
 very worthwhile. In fact, considering some analogies that have been
 drawn between garbage collection and transactional memory~\cite{dan07},
-we believe that it is worthwhile to focus the STM research more
+we think that it is worthwhile to focus the STM research more
 specifically onto the context shown in this paper --- for use in
 implementations of high-level languages, rather than as a tool
 directly used by the programmer.
@@ -581,6 +586,10 @@ their valuable inputs and the many fruitful discussions.
 
 \bibitem{webjython}
   The Jython Project, \url{www.jython.org}
+
+\bibitem{multiprocessing}
+  The Multiprocessing Module of Python,
+  \url{docs.python.org/2/library/multiprocessing.html}
 
 \bibitem{odaira14}
   Odaira, Rei, Jose G. Castanos, and Hisanobu Tomari.  "Eliminating
