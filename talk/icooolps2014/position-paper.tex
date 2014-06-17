@@ -7,6 +7,7 @@
 % 10pt          To set in 10-point type instead of 9-point.
 % 11pt          To set in 11-point type instead of 9-point.
 % authoryear    To obtain author/year citation style instead of numeric.
+\synctex=-1
 
 \usepackage[utf8]{inputenc}
 \usepackage{array}
@@ -14,6 +15,57 @@
 \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% listings
+\usepackage{float}
+\floatstyle{ruled}
+\newfloat{code}{tbp}{loa}
+\providecommand{\codename}{Listing}
+\floatname{code}{\protect\codename}
+
+
+% nice listings
+\usepackage{xcolor}
+\usepackage{newverbs}
+
+\usepackage{color}
+\definecolor{verylightgray}{rgb}{0.93,0.93,0.93}
+\definecolor{darkblue}{rgb}{0.2,0.2,0.6}
+\definecolor{commentgreen}{rgb}{0.25,0.5,0.37}
+\usepackage{letltxmacro}
+
+\usepackage{listings}
+
+\makeatletter
+\LetLtxMacro{\oldlstinline}{\lstinline}
+
+\renewcommand\lstinline[1][]{%
+  \Collectverb{\@@myverb}%
+}
+
+\def\@@myverb#1{%
+    \begingroup
+    \fboxsep=0.2em
+    \colorbox{verylightgray}{\oldlstinline|#1|}%
+    \endgroup
+}
+\makeatother
+
+
+\lstset{backgroundcolor={\color{verylightgray}},
+  basicstyle={\scriptsize\ttfamily},
+  commentstyle={\ttfamily\color{commentgreen}},
+  keywordstyle={\bfseries\color{darkblue}},
+  morecomment={[l]{//}},
+  tabsize=4,
+  morekeywords={foreach,in,def,type,dynamic,Int,
+    Boolean,infer,void,super,if,boolean,int,else,
+    while,do,extends,class,assert,for,switch,case,
+    private,protected,public,const,final,static,
+    interface,new,true,false,null,return}}
+\renewcommand{\lstlistingname}{Listing}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 \newcommand{\mynote}[2]{%
   \textcolor{red}{%
@@ -117,7 +169,7 @@ threads for concurrency, as well as the changes that are required to
 the interpreter itself.
 
 These requirements are not easy to meet. We argue that STM is the
-overall winner. While it has a big performance problem currently, it
+overall winner. While it currently has a big performance problem, it
 gets more points in all the other categories. We think that it is the
 only solution that also provides a better synchronisation mechanism to
 the application in the form of parallelisable atomic blocks.
@@ -158,18 +210,48 @@ advantages and disadvantages.
 \subsection{Why is there a GIL?}
 The GIL is a very simple synchronisation mechanism for supporting
 multithreading in an interpreter. The basic guarantee is that the GIL
-may only be released in between bytecode instructions. The interpreter
-can thus rely on complete isolation and atomicity of these
-instructions. Additionally, it provides the application with a
-sequential consistency model~\cite{lamport79}. As a consequence,
-applications can rely on certain operations to be atomic and that they
-will always be executed in the order in which they appear in the
-code. While depending on this may not always be a good idea, it is
-done in practice. A GIL-replacement should therefore uphold these
-guarantees, while preferably also be as easily implementable as a GIL
-for the interpreter. The latter can be especially important since
-many of these languages are developed and maintained by very large
-open-source communities, which are not easy to coordinate.
+may only be released in between bytecode instructions\footnote{This
+also applies to Abstract Syntax Tree (AST) interpreters, where the GIL
+may only be released between interpreting two AST nodes.}. The interpreter
+can thus rely on complete isolation and atomicity for the
+instructions' execution. Thus, accesses to data structures like
+dictionaries and lists happen atomically and do not need additional
+protection from data races when shared between threads.
+
+The GIL also provides the application with a sequential consistency
+model~\cite{lamport79}. This can be very valuable as it means less
+surprises for the programmer. For example in Table~\ref{tab:seq_cons},
+the programmer can expect the critical section to only be entered by
+one thread.  If the model allowed to buffer the writes, both threads
+may enter the critical section at the same time.
+
+\begin{table}[!ht]
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      Thread 1 & Thread 2 \\
+      \hline
+      \multicolumn{2}{|l|}{\texttt{A = B = 0}} \\
+      \hline
+      \texttt{A = 1} & \texttt{B = 1}\\
+      \texttt{if B == 0:} & \texttt{if A == 0:}\\
+      \texttt{    critical section} & \texttt{    critical section}\\
+      \hline
+    \end{tabular}
+    \caption{Critical section with a sequential consistency model.}
+    \label{tab:seq_cons}
+  \end{center}
+\end{table}
+
+As a consequence, applications can rely on certain operations to be
+atomic and that they will always be executed in the order in which
+they appear in the code. While depending on this may not always be a
+good idea, it is done in practice. A GIL-replacement should therefore
+uphold these guarantees, while preferably also be as easily
+implementable as a GIL for the interpreter. The latter can be
+especially important since many of these languages are developed and
+maintained by very large open-source communities, which are not easy
+to coordinate.
 
 The GIL also allows for easy integration with external C libraries that
 may not be thread-safe. For the duration of the calls, we
@@ -239,12 +321,15 @@ multiple potential solutions for removing or avoiding the GIL and its
 limitations:
 
 \begin{description}
-\item[Performance:] How well does the approach perform compared to the
-  GIL on a single and on multiple threads?
+\item[Performance:] How much does the approach impact performance on a single
+  and how much on multiple threads? Can it make use of parallelism?
 \item[Existing applications:] How big are the changes required to
   integrate with and parallelise existing applications?
-\item[Better synchronisation:] Does the approach enable better, paralleliseable
-  synchronisation mechanisms for applications (e.g. atomic blocks)?
+\item[Better synchronisation:] Does the approach enable better,
+  paralleliseable synchronisation mechanisms for applications
+  (e.g.\ atomic blocks)?  Many synchronisation mechanisms can be built on
+  top of all solutions (e.g.\  message passing). We look for mechanisms
+  that are directly enabled by the contending approaches.
 \item[Implementation:] How difficult is it to implement the approach
   in the interpreter?
 \item[External libraries:] Does the approach allow for easy
@@ -273,7 +358,11 @@ that uses fine-grained locking\footnote{The performance impact of
 fine-grained locking is milder in Java than it would be in a typical piece
 of C code; see e.g.~\cite{biased}.} to correctly synchronise the
 interpreter. For a language like Python, one needs quite a few,
-carefully placed locks. Since there is no central location, the
+carefully placed locks -- every dictionary, list, instance, or mutable
+object in general needs a lock. Compared to e.g.\ Java, object
+attributes are backed by a dictionary. Accesses to it must be
+synchronised because the interpreter could crash otherwise.  Since
+there is no central location for all these locks, the
 complexity of the implementation is quite a bit larger compared to
 using a GIL. Integrating external, non-thread-safe libraries should
 however be very simple too. One could simply use one lock per library
@@ -282,11 +371,15 @@ to avoid this issue.
 In the end, fine-grained locking can transparently replace the GIL and
 therefore parallelise existing applications, generally without any
 changes\footnote{There are rare cases where not having atomic
-  bytecodes actually changes the semantics.}. An implementation has to
-follow the GIL semantics very closely, otherwise it may expose some
-latent data races in existing applications which are just not exposed
-with a GIL. This approach does however not provide a better parallelising
-synchronisation mechanism to the application like e.g. atomic blocks.
+  bytecodes actually changes the semantics. E.g.\ in Jython,
+  \texttt{dict1.update(dict2)} is not atomic: it first reads data from
+  \texttt{dict2} with \texttt{dict2}'s lock, and then puts it into
+  \texttt{dict1} with \texttt{dict1}'s lock. A lot can happen
+  in-between.}. An implementation has to follow the GIL semantics very
+closely, otherwise it may expose some latent data races in existing
+applications which are just not exposed with a GIL. This approach does
+however not provide a better parallelising synchronisation mechanism
+to the application like e.g. atomic blocks.
 
 %% - support of atomic blocks?\\
 %% - hard to get right (deadlocks, performance, lock-granularity)\\
