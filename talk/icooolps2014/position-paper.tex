@@ -194,7 +194,9 @@ The GIL is a very simple synchronisation mechanism for supporting
 multithreading in an interpreter. The basic guarantee is that the GIL
 may only be released in between bytecode instructions\footnote{This
 also applies to Abstract Syntax Tree (AST) interpreters, where the GIL
-may only be released between interpreting two AST nodes.}. The interpreter
+may only be released between interpreting two AST nodes.  We talk about
+``bytecode instructions'' in a general way as a basic step in the
+interpreter.}.  The interpreter
 can thus rely on complete isolation and atomicity for the
 instructions' execution. Also, accesses to data structures like
 dictionaries and lists happen atomically and do not need additional
@@ -307,7 +309,8 @@ potential solutions for removing or avoiding the GIL and its
 limitations:
 
 \begin{description}
-\item[Performance:] How much does the approach impact performance on a single
+\item[Performance:] How much does the approach impact performance
+  on a single thread
   and how much on multiple threads? Can it make use of parallelism?
 \item[Existing applications:] How big are the changes required to
   integrate with and parallelise existing applications?
