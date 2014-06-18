@@ -16,6 +16,11 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+% Keine "Schusterjungen"
+\clubpenalty = 10000
+% Keine "Hurenkinder"
+\widowpenalty = 10000 \displaywidowpenalty = 10000
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% listings
 \usepackage{float}
@@ -307,9 +312,9 @@ limitations:
 \item[Existing applications:] How big are the changes required to
   integrate with and parallelise existing applications?
 \item[Better synchronisation:] Does the approach enable better,
-  paralleliseable synchronisation mechanisms for applications
+  parallelisable synchronisation mechanisms for applications
   (e.g.\ atomic blocks)?  Many synchronisation mechanisms can be built on
-  top of all solutions (e.g.\  message passing). We look for mechanisms
+  top of all solutions (e.g.\  message passing, monitors). We look for mechanisms
   that are directly enabled by the contending approaches.
 \item[Implementation:] How difficult is it to implement the approach
   in the interpreter?
@@ -456,14 +461,18 @@ on more than one thread are too small in real world applications.
 
 However, STM compared to HTM does not suffer from the same restricting
 limitations. Transactions can in principle be arbitrarily long.  This makes it
-possible to actually expose transactions to the application in the
-form of atomic blocks. This is the only approach that enables a better
-synchronisation mechanism than locks for applications \emph{and} still
-parallelises when using it. We think this is a very important point
-because it not only gives dynamic languages the ability to parallelise
-(already commonplace in most other languages), but also pushes
-parallel programming forward. Together with sequential consistency it
-provides a lot of simplification for parallel applications.
+possible to expose transactions to the application in the
+form of atomic blocks -- thereby attacking the issues
+of parallelisation and synchronisation in a unified way. While many
+synchronisation mechanisms can be bolted on top of any GIL replacement,
+this is the only approach that directly enables a better, parallelising
+synchronisation mechanism than locks.  We think this is a very
+important point because it not only gives dynamic languages the
+ability to parallelise (already commonplace in most other languages),
+but also pushes parallel programming forward in a way that other
+approaches cannot. Together with sequential consistency, it provides an
+environment for parallel applications that has much less surprises than
+e.g.\ Java or C\#.
 
 On the implementation level,
 while one can argue that STM requires the insertion of read and write
@@ -491,7 +500,7 @@ general overview in Table \ref{tab:comparison}. The points were assigned
 according to the criteria described in \ref{sec:pot_solutions}. Since
 the criteria are defined intuitively, there are no formal justifications
 for the number of points. The reader is thus advised to take the result
-with a grain of salt.
+with a grain of salt and form their own opinion.
 
 The general picture is everything else than clear. It looks like HTM
 may be a good solution to replace the GIL in the near future. Current
@@ -503,10 +512,11 @@ catch up to all other languages that already provide real
 parallelism. This is why we think that only the STM approach is a
 viable solution in the long-term. It unifies both, the simple memory
 model (sequential consistency) and the synchronisation of memory accesses
-using composable atomic blocks. It is not \emph{only} a simple GIL
+using composable atomic blocks. It is not \emph{just} a simple GIL
 replacement.
 
-Unfortunately, STM has a big performance problem. Particularly, for
+Unfortunately, STM has a big performance problem, which currently
+makes it lose this comparison. Particularly, for
 our use case there is not much static information available since we
 are executing a program only known at runtime. Additionally, replacing
 the GIL means running every part of the application in transactions,
@@ -518,7 +528,8 @@ better use of low-level features in existing OS kernels.  We are
 currently working on an STM system that makes use of several such
 features like virtual memory and memory segmentation.  We further
 tailor the system to the discussed use case, which gives us an
-advantage over other STM systems that are more general. With this
+advantage over other STM systems that try to be more general or
+simply focus on other use cases. With this
 approach, initial results suggest that we can keep the overhead of STM
 well below 50\%. A hybrid TM system, which also uses HTM to accelerate
 certain tasks, looks like a very promising direction of research
@@ -528,7 +539,7 @@ We think that further work to reduce the overhead of STM is
 very worthwhile. In fact, considering some analogies that have been
 drawn between garbage collection and transactional memory~\cite{dan07},
 we think that it is worthwhile to focus the STM research more
-specifically onto the context shown in this paper --- for use in
+specifically onto the context shown in this paper -- for use in
 implementations of high-level languages, rather than as a tool
 directly used by the programmer.
 
