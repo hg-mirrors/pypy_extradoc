@@ -99,6 +99,9 @@ div.footer, div.header {
   clear: both;
   font-size: smaller }
 
+div#header {
+  height: 88px ! important }
+
 div.line-block {
   display: block ;
   margin-top: 1em ;

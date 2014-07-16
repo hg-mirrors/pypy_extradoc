@@ -152,9 +152,18 @@ PyPy-STM
 
 * used in PyPy to replace the GIL
 
+* could also be used in CPython
+
+  - but refcounting needs replacing
+
+
+PyPy-STM status
+---------------
+
 * current status:
 
   - basics work
+  - tons of things to improve
   - tons of things to improve
   - tons of things to improve
   - tons of things to improve
@@ -174,7 +183,7 @@ Summary
 
 * Transactional Memory is still too researchy for production
 
-* Has the potential to enable parallelism:
+* Potential to enable parallelism:
 
   - as a replacement of ``multiprocessing``
 

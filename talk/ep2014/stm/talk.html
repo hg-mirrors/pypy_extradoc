@@ -109,6 +109,9 @@ div.footer, div.header {
   clear: both;
   font-size: smaller }
 
+div#header {
+  height: 88px ! important }
+
 div.line-block {
   display: block ;
   margin-top: 1em ;
@@ -513,8 +516,18 @@ covers the whole time during which the lock was acquired</li>
 </ul>
 </li>
 <li>used in PyPy to replace the GIL</li>
+<li>could also be used in CPython<ul>
+<li>but refcounting needs replacing</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="pypy-stm-status">
+<h1>PyPy-STM status</h1>
+<ul class="simple">
 <li>current status:<ul>
 <li>basics work</li>
+<li>tons of things to improve</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
@@ -535,7 +548,7 @@ covers the whole time during which the lock was acquired</li>
 <h1>Summary</h1>
 <ul class="simple">
 <li>Transactional Memory is still too researchy for production</li>
-<li>Has the potential to enable parallelism:<ul>
+<li>Potential to enable parallelism:<ul>
 <li>as a replacement of <tt class="docutils literal">multiprocessing</tt></li>
 <li>but also in existing applications not written for that</li>
 <li>as long as they do multiple things that are &quot;often independent&quot;</li>
