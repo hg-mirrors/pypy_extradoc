@@ -135,6 +135,16 @@ Big Point
   - the idea is to make sure, internally, that one transaction
     covers the whole time during which the lock was acquired
 
+  - even two big transactions can hopefully run in parallel
+
+  - even if they both acquire and release the *same* lock
+
+
+Big Point
+---------
+
+.. image:: fig4.svg
+
 
 Demo 1
 ------

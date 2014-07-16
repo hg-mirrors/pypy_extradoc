@@ -497,9 +497,16 @@ and if necessary, cancel and restart transactions</li>
 <li>but <em>can be very coarse:</em><ul>
 <li>the idea is to make sure, internally, that one transaction
 covers the whole time during which the lock was acquired</li>
+<li>even two big transactions can hopefully run in parallel</li>
+<li>even if they both acquire and release the <em>same</em> lock</li>
 </ul>
 </li>
 </ul>
+</div>
+<div class="slide" id="id2">
+<h1>Big Point</h1>
+<object data="fig4.svg" type="image/svg+xml">
+fig4.svg</object>
 </div>
 <div class="slide" id="demo-1">
 <h1>Demo 1</h1>
