@@ -45,13 +45,15 @@ Part 1 - Intro and Current Status
   for C: simplify your life for some problems, with a
   reasonable performance cost
 
-- the problems are:
+- this is about anything where the GIL is a blocker, obviously
 
-  - anything where the GIL is a blocker, obviously
+- but also any program with "often-parallelizable" sections of
+  code
 
-  - but also any program with "often-parallelizable"
-    sections of code
-
+- there are actually a lot of such programs around when we think about
+  it: Bottle, Twisted, Tornado, etc. serve multiple clients; many
+  CPU-consuming programs at some point need to iterate over some
+  large-ish data structure in some mostly-composable way; etc.
 
 
 ===========================================
@@ -99,11 +101,3 @@ Part 2 - Under The Hood
 
 - picture with nursery -- the GC can use the same write barrier
 
-
-
-===========================================
-Part 3 - Multithreading Revisited
-===========================================
-
-
-- 
