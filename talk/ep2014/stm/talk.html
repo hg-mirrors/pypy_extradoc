@@ -558,32 +558,7 @@ covers the whole time during which the lock was acquired</li>
 </div>
 <div class="slide" id="part-2-under-the-hood">
 <h1>Part 2 - Under The Hood</h1>
-<ul class="simple">
-<li>pictures &quot;GIL&quot; and &quot;no GIL&quot;</li>
-<li>zoom with reads and writes</li>
-<li>keep boundaries, each block is a _transaction_</li>
-<li>completely the same semantics as when run with a GIL</li>
-<li>write-write conflict</li>
-<li>deadlock detection and resolution by abort-retry</li>
-<li>read-write conflict: avoids (1) crashes,
-(2) reads-from-the-past, (3) reads-from-the-future</li>
-<li>reads are more common than writes: optimize read barriers</li>
-<li>pypy-stm: write a thread-local flag &quot;this object has been read&quot;,
-show code for read barrier and fast-path of write barrier;
-note about using the C library for CPython too</li>
-<li>reads are not synchronized at all between CPUs, but it's wrong
-to read data written by other in-progress transactions;
-so we have to write elsewhere</li>
-<li>but what if we read later an object we modified?  doing any kind
-of check in the read barrier makes it much more costly</li>
-<li>a solution would be to give each thread its own &quot;segment&quot; of
-memory, and copy data between them only at known points</li>
-<li>mmap trick: we do that, but we use mmap sharing to view the same
-pages of memory at several addresses in memory</li>
-<li>show clang source code and assembler for %gs</li>
-<li>picture with 15/16 objects, 1/16 read markers, one page control data</li>
-<li>picture with nursery -- the GC can use the same write barrier</li>
-</ul>
+<p><strong>STMGC-C7</strong></p>
 </div>
 </div>
 </body>
