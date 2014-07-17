@@ -383,6 +383,18 @@ ul.auto-toc {
 <div class="slide" id="part-1-intro-and-current-status">
 <h1>Part 1 - Intro and Current Status</h1>
 </div>
+<div class="slide" id="introduction">
+<h1>Introduction</h1>
+<ul class="simple">
+<li>PyPy-STM: Software Transactional Memory</li>
+<li>On-going research project:<ul>
+<li>by Remi Meier and myself</li>
+<li>helped by crowdfunding, thanks to all donors</li>
+</ul>
+</li>
+<li>Started as a EuroPython 2011 lightning talk</li>
+</ul>
+</div>
 <div class="slide" id="why-is-there-a-gil">
 <h1>Why is there a GIL?</h1>
 <ul class="simple">
@@ -495,10 +507,8 @@ and if necessary, cancel and restart transactions</li>
 <ul class="simple">
 <li>application-level locks still needed...</li>
 <li>but <em>can be very coarse:</em><ul>
-<li>the idea is to make sure, internally, that one transaction
-covers the whole time during which the lock was acquired</li>
 <li>even two big transactions can hopefully run in parallel</li>
-<li>even if they both acquire and release the <em>same</em> lock</li>
+<li>even if they both <em>acquire and release the same lock</em></li>
 </ul>
 </li>
 </ul>
@@ -511,6 +521,7 @@ fig4.svg</object>
 <div class="slide" id="demo-1">
 <h1>Demo 1</h1>
 <ul class="simple">
+<li>&quot;Twisted apps made parallel out of the box&quot;</li>
 <li>Bottle web server</li>
 </ul>
 </div>
@@ -534,6 +545,7 @@ fig4.svg</object>
 <ul class="simple">
 <li>current status:<ul>
 <li>basics work</li>
+<li>best case 25-40% overhead (much better than originally planned)</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
@@ -559,6 +571,10 @@ fig4.svg</object>
 <li>as a replacement of <tt class="docutils literal">multiprocessing</tt></li>
 <li>but also in existing applications not written for that</li>
 <li>as long as they do multiple things that are &quot;often independent&quot;</li>
+</ul>
+</li>
+<li>Keep locks coarse-grained:<ul>
+<li>need to track and fix issues in case of systematic conflicts</li>
 </ul>
 </li>
 </ul>

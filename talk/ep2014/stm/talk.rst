@@ -17,6 +17,19 @@ Part 1 - Intro and Current Status
 ---------------------------------
 
 
+Introduction
+------------
+
+* PyPy-STM: Software Transactional Memory
+
+* On-going research project:
+
+  - by Remi Meier and myself
+  - helped by crowdfunding, thanks to all donors
+
+* Started as a EuroPython 2011 lightning talk
+
+
 Why is there a GIL?
 -------------------
 
@@ -132,12 +145,9 @@ Big Point
 
 * but *can be very coarse:*
 
-  - the idea is to make sure, internally, that one transaction
-    covers the whole time during which the lock was acquired
-
   - even two big transactions can hopefully run in parallel
 
-  - even if they both acquire and release the *same* lock
+  - even if they both *acquire and release the same lock*
 
 
 Big Point
@@ -148,6 +158,8 @@ Big Point
 
 Demo 1
 ------
+
+* "Twisted apps made parallel out of the box"
 
 * Bottle web server
 
@@ -173,6 +185,7 @@ PyPy-STM status
 * current status:
 
   - basics work
+  - best case 25-40% overhead (much better than originally planned)
   - tons of things to improve
   - tons of things to improve
   - tons of things to improve
@@ -201,6 +214,9 @@ Summary
 
   - as long as they do multiple things that are "often independent"
 
+* Keep locks coarse-grained:
+    
+  - need to track and fix issues in case of systematic conflicts
 
 
 Part 2 - Under The Hood
