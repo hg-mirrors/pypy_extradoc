@@ -4,6 +4,17 @@
 PyPy Status
 ================================
 
+Who Am I
+--------
+
+* rguillebert on twitter and irc
+
+* GSoC student on PyPy/Cython
+
+* PyPy contributor since 2011
+
+* Worked on Py3k and Numpy
+
 PyPy is not dead
 ----------------
 
@@ -256,7 +267,7 @@ Current status for STM
 
 - Preliminary versions of pypy-jit-stm available
 
-- The overhead is still a bit too high and hard to precict
+- The overhead is still a bit too high and hard to predict
 
 - Lots of polishing needed
 
@@ -271,5 +282,7 @@ Contacts, Q&A
 - http://pypy.org
 
 - http://morepypy.blogspot.com/
+
+- #pypy@freenode.net
 
 - Any question?
