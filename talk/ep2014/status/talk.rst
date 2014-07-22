@@ -143,6 +143,8 @@ Commercial support
   improving support in parts of the Python or non-Python interpreters,
   etc.
 
+- http://baroquesoftware.com
+
 Current status
 ---------------
 
