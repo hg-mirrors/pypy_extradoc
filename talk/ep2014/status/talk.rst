@@ -217,15 +217,11 @@ The future: STM
 
 - Software Transactional Memory
 
-- Strategy to solve race conditions
+- Solving the GIL problem
 
-- On-going research project
-
-  * by Armin Rigo and Remi Meier
+- Without bringing the threads and locks mess
 
 - Preliminary versions of pypy-jit-stm available
-
-- Lots of polishing needed
 
 - See talk tomorrow
 
