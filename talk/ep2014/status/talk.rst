@@ -113,7 +113,7 @@ Fundraising campaign
 
 - STM, 2nd call: 3'000 $ of 80'000 $ (4%)
 
-- thank to all donors!
+- Thanks to all donors!
 
 Commercial support
 ------------------
@@ -166,23 +166,23 @@ ARM
 
 - ~7.5x faster than CPython on ARM
 
-- thanks to Raspberry-Pi foundation
+- Thanks to the Raspberry-Pi foundation
 
-- distributed as part of Raspbian OS
+- Distributed as part of Raspbian OS
 
 
 numpy
 -----
 
-- as usual, in-progress
+- As usual, in-progress
 
 - 2336 passing tests out of 3265
 
   * http://buildbot.pypy.org/numpy-status/latest.html
 
-- just try it
+- Just try it
 
-- no scipy :-/
+- No scipy :-/
 
 
 py3k
@@ -192,9 +192,9 @@ py3k
 
 - 3.3: branch started, in-progress
 
-- some missing optimizations
+- Some missing optimizations
 
-  * getting better
+  * Getting better
 
 
 CFFI
