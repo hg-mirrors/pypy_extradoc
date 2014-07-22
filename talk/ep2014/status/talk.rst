@@ -102,8 +102,6 @@ More PyPy-powered languages
 
   * http://hippyvm.com/
 
-
-
 Fundraising campaign
 ---------------------
 
@@ -147,7 +145,7 @@ Current status
 
 - Lots of CFFI modules around:
 
-  * pygame_cffi, psycopg2_cffi, lxml
+  * pygame_cffi, psycopg2cffi, lxml
 
 - numpy: in-progress (more later)
 
@@ -178,9 +176,7 @@ numpy
 
 - as usual, in-progress
 
-- ~80% of numpy implemented
-
-  * 2336 passing tests out of 3265
+- 2336 passing tests out of 3265
 
   * http://buildbot.pypy.org/numpy-status/latest.html
 
@@ -214,7 +210,7 @@ CFFI
 
 - Alternative to C-API, ctypes, Cython, etc.
 
-- Fast on CPython, super-fast on PyPy
+- Fast on CPython, super-fast on PyPy, Jython support in the future
 
 The future: STM
 ----------------
@@ -223,25 +219,15 @@ The future: STM
 
 - Strategy to solve race conditions
 
-- "Finger crossed", rollback in case of conflicts
-
 - On-going research project
 
   * by Armin Rigo and Remi Meier
 
-Current status for STM
-----------------------
-
 - Preliminary versions of pypy-jit-stm available
-
-- The overhead is still a bit too high and hard to predict
 
 - Lots of polishing needed
 
-- More fundamentally, how to best use it is still unknown
-
 - See talk tomorrow
-
 
 Contacts, Q&A
 --------------
