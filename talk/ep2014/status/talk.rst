@@ -9,11 +9,11 @@ Who Am I
 
 * rguillebert on twitter and irc
 
-* GSoC student on PyPy/Cython
-
 * PyPy contributor since 2011
 
-* Worked on Py3k and Numpy
+* GSoC student on PyPy/Cython
+
+* Worked on Py3k and Numpy support
 
 PyPy is not dead
 ----------------
@@ -25,12 +25,6 @@ PyPy is not dead
   * for no good reason :)
 
 - PyPy is healthy and alive
-
-|pause|
-
-- WARNING: This talk is boring
-
-  * "it just works"
 
 What is PyPy?
 --------------
@@ -49,11 +43,6 @@ What is PyPy?
 
   - **FAST**
 
-* Whatever (dynamic) language you want
-
-  - smalltalk, prolog, PHP, javascript, ...
-
-
 PyPy: past two years (1)
 -----------------------------
 
@@ -63,15 +52,11 @@ PyPy: past two years (1)
 
   * stackless + JIT (eventlet, gevent, ...)
 
-|pause|
-
 - PyPy 2.1 (July 2013)
 
   * stable ARM
 
   * py3k (3.2.3), numpy, general improvements, bugfixes
-
-|pause|
 
 - PyPy 2.2 (November 2013)
 
@@ -87,13 +72,13 @@ PyPy: past two years (2)
 
 - PyPy 2.3 (May 2014)
 
-- Lot of internal refactoring
+  * Lot of internal refactoring
 
-- C API for embedding
+  * C API for embedding
 
-  * pypy + uWSGI (thanks to Roberto De Ioris)
+    - pypy + uWSGI (thanks to Roberto De Ioris)
 
-- the usual, boring, general improvements
+  * the usual, boring, general improvements
 
 
 More PyPy-powered languages
@@ -230,26 +215,6 @@ CFFI
 - Alternative to C-API, ctypes, Cython, etc.
 
 - Fast on CPython, super-fast on PyPy
-
-
-cppyy
-------
-
-- Interface to C++
-
-- Based on reflection, no need to write wrappers
-
-- PyPy-only, similar to PyCintex for CPython
-
-- Main use case: ROOT
-
-  * http://root.cern.ch
-
-  * "a set of OO frameworks with all the functionality needed to handle and
-    analyze large amounts of data in a very efficient way"
-
-- 3x faster than CPython
-
 
 The future: STM
 ----------------
