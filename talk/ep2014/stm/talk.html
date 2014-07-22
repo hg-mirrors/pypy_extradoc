@@ -488,7 +488,7 @@ ul.auto-toc {
 <div class="slide" id="transactional-memory">
 <h1>Transactional Memory</h1>
 <ul class="simple">
-<li>like GIL, but instead of locking, each thread runs optimistically</li>
+<li>like GIL, but instead of blocking, each thread runs optimistically</li>
 <li>&quot;easy&quot; to implement:<ul>
 <li>GIL acquire -&gt; transaction start</li>
 <li>GIL release -&gt; transaction commit</li>
@@ -507,7 +507,7 @@ and if necessary, cancel and restart transactions</li>
 <ul class="simple">
 <li>application-level locks still needed...</li>
 <li>but <em>can be very coarse:</em><ul>
-<li>even two big transactions can hopefully run in parallel</li>
+<li>even two big transactions can optimistically run in parallel</li>
 <li>even if they both <em>acquire and release the same lock</em></li>
 </ul>
 </li>
@@ -546,6 +546,7 @@ fig4.svg</object>
 <li>current status:<ul>
 <li>basics work</li>
 <li>best case 25-40% overhead (much better than originally planned)</li>
+<li>parallelizing user locks not done yet</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
@@ -563,18 +564,38 @@ fig4.svg</object>
 <li>counting primes</li>
 </ul>
 </div>
-<div class="slide" id="summary">
-<h1>Summary</h1>
+<div class="slide" id="benefits">
+<h1>Benefits</h1>
 <ul class="simple">
-<li>Transactional Memory is still too researchy for production</li>
+<li>Keep locks coarse-grained</li>
 <li>Potential to enable parallelism:<ul>
-<li>as a replacement of <tt class="docutils literal">multiprocessing</tt></li>
+<li>in CPU-bound multithreaded programs</li>
+<li>or as a replacement of <tt class="docutils literal">multiprocessing</tt></li>
 <li>but also in existing applications not written for that</li>
 <li>as long as they do multiple things that are &quot;often independent&quot;</li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="slide" id="issues">
+<h1>Issues</h1>
+<ul class="simple">
+<li>Performance hit: 25-40% everywhere (may be ok)</li>
 <li>Keep locks coarse-grained:<ul>
-<li>need to track and fix issues in case of systematic conflicts</li>
+<li>but in case of systematic conflicts, performance is bad again</li>
+<li>need to track and fix them</li>
+<li>need tool support (debugger/profiler)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="summary">
+<h1>Summary</h1>
+<ul class="simple">
+<li>Transactional Memory is still too researchy for production</li>
+<li>But it has the potential to enable &quot;easier parallelism&quot;</li>
+<li>Still alpha but slowly getting there!<ul>
+<li>see <a class="reference external" href="http://morepypy.blogspot.com/">http://morepypy.blogspot.com/</a></li>
 </ul>
 </li>
 </ul>

@@ -122,7 +122,7 @@ Shared-nothing
 Transactional Memory
 --------------------
 
-* like GIL, but instead of locking, each thread runs optimistically
+* like GIL, but instead of blocking, each thread runs optimistically
 
 * "easy" to implement:
 
@@ -145,7 +145,7 @@ Big Point
 
 * but *can be very coarse:*
 
-  - even two big transactions can hopefully run in parallel
+  - even two big transactions can optimistically run in parallel
 
   - even if they both *acquire and release the same lock*
 
@@ -186,6 +186,7 @@ PyPy-STM status
 
   - basics work
   - best case 25-40% overhead (much better than originally planned)
+  - parallelizing user locks not done yet
   - tons of things to improve
   - tons of things to improve
   - tons of things to improve
@@ -201,22 +202,46 @@ Demo 2
 * counting primes
 
 
-Summary
--------
+Benefits
+--------
 
-* Transactional Memory is still too researchy for production
+* Keep locks coarse-grained
 
 * Potential to enable parallelism:
 
-  - as a replacement of ``multiprocessing``
+  - in CPU-bound multithreaded programs
+
+  - or as a replacement of ``multiprocessing``
 
   - but also in existing applications not written for that
 
   - as long as they do multiple things that are "often independent"
 
+
+Issues
+------
+
+* Performance hit: 25-40% everywhere (may be ok)
+
 * Keep locks coarse-grained:
-    
-  - need to track and fix issues in case of systematic conflicts
+
+  - but in case of systematic conflicts, performance is bad again
+
+  - need to track and fix them
+
+  - need tool support (debugger/profiler)
+
+
+Summary
+-------
+
+* Transactional Memory is still too researchy for production
+
+* But it has the potential to enable "easier parallelism"
+
+* Still alpha but slowly getting there!
+
+  - see http://morepypy.blogspot.com/
 
 
 Part 2 - Under The Hood
