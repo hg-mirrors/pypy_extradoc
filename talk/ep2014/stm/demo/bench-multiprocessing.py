@@ -8,7 +8,7 @@ def process(nstart):
             subtotal += 1
     return subtotal
 
-pool = Pool(4)
+pool = Pool(2)
 results = pool.map(process, xrange(0, 5000000, 20000))
 total = sum(results)
 

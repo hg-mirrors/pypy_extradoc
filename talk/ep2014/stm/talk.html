@@ -535,7 +535,6 @@ fig4.svg</object>
 <li>but <em>can be very coarse:</em><ul>
 <li>two transactions can optimistically run in parallel</li>
 <li>even if they both <em>acquire and release the same lock</em></li>
-<li>internally, drive the transaction lengths by the locks we acquire</li>
 </ul>
 </li>
 </ul>
@@ -558,8 +557,19 @@ fig4.svg</object>
 <li>this is not &quot;everybody should use careful explicit threading
 with all the locking issues&quot;</li>
 <li>instead, PyPy-STM pushes forward:<ul>
-<li>use a thread pool library</li>
+<li>make or use a thread pool library</li>
 <li>coarse locking, inside that library only</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="id4">
+<h1>PyPy-STM Programming Model</h1>
+<ul class="simple">
+<li>e.g.:<ul>
+<li><tt class="docutils literal">multiprocessing</tt>-like thread pool</li>
+<li>Twisted/Tornado/Bottle extension</li>
+<li>Stackless/greenlet/gevent extension</li>
 </ul>
 </li>
 </ul>
@@ -570,7 +580,7 @@ with all the locking issues&quot;</li>
 <li>current status:<ul>
 <li>basics work</li>
 <li>best case 25-40% overhead (much better than originally planned)</li>
-<li>parallelizing user locks not done yet (see &quot;with atomic&quot;)</li>
+<li>app locks not done yet (&quot;with atomic&quot; workaround)</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
@@ -604,7 +614,7 @@ with all the locking issues&quot;</li>
 <li>need tool to support this (debugger/profiler)</li>
 </ul>
 </li>
-<li>Performance hit: 25-40% over a plain PyPy-JIT (may be ok)</li>
+<li>Performance hit: 25-40% slower than a plain PyPy-JIT (may be ok)</li>
 </ul>
 </div>
 <div class="slide" id="summary-pypy-stm">
@@ -678,7 +688,7 @@ but only the few <em>old objects</em> modified</li>
 a read flag set in some other thread</li>
 </ul>
 </div>
-<div class="slide" id="id4">
+<div class="slide" id="id5">
 <h1>...</h1>
 </div>
 <div class="slide" id="thank-you">

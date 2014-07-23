@@ -176,8 +176,6 @@ Long Transactions
 
   - even if they both *acquire and release the same lock*
 
-  - internally, drive the transaction lengths by the locks we acquire
-
 
 Long Transactions
 -----------------
@@ -201,9 +199,21 @@ PyPy-STM Programming Model
 
 * instead, PyPy-STM pushes forward:
 
-  - use a thread pool library
+  - make or use a thread pool library
 
   - coarse locking, inside that library only
+
+
+PyPy-STM Programming Model
+--------------------------
+
+* e.g.:
+
+  - ``multiprocessing``-like thread pool
+
+  - Twisted/Tornado/Bottle extension
+
+  - Stackless/greenlet/gevent extension
 
 
 PyPy-STM status
@@ -213,7 +223,7 @@ PyPy-STM status
 
   - basics work
   - best case 25-40% overhead (much better than originally planned)
-  - parallelizing user locks not done yet (see "with atomic")
+  - app locks not done yet ("with atomic" workaround)
   - tons of things to improve
   - tons of things to improve
   - tons of things to improve
@@ -250,7 +260,7 @@ Summary: Issues
 
   - need tool to support this (debugger/profiler)
 
-* Performance hit: 25-40% over a plain PyPy-JIT (may be ok)
+* Performance hit: 25-40% slower than a plain PyPy-JIT (may be ok)
 
 
 Summary: PyPy-STM
