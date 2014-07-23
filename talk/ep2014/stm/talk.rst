@@ -138,6 +138,33 @@ Transactional Memory
   - but mostly still research-only
 
 
+PyPy-STM
+--------
+
+* implementation of a specially-tailored STM ("hard" part):
+    
+  - a reusable C library
+  - called STMGC-C7
+
+* used in PyPy to replace the GIL ("easy" part)
+
+* could also be used in CPython
+
+  - but refcounting needs replacing
+
+
+Commits
+---------
+
+.. image:: fig4.svg
+
+
+Demo
+------
+
+* counting primes
+
+
 Big Point
 ----------------------------
 
@@ -150,33 +177,31 @@ Big Point
   - even if they both *acquire and release the same lock*
 
 
-Big Point
----------
+Long Transactions
+-----------------
 
 .. image:: fig4.svg
 
 
-Demo 1
+Demo
 ------
-
-* "Twisted apps made parallel out of the box"
 
 * Bottle web server
 
 
-PyPy-STM
---------
+PyPy-STM Programming Model
+---------------------------
 
-* implementation of a specially-tailored STM:
-    
-  - a reusable C library
-  - called STMGC-C7
+* threads-and-locks, fully compatible with the GIL
 
-* used in PyPy to replace the GIL
+* this is not "everybody should use careful explicit threading
+  with all the locking issues"
 
-* could also be used in CPython
+* instead, PyPy-STM pushes forward:
 
-  - but refcounting needs replacing
+  - use a thread pool library
+
+  - coarse locking, inside that library only
 
 
 PyPy-STM status
@@ -186,7 +211,7 @@ PyPy-STM status
 
   - basics work
   - best case 25-40% overhead (much better than originally planned)
-  - parallelizing user locks not done yet
+  - parallelizing user locks not done yet (see ``with atomic``)
   - tons of things to improve
   - tons of things to improve
   - tons of things to improve
@@ -196,20 +221,14 @@ PyPy-STM status
   - tons of things to improve
 
 
-Demo 2
-------
-
-* counting primes
-
-
-Benefits
---------
+Summary: Benefits
+-----------------
 
 * Keep locks coarse-grained
 
 * Potential to enable parallelism:
 
-  - in CPU-bound multithreaded programs
+  - in any CPU-bound multithreaded program
 
   - or as a replacement of ``multiprocessing``
 
@@ -218,10 +237,8 @@ Benefits
   - as long as they do multiple things that are "often independent"
 
 
-Issues
-------
-
-* Performance hit: 25-40% everywhere (may be ok)
+Summary: Issues
+---------------
 
 * Keep locks coarse-grained:
 
@@ -229,13 +246,15 @@ Issues
 
   - need to track and fix them
 
-  - need tool support (debugger/profiler)
+  - need tool to support this (debugger/profiler)
+
+* Performance hit: 25-40% everywhere (may be ok)
 
 
-Summary
--------
+Summary: PyPy-STM
+-----------------
 
-* Transactional Memory is still too researchy for production
+* Not production-ready
 
 * But it has the potential to enable "easier parallelism"
 
@@ -248,3 +267,39 @@ Part 2 - Under The Hood
 -----------------------
 
 **STMGC-C7**
+
+
+Overview
+--------
+
+* Say we want to run two threads
+
+* We reserve twice the memory
+
+* Thread 1 reads/writes "memory segment" 1
+
+* Thread 2 reads/writes "memory segment" 2
+
+* Upon commit, we (try to) copy the changes to the other segment
+
+
+Trick #1
+--------
+
+* Objects contain pointers to each other
+
+* These pointers are relative instead of absolute:
+
+  - 
+
+
+Trick #1
+--------
+
+* Most objects are the same in all segments:
+
+  - so we share the memory
+  
+  - ``mmap() MAP_SHARED`` trickery
+
+
