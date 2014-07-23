@@ -153,8 +153,8 @@ PyPy-STM
   - but refcounting needs replacing
 
 
-Commits
----------
+How does it work?
+-----------------
 
 .. image:: fig4.svg
 
@@ -165,16 +165,18 @@ Demo
 * counting primes
 
 
-Big Point
+Long Transactions
 ----------------------------
 
-* application-level locks still needed...
+* threads and application-level locks still needed...
 
 * but *can be very coarse:*
 
-  - even two big transactions can optimistically run in parallel
+  - two transactions can optimistically run in parallel
 
   - even if they both *acquire and release the same lock*
+
+  - internally, drive the transaction lengths by the locks we acquire
 
 
 Long Transactions
@@ -211,7 +213,7 @@ PyPy-STM status
 
   - basics work
   - best case 25-40% overhead (much better than originally planned)
-  - parallelizing user locks not done yet (see ``with atomic``)
+  - parallelizing user locks not done yet (see "with atomic")
   - tons of things to improve
   - tons of things to improve
   - tons of things to improve
@@ -224,8 +226,6 @@ PyPy-STM status
 Summary: Benefits
 -----------------
 
-* Keep locks coarse-grained
-
 * Potential to enable parallelism:
 
   - in any CPU-bound multithreaded program
@@ -235,6 +235,8 @@ Summary: Benefits
   - but also in existing applications not written for that
 
   - as long as they do multiple things that are "often independent"
+
+* Keep locks coarse-grained
 
 
 Summary: Issues
@@ -248,7 +250,7 @@ Summary: Issues
 
   - need tool to support this (debugger/profiler)
 
-* Performance hit: 25-40% everywhere (may be ok)
+* Performance hit: 25-40% over a plain PyPy-JIT (may be ok)
 
 
 Summary: PyPy-STM
@@ -256,11 +258,15 @@ Summary: PyPy-STM
 
 * Not production-ready
 
-* But it has the potential to enable "easier parallelism"
+* But it has the potential to enable "easier parallelism for everybody"
 
 * Still alpha but slowly getting there!
 
   - see http://morepypy.blogspot.com/
+
+* Crowdfunding!
+
+  - see http://pypy.org/
 
 
 Part 2 - Under The Hood
@@ -272,7 +278,7 @@ Part 2 - Under The Hood
 Overview
 --------
 
-* Say we want to run two threads
+* Say we want to run N = 2 threads
 
 * We reserve twice the memory
 
@@ -290,16 +296,56 @@ Trick #1
 
 * These pointers are relative instead of absolute:
 
-  - 
+  - accessed as if they were "thread-local data"
+
+  - the x86 has a zero-cost way to do that (``%fs``, ``%gs``)
+
+  - supported in clang (not gcc so far)
 
 
-Trick #1
+Trick #2
 --------
 
-* Most objects are the same in all segments:
+* With Trick #1, most objects are exactly identical in all N segments:
 
   - so we share the memory
   
-  - ``mmap() MAP_SHARED`` trickery
+  - ``mmap() MAP_SHARED``
+
+  - actual memory usage is multiplied by much less than N
+
+* Newly allocated objects are directly in shared pages:
+    
+  - we don't actually need to copy *all new objects* at commit,
+    but only the few *old objects* modified
 
 
+Barriers
+--------
+
+* Need to record all reads and writes done by a transaction
+
+* Extremely cheap way to do that:
+
+  - *Read:* set a flag in thread-local memory (one byte)
+
+  - *Write* into a newly allocated object: nothing to do
+
+  - *Write* into an old object: add the object to a list
+
+* Commit: check if each object from that list conflicts with
+  a read flag set in some other thread
+
+
+...
+-------------------
+
+
+Thank You
+---------
+
+* http://morepypy.blogspot.com/
+
+* http://pypy.org/
+
+* irc: ``#pypy`` on freenode.net

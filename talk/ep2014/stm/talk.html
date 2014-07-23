@@ -502,40 +502,64 @@ and if necessary, cancel and restart transactions</li>
 </li>
 </ul>
 </div>
-<div class="slide" id="big-point">
-<h1>Big Point</h1>
+<div class="slide" id="pypy-stm">
+<h1>PyPy-STM</h1>
 <ul class="simple">
-<li>application-level locks still needed...</li>
+<li>implementation of a specially-tailored STM (&quot;hard&quot; part):<ul>
+<li>a reusable C library</li>
+<li>called STMGC-C7</li>
+</ul>
+</li>
+<li>used in PyPy to replace the GIL (&quot;easy&quot; part)</li>
+<li>could also be used in CPython<ul>
+<li>but refcounting needs replacing</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="how-does-it-work">
+<h1>How does it work?</h1>
+<object data="fig4.svg" type="image/svg+xml">
+fig4.svg</object>
+</div>
+<div class="slide" id="demo">
+<h1>Demo</h1>
+<ul class="simple">
+<li>counting primes</li>
+</ul>
+</div>
+<div class="slide" id="long-transactions">
+<h1>Long Transactions</h1>
+<ul class="simple">
+<li>threads and application-level locks still needed...</li>
 <li>but <em>can be very coarse:</em><ul>
-<li>even two big transactions can optimistically run in parallel</li>
+<li>two transactions can optimistically run in parallel</li>
 <li>even if they both <em>acquire and release the same lock</em></li>
+<li>internally, drive the transaction lengths by the locks we acquire</li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="slide" id="id2">
-<h1>Big Point</h1>
+<h1>Long Transactions</h1>
 <object data="fig4.svg" type="image/svg+xml">
 fig4.svg</object>
 </div>
-<div class="slide" id="demo-1">
-<h1>Demo 1</h1>
+<div class="slide" id="id3">
+<h1>Demo</h1>
 <ul class="simple">
-<li>&quot;Twisted apps made parallel out of the box&quot;</li>
 <li>Bottle web server</li>
 </ul>
 </div>
-<div class="slide" id="pypy-stm">
-<h1>PyPy-STM</h1>
+<div class="slide" id="pypy-stm-programming-model">
+<h1>PyPy-STM Programming Model</h1>
 <ul class="simple">
-<li>implementation of a specially-tailored STM:<ul>
-<li>a reusable C library</li>
-<li>called STMGC-C7</li>
-</ul>
-</li>
-<li>used in PyPy to replace the GIL</li>
-<li>could also be used in CPython<ul>
-<li>but refcounting needs replacing</li>
+<li>threads-and-locks, fully compatible with the GIL</li>
+<li>this is not &quot;everybody should use careful explicit threading
+with all the locking issues&quot;</li>
+<li>instead, PyPy-STM pushes forward:<ul>
+<li>use a thread pool library</li>
+<li>coarse locking, inside that library only</li>
 </ul>
 </li>
 </ul>
@@ -546,7 +570,7 @@ fig4.svg</object>
 <li>current status:<ul>
 <li>basics work</li>
 <li>best case 25-40% overhead (much better than originally planned)</li>
-<li>parallelizing user locks not done yet</li>
+<li>parallelizing user locks not done yet (see &quot;with atomic&quot;)</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
 <li>tons of things to improve</li>
@@ -558,44 +582,42 @@ fig4.svg</object>
 </li>
 </ul>
 </div>
-<div class="slide" id="demo-2">
-<h1>Demo 2</h1>
+<div class="slide" id="summary-benefits">
+<h1>Summary: Benefits</h1>
 <ul class="simple">
-<li>counting primes</li>
-</ul>
-</div>
-<div class="slide" id="benefits">
-<h1>Benefits</h1>
-<ul class="simple">
-<li>Keep locks coarse-grained</li>
 <li>Potential to enable parallelism:<ul>
-<li>in CPU-bound multithreaded programs</li>
+<li>in any CPU-bound multithreaded program</li>
 <li>or as a replacement of <tt class="docutils literal">multiprocessing</tt></li>
 <li>but also in existing applications not written for that</li>
 <li>as long as they do multiple things that are &quot;often independent&quot;</li>
 </ul>
 </li>
+<li>Keep locks coarse-grained</li>
 </ul>
 </div>
-<div class="slide" id="issues">
-<h1>Issues</h1>
+<div class="slide" id="summary-issues">
+<h1>Summary: Issues</h1>
 <ul class="simple">
-<li>Performance hit: 25-40% everywhere (may be ok)</li>
 <li>Keep locks coarse-grained:<ul>
 <li>but in case of systematic conflicts, performance is bad again</li>
 <li>need to track and fix them</li>
-<li>need tool support (debugger/profiler)</li>
+<li>need tool to support this (debugger/profiler)</li>
 </ul>
 </li>
+<li>Performance hit: 25-40% over a plain PyPy-JIT (may be ok)</li>
 </ul>
 </div>
-<div class="slide" id="summary">
-<h1>Summary</h1>
+<div class="slide" id="summary-pypy-stm">
+<h1>Summary: PyPy-STM</h1>
 <ul class="simple">
-<li>Transactional Memory is still too researchy for production</li>
-<li>But it has the potential to enable &quot;easier parallelism&quot;</li>
+<li>Not production-ready</li>
+<li>But it has the potential to enable &quot;easier parallelism for everybody&quot;</li>
 <li>Still alpha but slowly getting there!<ul>
 <li>see <a class="reference external" href="http://morepypy.blogspot.com/">http://morepypy.blogspot.com/</a></li>
+</ul>
+</li>
+<li>Crowdfunding!<ul>
+<li>see <a class="reference external" href="http://pypy.org/">http://pypy.org/</a></li>
 </ul>
 </li>
 </ul>
@@ -603,6 +625,69 @@ fig4.svg</object>
 <div class="slide" id="part-2-under-the-hood">
 <h1>Part 2 - Under The Hood</h1>
 <p><strong>STMGC-C7</strong></p>
+</div>
+<div class="slide" id="overview">
+<h1>Overview</h1>
+<ul class="simple">
+<li>Say we want to run N = 2 threads</li>
+<li>We reserve twice the memory</li>
+<li>Thread 1 reads/writes &quot;memory segment&quot; 1</li>
+<li>Thread 2 reads/writes &quot;memory segment&quot; 2</li>
+<li>Upon commit, we (try to) copy the changes to the other segment</li>
+</ul>
+</div>
+<div class="slide" id="trick-1">
+<h1>Trick #1</h1>
+<ul class="simple">
+<li>Objects contain pointers to each other</li>
+<li>These pointers are relative instead of absolute:<ul>
+<li>accessed as if they were &quot;thread-local data&quot;</li>
+<li>the x86 has a zero-cost way to do that (<tt class="docutils literal">%fs</tt>, <tt class="docutils literal">%gs</tt>)</li>
+<li>supported in clang (not gcc so far)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="trick-2">
+<h1>Trick #2</h1>
+<ul class="simple">
+<li>With Trick #1, most objects are exactly identical in all N segments:<ul>
+<li>so we share the memory</li>
+<li><tt class="docutils literal">mmap() MAP_SHARED</tt></li>
+<li>actual memory usage is multiplied by much less than N</li>
+</ul>
+</li>
+<li>Newly allocated objects are directly in shared pages:<ul>
+<li>we don't actually need to copy <em>all new objects</em> at commit,
+but only the few <em>old objects</em> modified</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="barriers">
+<h1>Barriers</h1>
+<ul class="simple">
+<li>Need to record all reads and writes done by a transaction</li>
+<li>Extremely cheap way to do that:<ul>
+<li><em>Read:</em> set a flag in thread-local memory (one byte)</li>
+<li><em>Write</em> into a newly allocated object: nothing to do</li>
+<li><em>Write</em> into an old object: add the object to a list</li>
+</ul>
+</li>
+<li>Commit: check if each object from that list conflicts with
+a read flag set in some other thread</li>
+</ul>
+</div>
+<div class="slide" id="id4">
+<h1>...</h1>
+</div>
+<div class="slide" id="thank-you">
+<h1>Thank You</h1>
+<ul class="simple">
+<li><a class="reference external" href="http://morepypy.blogspot.com/">http://morepypy.blogspot.com/</a></li>
+<li><a class="reference external" href="http://pypy.org/">http://pypy.org/</a></li>
+<li>irc: <tt class="docutils literal">#pypy</tt> on freenode.net</li>
+</ul>
 </div>
 </div>
 </body>
