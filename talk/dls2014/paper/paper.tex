@@ -468,6 +468,12 @@ reads or writes memory using an $SO$ address.  This is very efficient
 -- we can do it on every object access -- and some compilers support it
 natively (e.g.\ clang).
 
+On non-x86 architectures, most simple memory accesses could still be
+done efficiently if the supported addressing modes allow for the
+addition of an offset stored in some register (e.g.\ ARM). For more
+complicated accesses (e.g.\ array indexing) or if the CPU does not
+support such an addressing mode, one extra addition may be required.
+
 In summary, translating a $\%gs:SO$ to a physical address is a
 two-step process: First the memory segmentation feature of the CPU
 constructs a linear address. Then, this LA gets mapped by the MMU to
@@ -1100,6 +1106,12 @@ except those in Section~\ref{subsec:jit-benchs}. The STM-JIT
 integration is currently still incomplete and not tested much. The
 JIT-less interpreter provides a much more consistent environment for
 the STM system, so we remove some unknown variables by disabling it.
+Furthermore, we think the interpreter-STM evaluation is more relevant
+at this stage as the results can be more directly applied to other
+similar interpreters. PyPy's JIT~\cite{cfbolz09}, however, is quite
+unique as it is a JIT tracing the interpreter instead of the
+interpreted language itself. This demands its own thorough
+evaluation, which is out of the scope of this paper.
 
 
 We performed all benchmarks on a machine with an Intel Core i7-4770
@@ -1233,14 +1245,15 @@ benchmarks \emph{pypy-stm-nojit} beats \emph{pypy-nojit} already on
 two threads despite of this overhead.  The achieved speedup comparing
 STM to the GIL is between $1.14\times$ and $1.94\times$.
 
-Still, STM rarely beats CPython's single-thread performance. However, for
+Still, STM rarely beats CPython's \emph{single-thread} performance. However, for
 programs that need concurrency in CPython and that use threads to
 achieve this, it also makes sense to look at the overhead induced by
 the GIL on multiple threads. From this perspective, the STM
 implementation beats CPython's performance in all but two benchmarks.
 
-Since PyPy comes with a JIT~\cite{cfbolz09} to make its overhead compared to CPython
-go away, we will now look at how well STM works together with it.
+Since PyPy comes with a JIT~\cite{cfbolz09} to make its overhead
+compared to CPython go away, we will now look at how well STM works
+together with it.
 
 \begin{figure}[h]
   \centering
@@ -1300,12 +1313,16 @@ logically longer.  This increases the
 likelihood of conflicts between them and therefore limits scalability
 even more than in the no-JIT benchmarks.
 
-Overall PyPy needs the JIT  for its performance to be
-competitive with CPython's. It would be interesting to see how using
-our STM system in CPython would turn out, but an in-depth evaluation is
-beyond the scope of this paper. On its own, our system scales well,
-so we expect to also see this trend in the presence of a
-JIT in the future.
+Overall, PyPy without STM is around $2\times$ slower than CPython.
+Enabling its JIT allows it to outperform CPython by a huge margin.
+We see the same kind of speedup on PyPy with STM when enabling the
+JIT. This means that STM does not generally inhibit the JIT from
+optimising the programs execution, which is already a very important
+result on its own. We also see that for some
+benchmarks, STM is already able to give additional speedups
+compared to just the JIT-induced acceleration. This looks very
+promising and investigating when this is not the case is the next
+logical step.
 
 
 \begin{figure}[h]
@@ -1430,12 +1447,13 @@ embarrassingly parallel workloads on 4 threads.  When also used for
 synchronisation in the form of atomic blocks, the average speedup
 still reaches $2.0\times$.
 
-To obtain an overall performance that is competitive with the
-best-performing Python systems (Jython, PyPy), integration of the
-STM-based approach with a JIT compiler is necessary. Once this
-integration matures, the approach outlined here serves not only as a
-simple GIL replacement but also provides a way forward towards
-a parallel programming model for Python.
+To generally outperform the best-performing Python systems (Jython,
+PyPy), integration of the STM-based approach with a JIT compiler is
+necessary. Our early results of this integration suggest that there is
+no inherent incompatibility between STM and PyPy's JIT.  Once the
+implementation matures, the approach outlined here serves not only as a
+simple GIL replacement but also provides a way forward towards a
+parallel programming model for Python.
 
 %% \appendix
 %% \section{Appendix Title}
