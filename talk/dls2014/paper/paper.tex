@@ -704,11 +704,20 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   some young ones that were too big to be allocated in the nursery.
 \end{description}
 
-Note, since the above configuration is specified at compile time,
+Note, since the above configuration is currently specified at compile time,
 all these areas are at offsets inside the segments known to the
 compiler. This makes some checks very efficient, e.g.\ checking
 if an object resides in the nursery only requires comparing its $SO$
-to the static boundaries of the nursery.
+to the static boundaries of the nursery. It is possible that we want
+some parameters to be configurable at startup or even during the
+runtime. In that case we can still use a compile-time specified
+maximum so that these checks are still efficient. E.g.\ limiting the
+maximum amount of memory available to the application statically to a few
+terabytes is fine because it corresponds to virtual memory,
+the real physical memory is assigned on-demand by the operating
+system.
+
+
 
 
 \begin{figure*}[t]
@@ -1033,6 +1042,11 @@ want to synchronise. The mentioned check will then fail in those
 segments and call the slow path. In \lstinline!allocate_slowpath!
 they can simply check for this condition and enter a safe point.
 
+Note, this works well for interpreters that really allocate things
+all the time. In the presence of an optimising just-in-time compiler,
+some loops may indeed not allocate anything and therefore still need
+the insertion of a safe-point check.
+
 % For other synchronisation requirements, for example:
 % \begin{itemize}[noitemsep]
 % \item waiting for a segment to be released,
@@ -1089,7 +1103,8 @@ the STM system, so we remove some unknown variables by disabling it.
 
 
 We performed all benchmarks on a machine with an Intel Core i7-4770
-CPU~@3.40GHz (4 cores, 8 threads).  There are 16~GiB of memory
+CPU~@3.40GHz (4 cores, 8 threads) with disabled Hyper-Threading and
+Turbo Boost for less variation in the results.  There are 16~GiB of memory
 available and we ran them under Ubuntu 14.04 with a Linux 3.13.0
 kernel. The STM system was compiled with a number of segments $N=4$
 and a maximum amount of memory of 1.5~GiB (both are configurable at
