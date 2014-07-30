@@ -288,11 +288,16 @@ namely \emph{threading} and \emph{multiprocessing}.
 
 \emph{Threading} employs operating system (OS) threads to provide
 concurrency. It is, however, limited by the GIL and thus does not
-provide parallelism\footnote{At this point we should mention that it is indeed
-possible to run external functions written in C instead of Python in
-parallel. Our work focuses on Python itself and ignores this aspect as
-it requires writing in a different language.}.  Moreover, the GIL can
-only ensure correctness of the interpreter itself: applications are
+provide real parallelism.
+The only code that is not necessarily restricted by the GIL in CPython
+is code written in e.g.\ C instead of Python. External functions can
+choose to run without the GIL and thus, in parallel. We ignore this
+aspect here as it requires writing in a different language than Python
+and is therefore not relevant to our work.
+
+The GIL can also
+only ensure correctness of the interpreter itself: applications using
+threads are still
 required to coordinate concurrent accesses to data structures using
 conventional methods -- locks being the most common way.
 
@@ -444,28 +449,22 @@ the copy of the object in another segment.  Consequently, we would
 need to adapt these addresses to the segment they live in, which would
 prevent completely any page sharing because then the binary contents
 differ between segments.  Instead, we store pointers as
-\emph{Segment Offsets ($SO$)}, i.e.\ offsets from the start of the
-segment.  An $SO$ can then be interpreted in any segment by adding to
-it the start address of that segment.\footnote{An alternative model
-would be to simulate threads using several independent processes in
-which all segments are at the same address.  This might work well for
-demonstration purposes, but it is not really suitable for implementing
-an existing programming language: programs assume that most of the
-state (file descriptors, external libraries, ...) is shared.} The
+\emph{Segment Offsets (SO)}, i.e.\ offsets from the start of the
+segment.  An SO can then be interpreted in any segment by adding to
+it the start address of that segment. The
 result is called a \emph{Linear Address (LA)}. This is illustrated in
 Figure~\ref{fig:Segment-Addressing}.
 
 The x86 CPUs provide a feature which is called \emph{memory
-segmentation}.  On the modern x86-64, this is enough to perform the
-addition described above very efficiently.  We use the segment
-register $\%gs$\footnote{The other segment register $\%fs$ is
-typically used by the threading library to provide access to
-thread-local data.  One point of view is that we are using $\%gs$ for
-a similar purpose: thread-local data -- but a lot of it.}, which is
-available to applications, to point to the current thread's segment
-start address.  The translation from an $SO$ to an LA is done for us by
+  segmentation}.  On these CPU this is enough to perform the addition
+described above very efficiently. On the modern x86-64, there are two
+segment registers left: $\%fs$ and $\%gs$.  On Linux for example,
+$\%fs$ is already used for addressing thread-local data
+efficiently. Thus, we use the remaining segment register $\%gs$, which is
+still available to applications, to point to the current thread's segment
+start address.  The translation from an SO to an LA is done for us by
 using the ``$\%gs\colon$'' prefix before any CPU instruction that
-reads or writes memory using an $SO$ address.  This is very efficient
+reads or writes memory using an SO address.  This is very efficient
 -- we can do it on every object access -- and some compilers support it
 natively (e.g.\ clang).
 
@@ -478,7 +477,7 @@ support such an addressing mode, one extra addition may be required.
 In summary, translating a $\%gs:SO$ to a physical address is a
 two-step process: First the memory segmentation feature of the CPU
 constructs a linear address. Then, this LA gets mapped by the MMU to
-some place in the physical memory. This makes the $SO$ a valid reference
+some place in the physical memory. This makes the SO a valid reference
 to an object in all segments, automatically resolving either to a
 shared or a private version.
 
@@ -503,8 +502,8 @@ What we described so far has no measurable performance overhead by
 itself, but it is missing conflict detection to be considered a
 full-fledged STM system.  This requires adding \emph{barriers} to the
 program to register the objects in the read or write set before
-reading or writing to them\footnote{Barriers added by an automatic, conservative, and
-local program transformation~\cite{felber07}}.  Furthermore, we still
+reading or writing to them. We do this with an automatic, conservative, and
+local program transformation (cf.~\cite{felber07}).  Furthermore, we still
 need to describe the commit protocol.
 
 \begin{description}
@@ -516,7 +515,7 @@ need to describe the commit protocol.
   approach allows the read barrier to be a single, unconditional
   write into segment-local memory. We only need to \emph{mark} an object
   as read by the current transaction. The mark is stored in a
-  segment-local array indexed by a number derived from the $SO$
+  segment-local array indexed by a number derived from the SO
   of the object.
 
   Unlike other STM systems, the read barrier does not have to find the
@@ -532,10 +531,11 @@ need to describe the commit protocol.
 
   Here, we eagerly detect write-write conflicts by allowing only one
   transaction modifying an object at a time using write
-  locks.\footnote{Eager write-write detection is not inherent to our
-    approach; we may lift this restriction in the future.}  Part of making
-  the object write-ready is also the privatisation of all pages the
-  object belongs to, as described above.
+  locks\footnote{Eager write-write conflict detection is not inherent
+    to our approach; we may lift this restriction in the future if it
+    proves to be useful.}. To make the object write-ready, this is
+  also the place to privatise all pages the object belongs to, as
+  described above.
 
   Described below, we also need a write barrier for our generational
   garbage collector (GC). Interestingly, we are able to share the same
@@ -633,7 +633,7 @@ Programming Interface (API), only \lstinline!stm_allocate()!,
 \lstinline!stm_commit_transaction()!  require saving object
 references.
 
-In the following sections, whenever we use $SO$, we go through the
+In the following sections, whenever we use SO, we go through the
 address translation to get to the actual contents of an object. This
 is also signified by the type \lstinline!object_t!.  This type is
 special as it causes the
@@ -667,12 +667,12 @@ place in a single transaction.
 
 Another issue is the support of
 irreversible operations, like calls to external functions or general
-input~/ output. If we are allowed to, we commit the transaction
-before and start a new one after these operations\footnote{The language
-specification needs to specify if this is allowed.}. Within an atomic
+input~/ output. If Python allows it, we commit the transaction before
+and start a new one after these operations (the same way as the GIL is
+released around thread-safe external functions). Within an atomic
 block, however, the transaction is unbreakable, and we need to turn
-the transaction inevitable so that it
-cannot abort and strong isolation is guaranteed.
+the transaction inevitable so that it cannot abort and strong
+isolation is guaranteed at all times.
 
 
 
@@ -699,7 +699,7 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   segmentation violation when accessed. We use this to detect
   erroneous dereferencing of \lstinline!NULL! references.  All
   $\%gs{::}SO$ translated to linear addresses will point to NULL pages
-  if $SO$ is set to \lstinline!NULL!.
+  if SO is set to \lstinline!NULL!.
 \item [{Segment-local~data:}] Some area private to the segment that
   contains segment-local information for bookkeeping.
 \item [{Read~markers:}] These are private pages that store information about
@@ -707,8 +707,11 @@ Figure~\ref{fig:Segment-Layout} and explained here:
   segment.
 \item [{Nursery:}] This private area contains all the freshly allocated
   objects (\emph{young objects}) of the current transaction. The GC
-  uses bump-pointer allocation in this area to allocate objects in the
-  first generation.
+  uses bump-pointer allocation in this area to allocate objects of the
+  first generation. To make sure that only objects of the current
+  transaction reside in this space, a collection of the first
+  generation happens at the end of every transaction (see
+  section~\ref{sub:gc}).
 \item [{Old~object~space:}] These pages are the ones that are really
   shared between segments. They mostly contain old objects but also
   some young ones that were too big to be allocated in the nursery.
@@ -717,13 +720,13 @@ Figure~\ref{fig:Segment-Layout} and explained here:
 Note, since the above configuration is currently specified at compile time,
 all these areas are at offsets inside the segments known to the
 compiler. This makes some checks very efficient, e.g.\ checking
-if an object resides in the nursery only requires comparing its $SO$
+if an object resides in the nursery only requires comparing its SO
 to the static boundaries of the nursery. It is possible that we want
 some parameters to be configurable at startup or even during the
 runtime. In that case we can still use a compile-time specified
 maximum so that these checks are still efficient. E.g.\ limiting the
 maximum amount of memory available to the application statically to a few
-terabytes is fine because it corresponds to virtual memory,
+terabytes is fine because it corresponds to virtual memory;
 the real physical memory is assigned on-demand by the operating
 system.
 
@@ -759,7 +762,7 @@ page privatisation.
 
 
 
-\subsection{Garbage Collection}
+\subsection{Garbage Collection\label{sub:gc}}
 
 Garbage collection plays a big role in our TM system. The GC is
 generational and has two generations: the \emph{young} and the
@@ -828,7 +831,7 @@ to store it in private pages. The area is called \emph{read markers}
 and already mentioned in Section~\ref{sub:Setup}.
 
 This area can be seen as a continuous, segment-local array of bytes
-that is indexed with an object's reference ($SO$) divided by 16. So
+that is indexed with an object's reference (SO) divided by 16. So
 that each object has its own read marker, all objects have a size of
 at least 16 bytes. Otherwise there could be false conflicts when
 reading from two adjacent objects that share a single marker.
@@ -839,9 +842,9 @@ commit.  Thereby, we can avoid resetting the bytes to
 \lstinline!false!  on commit and only need to do this every 255
 transactions. The whole code for the barrier shown in
 Listing~\ref{lst:rb} is easily optimisable for compilers as well as
-perfectly predictable for CPUs\footnote{Additional benefit: The read
-barrier is not constrained to execute before the actual read -- both
-the compiler and the CPU are free to reorder or group them.}.
+perfectly predictable for CPUs. Additionally, the read barrier is not
+constrained to execute before the actual read -- both the compiler and
+the CPU are free to reorder or group them for efficiency.
 
 \begin{code}[h]
 \begin{lstlisting}
@@ -876,7 +879,7 @@ transactions anyway.
 
 The \textbf{fast path} of the write barrier is very simple. We only
 need to check for the flag \lstinline!WRITE_BARRIER! in the object's
-header through its $SO$ and call the slow path if it is set. This flag
+header through its SO and call the slow path if it is set. This flag
 is set either if the object is old and comes from an earlier
 transaction, or if there was a minor collection (in this case, the flag
 is added again on all objects, including new overflow objects). The flag
@@ -946,7 +949,7 @@ cases of the STM system that need to make old objects writable.
 For the \emph{STM part}, we first perform a read barrier on the
 object. We then try to acquire its write lock. \lstinline!write_locks!
 is a simple, \emph{global} array of bytes that is indexed with the
-$SO$ of the object divided by 16. Note, ``global'' here really means
+SO of the object divided by 16. Note, ``global'' here really means
 it is a single array with data for all segments, there is no address
 translation going on to access its elements contrary to e.g.\ the
 read markers array.  If we already own the lock, we are done.
@@ -961,7 +964,8 @@ privatise the page or pages where it resides (copy-on-write).
 In all cases, we remove the \lstinline!WRITE_BARRIER!  flag from the
 object before we return. Thus, we never trigger the slow path again
 before we do the next minor collection or we start the next
-transaction.\footnote{We always do a minor collection during a commit.}
+transaction (remember: we always perform a minor collection as part of
+each commit anyway).
 
 Note that we have three kinds of objects: \emph{young, overflow} and
 \emph{old} objects. Young and overflow objects were created in the
@@ -995,15 +999,19 @@ back to the location initialised by a \lstinline!setjmp()!  in
 
 Committing a transaction needs a bit more work. First, we synchronise
 all threads so that the committing one is the only one running and all
-the others are waiting in safe points.\footnote{This design choice is
-important to support our very cheap barriers. It is a trade-off that
-works best if the number of concurrent threads is small.
-See section~\ref{subsub:sync} for how we mitigate the costs.}
+the others are waiting in safe points.
 We then go through the write
 set (\lstinline!modified_old_objects!)  and check the corresponding
 \lstinline!read_markers!  in other threads~/ segments. If we detect a
 read-write conflict, we perform contention management to either abort us or
 the other transaction, or to simply wait a bit (see Section~\ref{subsub:contentionmanagement}).
+
+Note that synchronising all threads is an important design choice we
+made to support our very cheap read barriers. Since they now consist
+only of a single unconditional write to some memory location, all
+threads need to be stopped while we detect conflicts. This is a
+trade-off that works best if the number of concurrent threads is
+small.
 
 After verifying that there are no conflicts anymore, we copy all our
 changes (i.e.\ objects in our write set) to all other segments,
@@ -1292,8 +1300,8 @@ would be much further up in the plots. Also, to make jitting
 code worthwhile, we increased the input size of all benchmarks to get
 reasonable execution times (denoted with ``(large)'' in benchmark names).
 
-We also ran these benchmarks on Jython\footnote{version
-2.7b1~\cite{webjython}}, an implementation of Python on top of the
+We also ran these benchmarks on Jython (v2.7b1 from~\cite{webjython}),
+an implementation of Python on top of the
 Java Virtual Machine (JVM).  Instead of a GIL, this interpreter uses
 fine-grained locking for synchronisation. Even though it can use the
 JVM's JIT compiler, its performance in these benchmarks is behind
