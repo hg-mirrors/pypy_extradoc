@@ -1249,10 +1249,11 @@ of threads. They even become slower because of the overhead of
 thread-switching and GIL handling (see~\cite{beazley10} for a detailed
 analysis).
 
-PyPy using our STM system (\emph{pypy-stm-nojit}) scales in all
-benchmarks to a certain degree. It scales best for the embarrassingly
-parallel ones ($avg=2.6\times$ speedup) and a little less for
-the others ($avg=2.0\times$ speedup). The reason for this difference is
+On 4 cores, PyPy using our STM system (\emph{pypy-stm-nojit}) scales
+in all benchmarks to a certain degree. It scales best for the
+embarrassingly parallel ones ($avg=2.6\times$ speedup over 1 thread)
+and a little less for the others ($avg=2.0\times$ speedup over 1
+thread). The reason for this difference is
 that in the former group there are no real, logical conflicts -- all
 threads do independent calculations. STM simply replaces the GIL in
 those programs. In the latter group, the threads work on a common data
@@ -1265,11 +1266,13 @@ benchmarks, we indeed see some speedup going from 1 to 3 threads.
 There is no visible benefit from 3 to 4 threads, even a slight
 regression.
 
-Looking at the average overhead from switching from GIL to STM, we see
-that it is $\approx 43.3\%$. The maximum in richards is $71\%$. In all
-benchmarks \emph{pypy-stm-nojit} beats \emph{pypy-nojit} already on
-two threads despite of this overhead.  The achieved speedup comparing
-STM to the GIL is between $1.14\times$ and $1.94\times$.
+Looking at the average overhead on a single thread that is induced by
+switching from GIL to STM, we see that it is $\approx 43.3\%$. The
+maximum in richards is $71\%$. In all benchmarks \emph{pypy-stm-nojit}
+beats \emph{pypy-nojit} already on two threads, despite of this
+overhead.  The achieved speedup comparing the lowest runtimes of STM
+to the single-threaded GIL execution is between $1.14\times$ and
+$1.94\times$.
 
 Still, STM rarely beats CPython's \emph{single-thread} performance. However, for
 programs that need concurrency in CPython and that use threads to
@@ -1277,9 +1280,8 @@ achieve this, it also makes sense to look at the overhead induced by
 the GIL on multiple threads. From this perspective, the STM
 implementation beats CPython's performance in all but two benchmarks.
 
-Since PyPy comes with a JIT~\cite{cfbolz09} to make its overhead
-compared to CPython go away, we will now look at how well STM works
-together with it.
+Since PyPy comes with a JIT~\cite{cfbolz09} to make it vastly faster
+than CPython, we will now look at how well STM works together with it.
 
 \begin{figure}[h]
   \centering
@@ -1305,7 +1307,7 @@ exposes the overhead of STM more by speeding up all the rest.
 For these reasons, the following results have to be taken with a grain
 of salt.
 
-The speedups from enabling the JIT in these benchmarks range from
+The speedups from simply enabling the JIT in these benchmarks range from
 $10-50\times$. This is why we had to do without CPython here, since it
 would be much further up in the plots. Also, to make jitting
 code worthwhile, we increased the input size of all benchmarks to get
@@ -1322,11 +1324,10 @@ like to do an extensive comparison between the STM approach and
 fine-grained locking. It is out of the scope of this paper to do
 this thoroughly.
 
-The results are presented in Figure~\ref{fig:performance-jit}. We
-see that the performance is much less stable. There is certainly more
-work required in this area. The slowdown factor for switching from GIL
-to STM ranges around $1-2.4\times$, and we beat GIL performance
-in half of the benchmarks.
+The results are presented in Figure~\ref{fig:performance-jit}. We see
+that the performance gains are much less reliable.  The slowdown
+factor for switching from GIL to STM ranges around $1-2.4\times$, and
+we beat the GIL's single-thread performance in half of the benchmarks.
 
 We see that generally, the group of embarrassingly parallel benchmarks
 scales best. (There is a notable performance stability problem in the
