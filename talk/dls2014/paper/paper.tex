@@ -192,10 +192,9 @@ python, virtual machine
 
 \section{Introduction}
 
-
 Dynamic languages like Python, PHP, Ruby, and JavaScript receive a lot
-of attention but have not yet embraced parallelism. A parallel
-programming model was not part of the design of those languages. Thus,
+of attention but only provide limited forms of parallelism. A parallel
+programming model was not part of the initial design of those languages. Thus,
 the reference implementations of, e.g., Python and Ruby use a single,
 global interpreter lock (GIL) to serialise the execution of code in
 threads. The use of a single global lock causes several disadvantages,
@@ -844,7 +843,8 @@ transactions. The whole code for the barrier shown in
 Listing~\ref{lst:rb} is easily optimisable for compilers as well as
 perfectly predictable for CPUs. Additionally, the read barrier is not
 constrained to execute before the actual read -- both the compiler and
-the CPU are free to reorder or group them for efficiency.
+the CPU can reorder or group them freely between potential safe points
+for additional performance.
 
 \begin{code}[h]
 \begin{lstlisting}
