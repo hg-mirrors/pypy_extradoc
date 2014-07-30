@@ -1152,9 +1152,15 @@ iterations before the actual measurement.
 
 \subsection{Scaling}
 
-To asses how well the STM system scales on its own (without any real
-workload), we execute the loop in Listing~\ref{lst:scaling_workload}
-on 1 to 4 threads on the PyPy interpreter with STM.
+To asses how well the STM system in combination with a Python
+interpreter scales on its own (without any real workload), we execute
+the loop in Listing~\ref{lst:scaling_workload} on 1 to 4 threads on
+the PyPy interpreter with STM and without a JIT.  There are very few
+allocations or calculations in this loop, so the main purpose of this
+benchmark is simply to check that there are no inherent conflicts in
+the interpreter when everything is thread-local. We also get some
+idea about how much overhead each additional thread introduces.
+
 
 \begin{code}[h]
 \begin{lstlisting}
@@ -1166,9 +1172,10 @@ def workload():
 \caption{Dummy workload\label{lst:scaling_workload}}
 \end{code}
 
-For the results in Figure~\ref{fig:scaling}, we
+The STM system detected no conflicts when running this code on 4
+threads. For the results in Figure~\ref{fig:scaling}, we
 normalised the average runtimes to the time it took on a single
-thread. From this we see that there is additional overhead introduced
+thread. From this we see that there is some additional overhead introduced
 by each thread ($12.3\%$ for all 4 threads together). Every thread
 adds some overhead because during a commit, there is one more thread
 which has to reach a safe point. Additionally, conflict detection
@@ -1188,7 +1195,11 @@ more iterations per second than a single thread.
 \subsection{Small-Scale Benchmarks\label{sec:performance-bench}}
 
 For the following sections we use a set of six small benchmarks
-available at~\cite{pypybenchs}:
+available at~\cite{pypybenchs}. There are, unsurprisingly, not
+many threaded applications written in Python that can be used
+as a benchmark. Since until now, threading was rarely used
+for performance reasons because of the GIL, we mostly collected
+small demos and wrote our own benchmarks to evaluate our system:
 
 \begin{itemize}
 \item \emph{btree} and \emph{skiplist}, which are both inserting,
