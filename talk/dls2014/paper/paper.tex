@@ -34,6 +34,7 @@
 \floatname{code}{\protect\codename}
 
 
+
 % nice listings
 \usepackage{xcolor}
 \usepackage{newverbs}
@@ -539,8 +540,11 @@ need to describe the commit protocol.
   Described below, we also need a write barrier for our generational
   garbage collector (GC). Interestingly, we are able to share the same
   barrier and flag for both use cases. Since the GC is an integral
-  part of many dynamic languages, we actually do not incur any additional
-  overhead here since the barriers are already there.
+  part of many dynamic languages, we often do not incur additional
+  overhead since the barriers are already there. However, we do need
+  some additional barriers when writing non-references into objects.
+  In that case, generational GCs do not need a barrier but the STM
+  system still does.
 
 \item [{Commit:}] When we want to commit a transaction, we need to check
   for read-write conflicts.  Such conflicts cannot be detected in the
@@ -966,8 +970,11 @@ The close integration between STM and the GC allows us to use this
 information effectively: young objects do not trigger the slow path at
 all, overflow objects only need to be handled by the GC part of the
 write barrier once between collections, and only the old objects need
-to be handled by the STM part \emph{once per transaction}. This keeps the
-overhead of the write barrier very low.
+to be handled by the STM part \emph{once per transaction}. The
+privatisation step in particular is done very rarely because the pages
+stay private until the next major collection where they may get
+re-shared. This keeps the overhead of the write barrier very low in
+the common cases.
 
 
 \subsection{Abort}
@@ -1422,7 +1429,9 @@ applications.
 
 
 % STM needs good performance:
-The solution presented here is based on a software TM system.  As the
+The solution presented here is based on a software TM system developed
+as an independent and reusable C library for integration in dynamic
+language interpreters. As the 
 STM is a vital part of the interpreter, good performance is
 essential. We present an interesting way to combine the existing
 memory segmentation and virtual memory features of current CPUs to
@@ -1558,7 +1567,7 @@ Pascal Felber, Maciej Fijalkowski, Patrick Marlier, and Aristeidis Mastoras.
 
 \bibitem{odaira14}
   Rei Odaira, Jose G. Castanos, and Hisanobu Tomari. 2014. Eliminating
-  global interpreter locks in ruby through hardware transactional
+  global interpreter locks in Ruby through hardware transactional
   memory. In \emph{Proc. 19th ACM SIGPLAN Symposium on
     Principles and Practice of Parallel Programming} (PPoPP '14).
 
