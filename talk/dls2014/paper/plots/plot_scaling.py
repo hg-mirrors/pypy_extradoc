@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # obtained with time on
-#   pypy-c --jit off bench_scaling.py [1-4]
+#   pypy-c-paper-nojit bench_scaling.py [1-4]
 
 
 import matplotlib
@@ -20,10 +20,12 @@ import matplotlib.pyplot as plt
 # import pprint - slow as hell
 
 xs = range(1,5)
-ys = [[1.78,1.79,1.75,1.81,1.76],
-      [1.82,1.82,1.80,1.80,1.8],
-      [1.88,1.97,1.89,1.90,1.94],
-      [1.96,1.99,1.87,2.00,1.97,2.09,1.98,2.12]]
+ys = [
+    [1.77,1.75,1.75,1.74,1.75],
+    [1.75,1.74,1.75,1.76,1.75],
+    [1.80,1.92,1.87,1.88,1.84],
+    [1.90,1.92,1.94,1.88,1.92],
+]
 
 
 
