@@ -252,9 +252,10 @@ for bench_name, interps in benchs.items():
     slowdown = np.mean(interps["pypy-stm-nojit"][0]) / np.mean(interps["pypy-nojit"][0])
     speedup = np.mean(interps["pypy-stm-nojit"][0]) / np.mean(interps["pypy-stm-nojit"][3])
     total = np.mean(interps["pypy-nojit"][0]) / np.mean(interps["pypy-stm-nojit"][3])
-    print "overhead", bench_name, ":", slowdown
-    print "stm speedup", bench_name, ":", speedup
-    print "totals", bench_name, ":", total
+    print "===========",bench_name, "=========="
+    print "overhead STM-GIL", bench_name, ":", slowdown
+    print "stm-own speedup", bench_name, ":", speedup
+    print "total speedup STM over GIL", bench_name, ":", total
     sls.append(slowdown)
     spds.append(speedup)
     totals.append(total)

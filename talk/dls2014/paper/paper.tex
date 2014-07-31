@@ -156,7 +156,7 @@
 
 Since some years, the popularity of dynamic languages is on the rise.
 A common trait of many of these language's implementations is the use of
-a single global interpreter lock (GIL) to synchronise the interpreter
+a single, global interpreter lock (GIL) to synchronise the interpreter
 in a multithreading scenario. Since this lock effectively serialises
 the execution, applications can not make use of the increasing parallelism in
 current hardware.
@@ -197,7 +197,7 @@ of attention but only provide limited forms of parallelism. A parallel
 programming model was not part of the initial design of those languages. Thus,
 the reference implementations of, e.g., Python and Ruby use a single,
 global interpreter lock (GIL) to serialise the execution of code in
-threads. The use of a single global lock causes several disadvantages,
+threads. The use of a single, global lock causes several disadvantages,
 and as multi-core processors become the de facto standard in platforms
 ranging from smart phones to data centres, the issue of parallel
 execution must be addressed by these dynamic languages.
@@ -310,7 +310,7 @@ and expensively.
 We focus on the \emph{threading} approach. This requires us to remove
 the GIL from the interpreter to run code in parallel on multiple
 threads. One approach to this is fine-grained locking instead of a
-single global lock. Jython~\cite{webjython} and
+single, global lock. Jython~\cite{webjython} and
 IronPython~\cite{ironpython} follow this approach. Fine-grained
 locking is, however, not a \emph{direct} replacement for the GIL. It
 requires multiple locks in multiple places, not only in a central
@@ -1134,7 +1134,7 @@ CPU~@3.40GHz (4 cores, 8 threads) with disabled Hyper-Threading and
 Turbo Boost for less variation in the results.  There are 16~GiB of memory
 available and we ran them under Ubuntu 14.04 with a Linux 3.13.0
 kernel. The STM system was compiled with a number of segments $N=4$
-and a maximum amount of memory of 1.5~GiB (both are configurable at
+and a maximum amount of memory of 1.5~GiB (both configured at
 compile time).
 
 For each point in the plots, we took 5 measurements and report the
@@ -1176,14 +1176,14 @@ The STM system detected no conflicts when running this code on 4
 threads. For the results in Figure~\ref{fig:scaling}, we
 normalised the average runtimes to the time it took on a single
 thread. From this we see that there is some additional overhead introduced
-by each thread ($12.3\%$ for all 4 threads together). Every thread
+by each thread ($9.1\%$ for all 4 threads together). Every thread
 adds some overhead because during a commit, there is one more thread
 which has to reach a safe point. Additionally, conflict detection
 needs to check for conflicts in all concurrently running transactions.
 
-While not ideal, we think that $12.3\%$ is acceptable on four
-threads. In terms of throughput, 4 threads have $3.54\times$
-more iterations per second than a single thread.
+While not ideal, we think that $9.1\%$ is acceptable on four
+threads. In terms of throughput, 4 threads reach $3.67\times$
+the iterations per second of a single thread.
 
 \begin{figure}[h]
   \centering
@@ -1194,7 +1194,7 @@ more iterations per second than a single thread.
 
 \subsection{Small-Scale Benchmarks\label{sec:performance-bench}}
 
-For the following sections we use a set of six small benchmarks
+For the following sections we use a set of 8 small benchmarks
 available at~\cite{pypybenchs}. There are, unsurprisingly, not
 many threaded applications written in Python that can be used
 as a benchmark. Since until now, threading was rarely used
@@ -1207,18 +1207,18 @@ small demos and wrote our own benchmarks to evaluate our system:
   threads
 \item \emph{threadworms}, which simulates worms walking on a grid in
   parallel and checking for collisions with each other
-\item \emph{mandelbrot}, \emph{raytrace}, and \emph{richards}, which
-  all perform some independent computations in parallel (embarrassingly
-  parallel)
+\item \emph{miller-rabin}, \emph{mandelbrot}, \emph{raytrace},
+  \emph{richards}, and \emph{mersenne}, which all perform some mostly
+  independent computations in parallel (embarrassingly parallel).
 \end{itemize}
 
-We use atomic blocks to easily synchronise access to shared
-data structures in the first three benchmarks. For the embarrassingly
-parallel benchmarks, we do not need any explicit synchronisation at
-all. These atomic blocks are simulated with a single global lock
-when running on top of GIL-supported interpreters. With our STM
-system, they map to transactions that will execute optimistically
-in parallel.
+We use atomic blocks as the primary mechanism to synchronise access to
+shared data structures in the first three benchmarks. For the
+embarrassingly parallel benchmarks, we only need explicit
+synchronisation in some small isolated part. These atomic blocks are
+simulated with a single, global lock when running on top of
+GIL-supported interpreters. With our STM system, they map to
+transactions that will execute optimistically in parallel.
 
 
 %%% TODO: if time permits
@@ -1250,35 +1250,40 @@ thread-switching and GIL handling (see~\cite{beazley10} for a detailed
 analysis).
 
 On 4 cores, PyPy using our STM system (\emph{pypy-stm-nojit}) scales
-in all benchmarks to a certain degree. It scales best for the
-embarrassingly parallel ones ($avg=2.6\times$ speedup over 1 thread)
-and a little less for the others ($avg=2.0\times$ speedup over 1
-thread). The reason for this difference is
-that in the former group there are no real, logical conflicts -- all
-threads do independent calculations. STM simply replaces the GIL in
-those programs. In the latter group, the threads work on a common data
-structure and therefore create much more conflicts, which limits the
-scalability. Here we make active use of the STM-supported atomic
-blocks to synchronise access to the data structure. The hope
-is that the STM system is still able to parallelise, even if we use
-the atomic blocks in a coarse-grained way. While less than the other
-benchmarks, we indeed see some speedup going from 1 to 3 threads.
-There is no visible benefit from 3 to 4 threads, even a slight
-regression.
+in all benchmarks to a certain degree. \emph{mersenne} is a bit of a
+special case, since it is easily parallelisable but a few of the
+parallel computations dominate the runtime and cannot be made faster
+easily by parallelisation. This is why the benefit of adding more
+threads than 2 is diminishing.
+
+\emph{pypy-stm-nojit} scales best for the embarrassingly parallel
+benchmarks ($avg=2.7\times$ speedup over 1 thread) and a little less
+for the others ($avg=2.5\times$ speedup over 1 thread). The reason for
+this difference is that in the former group there are no real, logical
+conflicts -- all threads do independent calculations. STM simply
+replaces the GIL in those programs. In the latter group, the threads
+work on a common data structure and therefore create much more
+conflicts, which limits the scalability. Here we make active use of
+the STM-supported atomic blocks to synchronise access to the data
+structure. The hope is that the STM system is still able to
+parallelise, even if we use the atomic blocks in a coarse-grained
+way. While less than the other benchmarks, we indeed see some speedup
+going from 1 to 4 threads.
 
 Looking at the average overhead on a single thread that is induced by
-switching from GIL to STM, we see that it is $\approx 43.3\%$. The
-maximum in richards is $71\%$. In all benchmarks \emph{pypy-stm-nojit}
+switching from GIL to STM, we see that it is $\approx 40.1\%$. The
+maximum in richards is $65.5\%$. In all benchmarks \emph{pypy-stm-nojit}
 beats \emph{pypy-nojit} already on two threads, despite of this
-overhead.  The achieved speedup comparing the lowest runtimes of STM
-to the single-threaded GIL execution is between $1.14\times$ and
-$1.94\times$.
+overhead.  The achieved speedup comparing the fastest runtimes of STM
+to the single-threaded GIL execution of \emph{pypy-nojit} is between
+$1.11\times$ and $2.55\times$.
 
-Still, STM rarely beats CPython's \emph{single-thread} performance. However, for
+Still, \emph{pypy-stm-nojit} barely beats CPython's \emph{single-thread}
+performance. However, for
 programs that need concurrency in CPython and that use threads to
 achieve this, it also makes sense to look at the overhead induced by
 the GIL on multiple threads. From this perspective, the STM
-implementation beats CPython's performance in all but two benchmarks.
+implementation beats CPython's performance in all benchmarks.
 
 Since PyPy comes with a JIT~\cite{cfbolz09} to make it vastly faster
 than CPython, we will now look at how well STM works together with it.
@@ -1304,8 +1309,8 @@ advanced optimisations. Because compilation is already non-deterministic,
 so are these optimisations. And third, we did
 not have enough time to optimise integration with STM so that the JIT
 exposes the overhead of STM more by speeding up all the rest.
-For these reasons, the following results have to be taken with a grain
-of salt.
+For these reasons, the following results should be regarded as a
+preliminary outlook.
 
 The speedups from simply enabling the JIT in these benchmarks range from
 $10-50\times$. This is why we had to do without CPython here, since it
@@ -1325,32 +1330,31 @@ fine-grained locking. It is out of the scope of this paper to do
 this thoroughly.
 
 The results are presented in Figure~\ref{fig:performance-jit}. We see
-that the performance gains are much less reliable.  The slowdown
-factor for switching from GIL to STM ranges around $1-2.4\times$, and
-we beat the GIL's single-thread performance in half of the benchmarks.
+that the performance gains of STM are a bit less reliable with the JIT.
+The slowdown factor for switching from GIL to STM ranges around
+$1-2.5\times$, and we beat the GIL's single-thread performance in
+5 out of 8 benchmarks.
 
 We see that generally, the group of embarrassingly parallel benchmarks
-scales best. (There is a notable performance stability problem in the
-\emph{richards} benchmark. This is a bug we will fix in the future.)
-The other three benchmarks scale barely or not at all with the number of
-threads. The reason for this is likely again the conflicts in the
-latter group. Right now, because the code runs much more quickly with
-the JIT than without, it has the effect of making the transactions
-logically longer.  This increases the
-likelihood of conflicts between them and therefore limits scalability
-even more than in the no-JIT benchmarks.
+scales best.  The other three benchmarks scale barely or not at all
+with the number of threads. The reason for this is likely again the
+conflicts in the latter group. Right now, because the code runs much
+more quickly with the JIT than without, it has the effect of making
+the transactions logically longer.  This increases the likelihood of
+conflicts between them and therefore limits scalability even more than
+in the no-JIT benchmarks.
 
-Overall, PyPy without STM is around $2\times$ slower than CPython.
-Enabling its JIT allows it to outperform CPython by a huge margin.
-We see the same kind of speedup on PyPy with STM when enabling the
-JIT. This means that STM does not generally inhibit the JIT from
-optimising the programs execution, which is already a very important
-result on its own. We also see that for some
-benchmarks, STM is already able to give additional speedups
-compared to just the JIT-induced acceleration. This looks very
-promising and investigating when this is not the case is the next
-logical step.
-
+Overall, PyPy without STM is around $2\times$ slower than CPython
+(\emph{cpython} vs.\ \emph{pypy-nojit}).  Enabling its JIT allows it
+to outperform CPython by a huge margin.  We see the same kind of
+speedup on PyPy with STM when enabling the JIT. This means that STM
+does not generally inhibit the JIT from optimising the programs
+execution, which is already a very important result on its own. We
+also see that for some benchmarks, STM is already able to give
+additional speedups compared to just the JIT-induced
+acceleration. This looks very promising and improving this situation
+even more is the next step for reaching the goal of parallelising
+Python.
 
 \begin{figure}[h]
   \centering
@@ -1411,26 +1415,6 @@ are only some superficial similarities between the approach presented
 here and theirs.
 
 
-% Similar STMs:
-% \begin{itemize}
-% \item FastLane: \cite{warmhoff13}
-% \item TML: \cite{spear09}
-% \item Virtualizing HTM: \cite{rajwar05}
-% \item Page-based virtualizing HyTM: \cite{chung06}: page-level conflict
-%   detection, otherwise hardware extensions required; assumes most
-%   transactions fit HTM capacities (not so true here); COW using page-faults;
-%   they assume OS-level access to page-tables (maybe not inherent to their
-%   design); eval on simulator; value-based confl detection;
-
-%  (XTM can be
-%   implemented either in the OS as part of the virtual memory manager or
-%   between underlying TM systems and the OS, like virtual machines;
-%   Conflicts for overflowed transactions are tracked at page granularity;
-%   XTM-e allows conflict detection at cache line granu-
-%   larity, even for overflowed data in virtual memory)
-% \item using mmap(): Memory-Mapped Transactions
-% \item mem-protected conflict detection: \cite{martin09}
-% \end{itemize}
 
 
 \section{Conclusions}
@@ -1471,10 +1455,10 @@ has also been expressed by other researchers (see also
 
 % results, outlook
 The early results presented here are very encouraging. STM as a simple
-GIL replacement scales well and yields an average speedup of $2.6\times$ for
+GIL replacement scales well and yields an average speedup of $2.7\times$ for
 embarrassingly parallel workloads on 4 threads.  When also used for
 synchronisation in the form of atomic blocks, the average speedup
-still reaches $2.0\times$.
+still reaches $2.5\times$.
 
 To generally outperform the best-performing Python systems (Jython,
 PyPy), integration of the STM-based approach with a JIT compiler is
