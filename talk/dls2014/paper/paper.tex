@@ -267,8 +267,8 @@ This paper makes the following contributions:
 \vspace{3mm}               % XXX:HACK:TODO
 \item We integrate the system closely with a garbage collector
   (GC) to lower the overhead of STM.
-\item This new STM system is used to replace the GIL in one
-  implementation of Python and is then evaluated.
+\item This new STM system is used to replace the GIL in a Python
+  interpreter called PyPy and is then evaluated.
 \end{itemize}
 
 The STM described here is efficient and has low overhead and is
@@ -599,11 +599,11 @@ STM_POP_ROOT(object_t *SO)
 \caption{Application programming interface\label{lst:api}}
 \end{code}
 
-Our TM system is designed as a C library that covers all aspects around
-transactions and object memory management. It is designed for
-object-oriented dynamic language VMs as a replacement for the GIL.
-The library exposes the functions in Listing~\ref{lst:api} as its
-interface for use by a dynamic language interpreter.
+Our TM system is designed as a C library~\cite{stmgc-c7} that covers
+all aspects around transactions and object memory management. It is
+designed for object-oriented dynamic language VMs as a replacement for
+the GIL.  The library exposes the functions in Listing~\ref{lst:api}
+as its interface for use by a dynamic language interpreter.
 
 \lstinline!stm_start_transaction()!  starts a transaction in the
 current thread. Internally, it uses \lstinline!setjmp()! to remember
@@ -635,14 +635,13 @@ references.
 In the following sections, whenever we use SO, we go through the
 address translation to get to the actual contents of an object. This
 is also signified by the type \lstinline!object_t!.  This type is
-special as it causes the
-compiler\footnote{We use Clang 3.5 with patches to deal with bugs in
-its ``address-space 256'' feature. Patches are available from authors
-until inclusion into the official clang.} to make all accesses through
-it relative to the $\%gs$ register.  With exceptions, nearly all
-accesses to objects managed by the TM system use this type so
-that the CPU will translate the reference to the right version of the
-object.
+special as it causes the compiler\footnote{We use Clang 3.5 with
+  patches to deal with bugs in its ``address-space 256''
+  feature. Patches are available from authors until inclusion into the
+  official clang~\cite{stmgc-c7}.} to make all accesses through it
+relative to the $\%gs$ register.  With exceptions, nearly all accesses
+to objects managed by the TM system use this type so that the CPU will
+translate the reference to the right version of the object.
 \medskip   % why, Latex, why??
 
 
@@ -1086,7 +1085,7 @@ the problem as well as we can. The general rules are:
 \item prefer transactions that started earlier to younger transactions
   to increase the chance of long transactions succeeding
 \item to support \emph{inevitable} transactions, we always prefer them
-  to others since they cannot abort (similar to~\cite{blundell06})
+  to others since they cannot abort~\cite{blundell06}
 \end{itemize}
 
 We can either simply abort a transaction to let the other one succeed,
@@ -1336,6 +1335,12 @@ The slowdown factor for switching from GIL to STM ranges around
 $1-2.5\times$, and we beat the GIL's single-thread performance in
 5 out of 8 benchmarks.
 
+Again we see that the GIL degrades performance on multiple threads.
+On the other hand, STM gets faster with more threads, or at least
+not much slower. Hence, any application using threads for concurrency
+immediately benefits from running on STM. On 4 threads, its performance
+is better than the GIL's in 7 out of 8 benchmarks by up to $4\times$.
+
 We see that generally, the group of embarrassingly parallel benchmarks
 scales best.  The other three benchmarks scale barely or not at all
 with the number of threads. The reason for this is likely again the
@@ -1365,7 +1370,7 @@ Python.
 \end{figure}
 
 
-
+\vspace{3mm} % formatting hack
 \section{Related Work}
 
 There have been several attempts at removing the GIL using TM. We
@@ -1564,6 +1569,8 @@ Pascal Felber, Maciej Fijalkowski, Patrick Marlier, and Aristeidis Mastoras.
 \bibitem{pypybenchs} PyPy benchmarks repository. 2014. Revision
   fd2da4da8f33. \url{bitbucket.org/pypy/benchmarks}
 
+\bibitem{stmgc-c7} STMGC-C7 library repository. 2014
+  \url{bitbucket.org/pypy/stmgc}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
