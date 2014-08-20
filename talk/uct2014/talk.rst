@@ -11,13 +11,11 @@ What is this talk about?
 * just in time compilation and other innovations
 
 * how virtual machines should be written
-
-* commercial vs open source (???)
-
+  
 Who am I?
 ---------
 
-* Maciej Fijałkowski
+* Maciej Fijalkowski
 
 * PyPy core developer
 
