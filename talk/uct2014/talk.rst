@@ -44,7 +44,7 @@ What makes PyPy different?
 What's RPython?
 ---------------
 
-* implementation language for PyPy (and other projects, topaz, hippyvm, ...)
+* implementation language for PyPy (and other projects: topaz, hippyvm, ...)
 
 * a subset of Python that can be statically compiled
 
@@ -122,7 +122,7 @@ Recap on virtual machines
 
 * don't write virtual machines by hand
 
-* don't write JITs in hand
+  * don't write JITs by hand
 
 * use tools (PyPy/truffle)
 
