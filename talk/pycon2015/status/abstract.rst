@@ -12,3 +12,17 @@ and Python 3 will be covered.
 Abstract
 --------
 
+This talk will cover what has happened in the PyPy world during the last 2
+years :
+
+- Progress in Python 3 support and Numpy support
+
+- Performance improvements
+
+- An attempt to remove the GIL using Software Transactional Memory
+
+- CFFI : The best way to interface with C code on PyPy
+
+- Status of the crowdfunding
+
+- ARM
