@@ -12,7 +12,7 @@ def entry_point(argv):
     except ValueError:
         print "Requires ints"
         return 1
-    print "Added", arg0 + arg1
+    print "Got", adder(arg0, arg1)
     return 0
 
 def target(*args):
