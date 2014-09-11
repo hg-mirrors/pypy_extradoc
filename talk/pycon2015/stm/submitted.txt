@@ -1,0 +1,43 @@
+PyCon 2015 proposal for STM
+===========================
+
+Title
+
+Category
+
+Duration
+
+Description
+...If your talk is accepted this will be made public and printed in the program. Should be one paragraph, maximum 400 characters.
+
+Audience
+...Who is the intended audience for your talk? (Be specific; "Python programmers" is not a good answer to this question.)
+
+Python level
+...Level of audience expertise assumed in Python.
+
+Objectives
+...What will attendees get out of your talk? When they leave the room, what will they know that they didn't know before?
+... Who is the intended audience for your talk? (Be specific; "Python programmers" is not a good answer to this question.)
+... What will attendees get out of your talk? When they leave the room, what will they know that they didn't know before?
+
+Detailed Abstract
+...Detailed description. Will be made public if your talk is accepted.
+... Include links to source code, articles, blog posts, or other writing that adds context to the presentation.
+
+Outline
+... Your outline should be an enumeration of what you intend to say, along with time estimates.
+... It is not necessary to have completely written or planned your talk already, but you should have a basic idea of what the over-arching points you intend to make are, and roughly how long you will spend on each one.
+
+Additional notes
+...Anything else you'd like the program committee to know when making their selection: your past speaking experience, open source community experience, etc.
+... If you've given a talk, tutorial, or other presentation before, especially at an earlier PyCon or another conference, include that information as well as a link to slides or a video if they're available.
+
+Additional requirements
+...Please let us know if you have any specific needs (A/V requirements, multiple microphones, a table, etc). Note for example that 'audio out' is not provided for your computer unless you tell us in advance.
+
+Recording release
+...By submitting your talk proposal, you agree to give permission to the Python Software Foundation to record, edit, and release audio and/or video of your presentation. If you do not agree to this, please uncheck this box. See PyCon 2015 Recording Release for details.
+
+-----------------
+You will be able to edit your proposal after it has been submitted. The program committee may ask questions, provide feedback, and even suggest changes to your proposal as part of the review processes.
