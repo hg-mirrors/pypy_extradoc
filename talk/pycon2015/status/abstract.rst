@@ -11,11 +11,11 @@ Since no PyPy talk happened at PyCon 2014, we would like to present what
 we have achieved during the two years between talks. We would like to cover
 advancements in the PyPy performance landscape, but more importantly how
 we're addresssing the community needs and building the ecosystem. These days
-a lot of libraries that used to bind to C using CPython C API are either
+a lot of libraries that used to bind to C using the CPython C API are either
 using cffi or have alternatives using cffi.
 
 We would also like to walk through a few success stories that we have
-experienced. Unforunately the biggest chunk of PyPy clients are very
+experienced. Unfortunately the biggest chunk of PyPy clients are very
 secretive (e.g. trading companies), but we can still present a few case studies.
 
 XXXX
