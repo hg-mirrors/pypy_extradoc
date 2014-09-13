@@ -47,7 +47,7 @@ Objectives
 ----------
 
 Attendees will get a quick overview about how PyPy-STM manages to
-remove the GIL.  They will also learn about how this approach actually
+remove the GIL.  They will also learn about how this approach
 enables a new way to use multiple cores in their own applications, and
 how it differs from other solutions (which are generally about running
 independent processes).
@@ -76,8 +76,8 @@ them is allowed to proceed; the other "aborts" and restart its work
 from a bit earlier.  (This is conceptually similar to transactions in
 databases, but more transparent.)
 
-The typical application that can benefit is doing some computation on
-all objects in some list, but where many of the computations turn out
+The typical application that can benefit is doing some computations
+based on a number of inputs, where many of the computations turn out
 to be independent.  A lot of applications follow this pattern: for
 example, Twisted-based web servers, handling concurrent connections,
 can often answer different requests in an independent way.  This can
