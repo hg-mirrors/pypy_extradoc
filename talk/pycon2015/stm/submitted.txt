@@ -2,42 +2,124 @@ PyCon 2015 proposal for STM
 ===========================
 
 Title
+-----
+
+PyPy-STM: Using multiple cores in your existing Python programs
+
 
 Category
+--------
+
+???
+
 
 Duration
+--------
+
+30 minutes
+
 
 Description
-...If your talk is accepted this will be made public and printed in the program. Should be one paragraph, maximum 400 characters.
+-----------
+
+PyPy is a fast alternative Python implementation.  Software
+Transactional Memory is a current academic research topic.  Put the two
+together --brew for a few years-- and we get a version of PyPy
+that runs on multiple cores, without the infamous Global Interpreter
+Lock (GIL).  It has been released in 2013 in beta, including
+integration with the Just-in-Time compiler.
+
 
 Audience
-...Who is the intended audience for your talk? (Be specific; "Python programmers" is not a good answer to this question.)
+--------
+
+Regular Python programmers looking for simpler ways to use multiple
+cores; or people looking for the theory behind PyPy-STM.
+
 
 Python level
-...Level of audience expertise assumed in Python.
+------------
+
+Medium
+
 
 Objectives
-...What will attendees get out of your talk? When they leave the room, what will they know that they didn't know before?
-... Who is the intended audience for your talk? (Be specific; "Python programmers" is not a good answer to this question.)
-... What will attendees get out of your talk? When they leave the room, what will they know that they didn't know before?
+----------
+
+Attendees will get a quick overview about how PyPy-STM manages to
+remove the GIL.  They will also learn about how this approach actually
+enables a new way to use multiple cores in their own applications, and
+how it differs from other solutions (which are generally about running
+independent processes).
+
 
 Detailed Abstract
-...Detailed description. Will be made public if your talk is accepted.
-... Include links to source code, articles, blog posts, or other writing that adds context to the presentation.
+-----------------
+
+PyPy-STM is, in one sentence, a special version of PyPy that runs on
+multiple cores without the infamous Global Interpreter Lock (GIL).
+Unlike CPython or the regular PyPy, your multithreaded CPU-intensive
+programs will run using multiple cores.  Assuming that you have any
+such program.
+
+Look closer, though, and see that PyPy-STM is not actually *removing*
+the GIL.  It is instead using STM --Software Transactional Memory-- to
+try to run several threads in parallel even though they all acquire
+the same lock.  This lock can be the GIL, or it can be a custom lock.
+So PyPy-STM gives naturally a new way to use multiple cores, where
+race conditions and other pitfalls of multithreaded programming are
+almost absent: run multiple threads, but run them all using
+coarse-grained locking, with only one lock.  PyPy-STM actually
+executes such threads in parallel, as long as they modify independent
+data.  In case of an actual "conflict" between two threads, one of
+them is allowed to proceed; the other "aborts" and restart its work
+from a bit earlier.  (This is conceptually similar to transactions in
+databases, but more transparent.)
+
+The typical application that can benefit is doing some computation on
+all objects in some list, but where many of the computations turn out
+to be independent.  A lot of applications follow this pattern: for
+example, Twisted-based web servers, handling concurrent connections,
+can often answer different requests in an independent way.  This can
+be written by extending the core of Twisted to add a pool of threads.
+The actual Twisted programs remain unchanged: they need not be aware
+of the multiple threads, because they are all protected by the same
+lock.  Logically, they are serialized; in practice, with PyPy-STM,
+they often run in parallel.
+
+How does PyPy-STM actually work?  The 10000-feet view is to give to
+each thread its own copy of the memory, where it sees and updates its
+own version, or "view", of the objects.  Changes that are "committed"
+by a transaction are eventually propagated into the other threads'
+views.  The main trick on top of that is the OS's support for viewing
+the same physical page of memory at multiple address.  This allows the
+views to share most of their pages with each other.
+
+As of July 2013, the performance is that PyPy-STM is around 40% slower
+than a regular PyPy on one thread, but scales nicely.  Running an
+application on two threads already is more than enough to regain that
+loss.  So far, our target is around 4 threads; right now, performance
+degrades if you try to run more threads, but we are working on
+improving this as well.
+
+For more details and the current status, follow STM on the PyPy blog:
+http://morepypy.blogspot.com/search/label/stm
+
 
 Outline
-... Your outline should be an enumeration of what you intend to say, along with time estimates.
-... It is not necessary to have completely written or planned your talk already, but you should have a basic idea of what the over-arching points you intend to make are, and roughly how long you will spend on each one.
+-------
+
+1. Intro (5 min): PyPy, STM
+
+2. User Programming model (15 min): using multithreads with coarse locking;
+   examples of applications; how to structure them best for PyPy-STM
+   
+3. How things work under the cover (5 min): overview.
+
+4. Questions (5 min).
+
 
 Additional notes
-...Anything else you'd like the program committee to know when making their selection: your past speaking experience, open source community experience, etc.
-... If you've given a talk, tutorial, or other presentation before, especially at an earlier PyCon or another conference, include that information as well as a link to slides or a video if they're available.
+----------------
 
-Additional requirements
-...Please let us know if you have any specific needs (A/V requirements, multiple microphones, a table, etc). Note for example that 'audio out' is not provided for your computer unless you tell us in advance.
-
-Recording release
-...By submitting your talk proposal, you agree to give permission to the Python Software Foundation to record, edit, and release audio and/or video of your presentation. If you do not agree to this, please uncheck this box. See PyCon 2015 Recording Release for details.
-
------------------
-You will be able to edit your proposal after it has been submitted. The program committee may ask questions, provide feedback, and even suggest changes to your proposal as part of the review processes.
+Long-time PyPy speaker at numerous conferences (PyCon, EuroPython, etc.)
