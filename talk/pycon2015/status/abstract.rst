@@ -1,5 +1,19 @@
+Pycon 2015 proposal for PyPy status
+
+Title
+-----
+
 PyPy - the last 2 years of progress
-===================================
+
+Category
+--------
+
+Implementations, Virtual Machines
+
+Duration
+--------
+
+30min
 
 Description (one paragraph, 400 chars max)
 ------------------------------------------
@@ -8,6 +22,24 @@ This talk describes what happened in the PyPy ecosystem in the last 2 years, a
 timeframe in which PyPy has been successfully deployed multiple times while
 yielding interesting performance improvements and a timeframe in which more
 libraries started being compatible with PyPy through the use of cffi.
+
+Audience
+--------
+
+Regular Python programmers interested in performance,
+looking to learn more about PyPy. No virtual machine knowledge necessary
+
+Python level
+------------
+
+Medium
+
+Objectives
+----------
+
+We want to explain what we have done during the two years between our talks
+at Pycon and how we expanded PyPy community and the ability to use PyPy
+in various contexts.
 
 Detailed Abstract
 -----------------
@@ -29,4 +61,14 @@ We would also like to walk through a few success stories that we have
 experienced. Unfortunately the biggest chunk of PyPy clients are very
 secretive (e.g. trading companies), but we can still present a few case studies.
 
-XXXX
+Outline
+-------
+
+It's really hard to come up with the outline given the time to Pycon. We'll
+definitely talk about cffi and the community, but the exact extend
+will be decided later.
+
+Additional notes
+----------------
+
+Long-time PyPy speaker at numerous conferences (PyCon, EuroPython, etc.)
