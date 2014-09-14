@@ -72,3 +72,10 @@ Additional notes
 ----------------
 
 Long-time PyPy speaker at numerous conferences (PyCon, EuroPython, etc.)
+
+While this is "state of the project" talk, which is explicitely mentioned as
+"don't" in the talk guildelines, the PyPy talk at pycon has been
+always very well attended. We also believe that enough has happened in the past
+two years to move PyPy from a mostly interesting project to something
+that people are actually using in production in various interesting
+deployments.
