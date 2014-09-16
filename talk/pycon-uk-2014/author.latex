@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy Status]{PyPy Status\\\small{(no, PyPy is not dead)}}
+\author[antocuni]
+{Antonio Cuni}
+
+\institute{PyCon Cinque}
+\date{May 24, 2014}
