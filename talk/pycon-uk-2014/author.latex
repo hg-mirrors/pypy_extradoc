@@ -1,8 +1,8 @@
 \definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
 
-\title[PyPy Status]{PyPy Status\\\small{(no, PyPy is not dead)}}
-\author[antocuni]
-{Antonio Cuni}
+\title{PyPy and its ecosystem}
+\author[Ronan Lamy]{Ronan Lamy\\
+\includegraphics[width=80px]{../img/py-web-new.png}}
 
-\institute{PyCon Cinque}
-\date{May 24, 2014}
+\institute{Pycon UK}
+\date{19 September 2014}

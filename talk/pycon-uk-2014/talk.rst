@@ -1,106 +1,53 @@
 .. include:: beamerdefs.txt
 
-================================
-PyPy Status
-================================
+===========================
+PyPy and its ecosystem
+===========================
 
 About me
 ---------
 
 - PyPy core dev
 
-- ``pdb++``, ``fancycompleter``, ...
+- Working on HippyVM
 
-- Consultant, trainer
-
-- http://antocuni.eu
-
-
-PyPy is not dead
-----------------
-
-- No PyPy status talk at EuroPython 2013
-
-  * for the first time since 2004!
-
-  * for no good reason :)
-
-- PyPy is healthy and alive
-
-|pause|
-
-- WARNING: This talk is boring
-
-  * "it just works"
 
 What is PyPy?
 --------------
 
-* RPython toolchain
+- "PyPy is a fast, compliant alternative implementation of the Python language (2.7.8 and 3.2.5)."
 
-  - subset of Python
+- Python interpreter
 
-  - ideal for writing VMs
+  * written in RPython
 
-  - JIT & GC for free
-
-* Python interpreter
-
-  - written in RPython
-
-  - **FAST**
-
-* Whatever (dynamic) language you want
-
-  - smalltalk, prolog, PHP, javascript, ...
+  * **FAST**
 
 
-PyPy: past two years (1)
------------------------------
+What is RPython?
+----------------
 
-- PyPy 2.0 (May 2013)
+- Subset of Python
 
-  * beta ARM, CFFI, unicode performance
+  * easy to read
 
-  * stackless + JIT (eventlet, gevent, ...)
+  * easy to test
 
-|pause|
+- JIT & GC for free
 
-- PyPy 2.1 (July 2013)
-
-  * stable ARM
-
-  * py3k (3.2.3), numpy, general improvements, bugfixes
-
-|pause|
-
-- PyPy 2.2 (November 2013)
-
-  * incremental GC, faster JSON
-
-  * more JIT, more py3k
-
-  * more numpy, numpy C API
+- General framework for dynamic languages
 
 
-PyPy: past two years (2)
+RPython-powered languages
 -------------------------
 
-- PyPy 2.3 (May 2014)
+- **PyPy**
 
-- Lot of internal refactoring
+- HippyVM: implementing PHP
 
-- C API for embedding
+  * ~7x faster than standard PHP
 
-  * pypy + uWSGI (thanks to Roberto De Ioris)
-
-- the usual, boring, general improvements
-
-
-More PyPy-powered languages
-----------------------------
-
-- RPython: general framework for dynamic languages
+  * http://hippyvm.com/
 
 - Topaz: implementing Ruby
 
@@ -110,28 +57,152 @@ More PyPy-powered languages
 
   * https://github.com/topazproject/topaz
 
-- HippyVM: implementing PHP
+- Pyrolog (Prolog)
 
-  * ~7x faster than standard PHP
+- RTruffleSOM (Smalltalk)
 
-  * http://hippyvm.com/
+- RSqueakVM (Smalltalk)
+
+- lang-js (JavaScript)
 
 
+RPython translation stages
+--------------------------
 
-Fundraising campaign
----------------------
+- (R)Python code
 
-- py3k: 50'852 $ of 105'000 $ (48.4%)
+|pause|
 
-- numpy: 48'121 $ of 60'000 $ (80.2%)
+- ``import``
 
-- STM, 1st call: 25'000 $
+  * Python objects (functions, classes, ...)
 
-- STM, 2nd call: 2'097 $ of 80'000 $ (2.6%)
+|pause|
 
-  * more on STM later
+- Bytecode analysis, type inference
 
-- thank to all donors!
+  * Typed control flow graph
+
+|pause|
+
+- Translator transformations
+
+  * Add GC & JIT
+
+|pause|
+
+- Code generation
+
+  * C code
+
+|pause|
+
+- ``gcc``
+
+  * Compiled executable
+
+
+How does the JIT work?
+----------------------
+
+|pause|
+
+- "Jitcode": very low-level byte code
+
+  * Translates to machine code
+
+- Translation time
+
+  * Add jitcode representation to RPython functions
+
+- Run-time:
+
+  * Detect **hot** loop
+
+  * Trace one code path through the loop
+
+  * Compile (magic!)
+
+  * Profit!
+
+
+RPython example (HippyVM)
+-------------------------
+
+|scriptsize|
+
+.. code:: python
+
+    @wrap(['space', str, W_Root, Optional(int)])
+    def strpos(space, haystack, w_needle, offset=0):
+        """Find the position of the first occurrence of a substring in a string."""
+        if offset < 0 or offset > len(haystack):
+            space.ec.warn("strpos(): Offset not contained in string")
+            return space.w_False
+        try:
+            needle = unwrap_needle(space, w_needle)
+        except ValidationError as exc:
+            space.ec.warn("strpos(): " + exc.msg)
+            return space.w_False
+        if len(needle) == 0:
+            space.ec.warn("strpos(): Empty needle")
+            return space.w_False
+
+        result = haystack.find(needle, offset)
+
+        if result == -1:
+            return space.w_False
+        return space.newint(result)
+
+|end_scriptsize|
+
+PyPy: past two years (1)
+-----------------------------
+
+- PyPy 2.0 (May 2013)
+
+  * Beta ARM, CFFI, unicode performance
+
+  * stackless + JIT (eventlet, gevent, ...)
+
+|pause|
+
+- PyPy 2.1 (July 2013)
+
+  * Stable ARM
+
+  * py3k (3.2.3), numpy, general improvements, bugfixes
+
+|pause|
+
+- PyPy 2.2 (November 2013)
+
+  * Incremental GC, faster JSON
+
+  * More JIT, more py3k
+
+  * More numpy, numpy C API
+
+
+PyPy: past two years (2)
+-------------------------
+
+- PyPy 2.3 (May 2014)
+
+  * Lot of internal refactoring
+
+  * C API for embedding
+
+  * General improvements
+
+|pause|
+
+- PyPy 2.4 (coming soon!)
+
+  * Python 2.7.8 stdlib
+
+  * General fixes and improvements 
+
 
 Current status
 ---------------
@@ -171,25 +242,9 @@ ARM
 
 - ~7.5x faster than CPython on ARM
 
-- thanks to Raspberry-Pi foundation
+- Thanks to Raspberry-Pi foundation
 
-- distributed as part of Raspbian OS
-
-
-numpy
------
-
-- as usual, in-progress
-
-- ~80% of numpy implemented
-
-  * 2336 passing tests out of 3265
-
-  * http://buildbot.pypy.org/numpy-status/latest.html
-
-- just try it
-
-- no scipy :-/
+- Distributed as part of Raspbian OS
 
 
 py3k
@@ -199,7 +254,7 @@ py3k
 
 - 3.3: branch started, in-progress
 
-- some missing optimizations
+- Some missing optimizations
 
   * getting better
 
@@ -218,6 +273,22 @@ CFFI
 - Alternative to C-API, ctypes, Cython, etc.
 
 - Fast on CPython, super-fast on PyPy
+
+
+numpy
+-----
+
+- As usual, in-progress
+
+- ~80% of numpy implemented
+
+  * 2336 passing tests out of 3265
+
+  * http://buildbot.pypy.org/numpy-status/latest.html
+
+- Just try it
+
+- No scipy :-/
 
 
 cppyy
@@ -303,7 +374,7 @@ Race conditions
 
 - With atomic blocks
 
-  * ==> Rollaback
+  * ==> Rollback
 
   * Performance penalty
 
@@ -315,7 +386,7 @@ Race conditions
 Implementation
 ---------------
 
-- Conflicts detection, commit and rollaback is costly
+- Conflicts detection, commit and rollback is costly
 
 - Original goal (2011): 2x-5x slower than PyPy without STM
 
@@ -339,6 +410,20 @@ Current status
 - Lots of polishing needed
 
 
+Fundraising campaign
+---------------------
+
+- py3k: 52,380 $ of 105,000 $ (49.9%)
+
+- numpy: 48,412 $ of 60,000 $ (80.7%)
+
+- STM, 1st call: 25,000 $
+
+- STM, 2nd call: 13,939 $ of 80,000 $ (17.4%)
+
+- Thanks to all donors!
+
+
 Contacts, Q&A
 --------------
 
@@ -346,13 +431,6 @@ Contacts, Q&A
 
 - http://morepypy.blogspot.com/
 
-- twitter: @antocuni
-
-- Available for consultancy & training:
-
-  * http://antocuni.eu
-
-  * info@antocuni.eu
+- IRC: #pypy@freenode.net
 
 - Any question?
-
