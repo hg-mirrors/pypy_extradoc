@@ -23,6 +23,18 @@ What is PyPy?
 
   * **FAST**
 
+How does RPython work?
+----------------------
+
+.. image:: how-rpython.png
+
+.. raw:: latex
+
+    {\tiny
+
+Altered from http://abstrusegoose.com/secretarchives/under-the-hood - CC BY-NC 3.0 US 
+
+|>|
 
 What is RPython?
 ----------------
@@ -103,11 +115,24 @@ RPython translation stages
 
   * Compiled executable
 
-
 How does the JIT work?
 ----------------------
 
 |pause|
+
+.. image:: how-jit.png
+
+.. raw:: latex
+
+    {\tiny
+
+Altered from http://abstrusegoose.com/secretarchives/under-the-hood - CC BY-NC 3.0 US 
+
+|>|
+
+
+How does the JIT work?
+----------------------
 
 - "Jitcode": very low-level byte code
 
@@ -216,6 +241,20 @@ JITting strpos()
 
 |end_scriptsize|
 
+How does PyPy work?
+----------------------
+
+.. image:: how-pypy.png
+
+.. raw:: latex
+
+    {\tiny
+
+Altered from http://abstrusegoose.com/secretarchives/under-the-hood - CC BY-NC 3.0 US 
+
+|>|
+
+
 PyPy: past two years (1)
 -----------------------------
 
@@ -298,6 +337,17 @@ ARM
 
 - Distributed as part of Raspbian OS
 
+jitviewer
+---------
+
+- Python code: "it just works"
+
+  * but is it fast?
+
+- jitviewer: find out what the JIT does
+
+  * http://bitbucket.org/pypy/jitviewer
+
 
 Compiled extensions
 -------------------
@@ -343,7 +393,7 @@ CFFI
 |example<| Simple example |>|
 |scriptsize|
 
-.. code:: python
+.. sourcecode:: python
 
     >>> from cffi import FFI
     >>> ffi = FFI()
@@ -364,13 +414,17 @@ CFFI
 numpy
 -----
 
-- In-progress
+- Core inside PyPy
+
+- The rest at http://bitbucket.org/pypy/numpy
 
 - ~80% of numpy implemented
 
   * 2415 passing tests out of 3265
 
-- Just try it
+- In progress, just try it
+
+- No Python 3 support
 
 - No scipy :-/
 
