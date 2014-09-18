@@ -1,7 +1,7 @@
 .. include:: beamerdefs.txt
 
 ===========================
-PyPy and its ecosystem
+XXXFAKETITLE
 ===========================
 
 About me
@@ -43,19 +43,21 @@ RPython-powered languages
 
 - **PyPy**
 
+|pause|
+
 - HippyVM: implementing PHP
 
   * ~7x faster than standard PHP
 
   * http://hippyvm.com/
 
+|pause|
+
 - Topaz: implementing Ruby
 
-  * most of the language implemented
-
-  * "definitely faster than MRI"
-
   * https://github.com/topazproject/topaz
+
+|pause|
 
 - Pyrolog (Prolog)
 
@@ -122,6 +124,8 @@ How does the JIT work?
   * Trace one code path through the loop
 
   * Compile (magic!)
+    
+    - with guards to ensure correctness
 
   * Profit!
 
@@ -131,7 +135,7 @@ RPython example (HippyVM)
 
 |scriptsize|
 
-.. code:: python
+.. sourcecode:: python
 
     @wrap(['space', str, W_Root, Optional(int)])
     def strpos(space, haystack, w_needle, offset=0):
@@ -153,6 +157,62 @@ RPython example (HippyVM)
         if result == -1:
             return space.w_False
         return space.newint(result)
+
+|end_scriptsize|
+
+
+JITting strpos()
+----------------
+
+|example<| strpos_jit.php |>|
+
+|scriptsize|
+
+.. sourcecode:: php
+
+  <?php
+  function compute($n) {
+      $sum = 0;
+      for ($i=0; $i < 100000; $i++) {
+          $sum += strpos($i, '1');
+      }
+      return $sum;
+  }
+
+  echo compute(100000) . "\n";
+  ?>
+
+|end_scriptsize|
+
+|end_example|
+
+JITting strpos()
+----------------
+
+|scriptsize|
+
+.. parsed-literal::
+
+  label(p0, p1, p3, p7, i48, i52, p33, p26, descr=TargetToken(140099127632144))
+  i57 = int_eq(i52, 100000)
+  guard_false(i57, descr=<Guard0x7f6b5ebd5a60>) [p1, p0, i52, p3, p7, i48]
+  i58 = int_lt(i52, 100000)
+  guard_true(i58, descr=<Guard0x7f6b5ebd59f0>) [p1, p0, p3, p7, i52, i48]
+  guard_not_invalidated(descr=<Guard0x7f6b5ebd5980>) [p1, p0, p3, p7, p33, i52, i48]
+  **p59 = call(ConstClass(ll_str__IntegerR_SignedConst_Signed), i52, descr=<Callr 8 i EF=3>)**
+  guard_no_exception(descr=<Guard0x7f6b5ebd5910>) [p1, p0, p59, p3, p7, p33, i52, i48]
+  i60 = strlen(p59)
+  **i61 = call(ConstClass(ll_find_char__rpy_stringPtr_Char_Signed_Signed), p59, 49, 0, i60, descr=<Calli 8 riii EF=0>)**
+  i62 = int_eq(i61, -1)
+  guard_false(i62, descr=<Guard0x7f6b5ebd58a0>) [p1, p0, i61, p3, p7, p33, i52, i48]
+  i63 = int_add_ovf(i48, i61)
+  guard_no_overflow(descr=<Guard0x7f6b5ebd5830>) [p1, p0, i63, i61, i48, p3, p7, p33, i52, None]
+  i64 = int_add(i52, 1)
+  i65 = getfield_raw(24210432, descr=<FieldS pypysig_long_struct.c_value 0>)
+  i66 = int_lt(i65, 0)
+  guard_false(i66, descr=<Guard0x7f6b5ebd57c0>) [p1, p0, p3, p7, i63, i64, None, None, None]
+  i67 = arraylen_gc(p26, descr=<ArrayU 1>)
+  jump(p0, p1, p3, p7, i63, i64, p33, p26, descr=TargetToken(140099127632144))
 
 |end_scriptsize|
 
@@ -209,21 +269,13 @@ Current status
 
 - Python code: "it just works"
 
-- C code: better than ever!
+- 2.7: very stable
 
-  * cpyext: more complete, but still slow
+- 3.2: stable
 
-  * CFFI: the future
+  * Some missing optimizations
 
-  * Native PyPy C API for embedding
-
-  * cppyy for C++
-
-- Lots of CFFI modules around:
-
-  * pygame_cffi, psycopg2_cffi, lxml
-
-- numpy: in-progress (more later)
+- 3.3: in-progress
 
 
 Speed: 6.3x faster than CPython
@@ -247,16 +299,22 @@ ARM
 - Distributed as part of Raspbian OS
 
 
-py3k
-----
+Compiled extensions
+-------------------
 
-- 3.2: stable
+- cpyext: incomplete, slow
 
-- 3.3: branch started, in-progress
+- ctypes: inconvenient, slow
 
-- Some missing optimizations
+- "Don't write your own C, PyPy is fast enough"
 
-  * getting better
+|pause|
+
+- Native PyPy C API for embedding
+
+- CFFI: the future
+
+- numpy: in-progress (more later)
 
 
 CFFI
@@ -264,50 +322,57 @@ CFFI
 
 - Python <-> C interfacing done right
 
+  * Inspired by LuaJIT's FFI
+
   * existing shared libraries
 
   * custom C code
-
-- Inspired by LuaJIT's FFI
 
 - Alternative to C-API, ctypes, Cython, etc.
 
 - Fast on CPython, super-fast on PyPy
 
+- Lots of CFFI modules around:
+
+  * pygame_cffi, psycopg2_cffi, lxml, cryptography, pyzmq, ...
+
+
+CFFI
+--------------------
+
+|example<| Simple example |>|
+|scriptsize|
+
+.. code:: python
+
+    >>> from cffi import FFI
+    >>> ffi = FFI()
+    >>> ffi.cdef("""
+    ...     int printf(const char *format, ...);   // from man page
+    ... """)
+    >>> C = ffi.dlopen(None)              # loads whole C namespace
+    >>> arg = ffi.new("char[]", "world")  # char arg[] = "world";
+    >>> C.printf("hi there, %s!\n", arg)  # call printf()
+    hi there, world!
+
+|end_scriptsize|
+|end_example|
+
+- Docs: http://cffi.readthedocs.org
+
 
 numpy
 -----
 
-- As usual, in-progress
+- In-progress
 
 - ~80% of numpy implemented
 
-  * 2336 passing tests out of 3265
-
-  * http://buildbot.pypy.org/numpy-status/latest.html
+  * 2415 passing tests out of 3265
 
 - Just try it
 
 - No scipy :-/
-
-
-cppyy
-------
-
-- Interface to C++
-
-- Based on reflection, no need to write wrappers
-
-- PyPy-only, similar to PyCintex for CPython
-
-- Main use case: ROOT
-
-  * http://root.cern.ch
-
-  * "a set of OO frameworks with all the functionality needed to handle and
-    analyze large amounts of data in a very efficient way"
-
-- 3x faster than CPython
 
 
 The future: STM
@@ -315,97 +380,51 @@ The future: STM
 
 - Software Transactional Memory
 
-- Strategy to solve race conditions
-
-- "Finger crossed", rollback in case of conflicts
+- "Easier parallelism for everybody"
 
 - On-going research project
 
   * by Armin Rigo and Remi Meier
 
-STM semantics
--------------
+Transactional Memory
+--------------------
 
-- N threads
+* like GIL, but instead of blocking, each thread runs optimistically
 
-- Each thread split into atomic blocks
+* "easy" to implement:
 
-- Sequential execution in some arbitrary order
+  - GIL acquire -> transaction start
 
-- In practice:
+  - GIL release -> transaction commit
 
-- Parallel execution, conflicts solved by STM
+* overhead: cross-checking conflicting memory reads and writes,
+  and if necessary, cancel and restart transactions
 
 
-Unit of execution (1)
----------------------
-
-- Atomic blocks == 1 Python bytecode
-
-- Threads are executed in arbitrary order, but bytecodes are atomic
-
-- ==> Same semantics as GIL
-
-- "and this will solve the GIL problem" (A. Rigo, EuroPython 2011 lighting talk)
-
-Unit of execution (2)
-----------------------
+Longer transactions
+-------------------
 
 - Larger atomic blocks
 
-- ``with atomic:``
+- threads and application-level locks still needed...
 
-- Much easier to use than explicit locks
+- but *can be very coarse:*
+
+  - two transactions can optimistically run in parallel
+
+  - even if they both *acquire and release the same lock*
 
 - Can be hidden by libraries to provide even higher level paradigms
 
   * e.g.: Twisted apps made parallel out of the box
 
-Race conditions
----------------
 
-- They don't magically disappear
-
-- With explicit locks
-
-  * ==> BOOM
-
-  * you fix bugs by preventing race conditions
-
-- With atomic blocks
-
-  * ==> Rollback
-
-  * Performance penalty
-
-  * You optimize by preventing race conditions
-
-- Fast&broken vs. Slower&correct
-
-
-Implementation
----------------
-
-- Conflicts detection, commit and rollback is costly
-
-- Original goal (2011): 2x-5x slower than PyPy without STM
-
-  * But parallelizable!
-
-|pause|
-
-- Current goal (2014): 25% slower than PyPy without STM
-
-- Yes, that's 10x less overhead than original goal
-
-- mmap black magic
-
-Current status
----------------
+STM status
+----------
 
 - Preliminary versions of pypy-jit-stm available
 
-- The JIT overhead is still a bit too high
+- Best case 25-40% overhead (much better than originally planned)
 
 - Lots of polishing needed
 
@@ -417,9 +436,11 @@ Fundraising campaign
 
 - numpy: 48,412 $ of 60,000 $ (80.7%)
 
-- STM, 1st call: 25,000 $
+- STM (2nd call): 13,939 $ of 80,000 $ (17.4%)
 
-- STM, 2nd call: 13,939 $ of 80,000 $ (17.4%)
+- General PyPy progress
+
+- **September only**: PSF matches donations
 
 - Thanks to all donors!
 
@@ -429,8 +450,8 @@ Contacts, Q&A
 
 - http://pypy.org
 
-- http://morepypy.blogspot.com/
+- Commercial support: http://baroquesoftware.com
 
-- IRC: #pypy@freenode.net
+- IRC: ``#pypy`` on freenode.net
 
 - Any question?
