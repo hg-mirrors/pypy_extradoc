@@ -36,7 +36,7 @@ HippyVM status
 
 * cgi, fastcgi (not open source)
 
-* quick
+* quick    XXX do you mean 'fast'?  but next slide already says 'fast'
 
 HippyVM status - short
 ----------------------
