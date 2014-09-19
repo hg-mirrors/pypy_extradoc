@@ -4,24 +4,10 @@
 XXXFAKETITLE
 ===========================
 
-About me
----------
-
-- PyPy core dev
-
-- Working on HippyVM
-
-
 What is PyPy?
 --------------
 
 - "PyPy is a fast, compliant alternative implementation of the Python language (2.7.8 and 3.2.5)."
-
-- Python interpreter
-
-  * written in RPython
-
-  * **FAST**
 
 How does RPython work?
 ----------------------
@@ -39,45 +25,19 @@ Altered from http://abstrusegoose.com/secretarchives/under-the-hood - CC BY-NC 3
 What is RPython?
 ----------------
 
-- Subset of Python
+- General framework for dynamic languages
+
+- RPython: a subset of Python
 
   * easy to read
 
   * easy to test
 
-- JIT & GC for free
+- RPython toolchain
 
-- General framework for dynamic languages
+  * Translates RPython code to C
 
-
-RPython-powered languages
--------------------------
-
-- **PyPy**
-
-|pause|
-
-- HippyVM: implementing PHP
-
-  * ~7x faster than standard PHP
-
-  * http://hippyvm.com/
-
-|pause|
-
-- Topaz: implementing Ruby
-
-  * https://github.com/topazproject/topaz
-
-|pause|
-
-- Pyrolog (Prolog)
-
-- RTruffleSOM (Smalltalk)
-
-- RSqueakVM (Smalltalk)
-
-- lang-js (JavaScript)
+  * Just-in-time compiler (JIT) & garbage collector (GC) for free
 
 
 RPython translation stages
@@ -85,31 +45,21 @@ RPython translation stages
 
 - (R)Python code
 
-|pause|
-
 - ``import``
 
   * Python objects (functions, classes, ...)
-
-|pause|
 
 - Bytecode analysis, type inference
 
   * Typed control flow graph
 
-|pause|
-
 - Translator transformations
 
-  * Add GC & JIT
-
-|pause|
+  * Add GC & **JIT**
 
 - Code generation
 
   * C code
-
-|pause|
 
 - ``gcc``
 
@@ -149,10 +99,40 @@ How does the JIT work?
   * Trace one code path through the loop
 
   * Compile (magic!)
-    
+
     - with guards to ensure correctness
 
   * Profit!
+
+
+RPython-powered languages
+-------------------------
+
+- **PyPy**
+
+|pause|
+
+- HippyVM: implementing PHP
+
+  * ~7x faster than standard PHP
+
+  * http://hippyvm.com/
+
+|pause|
+
+- Topaz: implementing Ruby
+
+  * https://github.com/topazproject/topaz
+
+|pause|
+
+- Pyrolog (Prolog)
+
+- RTruffleSOM (Smalltalk)
+
+- RSqueakVM (Smalltalk)
+
+- lang-js (JavaScript)
 
 
 RPython example (HippyVM)
@@ -360,9 +340,11 @@ Compiled extensions
 
 |pause|
 
-- Native PyPy C API for embedding
-
 - CFFI: the future
+
+|pause|
+
+- Native PyPy C API for embedding
 
 - numpy: in-progress (more later)
 
