@@ -12,6 +12,17 @@ Who am I?
 
 * founder of baroquesoftware.com
 
+This talk
+---------
+
+* hippyvm project
+
+* performance and measurments
+
+* history
+
+* questions after each part
+
 HippyVM
 -------
 
@@ -32,11 +43,11 @@ HippyVM status
 
 * misses a lot of builtin functions
 
-* can kind of "run" wordpress, mediawiki, getting there
+* can kind of "run" wordpress, mediawiki, squirrelmail, getting there
 
 * cgi, fastcgi (not open source)
 
-* quick    XXX do you mean 'fast'?  but next slide already says 'fast'
+* fast
 
 HippyVM status - short
 ----------------------
@@ -44,6 +55,16 @@ HippyVM status - short
 * fast, compliant
 
 * not quite ready
+
+HippyVM - Python bridge
+-----------------------
+
+* demo
+
+HippyVM - questions
+-------------------
+
+* ?
 
 Let's talk about performance
 ----------------------------
@@ -55,6 +76,17 @@ Let's talk about performance
 |pause|
 
 * "I'll use a recursive fibonacci function"
+
+Performance - breakdown
+-----------------------
+
+* user code
+
+* runtime
+
+* IO, DB, ... - libraries and ecosystem
+
+* non-trivial interactions between the pieces
 
 Performance
 -----------
@@ -113,6 +145,13 @@ Current HippyVM performance
 
 * consider bottlenecks differ depending on implementation
 
+Good benchmarking - example
+---------------------------
+
+* speed.pypy.org
+
+* I strongly encourage people to come up with the same for PHP
+
 Performance - personal opinions
 -------------------------------
 
@@ -149,12 +188,58 @@ PyPy
 
 * fully Open Source, EU funded project
 
-PyPy history
-------------
+Let's go back 10 years
+----------------------
 
-xxxx
+* Python is (like PHP) a very complex language
 
-HippyVM history
----------------
+* writing an interpreter is hard
 
-xxxx
+* writing a just-in-time compiler is even harder
+
+* we decided to write a framework instead
+
+A typical example
+-----------------
+
+* interpreter, written in C++
+
+* just in time compiler that repeats the semantics, written in C++,
+  emits assembler
+
+* another layer, e.g. a method JIT
+
+|pause|
+
+* becomes harder and harder to keep up with semantics
+
+PyPy approach
+-------------
+
+* write an interpreter in machine-readable language
+
+* just in time compiler gets generated from the description
+
+* a lot of work once, but prevents a lot of problems
+
+How well it works?
+------------------
+
+* HippyVM - 4 people, 1.5 years
+
+* HHVM - 5 years, team of up to 20
+
+|pause|
+
+* a lot of effort is reusable
+
+* Truffle is another example of a similar approach
+
+Questions?
+----------
+
+* hippyvm.com
+
+* baroquesoftware.com
+
+* talk to me!
