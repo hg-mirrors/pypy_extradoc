@@ -1,27 +1,27 @@
+.. include:: ../default/beamerdefs.txt
+
 HippyVM - yet another attempt at PHP performance
-------------------------------------------------
+================================================
 
 Who am I?
 ---------
 
 * Maciej Fijalkowski
 
-* PyPy developer for about 8 years
+* PyPy core developer for about 8 years
 
-* main author of hippyvm
+* main author of HippyVM
 
 * founder of baroquesoftware.com
 
 This talk
 ---------
 
-* hippyvm project
+* HippyVM project
 
 * performance and measurments
 
-* history
-
-* questions after each part
+* a bit about PyPy, HippyVM and performance oriented virtual machines
 
 HippyVM
 -------
@@ -30,7 +30,7 @@ HippyVM
 
 |pause|
 
-* has a just in time compiler, which makes it fast
+* has a **just in time compiler**, which makes it fast
 
 |pause|
 
@@ -39,7 +39,7 @@ HippyVM
 HippyVM status
 --------------
 
-* runs a lot of PHP test suite
+* runs a lot of PHP test suite (over half)
 
 * misses a lot of builtin functions
 
@@ -47,7 +47,18 @@ HippyVM status
 
 * cgi, fastcgi (not open source)
 
-* fast
+* performance oriented
+
+HippyVM demo
+------------
+
+* famous fibonacci
+
+* fannkuch
+
+* richards
+
+* bigger stuff\*
 
 HippyVM status - short
 ----------------------
@@ -60,11 +71,6 @@ HippyVM - Python bridge
 -----------------------
 
 * demo
-
-HippyVM - questions
--------------------
-
-* ?
 
 Let's talk about performance
 ----------------------------
@@ -88,6 +94,10 @@ Performance - breakdown
 
 * non-trivial interactions between the pieces
 
+|pause|
+
+* I can't guess
+
 Performance
 -----------
 
@@ -105,6 +115,50 @@ Performance - let's try science
 * compare them
 
 * don't use a single number
+
+Bad benchmarking - example 1
+----------------------------
+
+* benchmarks game
+
+* limited set of benchmarks
+
+* limited set of bottlenecks
+
+* relentlessly optimized
+
+Bad benchmarking - example 2
+----------------------------
+
+* pystone
+
+* the idea - measure time consumed by each operation
+
+* should give you the idea how the program will operate
+
+|pause|
+
+* it's wrong
+
+Why it's wrong?
+---------------
+
+* the interaction is non-trivial
+
+* e.g. garbage collection
+
+* Python 2.6 vs 2.7, "minor" improvement in the GC
+
+* PyPy translation toolchain takes 1h instead of 3h
+
+Good benchmarking - example
+---------------------------
+
+* speed.pypy.org
+
+* a decent set of small medium and large benchmarks
+
+* I strongly encourage people to come up with the same for PHP
 
 PHP performance
 ---------------
@@ -145,26 +199,33 @@ Current HippyVM performance
 
 * consider bottlenecks differ depending on implementation
 
-Good benchmarking - example
----------------------------
+PHP performance problems
+------------------------
 
-* speed.pypy.org
+* low performance of the reference implementation
 
-* I strongly encourage people to come up with the same for PHP
+* relative immaturity of more advanced implementations
+
+* reload all the code creates problems
+
+|pause|
+
+* the language quirks can be worked around
+
+|pause|
+
+* in my opinion, dynamism, etc. does not matter
 
 Performance - personal opinions
 -------------------------------
 
 * the language should be easy **for a programmer**
 
+* we, as a PyPy team, never discuss language design
+
 * the language implementation can be complex
 
 * libraries, patterns and the ecosystem matter for anything non-trivial
-
-Performance - questions
------------------------
-
-* ?
 
 HippyVM history
 ---------------
@@ -199,12 +260,53 @@ Let's go back 10 years
 
 * we decided to write a framework instead
 
-A typical example
------------------
+Just in time compiler?
+----------------------
 
-* interpreter, written in C++
+* "lower level" languages, like C, have compilers that turn C into assembler
 
-* just in time compiler that repeats the semantics, written in C++,
+* "higher level" have interpreters that run a virtual machine
+
+* just in time is a hybrid - run in an interpreter,
+  compile to assembler on the fly
+
+Why not a compiler?
+-------------------
+
+* "Just compile X to Lisp/C/JavaScript, it'll be fast!"
+
+|pause|
+
+* mismatch in semantics
+
+* hard-to-prove edge cases
+
+* ends up not being that fast
+
+Just in time - benefits
+-----------------------
+
+* you can choose what to compile
+
+* you can ignore the edge cases (but have a way to deoptimize)
+
+* guesses are a lot easier
+
+* a lot of things fall in naturally, e.g. late imports
+
+A simple example
+----------------
+
+* an interpreter written in C/C++
+
+* e.g. CPython, Zend PHP, MRI Ruby, ...
+
+A typical more advanced example
+-------------------------------
+
+* interpreter, written in C/C++
+
+* just in time compiler that repeats the semantics, written in C/C++,
   emits assembler
 
 * another layer, e.g. a method JIT
@@ -213,10 +315,12 @@ A typical example
 
 * becomes harder and harder to keep up with semantics
 
+* examples: V8, HHVM, \*monkey
+
 PyPy approach
 -------------
 
-* write an interpreter in machine-readable language
+* write an interpreter in a machine-readable language
 
 * just in time compiler gets generated from the description
 
@@ -234,6 +338,15 @@ How well it works?
 * a lot of effort is reusable
 
 * Truffle is another example of a similar approach
+
+HippyVM - future
+----------------
+
+* find more funding
+
+* run open source projects efficiently
+
+* develop a benchmark suite
 
 Questions?
 ----------
