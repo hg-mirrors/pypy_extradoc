@@ -10,4 +10,5 @@ available from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo           20/10-2X/10    with fijal?
+Romain Guillebert    19/10-26-10    ???
 ==================== ============== =======================
