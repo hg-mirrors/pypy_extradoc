@@ -9,7 +9,8 @@ available from them.
 ==================== ============== =======================
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
-Armin Rigo           20/10-2X/10    with fijal?
+Armin Rigo           20/10-2X/10    with fijal
+Maciej Fijalkowski   20/10-30/10    private
 Romain Guillebert    19/10-26-10    ???
 Manuel Jacob         20/10-26/10    ? (shared hotel room?)
 Kostia Lopuhin
