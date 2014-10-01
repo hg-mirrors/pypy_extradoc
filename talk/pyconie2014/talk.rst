@@ -1,4 +1,4 @@
-.. include:: beamerdefs.tx
+.. include:: beamerdefs.txt
 
 PyPy : A fast Python Virtual Machine
 ====================================
@@ -73,4 +73,52 @@ How
 
 - If the type of the object is different from the type in the trace, go back to the interpreter : "guard failure"
 
-- If a guard fails too many times, optimize the trace for the other types frequently encountered
+- If a guard fails too many times, generate traces for the other types frequently encountered
+
+Compatibility
+-------------
+
+- Fully compatible with CPython 2.7 & 3.2 (minus bugs & implementation specific features)
+
+- Partial and slow support of the C-API
+
+- Alternatives might exist
+
+Ecosystem
+---------
+
+- Just my opinion
+
+- We should move away from the C-API
+
+  * Makes assumptions on refcounting, object layout, the GIL
+
+  * The future of Python is bound to the future of CPython (a more than 20 years old interpreter)
+
+  * It's hard for a new Python VM without C extension support to get traction (not only PyPy)
+
+- This doesn't mean we should lose Python's ability to interface with C easily
+
+CFFI
+----
+
+- Where do we go from here ?
+
+- CFFI is a fairly new way of interacting with C in an implementation independant way
+
+- Very fast on PyPy
+
+- Decently fast on CPython
+
+- The Jython project is working on fast support
+
+CFFI
+----
+
+- More convenient, safer, faster than ctypes
+
+- Python functions can be exposed to C easily
+
+- Already used by pyopenssl, psycopg2cffi, pygame_cffi, lxml_cffi
+
+- Other tools could be built on top of it (Cython cffi backend ?)
