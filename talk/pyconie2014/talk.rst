@@ -44,7 +44,7 @@ Speed
 
 - Removes overhead when unnecessary
 
-- But these Python features remain available (pdb)
+- But Python features which need require overhead remain available (frame introspection, pdb)
 
 RPython
 -------
@@ -67,29 +67,38 @@ Demo
 How
 ---
 
+- Generates linear traces from loops
+
+- Specializes traces on types
+
 - Removes boxing, integer objects become machine integers
 
-- Specializes trace on types, helps speed-up method lookup
-
-- If the type of the object is different from the type in the trace, go back to the interpreter : "guard failure"
+- If the type of the object is different from the type in the trace being executed, go back to the interpreter : "guard failure"
 
 - If a guard fails too many times, generate traces for the other types frequently encountered
 
 Compatibility
 -------------
 
-- Fully compatible with CPython 2.7 & 3.2 (minus bugs & implementation specific features)
+- Fully compatible with CPython 2.7 & 3.2 (minus implementation details)
 
 - Partial and slow support of the C-API
 
 - Alternatives might exist
 
+Future
+------
+
+- More Python 3
+
+- NumPyPy
+
+- STM
+
 Ecosystem
 ---------
 
-- Just my opinion
-
-- We should move away from the C-API
+- We should (slowly, incrementally) move away from the C extension API
 
   * Makes assumptions on refcounting, object layout, the GIL
 
@@ -99,8 +108,10 @@ Ecosystem
 
 - This doesn't mean we should lose Python's ability to interface with C easily
 
-CFFI
-----
+- CFFI is the PyPy team's attempt at solving this
+
+CFFI (1/2)
+----------
 
 - Where do we go from here ?
 
@@ -110,15 +121,22 @@ CFFI
 
 - Decently fast on CPython
 
-- The Jython project is working on fast support
+- The Jython project is working on support
 
-CFFI
-----
+CFFI (2/2)
+----------
 
 - More convenient, safer, faster than ctypes
 
-- Python functions can be exposed to C easily
+- Can call C functions easily, API and ABI mode
+
+- Python functions can be exposed to C
 
 - Already used by pyopenssl, psycopg2cffi, pygame_cffi, lxml_cffi
 
 - Other tools could be built on top of it (Cython cffi backend ?)
+
+Questions
+---------
+
+- Questions ?
