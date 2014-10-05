@@ -86,15 +86,6 @@ Compatibility
 
 - Alternatives might exist
 
-Future
-------
-
-- More Python 3
-
-- NumPyPy
-
-- STM
-
 Ecosystem
 ---------
 
@@ -135,6 +126,17 @@ CFFI (2/2)
 - Already used by pyopenssl, psycopg2cffi, pygame_cffi, lxml_cffi
 
 - Other tools could be built on top of it (Cython cffi backend ?)
+
+Future
+------
+
+- Python 3.3
+
+- NumPyPy
+
+- STM
+
+- You can donate to help the progress of these features : pypy.org
 
 Questions
 ---------
