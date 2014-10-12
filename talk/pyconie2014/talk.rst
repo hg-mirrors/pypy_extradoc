@@ -14,8 +14,6 @@ Me
 
 - Software consultant (hire me !)
 
-- Feel free to interrupt
-
 Introduction
 ------------
 
@@ -40,42 +38,28 @@ Speed
 
 - Automatically generated tracing just-in-time compiler
 
+- Generates linear traces from loops
+
 - Generates efficient machine code based on runtime observations
 
 - Removes overhead when unnecessary
 
 - But Python features which need require overhead remain available (frame introspection, pdb)
 
-RPython
--------
+Performance ?
+-------------
 
-- Subset of Python
+- Things get done faster
 
-- Made for writting virtual machines
+- Lower latency
 
-- Takes care of garbage collection and JIT compilation
-
-- A VM written in RPython doesn't have to know about the garbage collector
-
-- Minimal help from the VM is needed in order to have an efficient JIT (a few annotations)
+- Less servers for the same performance
 
 Demo
 ----
 
 - Real-time edge detection
 
-How
----
-
-- Generates linear traces from loops
-
-- Specializes traces on types
-
-- Removes boxing, integer objects become machine integers
-
-- If the type of the object is different from the type in the trace being executed, go back to the interpreter : "guard failure"
-
-- If a guard fails too many times, generate traces for the other types frequently encountered
 
 Compatibility
 -------------
@@ -126,6 +110,37 @@ CFFI (2/2)
 - Already used by pyopenssl, psycopg2cffi, pygame_cffi, lxml_cffi
 
 - Other tools could be built on top of it (Cython cffi backend ?)
+
+Success stories
+---------------
+
+    "Magnetic is the leader in online search retargeting, with a large, high volume, performance-critical platform written in Python. [...] 
+
+    The Magnetic bidders were ported from CPython to PyPy, yielding an overall 30% performance gain."
+
+- Julian Berman
+
+  magnetic.com
+
+Success stories
+---------------
+
+    Currently we have improvements in raw performance (read: response times) that span from 8% to a pretty interesting 40%, but we have a peak of an astonishing 100-120% and even more.
+
+    Take into the account that most of our apps are simple "blocking-on-db" ones, so a 2x increase is literally money.
+
+- Roberto De Ioris
+
+  Unbit
+
+Success stories
+---------------
+
+    In addition to this our main (almost secret) objective was reducing resource usage of the application servers, which directly translates to being able to host more customers on the same server.
+
+- Roberto De Ioris
+
+  Unbit
 
 Future
 ------
