@@ -114,9 +114,9 @@ CFFI (2/2)
 Success stories
 ---------------
 
-    "Magnetic is the leader in online search retargeting, with a large, high volume, performance-critical platform written in Python. [...] 
+    Magnetic is the leader in online search retargeting, with a large, high volume, performance-critical platform written in Python. [...] 
 
-    The Magnetic bidders were ported from CPython to PyPy, yielding an overall 30% performance gain."
+    The Magnetic bidders were ported from CPython to PyPy, yielding an overall 30% performance gain.
 
 - Julian Berman
 
