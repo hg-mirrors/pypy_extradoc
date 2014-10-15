@@ -113,13 +113,13 @@ Status
 Fundraising Campaign
 ---------------------
 
-- py3k: 52'000 $ of 105'000 $ (50%)
+- py3k: 55'000 $ of 105'000 $ (52%)
 
 - numpy: 48'000 $ of 60'000 $ (80%)
 
-- STM, 1st call: 25'000 $
+- STM, 1st call: 38'000 $
 
-- STM, 2nd call: 16'000 $ of 80'000 $ (20%)
+- STM, 2nd call: 17'000 $ of 80'000 $ (22%)
 
 - Thanks to all donors!
 
