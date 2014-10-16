@@ -7,7 +7,7 @@ PyPy
 Who We Are
 ----------
 
-* Maciej Fijałkovski
+* Maciej Fijałkowski
 
 * Armin Rigo
 
@@ -78,16 +78,34 @@ CFFI
 
   * custom C code
 
-- Inspired by LuaJIT's FFI
-
 - Alternative to the CPython Extension API, ctypes, Cython, etc.
 
 - Fast-ish on CPython, super-fast on PyPy, Jython support in the future
 
-STM
-----------------------
+- Simple, does not try to be magic
 
-- See later
+CFFI
+----
+
+.. image:: standards.png
+   :scale: 50%
+   :align: center
+
+CFFI demo
+---------
+
+CFFI idea
+---------
+
+* C and Python are enough, we don't need an extra language
+
+* C is well defined, let's avoid magic
+
+* all the logic (and magic!) can be done in Python
+
+* API vs ABI
+
+* Inspired by LuaJIT's FFI
 
 Status
 -----------------------------
@@ -104,11 +122,11 @@ Status
 
   * cppyy for C++
 
-  * A very small native PyPy C API for embedding
+  * A very small native PyPy C API for embedding, WIP
 
 - Lots of CFFI modules around:
 
-  * pygame_cffi, psycopg2cffi, lxml...
+  * pyopenssl, pygame_cffi, psycopg2cffi, lxml...
 
 Fundraising Campaign
 ---------------------
@@ -237,6 +255,20 @@ STM (4)
 STM (Demo)
 ----------
 
+
+Plans for the future (1)
+------------------------
+
+* warmup improvements
+
+XXX ....
+
+Plans for the future (2)
+------------------------
+
+* numpy
+
+* scipy, matplotlib, the entire ecosystem
 
 Contacts, Q&A
 --------------
