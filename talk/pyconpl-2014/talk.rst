@@ -56,7 +56,52 @@ Between PyPy 2.0 (May 2013) and PyPy 2.4 (now):
 
 * Numpy more complete (but still not done)
 
-  - also, no scipy
+Status
+-----------------------------
+
+- Python code "just works"
+
+  * generally much faster than with CPython
+
+- C code: improving support
+
+  * cpyext: tries to load CPython C extension modules, slowly
+
+  * CFFI: the future
+
+  * cppyy for C++
+
+  * A very small native PyPy C API for embedding, WIP
+
+- Lots of CFFI modules around:
+
+  * pyopenssl, pygame_cffi, psycopg2cffi, lxml...
+
+Fundraising Campaign
+---------------------
+
+- py3k: 55'000 $ of 105'000 $ (52%)
+
+- numpy: 48'000 $ of 60'000 $ (80%)
+
+- STM, 1st call: 38'000 $
+
+- STM, 2nd call: 17'000 $ of 80'000 $ (22%)
+
+- Thanks to all donors!
+
+Commercial support
+------------------
+
+- We offer commercial support for PyPy
+
+- Consultancy and training
+
+- Performance issues for open- or closed-source programs, porting,
+  improving support in parts of the Python or non-Python interpreters,
+  etc.
+
+- http://baroquesoftware.com
 
 Recent developments (2)
 --------------------------------
@@ -106,86 +151,6 @@ CFFI idea
 * API vs ABI
 
 * Inspired by LuaJIT's FFI
-
-Status
------------------------------
-
-- Python code "just works"
-
-  * generally much faster than with CPython
-
-- C code: improving support
-
-  * cpyext: tries to load CPython C extension modules, slowly
-
-  * CFFI: the future
-
-  * cppyy for C++
-
-  * A very small native PyPy C API for embedding, WIP
-
-- Lots of CFFI modules around:
-
-  * pyopenssl, pygame_cffi, psycopg2cffi, lxml...
-
-Fundraising Campaign
----------------------
-
-- py3k: 55'000 $ of 105'000 $ (52%)
-
-- numpy: 48'000 $ of 60'000 $ (80%)
-
-- STM, 1st call: 38'000 $
-
-- STM, 2nd call: 17'000 $ of 80'000 $ (22%)
-
-- Thanks to all donors!
-
-Commercial support
-------------------
-
-- We offer commercial support for PyPy
-
-- Consultancy and training
-
-- Performance issues for open- or closed-source programs, porting,
-  improving support in parts of the Python or non-Python interpreters,
-  etc.
-
-- http://baroquesoftware.com
-
-PyPy and RPython
----------------------------
-
-* PyPy is an interpreter/JIT-compiled for Python
-
-* PyPy is written in RPython
-
-* RPython is a language for writing interpreters:
-  it provides GC-for-free, JIT-for-free, etc.
-
-* Ideal for writing VMs for dynamic languages
-
-More PyPy-Powered Languages
-----------------------------
-
-- Topaz: implementing Ruby
-
-  * most of the language implemented
-
-  * "definitely faster than MRI"
-
-  * https://github.com/topazproject/topaz
-
-- HippyVM: implementing PHP
-
-  * ~7x faster than standard PHP
-
-  * comparable speed as HHVM
-
-  * http://hippyvm.com/
-
-- And more
 
 Work in Progress: STM
 ---------------------
@@ -254,6 +219,39 @@ STM (4)
 
 STM (Demo)
 ----------
+
+PyPy and RPython
+---------------------------
+
+* PyPy is an interpreter/JIT-compiled for Python
+
+* PyPy is written in RPython
+
+* RPython is a language for writing interpreters:
+  it provides GC-for-free, JIT-for-free, etc.
+
+* Ideal for writing VMs for dynamic languages
+
+More PyPy-Powered Languages
+----------------------------
+
+- Topaz: implementing Ruby
+
+  * most of the language implemented
+
+  * "definitely faster than MRI"
+
+  * https://github.com/topazproject/topaz
+
+- HippyVM: implementing PHP
+
+  * ~7x faster than standard PHP
+
+  * comparable speed as HHVM
+
+  * http://hippyvm.com/
+
+- And more
 
 Future
 ------

@@ -2,8 +2,9 @@
 
 \title[PyPy]{PyPy}
 \author[arigo, fijal]
-{Armin Rigo, Maciej Fijałkovski\\
-\includegraphics[width=80px]{../img/py-web-new.png}}
-
+{Armin Rigo, Maciej Fijałkowski\\
+\includegraphics[width=80px]{../img/py-web-new.png}
+\hspace{1em}
+\includegraphics[width=80px]{../img/baroquesoftware.png}}
 \institute{PyCon PL}
 \date{October 2014}
