@@ -29,6 +29,7 @@ Benchmarks
 
 .. image:: speed.png
    :scale: 44%
+   :align: center
 
 Demo
 --------------------------------
