@@ -255,20 +255,36 @@ STM (4)
 STM (Demo)
 ----------
 
+Future
+------
 
-Plans for the future (1)
-------------------------
+* future is hard to predict
+
+* continue working on general improvements
+
+* improved IO performance in the pipeline
 
 * warmup improvements
 
-XXX ....
-
-Plans for the future (2)
-------------------------
-
 * numpy
 
-* scipy, matplotlib, the entire ecosystem
+Warmup improvements
+-------------------
+
+* biggest complain - slow to warmup, memory hog
+
+* we have ideas how to improve the situation
+
+* still looking for funding
+
+Numpy
+-----
+
+* numpy is mostly complete
+
+* performance can be improved, especially the vectorized versions
+
+* scipy, matplotlib, the entire ecosystem, we have a hackish idea
 
 Contacts, Q&A
 --------------
