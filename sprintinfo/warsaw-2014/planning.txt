@@ -1,0 +1,36 @@
+Topics
+======
+
+* cffi.verify dlopen flag (Romain)
+
+* PyPy/CPython Bridge (Romain)
+
+* Pandas on PyPy (Romain, Kostia)
+
+* Profiler (Antonio, Maciej?)
+
+* Merge improve-docs (Manuel)
+
+* Merge kill-multimethod remove-remaining-smm  (Manuel)
+
+* STM presentation (Everybody)
+
+* Refactor annotator/rtyper (Ronan)
+
+* Python 3.3 (Valentina, Manuel)
+
+* Jitviewer redesign discussion
+
+* Everything (Armin)
+
+People
+======
+
+Antonio
+Armin
+Kostia
+Ronan
+Valentina
+Romain
+Manuel
+Maciej (not here yet)

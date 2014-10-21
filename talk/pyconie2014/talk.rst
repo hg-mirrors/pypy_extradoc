@@ -44,12 +44,14 @@ Speed
 
 - Removes overhead when unnecessary
 
-- But Python features which need require overhead remain available (frame introspection, pdb)
+- But Python features which require overhead remain available (frame introspection, pdb)
 
 Performance ?
 -------------
 
 - Things get done faster
+
+- Serve more requests per second
 
 - Lower latency
 
@@ -141,6 +143,15 @@ Success stories
 - Roberto De Ioris
 
   Unbit
+
+Success stories
+---------------
+
+    PyPy is an excellent choice for every pure Python project that depends on speed of execution of readable and maintainable large source code.
+    [...]
+    We had roughly a 2x speedup with PyPy over CPython.
+
+- Marko Tasic (Web and Data processing)
 
 Future
 ------
