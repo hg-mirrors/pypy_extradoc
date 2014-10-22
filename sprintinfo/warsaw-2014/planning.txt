@@ -1,36 +1,38 @@
 Topics
-======
+=====
 
-* cffi.verify dlopen flag (Romain)
+* cffi.verify dlopen flag - TO BE MERGED
 
-* PyPy/CPython Bridge (Romain)
+* PyPy/CPython Bridge (Romain, kostia) - IN PROGRESS
 
-* Pandas on PyPy (Romain, Kostia)
+* Profiler (Antonio, Maciej?) - IN PROGRESS
 
-* Profiler (Antonio, Maciej?)
+* Merge improve-docs (Manuel, Ronan)
 
-* Merge improve-docs (Manuel)
-
-* Merge kill-multimethod remove-remaining-smm  (Manuel)
+* Merge kill-multimethod remove-remaining-smm  (Manuel, Antonio)
 
 * STM presentation (Everybody)
 
 * Refactor annotator/rtyper (Ronan)
 
-* Python 3.3 (Valentina, Manuel)
+* Python 3.3 - IN PROGRESS
 
 * Jitviewer redesign discussion
 
 * Everything (Armin)
 
+* getting stuff run on pypy (antonin, fijal)
+
+* look into merging gc pinning (fijal, arigo)
+
 People
-======
+=====
 
 Antonio
 Armin
 Kostia
 Ronan
-Valentina
 Romain
 Manuel
-Maciej (not here yet)
+Maciej
+Antonin
