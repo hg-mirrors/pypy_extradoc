@@ -1,3 +1,5 @@
+.. include:: ../beamerdefs.txt
+
 ---------------------
 How to benchmark code
 ---------------------
@@ -5,7 +7,11 @@ How to benchmark code
 Who are we?
 ------------
 
-xxx
+* Maciej Fijalkowski, Armin Rigo
+
+* working on PyPy
+
+* interested in performance
 
 What is this talk is about?
 ---------------------------
@@ -76,3 +82,82 @@ Problems
 |pause|
 
 * not ideal at all
+
+Writing benchmarks - typical approach
+-------------------------------------
+
+* write a set of small programs that exercise one particular thing
+
+  * recursive fibonacci
+
+  * pybench
+
+PyBench
+-------
+
+* used to be a tool to compare python implementations
+
+* only uses microbenchmarks
+
+* assumes operation times are concatenative
+
+Problems
+--------
+
+* a lot of effects are not concatenative
+
+* optimizations often collapse consecutive operations
+
+* large scale effects only show up on large programs
+
+An example
+----------
+
+* python 2.6 vs python 2.7 had minimal performance changes
+
+* somewhere in the changelog, there is a gc change mentioned
+
+* it made pypy translation toolchain jump from 3h to 1h
+
+* it's "impossible" to write a microbenchmarks for this
+
+More problems
+-------------
+
+* half of the blog posts comparing VM performance uses recursive fibonacci
+
+* most of the others use computer language shootout
+
+PyPy benchmark suite
+--------------------
+
+* programs from small to medium and large
+
+* 50 LOC to 100k LOC
+
+* try to exercise various parts of language (but e.g. lack IO)
+
+Solutions
+---------
+
+* measure what you are really interested in
+
+* derive microbenchmarks from your bottlenecks
+
+* be skeptical
+
+* understand what you're measuring
+
+Q&A
+---
+
+- http://pypy.org/
+
+- http://morepypy.blogspot.com/
+
+- http://baroquesoftware.com/
+
+- ``#pypy`` at freenode.net
+
+- Any question?
+

@@ -1,7 +1,11 @@
 
 import time
 import numpy
-from matplotlib import pylab
+try:
+    from matplotlib import pylab
+except:
+    from embed.emb import import_mod
+    pylab = import_mod('matplotlib.pylab')
 
 def fib(n):
     if n == 0 or n == 1:
@@ -21,7 +25,7 @@ for i in xrange(1000):
 
 hist, bins = numpy.histogram(times, 20)
 #pylab.plot(bins[:-1], hist)
-pylab.ylim(ymin=0, ymax=max(times) * 1.2)
-pylab.plot(times)
+pylab.ylim(0, max(times) * 1.2)
+pylab.plot(numpy.array(times))
 #pylab.hist(hist, bins, histtype='bar')
 pylab.show()
