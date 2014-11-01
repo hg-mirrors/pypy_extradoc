@@ -1,25 +1,22 @@
 Tornado without a GIL on PyPy STM
 =================================
 
-Python has a GIL, right? Not quite - PyPy STM is a Python implementation
+Python has a GIL, right? Not quite - PyPy STM is a python implementation
 without a GIL, so it can scale CPU-bound work to several cores.
-More than that, it proposes an easier to reason about model
-that is not based on threads (although you can use threads too).
 PyPy STM is developed by Armin Rigo and Remi Meier,
 and supported by community `donations <http://pypy.org/tmdonate2.html>`_.
 You can read more about it in the
 `docs <http://pypy.readthedocs.org/en/latest/stm.html>`_.
 
 Although PyPy STM is still a work in progress, in many cases it can already
-run CPU-bound code faster than regular PyPy when using multiple cores.
+run CPU-bound code faster than regular PyPy, when using multiple cores.
 Here we will see how to slightly modify Tornado IO loop to use
 `transaction <https://bitbucket.org/pypy/pypy/raw/stmgc-c7/lib_pypy/transaction.py>`_
 module.
 This module is `descibed <http://pypy.readthedocs.org/en/latest/stm.html#atomic-sections-transactions-etc-a-better-way-to-write-parallel-programs>`_
-in the docs and is really simple to use if you have several things to do where
-you do not care about the order they are run, as long as they
-are run separately. So an event loop of Tornado, or any other asynchronous
-framework, looks a bit like this (with some simplifications)::
+in the docs and is really simple to use - please see an example there.
+An event loop of Tornado, or any other asynchronous
+web server, looks like this (with some simplifications)::
 
     while True:
         for callback in list(self._callbacks):
@@ -32,10 +29,10 @@ framework, looks a bit like this (with some simplifications)::
             self._handle_event(fd, handler, events)
 
 We get IO events, and run handlers for all of them, these handlers can
-also register new callbacks, which we run too. Then using such a framework,
-it is very nice to have a garanty that all things are run serially,
-so you do not have to put any locks. So this is an ideal case for the
-transaction module - it gives us garanties that things appear
+also register new callbacks, which we run too. When using such a framework,
+it is very nice to have a guaranty that all handlers are run serially,
+so you do not have to put any locks. This is an ideal case for the
+transaction module - it gives us guaranties that things appear
 to be run serially, so in user code we do not need any locks. We just
 need to change the code above to something like::
 
@@ -96,12 +93,11 @@ to analyse this log. It lists the most expensive conflicts::
         self._start_time = time.time()
     File "/home/ubuntu/tornado-stm/tornado/tornado/httpserver.py", line 455, in __init__
         self._start_time = time.time()
-
     ...
 
 There are only three kinds of conflicts, they are described in
 `stm source <https://bitbucket.org/pypy/pypy/src/6355617bf9a2a0fa8b74ae17906e4a591b38e2b5/rpython/translator/stm/src_stm/stm/contention.c?at=stmgc-c7>`_,
-Here we see that two theads call into external function (get current time),
+Here we see that two threads call into external function to get current time,
 and we can not rollback any of them, so one of them must wait till the other
 transaction finishes.
 For now we can hack around this by disabling this timing - this is only
@@ -130,7 +126,7 @@ can beat regular PyPy!
 This is not linear scaling, there are still conflicts left, and this
 is a very simple example but still, it works! And it was easy!
 
-Although it is defintily not ready for production use, you can alreay try
+Although it is definitely not ready for production use, you can already try
 to run things, report bugs, and see what is missing in user-facing tools
 and libraries.
 
