@@ -139,6 +139,6 @@ Benchmark setup:
 * Amazon c3.xlarge (4 cores) running Ubuntu 14.04
 * pypy-c-r74011-stm-jit
 * http://bitbucket.org/kostialopuhin/tornado-stm-bench at a038bf9
-* for PyPy-STM in this test the variation is rather high (around 20%),
-  best results from ``./bench_primes.sh`` were reported
+* for PyPy-STM in this test the variation is higher,
+  best results after warmup are given
 
