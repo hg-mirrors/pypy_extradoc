@@ -67,10 +67,6 @@ The benchmarks were run once, since the standard deviation was small.
 
 XXXX
 
-`The benchmark`_ consists of looped calls to ``os.read``, ``os.write``
-or ``file.read`` and ``file.write`` using different size strings. For writing
-the strings are freshly constructed. Consult the benchmark for details.
-
 What we can see is that ``os.read`` and ``os.write`` both improved greatly
 and outperforms CPython now for each combination. ``file`` operations are
 a little more tricky, and while those branches improved the situation a bit,
@@ -89,4 +85,4 @@ our own buffering, stay tuned for more.
 Cheers,
 fijal
 
-.. _`The benchmark`: https://bitbucket.org/pypy/benchmarks/src/69152c2aee7766051aab15735b0b82a46b82b802/io/iobasic.py?at=default
+.. _`this benchmark`: https://bitbucket.org/pypy/benchmarks/src/69152c2aee7766051aab15735b0b82a46b82b802/io/iobasic.py?at=default
