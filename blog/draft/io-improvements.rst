@@ -31,8 +31,8 @@ by Maciej Fijałkowski and Armin Rigo. Because of the way it works, the PyPy GC 
 time to time moves the objects in memory, meaning that their address can change.
 Therefore, if you want to pass pointers to some external C function (for
 example, write(2) or read(2)), you need to ensure that the objects they are
-pointing to will not be moved by the GC.
-PyPy 2.4 solves the problem by copying the data into a non-movable buffer, which
+pointing to will not be moved by the GC (e.g. when running a different thread).
+PyPy up to 2.4 solves the problem by copying the data into or from a non-movable buffer, which
 is obviously inefficient.
 The branch introduce the concept of "pinning", which allows us to inform the
 GC that it is not allowed to move a certain object for a short period of time.
