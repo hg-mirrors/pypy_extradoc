@@ -13,7 +13,7 @@ run CPU-bound code faster than regular PyPy, when using multiple cores.
 Here we will see how to slightly modify Tornado IO loop to use
 `transaction <https://bitbucket.org/pypy/pypy/raw/stmgc-c7/lib_pypy/transaction.py>`_
 module.
-This module is `descibed <http://pypy.readthedocs.org/en/latest/stm.html#atomic-sections-transactions-etc-a-better-way-to-write-parallel-programs>`_
+This module is `described <http://pypy.readthedocs.org/en/latest/stm.html#atomic-sections-transactions-etc-a-better-way-to-write-parallel-programs>`_
 in the docs and is really simple to use - please see an example there.
 An event loop of Tornado, or any other asynchronous
 web server, looks like this (with some simplifications)::
@@ -54,6 +54,9 @@ The actual commit is
 `here <https://github.com/lopuhin/tornado/commit/246c5e71ce8792b20c56049cf2e3eff192a01b20>`_,
 - we had to extract a little function to run the callback.
 
+Part 1: a simple benchmark: primes
+----------------------------------
+
 Now we need a simple benchmark, lets start with
 `this <https://bitbucket.org/kostialopuhin/tornado-stm-bench/src/a038bf99de718ae97449607f944cecab1a5ae104/primes.py?at=default>`_
 - just calculate a list of primes up to the given number, and return it
@@ -69,7 +72,7 @@ as JSON::
         def get(self, num):
             num = int(num)
             primes = [n for n in xrange(2, num + 1) if is_prime(n)]
-            self.write(json.dumps({'primes': primes}))
+            self.write({'primes': primes})
 
 
 We can benchmark it with ``siege``::
@@ -103,7 +106,7 @@ transaction finishes.
 For now we can hack around this by disabling this timing - this is only
 needed for internal profiling in tornado.
 
-If we do it, we get the following results:
+If we do it, we get the following results (but see caveats below):
 
 ============  =========
 Impl.           req/s
@@ -121,20 +124,109 @@ PyPy-STM 3      20.4
 PyPy STM 4      24.2
 ============  =========
 
+.. image:: results-1.png
+
 As we can see, in this benchmark PyPy STM using just two cores
 can beat regular PyPy!
 This is not linear scaling, there are still conflicts left, and this
-is a very simple example but still, it works! And it was easy!
+is a very simple example but still, it works!
+
+But its not that simple yet :)
+
+First, these are best case numbers after long (much longer than for regular
+PyPy) warmup. Second, it can sometimes crash (although removing old pyc files
+fixes it). Third, benchmark meta-parameters are also tuned.
+
+Here we get reletively good results only when there are a lot of concurrent
+clients - as a results, a lot of requests pile up, the server is not keeping
+with the load, and transaction module is busy with work running this piled up
+requests. If we decrease the number of concurrent clients, results get worse.
+Another thing we can tune is how heavy is each request - again, if we ask
+primes up to a slower number, than less time is spent doing calculations,
+more time is spent in conflicts, and results get worse.
+
+Besides the ``time.time()`` conflict described above, there are a lot of others.
+The bulk of time is lost in this conflicts::
+
+    14.153s lost in aborts, 0.000s paused (270x STM_CONTENTION_INEVITABLE)
+    File "/home/ubuntu/tornado-stm/tornado/tornado/web.py", line 1082, in compute_etag
+        hasher = hashlib.sha1()
+    File "/home/ubuntu/tornado-stm/tornado/tornado/web.py", line 1082, in compute_etag
+        hasher = hashlib.sha1()
+
+    13.484s lost in aborts, 0.000s paused (130x STM_CONTENTION_WRITE_READ)
+    File "/home/ubuntu/pypy/lib_pypy/transaction.py", line 164, in _run_thread
+        got_exception)
+
+The first one is presumably calling into some C function from stdlib, and we get
+the same conflict as for ``time.time()`` above, but is can be fixed on PyPy
+side, as we can be sure that computing sha1 is pure.
+
+It is easy to hack around this one too, just removing etag support, but if
+we do it, performance is much worse, only slightly faster than regular PyPy,
+with the top conflict being::
+
+    83.066s lost in aborts, 0.000s paused (459x STM_CONTENTION_WRITE_WRITE)
+    File "/home/arigo/hg/pypy/stmgc-c7/lib-python/2.7/_weakrefset.py", line 70, in __contains__
+    File "/home/arigo/hg/pypy/stmgc-c7/lib-python/2.7/_weakrefset.py", line 70, in __contains__
+
+**FIXME** why does it happen?
+
+The second conflict (without etag tweaks) originates
+in the transaction module, from this piece of code::
+
+    while True:
+        self._do_it(self._grab_next_thing_to_do(tloc_pending),
+                    got_exception)
+        counter[0] += 1
+
+**FIXME** why does it happen?
+
+Tornado modification used in this blog post is based on 3.2.dev2.
+As of now, the latest version is 4.0.2, and if we
+`apply <https://github.com/lopuhin/tornado/commit/04cd7407f8690fd1dc55b686eb78e3795f4363e6>`_
+the same changes to this version, then we no longer get any scaling on this benchmark,
+and there are no conflicts that take any substantial time.
+
+**FIXME** - maybe this is just me messing something up
+
+
+Part 2: a more interesting benchmark: A-star
+--------------------------------------------
+
+Although we have seen that PyPy STM is not all moonlight and roses,
+it is interesting to see how it works on a more realistic application.
+
+`astar.py <https://bitbucket.org/kostialopuhin/tornado-stm-bench/src/a038bf99de718ae97449607f944cecab1a5ae104/astar.py>`_
+is a simple game where several players move on a map
+(represented as a list of lists of integers),
+build and destroy walls, and ask server to give them
+shortest paths between two points
+using A-star search, adopted from `ActiveState recipie <http://code.activestate.com/recipes/577519-a-star-shortest-path-algorithm/>`_.
+
+The benchmark `bench_astar.py <https://bitbucket.org/kostialopuhin/tornado-stm-bench/src/a038bf99de718ae97449607f944cecab1a5ae104/bench_astar.py>`_
+is simulating players, and tries to put the main load on A-star search,
+but also does some wall building and desctruction. There are no locks
+around map modifications, as normal tornado is executing all callbacks
+serially, and we can keep this guaranty with atomic blocks of PyPy STM.
+This is also an example of a program that is not trivial
+to scale to multiple cores with separate processes (assuming
+more interesting shared state and logic).
+
+**TODO** - results
 
 Although it is definitely not ready for production use, you can already try
 to run things, report bugs, and see what is missing in user-facing tools
 and libraries.
 
-Benchmark setup:
+
+Benchmarks setup:
 
 * Amazon c3.xlarge (4 cores) running Ubuntu 14.04
-* pypy-c-r74011-stm-jit
+* pypy-c-r74011-stm-jit for the primes benchmark (but it has more bugs
+  then more recent versions), and
+  `pypy-c-r74378-74379-stm-jit <http://cobra.cs.uni-duesseldorf.de/~buildmaster/misc/pypy-c-r74378-74379-stm-jit.xz>`_
+  for all other stuff
 * http://bitbucket.org/kostialopuhin/tornado-stm-bench at a038bf9
 * for PyPy-STM in this test the variation is higher,
-  best results after warmup are given
-
+  best results after long warmup are given
