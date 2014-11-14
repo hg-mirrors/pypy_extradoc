@@ -88,7 +88,7 @@ Fortunately, we can see what this conflicts are, if we run code like this
 
     PYPYSTM=stm.log ./primes.py 4
 
-Than we can use `print_stm_log.py <https://bitbucket.org/pypy/pypy/raw/stmgc-c7/pypy/stm/print_stm_log.py>`_
+Then we can use `print_stm_log.py <https://bitbucket.org/pypy/pypy/raw/stmgc-c7/pypy/stm/print_stm_log.py>`_
 to analyse this log. It lists the most expensive conflicts::
 
     14.793s lost in aborts, 0.000s paused (1258x STM_CONTENTION_INEVITABLE)
@@ -133,20 +133,20 @@ is a very simple example but still, it works!
 
 But its not that simple yet :)
 
-First, these are best case numbers after long (much longer than for regular
+First, these are best-case numbers after long (much longer than for regular
 PyPy) warmup. Second, it can sometimes crash (although removing old pyc files
 fixes it). Third, benchmark meta-parameters are also tuned.
 
-Here we get reletively good results only when there are a lot of concurrent
+Here we get relatively good results only when there are a lot of concurrent
 clients - as a results, a lot of requests pile up, the server is not keeping
 with the load, and transaction module is busy with work running this piled up
 requests. If we decrease the number of concurrent clients, results get slightly worse.
 Another thing we can tune is how heavy is each request - again, if we ask
-primes up to a slower number, than less time is spent doing calculations,
+primes up to a lower number, then less time is spent doing calculations,
 more time is spent in tornado, and results get much worse.
 
 Besides the ``time.time()`` conflict described above, there are a lot of others.
-The bulk of time is lost in this conflicts::
+The bulk of time is lost in these two conflicts::
 
     14.153s lost in aborts, 0.000s paused (270x STM_CONTENTION_INEVITABLE)
     File "/home/ubuntu/tornado-stm/tornado/tornado/web.py", line 1082, in compute_etag
@@ -188,8 +188,6 @@ As of now, the latest version is 4.0.2, and if we
 the same changes to this version, then we no longer get any scaling on this benchmark,
 and there are no conflicts that take any substantial time.
 
-**FIXME** - maybe this is just me messing something up
-
 
 Part 2: a more interesting benchmark: A-star
 --------------------------------------------
@@ -206,7 +204,7 @@ using A-star search, adopted from `ActiveState recipie <http://code.activestate.
 
 The benchmark `bench_astar.py <https://bitbucket.org/kostialopuhin/tornado-stm-bench/src/a038bf99de718ae97449607f944cecab1a5ae104/bench_astar.py>`_
 is simulating players, and tries to put the main load on A-star search,
-but also does some wall building and desctruction. There are no locks
+but also does some wall building and destruction. There are no locks
 around map modifications, as normal tornado is executing all callbacks
 serially, and we can keep this guaranty with atomic blocks of PyPy STM.
 This is also an example of a program that is not trivial
@@ -229,8 +227,10 @@ PyPy-STM 1      2 .. 4
 PyPy STM 4      2 .. 6
 ============  ==========
 
-The bulk of conflicts are the same as in the previous benchmark with etag
-calculation removed::
+Clearly this is a very benchmark, but still we can see that scaling is worse
+and STM overhead is sometimes higher.
+The bulk of conflicts come from the transaction module (we have seen it
+above)::
 
     91.655s lost in aborts, 0.000s paused (249x STM_CONTENTION_WRITE_READ)
     File "/home/ubuntu/pypy/lib_pypy/transaction.py", line 164, in _run_thread
@@ -246,7 +246,7 @@ Benchmarks setup:
 
 * Amazon c3.xlarge (4 cores) running Ubuntu 14.04
 * pypy-c-r74011-stm-jit for the primes benchmark (but it has more bugs
-  then more recent versions), and
+  than more recent versions), and
   `pypy-c-r74378-74379-stm-jit <http://cobra.cs.uni-duesseldorf.de/~buildmaster/misc/pypy-c-r74378-74379-stm-jit.xz>`_
   for astar benchmark (put it inside pypy source checkout at 38c9afbd253c)
 * http://bitbucket.org/kostialopuhin/tornado-stm-bench at 65144cda7a1f
