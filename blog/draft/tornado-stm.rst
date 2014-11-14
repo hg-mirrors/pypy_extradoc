@@ -140,10 +140,10 @@ fixes it). Third, benchmark meta-parameters are also tuned.
 Here we get reletively good results only when there are a lot of concurrent
 clients - as a results, a lot of requests pile up, the server is not keeping
 with the load, and transaction module is busy with work running this piled up
-requests. If we decrease the number of concurrent clients, results get worse.
+requests. If we decrease the number of concurrent clients, results get slightly worse.
 Another thing we can tune is how heavy is each request - again, if we ask
 primes up to a slower number, than less time is spent doing calculations,
-more time is spent in conflicts, and results get worse.
+more time is spent in tornado, and results get much worse.
 
 Besides the ``time.time()`` conflict described above, there are a lot of others.
 The bulk of time is lost in this conflicts::
@@ -213,7 +213,29 @@ This is also an example of a program that is not trivial
 to scale to multiple cores with separate processes (assuming
 more interesting shared state and logic).
 
-**TODO** - results
+This benchmark is very noisy due to randomness of client interactions
+(also it could be not linear), so just lower and upper bounds for
+number of requests are reported
+
+============  ==========
+Impl.           req/s
+============  ==========
+PyPy 2.4        5 .. 7
+------------  ----------
+CPython 2.7   0.5 .. 0.9
+------------  ----------
+PyPy-STM 1      2 .. 4
+------------  ----------
+PyPy STM 4      2 .. 6
+============  ==========
+
+The bulk of conflicts are the same as in the previous benchmark with etag
+calculation removed::
+
+    91.655s lost in aborts, 0.000s paused (249x STM_CONTENTION_WRITE_READ)
+    File "/home/ubuntu/pypy/lib_pypy/transaction.py", line 164, in _run_thread
+        got_exception)
+
 
 Although it is definitely not ready for production use, you can already try
 to run things, report bugs, and see what is missing in user-facing tools
@@ -226,7 +248,5 @@ Benchmarks setup:
 * pypy-c-r74011-stm-jit for the primes benchmark (but it has more bugs
   then more recent versions), and
   `pypy-c-r74378-74379-stm-jit <http://cobra.cs.uni-duesseldorf.de/~buildmaster/misc/pypy-c-r74378-74379-stm-jit.xz>`_
-  for all other stuff
-* http://bitbucket.org/kostialopuhin/tornado-stm-bench at a038bf9
-* for PyPy-STM in this test the variation is higher,
-  best results after long warmup are given
+  for astar benchmark (put it inside pypy source checkout at 38c9afbd253c)
+* http://bitbucket.org/kostialopuhin/tornado-stm-bench at 65144cda7a1f
