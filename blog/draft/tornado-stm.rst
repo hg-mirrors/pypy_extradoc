@@ -127,7 +127,7 @@ PyPy-STM 3      20.4
 PyPy STM 4      24.2
 ============  =========
 
-.. image:: results-1.png
+.. image:: tornado-stm-results.png
 
 As we can see, in this benchmark PyPy STM using just two cores
 can beat regular PyPy!
