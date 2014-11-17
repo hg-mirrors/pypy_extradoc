@@ -1,6 +1,9 @@
 Tornado without a GIL on PyPy STM
 =================================
 
+*This post is by Konstantin Lopuhin, who tried PyPy STM during the
+Warsaw sprint.*
+
 Python has a GIL, right? Not quite - PyPy STM is a python implementation
 without a GIL, so it can scale CPU-bound work to several cores.
 PyPy STM is developed by Armin Rigo and Remi Meier,
@@ -170,7 +173,7 @@ with the top conflict being::
     File "/home/arigo/hg/pypy/stmgc-c7/lib-python/2.7/_weakrefset.py", line 70, in __contains__
     File "/home/arigo/hg/pypy/stmgc-c7/lib-python/2.7/_weakrefset.py", line 70, in __contains__
 
-[Armin: It is unclear why this happens so far.  We'll investigate...]
+*Comment by Armin: It is unclear why this happens so far.  We'll investigate...*
 
 The second conflict (without etag tweaks) originates
 in the transaction module, from this piece of code::
@@ -180,9 +183,9 @@ in the transaction module, from this piece of code::
                     got_exception)
         counter[0] += 1
 
-[Armin: This is a conflict in the transaction module itself; ideally,
+*Comment by Armin: This is a conflict in the transaction module itself; ideally,
 it shouldn't have any, but in order to do that we might need a little bit
-of support from RPython or C code.  So this is pending improvement.]
+of support from RPython or C code.  So this is pending improvement.*
 
 Tornado modification used in this blog post is based on 3.2.dev2.
 As of now, the latest version is 4.0.2, and if we
@@ -190,13 +193,13 @@ As of now, the latest version is 4.0.2, and if we
 the same changes to this version, then we no longer get any scaling on this benchmark,
 and there are no conflicts that take any substantial time.
 
-[Armin: There are two possible reactions to a conflict.  We can either
+*Comment by Armin: There are two possible reactions to a conflict.  We can either
 abort one of the two threads, or (depending on the circumstances) just
 pause the current thread until the other one commits, after which the
 thread will likely be able to continue.  The tool ``print_stm_log.py``
 did not report conflicts that cause pauses.  It has been fixed very
 recently.  Chances are that on this test it would report long pauses and
-point to locations that cause them.]
+point to locations that cause them.*
 
 
 Part 2: a more interesting benchmark: A-star
