@@ -10,7 +10,7 @@ echo
 for p in iter/*.py; do
     echo pypy $p
     for b in $BENCHMARKS; do
-	/tmp/pypy-trunk ./runner.py -n 5 $p $b 10
+	pypy ./runner.py -n 5 $p $b 10
     done
     echo
 done
