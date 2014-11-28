@@ -32,7 +32,7 @@ The results for fibonacci and gcbench are below (normalized to cpython
 deviation comes mostly from the warmup at the beginning, true figures
 are smaller):
 
-+----------------+----- ------------+-------------------------+--------------------+
++----------------+------------------+-------------------------+--------------------+
 | benchmark      | CPython          | PyPy 2.4                | PyPy non-zero      |
 +----------------+------------------+-------------------------+--------------------+
 | fibonacci      | 4.8+-0.15 (1.0x) | 0.59+-0.07 (8.1x)       | 0.45+-0.07 (10.6x) |
