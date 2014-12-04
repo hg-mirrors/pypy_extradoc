@@ -65,7 +65,7 @@ PyPy And C
 
 * With CFFI you can call C code from Python and expose Python functions to C 
 
-  - this means that you can create your own C API in pure python !
+  - This means you can create your own C API in pure python !
 
 * It is now possible to embed PyPy in a C application (uWSGI)
 
