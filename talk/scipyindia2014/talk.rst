@@ -96,4 +96,15 @@ NumPyPy
 
 * ~80% of the numpy tests are passing
 
-* XXX
+* Most of numpy is there
+
+* XXX is missing
+
+NumPyPy performance
+-------------------
+
+PyMetabiosis
+------------
+
+JitPy
+-----
