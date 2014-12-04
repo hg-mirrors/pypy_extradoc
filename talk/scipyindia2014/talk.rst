@@ -56,16 +56,25 @@ How to get performance out of Python code ?
 
 * Rewrite your code in some subset/dialect of Python like Numba
 
-* Just write Python and use PyPy, pay only the cost of what you use
+* Just write Python and use PyPy, only pay the cost of what you use
 
-PyPy And C
-----------
+PyPy and C (1/2)
+----------------
 
-* PyPy is pretty good at interacting with C code with cffi
+* PyPy is pretty good at interacting with C code now, thanks to CFFI
+
+* CFFI is the easiest tool to I've used so far
+
+* Very fast on PyPy, fast enough on CPython
+
+* Used by NumPyPy
 
 * With CFFI you can call C code from Python and expose Python functions to C 
 
-  - This means you can create your own C API in pure python !
+  - This means you can create your own C API in pure Python !
+
+PyPy and C (2/2)
+----------------
 
 * It is now possible to embed PyPy in a C application (uWSGI)
 
