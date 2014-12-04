@@ -26,11 +26,6 @@ PyPy
 
 * Compatibility is very important to us
 
-Speed
------
-
-* XXX : Insert speed.pypy.org screenshot
-
 Python
 ------
 
@@ -41,6 +36,16 @@ Python
 * Easy to introspect (pdb is just another Python module)
 
 * Considered slow
+
+Speed
+-----
+
+* XXX : Insert speed.pypy.org screenshot
+
+Demo
+----
+
+* Real-time edge detection
 
 How to get performance out of Python code ?
 -------------------------------------------
@@ -57,6 +62,12 @@ PyPy And C
 ----------
 
 * PyPy is pretty good at interacting with C code with cffi
+
+* With CFFI you can call C code from Python and expose Python functions to C 
+
+  - this means that you can create your own C API in pure python !
+
+* It is now possible to embed PyPy in a C application (uWSGI)
 
 * C extensions written using the Python C API can work, but they're slow and support is incomplete
 
