@@ -1,3 +1,5 @@
+.. include:: beamerdefs.txt
+
 =============================
 PyPy and the scientific stack
 =============================
@@ -40,7 +42,16 @@ Python
 Speed
 -----
 
-* XXX : Insert speed.pypy.org screenshot
+.. image:: speed.png
+   :scale: 50%
+   :align: center
+
+How ?
+-----
+
+* Tracing Just-In-Time compiler
+
+* Removes overhead
 
 Demo
 ----
@@ -103,8 +114,23 @@ NumPyPy
 NumPyPy performance
 -------------------
 
+* Vectorized operations should be as fast as Numpy
+
+* Using ndarrays as you would use arrays in C or Java should be as fast
+
+* Lazy evaluation ?
+
 PyMetabiosis
 ------------
 
+* Work in progress
+
 JitPy
 -----
+
+* Work in progress
+
+Thank You
+---------
+
+Questions ?
