@@ -107,14 +107,14 @@ NumPyPy
 
 * Most of numpy is there
 
-* XXX is missing
+* linalg and the object dtype are the two biggest features that we haven't implemented yet
 
 NumPyPy performance
 -------------------
 
 * Vectorized operations should be as fast as Numpy
 
-* Using ndarrays as you would use arrays in C or Java should be as fast
+* Using ndarrays as you would use arrays in C or Java should be as fast as the vectorized way
 
 * Lazy evaluation ?
 
@@ -123,7 +123,7 @@ PyMetabiosis
 
 * Work in progress
 
-* Allows you to use any CPython module on PyPy
+* Allows you to use any CPython module on PyPy (scipy for example)
 
 * Embeds CPython into PyPy with CFFI
 
@@ -164,7 +164,7 @@ JitPy
 
 * Provides a decorator that allows you to run specific functions on PyPy
 
-* Is used the same way as numba, but different performance caracteristics
+* Is used the same way as numba, but different performance characteristics
 
 JitPy
 -----
@@ -187,6 +187,17 @@ JitPy
     func(100000, 1.2)
 
 |end_scriptsize|
+
+Future
+------
+
+* Full numpy support
+
+* Improved C extension compatibility
+
+* I would like to see Cython work with PyPy
+
+* No more Global Interpreter Lock
 
 Thank You
 ---------
