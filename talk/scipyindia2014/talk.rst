@@ -17,8 +17,6 @@ Introduction
 
 * Software consultant
 
-* Feel free to interrupt me
-
 PyPy
 ----
 
@@ -125,10 +123,70 @@ PyMetabiosis
 
 * Work in progress
 
+* Allows you to use any CPython module on PyPy
+
+* Embeds CPython into PyPy with CFFI
+
+* Numpy arrays can be shared between PyPy and CPython
+
+PyMetabiosis
+------------
+
+|scriptsize|
+
+.. sourcecode:: python
+
+    from pymetabiosis import import_module
+
+    cpython_virtualenv_path = 
+        "/home/rguillebert/.virtualenvs/venv/bin/activate_this.py"
+
+    builtin = import_module("__builtin__")
+
+    # Activate a virtualenv for the cpython interpreter
+    builtin.execfile(cpython_virtualenv_path,
+        {"__file__" : cpython_virtualenv_path}
+    )
+
+    pylab = import_module("matplotlib.pylab")
+
+    pylab.plot([1, 2, 3, 4])
+    pylab.show()
+
+|end_scriptsize|
+
 JitPy
 -----
 
 * Work in progress
+
+* Embeds PyPy into CPython
+
+* Provides a decorator that allows you to run specific functions on PyPy
+
+* Is used the same way as numba, but different performance caracteristics
+
+JitPy
+-----
+
+|scriptsize|
+
+.. sourcecode:: python
+
+    from jitpy import setup
+    setup('<path-to-pypy-home>')
+    from jitpy.wrapper import jittify
+
+    @jittify([int, float], float)
+    def func(count, no):
+        s = 0
+        for i in range(count):
+           s += no
+        return s
+
+    func(100000, 1.2)
+
+|end_scriptsize|
 
 Thank You
 ---------
