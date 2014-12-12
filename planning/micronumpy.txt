@@ -1,15 +1,13 @@
 NEW TASKS
 ---------
 
-- astype
-
 - a good sort function
 
 - indexing by arrays and lists
 
 - endianness
 
-- frompyfunc to create ufuncs from python functions
+- frompyfunc to create ufuncs from python functions (wip on ufuncapi branch)
 
 - more ufuncs
 
@@ -37,11 +35,11 @@ OPTIMIZATIONS
 - bridges are a tad too complicated - we need to store optimizer info
   in order to improve though
 
-- iterators should possibly not require reinstantiating them.
-
 - things like take/item/fancy indexing can use some knowledge about the density
   of data and either evaluate interesting points (without forcing) or
   do what they do now.
 
 - counting by element_size instead of by 1 and then multiply sounds
   like a much faster option sometimes
+
+- use ndarray.flags to cache values, only recompute when state changes
