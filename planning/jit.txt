@@ -105,6 +105,9 @@ Things we can do mostly by editing optimizeopt/:
 
   (This applies to the read direction as well)
 
+- hash(str[x:y]) should have an optimization in the JIT so that no malloc/copy
+  occurs
+
 PYTHON EXAMPLES
 ---------------
 
