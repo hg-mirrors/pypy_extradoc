@@ -51,10 +51,10 @@ lodging there too -- you won't find a better view anywhere else (though
 you probably won't get much worse ones easily, either :-)
 
 Please *confirm* that you are coming so that we can adjust the
-reservations as appropriate.  The rate so far used to be around 60 CHF a
-night all included in 2-person rooms, with breakfast.  The rooms
-available now are either single-person (or couple), or 3-4 persons;
-the latter choice should be under 60 CHF per person.
+reservations as appropriate.  In the past, the rates were around 60 CHF a
+night all included in 2-person rooms, with breakfast.  Now, the rooms
+available are either single-person (or couple), or rooms for 3 persons.
+The latter choice is recommended and should be under 60 CHF per person.
 
 Please register by Mercurial::
 
