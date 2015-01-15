@@ -22,6 +22,9 @@ topics such as:
   the conflict reporting tools, and more generally to figure out how
   practical it is in large projects to avoid conflicts
 
+* vmprof - a statistical profiler for CPython and PyPy work, including
+  making it more user friendly.
+
 * Py3k (Python 3.x support), NumPyPy (the numpy module)
 
 * And as usual, the main side goal is to have fun in winter sports :-)
