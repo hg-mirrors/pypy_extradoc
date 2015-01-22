@@ -24,17 +24,17 @@ Original PyPy dictionary design
 Originally, PyPy dictionaries, as well as CPython dictionaries
 are implemented as follows (simplified view)::
 
-  struct dict {
-     long num_items;
-     dict_entry* items;   /* pointer to array */
-  }
-  
-  struct dict_entry {
-      long hash;
-      PyObject* key;
-      PyObject* value;
-  }
-  
+  struct dict {
+     long num_items;
+     dict_entry* items;   /* pointer to array */
+  }
+
+  struct dict_entry {
+     long hash;
+     PyObject* key;
+     PyObject* value;
+  }
+
 Where items is a sparse array, with 1/3 to 1/2 of the items being NULL.
 The average space occupied by a dictionary is ``3 * WORD * 12/7`` plus some small constant (the smallest dict has 8 entries, which is
 ``8 * 3 * WORD + 2 * WORD = 26 WORDs``).
@@ -45,21 +45,21 @@ New PyPy dictionary design
 
 The new PyPy dictionary is split in two arrays::
 
-  struct dict {
-      long num_items;
-      variable_int *sparse_array;
-      dict_entry* compact_array;
-  }
-  
-  struct dict_entry {
-      long hash;
-      PyObject *key;
-      PyObject *value;
-  }
-  
+  struct dict {
+      long num_items;
+      variable_int *sparse_array;
+      dict_entry* compact_array;
+  }
+  
+  struct dict_entry {
+      long hash;
+      PyObject *key;
+      PyObject *value;
+  }
+  
 Here, ``compact_array`` stores all the items in order of insertion, while ``sparse_array`` is a 1/2 to 2/3 full array of integers. The integers themselves are of the smallest size necessary for indexing the ``compact_array``. So if ``compact_array`` has less than 256 items, then ``sparse_array`` will be made of bytes; if less than 2^16, it'll be two-byte integers; and so on.
 
-This design saves quite a bit of memory.  For example, on 64bit systems we can, but almost never, use indexing of more than 4 billion elements; and for small dicts, the extra ``sparse_array`` takes very little space.  For example a 100 element dict, would be on average for the original design on 64bit: 100 * 12/7 * WORD * 3 =~ 4100 bytes, while on new design it's 100 * 12/7 + 3 * WORD * 100 =~ 2600 bytes, quite a significant saving.
+This design saves quite a bit of memory. For example, on 64bit systems we can, but almost never, use indexing of more than 4 billion elements; and for small dicts, the extra ``sparse_array`` takes very little space.  For example a 100 element dict, would be on average for the original design on 64bit: 100 * 12/7 * WORD * 3 =~ 4100 bytes, while on new design it's 100 * 12/7 + 3 * WORD * 100 =~ 2600 bytes, quite a significant saving.
 
 GC friendliness
 ---------------
