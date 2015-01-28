@@ -12,6 +12,7 @@ available yet from them.
 ==================== ============== =======================
 Armin Rigo                          private
 Maciej Fijalkowski   20-28          Ermina
+Remi Meier           21-28          Ermina
 ==================== ============== =======================
 
 
@@ -21,7 +22,6 @@ People on the following list were present at previous sprints:
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
 Romain Guillebert    ?              ?
-Remi Meier           ?              ?
 Christian Clauss     ?              ?
 Johan Råde           ?              ?
 Antonio Cuni         ?              ?
