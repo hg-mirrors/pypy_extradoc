@@ -49,6 +49,16 @@ How ?
 
 * Tracing Just-In-Time compiler
 
+* Optimizes loops
+
+* Traces one iteration of a loop
+
+* Produces a linear trace of execution
+
+* Inlines almost everything
+
+* The trace is then optimized and compiled
+
 * Removes overhead
 
 Demo
@@ -166,6 +176,8 @@ JitPy
 
 * Is used the same way as numba, but different performance characteristics
 
+* Needs a very recent version of PyPy
+
 JitPy
 -----
 
@@ -198,6 +210,15 @@ Future
 * I would like to see Cython work with PyPy
 
 * No more Global Interpreter Lock
+
+Takeaway
+--------
+
+* Get PyPy at pypy.org (or from your favorite distribution)
+
+* Try it
+
+* Give us feedback (good or bad)
 
 Thank You
 ---------

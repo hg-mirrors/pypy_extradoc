@@ -1,0 +1,9 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy and the future of the Python ecosystem]{PyPy and the future of the Python ecosystem}
+\author[rguillebert]
+{Romain Guillebert\\
+\includegraphics[width=80px]{../img/py-web-new.png}}
+
+\institute{Fosdem 2015}
+\date{January 31st, 2015}
