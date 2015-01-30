@@ -64,7 +64,7 @@ Current situation (3/3)
 
 |pause|
 
-* More competition between implementations would benefit us
+* More competition between implementations would benefit everybody
 
 Why can't other implementations implement the C API
 ---------------------------------------------------
@@ -146,7 +146,18 @@ Short term C extension support
 
 * PyMetabiosis demo
 
-* This will allow us to bring the entire scientific stack in a very short amount of time
+* This should give PyPy another way to interact with CPython C extensions, better suited for bringing e.g. the entire scientific stack in
+
+Summary
+-------
+
+* We can do better
+
+* PyPy is working on getting even better
+
+* Making an alternative implementation friendly ecosystem is quite hard
+
+* But rewarding
 
 Thank you
 ---------
