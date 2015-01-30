@@ -117,6 +117,8 @@ The Jit
 
 * Competes with other fast dynamic languages
 
+* Pay the cost of what you use
+
 CFFI
 ----
 
