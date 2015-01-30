@@ -49,7 +49,7 @@ Current situation (2/3)
 
 * Javascript is pretty fast
 
-* PHP is fast...
+* Even PHP is fast these days...
 
 Current situation (3/3)
 -----------------------
@@ -82,6 +82,10 @@ Why can't other implementations implement the C API
 C APIs in other languages
 -------------------------
 
+* JNI / V8
+
+* Lua / Julia
+
 Can we implement a similar API ?
 --------------------------------
 
@@ -89,29 +93,58 @@ Can we implement a similar API ?
 
 * Not that many changes to the C API are required
 
-* It's even possible to do it in pure Python with CFFI
+* It's even possible to have a C API written in pure Python with CFFI
 
 * Designing it to make everyone happy is harder than to actually implement it
 
 * Making people port their extensions is hard
 
-* CPython would need to keep both APIs implement, at least for a while
+* CPython would need to keep both APIs, at least for a while
 
 Where does PyPy fit in this ?
 -----------------------------
 
 * The most flexible implementation
 
-* Already fast
+* RPython
 
-* Can already interact with C code easily
+The Jit
+-------
 
-* PyPy-STM
+* speed.pypy.org
 
-What about short term ?
------------------------
+* 6.9 times faster than CPython on our benchmarks
 
-* PyMetabiosis
+* Competes with other fast dynamic languages
+
+CFFI
+----
+
+* Interacting with C code is very important to the Python community
+
+* CFFI allows you to call C code and expose Python functions to C
+
+* Very fast on PyPy
+
+* As powerful as the C API
+
+STM
+---
+
+* Removing the GIL
+
+* Without having to deal with threads and locks
+
+* Still allows you to share memory between threads
+
+Short term C extension support
+------------------------------
+
+* We can bridge PyPy and CPython and let CPython deal with C extensions
+
+* PyMetabiosis demo
+
+* This will allow us to bring the entire scientific stack in a very short amount of time
 
 Thank you
 ---------
