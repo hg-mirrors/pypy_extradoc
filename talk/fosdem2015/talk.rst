@@ -54,7 +54,7 @@ Current situation (2/3)
 Current situation (3/3)
 -----------------------
 
-* It's pretty hard to switch between implementations because of C extensions ()
+* It's pretty hard to switch between implementations because of C extensions
 
 * C extensions are very useful but CPython can't evolve because of them
 
