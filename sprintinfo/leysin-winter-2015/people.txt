@@ -18,6 +18,7 @@ Manuel Jacob         21-28          Ermina
 Joan Massich         20-?           Ermina
 Quim Sanchez         20-?           Ermina
 Francisco Fernandez  20-28          Ermina
+Alexander Schremmer  21-23          Ermina
 ==================== ============== =======================
 
 
@@ -56,7 +57,6 @@ Beatrice Duering     ?              ?
 Richard Emslie       ?              ?
 Johan Hahn           ?              ?
 Stephan Diehl        ?              ?
-Alexander Schremmer  ?              ?
 Anders Chrigstroem   ?              ?
 Eric van Riet Paap   ?              ?
 Holger Krekel        ?              ?
