@@ -11,7 +11,7 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo                          private
-Maciej Fijalkowski   20-28          Ermina
+Maciej Fijalkowski   21-28          Ermina
 Remi Meier           21-28          Ermina
 Sebastian Pawlus     21-27          Ermina
 Manuel Jacob         21-28          Ermina
