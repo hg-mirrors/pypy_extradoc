@@ -16,7 +16,7 @@ What is PyPy?
 
 * a fast, compliant Python interpreter
 
-* comes with a just in time compiler
+* comes with a just-in-time compiler
 
 * covers Python 2.7 and beta 3.2/3.3
 
