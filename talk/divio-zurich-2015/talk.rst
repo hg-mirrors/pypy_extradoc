@@ -45,12 +45,28 @@ Compatibility - C extensions
 cffi
 ----
 
-XXX slide about cffi and demo
+xxxx image
+
+cffi (2)
+--------
+
+* demo
+
+numpy and numerics
+------------------
+
+* big subset of numpy reimplemented
+
+* same speed as numpy, much faster with python code
+
+* aim at compatibility
+
+* pymetabiosis (scipy, matplotlib)
 
 Speed status
 ------------
 
-xxx graph
+* speed.pypy.org
 
 Speed status (2)
 ----------------
@@ -68,11 +84,65 @@ Memory consumption
 
 * objects are smaller than CPython
 
+* interpreter size is large (~60M)
+
+* additional assembler consumes memory
+
+* plus bookkeeping info
+
+* measure!
+
 Can I run PyPy?
 ---------------
 
-Xxxx
+* mostly, yes!
 
-Case study - magnetic
+* look at C extensions
+
+* try, measure, benchmark
+
+Case study - magnetic.com
+-------------------------
+
+* magnetic.com - online search retargetting
+
+* 2 weeks of work, including benchmarking and analysis
+
+* swapped ujson for json
+
+* rewrote bindings for protobuf
+
+* ~2x speedup after warmup, no additional noticable memory
+
+Future
+------
+
+* work on warmup
+
+* STM work
+
+* more numpy compatibility
+
+Crowdfunding
+------------
+
+* moderate success in crowdfunding
+
+* numpy, STM, py3k
+
+* donate
+
+Commercial consulting
 ---------------------
+
+* baroquesoftware.com
+
+* measure, analyze, port to pypy
+
+Q&A
+---
+
+* http://pypy.org
+
+* http://baroquesoftware.com
 
