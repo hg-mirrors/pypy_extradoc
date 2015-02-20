@@ -1,3 +1,5 @@
+.. include:: ../default/beamerdefs.txt
+
 ====
 PyPy
 ====
@@ -45,7 +47,9 @@ Compatibility - C extensions
 cffi
 ----
 
-xxxx image
+.. image:: standards.png
+   :scale: 50%
+   :align: center
 
 cffi (2)
 --------
@@ -67,6 +71,8 @@ Speed status
 ------------
 
 * speed.pypy.org
+
+* basic demo
 
 Speed status (2)
 ----------------
@@ -122,6 +128,8 @@ Future
 * STM work
 
 * more numpy compatibility
+
+* tools for performance analysis
 
 Crowdfunding
 ------------
