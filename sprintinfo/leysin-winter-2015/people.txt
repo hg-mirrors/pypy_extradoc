@@ -17,7 +17,6 @@ Sebastian Pawlus     21-27          Ermina
 Manuel Jacob         21-28          Ermina
 Joan Massich         20-?           Ermina
 Quim Sanchez         20-?           Ermina
-Francisco Fernandez  20-28          Ermina
 Alexander Schremmer  21-23          Ermina
 ==================== ============== =======================
 
@@ -27,6 +26,7 @@ People on the following list were present at previous sprints:
 ==================== ============== =====================
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
+Francisco Fernandez  no-show in     Leysin Winter 2015
 Romain Guillebert    ?              ?
 Christian Clauss     ?              ?
 Johan Råde           ?              ?
