@@ -1,0 +1,10 @@
+=============
+Status of STM
+=============
+
+- stmgc-c7 reasonably good results, now porting to stmgc-c8
+
+- stmgc-c7 results (with download link), explain the new
+  features
+
+- stmgc-c8 in two words
