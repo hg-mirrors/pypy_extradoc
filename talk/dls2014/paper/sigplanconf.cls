@@ -602,12 +602,14 @@
   \def \@toappear {#1}}
 
 \toappear{%
-  \noindent \@permission \par
-  \vspace{2pt}
-  \noindent \textsl{\@conferencename}, \quad \@conferenceinfo. \par
-  \noindent Copyright \copyright\ \@copyrightyear\ ACM \@copyrightdata
-    \dots \@reprintprice.\par
-  \noindent http://dx.doi.org/10.1145/\@doi }
+  Technical report, June-August 2014
+%  \noindent \@permission \par
+%  \vspace{2pt}
+%  \noindent \textsl{\@conferencename}, \quad \@conferenceinfo. \par
+%  \noindent Copyright \copyright\ \@copyrightyear\ ACM \@copyrightdata
+%    \dots \@reprintprice.\par
+%  \noindent http://dx.doi.org/10.1145/\@doi }
+  }
 
 \newcommand{\permission}[1]{%
   \gdef \@permission {#1}}
