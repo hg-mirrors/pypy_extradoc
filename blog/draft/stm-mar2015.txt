@@ -52,7 +52,7 @@ conflicts that occur all the time.  This prevents any parallelization.
 Now PyPy-STM is no longer a black box: you have a way to learn about
 these conflicts and fix them.  The tl;dr version is to run::
 
-    PYPYSTM=stmlog pypy yourprogr.py
+    PYPYSTM=stmlog pypy-stm yourprogr.py
     print_stm_log.py stmlog
 
 
