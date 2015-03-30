@@ -25,7 +25,39 @@ special cases.  In other words, you should be able to drop in
 PyPy-STM instead of the regular PyPy and your program should still
 work.  See `current status`_ for more information.
 
+This work was done by Remi Meier and Armin Rigo.  Thanks to all donors
+for `crowd-funding the STM work`_ so far!  As usual, it took longer
+than we would have thought.  I really want to thank the people that
+kept making donations anyway.  Your trust is greatly appreciated!
+
 .. _`current status`: http://pypy.readthedocs.org/en/latest/stm.html#current-status-stmgc-c7
+.. _`crowd-funding the STM work`: http://pypy.org/tmdonate2.html
+.. _`July 2014 release`: http://morepypy.blogspot.ch/2014/07/pypy-stm-first-interesting-release.html
+
+
+What's new?
+-----------
+
+Compared to the `July 2014 release`_, the main addition is a way to
+get reports about STM conflicts.  This is an essential new feature.
+
+To understand why this is so important, consider that if you already
+played around with the previous release, chances are that you didn't
+get very far.  It probably felt like a toy: on very small examples it
+would nicely scale, but on any larger example it would not scale at
+all.  You didn't get any feedback about why, but the underlying reason
+for that is that, in any large example, there are a few unexpected STM
+conflicts that occur all the time.  This prevents any parallelization.
+
+Now PyPy-STM is no longer a black box: you have a way to learn about
+these conflicts and fix them.  The tl;dr version is to run::
+
+    PYPYSTM=stmlog pypy yourprogr.py
+    print_stm_log.py stmlog
+
+
+Performance
+-----------
 
 The performance is now more stable than it used to be.  More
 precisely, the best case is "25%-40% single-core slow-down with
@@ -34,13 +66,6 @@ not too far from that.  There are still dark spots --- notably, the
 JIT is still slower to warm up, though it was improved a lot.  Apart from
 that, we should not get more than 2x single-core slow-down in the
 worst case.  Please report such cases as bugs!
-
-This work was done by Remi Meier and Armin Rigo.  Thanks to all donors
-for `crowd-funding the STM work`_ so far!  (As usual, it took longer
-than we would have thought.  I really want to thank the people that
-kept making donations anyway.  Your trust is greatly appreciated!)
-
-.. _`crowd-funding the STM work`: http://pypy.org/tmdonate2.html
 
 
 TransactionQueue
