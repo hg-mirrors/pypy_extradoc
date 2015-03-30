@@ -3,7 +3,8 @@ PyPy-STM 2.5.1 - Mawhrin-Skel
 =============================
 
 We're pleased to announce PyPy-STM 2.5.1, Mawhrin-Skel.  This is the
-first full release of PyPy-STM.  You can download this release here:
+second official release of PyPy-STM.  You can download this release
+here:
 
     http://pypy.org/download.html
 
@@ -19,8 +20,8 @@ the core, stmgc-c8, is in development and should address that
 limitation.  Both versions only support 64-bit Linux for now
 (contributions welcome).
 
-This is the first full release: it passes all regular PyPy tests,
-except for a few special cases.  In other words, you should be able to drop in
+This release passes all regular PyPy tests, except for a few
+special cases.  In other words, you should be able to drop in
 PyPy-STM instead of the regular PyPy and your program should still
 work.  See `current status`_ for more information.
 
