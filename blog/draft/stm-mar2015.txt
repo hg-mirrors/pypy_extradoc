@@ -16,29 +16,28 @@ Transactional Memory" (STM) core called stmgc-c7.  It gives a
 replacement for Python's classical Global Interpreter Lock (GIL).  The
 current version scales only up to around 4 cores; the next version of
 the core, stmgc-c8, is in development and should address that
-limitation.  Both versions only supports 64-bit Linux for now
+limitation.  Both versions only support 64-bit Linux for now
 (contributions welcome).
 
-This is the first full release: it runs all regular PyPy tests.  It
-passes most of them... only, but that's still much better than the
-previous versions.  In other words, you should be able to drop in
+This is the first full release: it passes all regular PyPy tests,
+except for a few special cases.  In other words, you should be able to drop in
 PyPy-STM instead of the regular PyPy and your program should still
 work.  See `current status`_ for more information.
 
 .. _`current status`: http://pypy.readthedocs.org/en/latest/stm.html#current-status-stmgc-c7
 
-It seems the performance is now more stable than it used to be.  More
-precisely, the best case is still "25%-40% single-core slow-down with
-very good scaling up to 4 threads", but the average performance seems
+The performance is now more stable than it used to be.  More
+precisely, the best case is "25%-40% single-core slow-down with
+very good scaling up to 4 threads", and the average performance seems
 not too far from that.  There are still dark spots --- notably, the
-JIT is still slower to warm up, though it was improved.  Apart from
-that, we should not get worse than 2x single-core slow-down in the
+JIT is still slower to warm up, though it was improved a lot.  Apart from
+that, we should not get more than 2x single-core slow-down in the
 worst case.  Please report such cases as bugs!
 
 This work was done by Remi Meier and Armin Rigo.  Thanks to all donors
 for `crowd-funding the STM work`_ so far!  (As usual, it took longer
 than we would have thought.  I really want to thank the people that
-kept making donations anyway.  Your trust is great!)
+kept making donations anyway.  Your trust is greatly appreciated!)
 
 .. _`crowd-funding the STM work`: http://pypy.org/tmdonate2.html
 
@@ -48,10 +47,10 @@ TransactionQueue
 
 PyPy-STM is more than "just" a Python without GIL.  It is a Python in
 which you can do minor tweaks to your existing, *non-multithreaded*
-program, and get them to use multiple cores.  The basic idea is to
-identify medium- or large-sized likely-independent parts of the code,
-like every iteration of some outermost loop over all items of a
-dictionary; then ask PyPy-STM to try to run these parts in parallel.
+programs and get them to use multiple cores.  The basic idea is to
+identify medium- or large-sized, likely-independent parts of the code
+and to ask PyPy-STM to run these parts in parallel. An example would be
+every iteration of some outermost loop over all items of a dictionary.
 This is done with a ``transaction.TransactionQueue`` instance.  See
 ``help(TransactionQueue)`` or read more about it in `the STM user
 guide`_.
