@@ -18,16 +18,15 @@ core/process scenario. PyPy STM brings to the table a version of PyPy
 that does not have the infamous Global Interpreter Lock, hence can run
 multiple threads on multiple cores. Additionally it comes with a set
 of primitives that make writing multithreaded applications a lot easier,
-see the documentation for details.
+as explained below (see TransactionQueue) and in the documentation.
 
-This is a special version of PyPy that contains the "Software
-Transactional Memory" (STM) plug-in called stmgc-c7.  It gives a
-replacement for Python's classical Global Interpreter Lock (GIL).  The
-current version comes with a modest single-core overhead and scales only
-up to around 4 cores on some examples; the next version of
-the plug-in, stmgc-c8, is in development and should address that
-limitation.  Both versions only support 64-bit Linux; we'd welcome
-someone to port stmgc-c8 to other (64-bit) platforms.
+Internally, PyPy-STM is based on the Software Transactional Memory
+plug-in called stmgc-c7.  This version comes with a relatively
+reasonable single-core overhead but scales only up to around 4 cores
+on some examples; the next version of the plug-in, stmgc-c8, is in
+development and should address that limitation (as well as reduce the
+overhead).  These versions only support 64-bit Linux; we'd welcome
+someone to port the upcoming stmgc-c8 to other (64-bit) platforms.
 
 This release passes all regular PyPy tests, except for a few
 special cases.  In other words, you should be able to drop in
