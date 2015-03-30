@@ -2,9 +2,9 @@
 PyPy-STM 2.5.1 - Mawhrin-Skel
 =============================
 
-We're pleased to announce PyPy-STM 2.5.1, Mawhrin-Skel.  This is the
-second official release of PyPy-STM.  You can download this release
-here:
+We're pleased to announce PyPy-STM 2.5.1, codenamed Mawhrin-Skel.
+This is the second official release of PyPy-STM.  You can download
+this release here (64-bit Linux only):
 
     http://pypy.org/download.html
 
@@ -17,8 +17,8 @@ Transactional Memory" (STM) plug-in called stmgc-c7.  It gives a
 replacement for Python's classical Global Interpreter Lock (GIL).  The
 current version scales only up to around 4 cores; the next version of
 the plug-in, stmgc-c8, is in development and should address that
-limitation.  Both versions only support 64-bit Linux for now
-(contributions welcome).
+limitation.  Both versions only support 64-bit Linux; we'd welcome
+someone to port stmgc-c8 to other (64-bit) platforms.
 
 This release passes all regular PyPy tests, except for a few
 special cases.  In other words, you should be able to drop in
