@@ -102,6 +102,30 @@ Speed: 7x faster than CPython
    :scale: 47%
 
 
+The JIT
+--------
+
+.. image:: jit-overview1.pdf
+   :scale: 50%
+
+
+The JIT
+--------
+
+.. image:: jit-overview2.pdf
+   :scale: 50%
+
+
+The JIT
+--------
+
+.. image:: jit-overview3.pdf
+   :scale: 50%
+          
+
+
+
+
 Contacts, Q&A
 --------------
 
