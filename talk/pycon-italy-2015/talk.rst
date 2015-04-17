@@ -226,7 +226,18 @@ Virtuals
 
 - Remove unnecessary load/store
 
-- "Abstraction for free"
+|small|
+|example<| |small| virtuals.py |end_small| |>|
+
+.. sourcecode:: python
+
+    res = 0
+    while res < 10000:
+        obj = Foo(x, y, z)
+        res += obj.x
+
+|end_example|
+|end_small|
 
 
 Example
