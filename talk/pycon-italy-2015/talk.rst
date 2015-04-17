@@ -244,9 +244,9 @@ Example
 .. sourcecode:: C
 
     struct Point {
-        long x;
-        long y;
-        int color;
+        int x;
+        int y;
+        short color;
     }
 
 |end_example|
@@ -429,6 +429,121 @@ Example: better API
     call(ll_arraycopy__arrayPtr_arrayPtr_Signed_Signed_Signed), p175, p174, 0, 0, i173, descr=<Callv 0 rriii EF=2 OS=1>)
     i176 = int_eq(i173, 2)
     guard_false(i176, descr=<Guard0xb3a8cc10>)
+
+|end_example|
+|end_scriptsize|
+
+Example: faster API
+---------------------
+
+|scriptsize|
+|example<| |small| decode2.py |end_small| |>|
+
+.. sourcecode:: python
+
+    def Message(name, fields):
+        class M(object):
+            def read(self, buf, name):
+                f = getattr(self, name)
+                return struct.unpack_from(f.fmt, buf, f.offset)[0]            
+    
+        for fname, f in fields.iteritems():
+            setattr(M, fname, f)
+    
+        M.__name__ = name
+        return M()
+    
+    Point = Message('Point', {
+        'x': Field('l', 0),
+        'y': Field('l', 4),
+        'color': Field('i', 8)
+        })
+    
+     ...
+     x = Point.read(p, 'x')
+     ...
+
+|end_example|
+|end_scriptsize|
+
+Example: faster API
+----------------------------
+
+|scriptsize|
+|example<| |small| decode2.py trace (3) |end_small| |>|
+
+.. sourcecode:: python
+
+    debug_merge_point(1, 1, '<code object read> #36 CALL_METHOD')
+    +670: i104 = strlen(p101)
+    +673: i105 = int_lt(i104, 4)
+    guard_false(i105, descr=<Guard0xb3afac10>)
+    +682: i106 = strgetitem(p101, 0)
+    +686: i107 = strgetitem(p101, 1)
+    +696: i108 = int_lshift(i107, 8)
+    +699: i109 = int_or(i106, i108)
+    +701: i110 = strgetitem(p101, 2)
+    +717: i111 = int_lshift(i110, 16)
+    +720: i112 = int_or(i109, i111)
+    +722: i113 = strgetitem(p101, 3)
+    +726: i114 = int_ge(i113, 128)
+    guard_false(i114, descr=<Guard0xb3afabe0>)
+    +738: i115 = int_lshift(i113, 24)
+    +741: i116 = int_or(i112, i115)
+
+|end_example|
+|end_scriptsize|
+
+What happened?
+---------------
+
+- dict lookups inside classes are specialized
+
+- decode1.py
+
+  * ``fields`` is "normal data" and expected to change
+
+  * one JIT code for **all** possible messages
+
+- decode2.py
+
+  * ``fields`` is expected to be constant
+
+  * one JIT code for **each** message
+
+- Behaviour is the same, different performance
+
+
+Example: even better API :)
+-----------------------------
+
+|scriptsize|
+|example<| |small| decode3.py |end_small| |>|
+
+.. sourcecode:: python
+
+    class Field(object):
+        def __init__(self, fmt, offset):
+            self.fmt = fmt
+            self.offset = offset
+    
+        def __get__(self, obj, cls):
+            return struct.unpack_from(self.fmt, obj._buf, self.offset)[0]
+    
+    class Point(object):
+        def __init__(self, buf):
+            self._buf = buf
+    
+        x = Field('l', 0)
+        y = Field('l', 4)
+        color = Field('h', 8)
+    
+    def main():
+        res = 0
+        for p in PLIST:
+            p = Point(p)
+            res += p.x
+        print res
 
 |end_example|
 |end_scriptsize|
