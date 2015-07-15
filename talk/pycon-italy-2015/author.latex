@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy JIT]{PyPy JIT (not) for dummies}
+\author[antocuni]
+{Antonio Cuni}
+
+\institute{PyCon Sei}
+\date{April 17, 2015}
