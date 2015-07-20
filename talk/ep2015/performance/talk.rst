@@ -329,12 +329,25 @@ Specialization trade-offs
 Guidos points
 -------------
 
-xzxzcxzcxz
+.. image:: guido.png
+   :scale: 50%
 
 Don't do it on PyPy (or at all)
 -------------------------------
 
-yyyy
+* simple is better than complicated
+
+* avoid string concatenation in the loop
+
+* avoid replacing simple loop with itertools monsters
+
+* "move stuff to C" is (almost) never a good idea
+
+* use ``cffi`` when calling C
+
+* avoid C extensions using CPython C API
+
+* avoid creating classes at runtime
 
 More about PyPy
 ---------------
