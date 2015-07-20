@@ -326,4 +326,30 @@ Specialization trade-offs
 
   * inefficient code
 
+Guidos points
+-------------
 
+xzxzcxzcxz
+
+Don't do it on PyPy (or at all)
+-------------------------------
+
+yyyy
+
+More about PyPy
+---------------
+
+* we are going to run a PyPy open space
+
+* come ask more questions
+
+Q&A?
+----
+
+* Thank you!
+
+* http://baroquesoftware.com
+
+* http://pypy.org
+
+* http://vmprof.readthedocs.org
