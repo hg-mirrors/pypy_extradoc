@@ -16,16 +16,6 @@ About us
 - http://baroquesoftware.com/
 
 
-About you
--------------
-
-- You are proficient in Python
-
-- Your Python program is slow
-
-- You want to make it fast(er)
-
-
 Optimization for dummies
 -------------------------
 
@@ -55,43 +45,37 @@ This talk
 
   2. How to address the problems
 
-
 Part 1
--------
+------
 
-* profiling
-
-* tools
-
+* identifying the slow spots
 
 What is performance?
 --------------------
 
-* you need something quantifiable by numbers
+* something quantifiable by numbers
 
 * usually, time spent doing task X
 
-* sometimes number of requests, latency, etc.
+* number of requests, latency, etc.
 
-* some statistical properties about that metric (average, minimum, maximum)
+* statistical properties about that metric
 
 Do you have a performance problem?
 ----------------------------------
 
-* define what you're trying to measure
+* what you're trying to measure
 
-* measure it (production, benchmarks, etc.)
+* means to measure it (production, benchmarks, etc.)
 
-* see if Python is the cause here (if it's not, we can't help you,
-  but I'm sure someone can)
+* is Python is the cause here?
 
-* make sure you can change and test stuff quickly (e.g. benchmarks are better
-  than changing stuff in production)
+* environment to quickly measure and check the results
 
-* same as for debugging
+  - same as for debugging
 
-We have a python problem
-------------------------
+When Python is the problem
+--------------------------
 
 * tools, timers etc.
 
@@ -106,7 +90,7 @@ Profilers landscape
 
 * cProfile, runSnakeRun (high overhead) - event based profiler
 
-* plop, vmprof - statistical profiler
+* plop, vmprof - statistical profilers
 
 * cProfile & vmprof work on pypy
 
@@ -121,8 +105,8 @@ vmprof
 
 * CPython, PyPy, possibly more virtual machines
 
-why not just use gperftools?
-----------------------------
+why not  gperftools?
+--------------------
 
 * C stack does not contain python-level frames
 
@@ -349,10 +333,19 @@ Don't do it on PyPy (or at all)
 
 * avoid creating classes at runtime
 
+Example
+-------
+
+* ``map(operator.attrgetter('x'), list)``
+
+vs
+
+* ``[x.x for x in list]``
+
 More about PyPy
 ---------------
 
-* we are going to run a PyPy open space
+* we are going to run a PyPy open space (tomorrow 18:00 @ A4)
 
 * come ask more questions
 
