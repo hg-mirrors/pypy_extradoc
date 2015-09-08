@@ -44,7 +44,13 @@ time by about 7%, so your mileage may vary. In fact in most cases there
 should not be a visible difference if you're already achieving peak performance,
 however wherever warmup is a problem there should be a modest speedup.
 
+Of course, as usual with the large refactoring of a crucial piece of PyPy,
+there are expected to be bugs. We are going to wait for the default to stabilize
+and you should see warmup improvements in the next release. If you're not afraid
+to try, `nightlies`_ will already have them.
+
 .. _`obvious warmup benchmark`: https://bitbucket.org/pypy/benchmarks/src/fe2e89c0ae6846e3a8d4142106a4857e95f17da7/warmup/function_call2.py?at=default
+.. _`nightlies`: http://buildbot.pypy.org/nightly/trunk
 
 Cheers!
 fijal & arigo
