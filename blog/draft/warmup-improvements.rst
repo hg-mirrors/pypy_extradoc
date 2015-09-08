@@ -1,6 +1,7 @@
 Hello everyone!
 
-I'm very pleased to announce that we've just managed to merge optresult branch.
+I'm very pleased to announce that we've just managed to merge
+the optresult branch.
 Under this cryptic name is the biggest JIT refactoring we've done in a couple
 years, mostly focused on the warmup time and memory impact of PyPy.
 
