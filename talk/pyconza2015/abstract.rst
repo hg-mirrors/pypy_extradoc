@@ -3,7 +3,7 @@ How PyPy runs your program
 ==========================
 
 [[The talk will be given by Maciej Fijalkowski,
-both long time PyPy core developers and expert in the area of
+both long time PyPy core developer and expert in the area of
 Python performance.]]
 
 In this talk we would like to have a short introduction on how Python
