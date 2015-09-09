@@ -13,6 +13,58 @@ quite a bit of technical debt over time that we're trying, with difficulty,
 to address right now. This branch mostly does not affect the peak performance
 - it should however help you with short-living scripts, like test runs.
 
+To see how much of a problem warmup is for your program, you can run your
+program with ``PYPYLOG=jit-summary:-`` environment variable set.
+This should show you something like this::
+
+    (pypy-optresult)fijal@hermann:~/src/botbot-web$ PYPYLOG=jit-summary:- python orm.py 1500
+    [d195a2fcecc] {jit-summary
+    Tracing:      	781	2.924965
+    Backend:      	737	0.722710
+    TOTAL:      		35.912011
+    ops:             	1860596
+    recorded ops:    	493138
+      calls:         	81022
+    guards:          	131238
+    opt ops:         	137263
+    opt guards:      	35166
+    forcings:        	4196
+    abort: trace too long:	22
+    abort: compiling:	0
+    abort: vable escape:	22
+    abort: bad loop: 	0
+    abort: force quasi-immut:	0
+    nvirtuals:       	183672
+    nvholes:         	25797
+    nvreused:        	116131
+    Total # of loops:	193
+    Total # of bridges:	575
+    Freed # of loops:	6
+    Freed # of bridges:	75
+    [d195a48de18] jit-summary}
+
+This means that the total (wall clock) time was 35.9s, out of which we spent
+2.9s tracing 781 loops and 0.72s compiling them. The remaining couple were
+aborted (trace too long is normal, vable escape means someone called
+``sys._getframe()`` or equivalent). You can do the following things:
+
+* compare the numbers with ``pypy --jit off`` and see at which number of
+  iterations ``pypy`` jit kicks in
+
+* play with the thresholds:
+  ``pypy --jit threshold=500,function_threshold=400,trace_eagerness=50`` was
+  much better in this example. What this does is to lower the threshold
+  for tracing loops from default of 1039 to 400, threshold for tracing
+  functions from the start from 1619 to 500 and threshold for tracing bridges
+  from 200 to 50. Bridges are "alternative paths" that JIT did not take that
+  are being additionally traced. We believe in sane defaults, so we'll try
+  to improve upon those numbers, but generally speaking there is no one-size
+  fits all here.
+
+* if the tracing/backend time stays high, come and complain to us with
+  benchmarks, we'll try to look at them
+
+
 The branch does "one" thing - it changes the underlying model of how operations
 are represented during tracing and optimizations. Let's consider a simple
 loop like::
