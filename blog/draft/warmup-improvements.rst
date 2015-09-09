@@ -83,6 +83,28 @@ Warmup, as a number, is notoriously hard to measure. It's a combination of:
 
 We're working hard on making a better assesment at this number, stay tuned :-)
 
+Speedups
+========
+
+Overall we measured about 50% speed improvement in the optimizer, which reduces
+the overall warmup time between 10% and 30%. The very
+`obvious warmup benchmark`_ got a speedup from 4.5s to 3.5s, almost
+30% improvement. Obviously the speedups on benchmarks would vastly
+depend on how much warmup time is there in those benchmarks. We observed
+annotation of pypy to decreasing by about 30% and the overall translation
+time by about 7%, so your mileage may vary.
+
+Of course, as usual with the large refactoring of a crucial piece of PyPy,
+there are expected to be bugs. We are going to wait for the default branch
+to stabilize so you should see warmup improvements in the next release.
+If you're not afraid to try, `nightlies`_ will already have them.
+
+We're hoping to continue improving upon warmup time and memory impact in the
+future, stay tuned for improvements.
+
+Technical details
+=================
+
 The branch does "one" thing - it changes the underlying model of how operations
 are represented during tracing and optimizations. Let's consider a simple
 loop like::
@@ -107,23 +129,7 @@ arguments getting special treatment.
 That alone reduces the GC pressure slightly, but a reduced number
 of instances also lets us store references on them directly instead
 of going through expensive dictionaries, which were used to store optimizing
-information about the boxes. Overall
-we measured about 50% speed improvement in the optimizer, which reduces
-the overall warmup time between 10% and 30%. The very
-`obvious warmup benchmark`_ got a speedup from 4.5s to 3.5s, almost
-30% improvement. Obviously the speedups on benchmarks would vastly
-depend on how much warmup time is there in those benchmarks. We observed
-annotation of pypy to decreasing by about 30% and the overall translation
-time by about 7%, so your mileage may vary.
-
-Of course, as usual with the large refactoring of a crucial piece of PyPy,
-there are expected to be bugs. We are going to wait for the default branch
-to stabilize
-so you should see warmup improvements in the next release. If you're not afraid
-to try, `nightlies`_ will already have them.
-
-We're hoping to continue improving upon warmup time and memory impact in the
-future, stay tuned for improvements.
+information about the boxes.
 
 .. _`obvious warmup benchmark`: https://bitbucket.org/pypy/benchmarks/src/fe2e89c0ae6846e3a8d4142106a4857e95f17da7/warmup/function_call2.py?at=default
 .. _`nightlies`: http://buildbot.pypy.org/nightly/trunk
