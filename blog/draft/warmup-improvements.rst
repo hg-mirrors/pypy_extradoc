@@ -13,6 +13,12 @@ quite a bit of technical debt over time that we're trying, with difficulty,
 to address right now. This branch mostly does not affect the peak performance
 - it should however help you with short-living scripts, like test runs.
 
+We identified warmup time to be one of the major pain points for pypy users,
+along with memory impact and compatibility issues with CPython C extension
+world. While we can't address all the issues at once, we're trying to address
+the first two in the work contributing to this blog post. I will write
+a separate article on the last item separately.
+
 To see how much of a problem warmup is for your program, you can run your
 program with ``PYPYLOG=jit-summary:-`` environment variable set.
 This should show you something like this::
@@ -64,6 +70,18 @@ aborted (trace too long is normal, vable escape means someone called
 * if the tracing/backend time stays high, come and complain to us with
   benchmarks, we'll try to look at them
 
+Warmup, as a number, is notoriously hard to measure. It's a combination of:
+
+* pypy running interpreter before jitting
+
+* pypy needing time to JIT the traces
+
+* additional memory allocations needed during tracing to accomodate bookkeeping
+  data
+
+* exiting and entering assembler until there is enough coverage of assembler
+
+We're working hard on making a better assesment at this number, stay tuned :-)
 
 The branch does "one" thing - it changes the underlying model of how operations
 are represented during tracing and optimizations. Let's consider a simple
@@ -103,6 +121,9 @@ there are expected to be bugs. We are going to wait for the default branch
 to stabilize
 so you should see warmup improvements in the next release. If you're not afraid
 to try, `nightlies`_ will already have them.
+
+We're hoping to continue improving upon warmup time and memory impact in the
+future, stay tuned for improvements.
 
 .. _`obvious warmup benchmark`: https://bitbucket.org/pypy/benchmarks/src/fe2e89c0ae6846e3a8d4142106a4857e95f17da7/warmup/function_call2.py?at=default
 .. _`nightlies`: http://buildbot.pypy.org/nightly/trunk
