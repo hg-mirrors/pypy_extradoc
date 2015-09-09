@@ -10,7 +10,8 @@ got the first working JIT prototype in 2009 we were focused exclusively
 on the peak performance with some consideration towards memory usage, but
 without serious consideration towards warmup time. This means we accumulated
 quite a bit of technical debt over time that we're trying, with difficulty,
-to address right now.
+to address right now. This branch mostly does not affect the peak performance
+- it should however help you with short-living scripts, like test runs.
 
 The branch does "one" thing - it changes the underlaying model of how operations
 are represented during the tracing and optimizations. Let's consider a simple
@@ -33,17 +34,17 @@ completely, instead using link to ``ResOperation`` itself. So say in the above
 example, ``i2`` would refer to its producer - ``i2 = int_add(i0, i1)`` with
 arguments getting special treatment.
 
-That alone reduces the GC pressure slightly, but we went an extra mile
-to change a bunch of data structures in the optimizer itself. Overall
+That alone reduces the GC pressure slightly, but a reduced number
+of instances also lets us store references on them directly instead
+of going through expensive dictionaries, which were used to store optimizing
+information about the boxes. Overall
 we measured about 50% speed improvement in the optimizer, which reduces
 the overall warmup time between 10% and 30%. The very
 `obvious warmup benchmark`_ got a speedup from 4.5s to 3.5s so almost
 30% improvement. Obviously the speedups on benchmarks would vastly
 depend on how much warmup time is there in those benchmarks. We observed
 annotation of pypy to decrease by about 30% and the overall translation
-time by about 7%, so your mileage may vary. In fact in most cases there
-should not be a visible difference if you're already achieving peak performance,
-however wherever warmup is a problem there should be a modest speedup.
+time by about 7%, so your mileage may vary.
 
 Of course, as usual with the large refactoring of a crucial piece of PyPy,
 there are expected to be bugs. We are going to wait for the default to stabilize
