@@ -29,6 +29,8 @@ The basics of PyPy
 
 * different base, not written in C
 
+* ~7x faster than cpython
+
 PyPy - the wider angle
 ----------------------
 
@@ -122,9 +124,31 @@ Optimization for dummies
 Guidos points about optimizing python
 -------------------------------------
 
-xxx find the link
-
 Why we're here?
 ---------------
 
-yyyyy
+* because the points above don't really work
+
+* once you fix obvious mistakes, profiles tend to look flat
+
+* let's look at some of them
+
+the basics
+----------
+
+* have a metric
+
+a word about timeit
+-------------------
+
+xxxxx
+
+introducing vmprof
+------------------
+
+* low-overhead profiler
+
+* statistical
+
+* visualization tools (work in progress)
+
