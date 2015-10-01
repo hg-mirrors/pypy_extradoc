@@ -1,6 +1,6 @@
 
 How PyPy runs your program
-==================
+==========================
 
 About me
 --------
@@ -8,6 +8,10 @@ About me
 * PyPy core developer for 8 years
 
 * running consulting business baroquesoftware.com
+
+* always interested in tooling and improving experience
+
+* originally from Poland, living in Cape Town
 
 This talk
 ---------
@@ -27,7 +31,7 @@ The basics of PyPy
 
 * uses magic to run code faster (most of the time)
 
-* different base, not written in C
+* completely different codebase, not written in C
 
 * ~7x faster than cpython
 
