@@ -7,7 +7,7 @@ About me
 
 * PyPy core developer for 8 years
 
-* running consulting business baroquesoftware.com
+* running consulting business ``http://baroquesoftware.com``
 
 * always interested in tooling and improving experience
 
@@ -20,9 +20,9 @@ The idea is to learn:
 
 * how pypy runs your programs
 
-* how to assess the performance of your program
+* how to assess the **performance** of your program
 
-* additionally, why a lot of common folklore is not true
+* additionally, why a lot of **common folklore** is not true
 
 The basics of PyPy
 ------------------
@@ -33,7 +33,7 @@ The basics of PyPy
 
 * completely different codebase, not written in C
 
-* ~7x faster than cpython
+* **~7x faster** than cpython
 
 PyPy - the wider angle
 ----------------------
@@ -133,6 +133,8 @@ Why we're here?
 
 * because the points above don't really work
 
+* tradeoffs between productivity and performance
+
 * once you fix obvious mistakes, profiles tend to look flat
 
 * let's look at some of them
@@ -142,10 +144,22 @@ the basics
 
 * have a metric
 
+* a number, the shorter iteration the better
+
+* use science!
+
 a word about timeit
 -------------------
 
-xxxxx
+* don't use it
+
+* really, never
+
+* no, not even that time
+
+* minimum is a terrible thing
+
+* disables the GC
 
 introducing vmprof
 ------------------
@@ -156,3 +170,37 @@ introducing vmprof
 
 * visualization tools (work in progress)
 
+vmprofdemo
+----------
+
+* optimize for yourself
+
+* cpython, pypy
+
+more complicated example
+------------------------
+
+* django admin
+
+* 30 req/s
+
+* in 2015, that's 90mln operations to show you a simple website
+
+baroquesoftware.com
+-------------------
+
+
+* monetizing open source is a difficult question, warrants another talk
+
+* small consultancy on execution of programs
+
+* talk to me
+
+Questions?
+----------
+
+* http://pypy.org
+
+* http://baroquesoftware.com
+
+* http://vmprof.com
