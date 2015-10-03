@@ -1,8 +1,8 @@
 
 Hello everyone!
 
-This is the second part of the series of warmup improvements and
-memory consumption. This post covers recent work on sharing guard
+This is the second part of the series of improvement in warmup time and
+memory consumption in the PyPy JIT. This post covers recent work on sharing guard
 resume data that was recently merged to trunk. It will be a part
 of the next official PyPy release. To understand what it does, let's
 start with a loop for a simple example::
@@ -31,15 +31,15 @@ which compiles to the following loop::
    guard(i50 is false)
    jump(p0, p1, p4, p6, p7, i47, i44, p15, p24, i46, i29, descr=TargetToken(4364727712))
 
-Now each ``guard`` here needs a bit of data to know how to exit the compiled
-assembler into the interpreter, and potentially to compile a bridge in the future.
-Since over 90% of guards never fail, this is incredibly wasteful - we have a copy
+Now each ``guard`` needs a bit of data to know how to exit the compiled
+assembler back up to the interpreter, and potentially to compile a bridge in the
+future. Since over 90% of guards never fail, this is incredibly wasteful - we have a copy
 of the resume data for each guard. When two guards are next to each other or the
 operations in between them are pure, we can safely redo the operations or to simply
 put, resume in the previous guard. That means every now and again we execute a few
 operations extra, but not storing extra info saves quite a bit of time and a bit of memory.
-I've done some measurments on annotating & rtyping pypy which is pretty memory hungry
-program that compiles a fair bit. I measured, respectively:
+I've done some measurments on annotating & rtyping translation of pypy, which
+is a pretty memory hungry program that compiles a fair bit. I measured, respectively:
 
 * total time the translation step took (annotating or rtyping)
 
@@ -61,8 +61,8 @@ Here is the table:
 | win     | 4.8%            | 5.5%         | 19%               | 26%            | 17%          |
 +---------+-----------------+--------------+-------------------+----------------+--------------+
 
-Obviously pypy translation is a bit extreme exampl - the vast majority of the code out there
-does not have that much code involved that's being jitted. However, it's at the very least
+Obviously pypy translation is an extreme example - the vast majority of the code out there
+does not have that many lines of code to be jitted. However, it's at the very least
 a good win for us :-)
 
 We will continue to improve the warmup performance and keep you posted!
