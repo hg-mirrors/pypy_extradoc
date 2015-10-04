@@ -1,7 +1,7 @@
 
 Hello everyone!
 
-This is the second part of the series of improvement in warmup time and
+This is the second part of the series of improvements in warmup time and
 memory consumption in the PyPy JIT. This post covers recent work on sharing guard
 resume data that was recently merged to trunk. It will be a part
 of the next official PyPy release. To understand what it does, let's
