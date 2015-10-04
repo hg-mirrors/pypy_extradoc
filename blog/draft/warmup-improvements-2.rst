@@ -7,34 +7,45 @@ resume data that was recently merged to trunk. It will be a part
 of the next official PyPy release. To understand what it does, let's
 start with a loop for a simple example::
 
+   class A(object):
+       def __init__(self, x, y):
+           self.x = x
+           self.y = y
+
+       def call_method(self, z):
+           return self.x + self.y + z
+
    def f():
        s = 0
        for i in range(100000):
-          s += 1
+           a = A(i, 1 + i)
+           s += a.call_method(i)
 
-which compiles to the following loop::
+At the entrance of the loop, we have the following set of operations:
 
-   label(p0, p1, p4, p6, p7, i39, i25, p15, p24, i44, i29, descr=TargetToken(4364727712))
-   # check the loop exit
-   i45 = i44 >= i29
-   guard(i45 is false)
-   # increase the loop counter
-   i46 = i44 + 1
-   # store the index into special W_RangeObject
-   ((pypy.objspace.std.iterobject.W_AbstractSeqIterObject)p15).inst_index = i46
-   # add s += 1 with overflow checking
-   i47 = int_add_ovf(i39, 1)
-   guard_no_overflow(descr=<Guard0x104295518>)
-   guard_not_invalidated(descr=<Guard0x1042954c0>)
-   i49 = getfield_raw_i(4336405536, descr=<FieldS pypysig_long_struct.c_value 0>)
-   i50 = i49 < 0
-   guard(i50 is false)
-   jump(p0, p1, p4, p6, p7, i47, i44, p15, p24, i46, i29, descr=TargetToken(4364727712))
+    guard(i5 == 4)
+    guard(p3 is null)
+    p27 = getfield_gc_pure_r(p2, descr=<FieldP pypy.interpreter.pycode.PyCode.inst_co_cellvars 80>)
+    p28 = getfield_gc_pure_r(p2, descr=<FieldP pypy.interpreter.pycode.PyCode.inst_co_freevars 128>)
+    guard_class(p17, 4316866008, descr=<Guard0x104295e08>)
+    p30 = getfield_gc_r(p17, descr=<FieldP pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_w_seq 16>)
+    guard_nonnull(p30, descr=<Guard0x104295db0>)
+    i31 = getfield_gc_i(p17, descr=<FieldS pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_index 8>)
+    p32 = getfield_gc_r(p30, descr=<FieldP pypy.objspace.std.listobject.W_ListObject.inst_strategy 16>)
+    guard_class(p32, 4317041344, descr=<Guard0x104295d58>)
+    p34 = getfield_gc_r(p30, descr=<FieldP pypy.objspace.std.listobject.W_ListObject.inst_lstorage 8>)
+    i35 = getfield_gc_pure_i(p34, descr=<FieldS tuple1.item0 8>)
 
-Now each ``guard`` needs a bit of data to know how to exit the compiled
-assembler back up to the interpreter, and potentially to compile a bridge in the
-future. Since over 90% of guards never fail, this is incredibly wasteful - we have a copy
-of the resume data for each guard. When two guards are next to each other or the
+The above operations gets executed at the entrance, so each time we call ``f()``. They ensure
+all the optimizations done below stay valid. Now, as long as nothing
+crazy happens, they only ensure that the world around us never changed. However, if someone puts new
+methods on class ``A``, any of the above guards might fail, despite the fact that it's a very unlikely
+case, pypy needs to track how to recover from this situation. Each of those points needs to keep the full
+state of the optimizations performed, so we can safely deoptimize them and reenter the interpreter.
+This is vastly wasteful since most of those guards never fail, hence some sharing between guards
+has been performed.
+
+We went a step further - when two guards are next to each other or the
 operations in between them are pure, we can safely redo the operations or to simply
 put, resume in the previous guard. That means every now and again we execute a few
 operations extra, but not storing extra info saves quite a bit of time and a bit of memory.
