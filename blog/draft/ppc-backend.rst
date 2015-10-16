@@ -2,7 +2,7 @@ Hi all,
 
 PyPy's JIT now supports the 64-bit PowerPC architecture!  This is the
 third architecture supported, in addition to x86 (32 and 64) and ARM
-(32-bit only).  More precisely, we support the big- and the
+(32-bit only).  More precisely, we support Linux running the big- and the
 little-endian variants of ppc64.  Thanks to IBM for funding this work!
 
 The new JIT backend has been merged into "default".  You should be able
@@ -24,9 +24,10 @@ up with given the limited resources.
 
 Here are the results, where the numbers are speed-up factors between the
 non-jit and the jit version of PyPy.  The first column is x86-64, for
-reference.  The second and third columns are the two ppc64le runs.  A
-few benchmarks are not reported here because the runner doesn't execute
-them on non-jit (however, apart from sqlitesynth, they all worked).
+reference.  The second and third columns are the two ppc64le runs.  All
+are Linux.  A few benchmarks are not reported here because the runner
+doesn't execute them on non-jit (however, apart from sqlitesynth, they
+all worked).
 
 ::
 
