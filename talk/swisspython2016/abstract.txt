@@ -1,5 +1,5 @@
 CFFI: calling C code
---------------------
+====================
 
 I will introduce CFFI, a way to call C libraries from Python.
 It was designed in 2012 to get away from Python's C extension
