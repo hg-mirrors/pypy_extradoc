@@ -16,7 +16,7 @@ on multiple threads, and so on.
 
 Moreover, this approach is specific to CPython (2.x or 3.x, which you
 can do in a similar way).  It does not work on PyPy, which has its own
-smaller `embedding API`_.
+smaller but very different `embedding API`_.
 
 The new-and-coming thing about CFFI, meant as replacement of the above
 solutions, is direct embedding support---and it does that with no
@@ -39,9 +39,11 @@ in your particular case.  You can even directly make a "plug-in" for
 any program that supports them, just by exporting the API expected for
 such plugins.
 
-This is still being finalized, but please try it out.  (You can also
-see `embedding.py`_ directly online for a quick glance.)  These are
-the instructions on Linux with CPython 2.7::
+This is still being finalized, but please try it out.  (You can also see
+`embedding.py`_ directly online for a quick glance.)  These are the
+instructions on Linux with CPython 2.7 (CPython 3.x and non-Linux
+platforms are still a work in progress right now, but this should be
+quickly fixed):
 
 * get the branch ``static-callback-embedding`` of CFFI::
 
@@ -74,9 +76,6 @@ more recent one in ``..``.  Be sure to use ``PYTHONPATH=..`` for now.
 Very similar steps can be followed on PyPy, but it requires the
 ``cffi-static-callback-embedding`` branch of PyPy, which you must
 first translate from sources.
-
-CPython 3.x and non-Linux platforms are still a work in progress right
-now, but this should be quickly fixed.
 
 Note that CPython/PyPy is automatically initialized (using locks in
 case of multi-threading) the first time any of the ``extern "Python"``
