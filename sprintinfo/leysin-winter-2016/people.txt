@@ -12,6 +12,7 @@ available yet from them.
 Armin Rigo                          private
                                     (SEE NOTE BELOW)
 Remi Meier           21-27          Ermina
+Carl Friedrich Bolz  20-27          Ermina?
 ==================== ============== =======================
 
 **NOTE:** we might have only a single double-bed room and a big room
@@ -42,7 +43,6 @@ David Schneider      ?              ?
 Jacob Hallen         ?              ?
 Laura Creighton      ?              ?
 Hakan Ardo           ?              ?
-Carl Friedrich Bolz  ?              ?
 Samuele Pedroni      ?              ?
 Anders Hammarquist   ?              ?
 Christian Tismer     ?              ?
