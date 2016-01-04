@@ -6,12 +6,17 @@ People who have a ``?`` in their arrive/depart or accomodation
 column are known to be coming but there are no details 
 available yet from them.
 
-
 ==================== ============== =======================
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo                          private
+                                    (SEE NOTE BELOW)
 ==================== ============== =======================
+
+**NOTE:** we might have only a single double-bed room and a big room
+(5-6 individual beds).  I can ask if more people want smaller rooms,
+and/or recommend hotels elsewhere in Leysin.  Please be explicit in what
+you prefer.
 
 
 People on the following list were present at previous sprints: 
@@ -19,13 +24,13 @@ People on the following list were present at previous sprints:
 ==================== ============== =====================
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
-Maciej Fijalkowski   21-28          Ermina
-Remi Meier           21-28          Ermina
-Sebastian Pawlus     21-27          Ermina
-Manuel Jacob         21-28          Ermina
-Joan Massich         20-?           Ermina
-Quim Sanchez         20-?           Ermina
-Alexander Schremmer  21-23          Ermina
+Maciej Fijalkowski   ?              ?
+Remi Meier           ?              ?
+Sebastian Pawlus     ?              ?
+Manuel Jacob         ?              ?
+Joan Massich         ?              ?
+Quim Sanchez         ?              ?
+Alexander Schremmer  ?              ?
 Romain Guillebert    ?              ?
 Christian Clauss     ?              ?
 Johan Råde           ?              ?
