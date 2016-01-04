@@ -68,5 +68,4 @@ Guido Wesdorp        ?              ?
 Leonardo Santagada   ?              ?
 Alexandre Fayolle    ?              ?
 Sylvain Thénault     ?              ?
-Richard Plangger     ?              ?
 ==================== ============== =====================
