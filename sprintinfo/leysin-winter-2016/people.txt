@@ -16,7 +16,8 @@ Armin Rigo                          private
 **NOTE:** we might have only a single double-bed room and a big room
 (5-6 individual beds).  I can ask if more people want smaller rooms,
 and/or recommend hotels elsewhere in Leysin.  Please be explicit in what
-you prefer.
+you prefer.  The standard booking is for the nights from Saturday to
+Saturday, but it is possible to extend that.
 
 
 People on the following list were present at previous sprints: 
