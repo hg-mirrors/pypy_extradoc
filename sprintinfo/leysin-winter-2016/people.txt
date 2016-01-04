@@ -14,6 +14,7 @@ Armin Rigo                          private
 Remi Meier           21-27          Ermina
 Carl Friedrich Bolz  20-27          Ermina?
 Matti Picus          20-25          Ermina
+Manuel Jacob         20-28          Ermina
 ==================== ============== =======================
 
 **NOTE:** we might have only a single double-bed room and a big room
