@@ -16,6 +16,7 @@ Carl Friedrich Bolz  20-27          Ermina?
 Matti Picus          20-25          Ermina
 Manuel Jacob         20-28          Ermina
 Richard Plangger     20-28          Ermina
+Maciej Fijalkowski   20-?           Ermina (big room preferred)
 ==================== ============== =======================
 
 **NOTE:** we might have only a single double-bed room and a big room
@@ -30,7 +31,6 @@ People on the following list were present at previous sprints:
 ==================== ============== =====================
        Name          Arrive/Depart  Accomodation 
 ==================== ============== =====================
-Maciej Fijalkowski   ?              ?
 Remi Meier           ?              ?
 Sebastian Pawlus     ?              ?
 Manuel Jacob         ?              ?
