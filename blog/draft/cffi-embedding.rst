@@ -6,6 +6,10 @@ CFFI_ has been a great success so far to call C libraries in your
 Python programs, in a way that is both simple and that works across
 CPython 2.x and 3.x and PyPy.
 
+This post assumes that you know what CFFI is and how to use it in
+API mode (``ffi.cdef()``, ``ffi.set_source()``, ``ffi.compile()``).
+A quick overview can be found here__.
+
 The major news of CFFI 1.4, released last december, was that you can
 now declare C functions with ``extern "Python"``, in the ``cdef()``.
 These magic keywords make the function callable from C (where it is
@@ -51,7 +55,7 @@ case.  You can even directly make a "plug-in" for any program that
 supports them, just by exporting the API expected for such plugins.
 
 This is still being finalized, but please try it out.  (You can also
-see `embedding.py`_ directly online for a quick glance.)  Here are
+see `embedding.py`_ directly online for a quick glance.)  See
 below the instructions on Linux with CPython 2.7 (CPython 3.x and
 non-Linux platforms are still a work in progress right now, but this
 should be quickly fixed):
@@ -86,30 +90,31 @@ more recent one in ``..``.  Be sure to use ``PYTHONPATH=..`` for now.
 
 Very similar steps can be followed on PyPy, but it requires the
 ``cffi-static-callback-embedding`` branch of PyPy, which you must
-first translate from sources.  The difference is only that you need to
+first translate from sources.  The difference is then that you need to
 adapt the first ``gcc`` command line: replace ``-lpython2.7`` with
 ``-lpypy-c`` and to fix the ``-I`` path (and possibly add a ``-L``
 path).
 
-Note that CPython/PyPy is automatically initialized (using locks in
-case of multi-threading) the first time any of the ``extern "Python"``
+Note that CPython/PyPy is automatically initialized (using locks in case
+of multi-threading) the first time any of the ``extern "Python"``
 functions is called from the C program.  (This should work even if two
 different threads call the first time a function from two *different*
 embedded CFFI extensions; in other words, explicit initialization is
 never needed).  The custom initialization-time Python code you put in
-``ffi.embedding_init_code()`` is executed.  If this code starts to be
-big, you can move it to independent modules or packages.  Then the
-initialization-time Python code only needs to import them.  In that
-case, you have to carefully set up ``sys.path`` if the modules are not
-installed in the usual Python way.
+``ffi.embedding_init_code()`` is executed at that time.  If this code
+starts to be big, you can move it to independent modules or packages.
+Then the initialization-time Python code only needs to import them.  In
+that case, you have to carefully set up ``sys.path`` if the modules are
+not installed in the usual Python way.
 
-A better alternative would be to use virtualenv.  How to do that is
-not fully fleshed out so far.  You can certainly run the whole program
-with the environment variables set up by the virtualenv's ``activate``
-script first.  There are probably other solutions that involve using
-gcc's ``-Wl,-rpath=\$ORIGIN/`` or ``-Wl,-rpath=/fixed/path/`` options
-to load a specific libpython or libypypy-c library.  If you try it out
-and it doesn't work the way you would like, please complain :-)
+If the Python code is big and full of dependencies, a better alternative
+would be to use virtualenv.  How to do that is not fully fleshed out so
+far.  You can certainly run the whole program with the environment
+variables set up by the virtualenv's ``activate`` script first.  There
+are probably other solutions that involve using gcc's
+``-Wl,-rpath=\$ORIGIN/`` or ``-Wl,-rpath=/fixed/path/`` options to load
+a specific libpython or libypypy-c library.  If you try it out and it
+doesn't work the way you would like, please complain ``:-)``
 
 Another point: right now this does not support CPython's notion of
 multiple subinterpreters.  The logic creates a single global Python
