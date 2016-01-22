@@ -30,6 +30,10 @@ project with only long-term goals?):
   the conflict reporting tools, and more generally to figure out how
   practical it is in large projects to avoid conflicts
 
+* Running Mercurial on Pypy
+
+* Workflow of the Pypy Project with Mercurial
+
 * And as usual, the main side goal is to have fun in winter sports :-)
   We can take a day off for ski.
 
