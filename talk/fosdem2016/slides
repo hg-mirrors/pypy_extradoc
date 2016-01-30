@@ -324,7 +324,7 @@ CFFI
 
   - it does not expose any part of the CPython C API
 
-  - everything is done with a different, minimal API on the ``ffi`` object
+  - everything is done with a minimal API on the ``ffi`` object
     which is closer to C
 
     - ``ffi.cast()``, ``ffi.new()``, etc.
