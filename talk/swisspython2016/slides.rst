@@ -2,6 +2,15 @@
 CFFI and PyPy
 =============
 
+.. raw:: latex
+
+   \catcode`\|=13
+   \def|{\hskip 1cm}
+
+   \let\foobarbaz=>
+   \catcode`\>=13
+   \def>{\foobarbaz\relax}
+ 
 
 CFFI
 ====
@@ -45,32 +54,19 @@ CFFI demo
 
 ::
 
-  $ man getpwuid
+ |    $ man getpwuid
 
-  SYNOPSIS
-         #include <sys/types.h>
-         #include <pwd.h>
+ | 
 
-         struct passwd *getpwnam(const char *name);
+ |    SYNOPSIS
 
+ |    |      #include <sys/types.h>
 
-CFFI demo
-=========
+ |    |      #include <pwd.h>
 
-::
+ |    |
 
-       .
-       .
-       .
-       The passwd structure is defined in <pwd.h> as follows:
-
-           struct passwd {
-               char   *pw_name;       /* username */
-               char   *pw_passwd;     /* user password */
-               uid_t   pw_uid;        /* user ID */
-       .
-       .
-       .
+ |    |      struct passwd *getpwnam(const char *);
 
 
 CFFI demo
@@ -78,17 +74,59 @@ CFFI demo
 
 ::
 
-  from cffi import FFI
-  ffi = cffi.FFI()
+ |       .
 
-  ffi.cdef("""
-      typedef int... uid_t;
-      struct passwd {
-          uid_t pw_uid;
-          ...;
-      };
-      struct passwd *getpwnam(const char *name);
-  """)
+ |       .
+
+ |       .
+
+ |       The passwd structure is defined in <pwd.h>
+
+ |       as follows:
+
+ |
+ 
+ |       struct passwd {
+
+ |       |      char   *pw_name;       /* username */
+
+ |       |      char   *pw_passwd;     /* user password */
+ 
+ |       |      uid_t   pw_uid;        /* user ID */
+ 
+ |       .
+
+ |       .
+
+ |       .
+   
+
+CFFI demo
+=========
+
+::
+
+ |  from cffi import FFI
+
+ |  ffi = cffi.FFI()
+
+ |
+
+ |  ffi.cdef("""
+
+ |  |     typedef int... uid_t;
+ 
+ |  |     struct passwd {
+ 
+ |  |     |     uid_t pw_uid;
+ 
+ |  |     |     ...;
+ 
+ |  |     };
+ 
+ |  |     struct passwd *getpwnam(const char *);
+ 
+ |  """)
 
 
 CFFI demo
@@ -96,14 +134,21 @@ CFFI demo
 
 ::
 
-  ffi.set_source("_pwuid_cffi", """
-      #include <sys/types.h>
-      #include <pwd.h>
-  """)
+ | ffi.set_source("_pwuid_cffi", """
+ 
+ | |    #include <sys/types.h>
+ 
+ | |    #include <pwd.h>
+ 
+ | """)
 
-  ffi.compile()
+ |
+ 
+ | ffi.compile()
 
-------- ^^ put that in pwuid_build.py
+ |
+
+... and put that in pwuid_build.py
 
 
 CFFI demo
@@ -111,9 +156,11 @@ CFFI demo
 
 ::
 
-  python pwuid_build.py
+ | python pwuid_build.py
 
-creates ``_pwuid_cffi.so``
+ |
+
+creates _pwuid_cffi.so
 
 
 CFFI demo
@@ -123,7 +170,7 @@ CFFI demo
 
   from _pwuid_cffi import lib
 
-  print lib.getpwnam("arigo").pw_uid
+  print lib.getpwnam("username").pw_uid
 
 
 CFFI demo
@@ -143,13 +190,19 @@ ffi.cdef()
 
 ::
 
-    ffi.cdef("""
-        int foo1(int a, int b);
+ |   ffi.cdef("""
+ 
+ |   |   int foo1(int a, int b);
 
-        typedef ... Window;
-        Window *make_window(int, int, int);
-        void hide_window(Window *);
-    """)
+ |   |
+
+ |   |   typedef ... Window;
+ 
+ |   |   Window *make_window(int w, int h);
+ 
+ |   |   void hide_window(Window *);
+ 
+ |   """)
 
 
 ffi.new()
@@ -157,61 +210,116 @@ ffi.new()
 
 ::
     
-    >>> p = ffi.new("char[]", "Some string")
-    >>> p
-    <cdata 'char[]' owning 12 bytes>
-    >>> p[1]
-    'o'
-    >>> q = lib.getpwnam(p)
-    >>> q
-    <cdata 'struct passwd *' 0x12345678>
-    >>> q.pw_uid
-    500
+ |   >>> p = ffi.new("char[]", "Some string")
+ 
+ |   >>> p
+ 
+ |   <cdata 'char[]' owning 12 bytes>
+
+ |
+ 
+ |   >>> p[1]
+ 
+ |   'o'
+
+ |
+ 
+ |   >>> q = lib.getpwnam(p)
+ 
+ |   >>> q
+ 
+ |   <cdata 'struct passwd *' 0x12345678>
+
+ |
+  
+ |   >>> q.pw_uid
+ 
+ |   500
 
 ffi.cast()
 ==========
 
 ::
 
-    >>> p = lib.getpwnam("root")
-    >>> p
-    <cdata 'struct passwd *' 0x12345678>
-    >>> ffi.cast("void *", p)
-    <cdata 'void *' 0x12345678>
-    >>> ffi.cast("long", p)
-    305419896
-    >>> hex(_)
-    0x12345678
+ |   >>> p = lib.getpwnam("root")
+
+ |   >>> p
+
+ |   <cdata 'struct passwd *' 0x12345678>
+
+ |
+
+ |   >>> ffi.cast("void *", p)
+
+ |   <cdata 'void *' 0x12345678>
+
+ |
+
+ |   >>> ffi.cast("long", p)
+
+ |   305419896
+
+ |   >>> hex(_)
+
+ |   0x12345678
+
 
 ffi.new_handle()
 ================
 
 ::
 
-    >>> h1 = ffi.new_handle(some_object)
-    >>> h1
-    <cdata 'void *' handle to <X object at 0x123456>>
-    >>> lib.same_away(h1)
+ |   >>> h1 = ffi.new_handle(some_object)
+ 
+ |   >>> h1
+ 
+ |   <cdata 'void *' handle to
 
-    >>> h2 = lib.fish_again()
-    >>> h2
-    <cdata 'void *' 0x87654321>
-    >>> ffi.from_handle(h2)
-    <X object at 0x123456>
+ |   | | | | <X object at 0x123456>>
+ 
+ |   >>> lib.save_away(h1)
+ 
+ |
+ 
+ |   >>> h2 = lib.fish_again()
+ 
+ |   >>> h2
+ 
+ |   <cdata 'void *' 0x87654321>
+
+ |
+
+ |   >>> ffi.from_handle(h2)
+ 
+ |   <X object at 0x123456>
+
 
 ffi.string()
 ============
 
 ::
 
-    >>> p
-    <cdata 'struct passwd *' 0x12345678>
-    >>> p.pw_uid
-    500
-    >>> p.pw_name
-    <cdata 'char *' 0x5234abcd>
-    >>> ffi.string(p.pw_name)
-    "username"
+ |   >>> p
+
+ |   <cdata 'struct passwd *' 0x12345678>
+
+ |
+
+ |   >>> p.pw_uid
+
+ |   500
+
+ |
+
+ |   >>> p.pw_name
+
+ |   <cdata 'char *' 0x5234abcd>
+
+ |
+
+ |   >>> ffi.string(p.pw_name)
+
+ |   "username"
 
 
 CFFI
@@ -244,14 +352,19 @@ PyPy
 
 ::
 
-    $ pypy
+ |   $ pypy
 
-    Python 2.7.10 (5f8302b8bf9f, Nov 18 2015, 10:46:46)
-    [PyPy 4.0.1 with GCC 4.8.4] on linux2
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>>> 2+3
-    5
-    >>>>
+ |  Python 2.7.10 (5f8302b8bf9f, Nov 18 2015,
+
+ |  [PyPy 4.0.1 with GCC 4.8.4] on linux2
+ 
+ |  Type "help", "copyright", "credits" or
+
+ |  >>>> 2+3
+
+ |  5
+
+ |  >>>>
 
 
 PyPy
