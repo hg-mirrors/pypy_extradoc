@@ -135,15 +135,83 @@ CFFI demo
 
 * ``lib`` gives access to all functions from the cdef
 
-* ``ffi`` gives access to a few general helpers, e.g.
+* ``ffi`` gives access to a few general helpers
 
-   - ``ffi.cast("float", 42)``
 
-   - ``p = ffi.new("struct passwd *")``
+ffi.cdef()
+==========
 
-   - ``p = ffi.new("char[10]"); p[0] = 'X'; s = lib.getpwnam(p)``
+::
 
-   - ``p = ffi.new_handle(random_obj); ...; random_obj = ffi.from_handle(p)``
+    ffi.cdef("""
+        int foo1(int a, int b);
+
+        typedef ... Window;
+        Window *make_window(int, int, int);
+        void hide_window(Window *);
+    """)
+
+
+ffi.new()
+=========
+
+::
+    
+    >>> p = ffi.new("char[]", "Some string")
+    >>> p
+    <cdata 'char[]' owning 12 bytes>
+    >>> p[1]
+    'o'
+    >>> q = lib.getpwnam(p)
+    >>> q
+    <cdata 'struct passwd *' 0x12345678>
+    >>> q.pw_uid
+    500
+
+ffi.cast()
+==========
+
+::
+
+    >>> p = lib.getpwnam("root")
+    >>> p
+    <cdata 'struct passwd *' 0x12345678>
+    >>> ffi.cast("void *", p)
+    <cdata 'void *' 0x12345678>
+    >>> ffi.cast("long", p)
+    305419896
+    >>> hex(_)
+    0x12345678
+
+ffi.new_handle()
+================
+
+::
+
+    >>> h1 = ffi.new_handle(some_object)
+    >>> h1
+    <cdata 'void *' handle to <X object at 0x123456>>
+    >>> lib.same_away(h1)
+
+    >>> h2 = lib.fish_again()
+    >>> h2
+    <cdata 'void *' 0x87654321>
+    >>> ffi.from_handle(h2)
+    <X object at 0x123456>
+
+ffi.string()
+============
+
+::
+
+    >>> p
+    <cdata 'struct passwd *' 0x12345678>
+    >>> p.pw_uid
+    500
+    >>> p.pw_name
+    <cdata 'char *' 0x5234abcd>
+    >>> ffi.string(p.pw_name)
+    "username"
 
 
 CFFI
@@ -151,7 +219,7 @@ CFFI
 
 * supports more or less the whole C
 
-* there is more than my short explanation suggests
+* there is more than my short explanations suggests
 
 * read the docs: http://cffi.readthedocs.org/
 
