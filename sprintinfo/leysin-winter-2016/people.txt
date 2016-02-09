@@ -10,9 +10,8 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo                          private
-                                    (SEE NOTE BELOW)
 Remi Meier           21-27          Ermina
-Carl Friedrich Bolz  20-27          Ermina?
+Carl Friedrich Bolz  20-27          Ermina (individual room)
 Matti Picus          20-25          Ermina
 Manuel Jacob         20-27          Ermina
 Richard Plangger     20-28          Ermina
@@ -21,10 +20,16 @@ Ronan Lamy           20-27          Ermina?
 Pierre-Yves David    20-27          Ermina
 ==================== ============== =======================
 
-**NOTE:** we might have only a single double-bed room and a big room
-(5-6 individual beds).  I can ask if more people want smaller rooms,
-and/or recommend hotels elsewhere in Leysin.  Please be explicit in what
-you prefer.  The standard booking is for the nights from Saturday to
+**NOTE:** lodging is by default in Ermina in 4-5 people rooms.  (One of
+the two big rooms may be rented on the last day; we'll see if we have to
+do other arrangements on-the-spot, but don't worry, it is possible in
+the worst case to send a couple of people to a hotel for one night.)
+
+Please tell if you would prefer a smaller or individual room (which may
+be in a nearby hotel).  Of course you're free to book the hotel yourself
+if you prefer.
+
+The standard booking is for the nights from Saturday to
 Saturday, but it is possible to extend that.
 
 
