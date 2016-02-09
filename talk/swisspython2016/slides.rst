@@ -107,7 +107,7 @@ CFFI demo
 
 ::
 
- |  from cffi import FFI
+ |  import cffi
 
  |  ffi = cffi.FFI()
 
