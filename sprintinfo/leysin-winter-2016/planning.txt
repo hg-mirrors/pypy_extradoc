@@ -1,0 +1,32 @@
+Tasks
+=====
+
+- mercurial benchmarks on PyPy (fijal, marmoute, cfbolz around)
+- merging cpyext-ext, numpy-on-cpyext (mattip, ronan, arigo around)
+- jit leaner frontend
+- maps reordering (cfbolz, fijal around)
+- py3k work (manuel, richard)
+- register allocation
+- live ranges in JIT viewer
+- VMProf on OS X, fix bugs
+- continuing to refactoring annotator
+- general wizardry (cfbolz, arigo, samuele not around)
+- do we have warmup time to VMProf
+
+
+
+Discussions
+=========
+
+- tooling
+- too many bridges
+- cpyext+numpy
+- unstucking benchmarking
+- Python3
+- mercurial stuff (how pypy use it)
+- update work areas
+- code quality
+- vmprof memory
+- summer of code
+- future of rffi
+- think about resizable lists
