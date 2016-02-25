@@ -36,15 +36,16 @@ So, the good news is that now PyPy actually supports the upstream
 `lxml`_ package---which is is one of the most popular packages on PyPI.
 (Specifically, you need version 3.5.0 with
 https://github.com/lxml/lxml/pull/187 to remove old PyPy-specific hacks
-that were not really working.)  At this point, we no longer recommend
-using the `cffi lxml`_ alternative: although it may still be faster, it
-might be incomplete and old.
+that were not really working.  See details__.)  At this point, we no
+longer recommend using the cffi-lxml alternative: although it may
+still be faster, it might be incomplete and old.
 
 We are actively working on extending our C-API support, and hope to soon
 merge a branch to support more of the C-API functions (some numpy news
 coming!).  Please `try it out`_ and let us know how it works for you.
 
 _`lxml`: https://github.com/lxml/lxml
+__: https://bitbucket.org/pypy/compatibility/wiki/lxml
 _`try it out`: http://buildbot.pypy.org/nightly/trunk/
 
 Armin Rigo and the PyPy team
