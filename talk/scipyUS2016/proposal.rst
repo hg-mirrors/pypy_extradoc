@@ -29,8 +29,15 @@ after a brief introduction of the RPython toolchain and the PyPy interpreter.
 We have been working for a number of years on an alternative 
 implementation of the ndarray, tightly integrated to the PyPy machinary.
 Reimplementing numpy completely comes with costs, like a constant need to
-replicate updates when a new version of numpy is released.
-We've been recently experimenting with reusing
-more of C numpy through the C API and we have ideas how to merge both 
-approaches to have the best of both worlds. 
+replicate updates when a new version of numpy is released and difficulty to
+integrate with the rest of the numeric stack. We've been recently experimenting
+with a quite different approach -- to have a good enough implementation of CPython
+C API to be able to just use numpy, which is in the experimental stage.
+That comes with a problem of speed of array access which now has to traverse
+the slow C API. We propose a solution that would merge the two, where we
+would be able to both use the current numpy as well as reimplement parts
+that will be performance critical.
 
+We hope that this approach will fill a gap of using pypy in the numeric
+world, where jit-level performance can provide middle ground between
+user-input heavy solutions like cython and the slowness of CPython.
