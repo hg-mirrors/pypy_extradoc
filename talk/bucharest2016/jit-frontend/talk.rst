@@ -167,7 +167,7 @@ Terminology (1)
 ----------------
 
 * **translation time**: when you run "rpython targetpypy.py" to get the
-  ``pypy` binary
+  ``pypy`` binary
 
 * **runtime**: everything which happens after you start ``pypy``
 
@@ -200,6 +200,7 @@ Terminology (2)
 Terminology (3)
 ---------------
 
+
 * (the following is not 100% accurate but it's enough to understand the
   general principle)
 
@@ -221,6 +222,9 @@ Terminology (3)
 
   - 1 RPython function --> 1 C function --> 1 jitcode
 
+
+Terminology (4)
+---------------
 
 * **JIT traces or loops**
 
