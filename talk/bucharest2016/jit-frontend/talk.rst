@@ -54,6 +54,9 @@ PyPy as a project
 
   - "like GCC" (it statically produces a binary)
 
+  - you can run RPython programs on top of CPython (veeery slow, for
+    development only)
+
 |pause|
 
 * ``pypy``: a Python interpreter
@@ -158,6 +161,77 @@ Part 3
 ------
 
 **The PyPy JIT**
+
+
+Terminology (1)
+----------------
+
+* **translation time**: when you run "rpython targetpypy.py" to get the
+  ``pypy` binary
+
+* **runtime**: everything which happens after you start ``pypy``
+
+* **interpretation**, **tracing**, **compiling**
+
+* **assembler/machine code**: the output of the JIT compiler
+
+* **execution time**: when your Python program is being executed
+
+  - by the interpreter
+
+  - by the machine code
+
+
+Terminology (2)
+----------------
+
+* **interp-level**: things written in RPython
+
+* **[PyPy] interpreter**: the RPython program which executes the final Python
+  programs
+
+* **bytecode**: "the output of dis.dis". It is executed by the PyPy
+  interpreter.
+
+* **app-level**: things written in Python, and executed by the PyPy
+  Interpreter
+
+
+Terminology (3)
+---------------
+
+* (the following is not 100% accurate but it's enough to understand the
+  general principle)
+
+* **low level op or ResOperation**
+
+  - low-level instructions like "add two integers", "read a field out of a
+    struct", "call this function"
+
+  - (more or less) the same level of C ("portable assembler")
+
+  - knows about GC objects (e.g. you have ``getfield_gc`` vs ``getfield_raw``)
+
+
+* **jitcodes**: low-level representation of RPython functions
+
+  - sequence of low level ops
+
+  - generated at **translation time**
+
+  - 1 RPython function --> 1 C function --> 1 jitcode
+
+
+* **JIT traces or loops**
+
+  - a very specific sequence of llops as actually executed by your Python program
+
+  - generated at **runtime** (more specifically, during **tracing**)
+
+* **JIT optimizer**: takes JIT traces and emits JIT traces
+
+* **JIT backend**: takes JIT traces and emits machine code
+
 
 General architecture
 ---------------------
