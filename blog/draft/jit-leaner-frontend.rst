@@ -46,6 +46,7 @@ the last change, jit-leaner-frontend branch. The last change is simple, instead 
 pointers to store the "operations" object after tracing, we use a compact list of
 16-bit integers (with 16bit pointers in between). On 64bit machine the wins are
 tremendous - it's 4x more efficient to use 16bit pointers than full 64bit pointers.
+.. XXX: I assume you are talking about "memory efficiency": we should be clearer
 Additionally those pointers have a much better defined lifespan, so we don't need to
 bother tracking them by the GC, which also saves quite a bit of time.
 
