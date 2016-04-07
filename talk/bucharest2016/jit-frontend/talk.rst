@@ -152,10 +152,38 @@ Tracing JIT phases
    :scale: 100%
 
 
-Trace trees
------------
+Trace trees (1)
+---------------
 
-WRITE ME
+|scriptsize|
+|example<| |small| tracetree.py |end_small| |>|
+
+.. sourcecode:: python
+
+    def foo():
+      a = 0
+      i = 0
+      N = 100
+      while i < N:
+        if i%2 == 0:
+            a += 1
+        else:
+            a *= 2;
+        i += 1
+      return a
+
+|end_example|
+|end_scriptsize|
+
+
+Trace trees (2)
+---------------
+
+.. animage:: diagrams/tracetree-p*.pdf
+   :align: center
+   :scale: 30%
+
+
 
 Part 3
 ------

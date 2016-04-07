@@ -1,4 +1,6 @@
-pypy's assembler backend
+========================
+PyPy's assembler backend
+========================
 
 input: linear sequence of instructions, called a "trace".
 
@@ -76,9 +78,9 @@ Some instructions generate more complex code.  These are either or both of:
 
 ## GC pointers
 
-Around most CALL instructions, we need to record a description of where the GC pointers are (registers and stack frame).  This is needed in case the CALL invokes a garbage collection.  The GC pointers can move; the positions in the registers and stack frame are fixed by the GC.  That's a reason for why we don't have explicit interior pointers.
+Around most CALL instructions, we need to record a description of where the GC pointers are (registers and stack frame).  This is needed in case the CALL invokes a garbage collection.  The GC pointers can move; the pointers in the registers and stack frame are updated by the GC.  That's a reason for why we don't have explicit interior pointers.
 
-GC pointers can appear as constants in the trace.  We are busy changing that to use a constant table and MOV REG, (%RIP+offset).  The "constant" table can actually change if the GC objects move.
+GC pointers can appear as constants in the trace.  We are busy changing that to use a constant table and MOV REG, (%RIP+offset).  The "constant" in the table is actually updated by the GC if the object move.
 
 
 ## Vectorization
