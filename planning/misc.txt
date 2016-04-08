@@ -1,0 +1,13 @@
+
+
+
+
+minor/major collections: order the visit to the objects by... address?
+
+make the resizing of dict/lists more GC-aware
+
+virtualizables are a mess of loads/stores in the jit traces
+
+modulo is very bad; "x % (2**n)" should be improved even if x might be
+negative.  Think also about "x % C" for a general C?
+
