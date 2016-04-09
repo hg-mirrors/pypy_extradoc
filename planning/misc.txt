@@ -9,5 +9,50 @@ make the resizing of dict/lists more GC-aware
 virtualizables are a mess of loads/stores in the jit traces
 
 modulo is very bad; "x % (2**n)" should be improved even if x might be
-negative.  Think also about "x % C" for a general C?
+negative.  Think also about "x % C" for a general C?  (Fwiw, a 64-bit
+IDIV instruction might be worse than a 32-bit IDIV, but unsure we can
+use that.)  Maybe tweak RPython so that the Python-level "%" is the
+basic llop handled by the JIT (so far it's turned into the C-level "%"
+before the codewriter sees the code).
 
+branch prediction: in the jit assembler, write the common path
+(e.g. write barriers) such that it is a fall-through, and move
+the slow-path code further down
+
+Micro-fusion: using e.g. "cmp [rax+32],0" is better than two
+instructions "mov rdx,[rax+32]; cmp rdx, 0".  Also applies to "add
+rdx,[rax+32]".  *Does not work* with "call [rip+1234]" because it is a
+control flow operation using rip-based addressing; unclear how it
+compares with "mov r11,<64-bit-const>; call r11".
+
+Macro-fusion: a "cmp" or "test" immediately followed by a conditional
+jump.  Works also if the "cmp" or "test" is a reg-mem.  *Does not
+work* if it is a mem-immediate.  It is better to first load the value
+in a register.
+
+Avoid putting references to rsp close to pop/push/call/ret
+instructions.
+
+"lea" is slow in the following forms:
+    [base+index+offset]        with all three operands present
+    [rbp+index], [r13+index]   (because the +0 is always present then)
+    [rip+offset]
+
+e.g. replace "lea rsi,[rsi+rdx+1]" by "lea rsi,[rsi+rdx]; lea
+rsi,[rsi+1]".
+
+multibyte NOPs are not full NOPs: pick the register arguments
+carefully to reduce dependencies
+
+when floating-point operations are bitwise equivalent, use the xxxPS
+version instead of the xxxPD version.  But don't mix integer
+operations (e.g. PXOR) and floating-point operations (e.g. XORPS).
+
+for small loops, check that we spill loop invariants in preference
+over spilling non-loop-invariants.
+
+if a value in a register dies, try to overwrite this register quickly
+instead of writing to an old register?
+
+avoid MOVSD/MOVSS between registers; do a full copy with MOVAPD or
+MOVDQA
