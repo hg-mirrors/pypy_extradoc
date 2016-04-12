@@ -3,6 +3,8 @@
 
 
 minor/major collections: order the visit to the objects by... address?
+using two lists of pointers, popping from one and appending to the
+other, and when the first one is empty, sort the other and swap them
 
 make the resizing of dict/lists more GC-aware
 
@@ -56,3 +58,12 @@ instead of writing to an old register?
 
 avoid MOVSD/MOVSS between registers; do a full copy with MOVAPD or
 MOVDQA
+
+on CPUs with 'emsr' in /proc/cpuinfo, a memcpy is documented as best
+implemented as simply REP MOVSB.  But measures on my CPU show it's not
+the case.  E.g. sizes <= 128 are three times faster if done by a call
+to memcpy than by REP MOVSB, for any size.
+
+still, look at replacing CALLs to memcpy by, say, up to 3 pairs of
+MOVs of 1, 2, 4, 8 or 16 bytes each.  it is a win also because it
+doesn't force specific registers
