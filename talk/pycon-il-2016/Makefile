@@ -8,6 +8,6 @@ talk.pdf: talk.tex
 
 
 talk.tex: talk.rst author.latex stylesheet.latex
-	rst2beamer --stylesheet=stylesheet.latex --documentoptions=14pt --input-encoding=utf8 --output-encoding=utf8 $<  > talk.tex
+	rst2beamer --stylesheet=stylesheet.latex --documentoptions=14pt --input-encoding=utf8 --output-encoding=utf8 $<  > talk.latex
 	sed 's/\\date{}/\\input{author.latex}/' -i talk.latex || exit
 
