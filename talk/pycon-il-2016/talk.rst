@@ -107,8 +107,8 @@ Why not PyPy?
 
   - Opportunity???
 
-PyPy and C (1/3)
-----------------
+PyPy and Third-party libraries
+------------------------------
 
 * PyPy and CFFI (Armin Rigo, Maciej Fijałkowski)
 
@@ -116,17 +116,14 @@ PyPy and C (1/3)
 
 * Use CFFI to call python from C 
 
-  - This means you can create your own C API in pure Python !
-
-PyPy and C (2/3)
-----------------
-
 * CFFI enables embedded Python (and PyPy) in a C application (uWSGI)
 
 * Very fast on PyPy, fast enough on CPython
 
-PyPy and C (3/3)
-----------------
+PyPy and Third-party libraries
+------------------------------
+
+* Not everyone will rewrite in CFFI
 
 * What about C-API (glad you asked)
 
@@ -145,8 +142,10 @@ Python C API
 
 * Hint - good things are coming
 
-NumPyPy
--------
+PyPy and Third-party libriaries: NumPyPy
+----------------------------------------
+
+* Numpy (and its ecosystem) is the last frontier for PyPy
 
 * https://bitbucket.org/pypy/numpy + pypy
 
@@ -179,81 +178,6 @@ NumPyPy future
 
 * But what about SciPy?
 
-PyMetabiosis
-------------
-
-* https://github.com/rguillebert/pymetabiosis
-
-* Proof of concept (Romain Guillebert)
-
-* Allows you to use any CPython module on PyPy (scipy for example)
-
-* Embeds CPython into PyPy with CFFI
-
-* Numpy arrays can be shared between PyPy and CPython
-
-PyMetabiosis
-------------
-
-|scriptsize|
-
-.. sourcecode:: python
-
-    from pymetabiosis import import_module
-
-    cpython_virtualenv_path = 
-        "/tmp/venv/bin/activate_this.py"
-
-    builtin = import_module("__builtin__")
-
-    # Activate a virtualenv for the cpython interpreter
-    builtin.execfile(cpython_virtualenv_path,
-        {"__file__" : cpython_virtualenv_path}
-    )
-
-    pylab = import_module("matplotlib.pylab")
-
-    pylab.plot([1, 2, 3, 4])
-    pylab.show()
-
-|end_scriptsize|
-
-JitPy
------
-
-* http://jitpy.readthedocs.io
-
-* Proof of concept (Maciej Fijałkowski)
-
-* Embeds PyPy into CPython
-
-* Provides a decorator that allows you to run specific functions on PyPy
-
-* Is used the same way as numba, but different performance characteristics
-
-
-JitPy
------
-
-|scriptsize|
-
-.. sourcecode:: python
-
-    import numpy as np
-    from jitpy import setup
-    setup('<path-to-pypy-home>')
-    from jitpy.wrapper import jittify
-
-    @jittify(['array', float], float)
-    def f(a, s):
-        r = 0
-        for i in xrange(a.shape[0]):
-            r += a[i] * s
-    return s
-    func(np.arange(10000), 1.2)
-
-|end_scriptsize|
-
 Future - wouldn't it be great if
 --------------------------------
 
@@ -265,9 +189,13 @@ Future - wouldn't it be great if
 The Future is Now!
 ------------------
 
+* Merged major upgrade of the C-API
+
 * (Applause)
 
 * Native numpy (tweaked) passes 90% of tests
+
+* Download a nightly and try http://github.com/pypy/numpy
 
 * How to leverage the JIT and NumPyPy?
 
@@ -294,8 +222,6 @@ Thank You
 
 Questions ?  Examples:
 
-* What about this other interpreter I heard of?
-
 * How can I get involved?
 
 * What about commercial involvement?
@@ -303,3 +229,6 @@ Questions ?  Examples:
 * How can I get support?
 
 * What about Python 3.5?
+
+* What about this other interpreter I heard of?
+
