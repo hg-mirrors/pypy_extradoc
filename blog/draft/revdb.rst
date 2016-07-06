@@ -49,8 +49,10 @@ RevDB in PyPy
 
 Right now, RevDB works barely enough to start being useful.  I have
 used it to track one real bug (for the interested people, see
-bd220c268bc9).  So here is what it is, what it is not, and how to use
+bd220c268bc9_).  So here is what it is, what it is not, and how to use
 it.
+
+.. _bd220c268bc9: https://bitbucket.org/pypy/pypy/commits/bd220c268bc9
 
 RevDB is a Python debugger.  It will not help track issues like
 segfaults or crashes of the interpreter, but it will help track any
@@ -78,6 +80,9 @@ commands like "next" and "p foo.bar" and even run more complicated
 bits of Python code.  You also have new commands like "bnext" to go
 backwards.  Most importantly, you can set *watchpoints*.  More about
 that later.
+
+
+XXX CF: it's not clear to me what "doing any input/output from the debugger" means
 
 What you cannot do is do any input/output from the debugger.  Indeed,
 the log file records all imports that were done and what the imported
