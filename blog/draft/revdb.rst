@@ -110,9 +110,17 @@ tracking occurs rarely, we need to re-run it several times until we
 get the failure.  But once we got the failure, then we're done with
 this step.)
 
-Start ``rpython/translator/revdb/revdb.py log.rdb``.  We get a
-pdb-style debugger.  Initially, we are at the start of the program
-(not at the end, like we'd get in a regular debugger)::
+Start::
+    
+    rpython/translator/revdb/revdb.py log.rdb
+    
+We get a pdb-style debugger.  This ``revdb.py`` is a normal Python
+program, which you run with an unmodified Python; internally, it looks
+inside the log for the path to ``pypy-revdb`` and run it as needed (as
+one forking subprocess, in a special mode).
+
+Initially, we are at the start of the program---not at the end, like
+we'd get in a regular debugger::
 
     File "<builtin>/app_main.py", line 787 in setup_bootstrap_path:
     (1)$
@@ -121,6 +129,7 @@ The list of commands is available with ``help``.
 
 Go to the end with ``continue`` (or ``c``)::
   
+    (1)$ continue
     File "/tmp/x.py", line 14 in <module>:
     ...
       lst1 = [Foo() for i in range(100)]
@@ -139,7 +148,7 @@ We are now at the beginning of the last executed line.  The number
 backward with the ``bstep`` command (backward step, or ``bs``), line
 by line, and forward again with the ``step`` command.  There are also
 commands ``bnext``, ``bcontinue`` and ``bfinish`` and their forward
-equivalents.  There is also ``go TIME`` to jump directly to the specified
+equivalents.  There is also "``go TIME``" to jump directly to the specified
 time.  (Right now the debugger only stops at "line start"
 events, not at function entry or exit, which makes some cases a bit
 surprising: for example, a ``step`` from the return statement of
@@ -381,8 +390,8 @@ Replaying also comes with a bunch of user interface issues:
   have side-effects; these effects are discarded as soon as you move
   in time again.
 
-- sometimes even ``p import foo`` will fail with ``Attempted to do
-  I/O``.  Use instead ``p import sys; foo = sys.modules['foo']``.
+- sometimes even "``p import foo``" will fail with ``Attempted to do
+  I/O``.  Use instead "``p import sys; foo = sys.modules['foo']``".
 
 - use ``help`` to see all commands.  ``backtrace`` can be useful.
   There is no ``up`` command; you have to move in time instead,
@@ -481,3 +490,32 @@ For C:
 .. _`reverse debugging`: https://en.wikipedia.org/wiki/Debugger#Reverse_debugging
 .. _`undodb-gdb`: http://undo.io/
 .. _`rr`: http://rr-project.org/
+
+
+Future work
+-----------
+
+As mentioned above, it is alpha-level, and only works on Linux with ASLR
+disabled.  So the plans for the immediate future are to fix the various
+issues described above, and port to more operating systems and remove
+the restriction that requires a non-ASLR system.  The core of the system
+is in the C file and headers in ``rpython/translator/revdb/src-revdb``.
+
+For interested people, there is also the Duhton_ interpreter and its
+``reverse-debugger`` branch, which is where I prototyped the RPython
+concept before moving to PyPy.  The basics should work for any
+interpreter written in RPython, but they require some specific code to
+interface with the language; in the case of PyPy, it is in
+``pypy/interpreter/reverse_debugging.py``.
+
+.. _Duhton: https://bitbucket.org/pypy/duhton/
+
+In parallel, there are various user interface improvements that people
+could be interested in, like a more "pdb++" experience.  (And the script
+at ``rpython/translator/revdb/revdb.py`` should be moved out into some
+more "official" place, and the ``reverse-debugger`` branch should be
+merged back to default.)
+
+I would certainly welcome any help!
+
+-+- Armin
