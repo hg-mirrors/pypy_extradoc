@@ -8,8 +8,8 @@ RevPDB
 A "reverse debugger" is a debugger where you can go forward and
 backward in time.  It is an uncommon feature, at least in the open
 source world, but I have no idea why.  I have used `undodb-gdb`_ and
-`rr`_, which are reverse debugger for C code, and I can only say that
-it saved me many, many days of poking around blindly in gdb.
+`rr`_, which are reverse debuggers for C code, and I can only say that
+they saved me many, many days of poking around blindly in gdb.
 
 The PyPy team is pleased to give you "RevPDB", a reverse-debugger
 similar to ``rr`` but for Python.
@@ -142,7 +142,7 @@ commands ``bnext``, ``bcontinue`` and ``bfinish`` and their forward
 equivalents.  There is also ``go TIME`` to jump directly to the specified
 time.  (Right now the debugger only stops at "line start"
 events, not at function entry or exit, which makes some cases a bit
-surprizing: for example, a ``step`` from the return statement of
+surprising: for example, a ``step`` from the return statement of
 function ``foo()`` will jump directly to the caller's caller, if the
 caller's current line was ``return foo() + 2``, because no "line
 start" event occurs in the caller after ``foo()`` returns to it.)
@@ -401,8 +401,10 @@ interpreter---tweaked in a way that would be hard to do with CPython,
 because it would require systematic changes everywhere.  The most
 obvious and successful examples are the GC and the JIT.  But there
 have been many other experiments along the same lines, from the
-so-called "stackless transformation" in the early days, to the STM
+so-called `stackless transformation`_ in the early days, to the STM
 version of PyPy.
+
+.. _`stackless transformation`: https://bitbucket.org/pypy/extradoc/raw/tip/eu-report/D07.1_Massive_Parallelism_and_Translation_Aspects-2007-02-28.pdf
 
 RevPDB works in a similar way.  It is a version of PyPy in which some
 operations are systematically replaced with other operations.
