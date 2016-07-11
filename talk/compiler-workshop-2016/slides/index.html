@@ -25,7 +25,7 @@
         <div class="reveal">
             <div class="slides">
                 <section>
-                    <img class="noborder" data-src="img/pypylogo.png" />
+                    <img style="border: none; box-shadow: none;" width="500px" data-src="img/pypylogo.png" />
                     <h2>Python Compiler Workshop</h2>
                     <p>11. July 2016, Austin Texas</p>
                     <h3>Matti Picus &amp; Richard Plangger</h3>
@@ -38,7 +38,7 @@
                         up to <strong>7x</strong> on average
                     </section>
                     <section>
-                        <h1>PyPy's is used</h1>
+                        <h1>PyPy is used</h1>
                         In many differnt commercial settings
                     </section>
                 </section>
@@ -46,23 +46,39 @@
                 <section>
                     <section>
                         <h1>What We Bring to the Table</h1>
-                        Our core is based on cutting-edge JIT compiler
-                        research, written in Python.
+                        A JIT compiler &amp; GC for your language
                     </section>
 
                     <section>
-                        <h1>Written in Python</h1>
-                        Being written in Python means we can quickly
-                        try out (and reject or incorporate) new ideas.
-                        For instance, our STM work has
-                        uncovered subtle bugs in CLANG and GCC, or the fact that we can easily try out
-                        new register allocation strategies.
+                        <h2>Written in Python</h2>
+                        Quickly try out (and reject or incorporate) new ideas.
+                    </section>
+
+                    <section>
+                        <h2>PyPy STM</h2>
+                        <p>PyPy STM, Accept the GIL, but allow concurrent and correct execution</p>
+                        <p>Uncovered subtle bugs in CLANG and GCC</p>
+                        <small>Done by Armin Rigo &amp; Remi Meier</small>
+                    </section>
+                    <section>
+                        <h2>VecOpt</h2>
+                        <p>Optimization to use SIMD instructions in a loop</p>
+                        <small>Done by Richard Plangger</small>
+                    </section>
+                    <section>
+                        <h2>CPyExt Emulation</h2>
+                        <p>Support a rather complete set of CPyExt</p>
+                        <small>Done by Matti Picus &amp; Armin Rigo</small>
+                    </section>
+                    <section>
+                        <h2>VMProf, Reverse Python Debugger, CFFI, Sandboxing, several GCs</h2>
+                        <p>And many more in the pipeline ... </p>
                     </section>
                 </section>
 
                 <section>
                     <section>
-                        <h2>Took us some time too</h2>
+                        <h2>Took us some time ...</h2>
                         ... but runs on all major platforms <br>
                         <strong>Linux, Windows, MacOS, ...</strong><br>
                         including four different CPU architectures <br>
@@ -75,11 +91,21 @@
                         <p>Flow graphs &rarr; Annotation &rarr; RTyping &rarr; Code generation</p>
 
                         <ul>
-                            <li>+ Whole program optimizations (take that, C)</li>
+                            <li>+ Whole program optimizations</li>
                             <li>+ Deliver features quickly, without sacrificing speed</li>
                             <li>+ Loosely coupled (JIT, Interp., RPython)</li>
                             <li>- Takes a while to translate</li>
                         </ul>
+                    </section>
+
+                    <section>
+                        <h2>Tracing JIT compiler</h2>
+                        <p>Start off in loops and record one iteration</p>
+                        <p>Build a tree of traces</p>
+                        <ul>
+                            <li>+ Simple and efficient type specialization</li>
+                            <li>+ Optimization pass easier</li>
+                            <li>- Code duplication</li>
                     </section>
                 </section>
                 <section>
@@ -93,13 +119,6 @@
                     </section>
 
                     <section>
-                        <h2>PyPy is extremly "under-funded"</h2>
-                        We are not pushing data science on PyPy at all,<br>
-                        slowly moving forward on a volunteer basis.
-                        <p>&rarr; C-API compatibility</p>
-                    </section>
-
-                    <section>
                         <h2>Does PyPy run out of the box?</h2>
 
                         More help in identifying and resolving small issues<br>
@@ -107,11 +126,18 @@
                     </section>
 
                     <section>
+                        <h2>PyPy is extremly "under-funded"</h2>
+                        We are not pushing data science on PyPy at all,<br>
+                        <p>&rarr; C-API compatibility</p>
+                        <small>Slowly moving forward on a volunteer basis</small>
+                    </section>
+
+                    <section>
                         <h2>NumPy</h2>
 
-                        We are also working on Micro NumPy, which provides the kernels for numerical operations.
-                        It is very usable, but still some features are missing. We would love to have a
-                        partner/company that would help us to complete NumPy for PyPy.
+                        <p>Several limitations made us to redo part of the work</p>
+                        <p>Usable, still features missing</p>
+                        <small>Slowly moving forward on a volunteer basis</small>
                     </section>
 
                     <section>
@@ -124,14 +150,27 @@
                 </section>
                 <section>
                     <section>
-                        <h2>Opinionated aspects</h2>
+                        <h2>Some Aspects</h2>
+                        <p>with strong opinion</p>
+                    </section>
+                    <section>
+                        <h4>Let's only apply</h4>
+                        static compiler techniques to speed up dynamic languages
+                    </section>
+                    <section>
+                        <h4>You need static type information</h4>
+                        to optimize your program
+                    </section>
+                    <section>
+                        <h4>Method based JIT compilers</h4>
+                        is the only concept that works <strong>*cough*</strong>
                     </section>
                     <section>
                         <h4>Writing a program in statically compiled language</h4>
                         does not mean the dev time / speedup ratio is appropriate
                     </section>
                     <section>
-                        neither does it mean you program is fast
+                        neither does it mean you program is "fast"
                     </section>
                     <section>
                         <h4>Exposing details of your VM impl.</h4>
@@ -141,19 +180,11 @@
                         and caused PyPy a lot of troubles
                     </section>
                     <section>
-                        <h4>Dynamic typed languages</h4>
+                        <h4>Dynamically typed languages</h4>
                         are slow?
                     </section>
                     <section>
                         and cannot be used for big programs?
-                    </section>
-                    <section>
-                        <h4>Method based JIT compilers</h4>
-                        is the only concept that works <strong>*cough*</strong>
-                    </section>
-                    <section>
-                        <h4>Let's apply</h4>
-                        static compiler techniques to speed up dynamic langues
                     </section>
                 </section>
                 <section>
