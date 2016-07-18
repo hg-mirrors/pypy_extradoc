@@ -18,11 +18,11 @@ CFFI
 
 * successful project according to PyPI
 
-* 3.4 million downloads last month
+* 3.4 million downloads for January
 
-* total 19.2 millions, 27th place on `pypi-ranking.info`
+* total 22.3 millions, 25th place on `pypi-ranking.info`
 
-  - Django is 28th
+  - Django is 31st
 
 * some high-visibility projects have switched to it (Cryptography)
 
@@ -30,7 +30,7 @@ CFFI
 PyPy
 ====
 
-* harder to say, but probably not so successful
+* harder to say...
 
 * more later
 
@@ -109,11 +109,11 @@ CFFI demo
 
  |  import cffi
 
- |  ffi = cffi.FFI()
+ |  ffibuilder = cffi.FFI()
 
  |
 
- |  ffi.cdef("""
+ |  ffibuilder.cdef("""
 
  |  |     typedef int... uid_t;
  
@@ -135,7 +135,7 @@ CFFI demo
 
 ::
 
- | ffi.set_source("_pwuid_cffi", """
+ | ffibuilder.set_source("_pwuid_cffi", """
  
  | |    #include <sys/types.h>
  
@@ -145,7 +145,7 @@ CFFI demo
 
  |
  
- | ffi.compile()
+ | ffibuilder.compile()
 
  |
 
@@ -186,12 +186,12 @@ CFFI demo
 * ``ffi`` gives access to a few general helpers
 
 
-ffi.cdef()
-==========
+ffi/ffibuilder.cdef()
+=====================
 
 ::
 
- |   ffi.cdef("""
+ |   ffi/ffibuilder.cdef("""
  
  |   |   int foo1(int a, int b);
 
@@ -256,13 +256,41 @@ ffi.cast()
 
  |
 
- |   >>> ffi.cast("long", p)
+ |   >>> int(ffi.cast("intptr_t", p))
 
  |   305419896
 
  |   >>> hex(_)
 
  |   0x12345678
+
+
+ffi.string()
+============
+
+::
+
+ |   >>> p
+
+ |   <cdata 'struct passwd *' 0x12345678>
+
+ |
+
+ |   >>> p.pw_uid
+
+ |   500
+
+ |
+
+ |   >>> p.pw_name
+
+ |   <cdata 'char *' 0x5234abcd>
+
+ |
+
+ |   >>> ffi.string(p.pw_name)
+
+ |   "username"
 
 
 ffi.new_handle()
@@ -295,42 +323,43 @@ ffi.new_handle()
  |   <X object at 0x123456>
 
 
-ffi.string()
-============
-
-::
-
- |   >>> p
-
- |   <cdata 'struct passwd *' 0x12345678>
-
- |
-
- |   >>> p.pw_uid
-
- |   500
-
- |
-
- |   >>> p.pw_name
-
- |   <cdata 'char *' 0x5234abcd>
-
- |
-
- |   >>> ffi.string(p.pw_name)
-
- |   "username"
-
-
 CFFI
 ====
 
 * supports more or less the whole C
 
-* there is more than my short explanations suggests
+* there is more than this short introduction suggests
 
-* read the docs: http://cffi.readthedocs.org/
+
+CFFI
+====
+
+* in real life, you want to provide a Pythonic API to a C library
+
+* you write Python functions and classes implementing it
+
+* all CFFI objects like ``<cdata 'foo *'>`` are hidden inside
+
+
+CFFI
+====
+
+* other use cases:
+
+  - call C code that you write yourself, not a separate C library
+
+  - API versus ABI mode: can also run in a ctypes-like way if
+    you don't want to depend on any C compiler at all
+
+* support for "embedding" Python inside some other non-Python program
+
+  - now you really never need the CPython C API any more
+  
+
+CFFI
+====
+
+* see the docs: http://cffi.readthedocs.org/
 
 
 
@@ -355,9 +384,9 @@ PyPy
 
  |   $ pypy
 
- |  Python 2.7.10 (5f8302b8bf9f, Nov 18 2015,
+ |  Python 2.7.10 (7e8df3df9641, Jun 28 2016, 23:19:52)
 
- |  [PyPy 4.0.1 with GCC 4.8.4] on linux2
+ |  [PyPy 5.3.1 with GCC 6.1.1 20160602] on linux2
  
  |  Type "help", "copyright", "credits" or
 
@@ -399,9 +428,9 @@ PyPy: Garbage Collection
 
 * allocated in a "nursery"
 
-* when nursery full, find surviving nursery objects and move them out
+* when nursery full, surviving objects are moved out
 
-* usually work on nursery objects only (fast), but rarely also perform
+* usually works on nursery objects only (fast), but rarely also perform
   a full GC
 
 
@@ -412,10 +441,6 @@ PyPy: C extensions
 
 * less great when there are CPython C extension modules involved
 
-
-PyPy: C extensions
-==================
-
 * not directly possible: we have moving, non-reference-counted objects,
   and the C code expects non-moving, reference-counted objects
 
@@ -425,31 +450,13 @@ PyPy: C extensions
 
 * PyPy has still some support for them, called its ``cpyext`` module
 
-* similar to IronPython's Ironclad
-
 * emulate all objects for C extensions with a shadow, non-movable,
   reference-counted object
 
-
-PyPy: C extensions
-==================
-
 * ``cpyext`` is slow
 
-* ``cpyext`` is actually *really, really* slow
-
-  - but we're working on making it *only* slow
-
-
-PyPy: C extensions
-==================
-
-* ``cpyext`` will "often" work, but there are a some high-profile C
-  extension modules that are not supported so far
-
-* notably, ``numpy``
-
-* (it is future work)
+* it should "often" work even with large libraries
+  (e.g. ``numpy`` support is mostly there)
 
 
 PyPy: ad
@@ -572,16 +579,4 @@ CFFI
 
   - better supported on non-CPython implementations
 
-
-CFFI: latest news
-=================
-
-* support for "embedding" Python inside some other non-Python program
-
-  - now you really never need the CPython C API any more
-
-
-CFFI
-====
-
-http://cffi.readthedocs.org/
+* http://cffi.readthedocs.org/
