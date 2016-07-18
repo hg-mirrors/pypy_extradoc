@@ -286,7 +286,8 @@ message as the string it currently evaluates to).
     (19422)$ bcontinue
     [searching 19325..19422]
 
-    updating watchpoint value: $0.value => RuntimeError: '$0' refers to an object created later in time
+    updating watchpoint value: $0.value => RuntimeError:
+            '$0' refers to an object created later in time
     Reverse-hit watchpoint 1: $0.value
     File "/tmp/x.py", line 6 in <module>:
       import os
