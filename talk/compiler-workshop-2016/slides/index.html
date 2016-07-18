@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Compiler Workshop Austin Texas</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/white.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <img style="border: none; box-shadow: none;" width="500px" data-src="img/pypylogo.png" />
+                    <h2>Python Compiler Workshop</h2>
+                    <p>11. July 2016, Austin Texas</p>
+                    <h3>Matti Picus &amp; Richard Plangger</h3>
+                </section>
+                <section>
+                    <section>
+                        <h1>PyPy's Niche</h1>
+                        <strong>Mature &amp; production-ready</strong> Python VM <br>
+                        <strong>Accelerating</strong> pure Python code <br>
+			Speedup is <strong>~7x</strong> on average (see our benchmarks)
+                    </section>
+                    <section>
+                        <h1>PyPy is used</h1>
+                        In many different commercial settings
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h1>What We Bring to the Table</h1>
+                        A JIT compiler &amp; GC for your language
+                    </section>
+
+                    <section>
+                        <h2>Written in Python</h2>
+                        Quickly try out (and reject or incorporate) new ideas.
+                    </section>
+
+                    <section>
+                        <h2>PyPy STM</h2>
+                        <p>PyPy STM, Accept the GIL, but allow concurrent and correct execution</p>
+                        <p>Uncovered subtle bugs in CLANG and GCC</p>
+                        <small>Done by Armin Rigo &amp; Remi Meier</small>
+                    </section>
+                    <section>
+                        <h2>VecOpt</h2>
+                        <p>Optimization to use SIMD instructions in a loop</p>
+                        <small>Done by Richard Plangger</small>
+                    </section>
+                    <section>
+                        <h2>CPyExt Emulation</h2>
+                        <p>Support a rather complete set of CPyExt</p>
+                        <small>Done by Matti Picus &amp; Armin Rigo</small>
+                    </section>
+                    <section>
+                        <h2>VMProf, Reverse Python Debugger, CFFI, Sandboxing, several GCs</h2>
+                        <p>And many more in the pipeline ... </p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Took us some time ...</h2>
+                        ... but runs on all major platforms <br>
+                        <strong>Linux, Windows, MacOS, ...</strong><br>
+                        including four different CPU architectures <br>
+                        <strong>x86, arm, ppc, s390x</strong>
+                    </section>
+
+                    <section>
+                        <h2>RPython</h2>
+                        <p>High level language to aid the construction of VMs</p>
+                        <p>Flow graphs &rarr; Annotation &rarr; RTyping &rarr; Code generation</p>
+
+                        <ul>
+                            <li>+ Whole program optimizations</li>
+                            <li>+ Deliver features quickly, without sacrificing speed</li>
+                            <li>+ Loosely coupled (JIT, Interp., RPython)</li>
+                            <li>- Takes a while to translate</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Tracing JIT compiler</h2>
+                        <p>Start off in loops and record one iteration</p>
+                        <p>Build a tree of traces</p>
+                        <ul>
+                            <li>+ Simple and efficient type specialization</li>
+                            <li>+ Optimization pass easier</li>
+                            <li>- Code duplication</li>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>What We Need Help With</h1>
+                    </section>
+                    <section>
+                        <h2> Packaging &amp; Distriubtion </h2>
+                        More successful in improving core technologies than creating a
+                        end-user friendly nicely packaged distribution.
+                    </section>
+
+                    <section>
+                        <h2>Does PyPy run out of the box?</h2>
+
+                        More help in identifying and resolving small issues<br>
+                        Increase user experience, not discurage many dev's
+                    </section>
+
+                    <section>
+                        <h2>PyPy is extremly "under-funded"</h2>
+                        We are not pushing data science on PyPy at all,<br>
+                        <p>&rarr; C-API compatibility</p>
+                        <small>Slowly moving forward on a volunteer basis</small>
+                    </section>
+
+                    <section>
+                        <h2>NumPy</h2>
+
+                        <p>Several limitations made us to redo part of the work</p>
+                        <p>Usable, still features missing</p>
+                        <small>Slowly moving forward on a volunteer basis</small>
+                    </section>
+
+                    <section>
+                        <h2>JIT compiler</h2>
+
+                        <p>Optimizing dynamic languages on a high and low level</p>
+                        <p>Towards a new version of our JIT</p>
+                        <p>Open to new ideas</p>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Some Aspects</h2>
+                        <p>with strong opinion</p>
+                    </section>
+                    <section>
+                        <h4>Let's only apply</h4>
+                        static compiler techniques to speed up dynamic languages
+                    </section>
+                    <section>
+                        <h4>You need static type information</h4>
+                        to optimize your program
+                    </section>
+                    <section>
+                        <h4>Method based JIT compilers</h4>
+                        is the only concept that works <strong>*cough*</strong>
+                    </section>
+                    <section>
+                        <h4>Writing a program in statically compiled language</h4>
+                        does not mean the dev time / speedup ratio is appropriate
+                    </section>
+                    <section>
+                        neither does it mean you program is "fast"
+                    </section>
+                    <section>
+                        <h4>Exposing details of your VM impl.</h4>
+                        is bad.
+                    </section>
+                    <section>
+                        and caused PyPy a lot of troubles
+                    </section>
+                    <section>
+                        <h4>Dynamically typed languages</h4>
+                        are slow?
+                    </section>
+                    <section>
+                        and cannot be used for big programs?
+                    </section>
+                </section>
+                <section>
+                    <h4>Questions?</h4>
+                    <a href="morepypy.blogspot.com">morepypy.blogspot.com</a>
+                </section>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                history: true,
+
+                // More info https://github.com/hakimel/reveal.js#dependencies
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                ]
+            });
+        </script>
+    </body>
+</html>
