@@ -1,5 +1,5 @@
 ====================================================
-CFFI and PyPy
+CFFI (and PyPy)
 ====================================================
 
 .. raw:: latex
@@ -16,6 +16,8 @@ CFFI and PyPy
 CFFI
 ====
 
+* created in 2012
+
 * successful project according to PyPI
 
 * 3.4 million downloads for January
@@ -30,7 +32,7 @@ CFFI
 PyPy
 ====
 
-* harder to say...
+* success: harder to say for sure
 
 * more later
 
@@ -47,7 +49,7 @@ CFFI
 
 * CFFI = C Foreign Function Interface
 
-* shares ideas from Cython, ctypes, and LuaJIT's FFI
+* shares ideas from Cython, ctypes, LuaJIT's FFI, SWIG...
 
 
 CFFI demo
@@ -55,7 +57,7 @@ CFFI demo
 
 ::
 
- |    $ man getpwuid
+ |    $ man getpwnam
 
  | 
 
@@ -173,6 +175,8 @@ CFFI demo
 
   print lib.getpwnam("username").pw_uid
 
+* That's all folks
+
 
 CFFI demo
 =========
@@ -183,15 +187,17 @@ CFFI demo
 
 * ``lib`` gives access to all functions from the cdef
 
+  - like ``lib.getpwnam()``
+
 * ``ffi`` gives access to a few general helpers
 
 
-ffi/ffibuilder.cdef()
+ffibuilder.cdef()
 =====================
 
 ::
 
- |   ffi/ffibuilder.cdef("""
+ |   ffibuilder.cdef("""
  
  |   |   int foo1(int a, int b);
 
@@ -242,21 +248,21 @@ ffi.cast()
 
 ::
 
- |   >>> p = lib.getpwnam("root")
+ |   >>> q = lib.getpwnam("root")
 
- |   >>> p
+ |   >>> q
 
  |   <cdata 'struct passwd *' 0x12345678>
 
  |
 
- |   >>> ffi.cast("void *", p)
+ |   >>> ffi.cast("void *", q)
 
  |   <cdata 'void *' 0x12345678>
 
  |
 
- |   >>> int(ffi.cast("intptr_t", p))
+ |   >>> int(ffi.cast("intptr_t", q))
 
  |   305419896
 
@@ -298,7 +304,9 @@ ffi.new_handle()
 
 ::
 
- |   >>> h1 = ffi.new_handle(some_object)
+ |   >>> x = X()
+
+ |   >>> h1 = ffi.new_handle(x)
  
  |   >>> h1
  
@@ -384,9 +392,9 @@ PyPy
 
  |   $ pypy
 
- |  Python 2.7.10 (7e8df3df9641, Jun 28 2016, 23:19:52)
+ |  Python 2.7.10 (7e8df3df9641, Jun 28 2016)
 
- |  [PyPy 5.3.1 with GCC 6.1.1 20160602] on linux2
+ |  [PyPy 5.3.1 with GCC 6.1.1] on linux2
  
  |  Type "help", "copyright", "credits" or
 
@@ -400,23 +408,9 @@ PyPy
 PyPy
 ====
 
-* run ``pypy my_program.py``
+* run ``pypy my_program.py`` instead of ``python my_program.py``
 
-* starts working like an interpreter
-
-* then a Just-in-Time Compiler kicks in
-
-* generate and execute machine code from the Python program
-
-* good or great speed-ups for the majority of long-running code
-
-
-PyPy
-====
-
-* different techniques than CPython also for "garbage collection"
-
-* works very well (arguably better than CPython's reference counting)
+* contains a JIT compiler
 
 
 PyPy: Garbage Collection
