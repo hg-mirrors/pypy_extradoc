@@ -8,14 +8,14 @@ A useful tool to understand PyPy, learn many details of our compiler and find po
 Both VMProf and JV share some common goals. That is the reason why they are now both packaged together.
 www.vmprof.com also got updated with various bugfixes and changes including an all new interface to JV.
 
-A advertisment: We constantly improve tooling and libraries around the Python/PyPy eco system.
+An advertisment: We constantly improve tooling and libraries around the Python/PyPy eco system.
 Here are a three examples you might also want to use in your Python projects:
 
 * VMProf - A statistical CPU profiler
 * RevDB - A reverse debugger for Python 
 * CFFI - Foreign Function Interface that avoids CPyExt
 
-A brand new JitViewer
+A "brand new" JitViewer
 ---------------------
 
 The old logging format was a hard to maintain plain text logging facility. Frequent changes often broke internal tools, most notably JV. Additionaly the logging output of a long running program took a lot of disk space.
