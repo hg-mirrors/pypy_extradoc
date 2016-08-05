@@ -1,26 +1,30 @@
-JitViewer moves to vmprof.com
+PyPy Tooling Upgrade: JitViewer and VMProf
 =======
 
-We are happy to announce that VMProf got a major update. The most significant change is the movement of JitViewer (JV)
-to VMProf.
+We are happy to announce a major JitViewer (JV) update.
 JV allows you to inspect PyPy's internal compiler representation including the generated machine code of your program.
-A useful tool to understand PyPy, learn many details of our compiler and find potential issues related to our JIT.
-Both VMProf and JV share some common goals. That is the reason why they are now both packaged together.
+A useful tool to spot issues in your program and learn PyPy's compiler details.
+
+VMProf is a statistical cpu profiler imposing very little overhead at runtime.
+
+Both VMProf and JitViewer share a common goal: Present useful information for your Python program. 
+The combination of both might reveal more information. That is the reason why they are now both packaged together.
 www.vmprof.com also got updated with various bugfixes and changes including an all new interface to JV.
 
 An advertisment: We constantly improve tooling and libraries around the Python/PyPy eco system.
-Here are a three examples you might also want to use in your Python projects:
+Here are a four examples you might also want to use in your Python projects:
 
-* VMProf - A statistical CPU profiler
-* RevDB - A reverse debugger for Python 
-* CFFI - Foreign Function Interface that avoids CPyExt
+* VMProf - A statistical CPU profiler (http://vmprof.readthedocs.io/en/latest/)
+* RevDB - A reverse debugger for Python (https://morepypy.blogspot.co.at/2016/07/reverse-debugging-for-python.html)
+* CFFI - Foreign Function Interface that avoids CPyExt (http://cffi.readthedocs.io/en/latest/)
+* JitViewer - Visualization of the log file produced by PyPy (http://vmprof.readthedocs.io/en/latest/)
 
 A "brand new" JitViewer
 ---------------------
 
-The old logging format was a hard to maintain plain text logging facility. Frequent changes often broke internal tools, most notably JV. Additionaly the logging output of a long running program took a lot of disk space.
+The old logging format was a hard to maintain plain text logging facility. Frequent changes often broke internal tools. Additionaly the logging output of a long running program took a lot of disk space.
 
-Our new binary format encodes data densly, makes use of some compression (gzip) and tries to remove repetition where possible. On top of that protocol supports versioning and can be extended easily. And *drumroll* you do not need to install JV yourself anymore! The whole system moved to vmprof.com and you can use it any time.
+Our new binary format encodes data densly, makes use of some compression (gzip) and tries to remove repetition where possible. On top of that it supports versioning and can be extended easily. And *drumroll* you do not need to install JV yourself anymore! The whole system moved to vmprof.com and you can use it any time.
 
 Sounds great. But what can you do with it? Here are two examples useful for a PyPy user:
 
