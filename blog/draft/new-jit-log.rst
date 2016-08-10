@@ -66,7 +66,7 @@ Providing the link in the bug report allows PyPy developers to browse and identi
 Speed issues
 ------------
 
-VMProf is a great tool to find out hot spots that consume a lot of time in your program. As soon as you have identified code that runs slowly, you can switch to jitlog and maybe pinpoint certain aspects that do not behave as expected. You will find an overview, and are able to browse the generated code. If you cannot make sense of all that, you can just share the link with us and we can have a look too.
+VMProf is a great tool to find hot spots that consume a lot of time in your program. As soon as you have identified code that runs slowly, you can switch to jitlog and maybe pinpoint certain aspects that do not behave as expected. You will find an overview, and are able to browse the generated code. If you cannot make sense of all that, you can just share the link with us and we can have a look too.
 
 Future direction
 ----------------
