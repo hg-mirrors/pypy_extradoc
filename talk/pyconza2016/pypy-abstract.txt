@@ -1,14 +1,31 @@
-Optimizing Python programs, PyPy to rescue
-======================================
+Optimizing Python programs, PyPy to the rescue
+==============================================
 
 In this talk I want to show how you can use PyPy for your benefit.
 It will kick off with a short introduction covering PyPy and its just in time
 compiler. PyPy is the most advanced Python interpreter around (besides CPython)
+XXX
+XXX you seem to say "CPython is more advanced than PyPy" above,
+XXX which doesn't make sense in this sentence because you say
+XXX below that PyPy is much faster than CPython
+XXX
 and while it should generally just speed up your programs there is a wide range
 of performance that you can get out of PyPy.
 
 The first part, will cover considerations why one should write Python programs,
 and only spend fractions of the development time to optimize your program.
+XXX
+XXX you mean, you want to explain that developers should write in Python
+XXX and spend only a small part of their time optimizing the program?
+XXX or something else?  if I'm right then you should add below something 
+XXX like "The second part of this session will be about this small part
+XXX of time: in cases where you need it, then I'll show tools that..."
+XXX But I'm not sure that's what you mean because CFFI is not really
+XXX about that: I'm trying to push it as a general solution also for
+XXX CPython, without focusing too much on performance.  Maybe we should
+XXX have this talk be really about PyPy, and then for the other talk
+XXX I should have both CFFI and RevDB?
+XXX
 The second part of this session will show and give you the knowledge and
 tools to inspect and change your program to improve it. We will cover two tools in detail:
 CFFI & VMProf.
