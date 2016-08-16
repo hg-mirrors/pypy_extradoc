@@ -45,6 +45,10 @@ planned:
 
 * Newly created file descriptors are non-inheritable (PEP 446)
 
+  - added rposix.{set,get}_inheritable(), used it as a quick hack
+    inside interp_posix.pipe(), needed otherwise subprocess.Popen()
+    deadlocks
+
 * The marshal format has been made more compact and efficient
 
 * enum: Support for enumeration types (PEP 435).
