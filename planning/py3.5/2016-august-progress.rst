@@ -6,9 +6,8 @@ Planned
 
 * Implement changes to memory view. e.g. hex(): https://bugs.python.org/issue9951 (plan_rich)
 
-* Make a translated py3.5 actually work a bit (currently we get
-  systematic failures), up to the point where we can meaningfully
-  run the lib-python tests (arigo)
+* At some point, review lib-python/conftest.py to remove the skips
+  due to deadlocks (search for "XXX:")
 
 Finished
 --------
