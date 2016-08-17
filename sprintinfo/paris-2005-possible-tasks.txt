@@ -1,0 +1,74 @@
+
+RTyper tasks
+-------------
+
+- fixed size lists
+- poor-man type erasure for rlist and rdict
+
+- rtyping of classes/instances/methods for target languages with direct/prevalent OO/class support:
+  devise a low-level model variation for this case
+
+Annotator related tasks
+------------------------
+
+- support the notion of separate/external functions (and classes/PBCs)
+  in preparation for separate compilations
+
+JIT related work
+-----------------
+- (DONE) support addresses in the backends
+- an ll interpreter written in RPython
+- Saving ll graphs plus a loader written in RPython
+
+- Start thinking/experimenting with JIT generation at translation time
+
+- (DONE the starting) start a genasm back-end
+
+Threading/concurrency
+----------------------
+
+- release the GIL around system calls
+- understand and possibly fix where the overhead, when threads are enabled, comes from
+
+- (DONE) generating (single-threaded) stackless C code
+
+Implementation/translation
+---------------------------
+
+- (somewhat DONE) stack overflow detection (needed to be able to run many compliancy tests)
+- try more interp. level optimisations (dicts with string keys, more agressive use of fastcall*...)
+
+- compute correct max stack size in compiler (?)
+- cleanup our multiple compiler situation: remove
+  testcompiler, fix the tests to work on CPython 2.3 too,
+  decide what to put in lib-python/modified-2.4.1/compiler --
+  stablecompiler or astcompiler? -- and submit it back to
+  CPython.  Clean up pyparser/pythonutil.py.
+
+- (socket module, PEP302)
+
+GC related tasks
+-----------------
+
+- look into implementing weakrefs
+- Boehm: fix the x=range(10**7) issue
+- (improve refcounting)
+- (passes toward integrating other GCs, rpython/memory)
+
+
+Refactorings/cleanups
+----------------------
+
+- cbuild/translator.Translator (use SCons?, use/generalize TranslationDriver)
+- PyPy option handling unification, passing py.py options to targetpypy*
+- inline (transforms in general) 
+
+- (DONE) genc: producing multiple .h/.c files tracking Python code origin
+
+Larger whole projects
+----------------------
+
+- Javascript frontend
+- support for developing C extensions for CPython with RPython code
+- writing a sort of flow object space for the llinterpreter
+  to experiment with JIT work

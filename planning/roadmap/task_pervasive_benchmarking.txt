@@ -1,0 +1,25 @@
+
+Pervasive Benchmarking
+======================
+
+status: 
+
+- some microbenchmarks, but coverage not consistent
+  (see pypy/translator/microbench) 
+- some small-to-medium-sized apps as real-world benchmarks
+- benchmarks run on one machine (tuatara), no collection of results
+
+todo: 
+
+- implement more micro- and more large-scale benchmarks
+- benchmarks against cpython/pypy/jython/ironpython 
+- run benchmarks automatically on more servers
+- tool for sending benchmark data to a central place 
+- display benchmarking and progress information centrally
+
+expected outcome: 
+
+- identification of slow areas of PyPy and for follow up work  
+- faster PyPy (i.e. some easy-to-do fixing of speed bugs) 
+- more community participation and contributions in analysing 
+  and helping with speed problems 

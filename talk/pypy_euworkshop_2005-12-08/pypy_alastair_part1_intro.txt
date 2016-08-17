@@ -1,0 +1,210 @@
+Introduction
+
+World Domination
+
+ - Quote from Linus Torvalds, when he first asked for help in building
+   Linux.
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - Figures for growth of Linux
+
+  - A student just learning computing.
+
+    - Now works full time on Linux, in a non-profit mainly targeted at
+      promoting his baby.
+
+    - Linux now at the centre of the business strategy of IBM, Sun,
+      Nokia, Sony etc.
+
+  - Without the internet, it would have remained the hobby project of
+    a student.
+
+  - The talk will cover the mechanisms through which Torvalds and
+    others have built up such effective communities. It will centre on
+    the community we know best - that of Python and PyPy.
+
+---------------------------------------------------------------------------
+
+Talk Structure
+
+  - Introduction
+
+    - Free / Open Source Software.
+
+    - Python programming language.
+
+    - Elements of typical F/OSS development.
+
+  - View from the Trenches
+
+    - Typical Python development.
+
+    - PyPy - building a better Python.
+
+    - A F/OSS community and the EU.
+
+  - Agile Programming Practices
+
+    - Best practice in software engineering.
+
+    - Agile methods and the typical F/OSS project.
+
+    - Agile methods and PyPy - sprints.
+
+  - Discussion
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - Handouts
+
+  - Weblinks for further information.
+
+  - Contacts.
+
+---------------------------------------------------------------------------
+
+Free and Open Source Software
+
+  - Four freedoms
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - The two communities and the F/OSS acronym (also FLOSS).
+
+    - Python has elements of both communities.
+
+    - Some Python developers also produce proprietary source code.
+
+  - One man projects are just as free and open source as big ones, but
+    the openness supports cooperative development.
+
+---------------------------------------------------------------------------
+
+What is Python? 
+
+  - Executable pseudo-code. Example.
+
+  - Guido van Rossum - Benevolent Dictator for Life (BDFL).
+
+  - The typical Pythonista.
+
+  - Not the most popular F/OSS language, but has many dedicated fans:
+
+    - Google.
+
+    - Tim Berners Lee - plane flight coding projects.
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - Python is a general purpose language. PyPy will remove barriers to
+    its take-up in some sectors.
+
+  - GvR - started in academic environment, in Netherlands, then US.
+
+  - Currently, most people working with Python do so out of
+    choice. This is reflected in the nature of the
+    community. Popularity may change this.
+
+---------------------------------------------------------------------------
+
+Python Principles - What Shapes the Community
+
+  - Priorities and principle - Gabriel "Worse is better"
+
+  - Python principles - highlight the interesting ones.
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - Almost all programmers value the same set of principles, but
+    priorities are everything.
+
+---------------------------------------------------------------------------
+
+F/OSS Community Practices
+
+  - Mailing list - no email, no community.
+
+  - Source code management - read / write access.
+
+  - Bug / feature request tracking.
+
+  - Newsgroups, forums - users and developers.
+
+  - Web page:
+
+    - About, News
+
+    - Download - often stable and development branches
+
+    - Support - Documentation, FAQ, Wiki.
+
+    - Related projects.
+
+  - IRC - chat.
+
+  - Developer weblogs.
+
+  - Newsletters.
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - Role of Sourceforge - and moves from Sourceforge:
+
+    - Central point of failure.
+
+  - CVS to SVN.
+
+  - Declining role of USENET.
+
+  - Formal documentation spotty - forums and IRC can provide excellent
+    support. This can be a deciding factor in choosing software.
+
+  - Related projects - friendly rivalry. Much reusing of ideas and
+    some code.
+
+---------------------------------------------------------------------------
+
+F/OSS Community Practices - Formal Structure
+
+  - Sub-communities in larger projects - special interest groups.
+
+  - Regular meetings and conferences.
+
+  - Non-proft organisations:
+
+    - Organise meetings and marketing.
+
+    - Hold copyright.
+
+    - Parallel to technical structure.
+
+  - Semi-formal decision processes:
+
+    - Python PEPS - proposed changes in the language and development.
+
+    - BDFLs and the art of saying "no".
+
+---------------------------------------------------------------------------
+
+Notes:
+
+  - Meritocracy.
+
+  - Ability to fork.
+
+  - Tensions between large commercial developers and outsiders.
+
+

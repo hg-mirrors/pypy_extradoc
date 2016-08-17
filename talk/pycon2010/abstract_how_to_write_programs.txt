@@ -1,0 +1,47 @@
+How to write cross-interpreter Python programs
+==============================================
+
+Summary:
+
+This talk will cover basics about writing cross-interpreter
+python programs. What to do and most of all what not to do.
+This will help you if you want at some point in time to
+run program on for example Java platform or faster python
+interpreter, but also if you want to keep it running between
+CPython releases.
+
+Description:
+
+The talk will consist mostly out of list of issues what to do and what
+not to do. Some examples are given below:
+
+Having good tests is the most important component to successful
+cross-interpreter programs.  This includes having the infrastructure set up to
+automatically run them on all supported platforms, runtimes, and versions.
+
+Try to avoid 3rd party libraries that require C extension modules unless you can
+fallback to a pure Python replacement.  Implementation specific code, especially
+if it's not Python code, is one of the hardest parts to port to other
+interpreters.  This also applies to libraries that are made available by the
+implementation by default but are not part of the stdlib like Java libraries
+from Jython and .NET in IronPython.  The preferred way to access libraries is
+ctypes, since CPython, PyPy and IronPython supports it,
+while Jython is on the way.
+
+Mind your bytes and strings!  The usual rule is to always decode data as soon as
+possible from IO if you need to do processing on it, or always keep it as bytes.
+In 2.x, always use unicode for text, and str for byte strings.
+
+Don't use sys.prefix.  Different implementations have different installed
+layouts, so it's wrong to assume the CPython one.
+
+Use all new style classes.  Not only does this provide consistency, but it will
+avoid surprises in 3.x when all classes are new style and be useful for other
+implementations, where new style classes are optimized more.
+
+Never use exact string representation of exceptions, they might even
+change from one minor revision to other.
+
+Don't really on exact finalization, especially on files.
+
+In short: there is no feature obscure enough for people not to rely on.

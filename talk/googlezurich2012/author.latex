@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy in Production]{PyPy}
+\author[Armin Rigo]
+{Armin Rigo}
+
+\institute{Google 2012}
+\date{September 12, 2012}

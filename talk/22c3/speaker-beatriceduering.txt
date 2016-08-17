@@ -1,0 +1,47 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2005/cfp.html
+DEADLINE: 30th September 2005 (friday)
+
+Name: Beatrice Düring
+
+Public Name: Beatrice Düring 
+
+Other Names: bd on irc.freenode.org, bea 
+
+Primary E-Mail address: bea@changemaker.nu 
+
+Phone number(s): +46 (0)734 22 89 06  
+
+A photo, square format, min. 128x128 pixels (optional): 
+    (is also attached in the proposals zip file)
+    see http://codespeak.net/pypy/extradoc/talk/22C3/bea.jpg 
+   
+Statement: publishing contact info except for the phone number 
+           is fine with me. 
+
+Public home page, weblog and other speaker-related websites: 
+    
+    http://codespeak.net/pypy
+
+Short Info: 
+
+    Beatrice During (Sweden), consultant in the project management field, 
+    assistant project manager in PyPy
+
+Bio: 
+
+    Beatrice Düring studied teaching/pedagogy at the University of Karlstad in
+    Sweden. She was recruited into the IT-industry to work as a project manager
+    for large scale education projects for the company NetGuide Scandinavia,
+    Gothenburg. Since 1998 she has been working with education and development
+    project management and management of education and consultant departments,
+    implementing Open Source strategies and Agile development methods. Beatrice
+    also teaches project management, requirements and communication courses for
+    Learning Tree International through the Chaos Pilot company Change Maker.
+    Currently she is involved in the project management team of the PyPy project
+    and tries to fit in some maternity leave  (;-)
+
+
+Postal address: Change Maker, Järntorget 3, 41304 Gothenburg, Sweden
+Bank information: 
+Expected day of arrival and departure: 27th-30th December. 
+

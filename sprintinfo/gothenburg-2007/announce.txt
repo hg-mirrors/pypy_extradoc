@@ -1,0 +1,97 @@
+PyPy Göteborg Cleanup Sprint November 19 - November 25 2007
+===============================================================
+
+The next post-EU-project PyPy sprint will be in Gothenburg, Sweden. It will
+focus on cleaning up the PyPy codebase and making it ready for the next round
+of improvements. It is a "public" sprint but it will probably be more suitable
+for people already somewhat acquainted with PyPy.
+
+Topics and goals
+----------------
+
+Meta-Tasks
+++++++++++
+
+ - Tracker-gardening
+ - Start slowly thinking about 1.1 plans
+
+Translation toolchain
++++++++++++++++++++++
+
+
+ - finish rctypes removal
+
+ - move away from implicit keepalives
+ - raw_malloc should be split, rffi one should not use obmalloc (it's
+   not thread-safe)
+ - delegate finding type stuff like vtables etc to GC, cleaner interface
+   for rtti, simplify translator/c/gc.py
+
+ - clean up the tangle of including headers in the C backend
+
+ - review pdbplus, especially the graph commands, also in the light of
+   https://codespeak.net/issue/pypy-dev/issue303 and the fact that we
+   can have more than one translator/annotator around (with the
+   timeshifter)
+
+ - kill half concrete wrapper
+ 
+ - kill opaque hacks on the C backend
+  
+ - decide how to implement constants in rffi
+   
+ - think about/remove orphaned parts
+
+ - implement callback mechanism for rffi/lltype/ll2ctypes
+
+Interpreter
++++++++++++
+
+ - there's a shadow tracking bug it seems
+
+ - fix the taint space
+
+ - review the things implemented at applevel whether they are
+   performance-critical
+
+ - app-level ctypes
+    
+ - remove prebuilt costate vars  (might happen before)
+
+JIT
++++
+
+ - repair the JIT tests (if it doesn't happen before), the keep alive killing merge broke them
+ - start writing real unit tests for the merging logic
+
+
+Location
+--------
+
+The sprint will be held in the apartment of Laura Creighton and Jacob Hallén
+which is at Götabergsgatan 22 in Gothenburg, Sweden.  Here is a map_.  This is
+in central Gothenburg.  It is between the tram_ stops of Vasaplatsen and Valand,
+where many lines call.
+
+.. _tram: http://www.vasttrafik.se
+
+.. _map: http://gulasidorna.eniro.se/query?stq=0&streetname=G%F6tabergsgatan+22%2C+G%F6teborg&what=map&asearch=1
+
+Probably cheapest and not too far away is to book accomodation at `SGS
+Veckobostader`_. There are also hotels to suit every price range and desire for
+luxury.  Just ask in the mailing list.
+
+.. _`SGS Veckobostader`: http://www.sgsveckobostader.com
+
+
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More 
+organisational information will be send to that list.  We'll keep a list
+of `people`_ which we'll update (which you can do so yourself if you
+have codespeak commit rights).
+
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`people`: http://codespeak.net/pypy/extradoc/sprintinfo/gothenburg-2007/people.html

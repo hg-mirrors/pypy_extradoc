@@ -1,0 +1,18 @@
+Refactor the JIT
+================
+
+status:
+
+  - Currently underway on a few branches, refer to Carl and Armin for details.
+
+todo:
+
+ - The JIT is the result of programming under severe time pressure. This
+   means that the existing JIT framework needs a fair bit of cleanup and
+   restructuring.
+
+
+expected outcome:
+
+dependencies:
+ - None

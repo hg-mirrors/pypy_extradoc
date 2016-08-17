@@ -1,0 +1,135 @@
+\documentclass{llncs}
+
+
+ %%%% Compression Light+: LNCS margin reduced by +/-7mm along all edges (RG).
+%\textwidth=130mm   % LNCS: 122mm
+%\textheight=203mm  % LNCS: 193mm
+
+\renewcommand{\baselinestretch}{0.97}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[sans]{dsfont}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage[pdftex]{graphicx}
+
+%\input{macros}
+
+\pagestyle{plain}
+
+%\lstset{mathescape=true,language=Java,basicstyle=\tt,keywordstyle=\bf}
+\lstset{language=Python,
+        basicstyle=\scriptsize\ttfamily,
+        keywordstyle=\color{blue}, % I couldn't find a way to make chars both bold and tt
+        frame=none,
+        stringstyle=\color{blue},
+        fancyvrb=true,
+        xleftmargin=20pt,xrightmargin=20pt,
+        showstringspaces=false}
+
+\setlength{\tabcolsep}{1ex}
+
+
+%\renewcommand{\baselinestretch}{.98}
+\newboolean{showcomments}
+\setboolean{showcomments}{false}
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$Id: main.tex 19055 2008-06-05 11:20:31Z cfbolz $-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\dacom[1]{\nb{DA}{#1}}
+\newcommand\cfbolz[1]{\nb{CFB}{#1}}
+\newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\arigo[1]{\nb{AR}{#1}}
+\newcommand{\commentout}[1]{}
+
+\let\oldcite=\cite
+
+\renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
+
+
+\begin{document}
+\title{Tutorial Proposal: Writing Interpreters for Dynamic Languages Using PyPy
+(and Getting Them Fast)}
+
+
+\author{Carl Friedrich Bolz\inst{2} \email{cfbolz@gmx.de} \and Antonio Cuni\inst{1} \email{anto.cuni@gmail.com} \and Armin Rigo\inst{2} \email{arigo@tunes.org}}
+
+\institute{DISI, University of Genova, Italy 
+\and 
+Softwaretechnik und Programmiersprachen
+ Heinrich-Heine-Universit\"at D\"usseldorf}
+\maketitle
+
+
+\begin{abstract}
+We propose to give a tutorial on how to use the PyPy project to write
+interpreters for dynamic languages. PyPy supports compiling such interpreters
+to various target environments (like .NET or C/Posix) and automatically
+generating a Just-In-Time compiler for them. PyPy is thus an emerging tool to
+help implement fast, portable multi-platform interpreters with less effort.
+\end{abstract}
+
+The easiest way to implement a dynamic language such as JavaScript or Python is
+to write an interpreter for it; however, interpreters are slow. An alternative
+is to write a compiler; writing a compiler that targets a high level virtual
+machine like CLI or JVM is easier than targeting a real CPU, but it still
+requires a lot of work, as demonstrated by the IronPython, Jython, JRuby
+projects. Moreover, the various platforms (either VM or real hardware) have to
+be targeted independently.
+
+The PyPy project\footnote{\url{http://codespeak.net/pypy}} \cite{RigoPedroni06}
+\cite{RiBo07_223}
+aims to make the implementation of dynamic
+languages easier by providing a toolchain that allows to compile an
+interpreter to various target platforms, including the JVM, .NET and C/Posix. 
+In addition, we are working on being able to automatically transform the
+interpreter into a specializing JIT-compiler to vastly increase performance.
+The goal is to minimize the effort required to get a fast implementation for a
+dynamic language.
+
+This tutorial will provide insights into the usage of the PyPy translation
+toolchain by giving a step-by-step introduction. The topics covered are how to
+write an interpreter for a dynamic language with PyPy and make it possible to
+automatically generate a JIT for it.  We will showcase a typical interpreter for a
+small object-oriented dynamic language as a running example.
+
+
+Outline of the tutorial:
+\begin{itemize}
+ \item \textbf{Introduction to PyPy:} Introduce the PyPy project and give an
+ overview of its goals.
+ \item \textbf{Overview of the example language:} Present the small language and
+ its interpreter that will be used as a running example throughout the tutorial.
+ \item \textbf{Translation:} Show how to compile the interpreter to various
+ platforms, including .NET and C/Posix.
+ \item \textbf{JIT-Generation:} Show how to apply the JIT-generator to the
+ interpreter by placing a few hints to automatically get a JIT for the language.
+\end{itemize}
+
+
+There is a current resurgence in research on JIT-compilers for dynamic
+languages, mostly focusing on JavaScript implementations. PyPy generates such
+JITs so that they don't have to be hand-written. This requires much less effort
+for the language implementor. PyPy is the first project that attempts to
+generate JITs at this scale \cite{PyPyJIT}.
+
+The presenters are part of the PyPy core development team and are all involved
+in the ongoing research on the JIT generator. 
+
+\bibliographystyle{plain}
+\bibliography{proposal}
+
+\end{document}

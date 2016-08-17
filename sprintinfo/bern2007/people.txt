@@ -1,0 +1,51 @@
+People coming to the Bern sprint October 2007
+====================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ================= =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ================= =====================
+Carl Friedrich Bolz  ?                  ?
+Adrian Kuhn          -                  private
+Niko Matsakis        22.10 / 26.10      private (Zurich)
+Armin Rigo           22.10(9:26)/26.10  at the Uni
+==================== ================= =====================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Michael Hudson       ?              ?
+Antonio Cuni         ?              ?
+Samuele Pedroni      ?              ?
+Anders Chrigstroem   ?              ?
+Maciej Fijalkowski   ?              ?
+Andrew Thompson      ?              ?
+Stephan Diehl        ?              ?
+Eric van Riet paap   ?              ?
+Leonardo Santagada   ?              ?
+Richard Emslie       ?              ?
+Christian Tismer     ?              ?
+Alexander Schremmer  ?              ?
+Jacob Hallen         ?              ?
+Aurelien Campeas     ?              ?
+Alexandre Fayolle    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Bert Freudenberg     ?              ?
+Laura Creighton      ?              ?
+Beatrice Duering     ?              ?
+Johan Hahn           ?              ?
+Holger Krekel        ?              ?
+Anders Chrigstroem   ?              ?
+Samuele Pedroni      ?              ?
+Anders Lehmann       ?              ? 
+Niklaus Haldimann    ?              ?
+==================== ============== =====================

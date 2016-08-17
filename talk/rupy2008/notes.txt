@@ -1,0 +1,77 @@
+
+
+Overview Slides
+
+Demos:
+ - simple pypy-c prompt
+ - pypy-cli windows forms demo
+ - reflective object space (test_add)
+
+
+Status:
+
+ - Last year's developments:
+   - cleanups:
+     - getting rid of unmaintainable features
+     - unicode support in RPython
+
+   - a much better GC, generational
+   - a ctypes implementation
+   - .NET integration
+
+ - cleanups:
+   - over the EU project a lot of features accumulated that were required by our proposal
+   - not all of them were implemented well
+   - all of them were unmaintained
+   - they were preventing progress in other areas
+   - so we killed them
+   - many other improvements on all levels, e.g. RPython support for Unicode
+
+ - ctypes:
+   - CTypes is a libffi wrapper for CPython
+   - implemented in C
+   - can be used to wrap C libraries rather effortlessly
+   - CTypes implementation for PyPy:
+     - two parts
+     - a very thin wrapper around libffi
+     - normal Python code for all the CTypes logic
+     - some things missing but already very useful
+     - ... demo
+
+ - GCs:
+   - completely written in Python
+   - similar to the MMTK toolkit of Jikes RVM
+   - two fast GCs: semispace, generational
+   - lots of care to get the semantics right, e.g. of weakrefs and finalizers
+   - performance pretty good, memory-bound benchmarks faster than CPython
+     despite our bigger memory needs
+   - demo (id(x))
+
+ - Currently Working on: JIT Generation
+   - writing good JITs for dynamic languages is hard work
+   - not really many good JITs around:
+     - Psyco (unmaintained)
+     - LuaJit (slightly simpler language, genius at work)
+     - Tamarin (company support, who knows how good it is)
+
+   - keeping up with new language features is hard
+   - compilers are a bad encoding for languag semantics
+   - idea: automatically generate the JIT from an interpreter
+
+ - JIT Generation Ideas
+   - partial evaluation: old idea from CS research
+   - usually in a static compiler context
+   - never worked well on real-life examples
+   - key insight: things become *easier* if you generate JITs instead of static compilers
+
+ - JIT Generation: Current Status
+   - a working prototype at the end of the EU project
+   - speeds up simple arithmetic functions *a lot*
+   - had limitations that were hard to fix with the design
+   - refactoring happened in the last two months to improve the situation
+   - still in progress, but already allows experimentation
+   - starting to hit the hard bits
+   - we hope to get really good results for more general code in a few months
+   - demo
+
+

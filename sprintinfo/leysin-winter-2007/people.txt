@@ -1,0 +1,55 @@
+
+People coming to the Leysin sprint Winter 2007
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+Use ``Accomodation = Ermina`` for the group booking at the Chalets.
+Recommended arrival day is the 7th (there might not be enough rooms
+available if everybody shows up on the 6th!)
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Armin Rigo           --             private
+Anders Chrigstroem   6th-15th       Ermina
+Samuele Pedroni      6th-15th       Ermina
+Michael Hudson       7th-15th       Ermina
+Niko Matsakis        9th-14th       Ermina
+Antonio Cuni         7th-15th       Ermina
+Maciej Fijalkowski   6th-17th?      Ermina
+Eric van Riet Paap   10th-14th      Ermina
+Jacob Hallen         5th-15th       Ermina
+Laura Creighton      5th-15th       Ermina
+Holger Krekel        5th-14th       Ermina
+Carl Friedrich Bolz  5th-14th       Ermina
+Guido Wesdorp        6th-14th       Ermina
+Leonardo Santagada   6th-14th       Ermina
+Alexandre Fayolle    8th-12th       Ermina
+Sylvain Thénault     8th-12th       Ermina
+==================== ============== =====================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Stephan Diehl        ?              ?
+Niko Matsakis        ?              ?
+Alexander Schremmer  ?              ?
+==================== ============== =====================

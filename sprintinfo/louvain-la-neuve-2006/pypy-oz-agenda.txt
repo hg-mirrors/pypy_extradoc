@@ -1,0 +1,232 @@
+PyPy/Oz meeting Agenda
+=======================
+
+Participants
+------------
+
+ * sprint participants
+
+and
+
+ * Peter Van Roy (UCL)  Oz author (one of).
+ * Grégoire Dooms (UCL) Oz contributor.
+ * Roel Wuyts (ULB)     PyPy reviewer.
+
+and maybe:
+
+ * Alastair Burt (DFKI)   PyPy coordinator.
+ * Raphael Collet (UCL)   Oz contributor.
+ * Kevin Glynn (UCL)      Oz contributor.
+ * Michael Leuschel (HHU) interest in Prolog+Python
+
+even better:
+
+ * others ?
+
+
+Possible Agenda
+---------------
+
+Presentations
+
+* goals (nicolas ?)
+
+  Our goal is to add new programming approaches/paradigms to Python and
+  we would have a lot to learn from your experience with Oz. What
+  is possible and how far can we go with the current langage
+  definition? How to enhance Python with logic and keep a
+  consistent langage?
+
+  understanding of how Oz itself manages the relation between stateful programming and the
+  declarative parts.
+
+* PyPy quick description (samuele ?)
+
+* Adding a constraint store to Python (aurelien ?)
+
+* Languages integration of Soul (roel)
+
+Discussions
+
+* Mozart design philosophy vs. Python design philosophy (peter)
+  How a little bit of formal semantics can help a lot.  The Mozart
+  philosophy is based on having *two* things at all times: an efficient implementation and a simple
+  formal semantics.  This makes for an interesting balancing act, but the result is worth it I think.
+
+* Concurrent programming (peter)
+  lightweight concurrency and support for
+  asynchronous messages are really very important if you want to "future-proof" Python.  Monitors
+  are terrible; transactions  are nice if you can support them in the language.
+  discuss futures/promises versus blocking on unbound logic variables
+
+* Distributed computing (peter)
+  A single bullet does not do it justice by a long shot.  There are lots
+  of issues: degree of transparency, language design, distributed algorithms, fault tolerance,  openness, security.
+
+* security features (?)
+
+* garbage collection (samuele + ?)
+
+
+
+Topics
+------
+
+To be summarized.
+
+Excerpts from e-mails:
+
+Grégoire::
+
+    I can think of a few topics for discussion (non exhaustive):
+    - your ongoing work on implementing a constraint store in pypy
+    - transparent distributed computing
+    - garbage collection
+    - constraint programming: constraint propagation, modeling, search and
+      computation spaces.
+    - logic variables and unification
+    - lazy computations
+    - dataflow concurrency (through logic variables or future/promise)
+
+Roel::
+
+    I could give a presentation about Soul, or, more specifically, about
+    the language integration of Soul.
+
+    Soul is a Prolog implemented in Smalltalk that allows object-oriented
+    (Smalltalk) code to be executed during logic reasoning. The key
+    aspect of this symbiosis is what we call the up/down mechanism, which
+    was previously used by other members of the lab where I did my Ph.D.
+    (Programming Technology Lab, of the Vrije Universiteit Brussel) for
+    the prototype-based language Agora (that featured symbiosys with C++,
+    Java and Smalltalk). In the case of Soul, however, the symbiosis is
+    between languages of different paradigms. The up/down scheme is
+    similar to what is used in the object space in PyPy. So lots of
+    things are touching.
+
+    Note that the integration of Soul with Smalltalk is different than
+    what happens in Oz, since I explicitly wanted to have two languages
+    in symbiosis (e.g. I did not want to change Smalltalk).
+
+
+Peter::
+
+    - Mozart design philosophy vs. Python design philosophy
+    - How a little bit of formal semantics can help a lot.  The Mozart
+    philosophy is based on having
+     *two* things at all times: an efficient implementation and a simple
+    formal semantics.  This makes
+     for an interesting balancing act, but the result is worth it I think.
+    - Concurrent programming: lightweight concurrency and support for
+    asynchronous messages are
+     really very important if you want to "future-proof" Python.  Monitors
+    are terrible; transactions
+     are nice if you can support them in the language.
+    - Distributed computing: A single bullet does not do it justice by a
+    long shot.  There are lots
+     of issues: degree of transparency, language design, distributed
+    algorithms, fault tolerance,
+     openness, security.
+
+    There are slides on much of this, but I can present a lot just by
+    talking and writing on a
+    whiteboard and answering your questions (helped by Raph and Kevin and
+    the others in
+    our group).  That will let you direct the discussion.
+
+
+Nicolas::
+
+    In my opinion:
+    >
+    >* Presenting PyPy is needed.
+    >
+    >* Presenting our ongoing work about adding logic programming to Python
+    >  is needed.
+    >
+    >* Our goal is to add new programming approaches/paradigms to Python
+    >  and we would have a lot to learn from your experience with Oz. What
+    >  is possible and how far can we go with the current langage
+    >  definition? How to design/enhance Python with logic and keep a
+    >  consistent langage?
+    >
+    >Among the above topics cited by Gregoire, everything is of interest
+    >and several are already researched:
+    >
+    >* PyPy will have a framework for experimenting with GC
+    >* PyPy has lazy computation through a Thunk ObjectSpace (pypy slang)
+    >* PyPy has some concurrency inherited from Stackless Python
+    >* PyPy plans to do some transparent distribution (end of 2006)
+
+
+
+Aurélien::
+
+    It might be worthwhile to complete this with the current state of our
+    plans to "inject" some parts of Oz into PyPy. When this session will
+    happen, I expect that we will have a working prototype, written in full
+    Python, that covers the following :
+
+    - a constraint store (kind of first-class environment holding up
+      variables, domains and constraints) which knows how to bind and unify variables,
+      and how to propagate constraints on the domains (AC3)
+    - dataflow variables (with method on them that give (Python, ie OS-threads) thread
+      access the wait-til-bound semantics, multiple albeit monotonic binding
+      of compatible/unifiable values) and streams
+    - computation space (embeds/extends a constraint store, provides the
+      operators defined in CTM)
+    - sample search strategies & distributors
+    - sample problems exercizing the prototype
+
+    This is the subset of Oz we believe covers logic and constraint
+    programming. Other aspects of Oz, while important and fascinating, will
+    not be considered in our implementation attempt at this stage.
+
+    The prototype will be, when completed, the basis of a port of these Oz
+    features to PyPy. How it will be integrated, implementation-wise,
+    remains unknown to us; to decide what feature will be allowed to "leak"
+    from one world to the other depends on a clear understanding of how Oz
+    itself manages the relation between stateful programming and the
+    declarative parts.
+
+
+Peter's answer::
+
+    Ok, I see: you are focusing on constraint programming.  This is
+    absolutely fine.
+    There are three levels you can go here, as I see it:
+    - Just add lightweight concurrency and dataflow variables.  This
+    provides many
+     interesting idioms already -- see, e.g., the paper on Flow Java which
+    adds this
+     to Java by changing the compiler & VM slightly (see
+    http://www.sics.se/~frej/flow_java/).
+    - Add WaitNeeded to the first level.  This adds lazy evaluation in a
+    very nice way.
+     The combination of dataflow concurrency and lazy evaluation is very
+    powerful; it goes
+     beyond what a language with a tighter evaluation strategy can express
+    (such as Haskell
+     with its nonstrict strategy).
+    - Add computation spaces to the first level.  This gives a full-fledged
+    compositional
+     constraint logic language.  It goes much beyond Prolog in that it has
+    a first-class top
+     level and lazy versions of bagof (even without lazy evaluation in the
+    language; with
+     lazy evaluation it just becomes more concise).
+    Note that lightweight concurrency is a prerequisite to constraint
+    programming: each
+    operational version of a constraint (what we call a "propagator")
+    executes in its own
+    thread, and in big constraint problems there can easily be tens of
+    thousands of these.
+
+
+Carl::
+
+    On the other hand, since Oz/Mozart contains
+    interesting security features as well, it might also be interesting to do a
+    bit of work/talking with the Oz people in this direction.
+
+

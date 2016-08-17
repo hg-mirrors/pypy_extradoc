@@ -1,0 +1,36 @@
+
+- multicore machines, manycore machines
+
+- focus on cases where using more cores is harder than making more processes
+
+
+- using locks
+- using stm/htm
+
+- HTM: Haswell
+- STM: read/write barriers, picture
+
+
+- the deeper problem is: you have to use threads
+- messy
+
+- parallel with GC: common programming languages are either fully GC'ed or
+  not at all
+
+- what do you get if you run *everything* in STM/HTM?
+
+- longer transactions, corresponding to larger parts of the program
+
+- the thread model becomes implicit
+
+- demo
+
+
+- GIL/STM pictures
+- can pretend it is one-core
+
+- always gives correct results, but maybe too many conflicts
+
+- "the right side" of the problem, in my opinion: debugging tools etc.
+  (same as: GC is "the right side": no crashes, but you need occasionally
+  to understand memory-not-freed problems)

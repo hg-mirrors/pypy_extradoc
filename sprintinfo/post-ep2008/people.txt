@@ -1,0 +1,56 @@
+        
+People coming to the Post EuroPython Sprint (Vilnius) 10-12 July 2008
+=====================================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+
+==================== ============== ============================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== ============================
+Antonio Cuni         6-13           http://www.jnn.lt/
+Holger Krekel        6-13           http://www.litinterp.lt/
+Maciej Fijalkowski   6-13           http://www.jnn.lt/
+Jakub Gustak         6-13           http://hospitalityclub.org/
+Stephan Diehl        6-13           http://www.litinterp.lt/
+Armin Rigo           6-13           Ambassador Hotel
+Samuele Pedroni      6-13           conf hotel
+==================== ============== ============================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Carl Friedrich Bolz  ?              ?
+Alexander Schremmer  ?              ?
+Holger Krekel        ?              ?
+Toon Verwaest        ?              ?
+Camillo Bruni        ?              ?
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Niko Matsakis        ?              ?
+Anders Chrigstroem   ?              ?
+Eric van Riet Paap   ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+==================== ============== =====================

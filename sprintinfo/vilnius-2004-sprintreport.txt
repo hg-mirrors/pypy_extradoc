@@ -1,0 +1,16 @@
+Vilnius (Nov 2004)
+========================
+
+I don't really remember what others did at this sprint, but this is where 
+Laura and I wrote the file I/O handling.
+
+People I remember being there: Marius Gedminas, Bob Ippolito, Christian, 
+Armin.
+
+Jacob
+
+IIRC everyone was overjoyed when PyPy managed to completely translate
+into C and compute the Ultimate Answer to Life, the Universe, and
+Everything (def somefunc(): return -6 * -7).
+
+Marius Gedminas

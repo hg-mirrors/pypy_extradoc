@@ -1,0 +1,21 @@
+Optimizing Python programs, PyPy to the rescue
+==============================================
+
+In this talk I want to show how you can use PyPy for your benefit.
+It will kick off with a short introduction covering PyPy and its just in time
+compiler. PyPy is the most advanced Python interpreter around
+and while it should generally just speed up your programs there is a wide range
+of performance that you can get out of PyPy.
+
+The first part, will cover considerations why one should write Python programs,
+and only spend fractions of the development time to optimize your program.
+The second part of this session will be about this small part
+of time: in cases where you need it, then I'll show tools that help you inspect
+and change your program to improve it. We will also dive into one tool more elaboratly.
+VMProf, a platform to inspect your program while it is running, imposing very little overhead.
+
+Throughout the talk real world examples will motivate why PyPy is a viable option
+to optimize you Python programs and present the examples' value to their developers.
+
+As a result of this talk, an audience member should be equipped with
+tools that helps him to understand and optimize programs. 

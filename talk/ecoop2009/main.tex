@@ -1,0 +1,116 @@
+\documentclass{llncs}
+
+
+ %%%% Compression Light+: LNCS margin reduced by +/-7mm along all edges (RG).
+%\textwidth=130mm   % LNCS: 122mm
+%\textheight=203mm  % LNCS: 193mm
+
+\renewcommand{\baselinestretch}{0.97}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[sans]{dsfont}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\usepackage{multirow}
+\usepackage[pdftex]{graphicx}
+
+%\input{macros}
+
+\pagestyle{plain}
+
+%\lstset{mathescape=true,language=Java,basicstyle=\tt,keywordstyle=\bf}
+\lstset{language=Python,
+        basicstyle=\scriptsize\ttfamily,
+        keywordstyle=\color{blue}, % I couldn't find a way to make chars both bold and tt
+        frame=none,
+        stringstyle=\color{blue},
+        fancyvrb=true,
+        xleftmargin=20pt,xrightmargin=20pt,
+        showstringspaces=false}
+
+\setlength{\tabcolsep}{1ex}
+
+
+%\renewcommand{\baselinestretch}{.98}
+\newboolean{showcomments}
+\setboolean{showcomments}{false}
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$Id: main.tex 19055 2008-06-05 11:20:31Z cfbolz $-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\dacom[1]{\nb{DA}{#1}}
+\newcommand\cfbolz[1]{\nb{CFB}{#1}}
+\newcommand\anto[1]{\nb{ANTO}{#1}}
+\newcommand\arigo[1]{\nb{AR}{#1}}
+\newcommand{\commentout}[1]{}
+
+\let\oldcite=\cite
+
+\renewcommand\cite[1]{\ifthenelse{\equal{#1}{XXX}}{[citation~needed]}{\oldcite{#1}}}
+
+
+\begin{document}
+\title{Automatic generation of JIT compilers for dynamic languages
+  in .NET\thanks{This work has been partially
+supported by MIUR EOS DUE - Extensible Object Systems for Dynamic and
+Unpredictable Environments and by the EU-funded project: IST 004779 PyPy
+(PyPy: Implementing Python in Python).}}
+
+
+\author{Davide Ancona\inst{1} \and Carl Friedrich Bolz\inst{2} \and Antonio Cuni\inst{1} \and Armin Rigo\inst{2}}
+
+\institute{DISI, University of Genova, Italy 
+\and 
+Softwaretechnik und Programmiersprachen
+ Heinrich-Heine-Universit\"at D\"usseldorf}
+
+\maketitle
+
+\commentout{
+\section{Tentative structure}
+\begin{itemize}
+  \item Introduction \& background; main contributions:
+    \begin{itemize}
+      \item Promotion
+      \item (unboxing)
+      \item JIT layering
+    \end{itemize}
+  \item How the generated JITs work
+    \begin{itemize}
+      \item Promotion: allows intermixing compile-time and runtime; how to
+        compare with polymorphic inline caches and partial evaluation
+      \item unboxing: how they compare with tracing JITs
+      \item (don't talk about merging)
+    \end{itemize}
+  \item .NET backend
+  \item How the JIT generator works
+  \item Benchmarks (TLC)
+  \item Future works
+  \item Conclusions
+\end{itemize}
+}    
+
+\input{abstract}
+\input{intro}
+\input{tlc}
+\input{jitgen}
+\input{rainbow}
+\input{clibackend}
+\input{benchmarks}
+\input{conclusion}
+
+\bibliographystyle{plain}
+\bibliography{main}
+
+\end{document}

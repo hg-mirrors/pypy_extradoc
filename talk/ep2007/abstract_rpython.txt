@@ -1,0 +1,27 @@
+RPython: need for speed
+=======================
+
+XXX: suggestions for title are welcome :-)
+XXX: another proposition - C considered harmful
+
+Speakers: Antonio Cuni & Maciek Fijalkowski
+
+Abstract
+--------
+
+Restricted Python (RPython) is a subset of a Python language designed to be
+compiled into lower-level languages, suitable for direct compilation
+into C, CLI, JVM or others. RPython cuts some of python dynamism (allows for
+full type inference and creation of flow graphs), but doesn't require explicit
+type annotations.
+Results might be up to 300 times faster than the
+original python program. Although it was born as an implementation
+detail of the PyPy interpreter, experience showed that it can be useful
+by itself. This talk will present some typical RPython's use cases, including:
+ * how to write a standalone executable in RPython.
+ * how to write an extension module for CPython.
+ * how to produce .NET libraries/executables as fast as C#
+ * how to write AJAX applications without a single line of Javascript.
+   (and with tests!)
+ * how to create bub-n-bros client in just few lines of code running on
+   a browser :-)

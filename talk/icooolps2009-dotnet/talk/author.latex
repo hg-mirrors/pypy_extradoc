@@ -1,0 +1,9 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Efficient dynamic languages on .NET]
+{Faster than C\#: efficient implementation of dynamic languages on .NET}
+\author[A. Cuni, D. Ancona, A. Rigo]
+{Antonio Cuni \\ Davide Ancona \\ Armin Rigo}
+
+\institute[icooolps 09]{ICOOOLPS@ECOOP 2009 - Genova, Italy}
+\date{July 6, 2009}

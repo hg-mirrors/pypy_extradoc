@@ -1,0 +1,87 @@
+========================================================
+Vilnius/Post EuroPython PyPy Sprint 12-14th of July
+========================================================
+
+The PyPy team is sprinting at EuroPython again and we invite
+you to participate in our 3 day long sprint at the conference hotel
+- Reval Hotel Lietuva.
+
+If you plan to attend the sprint we recommend you to listen to the PyPy
+technical talks (`EuroPython schedule`_) during the
+conference since it will give you a good overview of the status of development.
+
+On the morning of the first sprint day (12th) we will also have a
+tutorial session for those new to PyPy development.  As 3 days is relatively
+short for a PyPy sprint we suggest to travel back home on the 15th if
+possible (but it is ok to attend less than 3 days too).
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+There are many possible and interesting sprint topics to work on - here
+we list some possible task areas:
+
+* completing the missing python 2.5 features and support
+* write or port more extension modules (e.g. zlib is missing)
+* identify slow areas of PyPy through benchmarking and work on improvements,
+  possibly moving app-level parts of the Python interpreter to interp-level
+  if useful.
+* there are some parts of PyPy in need of refactoring, we may spend some time
+  on those, for example:
+
+    - rctypes and the extension compiler need some rethinking
+    - support for LLVM 2.0 for the llvm backend
+    - ...
+
+* some JIT improvement work
+* port the stackless transform to ootypesystem
+* make the JIT generate fast code for float operations (??)
+* experimenting in the perfect_dict direction (?????)
+* other interesting stuff that you would like to work on ...;-)
+
+------------
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More
+organisational information will be sent to that list.
+
+Please register by adding yourself on the following list (via svn):
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/post-ep2007/people.txt
+
+or on the pypy-sprint mailing list if you do not yet have check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+---------------------------------------
+Preparation (if you feel it is needed):
+---------------------------------------
+
+* read the `getting-started`_ pages on http://codespeak.net/pypy
+
+* for inspiration, overview and technical status you are welcome to
+  read `the technical reports available and other relevant documentation`_
+
+* please direct any technical and/or development oriented questions to
+  pypy-dev at codespeak.net and any sprint organizing/logistical
+  questions to pypy-sprint at codespeak.net
+
+* if you need information about the conference, potential hotels,
+  directions etc we recommend to look at http://www.europython.org.
+
+
+We are looking forward to meet you at the Vilnius Post EuroPython
+PyPy sprint!
+
+The PyPy team 
+
+
+.. See also ..
+
+.. _getting-started: http://codespeak.net/pypy/dist/pypy/doc/getting-started.html
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`the technical reports available and other relevant documentation`: http://codespeak.net/pypy/dist/pypy/doc/index.html
+.. _`EuroPython schedule`: http://europython.org/timetable

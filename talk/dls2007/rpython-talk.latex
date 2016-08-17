@@ -1,0 +1,407 @@
+\documentclass[14pt]{beamer}
+\usepackage[latin1]{inputenc}
+
+% settings for code snippets
+\usepackage{listings}
+\usepackage{fancyvrb}
+\lstset{language=Python,
+        basicstyle=\footnotesize\ttfamily,
+        frame=none,
+        stringstyle=\color{blue},
+        fancyvrb=true,
+        xleftmargin=2pt,xrightmargin=2pt,
+        showstringspaces=false}
+
+
+\usetheme{Boadilla}
+%\usetheme{Warsaw}
+\setbeamercovered{transparent}
+\setbeamertemplate{navigation symbols}{}
+
+\title[RPython, a dynamic static language]{RPython\\A Step Towards Reconciling Dynamically and Statically Typed OO Languages}
+\author[Antonio Cuni]{Antonio Cuni -- DISI, Università degli Studi di Genova\\\small{joint work with D. Ancona, M. Ancona, N. D. Matsakis}}
+\institute[DSL'07 OOPSLA]{DLS'07 OOPSLA Montreal CA}
+\date{October 22, 2007}
+
+ % outline
+\AtBeginSection[]
+{
+ \begin{frame}
+  \frametitle{Outline}
+  \small
+  \tableofcontents[currentsection,hideothersubsections]
+  \normalsize
+ \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Introduction to RPython}
+
+\begin{frame}
+  \frametitle{Dynamic languages for .NET and JVM}
+  \begin{itemize}
+  \item .NET and JVM: widespread platforms
+  \item Designed for static languages
+  \item Great Python implementations: \textbf{IronPython}, \textbf{Jython}
+  \item Much slower than e.g. C\# and Java
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Dynamic vs. static}
+  \begin{alertblock}{Dynamic languages}
+    \begin{itemize}
+    \item Flexibility
+    \item Rapid development cycle
+    \item \textbf{Metaprogramming}
+    \end{itemize}
+  \end{alertblock}
+
+  \pause
+  \begin{alertblock}{Static languages}
+    \begin{itemize}
+    \item Speed
+    \item Nothing more :-)
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{RPython Quick Facts}
+
+  \begin{itemize}
+  \item \textbf{Restricted subset} of Python
+  \item Statically typed (\textbf{type inference})
+  \item Still allows metaprogramming
+  \item RPython programs still run under {\{}C,J,Iron{\}}Python
+  \item Three backends: C, .NET, JVM
+  \item \textbf{Almost as fast} as C, C{\#}, Java
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Type inference}
+  \begin{itemize}
+  \item Top-down, starting from an entry point; whole program analysis
+  \item Assign the most precise type to each variable
+  \item Fail if you try to mix incompatible types
+  \end{itemize}
+
+  \pause
+
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{exampleblock}{RPython}
+        \begin{lstlisting}
+def main():           
+    print add(40, 2)  
+
+def add(a, b):
+    return a+b
+        \end{lstlisting}
+      \end{exampleblock}
+    \end{column}
+
+    \pause
+
+    \begin{column}{0.45\textwidth}
+      \begin{exampleblock}{Not RPython}
+        \begin{lstlisting}
+def fn(flag):     
+    if flag:               
+       return 42           
+    else:                  
+       return 'hello'
+        \end{lstlisting}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Other restrictions}
+
+  \begin{itemize}
+  \item Globals are assumed to be \textbf{constant}
+  \item \texttt{yield} and generators not supported
+  \item No special \_\_methods\_\_ (except \_\_init\_\_ and \_\_del\_\_) 
+  \item No run-time definition of new functions and classes
+  \item Cannot modify classes at run-time
+  \item Cannot change the {\_}{\_}class{\_}{\_} of an object
+  \item \textbf{Single inheritance}, with limited support for mixins
+  \end{itemize}
+\end{frame}
+
+
+  \begin{frame}
+    \frametitle{Still pythonic, though}
+
+    \begin{itemize}
+      \item No syntactic restriction
+      \item Functions and classes are first-order values
+      \item Exceptions work
+
+      \pause
+      \begin{alertblock}{Lists and dictionaries}
+        \begin{itemize}
+        \item Work, but they must be homogeneous
+        \item list of int, dict from string to floats, etc. are OK
+        \item list of \emph{int and strings} is not
+        \item Most of methods of \texttt{list}, \texttt{dict} and
+          \texttt{str} are supported
+        \end{itemize}
+      \end{alertblock}  
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Init-time, translation-time, run-time}
+  \begin{center}
+    \includegraphics[scale=0.45]{image/translation.pdf}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Metaprogramming}
+  \begin{itemize}
+  \item RPython restrictions only apply to live objects
+  \item No restrictions about how they are created
+    \begin{itemize}
+    \item Full Python is allowed at init-time
+    \end{itemize}
+  \item Python as a metaprogramming language for RPython
+  \item Code generation considered harmful
+  \end{itemize}
+\end{frame}
+
+\section{RPython idioms}
+
+\begin{frame}[fragile]
+  \frametitle{Compute complex constants}
+
+  \begin{exampleblock}{Fibonacci's numbers}
+    \begin{lstlisting}
+def fibo(N):
+    sequence = []
+    a, b = 1, 1
+    for i in xrange(N):
+        sequence.append(a)
+        a, b = b, a+b
+    return sequence
+
+# computed at init-time
+fibo_numbers = fibo(100)
+    \end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Metaclasses run at init-time}
+
+  \begin{exampleblock}{\texttt{\_\_extend\_\_} metaclass}
+    \begin{lstlisting}
+class MyClass(object):
+    def foo(self):  ...
+
+class __extend__(MyClass):
+    def bar(self):  ...
+
+def main():
+    obj = MyClass()
+    obj.bar()
+  \end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Dynamic classes/functions at init-time}
+  \begin{exampleblock}{``Static'' nested scopes work}
+    \begin{lstlisting}
+def make_adder(N):
+    def add(x):
+        return x+N
+    return add
+
+add10 = make_adder(10)
+add20 = make_adder(20)
+
+def main():
+    print add10(32)
+    print add20(22)
+    \end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\section{Implementation notes and benchmarks}
+
+\begin{frame}
+  \frametitle{The Translation Toolchain}
+  \begin{itemize}
+  \item \textbf{CPython}: *.py -{}-{\textgreater} Python bytecode
+  \item \textbf{FlowObjSpace}: bytecode -{}-{\textgreater} flow graphs
+  \item \textbf{Annotator}: type inference on flow graphs
+    \begin{itemize}
+    \item High level Python types (\texttt{List(Integer)})
+    \end{itemize}
+  \item \textbf{RTyper}: high level types -{}-{\textgreater} low level types
+    \begin{itemize}
+    \item lltype for C, ootype for CLI and JVM
+    \end{itemize}
+  \item \textbf{Backends}: code generation
+    \begin{itemize}
+    \item C, CLI (.NET), JVM
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Benchmarks}
+
+  \begin{itemize}
+  \item Classic Martin Richard's test
+  \item Available in Java, C{\#}, RPython
+
+    \begin{table}[ht]
+      \begin{tabular}{|l|r|r|}
+        \hline
+        \textbf{Language} & 
+        \textbf{Result} &
+        \textbf{Factor} \\
+        \hline
+        \multicolumn{3}{|c|}{Results on Microsoft CLR}\\
+        \hline
+        C\# & 
+        6.94 ms &
+        1.00x \\
+        
+        RPython &
+        7.25 ms &
+        1.04x \\
+
+        IronPython &
+        1675.00 ms &
+        241.35x \\
+        \hline
+
+        \multicolumn{3}{|c|}{Results on JVM}\\
+        \hline
+        Java & 
+        1.77 ms &
+        1.00x \\
+
+        RPython &
+        2.10 ms &
+        1.18x \\
+
+        Jython &
+        2918.90 ms &
+        1641.80x \\
+        \hline
+      \end{tabular}
+    \end{table}
+  \end{itemize}
+\end{frame}
+
+\section{Conclusions}
+
+\begin{frame}
+  \frametitle{What's good about RPython}
+  \begin{itemize}
+  \item Pythonic enough to be usable
+  \item Very fast
+  \item Testable under CPython
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Things to improve}
+  \begin{itemize}
+  \item Originally an implementation detail
+  \item Not designed to be user-friendly; terse error messages
+  \item Lack of documentation/reference manual
+  \item Lack of separate compilation
+  \item Integration with the hosting platform
+    \begin{itemize}
+    \item Good for C/Posix
+    \item Proof of concept for .NET
+    \item Doesn't exist for JVM
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{About PyPy}
+
+  \begin{alertblock}{Python in (R)Python}
+    \begin{itemize}
+    \item High level interpreter written in RPython
+    \item Easy to understand
+    \item Easy to extend
+    \end{itemize}
+  \end{alertblock}
+
+  \pause
+  \begin{alertblock}{Translation Toolchain}
+    \begin{itemize}
+    \item Written in full Python
+    \item Works as a general compiler
+    \item Especially for interpreters (e.g. Javascript, Prolog)
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{About PyPy (2)}
+
+%  \begin{alertblock}{Low-level aspects inserted by the TT}
+%    \begin{itemize}
+%    \item Garbage collector
+%    \item Threading model/Stackless
+%    \item Additional language features
+%    \item JIT compiler (only for the C backend so far)
+%    \end{itemize}
+%  \end{alertblock}
+
+%  \pause
+%  \begin{alertblock}{PyPy you can get}
+%    \begin{itemize}
+%    \item pypy-c (about 2x slower than CPython)
+%    \item pypy-c-jit (up to 60x \textbf{faster} than CPython)
+%    \item pypy.NET (about 6x slower than IronPython)
+%    \item pypy-jvm (about 30\% \textbf{faster} than Jython)
+%  \end{itemize}
+%  \end{alertblock}
+%\end{frame}
+
+
+\begin{frame}
+  \frametitle{Acknowledgments}
+  \begin{itemize}
+  \item The whole PyPy Team
+    \begin{itemize}
+    \item RPython is \textbf{not} mine :-)
+    \item Our contributions: CLI and JVM backends
+    \end{itemize}
+
+  \item Thanks for the attention
+  \item Any question?
+  \end{itemize}
+\end{frame}
+
+\end{document}

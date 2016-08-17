@@ -1,0 +1,118 @@
+Sprint Report Louvain-La-Neuve 6-10/3/2006
+==========================================
+
+Achievements
+------------
+
+The main achievements of the sprint are :
+
+  * wrapper of GECODE constraint-solving library
+
+  * workshop about functionnalities of the PyPy/Python and Oz languages
+
+  * microthreads and dataflow variables in Logic ObjectSpace
+
+  * draft of a standard mechanism to express search problems in Python
+
+Sprint participants
+-------------------
+
+Ludovic Aubry, Aurélien Campéas, Nicolas Chauvat, Alexandre Fayolle,
+Anders Lehmann, Grégoire Dooms, Samuele Pedroni, Carl Friedrich Bolz,
+Raphaël Collet.
+
+Workshop participants
+---------------------
+
+Sprinters + Roel Wuyts, Peter Van Roy, Kevin Glynn, Luis Quesada,
+Boris Mejias, Jean-Noël Monette, Pierre Schaus
+
+Before workshop
+---------------
+
+Monday and Tuesday where spent sharing information about what had been
+implemented, discussing what could be implemented and looking at
+existing implementations. This is what the planning was like:
+
+* identify parts of the current logic module that can be usefully implemented
+  in RPython
+
+* take a look at existing logic programming software and think about integration 
+  (pychinko_ and Rete_ algorithm or CWM_ for forward-chaining, GECODE_
+  library for constraint-solving, tableau, pylog_ for
+  backward-chaining, Python Cookbook recipes, etc.)
+
+* existing Python syntax/new syntax: look at and update existing document in pypy's svn
+
+* consistency for multi-paradigm programming languages (especially
+  Python). Oz_ has consistent semantics and offers many different
+  programming paradigms (object, functionnal, constraint, distributed,
+  secure, dataflow, etc.)
+
+References that we looked at are:
+
+* the Rete_ algorithm, an efficient algorithm_ for rule-based systems
+
+* CWM_, a rule-based system written in Python by Tim Berners-Lee
+
+* pychinko_, a Python implementation of RETE
+
+* pylog_, an implementation of prolog in python that compiles prolog
+  source code to Python functions
+
+* a Python cookbook recipe_ that lets one add arbitrary infix binary operators
+
+* a simple Prolog implementation using continuations_ to implement backtracking search
+
+* `linear programming`_ with nice syntactic sugar via operator overloading
+
+* candygram_, erlang style message-based communication and concurrency in Python
+
+* discussing extending python with `futures/promises`_
+
+* two_ python recipes_ that analyse and transform the bytecode of a
+  function to interpret it as a set of facts and rules
+
+.. _GECODE: http://www.gecode.org/
+.. _Rete: http://en.wikipedia.org/wiki/Rete
+.. _algorithm: http://drools.org/Rete 
+.. _CWM: http://infomesh.net/2001/cwm/
+.. _pychinko: http://www.mindswap.org/~katz/pychinko/ 
+.. _pylog: http://christophe.delord.free.fr/en/pylog/
+.. _recipe: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/384122
+.. _continuations: http://www.ps.uni-sb.de/~duchier/python/continuations.html
+.. _`linear programming`: http://www.jeannot.org/~js/code/index.en.html
+.. _candygram: http://candygram.sourceforge.net/
+.. _`futures/promises`: http://lists.logilab.org/pipermail/python-logic/2005-August/000112.html
+.. _two: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/360698
+.. _recipes: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/303057
+.. _Oz: http://www.mozart-oz.org/
+
+Workshop
+--------
+
+* presentation of pypy architecture
+
+* presentation of current implementation of a constraint store in python
+
+* presentation of soul/smalltalk language symbiosis
+
+* presentation of dataflow paradigm and basic mechanisms
+
+After the workshop
+------------------
+
+Samuele and Carl implemented a logic object space with microthreads
+and logic variables. See dist/pypy/objspace/logic.py
+
+Nicolas, Raphaël and Aurélien discussed a design for a generic
+computation space similar to Oz's object space that could run searches
+expressed as a constraint problem or as a rule-set.
+
+Ludovic, Alexandre and Grégoire wrapped the GECODE library. See
+dist/pypy/lib/logic/gecode_wrapper
+
+Alexandre and Anders used PyPy to compile the constraints before
+running the search and gained a nice speedup.
+
+

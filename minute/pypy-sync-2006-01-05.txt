@@ -1,0 +1,198 @@
+=============================================
+pypy-sync developer meeting 5th January
+=============================================
+
+Time & location: 1pm (30 minutes), GMT+1 at #pypy-sync
+
+Attendees::
+
+         Anders Lehmann
+         Adrien di Mascio
+	 Christian Tismer
+	 Holger Krekel
+         Carl Friedrich Bolz
+	 Niklaus Haldimann
+	 Richard Emslie 
+         Armin Rigo
+	 Samuele Pedroni (moderation & minutes)
+
+Justified Absentees::
+
+         Eric van Riet Paap (sent status before meeting)
+         Anders Chrigstrom (vacation)
+         Michael Hudson (vacation)
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+Possible work between now and the Mallorca sprint
+---------------------------------------------------
+(some core people will be partially busy with review preparation)
+
+* Finish interactive.py, the somepbc-refactoring branch broke bin/translator.py functionality,
+  this should reestablish it in some form (Samuele Pedroni)
+
+* Attach called low-level functions to call sites (Carl Friedrich Bolz)
+
+* Maybe GC framework integration preparation tasks, or l3 interpreter improvements; to be discussed
+  on #pypy
+
+Other
+------------------------------
+
+* Holger reminded of codespeak migration which will happen between now and the start of February
+
+* Merlinux new hire has a filming background. Holger discussed the possibilities with Bea. There may
+  be some sprint filming at future sprints.
+
+
+.. _`IRC-Log`:
+
+Complete IRC log
+=================
+
+complete log::
+
+  [12:57] <pedronis> so let's start, please post your status lines
+  [12:57] <aleale> PREV: Trying to get OWL parser to a usable state
+  [12:57] <aleale> NEXT: getting OWL parser usable
+  [12:57] <aleale> Blockers: -
+  [12:57] <adim> LAST: holidays
+  [12:57] <adim> NEXT: will work on exporting the grammar object, if time left, will work on WP10
+  [12:57] <adim> BLOCKERS: none
+  [12:57] <stakkars> DONE: ccc congress, recruiting negotiations, a bit of holidays
+  [12:57] <stakkars> NEXT: stackless module, preparing possible work chunks for coworkers
+  [12:57] <stakkars> BLOCK: None
+  [12:57] <hpk> LAST: 22C3 congress, EU issues, recovering
+  [12:57] <hpk> NEXT: EU-review preps, revised work plan
+  [12:57] <hpk> BLOCKERS: - um -
+  [12:58] <cfbolz> LAST: CCC conference, illness
+  [12:58] <cfbolz> NEXT: don't know yet, GC maybe?
+  [12:58] <cfbolz> BLOCKERS: none
+  [12:58] <nikh> LAST: holidays
+  [12:58] <nikh> NEXT: non-pypy (lurking)
+  [12:58] <nikh> BLOCKERS. none
+  [12:58] <rxe> NEXT: lurking
+  [12:58] <arigo> PREV: holidays, some jit refactoring; NEXT: unknown; BLOCKERS: none
+  [12:58] <pedronis> <ericvrp> Last: improved nighly benchmark cronjob Next: optimizations and a  little genjs, Blockers: bit ill
+  [12:59] <pedronis> Last: reports, vacation, bugs, isolate to run boehm tests
+  [12:59] <pedronis> Next: interactive, l3?, review preparation, ?
+  [12:59] <pedronis> Blockers: -
+  [12:59] <pedronis> ok, there are no blockers
+  [12:59] <cfbolz> but many ?s
+  [13:00] <pedronis> but is seems some people don't know exactly what to do between
+  [13:00] <pedronis> now and the review/sprint
+  [13:00] <pedronis> we should take into account that there is still some preparation for the review and discussions for core people
+  [13:00] <pedronis> but still is probably worth to discuss
+  [13:00] <pedronis> what is best done/achieve before the sprint
+  [13:01] <hpk> yes
+  [13:01] <hpk> let me note that sometime this month, latest mid february there will be a codespeak migration to a new environment
+  [13:01] <hpk> helios who hosted codespeak.net for three years now - finally said the traffic is getting too much
+  [13:01] <hpk> some 30-50 GB per month
+  [13:02] <cfbolz> oops
+  [13:02] <nikh> hoppla
+  [13:02] <hpk> more in an announcement when the time comes.
+  [13:02] <pedronis> ok
+  [13:03] <cfbolz> so what about work to be done?
+  [13:03] <cfbolz> there are still two reports, too :-(
+  [13:03] <pedronis> to format? yes
+  [13:03] <stakkars> about codespeak: I get that traffic for \u20ac39 per month at hetzner.de
+  [13:03] <hpk> and the EU review preps for some of us, indeed (armin, carl, samuele, me mostly)
+  [13:03] <cfbolz> pedronis: yes, I meant that
+  [13:04] <hpk> stakkars: we are also moving to hetzner but let's not discuss that here right now
+  [13:04] <pedronis> cfbolz, arigo: the question is what kind of work is best done before the sprint vs at the sprint
+  [13:04] <pedronis> I think that finishing the interactive for me is such kind of work
+  [13:04] <cfbolz> yes, not really a sprint task
+  [13:04] <arigo> yes
+  [13:05] <cfbolz> are there other such obvious non-sprint tasks?
+  [13:05] <pedronis> well, attaching ll functions called to call sites
+  [13:05] <cfbolz> yes, indeed
+  [13:07] <pedronis> arigo: do you have some jit stuff in mind for before the sprint?
+  [13:07] <arigo> I don't see much where it would make a difference to be at a sprint or not
+  [13:07] <arigo> ...at this point.
+  [13:07] <pedronis> yes
+  [13:08] <cfbolz> anything that should be done preparing for possible GC work?
+  [13:08] <pedronis> cfbolz: do you want to work on that (attaching ll functions to call sites)?
+  [13:08] <cfbolz> pedronis: yes, could do
+  [13:08] <arigo> there's always refactoring external function calls, but again it might be done during the sprint too
+  [13:08] <pedronis> cfbolz: maybe, we should discuss that on #pypy
+  [13:08] <hpk> cfbolz: bea requested to put the deliverable reports online visibly somewhere, makes sense IMO
+  [13:08] <cfbolz> yes, indeed
+  [13:08] <cfbolz> cfbolz: yes
+  [13:08] <cfbolz> hpk: next topic?
+  [13:08] <pedronis> cfbolz: the GC stuff
+  [13:09] <cfbolz> pedronis: yes?
+  [13:09] <hpk> cfbolz: sure, i am not aware, do we have a topic list?
+  [13:09] <pedronis> dicussing that on #pypy
+  [13:09] <cfbolz> ok
+  [13:09] <cfbolz> hpk: no, we don't. but we still shouldn't intermix :-)
+  [13:09] <pedronis> hpk: not really, people didn't sent in any topic wish
+  [13:09] <hpk> cfbolz: ok, i was just refering to what small things can be done before the sprint :)
+  [13:09] <stakkars> hpk: throwing in a hint was not meant to start a discussion...
+  [13:10] <pedronis> but I presumed what to do next was a likely topic
+  [13:10] <cfbolz> yes
+  [13:10] <pedronis> arigo, cfboly: I think some small l3 progress may make sense but is probably best to discuss it a bit on #pypy
+  [13:10] <hpk> arigo: i think refactoring external function calls makes sense at the sprint, also documenting it to allow people to better work on porting ext-modules
+  [13:10] <cfbolz> hpk: it _is_ documented :-)
+  [13:10] <cfbolz> it's just clumsy
+  [13:11] <hpk> cfbolz: well :)
+  [13:11] <arigo> well, refactoring and *then* documenting the new ways :-)
+  [13:11] <hpk> yip
+  [13:11] <arigo> makes sense
+  [13:11] <pedronis> ok, I think that's it for this topic, someone want to discuss something else in the last 10 mins?
+  [13:12] <hpk> just a side note: i am going to talk to ÜProf. Leuschel on monday regarding Summer-of-PyPy specifics - he likes the idea and HHU being a carrier
+  [13:12] <hpk> thanks to michael who established the contact
+  [13:13] <cfbolz> pedronis: short topic: where/in what form should I put a link to the reports?
+  [13:13] <hpk> main doc index page IMO and also on pypy.org somewhere
+  [13:13] <hpk> the main doc index page should specificially hint at wp05 reports i think
+  [13:13] <hpk> the wp04 are not that interesting because they mostly copy what is on the website
+  [13:14] <cfbolz> just a link to the dir? or to a nicer description page maybe?
+  [13:14] <hpk> (except the parser report i think)
+  [13:14] <hpk> a nicer description page, also linking the 22C3 papers which are nicely in the book of proceedings, btw.
+  [13:15] <cfbolz> ok. I think I can start that description page today
+  [13:15] <cfbolz> yes, the 22c3 papers came out quite nicely
+  [13:15] <hpk> arigo: i guess you don't mind that i talk to leuschel as long as you don't have to worry about EU issues :)
+  [13:15] <arigo> np
+  [13:16] <cfbolz> so, was that it?
+  [13:16] <hpk> i have one more thing i'd like to mention (i did already to some people but here more people may get it)
+  [13:17] <pedronis> go ahead
+  [13:17] <hpk> we have a new person starting at merlinux who has a background in filming and movies
+  [13:18] <hpk> i discussed with Bea who heads the dissemination works and such - and she likes the idea of getting some non-text documentation about sprints and such
+  [13:18] <hpk> but that might mean that you all get filmed when you come to a sprint and such :)
+  [13:18] <cfbolz> "a sprint" == mallorca?
+  [13:18] <hpk> thea idea is to get some material on the website that allows people insights (maybe including interviews with developers or so) other than reading text reports
+  [13:19] <hpk> maybe mallorca, that is not clear yet
+  [13:19] <hpk> the question is: what do you all think of this?
+  [13:19] <aleale> +1
+  [13:19] <arigo> fine by me
+  [13:19] <stakkars> fine with me. Make sure to tell in advance, so I can clean the craziest T-shirts
+  [13:19] <hpk> hehe :)
+  [13:20] <nikh> from a PR point of view, this seems like a nice idea
+  [13:20] <cfbolz> nikh: but you hate being filmed? :-)
+  [13:20] <adim> as long as I'm not on the film, I'm fine with it :)
+  [13:20] <nikh> cfbolz: kinda ;)
+  [13:21] <hpk> ok, great thanks for the feeback
+  [13:22] <stakkars> OT: does anybody know how much space we have in Palma, are there limitations on # of people?
+  [13:22] <stakkars> because I'm going to be 3-4
+  [13:22] <stakkars> maybe 5 if rxe can make it
+  [13:22] <cfbolz> we probably have to ask bea
+  [13:23] <hpk> IIRC it is planned for 10-12 people ...
+  [13:24] <cfbolz> uh. might become a problem?
+  [13:24] <nikh> oh, only this few? there is a remote chance that i can come too, after all
+  [13:24] <stakkars> right now I see 12 people on the list
+  [13:24] <arigo> ugh, time to close this meeting :-)
+  [13:24] Action: arigo is very hungry
+  [13:24] <stakkars> let's follow this topic somewhere else
+  [13:25] <pedronis> yes, indeed
+  [13:25] <cfbolz> ok
+  [13:25] <cfbolz> see you all!
+  [13:25] <pedronis> I think we can close here

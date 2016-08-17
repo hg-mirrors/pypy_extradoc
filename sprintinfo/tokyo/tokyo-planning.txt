@@ -1,0 +1,304 @@
+Tokyo Sprint Planning
+---------------------
+
+Sprint Times: 10 am to 7 pm
+
+Break day: Wednesday
+
+
+Sunday, 23. April 2006
+**********************
+
+Present: Samuele, Arre, Valentino, Eric, Yutaka, Sanghyeon, Yusei, Bea, Nik, George
+
+General Interests:
+
+  - gensqueak/ootypesystem (Nik)
+
+  - Implementing Python 2.5 features in PyPy. (Yusei)
+
+  - Progress further on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+    - check status
+    - ctypes time and socket (and select ;))
+
+    (Arre, Valentino, Eric)
+
+  - rctypes support for LLVM (Eric)
+
+  - convert JS backend to ootypesystem (Eric, Nik, Yusei)
+
+  - genjs test failure fixes (Eric)
+
+  - raisingops transformation (Eric)
+
+  - PyPy debian packaging (Yutaka, Holger?)
+
+  - Fun with the Common Lisp backend (Yutaka, Valentino)
+
+  - Possibly experiment with writing modules translatable for use both
+    in PyPy and CPython. (Sanghyeon, Armin?)
+  
+Pairings today:
+
+  - ctypes time and socket (and select ;)) (Arre, Valentino, Eric, Sanghyeon)
+
+  - ootypesystem introduction, gensqueak/gencl (Nik, Yutaka, Yusei, George)
+
+  - general wizardry (Samuele)
+
+
+Monday, 24th April 2006
+***********************
+
+Present: Samuele, Arre, Valentino, Eric, Sanghyeon, Bea, Nik, Anders, Daiki, and later, Yutaka and Yusei
+
+Status after day 1:
+
+  - gensqueak/ootypesystem (Nik)
+
+    * introduction done
+    * steps towards making gencl use current infrastructure
+
+  - Implementing Python 2.5 features in PyPy. (Yusei)
+
+  - Progress further on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+    - check status (DONE)
+    - ctypes time and socket (and select ;))
+
+        * added errno functionality
+        * refactor to latest ctypes version
+        * wrote test for finding missing socket methods+added stubs
+
+    (Arre, Valentino, Eric, Sanghyeon)
+
+Pairings today:
+
+  - ctypes time and socket (and select ;))
+    (Arre, Valentino, Eric)
+
+    * Anders will join Arre, Valentino and Eric
+
+  - ootypesystem introduction, gensqueak/gencl
+    (Nik, Yusei, Sanghyeon)
+
+    * more steps towards making gencl use current infrastructure
+      (Nik, Yusei, Sanghyeon)
+    * during sprint some ootype issues will be resolved by
+      Samuele and Nik (tuples list...)
+
+  - general wizardry (Samuele)
+
+    * bit running around and working with Nik in the afternoon
+      on ootype
+
+
+Tuesday, 25th April 2006
+************************
+
+Present: Samuele, Arre, Valentino, Eric, Sanghyeon, Bea, Nik, Anders, Daiki
+
+Status after day 2:
+
+  - Orientation on pickling support for cells and generators for being able 
+    to pickle tasklets (Eric)
+
+  - gencl (Sanghyeon, Nik, Yusei)
+     * instance creation and function call
+     * code reorganization and cleanup (and Valentino)
+
+  - Progress further on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+    - ctypes time and socket (and select ;))
+
+        * sockets now listen for connections and connect correctly
+        * they also actually send and receive data
+        * lower level ctypes wrapper almost complete
+
+    (Arre, Valentino, Eric, Anders)
+
+Pairings today:
+
+  - Work on pickling support for cells and generators for being able 
+    to pickle tasklets (Eric)
+
+  - reorganize the new socket module in the right project location (Arre, Anders)
+
+  - compile pystone in gencl (Valentino, Sanghyeon)
+
+  - Conceptual design decisions about ootypesystem (tuples list...) (Samuele, Nik)
+
+Thursday, 27th April 2006
+*************************
+
+Present: Samuele, Arre, Valentino, Eric, Sanghyeon, Nik, Anders
+
+Status after day 3:
+
+  - gencl (Sanghyeon, Valentino)
+
+    * refactored another bit
+    * superclasses and inheritance and isinstance and range
+    * Record type
+
+  - Pickle support for cell objects (Eric)
+    * works but breaks translation
+
+  - OOTypeSystem (Nik, Samuele)
+
+    * Improved forward references and made the List type lazily inittable.
+    * Introduced the Record type
+    * Introduced Range support in the OOTypeSystem.
+
+  - ctypes _socket (and select ;))  (Arre, Anders)
+
+    * Passing 14 tests for the translatable module
+    * It should be translatable now (although not tested)
+
+Pairings today:
+
+  - Pickling cells (Eric)
+
+    * fix translation
+    * add support for additional objects like code objects.
+
+  - ctypes _socket (Arre, Anders)
+
+    * Pass all previous tests.
+    * start proper translation work.
+
+  - OOTypeSystem (Nik, Sanghyeon)
+
+    * Dictionaries need to be lazy too.
+    * Record type for iterator and tuples and make it generic
+    * String type
+
+  - progress further on rpystone gencl translation (Valentino)
+
+  - general wizardry (Samuele)
+  
+Friday, 28th April 2006
+************************
+
+Present: Samuele, Arre, Valentino, Eric, Sanghyeon, Nik, Anders
+
+Status after day 4:
+
+  - gencl (Sanghyeon, Valentino)
+
+    * constant instances now supported which enables the metaclass 
+      model and class variables
+    * refactoring is ongoing
+
+  - Pickle support for cell objects (Eric)
+
+    * cell, code, function partly there but needs moduledict support
+
+  - OOTypeSystem (Nik, Samuele)
+
+    * introduced record type for iterators and tuples
+    * random smaller improvements
+
+  - ctypes _socket (and select ;))  (Arre, Anders)
+
+    * passing all tests
+    * uses only ctypes now but doesn't translate yet
+
+Pairings today:
+
+  - Pickling cells (Eric)
+
+    * add support for additional objects like code objects.
+
+  - ctypes _socket (Arre, Anders)
+
+    * continue translation work.
+
+  - OOTypeSystem (Nik, Sanghyeon)
+
+    * Dictionaries need to be lazy too.
+    * String type
+
+  - gencl (Valentino, Sanghyeon)
+
+    * exception handling
+    * rpystone translation
+
+  - general wizardry (Samuele)
+  
+Saturday, 29th April 2006
+***************************
+
+Present: Samuele, Arre, Valentino, Eric, Anders, Yusei, Koichi
+
+Status after day 5:
+
+  - gencl (Sanghyeon, Valentino)
+
+    * Somewhat working exception handling support, but it violates
+      the specification.
+
+  - Pickle support for objects (Eric, Samuele)
+    
+    * We added module, moduledict, functions
+
+  - OOTypeSystem (Nik, Samuele)
+
+    * fixed very obscure bug (see r26507 for the dirty details)
+    * splitting stringsupport between ootype and lltype system
+      (will need more work, since this broke translation)
+    
+  - ctypes _socket (and select ;))  (Arre, Anders)
+
+    * annotation workds, rtyping in progress.
+    * now supporting recursive structures in rctypes
+    * errno needs a bit more support in rctypes. More specifically,
+      errno can be many different things (a define, a function Xi
+      (sometimes thread specific)) but all platform specific.
+    * ipv6 support is not (ahum) complete
+    * no windows support yet
+    
+Pairings today:
+
+  - Pickling (Eric, Yusei)
+
+    * add support for additional objects like code objects.
+
+  - ctypes _socket (Arre, Anders)
+
+    * continue translation work.
+
+  - OOTypeSystem (Nik)
+
+    * fix String type translation issue
+
+  - gencl (Valentino)
+
+    * exception handling
+    * rpystone translation
+
+  - general wizardry (Samuele)
+
+Saturday, 29th April - Closing session
+***************************************
+
+  - gencl (Valentino)
+    * exceptions are now correctly supported
+    * gencl has been resurrected and can translate most of the basic operations
+    * rpystone has not been translated yet because of Strings (and maybe other things)
+
+  - OOTypeSystem (Nik)
+    * We got rid of ForwardReferences and now have full support for recursive types
+    * New Record type
+    * preliminary string support
+
+  - Pickling (Eric, Yusei)
+    * Everything is picklable except: SequenceIterators, DictIterators, 
+         Frames, Traceback and generators
+
+  - ctypes and _socket: Please one of the anders should comment on this.
+

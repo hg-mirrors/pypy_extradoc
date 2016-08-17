@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy Intro]{PyPy Intro and JIT Frontend}
+\author[antocuni]
+{Antonio Cuni}
+
+\institute{Intel@Bucharest}
+\date{April 4 2016}

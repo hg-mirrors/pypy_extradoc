@@ -1,0 +1,194 @@
+﻿Time: 2005-03-19-2005-03-22
+Participants:
+Michael Chermside 
+Anders Chrigström
+Brian Dorsey 
+Richard Emslie 
+Jacob Hallén
+Holger Krekel
+Alex Martelli 
+Alan Mcintyre 
+Lutz Pälike 
+Samuele Pedroni
+Jonathan Riehl 
+Armin Rigo
+Christian Tismer
+
+
+Pypy sprint and conference report
+
+The Pypy project held a 4 day sprint at the Marvin Center, George
+Washington University in Washington DC, USA on 19-22 March 2005.
+
+The sprint was part of the pre-Pycon sprinting sessions and we shared
+rooms with sprints for Distutils, Chandler, CPython AST, Twisted,
+ZODB, Mailman, Zope and others. The environment was quite inspiring
+and there was quite a bit of exchange between the different sprints.
+
+Participants at the Pypy sprint were:
+Michael Chermside <mcherm@mcherm.com>
+Anders Chrigström
+Brian Dorsey <briandorsey@gmail.com>
+Richard Emslie <richardemslie@gmail.com>
+Jacob Hallén
+Holger Krekel
+Alex Martelli <aleaxit@yahoo.com>
+Alan Mcintyre <alan.mcintyre@esrgtech.com>
+Lutz Pälike <lutz@fxcenter.de>
+Samuele Pedroni
+Jonathan Riehl <jriehl@cs.uchicago.edu>
+Armin Rigo
+Christian Tismer
+
+Alan Mcintyre was only present the first day. Michael Chermside joined
+the sprint Monday. All the others stayed for the whole sprint.
+
+The sprint was started with an introduction to Pypy by Armin and
+an orientation in the directory structure by Holger.
+
+We then had a discussion about what to focus on and how to divide the work.
+We decided to put our energies into making Pypy as compliant to the CPython
+implementation as possible by trying to fulfil the CPython regression tests.
+
+Christian and Alex worked on implementing Pickle, fixing a large
+number of bugs and corner cases in the process. Samuele helped
+Christian tracking a bunch of those.
+
+Related to pickling failing tests, we discovered that our
+type.__base__ implementation was too naive, Armin reworked it.  Also
+Samuele found out that some of our string operations because they were
+dispatching on ANY ended up being executed by unicode code (unicode
+being a better match than ANY) after an automatic conversion which
+would fail for non-ascii characters. This has been fixed.
+
+Anders and Richard worked on completing the builtin types, especially
+focusing on the FrameType. In particular they enabled sys.settrace
+and sys.setprofile functionality, also paying attention that
+app-level helper frames are appropriately hidden. The design of how
+to achieve the latter was discussed with Armin and Samuele.
+
+Jacob found an already implemented version of the datetime module by talking
+to Tim Peters. This required some adjustments before it was put into the
+Pypy library. When we later got access to the CPython tests, it turned out
+that the module needed some further fixes, which Christian applied.
+
+Jacob then turned to the binascii module and was later joined by Brian
+in this work. About half the module was implemented by the end of the sprint.
+
+Holger and Brian initially worked on making the CPython tests work
+under py.test. Samuele also paired a bit on this with Holger. Holger
+then went on to assist Michael and Jonathan while Brian went to work
+with Jacob.
+
+Holger alone and then pairing with Samuele reworked our tool to track
+our builtins implementations such that there's a summary page and it
+is run on codespeak after each check-in, the latest output can always
+be seen at http://codespeak.net/pypy/rev/current/ .
+
+Jonathan focussed on implementing a Python parser in Python.
+
+Michael wanted to interface the sre module with Pypy, and got started
+on the project.
+
+Armin wrote an example object space that can wrap a given other space
+and implements lazy objects and a become operation similar to the one
+found in Smalltalk implementations.
+
+
+[More stuff about what people did. I have no clue about what Alan,
+Armin, Lutz or Samuele did. Also, what I have written above is
+probably incomplete and in some cases downright wrong. This phappens
+if you focus tightly on your own coding. Please add and correct.]
+
+On the whole the sprint was very successful. We made great progress
+on the compliancy issue. While there are still many modules that need
+implementing, the builtin types are getting very close to being complete.
+The missing types generally require interfacing to system calls, which
+we are not yet able to handle.
+
+Talk at the conference
+======================
+
+Armin Rigo held a talk on the subject of Pypy and Type Inference It
+was lively and animated (both abstractly and literally
+speaking). Armin explained the concept of Object Spaces, first running
+an interpreter with an Object Space that added integers, and then with
+one that added fruit. He then went on to explain that you could run
+the interpreter with any sort of Object Space; for instance one that
+looks at the instructions and tries to deduce what types the variables
+involved have. Another object space can do translation to lower level
+languages (possibly using the annotations provided by a previous run
+with the annotator).
+
+Holger spoke about py.test and the py lib, which are intimately connected
+to the Pypy project.
+
+Other Pypy relevant talks at the conference were
+Localized Type Inference in Python by Brett Cannon
+Python on the .NET platform (IronPython) by Jim Hugunin
+Decimal Module for Beginners by Michael Chermside
+Decimal data type by Facundo Batista
+Pulling Java Lucene into Python: PyLucene by Andi Vajda
+
+OpenSpace discussion about how to handle non-CPython implementations of 
+Python
+=======================================================================
+Holger Krekel
+Jacob Hallén
+Armin Rigo
+Samuele Pedroni
+Christian Tismer
+Anders Chrigström
+Brian Dorsey
+Guido van Rossum (CPython)
+Jim Hugunin (IronPython)
+Brian Zimmer (Jython)
+
+1. We need to modify the CPython test suite so that it makes a
+difference between language compliance tests and CPython
+implementation tests.  Guido if fine with this, but wants a proposal
+written and discussed on python-dev. Jim is busy the next 2 months and
+will not start testing.  Pypy will modify the tests for its own
+purposes and will then propose things based on the experience of
+making the modifications. Jython presently has a number of "if not
+jython" defines in the test suite. Some of these are CPython
+implementation tests, while some are compliance tests that Jython
+doesn't pass.
+
+2. There was a long discussion of how to handle non-portable platform
+features and how to handle features that you don't know if you want or
+not. It was agreed that "from __experimental__ import ..." should be
+used for features that may go away. It was also agreed that it is a
+good idea to use "from __jython__ import ..." when you want to
+override standard builtin Python features with something that makes
+better sense in a specific platform environment.
+
+3. There was along discussion about where the sweetspot for a platform
+specific implementation should be. It didn't rellay conclude anything
+special.
+
+Pypy post-conference meeting
+============================
+After the conference, we held a meeting to discuss the division of work for
+the next few weeks.
+
+We should go ahead with the Oxford sprint. Holger wants to do a "private"
+sprint in Göteborg a week before Europython.
+
+Armin - will evaluate different alternatives for the translator and write 
+a report
+
+Samuele - will work on finishing the annotator
+
+Holger - will work on completing the test framework
+
+Arre - will work on making the std object space fully CPython compiant
+
+Christian - will work the C translator
+
+Lutz - will work on a GUI for generating flow graphs
+
+Jonathan - will continue on his parser
+
+Jacob - will finish binascii
+

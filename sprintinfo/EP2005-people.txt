@@ -1,0 +1,62 @@
+
+People coming to PyPy EuroPython Sprints/Events
+==================================================
+
+List Of Attendants for pre-EP sprint (4 full days 23rd-26th)
+---------------------------------------------------------------
+
+=================== ============== =====================
+       Name          Arrive/Depart Accomodation 
+=================== ============== =====================
+Armin Rigo          23rd-          private 
+Samuele Pedroni     23rd-          private 
+Holger Krekel       23rd-          private
+Beatrice Duering    visiting       private 
+Anders Lehmann      22nd-26th      SGS 
+Michael Hudson      23rd-          private
+Anders Chrigstroem  23rd-          private
+Christian Tismer    23rd-          ?
+=================== ============== =====================
+
+
+List Of Attendants for POST-EP sprint (7 full days 1st-7th)
+------------------------------------------------------------ 
+
+=================== ============== =====================
+       Name             Time          Accomodation 
+=================== ============== =====================
+Armin Rigo          1st-7th July   private 
+Samuele Pedroni     1st-7th July   private 
+Carl Friedrich Bolz 1st-6th July   private 
+Niklaus Haldimann   1st-5th July   SGS
+Eric van Riet Paap  1st-8th July   SGS
+Holger Krekel       1st-7th July   private 
+Richard Emslie      1st-7th July   private
+Bert Freudenberg    1st-7th July   ?
+Beatrice Duering    visiting       private 
+Jacob Hallen        ?              private 
+Laura Creighton     ?              private 
+Adrien Di Mascio    1st-5th July   Nice Hotel
+Ludovic Aubry       1st-5th July   Nice Hotel
+Anders Chrigstroem  1st-7th July   private
+Christian Tismer    1st-7th July   ?
+=================== ============== =====================
+
+
+List Of Attendants for EU workshop July 8th (whole day)
+----------------------------------------------------------
+
+=================== ============== =====================
+       Name            Time          Accomodation 
+=================== ============== =====================
+Armin Rigo          8th July       private 
+Samuele Pedroni     8th July       private 
+Holger Krekel       8th July       private 
+Bea During          8th July       private 
+Jacob Hallen        8th July       private 
+Laura Creighton     8th July       private
+Lene Wagner         8th July       ?
+Stephan Busemann    7+8th July     Hotel Lilton 
+Anders Chrigstroem  8th July       private
+Christian Tismer    8th July       ? 
+=================== ============== =====================

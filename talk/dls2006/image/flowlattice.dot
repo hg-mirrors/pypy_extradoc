@@ -1,0 +1,10 @@
+digraph lattice3 {
+    Variable -> "Constant(1)";
+    d1 [label="...", color=white];
+    Variable -> d1;
+    Variable -> "Constant(n)";
+    d2 [label="...", color=white];
+    Variable -> d2;
+    Variable -> "Constant([1,2,3])";
+    Variable -> "Constant(instance of A)";
+}

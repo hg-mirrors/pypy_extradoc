@@ -1,0 +1,21 @@
+Gothenburg (May 2003)
+=========================
+
+The major focus of the sprint was to make the interpreter chain complete. A 
+first goal was to make "Hello world" run and this was accomplished about half 
+way into the sprint. We then proceded to making a more complex program that 
+had operations involving string operations and dictionaries work. This was 
+accomplished before the end of the sprint.
+
+http://www.strakt.com/~jacob/pypy/img_0062.jpg
+
+There was a big discussion, mostly involving Armin and Samuele over how to 
+handle operator dispatching. This ended in the Multimethod dispatcher that 
+mostly still survives in the Standard Object Space.
+
+http://www.strakt.com/~jacob/pypy/img_0064.jpg
+http://www.strakt.com/~jacob/pypy/img_0065.jpg
+http://www.strakt.com/~jacob/pypy/img_0066.jpg
+
+People I remember being there: Armin, Christian, Samuele, Michael, Alex 
+Martelli, Anna Ravenscroft, Laura, Tomek Meka

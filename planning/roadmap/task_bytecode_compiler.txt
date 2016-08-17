@@ -1,0 +1,27 @@
+Compile Python sources into JVM/.NET bytecode
+=============================================
+
+Status: 
+
+ - pypy-jvm and pypy-cli interprets python bytecode
+
+Todo:
+
+ - make pypy-jvm and pypy-cli emitting native bytecode instead of
+   interpreting python bytecode;
+
+ - the plan is to reuse part of the JIT machinery to automatically
+   convert the Python interpreter into a compiler
+
+Expected outcome:
+
+ - compilation to native bytecode should give a speedup around 2/2.5x;
+
+ - emitting native bytecode is needed for doing some tasks that are
+   possible with Jython/IronPython (i.e., writing applets)
+
+Dependencies:
+
+ - `Port the JIT to ootype`_
+
+.. _`Port the JIT to ootype`: task_jit_ootype.html

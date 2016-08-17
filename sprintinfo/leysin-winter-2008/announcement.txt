@@ -1,0 +1,80 @@
+=====================================================================
+         PyPy Leysin Winter Sprint (12-19th January 2008)
+=====================================================================
+..                             image:: http://www.ermina.ch/002.JPG
+
+The next PyPy sprint will be in Leysin, Switzerland, for the
+fifth time.  This is a fully public sprint: newcomers and
+topics other than those proposed below are welcome.
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+* Like previous winters, the main side goal is to have fun in winter
+  sports :-) We can take a couple of days off for ski; at this time of
+  year, ski days end before 4pm, which still leaves plenty of time
+  to recover (er, I mean hack).
+
+* the overall idea of the sprint is to continue working on making PyPy ready
+  for general use.  A few more specific tasks:
+
+  - app-level ctypes: getting to a basically usable point
+    would be really nice.
+
+  - JIT: there is a long-standing timeshifter refactoring,
+    towards making the JIT be more interpreter-like.  Starting
+    it during the sprint might be a good way to share some of
+    the knowledge of how the JIT really works.  Alternatively,
+    we can work on supporting ootype in the timeshifter.
+
+  - Testing: e.g. we run various nightly test runs but the
+    results are not summarized in a single page yet.
+
+  - LLVM: llvm 2 is now at version 2.1 and nicely stable
+    again.  Our llvm backend has improved in the last few
+    months, but refactoring it together with the genc backend
+    to share code more directly would be a nice task.
+
+* We are open to all sorts of other tasks during the sprint, just
+  propose something.
+
+-----------------------
+Location & Accomodation
+-----------------------
+
+Leysin, Switzerland, "same place as before".  Let me refresh your
+memory: both the sprint venue and the lodging will be in a very spacious
+pair of chalets built specifically for bed & breakfast:
+http://www.ermina.ch/.  The place has a good ADSL Internet connexion
+with wireless installed.  You can of course arrange your own
+lodging anywhere (so long as you are in Leysin, you cannot be more than a
+15 minute walk away from the sprint venue), but I definitely recommend
+lodging there too -- you won't find a better view anywhere else (though you
+probably won't get much worse ones easily, either :-)
+
+I made pre-reservations in the Chalet, so please *confirm* quickly that
+you are coming so that we can adjust the reservations as appropriate.  The
+rate so far has been around 60 CHF a night all included in 2-person rooms,
+with breakfast.  There are larger rooms too (less expensive) and maybe the
+possibility to get a single room if you really want to.
+
+Please register by svn:
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/leysin-winter-2008/people.txt
+
+or on the pypy-sprint mailing list if you do not yet have check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+You need a Swiss-to-(insert country here) power adapter.  There will be
+some Swiss-to-EU adapters around - bring a EU-format power strip if you
+have one.
+
+-----------
+Exact times
+-----------
+
+Officially, 12th-19th January 2008.  Both dates are flexible, you can
+arrive or leave earlier or later.  We will give introductions and
+tutorials depending on who needs them, either on the 13th or the 14th.

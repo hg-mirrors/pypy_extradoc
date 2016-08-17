@@ -1,0 +1,62 @@
+
+People coming to the Genova-Pegli sprint Summer 2011
+====================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+
+==================== =================== =======================
+    Name              Arrive/Depart          Accomodation 
+==================== =================== =======================
+Antonio Cuni         --                  lives there
+Laura Creighton      26/6 - 2/7          double room w Jacob
+Jacob Hallen         26/6 - 2/7          double room w Laura
+Armin Rigo           26/6 - 3/7          room to share, anyone?
+Romain Guillebert    26/6 - 3/7          willing to share
+Dario Bertini        26/6 - 2 or 3/7     ?
+Christian Tismer     26/6 - 3/7          room to share, anyone?
+==================== =================== =======================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Michael Foord        ?              ?
+Maciej Fijalkowski   ?              ?
+David Schneider      ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Hakan Ardo           ?              ?
+Carl Friedrich Bolz  ?              ?
+Samuele Pedroni      ?              ?
+Anders Hammarquist   ?              ?
+Christian Tismer     ?              ?
+Niko Matsakis        ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Stephan Diehl        ?              ?
+Alexander Schremmer  ?              ?
+Anders Chrigstroem   ?              ?
+Eric van Riet Paap   ?              ?
+Holger Krekel        ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+==================== ============== =====================

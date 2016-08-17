@@ -1,0 +1,98 @@
+Author: Beatrice Düring
+20060103
+
+Sprint planning PyPy
+----------------------
+
+January/Palma de Mallorca
+--------------------------
+
+Time & location: 23-29th January 2006, CS Dep. of the Palma de 
+Mallorca University/GNU Linux lab.
+
+Nature: open 
+
+Primary organizer: Bea
+
+February/PyCon (USA)
+---------------------
+
+Time & location: 27 Feb - 1st March 2006 PyCon 
+(24-26 Feb, 2006 Dallas, Texas,
+
+Nature: postsprint
+
+Primary organizer: Holger and Michael
+
+March/Europe
+-------------------
+
+Time & location: Louvain-La-Neuve 6th-10th March
+
+Nature: joint sprint with OZ community and Roel Wuyts/ULB attending. 
+DFKI and Logilab primarily + Samuele, Carl F.
+
+Primary organizer: Nicolas Chauvat
+
+April/Leysin
+-------------
+
+Time & location: 3rd to 9th of April, 2006, Leysin, Switzerland
+
+Nature: closed/core
+
+Primary organizer: Armin
+
+April/Tokyo
+-------------
+
+Time & location: 23rd to 29th of April, 2006, host: 
+Yutaka Niibe, National Institute of AIST, Japan (FSIJ) 
+Akihabara, Tokyo, venue for 32 people. 
+
+Nature: open, dissemination
+
+Primary organizer: Bea
+
+
+July/Europython
+------------------
+
+Time & location: 3rd-5th of July, 2005, CERN Switzerland
+(sprints at 30th of June-2nd of July and 6th of July to 9th of July)
+
+Nature: presprint/postsprint?
+
+Primary organizer: Michael H, Holger)
+
+August/University of Limerick
+-------------------------------
+
+Time & location: 21th to 27th of August, 2006 at University
+of Limerick, Ireland
+
+Nature: open, dissemination (workshop with Calibre?)
+
+Primary organizer: Bea
+
+
+Other general possibilities: 
+Romania, Switzerland (Leysin,Bern), 
+Bristol, Uganda (Nkozi), Bruxelles
+
+October/University Düsseldorf (HHU)
+--------------------------------------
+Time and location: 30th October - 5th November 2006, 
+at HHU Duesseldorf, Germany
+
+Nature: open, also possible invite specific people, SOP
+
+Primary organizer: Carl Friedrich - location, Armin sprint
+announcement
+
+Late autumn sprint dates and possible locations (TBD):
+--------------------------------------------------------
+8th-14th January 2007, probably Leysin 
+  
+26th feb-4th March 2006, Hildesheim / Trillke (offered, or 
+  somewhere else)

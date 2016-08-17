@@ -1,0 +1,58 @@
+We will give an update on the state of PyPy, the Python
+implementation in Python.
+
+Slides:
+
+1. http://codespeak.net/svn/pypy/extradoc/talk/ep2009/status/pypy-status.pdf
+2. http://codespeak.net/svn/pypy/extradoc/talk/ep2009/jit/pypy-jit.pdf
+
+
+Part 1 - becoming complete - 30 minutes of the projected 1 hour
+===============================================================
+
+PyPy has come a long way.  No longer merely a research project and
+proof of concept, PyPy now is
+able to run sophisticated python applications such as Django and
+Twisted.  We will focus on the improvements that happened during
+the last year in PyPy, which made this possible.
+
+Thus -- even before the JIT work -- we could assert that PyPy
+now provides a complete, flexible and reasonably fast Python
+interpreter, itself implemented in Python.  ("Complete" means
+it is fully compliant but misses a lot of third-party
+extension modules.)
+
+This section of the talk is mostly intended for people who are already
+familiar with the PyPy project, and want an update as to how we are doing.
+We will also explain the motivations driving current PyPy development
+and its targets for the future.
+
+
+Part 2 - becoming fast - 30 minutes of the projected 1 hour
+===========================================================
+
+As we write this abstract we are finally integrating our Just-in-Time 
+compiler generator into PyPy.  Preliminary results look very good
+(more during the talk!).
+
+The PyPy JIT compiler, in addition to being a *specialising* compiler,
+is now a *tracing* compiler.  Another example of a tracing compiler is
+JavaScript's TraceMonkey, soon to be included in
+FireFox.  We will give the status of the implementation of
+our JIT, with speed measures.
+
+We will then describe how it all works.  No familiarity with tracing
+or specialising compilers required.
+
+Due to our architecture we can generate code for C but also for the
+JVM and .NET; it is possible to generate a JIT for these platforms too,
+running on top of the platform's native JIT.
+
+Also, as usual in PyPy, one can generate such a tracing compiler for 
+*any* computer language, only by writing an interpreter for it.  We already
+have ones for Squeak, Prolog and GameBoy, and experimental ones for
+JavaScript, Scheme, etc. so people wishing
+to speed up other languages now have a clear and simple path to follow.
+
+
+Authors: antocuni, cfbolz, pedronis, arigo

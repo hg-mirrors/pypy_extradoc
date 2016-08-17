@@ -1,0 +1,6 @@
+
+JFlow: Practical Mostly-Static Information Flow Control 
+http://pag.csail.mit.edu/reading-group/myers99jflow.pdf
+
+major paper on data flow analysis based security models. 
+

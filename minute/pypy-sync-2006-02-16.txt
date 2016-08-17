@@ -1,0 +1,284 @@
+==============================================
+pypy-sync developer meeting 16th February 2006
+==============================================
+
+Time & location: 1pm (30 minutes), GMT+1 at #pypy-sync
+
+Attendees::
+
+         Carl Friedrich Bolz
+         Anders Chrigstrom
+         Aurelien Campeas
+         Nik Haldimann
+	 Holger Krekel
+	 Samuele Pedroni
+         Eric van Riet Paap
+         Armin Rigo
+         Michael Hudson (moderation & minutes)
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see the `IRC Log`_
+  and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+
+- pycon sprint planning
+
+  Michael agreed to update our sprint tutorial materials.  There was
+  consensus that the "Paris style" of daily planning meetings and
+  small-ish discussion groups presenting results was likely to be a
+  good approach, although flexibility is required as we don't really
+  know who's going to be there.  Arre agreed to see if the Strakt
+  projector could be brought along.
+
+- mozart/oz sprint
+
+  Shortly before the meeting Nicolas checked in (revision 23397,
+  pypy/extradoc/sprintinfo/louvain-la-neuve-2006) enough information
+  to answer all questions :)
+
+- extra core sprint
+  
+  There was agreement that we need a core sprint before EuroPython.
+  Armin suggested the middle or end of March in Leysin, but most other
+  people preferred the beginning of April.  Armin agreed to
+  investigate a sprint location in Leysin for the dates 3-9th of
+  April.  So if you didn't attend the meeting, do want to attend the
+  sprint and can't make these dates, now would be the time to shout :)
+
+- state of stackless
+
+  The WP9 work requires an efficient threading implementation.
+  Aurelien wanted to know if the stackless work had progressed to the
+  point of making an efficient green threads implementation to be
+  made.  Armin said that anything was probably possible, but that
+  precise details of what was needed were required.
+
+  There was agreement that there should be a session on this at a
+  sprint, or if that failed a planned session on IRC about the topic.
+  The issue not especially time-critical, fortunately.
+
+- moderation of pypy-sync meetings
+
+  There was consensus that too many people will be in the air to have
+  a pypy-sync meeting next week.  As most of those people will still
+  be at pycon a week later for the next pypy-sync meeting, it's not
+  clear that there will be one on the 2nd of March either.
+
+
+.. _`IRC log`:
+
+Complete IRC log
+=================
+
+::
+
+    [12:55] <mwh> ok, my clock says 12:02
+    [12:55] arigo (n=arigo@p54AB84C0.dip0.t-ipconnect.de) joined #pypy-sync.
+    [12:55] <mwh> so i'd like to start
+    [12:55] <mwh> activity reports, please
+    [12:55] <auc> LAST: finished streams, scheduling problem
+    [12:55] <auc> NEXT: exercise the solver with various problems, dbugging
+    [12:55] <auc> BLOCK: nil
+    [12:56] <mwh> LAST: genc work
+    [12:56] <mwh> NEXT: more genc, pycon preparations
+    [12:56] <mwh> BLOCKERS: -
+    [12:56] <nikh> LAST: random explorations and fixes
+    [12:56] <nikh> NEXT: more explorations, also around rctypes and ootypesystem
+    [12:56] <nikh> BLOCKERS: none
+    [12:56] <ericvrp> LAST: stackless optimization and transformation, NEXT: more of that, BLOCKERS: -
+    [12:56] <hpk> LAST: codespeak refinements, press release, non-pypy
+    [12:56] <hpk> NEXT: pycon + sprints, customer-meeting
+    [12:56] <hpk> BLOCKERS:
+    [12:56] <arre> PREV: JIT-work
+    [12:56] <arre> NEXT: JIT-work
+    [12:56] <arre> BLOCKERS: None
+    [12:56] <cfbolz> LAST: some GC work with Armin: finding the roots sort of works somewhat
+    [12:56] <cfbolz> NEXT: maybe more GC work
+    [12:56] <cfbolz> BLOCKERS: not enough time
+    [12:57] <mwh> arigo, pedronis ?
+    [12:57] <pedronis> LAST: jit work, help with GC, some opt and polish, bug fixingwork
+    [12:57] <pedronis> NEXT: jit,, pycon
+    [12:57] <pedronis> BLOCKERS: -
+    [12:57] <arigo> LAST: Psyco stuff, GC framework progress with Carl
+    [12:57] <arigo> NEXT: more JIT, possibly more GC
+    [12:57] <arigo> BLOCKERS: -
+    [12:57] <mwh> ok
+    [12:57] <mwh> the first topic is pycon sprint planning
+    [12:58] <mwh> i'm not sure what we need to do other than update our tutorial
+    [12:58] <mwh> (also, we have some talks to write, i think...)
+    [12:58] Action: hpk will take care for the py lib/py.test track of that sprint
+    [12:58] <hpk> i guess we are going to proceed similarly to paris
+    [12:58] <mwh> does anyone desperately want to work on the tutorial?
+    [12:59] <mwh> hpk: in which way do you mean?
+    [12:59] <hpk> mwh: having short "result presesntation and rough planning" daily sessions and otherwise work more in sub-groups
+    [12:59] <mwh> hpk: ah right
+    [12:59] <hpk> arre,pedronis: can we have the projector there?
+    [12:59] <mwh> i think we probably need to be flexbile (agile, even :) and see who turns up
+    [13:00] <hpk> yes
+    [13:00] <hpk> arigo: can you also prepare our architecture session talk a bit before the conference?
+    [13:00] <mwh> if noone else wants to work on the tutorial, i can do it
+    [13:00] <arre> hpk: Provided Jacob does not want it I'll make sure to bring it allong.
+    [13:00] <hpk> mwh: would be great - i can review it at the conference but not before i guess
+    [13:01] <mwh> we've got a fair few topics to get though today, don't want to talk about this for two long
+    [13:01] <arigo> hpk: yes
+    [13:01] <mwh> so, decisions: arre to check about beamer, me to look at tutorial
+    [13:01] <mwh> any dissent?
+    [13:01] <hpk> no, fine
+    [13:02] <mwh> - mozart/oz sprint
+    [13:02] <mwh> i think for this we'd just like to hear dates, plans, who's going
+    [13:02] <auc> nicolas just posted some bits of information about that
+    [13:02] <mwh> i take it this is an insiders only sprint
+    [13:02] <auc> into svn
+    [13:02] <mwh> auc: ah
+    [13:02] <cfbolz> mwh: the sprint announcement does not sound like it
+    [13:02] <hpk> well, it can't hurt to do an announcement at least to pypy-dev?
+    [13:02] <mwh> cfbolz: ok
+    [13:03] <mwh> ah yes, i see the check in now
+    [13:03] <auc> http://codespeak.net/svn/pypy/extradoc/sprintinfo/louvain-la-neuve-2006/
+    [13:03] <mwh> ok, well i guess that  check in answers all the questions
+    [13:03] <mwh> move on to next topic?
+    [13:04] <cfbolz> mwh: yes :-)
+    [13:04] <mwh> - extra core sprint
+    [13:04] <mwh> i don't think there's much doubt that we need another sprint before europython
+    [13:05] <mwh> as both pycon and tokyo will be dissemination focussed to some extent
+    [13:05] <mwh> and louvain-la-neuve is a bit off centre
+    [13:05] <cfbolz> mwh: agreed
+    [13:05] <arigo> there is a non-concrete idea about Leysin, but more mid-end-of-March than early April
+    [13:05] <mwh> arigo: i see
+    [13:05] <hpk> arigo: early april would not be possible?
+    [13:05] <mwh> i can't make the end of march
+    [13:06] Action: hpk will not make it mid/end march either
+    [13:06] <arigo> the longer we wait, the less snow we have :-/
+    [13:06] <cfbolz> arigo: I would also prefer early april :-)
+    [13:06] <mwh> arigo: hmm :)
+    [13:06] <mwh> i don't know if we want to try and decide dates now
+    [13:06] <mwh> just "yes, we need a sprint"
+    [13:07] <hpk> well, it seems that early april is more likely to fit at least with carl, michael and me
+    [13:07] <arigo> yes, we need a sprint
+    [13:07] <hpk> just time-wise
+    [13:07] <cfbolz> mwh: yes, we need a sprint
+    [13:07] <arigo> hpk: point taken
+    [13:07] <pedronis> mid of march doesn't work for me either
+    [13:07] <mwh> auc: how about logilab?
+    [13:07] <auc> don't know
+    [13:07] <mwh> it seems getting logilab and tismerysoft in the same place at some point would be a good thing
+    [13:08] <mwh> (see next topic...)
+    [13:08] <cfbolz> indeed
+    [13:09] <auc> but april is better than march
+    [13:09] <hpk> ericvrp: how is beginning april for you?
+    [13:09] <ericvrp> I don't think I can make it to an intermediatte sprint
+    [13:09] <mwh> arigo: is leysin-in-april still a workable plan?
+    [13:09] <hpk> ericvrp: ok, i thought that because you don't come to pycon ... but then you'd like to go to tokyo, i see
+    [13:09] <mwh> (apart from the snow issue)
+    [13:10] <arigo> mwh: I propose that we fix potential dates (to be checked by me):
+    [13:10] <ericvrp> maybe I can come for a very short while, if that makes sense at all
+    [13:10] <arigo> the week of the 3rd-7th of April
+    [13:10] <hpk> arigo: yes, sounds like it
+    [13:10] <mwh> arigo: yes
+    [13:10] <hpk> and people can come around (preferably before) if they want to ski
+    [13:10] <arigo> if we don't fix dates now it will slip later Yet Another Time :-)
+    [13:11] <mwh> (predictably enough i'm prancing around in rock shoes the previous week...)
+    [13:11] <hpk> arigo: will you check out the old setting?
+    [13:11] <mwh> arigo: yes, agreed
+    [13:11] <mwh> 3-7?
+    [13:11] <arigo> (when's Easter?)
+    [13:11] <arigo> hpk: the same place, yes
+    [13:11] <mwh> easter sunday is 23rd april
+    [13:11] <mwh> i think
+    [13:11] <arre> arigo: The week after.
+    [13:11] <hpk> 3-7th sounds a bit like no-breakday?
+    [13:11] <hpk> it's five days
+    [13:12] <arigo> arre: 16th? thanks
+    [13:12] <arigo> hpk: I talked about the week
+    [13:12] <hpk> ah ok
+    [13:12] <hpk> so we are talking about 3-9th with a breakday in between or so
+    [13:12] <mwh> er, yes 16th
+    [13:12] <cfbolz> yes, sounds good to me
+    [13:12] <mwh> 3-9 works for me
+    [13:13] <hpk> pedronis, arre: would work for you as well?
+    [13:13] <mwh> so, mention this on pypy-dev?
+    [13:13] <arre> 3-9 is not a problem for me.
+    [13:13] <pedronis> it works for me
+    [13:13] <arigo> mwh: ok (I need to check of course)
+    [13:13] <mwh> i'd like to move on to the next topic soon ish
+    [13:13] <mwh> arigo: of course
+    [13:13] <hpk> arigo: yip
+    [13:13] <hpk> fine with me, mwh: i think it's enough for now to mention it prominently in the minutes
+    [13:14] <mwh> hpk: ok
+    [13:14] <mwh> next topic:
+    [13:14] <mwh> - state of stackless
+    [13:14] Action: ericvrp Christian needs to answer that one
+    [13:14] <mwh> this is auc's topic, but basically i think the question is particularly about whether there are concrete plans for microthreads
+    [13:15] <mwh> ericvrp: yeah
+    [13:15] <mwh> it's about 2am where he is though, i think
+    [13:15] <arigo> I think Christian's got coroutines, greenlets and tasklets so far
+    [13:15] <auc> what are green/tasklets ?
+    [13:15] <auc> wrt coroutines ?
+    [13:15] <arigo> and it should be very easy to add other abstractions
+    [13:15] <mwh> arigo: is that enough to build microthreads at app level?
+    [13:15] <arigo> auc: mostly just a different, slightly richer interface than bare coroutines
+    [13:16] <mwh> i guess not with preemption
+    [13:16] <auc> mwh: sure
+    [13:16] <arigo> mwh: yes, it all depends on what is needed more precisely
+    [13:16] <cfbolz> indeed
+    [13:16] <auc> anyway real threads are needed, if only because they are part of python, no ?
+    [13:16] <mwh> i guess pypy-sync isn't really the forum for this discussion in the long run
+    [13:16] <cfbolz> auc: well, yes. but you cannot have thousands of them
+    [13:17] <auc> sure, that's why we want picrothreads
+    [13:17] <auc> (shit)
+    [13:17] <auc> it's not extremely urgent
+    [13:17] <cfbolz> picothreads?
+    [13:17] <arigo> auc: the answer is that it's mostly easy for any of us to build whatever you need, but it must be more well-defined
+    [13:17] <auc> micro, nano, pico, femto, whatever ;-)
+    [13:18] <mwh> auc: good to know (about the urgency)
+    [13:18] <cfbolz> auc: well, would you want the exactly the same interface as threads, for example
+    [13:18] <auc> arigo: it's simple, we want efficient threads
+    [13:18] <mwh> ideal would be to have a session on this at a sprint
+    [13:18] <auc> bonus : threads that return values
+    [13:18] <arigo> auc: but for example, do you need threads that can block on system calls without blocking other threads
+    [13:18] <auc> bonus : threads that expose the interface present in Oz
+    [13:18] <arigo> auc: I guess not
+    [13:19] <auc> arigo: I guess yes
+    [13:19] <mwh> if not, would it make sense to schedule some irc session to get the relevant parties together?
+    [13:19] <arigo> auc: that's very hard to do without real OS threads
+    [13:19] <auc> this interface is describe in some document I've committed already
+    [13:19] <arigo> mwh: yes
+    [13:19] <auc> I can move it to doc/discussions
+    [13:19] <cfbolz> yes please
+    [13:19] <auc> arigo: ok we'll see
+    [13:20] <mwh> so ideally this will be talked about at lln/leysin
+    [13:20] <mwh> otherwise irc sometime
+    [13:20] <mwh> now for two minutes:
+    [13:20] <mwh> who moderates the next pypy-sync?
+    [13:20] <mwh> it's not going to be me!
+    [13:20] <arigo> (auc: feel free to talk about in in #pypy at any time :-)
+    [13:21] <cfbolz> mwh: will there be enough people on next thursday?
+    [13:21] <nikh> aren't about half of the people present here going to be on planes next pypy-sync?
+    [13:21] <arigo> 23rd?  half of us are in the plane
+    [13:21] <mwh> cfbolz: don't know
+    [13:21] <hpk> nikh: true
+    [13:21] <hpk> don't planes have wireless these days?
+    [13:21] <mwh> ok, so maybe there will not be a pypy-sync next week
+    [13:21] <mwh> that's fine
+    [13:22] <mwh> hpk: only if you pay $$$$ i think
+    [13:22] <auc> arigo: yup
+    [13:22] <cfbolz> mwh: then let's plan the one afterwards
+    [13:22] <mwh> well, the one afterwards is on the day i'm travelling again
+    [13:22] <cfbolz> argh
+    [13:22] <mwh> it will be about 5am local time for pycon-ers, i think
+    [13:23] <hpk> hum
+    [13:23] <hpk> well, then let's not decide now in a hurry
+    [13:23] <mwh> ok
+    [13:23] <mwh> there are maybe 30 seconds for any final points :)
+    [13:24] <hpk> (we could take the opportunity to shift it to a different time)
+    [13:24] <mwh> consistency is good though
+    [13:24] <mwh> anyway, time up
+    [13:24] Action: mwh closes the meeting

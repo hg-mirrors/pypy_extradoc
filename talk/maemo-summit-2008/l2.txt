@@ -1,0 +1,61 @@
+=============
+PyPy on Maemo
+=============
+
+What is PyPy?
+=============
+
+* Yet another python interpreter
+
+* Written in Python instead of C
+
+Why yet another python interpreter?
+===================================
+
+* To have a Python Just in time compiler
+
+* To experiment with Python implementation more
+
+* To have a decent GC
+
+* Whatever you wish...
+
+Why PyPy on maemo?
+==================
+
+* Pluggable GCs - potential for memory saving
+
+* Possible faster startup, due to freezing
+  modules etc.
+
+* Pluggable object layout in memory - possibility
+  for saving space.
+
+* Optimizations impossible on CPython
+
+* All this things "oh it's too tedious" with CPython
+
+Status of pypy on maemo
+=======================
+
+* runs
+
+* some experiments with embedded-friendly gc's
+
+Contact / Q&A 
+==========================
+
+holger krekel, Maciej Fijalkowski
+at http://merlinux.eu
+
+PyPy: http://codespeak.net/pypy
+
+Blog: http://morepypy.blogspot.com
+
+.. raw:: latex
+
+    \begin{figure}
+    \includegraphics[width=64px,height=64px]{merlinux-logo.jpg}
+    \qquad
+    \includegraphics[width=80px]{../img/py-web.png}
+    \end{figure}

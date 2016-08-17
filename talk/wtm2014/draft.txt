@@ -1,0 +1,155 @@
+
+
+Title page
+==========
+
+
+
+Current Situation
+=================
+
+Dynamic languages popular
+(Python, Ruby, PHP, JavaScript...)
+
+Parallelization is a problem:
+
+GIL
+    Atomicity & isolation for bytecode instructions
+    No real concurrency
+
+Multi-process
+    Exchanging data explicitly
+    Only suitable for some kinds of applications
+
+
+RPython
+=======
+
+RPython: language to generate virtual machines
+
+    Generational garbage collector
+    Just-in-Time meta-compiler
+    Software Transactional Memory  <- new
+
+PyPy: Python implementation in RPython
+
+Topaz: Ruby implementation in RPython
+
+etc.
+
+
+Transactional Memory
+====================
+
+Goal 1. A transaction executes N bytecodes
+
+    Existing multithred programs use multiple cores
+    The whole program is doing only transactions
+    -> Good performance is essential
+
+Goal 2. Improved multithreading model
+
+    Better programming model for the end user
+    Boundaries controlled by the program
+    Much longer transactions
+    -> HTM is far too limited for now
+
+
+Background: STM Overhead
+========================
+
+Major source of STM overhead in barriers
+All over the place
+Isolation (Copy-On-Write, Locking, …)
+Validation
+Reference resolution (for COW)
+
+O = read(O)
+return O
+return find_right_version(O)
+right version
+slowpath
+
+
+C7: It's Just a Nice Trick
+==========================
+
+Can two copies of an object share the same
+reference?
+
+Can one reference point to two different
+locations in memory if used from two
+different threads?
+
+
+C7: Segmentation
+================
+
+...
+
+C7: Page Sharing
+================
+
+...
+
+
+(C7: Copy-On-Write is merged with the next slide)
+
+
+C7: Read Barriers
+=================
+
+2-step address translation (all in hardware):
+%gs + SO → LA
+LA → memory location
+
+SO never changes
+
+SO always translates to the right version
+   no “right version” check
+   no find_right_version()
+
+Still need to set a flag "this object was read"
+
+
+C7: Write Barriers
+==================
+
+Write Barrier does Copy-On-Write
+
+   By copying the whole page
+   Only on first access to this page
+   Pages shared again at major collections
+
+Low cost, page-level COW
+Object-level conflict detection
+
+
+C7: Total costs
+===============
+
+Extremely cheap read and write barriers
+
+Integrated with garbage collection
+    Most new objects die quickly
+    One write barrier for both STM and GC
+    No write barriers on objects from same transaction
+
+Commit-time costs
+    Detect write-read conflicts
+    Copy around the objects in non-shared pages
+    Reasonable
+
+
+C7: Summary
+===========
+
+Total overhead < 50%
+
+Huge address space needed (64bit)
+
+Optimized for low #CPUs
+
+Optimized for dynamic language VMs
+
+Still STM, not HTM → flexibility

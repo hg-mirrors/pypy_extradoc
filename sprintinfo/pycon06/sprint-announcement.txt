@@ -1,0 +1,72 @@
+Post-PyCon PyPy Sprint: February 27th - March 2nd 2006 
+============================================================
+
+The next PyPy sprint is scheduled to take place right after 
+PyCon 2006 in Dallas, Texas, USA. 
+
+We hope to see lots of newcomers at this sprint, so we'll give
+friendly introductions.  Note that during the Pycon conference 
+we are giving PyPy talks which serve well as preparation.  
+
+Goals and topics of the sprint 
+------------------------------
+
+While attendees of the sprint are of course welcome to work on what
+they wish, we offer these ideas:
+
+  - Work on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+  - Writing ctypes implementations of modules to be used by the above
+    tool. 
+
+  - Experimenting with different garbage collection strategies.
+
+  - Implementing Python 2.5 features in PyPy
+
+  - Implementation of constraints solvers and integration of dataflow
+    variables to PyPy.
+
+  - Implement new features and improve the 'py' lib and py.test 
+    which are heavily used by PyPy (doctests/test selection/...).
+
+  - Generally experiment with PyPy -- for example, play with
+    transparent distribution of objects or coroutines and stackless
+    features at application level.
+
+  - Have fun!
+
+Location
+--------
+
+The sprint will be held wherever the PyCon sprints end up being held,
+which is to say somewhere within the Dallas/Addison Marriott Quorum
+hotel.
+
+For more information see the PyCon 06 sprint pages:
+
+  - http://us.pycon.org/TX2006/Sprinting
+  - http://wiki.python.org/moin/PyCon2006/Sprints
+
+Exact times 
+-----------
+
+The PyPy sprint will from from Monday February 27th until Thursday
+March 2nd 2006. Hours will be from 10:00 until people have had enough.
+
+Registration, etc.
+------------------ 
+
+If you know before the conference that you definitely want to attend
+our sprint, please subscribe to the `PyPy sprint mailing list`_,
+introduce yourself and post a note that you want to come.  Feel free
+to ask any questions or make suggestions there!
+
+There is a separate `PyCon 06 people`_ page tracking who is already
+planning to come.  If you have commit rights on codespeak then you can
+modify yourself a checkout of
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/pycon06/people.txt
+
+.. _`PyPy sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`PyCon 06 people`: http://codespeak.net/pypy/extradoc/sprintinfo/pycon06/people.txt

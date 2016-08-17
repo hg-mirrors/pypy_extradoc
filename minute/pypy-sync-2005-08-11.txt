@@ -1,0 +1,364 @@
+=============================================
+pypy-sync developer meeting 11th August 2005
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync 
+
+Attendees::
+
+         Samuele Pedroni, 
+         Adrien Di Mascio, 
+         Ludovic Aubrien,
+         Carl Friedrich Bolz, 
+         Niklaus Heidimann,
+         Eric van Riet Paap,
+         Holger Krekel (minutes/moderation)
+         later: Richard Emslie, Michael Hudson, 
+                Armin Rigo, Christian Tismer 
+
+with pre info::
+        Anders Lehmann
+
+Regular Topics 
+====================
+
+- roll call. holger opens the meeting. 
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No direct conflicts were discovered. Compliancy work was
+  discussed under its own topic. 
+
+Topics of the week
+===================
+
+re / array status
+------------------
+
+Niklaus reports that _sre is feature-complete and passes 
+compliance tests.  It's running mostly at application leve
+and is thus quite slow.  Niklaus is moving bits and pieces
+to interpreter-level but it is not clear how the main
+dispatching loop could be transformed this way (and especially
+making it non-norecursive).  Advice and comments welcome. 
+Niklaus will basically not be available until the Heidelberg sprint. 
+
+Niklaus also reports that the array module is passing
+the tests but lives fully at applevel. An open question
+is how C data type sizes are modeled in PyPy.  Samuele
+notes that this depends on how we plan to interact
+with user extensions.  It is agreed that this particular
+data-type size question is a post-0.7 issue. 
+
+
+llvm status
+---------------------
+
+Eric reports that the llvm is progressing steadily.  There are
+currently 10 exception raising operations left to implement. 
+Also some external (suggested_primitive) functions need to 
+be implemented as well as 64 bit support.  The benchmarks
+richards and bpnn can produce standalone executables 
+already!
+
+While working on the llvm backend, three bugs in the LLVM 
+tool chain itself were discovered, reported and fixed by
+the LLVM guys very quickly.  The current llvm file 
+can be found at http://codespeak.net/~ericvrp/download. 
+Eric thinks that a PyPy standalone version based on LLVM 
+is not far away!  Everybody agrees that next week it would
+make sense to plan an LLVM track (among other tracks) 
+for the Heidelberg sprint. 
+
+GC and threading 
+---------------------------------
+
+Two important aspects of the translated PyPy version 
+regard Garbage Collection and Threading.  We planned
+for having both GC and threading implemented as
+translation aspects.  While Carl is working on GC 
+(during his SoC project) we have no translation-aspect 
+code yet regarding threading integration. 
+
+Carl reports that the pure simulator already works. 
+There is an Address class that provides raw access
+to memory which should be used by the actual GC implementations. 
+This class is annotated with SomeAddress. On top of
+this is the 'lltypesimulator', a class that behaves
+like the _ptr type of pypy/rpython/lltype.  Next
+is implementing GC hooks into the llinterp and
+then actually writing GC implementations. 
+An open issue is that the rtyper/specializer needs 
+to be extended to work with the new GC classes. 
+
+Regarding threading there are various aspects
+where discussion started: 
+
+- support for "import thread" and the according API 
+  at Python level could be regarded as a different
+  issue than providing new (stackless) threading techniques. 
+  However, it's probably also possible (Armin thinks) 
+  to offer this API on top of a stackless implementations. 
+
+- threading support at the moment is (according to
+  Samuele) more about how we can weave translation
+  aspects into the translation machinery.  Samuele
+  also emphasizes that supporting os-level threads means
+  quite some debugging work, also judging from Jython
+  experiences which offers free threading. 
+
+more discussion is scheduled to happen at the technical
+board meeting friday 12th August and probably best 
+more on pypy-dev itself (see Armin's `posting`_ and the
+ensuing thread). 
+
+.. _posting: http://codespeak.net/pipermail/pypy-dev/2005q3/002257.html
+
+FYI: codespeak migration status
+-----------------------------------
+
+The migration of codespeak.net got postponed because the
+target machine's network connectivity is not satisfying yet
+(latency and dropped packets problems).  However, commits
+are now mirrored to the new machine which is basically
+ready to take over in case the current machine gets problems. 
+It's possible that the services get migrated without
+prior announcements (unless people really think it's
+neccessary to pre announce that accordingly). 
+
+This issue was postponed due to time restrictions 
+but it was mostly informational anyway. 
+
+Closing 
+------------------
+
+Holger closes the meeting in time at 13:30pm. 
+
+.. _`IRC-log`:
+
+Here is the full IRC log:: 
+
+    Aug 11 12:40:10 -->	You are now talking on #pypy-sync
+      ...
+    Aug 11 13:00:51 <hpk>	ok, let's start? 
+    Aug 11 13:01:01 <cfbolz>	yes
+    Aug 11 13:01:08 <hpk>	here is the agenda: 
+    Aug 11 13:01:11 <hpk>	- roll call.
+    Aug 11 13:01:11 <hpk>	- activity reports (3 prepared lines of info).
+    Aug 11 13:01:11 <hpk>	- resolve conflicts/blockers
+    Aug 11 13:01:11 <hpk>	*Topics of the week*
+    Aug 11 13:01:11 <hpk>	- re / array status
+    Aug 11 13:01:11 <hpk>	- llvm status
+    Aug 11 13:01:11 <hpk>	- GC and threading
+    Aug 11 13:01:11 <hpk>	- codespeak migration status
+    Aug 11 13:01:27 <hpk>	i propose the following order for activity reports: 
+    Aug 11 13:01:33 <hpk>	arigo, aleale, hpk, adim, cfbolz, ericvrp, nik, pedronis
+    Aug 11 13:01:44 ---	You are now known as arigo
+    Aug 11 13:01:50 <arigo>	DONE: random small stuff; mostly done: proper exc handling in rtyper
+    Aug 11 13:01:50 <arigo>	NEXT: to be decided on the technical board meeting
+    Aug 11 13:01:50 <arigo>	BLOCKERS: -
+    Aug 11 13:01:56 <ludal>	hi
+    Aug 11 13:01:59 ---	You are now known as aleale
+    Aug 11 13:02:05 <aleale>	PREV: Compliance tests
+    Aug 11 13:02:05 <aleale>	NEXT: Compliance tests
+    Aug 11 13:02:05 <aleale>	BLOCKERS: None
+    Aug 11 13:02:31 <aleale>	too many nick changes :-) 
+    Aug 11 13:02:36 <aleale>	adim, can you continue? 
+    Aug 11 13:02:40 <adim>	LAST: astbuilder (starting to have good results)
+    Aug 11 13:02:40 <adim>	NEXT: holidays
+    Aug 11 13:02:40 <adim>	BLOCKERS: none
+    Aug 11 13:02:49 ---	You are now known as hpk
+    Aug 11 13:03:00 <hpk>	LAST: codespeak.net migration, mentoring/user support
+    Aug 11 13:03:00 <hpk>	NEXT: some more codespeak-migration, open issues, at least three non-pypy days
+    Aug 11 13:03:00 <hpk>	BLOCKERS: None
+    Aug 11 13:03:16 <ludal>	PREV: none/helping adrien
+    Aug 11 13:03:17 <ludal>	NEXT: not much more
+    Aug 11 13:03:17 <ludal>	BLOCKERS: none
+    Aug 11 13:03:35 <cfbolz>	LAST: polished my lltype implementation on top of the memory simulation: it works quite well now (only 9 tests of all tests that use llinterp fail)
+    Aug 11 13:03:35 <cfbolz>	NEXT: implement a GC for the llinterp
+    Aug 11 13:03:35 <cfbolz>	BLOCKERS: None
+    Aug 11 13:03:45 <ericvrp>	last: progressing on full pypy translation with llvm
+    Aug 11 13:03:46 <ericvrp>	next: finishing external functions and exception raising operations
+    Aug 11 13:03:48 <ericvrp>	issues: possibly other llvm bugs
+    Aug 11 13:03:55 <nik>	LAST: _sre and array tuning
+    Aug 11 13:04:00 <nik>	NEXT: not much, will be at a conference in brussels from sunday until the sprint
+    Aug 11 13:04:04 <nik>	BLOCKERS: none
+    Aug 11 13:04:22 <pedronis>	Last: 2.4.1 tests, open issues, float ops/math and errors, a bit of tracker gardening, slottified lltype
+    Aug 11 13:04:24 <pedronis>	Next: ll_math.h error handling, ?
+    Aug 11 13:04:25 <pedronis>	Blockers: -
+    Aug 11 13:04:38 <hpk>	ok, thanks, there seems to be no blockers ... 
+    Aug 11 13:04:50 <cfbolz>	except llvm bugs :-(
+    Aug 11 13:04:59 <hpk>	and except that some of the compliance work was a bit re-recommiting
+    Aug 11 13:05:08 <hpk>	but we can talk about this at the sprint or some other time i think
+    Aug 11 13:05:23 <hpk>	so on to the next topic: re / array status
+    Aug 11 13:05:29 -->	rxe (n=rxe@client-82-14-80-179.manc.adsl.virgin.net) has joined #pypy-sync
+    Aug 11 13:05:33 <rxe>	hi
+    Aug 11 13:05:33 <nik>	ok
+    Aug 11 13:05:41 <nik>	_sre is feature-complete and fully compliant
+    Aug 11 13:05:47 <hpk>	rxe: we are in re/array status
+    Aug 11 13:05:49 <nik>	only problem: it's very slow ;)
+    Aug 11 13:06:03 <nik>	i'm slowly migrating some code to interp-level to improve that
+    Aug 11 13:06:11 <hpk>	but the core is running at applevel still? 
+    Aug 11 13:06:16 <nik>	yes
+    Aug 11 13:06:22 <hpk>	(i am not too accustomed to how re works internally)
+    Aug 11 13:06:36 <nik>	the core dispatcher loop is at app-level
+    Aug 11 13:06:50 <hpk>	you basically have a plan how to put this to interp level? 
+    Aug 11 13:07:00 <nik>	no
+    Aug 11 13:07:03 <nik>	it might be hard
+    Aug 11 13:07:09 <nik>	to do it non-recursive
+    Aug 11 13:07:20 <nik>	but not impossible
+    Aug 11 13:07:34 <hpk>	so would you need some helping advices from your mentors? 
+    Aug 11 13:07:55 <nik>	yes
+    Aug 11 13:08:06 <nik>	i think this is best discussed at the sprint
+    Aug 11 13:08:12 -->	mwh (N=user@82-33-185-193.cable.ubr01.azte.blueyonder.co.uk) has joined #pypy-sync
+    Aug 11 13:08:14 <nik>	as i will not have much time to work on it before that anyway
+    Aug 11 13:08:17 <hpk>	ok, especially since you will be away since then 
+    Aug 11 13:08:18 <hpk>	right
+    Aug 11 13:08:24 <hpk>	then a few words about array? 
+    Aug 11 13:08:42 <hpk>	mwh: hi, we are in the re/array topic already 
+    Aug 11 13:08:42 <nik>	array is also compliant
+    Aug 11 13:08:51 <nik>	fully app-level at the moment
+    Aug 11 13:09:00 <mwh>	(i'm late and also only planning on lurking sorry)
+    Aug 11 13:09:00 <nik>	there are conceptual issues:
+    Aug 11 13:09:18 <nik>	do we respect a machine's C data type sizes?
+    Aug 11 13:09:24 <nik>	ie the bytesize of a short int?
+    Aug 11 13:09:41 <nik>	or is pypy like a vm with fixed data type sizes?
+    Aug 11 13:09:56 <nik>	currently sizes are fixed, both in array and in struct
+    Aug 11 13:10:08 <hpk>	good question, pedronis, do you happen to have an opinion on that?
+    Aug 11 13:10:23 <pedronis>	well, the fact is that those aspects are related to interaction with other ext (possibly user) modules
+    Aug 11 13:10:44 <pedronis>	so until we have a model for that is hard to answer
+    Aug 11 13:10:46 <nik>	yes. if a user dumps arrays to disk from CPython
+    Aug 11 13:10:54 <nik>	and tries to read them with pypy's array
+    Aug 11 13:10:58 <nik>	stuff can break at the moment
+    Aug 11 13:11:14 <nik>	but it's a hard problem as array/struct assume a C backend
+    Aug 11 13:11:17 -->	arigo (n=odie@bch-ma-195.epfl.ch) has joined #pypy-sync
+    Aug 11 13:11:18 <hpk>	i guess we should treat this question as a post-0.7 issue
+    Aug 11 13:11:27 <pedronis>	yes
+    Aug 11 13:11:39 <hpk>	arigo: we are at the end of the re/array topic
+    Aug 11 13:11:53 <hpk>	ok, thanks Niklaus, then next topic: llvm status, eric? 
+    Aug 11 13:12:03 <hpk>	(or rxe for that matter)
+    Aug 11 13:12:06 <ericvrp>	this is my prepared text:
+    Aug 11 13:12:07 <ericvrp>	The LLVM backend is progressing slowly but steadily.  We currently have about 10 exception raising operations todo,
+    Aug 11 13:12:09 <ericvrp>	which is straightforward. The other open issue is the handful of external (suggested_primitive) functions that need
+    Aug 11 13:12:10 <ericvrp>	to be implemented. After a standalone version works, we need to refactor (of
+    Aug 11 13:12:12 <ericvrp>	course) and make the thing work on 64bit machines as well.
+    Aug 11 13:12:13 <ericvrp>	The benchmarks bpnn and Richards produce standalone executables already. (python llvm2/demo/richards l)
+    Aug 11 13:12:15 <ericvrp>	We encountered three bugs in the LLVM toolchain which after being reported to the LLVM team were all fixed very quickly. Which, in a way, gives me a good feeling. But discovering, reporting and waiting for fixes/workaround is what is costing us most of the time currently. I hope to have a working standalone mid next-week. 
+    Aug 11 13:12:17 <ericvrp>	The current llvm file can be found at http://codespeak.net/~ericvrp/download
+    Aug 11 13:12:58 <hpk>	wow, i am impressed with the progress
+    Aug 11 13:13:07 <cfbolz>	me as well. very cool!
+    Aug 11 13:13:31 <hpk>	and you reported some 3 times being faster on richards/bpnn, right? 
+    Aug 11 13:13:52 <ericvrp>	the only progress that counts (pypy) is still to come and I am not 100% sure if that will work first time round as did the C backend
+    Aug 11 13:14:07 <hpk>	well, the C backend didn't work exactly first time around :-) 
+    Aug 11 13:14:17 <ericvrp>	about the speed: I don't know if the C backend does any gcc optimizations currently?!?
+    Aug 11 13:14:28 <ericvrp>	richard?
+    Aug 11 13:14:31 <rxe>	hpt: I think I reported the speed increase.
+    Aug 11 13:14:37 <rxe>	hpk
+    Aug 11 13:14:45 <hpk>	ericvrp: the 337 pystones where with -O2 i think
+    Aug 11 13:15:02 <ericvrp>	I have seen no llvm pystone benchmark results
+    Aug 11 13:15:09 <cfbolz>	and for richard/bpnn?
+    Aug 11 13:15:16 <rxe>	however i had modify bpnn to get speed increases
+    Aug 11 13:15:31 <rxe>	for/range to while loops
+    Aug 11 13:15:35 <hpk>	ah, ok, nevermind, that's not too important right now but interesting neverhteless 
+    Aug 11 13:15:49 <hpk>	feel free to report any breakthroughts to pypy-dev, please 
+    Aug 11 13:16:03 <ericvrp>	ok
+    Aug 11 13:16:08 <rxe>	:-)
+    Aug 11 13:16:09 <hpk>	i think it will make sense to have a "llvm" track at the heidelberg sprint
+    Aug 11 13:16:26 <rxe>	yes - I would like to see some unification of the backends
+    Aug 11 13:16:39 <hpk>	indeed, we should discuss this next week in some detail, i think
+    Aug 11 13:16:39 <rxe>	with the external functions and test esp
+    Aug 11 13:16:49 <rxe>	ok
+    Aug 11 13:16:56 <ericvrp>	yes -
+    Aug 11 13:17:18 <hpk>	ok, let's rush to the next topic: GC and threading
+    Aug 11 13:17:28 <hpk>	there is a mail from armin on pypy-dev 
+    Aug 11 13:17:43 <hpk>	and carl, can you say a few words regarding GC and how it is supposed to integrate into PyPy? 
+    Aug 11 13:17:56 <cfbolz>	I am not that far yet :-(
+    Aug 11 13:18:02 <cfbolz>	I did some groundwork, and hope that I can now actually start to work writing GCs
+    Aug 11 13:18:07 -->	stakkars (i=mtsnwcw@i528C1380.versanet.de) has joined #pypy-sync
+    Aug 11 13:18:19 <hpk>	cfbolz: so you are at the pure simulator still 
+    Aug 11 13:18:27 <cfbolz>	there is an Address class that provides raw access to memory and should be used by the GC implementation. this class is annotated with SomeAddress
+    Aug 11 13:18:35 <cfbolz>	hpk: yes
+    Aug 11 13:18:40 <cfbolz>	there is a memory simulator that simulates the address' behaviour
+    Aug 11 13:18:52 <cfbolz>	on top of this there is the lltypesimulator: a class that behaves like the _ptr  type of lltype
+    Aug 11 13:19:17 <cfbolz>	the next thing I'm doing is imeplemting GC hooks into the llinterp for the 
+    Aug 11 13:19:29 <cfbolz>	and then actually write a GC
+    Aug 11 13:19:37 <cfbolz>	there is still quite some stuff left:
+    Aug 11 13:19:56 <cfbolz>	the rtyper has to be extended to work with the GC stuff
+    Aug 11 13:20:13 <cfbolz>	plus some more unsolved problems
+    Aug 11 13:20:30 <hpk>	i see, but i guess you are in consultation with Samuele there
+    Aug 11 13:20:37 <cfbolz>	of course
+    Aug 11 13:21:14 <hpk>	ok, arigo, and all, i have a question regarding threading
+    Aug 11 13:21:14 <cfbolz>	one other problem:
+    Aug 11 13:21:21 <cfbolz>	no go on
+    Aug 11 13:21:40 <hpk>	doesn't it make sense to divide the discussion into "import thread" support and "new threading facilities"? 
+    Aug 11 13:22:15 <hpk>	i mean we do need to offer the thread module, and e.g. stackless ideas or having multiple object spaes is a different issue, isn't it? 
+    Aug 11 13:22:32 <stakkars>	yes
+    Aug 11 13:23:24 <hpk>	arigo, pedronis: i am fine with raising and discussing this on pypy-dev, though, if further immediate comments cannot be made
+    Aug 11 13:23:34 <pedronis>	well, you could hava import thread threads as user level threads
+    Aug 11 13:23:58 <stakkars>	too bad that I missed the begining
+    Aug 11 13:24:11 <hpk>	pedronis: but that might already violate assumptions regarding compliancy? 
+    Aug 11 13:24:34 <hpk>	stakkars: this is just the first discussion, more to follow and the pypy-dev thread is there as well
+    Aug 11 13:24:40 <pedronis>	I don't think that threadidng is a compliancy problem
+    Aug 11 13:24:52 <pedronis>	is more about showing what translating can achieve
+    Aug 11 13:24:58 <pedronis>	at the moment
+    Aug 11 13:24:58 <stakkars>	nor do I. It is an option which can be turned off
+    Aug 11 13:25:19 <hpk>	pedronis: i see the point but i am not sure i 100% agree
+    Aug 11 13:25:39 <arigo>	hpk: I think we can emulate the thread module with stackless translation
+    Aug 11 13:25:59 <arigo>	just by switching tasklets automatically every N bytecodes
+    Aug 11 13:26:21 <hpk>	maybe
+    Aug 11 13:26:25 <pedronis>	well, supporting os threads means potentially quite some debugging
+    Aug 11 13:26:35 *	hpk notes 4 minutes left
+    Aug 11 13:26:35 <stakkars>	yes, I think so, too. I did some tests and theoretical musings.
+    Aug 11 13:26:37 <pedronis>	threads are not nice that way
+    Aug 11 13:26:48 <stakkars>	may I drop my 3 lines?
+    Aug 11 13:26:56 <hpk>	yes
+    Aug 11 13:27:01 <rxe>	cant we introduce OS threads and GIL except for IO?
+    Aug 11 13:27:02 <pedronis>	Jython has free
+    Aug 11 13:27:23 <stakkars>	DONE: integrated the new marshal module. Wrote exact string_to_float, moved it to interp-level, did some tests and theory about how to stackless
+    Aug 11 13:27:32 <stakkars>	NEXT: write a book chapter on PyPy
+    Aug 11 13:27:39 <stakkars>	BLOCK: time consumption due to memory fotprint and swapping, hard to track side effects of certain statements on the annotator
+    Aug 11 13:28:05 <hpk>	ok, let's continue gc+threading at pypy-dev and at the technical board meeting, last topic (3 minutes left) 
+    Aug 11 13:28:10 <pedronis>	Jython has free threading but is all quite delicate
+    Aug 11 13:28:19 <stakkars>	the blocker is muc better since I pushed arigo/pedronis to slotify
+    Aug 11 13:28:40 <hpk>	codespeak.net migration is half-done
+    Aug 11 13:28:48 <pedronis>	well, slottifying lltype killed 150m of memory usage
+    Aug 11 13:28:56 <hpk>	svn commits are mirrored to code2.codespeak.net seconds after the commit on the main hosts happens
+    Aug 11 13:29:01 <stakkars>	yes, I noticed.
+    Aug 11 13:29:08 <pedronis>	I don't know what happens combined with compacting node.py
+    Aug 11 13:29:20 *	hpk stops with the topic
+    Aug 11 13:29:37 <hpk>	stakkars, pedronis: are you reading my comments? 
+    Aug 11 13:29:48 <stakkars>	where?
+    Aug 11 13:29:54 <cfbolz>	here
+    Aug 11 13:29:57 <hpk>	well, i tried to move to the next topic
+    Aug 11 13:30:04 <hpk>	but you conitnued with the old topic 
+    Aug 11 13:30:04 <stakkars>	which is it
+    Aug 11 13:30:13 <hpk>	pypy-sync has a very tight schedule
+    Aug 11 13:30:35 <hpk>	in fact, the meeting is closed now
+    Aug 11 13:30:54 <hpk>	it
+    Aug 11 13:31:09 <hpk>	pypy-sync is just for synchronisation not for full blown content discussions
+    Aug 11 13:31:13 *	stakkars wonders why hpk wasted the rest instead of moving on
+    Aug 11 13:31:35 *	pedronis to make his point
+    Aug 11 13:32:26 <rxe>	can i post 3 lines (sorry I was late)?
+    Aug 11 13:32:29 <rxe>	DONE: tiny llvm stuff
+    Aug 11 13:32:29 <rxe>	NEXT: llvm refactors / organise sprint travelling
+    Aug 11 13:32:29 <rxe>	BLOCKERS: new laptop
+    Aug 11 13:33:01 <hpk>	thanks, i'll add it to the minutes
+    Aug 11 13:33:16 <cfbolz>	bye
+    Aug 11 13:33:20 <hpk>	see you
+    Aug 11 13:33:21 <stakkars>	bye
+    Aug 11 13:33:22 <adim>	bye
+    Aug 11 13:33:24 <mwh>	bye
+    Aug 11 13:33:24 <rxe>	bye
+    Aug 11 13:33:25 <ericvrp>	bye
+    Aug 11 13:33:30 <ludal>	bye
+    Aug 11 13:33:35 <--	mwh (N=user@82-33-185-193.cable.ubr01.azte.blueyonder.co.uk) has left #pypy-sync ("ERC Version 5.0 (CVS) $Revision: 1.767 $ (IRC client for Emacs)")
+    Aug 11 13:33:36 <--	stakkars (i=mtsnwcw@i528C1380.versanet.de) has left #pypy-sync
+    Aug 11 13:33:39 <--	adim (n=adim@logilab.net2.nerim.net) has left #pypy-sync
+    Aug 11 13:33:42 <--	nik (n=chatzill@123.74.203.62.cust.bluewin.ch) has left #pypy-sync
+    Aug 11 13:33:43 <--	rxe (n=rxe@client-82-14-80-179.manc.adsl.virgin.net) has left #pypy-sync
+    Aug 11 13:33:49 <--	cfbolz (n=a@b0bar.physi.uni-heidelberg.de) has left #pypy-sync ("Leaving")
+    Aug 11 13:33:50 <--	ericvrp (N=chatzill@ericvrp.demon.nl) has left #pypy-sync
+

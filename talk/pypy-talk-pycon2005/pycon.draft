@@ -1,0 +1,71 @@
+   - status report
+       . compliancy with CPython
+       . analysis/checking toolchain
+       . easy hacks  -o thunk
+
+   * ep2004-pypy
+
+   - flow obj space
+       . placeholder objects
+       . records operations
+
+* <=> translator.py: t.view()
+
+   - staticness restrictions
+       . do whatever you like at boot-time
+       . then no more dynamic function/class creation, no generator
+       . constant globals, constant class attributes/methods
+       . can use exceptions
+       . type coherency
+
+   - type annotation
+       . "type" as in "set of objects"
+       . custom selection of types
+
+* <=> t.annotate()
+
+   - algorithm
+       . "naive" forward propagation
+       . also known as "abstract interpretation"
+       . bottom-up fixpoint search
+
+   - features
+       . analyses the preinitialized program in-memory
+       . full-program analysis
+       . no user annotation
+       . mostly language-independent
+
+   - contrasting to
+       . declaring types everywhere
+       . exact restriction-less typing (local vars only)
+       . full-program source code analysis (Starkiller)
+
+   - (cont)
+       . Python2C (supersceded)
+       . Pyrex (analysis of Python-like source with types)
+       . Psyco (100% run-time)
+
+   - PyPy's type model
+       . int, float, str, bool, function, class
+       . tuple, list, dict, iter
+       . prebuilt-constant
+       . class, instance
+           > mostly single inheritance
+           > attributes lifted to base class on demand
+
+* <=> t.annotate() with OO  (translate_pypy1.py?)
+
+   - code generation
+       . can generate Pyrex (at PyCon 2004 already)
+       . can generate a slow C extension module (a la Python2C)
+       . Common Lisp / Java / LLVM / C++ / Python...
+
+   - next steps
+       . good C code
+       . Java, for object model
+       . LLVM in development (Carl Friedrich Bolz)
+
+   - status
+       . rather CPython-compliant source base in PyPy
+       . mostly annotatable
+       . next step: use the type annotations in the code generator!

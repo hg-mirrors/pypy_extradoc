@@ -1,0 +1,24 @@
+Refactor RPython external objects interface
+===========================================
+
+Status: 
+
+ - RPython programs compiled with gencli can make limited use of .NET
+   classes; it is possible to test them without translation by using
+   Python for .NET.
+
+ - genjvm does not support external objects at all
+
+Todo:
+
+ - refactor the code in gencli and make it shareable with genjvm
+
+ - add support for external objects to genjvm; the idea is to make
+   programs testable by using JPype_ or something similar
+
+Expected outcome:
+
+ - ability to use JVM classes from RPython programs
+
+.. _JPype: http://jpype.sourceforge.net/
+

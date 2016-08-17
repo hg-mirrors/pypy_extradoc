@@ -1,0 +1,217 @@
+===================
+Massive parallelism
+===================
+
+:Authors: Maciej Fijalkowski
+:Location: Warsaw University
+:Date: 13.III.2007
+
+Writing concurrent programs
+===========================
+
+* threads
+
+* events
+
+* everything has it's own problems
+
+Threads problems
+================
+
+* deadlock
+
+* hard to debug
+
+* implicit, non-voluntary scheduling
+
+Events problems
+===============
+
+* strange programming style
+
+* deferred problems
+
+Alternative approach
+====================
+
+* concept of greenlet (microthread)
+
+* way more functional
+
+* scales better
+
+* composable
+
+Implementation overview
+=======================
+
+* copies stack to heap
+
+* explicit, voluntary scheduling
+
+* can employ many policies of scheduling
+
+Debugging
+==========
+
+* two consecutive runs has the same behaviour
+
+* attaching a debugger in the middle stops whole execution
+
+* deadlock is explicitly stated by exception
+
+Goodies built on top (1)
+========================
+
+* tasklets
+
+* communication over channels
+
+* (demo)
+
+Greensock
+========================
+
+* cooperative I/O
+
+* oneof, allof
+
+* cannot use blocking I/O
+
+* doesn't work on win32
+
+* scales well (application built on top)
+
+* (demo)
+
+Composable greenlets
+=====================
+
+* keep different parent greenlet for different tasks
+
+* composable!
+
+Implementation - RPython
+=========================
+
+* Restricted subset of python
+
+* full type inference (static, implicit typing)
+
+* translated to C/LLVM/CLI/JVM/JavaScript
+
+* fast (~20-50x faster than python)
+
+Implementation - flowgraphs
+============================
+
+* flowing of live python objects
+
+* allows a wide range of metaprogramming
+
+* creates flow graph
+
+* (demo)
+
+Implementation - annotation
+============================
+
+* top to bottom type inference
+
+* explicit type declarations only for topmost functions
+
+* python type system
+
+Implementation - rtyping
+=========================
+
+* changes type system to low-level one
+
+* two type-systems: lltype (C) and ootype (CLI)
+
+Flow graphs transformation
+===========================
+
+* stackless transform
+
+* we create different return values for blocks
+
+* no direct stack access, no magic, plain C
+
+Use case - python console
+===================================
+
+* ajax using pypy's toolkit
+
+* pypy-c to play
+
+* multiple consoles
+
+* web server
+
+* dispatching of http/console
+
+* very easy
+
+Multimethods
+=============
+
+* multiple implementation of types
+
+* so called sliced multimethods
+
+* works quite well (benchmarks)
+
+Transparent proxy
+==================
+
+* just another implementation for types
+
+* also works for interpreter-level types
+
+* provides a controllable object
+
+* (demo)
+
+* ~300 LOC
+
+* easy :)
+
+Distribution
+=============
+
+* works quite well on top of tproxy
+
+* doesn't need to serialize types
+
+* sends small packets
+
+* can access any possible object
+
+* ~500 LOC
+
+* (demo)
+
+Back to use case
+=================
+
+* distributed computations
+
+* easy to debug
+
+* server over http without changes
+
+More PyPy!
+===========
+
+* translator toolchain (prolog interp, js interp)
+
+* taint object space
+
+* JIT
+
+* sponsored by EU as STReP
+
+* open source (MIT license)
+
+* Summer of Code

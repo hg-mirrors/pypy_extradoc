@@ -1,0 +1,50 @@
+
+People coming to the Post EuroPython Sprint (Vilnius) 12-14 July 2007
+======================================================================
+
+The 14th is also a full sprint day.
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =================================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =================================
+Maciej Fijalkowski   5/14th         Some hostel
+Antonio Cuni         8/15th         Same as Maciek :-)
+Samuele Pedroni      7/14th         Ratonda Centrum Hotels
+Laura Creighton	     7/14th	    Ratonda Centrum Hotels
+Jacob Hallen	     7/14th	    Ratonda Centrum Hotels
+Jakub Gustak         8/15th         Hospitality Club :)
+Christian Tismer     8/16th         Ratonda Centrum Hotels
+Simon Burton         8/15th
+Armin Rigo           8/16th         Comfort Vilnius (room to share!)
+Bea Düring           8/13th         Comfort Vilnius
+==================== ============== =================================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Beatrice Duering     ?              ?
+Anders Chrigström    ?              ?
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Richard Emslie       ?              ?
+Alexander Schremmer  ?              ?
+Georg Brandl         ?              ?
+Guido Wesdorp        ?              ?
+Carl Friedrich Bolz  ?              ?
+Holger Krekel        ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Johan Hahn           ?              ?
+Niko Matsakis        ?              ?
+==================== ============== =====================

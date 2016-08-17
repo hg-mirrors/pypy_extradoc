@@ -1,0 +1,35 @@
+people present:
+    Anto
+    Carl Friedrich
+    Ronny
+    Armin
+    Håkan
+    Lukas
+
+coming later?:
+    Sven
+
+not there today:
+    David
+
+topics:
+
+- add spilling and location support IN PROGRESS
+- ARM int trace operations SOME PROGRESS
+- hg conversion WE HAVE AN EVEN DIFFERENT PLAN (Anto, Ronny)
+- refine heap analysis GETTING BETTER (Carl Friedrich, Lukas)
+- (Re)write _bisect module DONE
+- buildbot improvements, locks, email on failing tests
+- run pypy-c-nojit in the benchmarks
+- make it possible to run benchmark on branches
+- understand problems of mapdict (Carl Friedrich, Armin)
+- rewrite ctypes to use _ffi
+- fix the remaining bugs on the jit-unroll-loops branch (Armin, Håkan)
+- have an implementation of Python longs with C long longs
+- work in Pyrolog (Sven, Carl Friedrich around)
+
+scheduled discussions:
+
+- hg migration planning
+- understand håkan's branch
+- JIT introduction (still today after lunch)

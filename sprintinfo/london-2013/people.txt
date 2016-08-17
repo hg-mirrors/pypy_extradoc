@@ -1,0 +1,68 @@
+People coming to the London sprint 2013
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available from them.
+
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Carl Friedrich Bolz  25/8-2/9       Lukas
+Lukas Diekmann       lives there
+Romain Guillebert    25/8-1/9       hotel LSE Northumberl.
+Laurence Tratt       lives there
+Edd Barrett          ?              ?
+Armin Rigo           25/8-2/9       hotel LSE Northumberl.
+Richard Emslie       25/8-2/9       some hotel
+Remi Meier           24/8-1/9       ?
+Marko Bencun         24/8-1/9       ?
+Maciej Fijalkowski   25/8-1/9       private
+Manuel Jacob         24/8-3/9       Rami
+Ronan Lamy           25/8-1/9       hotel Strand Continent.
+Antonio Cuni         26/8-5/9       hotel LSE Northumberl.
+Russel Winder        ?              ?
+Rami Chowdhury       ?              ?
+==================== ============== =======================
+
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Michael Foord        ?              ?
+Maciej Fijalkowski   ?              ?
+David Schneider      ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Hakan Ardo           ?              ?
+Samuele Pedroni      ?              ?
+Anders Hammarquist   ?              ?
+Christian Tismer     ?              ?
+Niko Matsakis        ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Stephan Diehl        ?              ?
+Alexander Schremmer  ?              ?
+Anders Chrigstroem   ?              ?
+Eric van Riet Paap   ?              ?
+Holger Krekel        ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thnault     ?              ?
+==================== ============== =====================

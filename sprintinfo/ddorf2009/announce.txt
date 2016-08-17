@@ -1,0 +1,57 @@
+Düsseldorf PyPy sprint November 6 - November 13 2009
+=====================================================
+
+The next PyPy sprint will be held in the Computer Science department of
+Heinrich-Heine Universität Düsseldorf from the 6th to the 13th of
+November 2009. This is a fully public sprint, everyone is welcome to
+join us.
+
+Topics and goals
+----------------
+
+At the sprint we intend to work on the JIT generator in PyPy and on
+applying it to PyPy Python interpreter.
+
+The precise work that will be done is not fixed, as we don't know in
+which state the JIT will be in November.  However, possible areas of
+work might include:
+
+- tweaking the interpreter/objspace to be more JIT-friendly, e.g.
+  instance implementation code, call code
+- if there is interest starting non x86-32 JIT backends
+- trying out existing software to find features where the optimizations
+  of the JIT could be improved
+- improving our benchmarking infrastructure
+
+We will give special priority to topics that "non-core" people find
+interesting (as long as they are somehow JIT-related).
+
+For an introduction of how our JIT-generation process works, please
+refer to our blog:
+
+http://morepypy.blogspot.com/2009/03/jit-bit-of-look-inside.html
+
+There is also a more dense academic paper about the subject:
+
+http://codespeak.net/svn/pypy/extradoc/talk/icooolps2009/bolz-tracing-jit-final.pdf
+
+Location
+--------
+
+The sprint will take place in a seminar room of the computer science
+department.  It is in the building 25.12 of the university campus. For
+travel instructions see
+
+    http://stups.cs.uni-duesseldorf.de/anreise/esbahn.php
+
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing
+list`_ and drop a note about your interests and post any questions.
+More organisational information will be send to that list.  We'll keep a
+list of `people`_ which we'll update (which you can do so yourself if
+you have codespeak commit rights). 
+
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`people`: http://codespeak.net/pypy/extradoc/sprintinfo/ddorf2009/people.txt

@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title{PyPy and its ecosystem}
+\author[Ronan Lamy]{Ronan Lamy\\
+\includegraphics[width=80px]{../img/py-web-new.png}}
+
+\institute{Pycon UK}
+\date{19 September 2014}

@@ -1,0 +1,9 @@
+                                                                                                                        
+Holger is a co-founder of the PyPy project, both a new Python
+implemenation and a framework for implementing dynamic
+languages.  Holger also authors a well known python testing
+framework and is interested in new paradigms for deploying
+networked programs ala Charles Stross' Zone VM.  He founded 
+merlinux in 2004, which organises mostly european specialists 
+to earn money with open-source and Python based collaborations. 
+

@@ -1,0 +1,73 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2006/cfp.html
+DEADLINE: 30th September 2005 (friday)
+
+Title: PyPy Fireworks
+
+Subtitle: Python Stackless JIT javascript .net AJAX 3.0 no-xml inside
+
+
+Section: Hacking 
+
+Talkers: Holger Krekel, Carl Friedrich Bolz, Armin Rigo
+
+Abstract (max 250 letters): 
+
+Some three years and two CCC talks later, we'd like to present 
+a variety of results and features of the PyPy project.  Topics will 
+include lightweight threading, low-level and high level backends, 
+e type-inferencing extension compiler, lazy evaluation and 
+applications of the PyPy translation toolchain, writing custom 
+Garbage Collectors
+
+Description (250-500 words): 
+
+PyPy is a reimplementation of Python written in a restricted subset of
+Python itself, flexible and easy to experiment with. Due to its flexibility
+it is easy to add language features that are sometimes hard to implement in
+more traditional VM implementations. We have implemented a number of such
+features, some of them enhancing the expressiveness and flexibility
+of the language. In addition there are some interesting applications of the
+translation toolchain that go beyond its original design goal of translating
+the Python interpreter to low-level languages.
+
+One of the language features the talk will showcase is the use of  
+OS-independent microthreads. With PyPy we can run millions
+of microthreads, their number limited only by memory.  The scheduling 
+of these threads can be done in various ways.  One of them is to 
+use Oz-like (and Prolog-like) dataflow variables for 
+synchronization. Another one is to explicitly state which 
+threadlet is supposed to run.
+
+Another interesting feature which is not common in other object oriented
+languages is transparent lazy evaluation of functions. 
+
+The translation toolchain has a variety of targets which Restricted Python
+code can be translated to: C, LLVM, CLI/.NET, Javascript (and more to come).
+The Javascript backend can be used to implement AJAX application in Python
+and run them either in Python (for testing purposes) or translate them to
+Javascript and run them in the browser.
+
+We also intend to present some just-in-time efforts. 
+
+Oh, and development of PyPy is actually partly funded by the 
+European Union during the 6th Research Framework programme. 
+
+Statement: We intend to submit a paper (PDF) for the 23C3 proceedings. XXX do we?
+Statement: We intend to submit the slides.
+
+Duration of your talk: 45 minutes + questions 
+
+Language of your talk: english 
+
+Links to background information on the talk: http://codespeak.net/pypy 
+
+Target Group: Advanced Users, Pros 
+
+Resources you need for your talk: digital projector, internet 
+
+Related talks at 23C3 you know of: None
+
+A lecture logo, square format, min. 128x128 pixels (optional): 
+    http://codespeak.net/pypy/img/py-web1.png 
+    (please scale it down a bit :-) 
+

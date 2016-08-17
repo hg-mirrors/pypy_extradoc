@@ -1,0 +1,41 @@
+Alla Ricerca di Prestazioni e di Flessibilità.  PyPy è l'arte di Generare Macchine Virtuali
+-------------------------------------------------------------------------------------------
+
+Vorremmo tutti che il nostro linguaggio dinamico preferito fosse più
+veloce, così da poterlo utilizzare in ancora più occasioni.
+
+Purtroppo, questo richiede un gran lavoro!
+
+Ci deve essere un modo migliore che non scrivere l'ennesimo interprete
+in C o Java per implementare linguaggi dinamici in modo da permettere
+al linguaggio stesso di cambiare e crescere più facilmente.
+
+PyPy è un framework per implementare linguaggi dinamici che accetta
+questa sfida; esso ci permette di implementare questi linguaggi
+scrivendo un semplice interprete in un ricco sottoinsieme di Python;
+questo significa far evolvere il nostro linguaggio richiede uno sforzo
+ragionevole.
+
+Quindi, PyPy genera tutta una serie di macchine virtuali da un unico
+sorgente, e supporta un'ampia gamma di piattaforme differenti, incluse
+C/Posix, Java e .NET.  Questo evita la maggior sorgente di
+frammentazione all'interno di una comunità legata ad un linguaggio
+dinamico, ovvero la necessità di avere implementazioni diverse per
+diverse macchine virtuali.  Significa anche che possiamo riutilizzare
+lo stesso framework ed ottenere gli stessi vantaggi per implementare
+tutta una serie di linguaggi anche molto diversi tra loro, come
+Python, Prolog o Smalltalk.
+
+Il toolchain necessario per generare macchine virtuali si rivela utile
+anche per altri scopi.  Tradizionalmente, per implementare una
+macchina virtuale occorre prendere importanti decisioni nelle
+primissime fasi dello sviluppo, che quindi diventano pervasive
+all'interno dell'intero codice sorgente, rendendo difficile se non
+impossibile cambiarle successivamente.  Sarebbe bello poter
+sperimentare ad esempio diversi garbage collector, ma non se per fare
+ciò è necessario riscrivere tutto o quasi da zero per ognuno di essi.
+Con PyPy, questo non è necessario.
+
+Inoltre, è anche possibile generare automaticamente un compilatore JIT
+per il linguaggio in questione, dimostrando che è possibile ottenere
+un altro grado di flessibilità senza rinunciare alla velocità.

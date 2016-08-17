@@ -1,0 +1,16 @@
+Support a tool like Swig or Boost
+=================================
+
+status:
+
+ - Not started
+
+todo:
+
+ - To make it simpler to integrate C libraries with PyPy, we should
+   support at least one of the wrapper generators that are already in
+   use in the Python community.
+
+expected outcome:
+
+dependencies:

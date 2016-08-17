@@ -1,0 +1,148 @@
+People
+======
+
+ * Antonio
+ * Leonardo
+ * Guido
+ * Maciek
+ * Armin
+ * Michael
+ * Arre
+ * Samuele
+ * Carl Friedrich
+ * Laura
+ * Jacob
+ * Alexandre
+ * Sylvain
+ * Niko
+ * Eric
+
+later
+-----
+
+ * Holger
+
+
+Tasks
+=====
+
+JIT
+---
+
+* "virtual frames" (Samuele, Arre): funfunfun. basic test is working,
+  manually written virtualizable structs can be change within the jit-generated
+  code and the changes are seen from outside. 
+  some more tests pass. easy part of the hard part is about to start.
+  IN-PROGRESS
+
+  - write a small interpreter that shows the performance problems without having
+    to use the full pypy
+
+  - actually implement support for this in the rtyper and the jit...
+
+* have register allocation: IN-PROGRESS: redesigned the
+  backend interface a bit, adapted all the backends to the changes. Michael
+  started completing the PPC backend, but is getting annoyed
+  Armin did more work on register allocation on i386
+
+
+
+py.test and the py-lib
+----------------------
+
+* polish the code and documentation of the py lib, and eventually
+  release it MORE PROGRESS
+
+* integrate api-doc and source-viewer on the py-lib web-page
+  SLOW PROGRESS on rewrite the page generation to produce HTML directly
+  (Guido, Maciek)
+
+* use source-viewer on more code? pypy? IN-PROGRESS
+
+* debian packaging for the py-lib: DONE (need to port changes)
+
+* (provide code search facility)
+
+* detailed (and shrinking) TODO list in py/documentation/TODO.txt
+
+
+interpreter prototypes
+----------------------
+
+* discuss the status of the various prototypes (coordinated by arre?)
+
+* think especially hard about persistence
+
+* discuss fallback possibilities if py.execnet cannot run on pypy-c
+
+* (maybe try the taint object space on a cgi example + write some docs?)
+
+
+Integration and Configuration
+-----------------------------
+
+* actually use the build tool during the sprint: FIXED SOME SMALL THINGS
+
+* think about py-lib and pypy debian packaging
+
+* document in some detail the configuration
+
+* integrate wp9, wp10 work?
+
+* web frontend on the build tool
+
+Other
+-----
+
+* progress on the JavaScript interpreter (Leonardo, Maciek): IN-PROGRESS,
+  the JS intepreter translates. There is now an interactive interpreter.
+  for loops, enough parsing machinery for EcmaTest
+
+* Java backend: lot of random problems fixed, test_class, test_pbc, test_list,
+  test_dict run completely. external functions, test_rdict are next!
+
+* investigate why the annotator fails when doing --faassen with gencli?!
+  (Anto, general wizards around) (same bug than in the build tool)
+
+* discuss refinement interface for external functions SOME PROGRESS: annotation
+  part is mostly done (Maciek,  Michael)
+
+* (make py-lib run on pypy-c) PROGRESS: the compiler problems are fixed
+
+* "shadow tracking" (Carl Friedrich, Samuele), DONE
+
+* progress on the LLVM JIT code generator. PROGRESS: fixing operations of the
+  LLVM codegen (Eric, Armin)
+
+* progress on the translation of the parser branch (Adrien remotely, Sylvain,
+  Michael around)
+
+* add an option to translate.py to give a name to the executable (Alexandre,
+  Carl Friedrich)
+
+
+Report outline writing
+----------------------
+
+ * Guido, Carl Friedrich, Alexandre: WP13 DONE
+ * Guido, Carl Friedrich, Maciek: WP2
+ * Arre, Maciek, Armin, Anto: WP12
+ * Michael, Samuele, Carl Friedrich?: WP6 DONE
+
+
+Discussions during the sprint
+=============================
+
+* eu meeting: thursday 5pm
+  - status and plans for wp6 and wp12
+  - wp9 + wp10 + wp11 discussion
+  - eu-report meeting
+
+* pycon talk discussion
+
+* release plannings: saturday 5pm
+
+* pypy and py-lib debian packaging discussion: thursday morning 11am
+  (Michael, Alexandre, Carl Friedrich, Sylvain)
+
+* there is the idea of doing a game evening friday

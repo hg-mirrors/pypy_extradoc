@@ -1,0 +1,51 @@
+Preliminary plan for WP9 and WP10
+=================================
+
+WP9 Logic Programming and Semantic Web
+--------------------------------------
+
+Motivations:
+   - logic programming is one of the few missing programming paradigm in Python
+   - this way of programming greatly benefits from multiple threads/coroutines and can be
+     simplified using a few extra language constructs
+   - among the domains benifiting most from logic programming are most AI engines
+      (prolog, implementing OWL, SQL like languages)
+
+Tasks:
+
+  - Add hooks to the parser/compiler allowing syntax modifications at runtime (Logilab)
+
+  - Investigate using continuations to implement blocking on undefined Logic variables (DFKI, Logilab)
+
+  - Investigate adding prolog style logic constructs
+
+  - Investigate different search algorithmes to solve logic problems
+
+  - Implement OWL parser/inferer on top of logic constructs (DFKI)
+
+
+
+Milestones:
+
+  - Implement a subset of prolog 
+
+  - OWL parser based on logilab.constraint integrated with rdflib
+
+  - Constraint solving on top of continuations
+
+
+WP10 Aspect Oriented Programming 
+--------------------------------
+
+Motivations:
+  - AOP is a way to describe and implements plugging of software behavior on specific
+    parts of a program
+  - The thunk object space is a  trivial example of applying an aspect to a regular object space 
+
+Tasks:
+
+  - Implement Aspects on AST nodes (using hooks from WP09)
+     - formally describe a node selection/transformation mechanism
+
+
+  

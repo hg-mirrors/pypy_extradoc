@@ -1,0 +1,279 @@
+[1c697e4e251e] {jit-log-noopt-loop
+[i0, i1, p2]
+label(i0, i1, p2, descr=TargetToken(4417159200))
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+guard_nonnull(p2, descr=<ResumeGuardDescr object at 0x106f6e220>)
+guard_class(p2, 4405741656, descr=<ResumeGuardDescr object at 0x106f6e320>)
+i4 = getfield_gc(p2, descr=<FieldS example.Base.inst_value 8>)
+i6 = int_rshift(i4, 2)
+i8 = int_eq(i6, 1)
+guard_false(i8, descr=<ResumeGuardDescr object at 0x106f6e5c8>)
+i10 = int_and(i6, 1)
+i11 = int_is_zero(i10)
+guard_true(i11, descr=<ResumeGuardDescr object at 0x106f6e7c8>)
+p13 = new_with_vtable(4405741656)
+setfield_gc(p13, i6, descr=<FieldS example.Base.inst_value 8>)
+i15 = int_lt(i1, 100)
+guard_true(i15, descr=<ResumeGuardDescr object at 0x106f6ea60>)
+i17 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+label(i0, i17, p13, descr=<Loop-1>)
+[1c697e522d8e] jit-log-noopt-loop}
+[1c697e603dfe] {jit-log-noopt-loop
+[i0, i1, p2]
+label(i0, i3, i4, descr=TargetToken(4417159280))
+    p6 = new_with_vtable(4405741656)
+    setfield_gc(p6, i4, descr=<FieldS example.Base.inst_value 8>)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+guard_nonnull(p6, descr=<ResumeGuardDescr object at 0x106f7b060>) []
+guard_class(p6, 4405741656, descr=<ResumeGuardDescr object at 0x106f7b240>) []
+i8 = getfield_gc(p6, descr=<FieldS example.Base.inst_value 8>)
+i10 = int_rshift(i8, 2)
+i12 = int_eq(i10, 1)
+guard_false(i12, descr=<ResumeGuardDescr object at 0x106f7ba58>) []
+i14 = int_and(i10, 1)
+i15 = int_is_zero(i14)
+guard_true(i15, descr=<ResumeGuardDescr object at 0x106f7c138>) []
+p16 = new_with_vtable(4405741656)
+setfield_gc(p16, i10, descr=<FieldS example.Base.inst_value 8>)
+i18 = int_lt(i3, 100)
+guard_true(i18, descr=<ResumeGuardDescr object at 0x106f7c610>) []
+i20 = int_add(i3, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+jump(i0, i20, p16, descr=<Loop-1>)
+[1c697e622cb2] jit-log-noopt-loop}
+[1c697e6e123c] {jit-log-opt-loop
+# Loop 0 ((no jitdriver.get_printable_location!)) : loop with 27 ops
+[i0, i1, p2]
++97: label(i0, i1, p2, descr=TargetToken(4417159200))
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++104: guard_nonnull_class(p2, 4405741656, descr=<Guard2>) [i1, i0, p2]
++122: i4 = getfield_gc(p2, descr=<FieldS example.Base.inst_value 8>)
++126: i6 = int_rshift(i4, 2)
++130: i8 = int_eq(i6, 1)
+guard_false(i8, descr=<Guard3>) [i6, i1, i0]
++140: i10 = int_and(i6, 1)
++147: i11 = int_is_zero(i10)
+guard_true(i11, descr=<Guard4>) [i6, i1, i0]
++157: i13 = int_lt(i1, 100)
+guard_true(i13, descr=<Guard5>) [i1, i0, i6]
++167: i15 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++171: label(i0, i15, i6, descr=TargetToken(4417159280))
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++171: i16 = int_rshift(i6, 2)
++175: i17 = int_eq(i16, 1)
+guard_false(i17, descr=<Guard6>) [i16, i15, i0]
++185: i18 = int_and(i16, 1)
++192: i19 = int_is_zero(i18)
+guard_true(i19, descr=<Guard7>) [i16, i15, i0]
++202: i20 = int_lt(i15, 100)
+guard_true(i20, descr=<Guard8>) [i15, i0, i16]
++212: i21 = int_add(i15, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++216: jump(i0, i21, i16, descr=TargetToken(4417159280))
++224: --end of the loop--
+[1c697e6fe748] jit-log-opt-loop}
+[1c697e8094f8] {jit-log-noopt-loop
+[i0, i1, p2]
+guard_nonnull(p2, descr=<ResumeGuardDescr object at 0x106fb3e88>)
+guard_class(p2, 4405741512, descr=<ResumeGuardDescr object at 0x106fb3f88>)
+i4 = getfield_gc(p2, descr=<FieldS example.Base.inst_value 8>)
+i6 = int_mul(i4, 3)
+i8 = int_add(i6, 1)
+p10 = new_with_vtable(4405741656)
+setfield_gc(p10, i8, descr=<FieldS example.Base.inst_value 8>)
+i12 = int_lt(i0, 100)
+guard_true(i12, descr=<ResumeGuardDescr object at 0x106fb43d0>)
+i14 = int_add(i0, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+jump(i1, i14, p10, descr=<Loop0>)
+[1c697e817ed0] jit-log-noopt-loop}
+[1c697e8622e8] {jit-log-noopt-loop
+[i0, i1, p2]
+label(i0, i1, i3, descr=TargetToken(4417159920))
+    p2 = new_with_vtable(4405741656)
+    setfield_gc(p2, i3, descr=<FieldS example.Base.inst_value 8>)
+guard_nonnull(p2, descr=<ResumeGuardDescr object at 0x106fc1570>)
+guard_class(p2, 4405741656, descr=<ResumeGuardDescr object at 0x106fc1670>)
+i6 = getfield_gc(p2, descr=<FieldS example.Base.inst_value 8>)
+i8 = int_rshift(i6, 2)
+i10 = int_eq(i8, 1)
+guard_false(i10, descr=<ResumeGuardDescr object at 0x106fc1918>)
+i12 = int_and(i8, 1)
+i13 = int_is_zero(i12)
+guard_true(i13, descr=<ResumeGuardDescr object at 0x106fc1b18>)
+p15 = new_with_vtable(4405741656)
+setfield_gc(p15, i8, descr=<FieldS example.Base.inst_value 8>)
+i17 = int_lt(i1, 100)
+guard_true(i17, descr=<ResumeGuardDescr object at 0x106fc1db0>)
+i19 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+jump(i0, i19, p15, descr=<Loop0>)
+[1c697e88b3e8] jit-log-noopt-loop}
+[1c697e8e996c] {jit-log-opt-bridge
+# bridge out of Guard 2 with 20 ops
+[i0, i1, p2]
++7: guard_nonnull_class(p2, 4405741512, descr=<Guard9>) [i0, i1, p2]
++25: i4 = getfield_gc(p2, descr=<FieldS example.Base.inst_value 8>)
++29: i6 = int_mul(i4, 3)
++33: i8 = int_add(i6, 1)
++37: i10 = int_lt(i0, 100)
+guard_true(i10, descr=<Guard10>) [i0, i1, i8]
++47: i12 = int_add(i0, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++51: label(i1, i12, i8, descr=TargetToken(4417159920))
++51: i14 = int_rshift(i8, 2)
++55: i16 = int_eq(i14, 1)
+guard_false(i16, descr=<Guard11>) [i14, i12, i1]
++65: i18 = int_and(i14, 1)
++72: i19 = int_is_zero(i18)
+guard_true(i19, descr=<Guard12>) [i14, i12, i1]
++82: i21 = int_lt(i12, 100)
+guard_true(i21, descr=<Guard13>) [i12, i1, i14]
++92: i23 = int_add(i12, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++96: jump(i1, i23, i14, descr=TargetToken(4417159280))
++112: --end of the loop--
+[1c697e9012f0] jit-log-opt-bridge}
+[1c697ea674bc] {jit-log-noopt-loop
+[i0, i1, i2]
+p4 = new_with_vtable(4405741512)
+setfield_gc(p4, i0, descr=<FieldS example.Base.inst_value 8>)
+i6 = int_lt(i1, 100)
+guard_true(i6, descr=<ResumeGuardDescr object at 0x107005300>)
+i8 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+jump(i2, i8, p4, descr=<Loop0>)
+[1c697ea70e54] jit-log-noopt-loop}
+[1c697ea9ffa4] {jit-log-noopt-loop
+[i0, i1, p2]
+label(i0, i1, i3, descr=TargetToken(4417160720))
+    p2 = new_with_vtable(4405741512)
+    setfield_gc(p2, i3, descr=<FieldS example.Base.inst_value 8>)
+guard_nonnull(p2, descr=<ResumeGuardDescr object at 0x107010580>)
+guard_class(p2, 4405741512, descr=<ResumeGuardDescr object at 0x107010680>)
+i6 = getfield_gc(p2, descr=<FieldS example.Base.inst_value 8>)
+i8 = int_mul(i6, 3)
+i10 = int_add(i8, 1)
+p12 = new_with_vtable(4405741656)
+setfield_gc(p12, i10, descr=<FieldS example.Base.inst_value 8>)
+i14 = int_lt(i1, 100)
+guard_true(i14, descr=<ResumeGuardDescr object at 0x107010ac8>)
+i16 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+jump(i0, i16, p12, descr=<Loop0>)
+[1c697eab1220] jit-log-noopt-loop}
+[1c697eaffe10] {jit-log-opt-bridge
+# bridge out of Guard 12 with 12 ops
+[i0, i1, i2]
++7: i4 = int_lt(i1, 100)
+guard_true(i4, descr=<Guard14>) [i1, i2, i0]
++17: i6 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++21: label(i2, i6, i0, descr=TargetToken(4417160720))
++21: i8 = int_mul(i0, 3)
++25: i10 = int_add(i8, 1)
++29: i12 = int_lt(i6, 100)
+guard_true(i12, descr=<Guard15>) [i6, i2, i10]
++39: i14 = int_add(i6, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++43: jump(i2, i14, i10, descr=TargetToken(4417159920))
++59: --end of the loop--
+[1c697eb0deb0] jit-log-opt-bridge}
+[1c697eb6cc08] {jit-log-noopt-loop
+[i0, i1, i2]
+p4 = new_with_vtable(4405741512)
+setfield_gc(p4, i0, descr=<FieldS example.Base.inst_value 8>)
+i6 = int_lt(i1, 100)
+guard_true(i6, descr=<ResumeGuardDescr object at 0x10702cf20>)
+i8 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+jump(i2, i8, p4, descr=<Loop0>)
+[1c697eb754fc] jit-log-noopt-loop}
+[1c697eba0930] {jit-log-opt-bridge
+# bridge out of Guard 7 with 5 ops
+[i0, i1, i2]
++7: i4 = int_lt(i1, 100)
+guard_true(i4, descr=<Guard16>) [i1, i2, i0]
++17: i6 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++21: jump(i2, i6, i0, descr=TargetToken(4417160720))
++37: --end of the loop--
+[1c697ebb936c] jit-log-opt-bridge}
+[1c697ec16c6a] {jit-log-noopt-loop
+[i0, i1, i2]
+p4 = new_with_vtable(4405741656)
+setfield_gc(p4, i2, descr=<FieldS example.Base.inst_value 8>)
+p6 = call_pure(ConstClass(ll_int_str__IntegerR_SignedConst_Signed), i1, descr=<Callr 8 i EF=3>)
+guard_no_exception(, descr=<ResumeGuardDescr object at 0x107049600>)
+call(ConstClass(rpython_print_item), p6, descr=<Callv 0 r EF=4>)
+guard_no_exception(, descr=<ResumeGuardDescr object at 0x107049728>)
+i9 = getfield_gc(ConstPtr(ptr8), descr=<FieldS list.length 8>)
+i10 = int_is_true(i9)
+guard_true(i10, descr=<ResumeGuardDescr object at 0x107049908>)
+i12 = getfield_gc(ConstPtr(ptr11), descr=<FieldS list.length 8>)
+i14 = int_add(i12, -1)
+p16 = getfield_gc(ConstPtr(ptr15), descr=<FieldP list.items 16>)
+setarrayitem_gc(p16, i14, 10, descr=<ArrayU 1>)
+i19 = getfield_gc(ConstPtr(ptr18), descr=<FieldS list.length 8>)
+p21 = getfield_gc(ConstPtr(ptr20), descr=<FieldP list.items 16>)
+p23 = call(ConstClass(ll_join_chars_trampoline__v11___simple_call__function_ll), i19, p21, descr=<Callr 8 ir EF=4>)
+guard_no_exception(, descr=<ResumeGuardDescr object at 0x107049d88>)
+call(ConstClass(ll_listdelslice_startonly_trampoline__v20___simple_call__function_ll), ConstPtr(ptr25), 0, descr=<Callv 0 ri EF=4>)
+guard_no_exception(, descr=<ResumeGuardDescr object at 0x107049eb8>)
+i29 = call_may_force(ConstClass(ll_os.ll_os_write), 1, p23, descr=<Calli 8 ir EF=6>)
+guard_not_forced(, descr=<ResumeGuardForcedDescr object at 0x107049fe8>)
+guard_no_exception(, descr=<ResumeGuardDescr object at 0x10704a0b8>)
+i31 = int_add(i1, 1)
+i33 = int_and(i31, 1)
+i34 = int_is_zero(i33)
+guard_true(i34, descr=<ResumeGuardDescr object at 0x10704a338>)
+p36 = new_with_vtable(4405741656)
+setfield_gc(p36, i31, descr=<FieldS example.Base.inst_value 8>)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+i38 = same_as(1)
+jump(i31, i38, p36, descr=<Loop0>)
+[1c697ec3287c] jit-log-noopt-loop}
+[1c697ec91ba8] {jit-log-opt-bridge
+# bridge out of Guard 8 with 23 ops
+[i0, i1, i2]
++7: p4 = call(ConstClass(ll_int_str__IntegerR_SignedConst_Signed), i1, descr=<Callr 8 i EF=3>)
++38: guard_no_exception(, descr=<Guard22>) [i1, p4]
++58: call(ConstClass(rpython_print_item), p4, descr=<Callv 0 r EF=4>)
++85: guard_no_exception(, descr=<Guard23>) [i1]
++105: i7 = getfield_gc(ConstPtr(ptr6), descr=<FieldS list.length 8>)
++118: i8 = int_is_true(i7)
+guard_true(i8, descr=<Guard24>) [i1]
++128: i10 = int_add(i7, -1)
++135: p12 = getfield_gc(ConstPtr(ptr11), descr=<FieldP list.items 16>)
++148: setarrayitem_gc(p12, i10, 10, descr=<ArrayU 1>)
++154: p15 = call(ConstClass(ll_join_chars_trampoline__v11___simple_call__function_ll), i7, p12, descr=<Callr 8 ir EF=4>)
++181: guard_no_exception(, descr=<Guard25>) [i1, p15]
++201: call(ConstClass(ll_listdelslice_startonly_trampoline__v20___simple_call__function_ll), ConstPtr(ptr17), 0, descr=<Callv 0 ri EF=4>)
++250: guard_no_exception(, descr=<Guard26>) [i1, p15]
++270: i21 = call_may_force(ConstClass(ll_os.ll_os_write), 1, p15, descr=<Calli 8 ir EF=6>)
+guard_not_forced(, descr=<Guard21>) [i1]
++320: guard_no_exception(, descr=<Guard27>) [i1]
++340: i23 = int_add(i1, 1)
++351: i25 = int_and(i23, 1)
++358: i26 = int_is_zero(i25)
+guard_true(i26, descr=<Guard28>) [i23]
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
++368: jump(i23, 1, i23, descr=TargetToken(4417159920))
++396: --end of the loop--
+[1c697eca70c2] jit-log-opt-bridge}
+[1c697ecf5a40] {jit-log-noopt-loop
+[i0, i1, i2]
+i4 = int_lt(i1, 100)
+guard_true(i4, descr=<ResumeGuardDescr object at 0x107078038>)
+i6 = int_add(i1, 1)
+debug_merge_point(0, 0, '(no jitdriver.get_printable_location!)')
+p8 = same_as(ConstPtr(ptr7))
+jump(i2, i6, p8, descr=<Loop0>)
+[1c697ecfb8a4] jit-log-noopt-loop}
+[1c697ed186d0] {jit-log-noopt-loop
+[i0, i1, p2]
+label(i0, i1, descr=TargetToken(4417161920))
+    p2 = same_as(ConstPtr(ptr3))
+guard_is

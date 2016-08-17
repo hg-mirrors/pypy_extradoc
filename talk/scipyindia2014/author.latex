@@ -1,0 +1,9 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy and the scientific stack]{PyPy and the scientific stack}
+\author[rguillebert]
+{Romain Guillebert\\
+\includegraphics[width=80px]{../img/py-web-new.png}}
+
+\institute{Scipy India 2014}
+\date{December 7th, 2014}

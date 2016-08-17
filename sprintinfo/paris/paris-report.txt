@@ -1,0 +1,238 @@
+Paris sprint report 2005-10-10-2005-10-16
+Authors: Michael Hudson, Carl Friedrich Bolz, Armin Rigo
+
+Participants:
+
+Ludovic Aubry        
+Adrien Di Mascio     
+Jacob Hallen          
+Laura Creighton      
+Beatrice Duering      
+Armin Rigo            
+Samuele Pedroni       
+Anders Chrigstroem    
+Holger Krekel          
+Lene Wagner           
+Michael Hudson        
+Carl Friedrich Bolz  
+Bert Freudenberg     
+Anders Lehmann       
+Boris Feigin	     
+Amaury Forgeot d'Arc 
+Andrew Thompson      
+Christian Tismer     
+Valentino Volonghi   
+Aurelien Campeas
+Stephan Busemann
+Nicholas Chauvat
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+The largest PyPy sprint yet (in terms of attendants) where done in the offices of Logilab in Paris 
+2005-10-16-2005-10-16.
+
+Possible task on the sprint was:
+
+RTyper tasks:
+- fixed size lists
+- poor-man type erasure for rlist and rdict
+
+- rtyping of classes/instances/methods for target languages with direct/prevalent OO/class support:
+  devise a low-level model variation for this case
+
+Annotator related tasks:
+
+- support the notion of separate/external functions (and classes/PBCs)
+  in preparation for separate compilations
+
+JIT related work:
+- (DONE) support addresses in the backends
+- an ll interpreter written in RPython
+- Saving ll graphs plus a loader written in RPython
+
+- Start thinking/experimenting with JIT generation at translation time
+
+- (DONE the starting) start a genasm back-end
+
+Threading/concurrency:
+- release the GIL around system calls
+- understand and possibly fix where the overhead, when threads are enabled, comes from
+
+- (DONE) generating (single-threaded) stackless C code
+
+Implementation/translation:
+- (somewhat DONE) stack overflow detection (needed to be able to run many compliancy tests)
+- try more interp. level optimisations (dicts with string keys, more agressive use of fastcall*...)
+
+- compute correct max stack size in compiler (?)
+- cleanup our multiple compiler situation: remove
+  testcompiler, fix the tests to work on CPython 2.3 too,
+  decide what to put in lib-python/modified-2.4.1/compiler --
+  stablecompiler or astcompiler? -- and submit it back to
+  CPython.  Clean up pyparser/pythonutil.py.
+
+- (socket module, PEP302)
+
+GC related tasks:
+- look into implementing weakrefs
+- Boehm: fix the x=range(10**7) issue
+- (improve refcounting)
+- (passes toward integrating other GCs, rpython/memory)
+
+Refactorings/cleanups:
+- cbuild/translator.Translator (use SCons?, use/generalize TranslationDriver)
+- PyPy option handling unification, passing py.py options to targetpypy*
+- inline (transforms in general) 
+
+- (DONE) genc: producing multiple .h/.c files tracking Python code origin
+
+Larger whole projects:
+
+- Javascript frontend
+- support for developing C extensions for CPython with RPython code
+- writing a sort of flow object space for the llinterpreter
+  to experiment with JIT work
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Activities during the sprint  - day-to-day:
+
+Monday-Wednesday:
+The morning (once everyone had found their way/fought with the
+metro/...) began with a tutorial for the newcomers and two discussion
+groups -- one on implementing stackless-like functionality and one
+titled "towards a translatable llinterpreter".
+
+After lunch, everyone met to hear the results of the discussion groups
+and decide what to do next.  The stackless group's conclusion was
+"it'll be easy!" :) The llinterp group concluded "it might be doable".
+More details can be found in svn at
+
+http://codespeak.net/svn/pypy/extradoc/sprintinfo/paris-2005-stackless-discussion.txt
+http://codespeak.net/svn/pypy/extradoc/sprintinfo/paris/tllinterpreter_planning.txt
+
+(consistency?  We're researchers!)
+
+Christian (he didn't get a choice), Valentino, Anders (L), Adrien,
+Armin and Amaury became the stackless working group and by Tuesday
+lunchtime had progressed via an unlikely sounding six-person-pair
+programming methodology involving a beamer to a fully stackless C
+translation, albeit with limited functionality visible even to
+RPython.
+
+Samuele, Bert, Arre, Aurelien, and Boris became what was ultimately
+known as the 'ootype group' working on a variation of the rtyper more
+suited to translation to a language with a richer type system than C
+(classes, lists, some vague notion of type safety, etc) such as Java,
+Smalltalk, ...
+
+Michael and Andrew worked on a backend that emits machine code -- in
+particular ppc32 machine code -- directly.  By the end of Monday a toy
+function doing some simple integer calculations had been translated
+but on Tuesday restructuring towards re-use (and comprehensibility)
+became the main goal.  Oh, and not assuming an infinite supply of
+registers...
+
+Carl and Holger started implementing Addresses in the C backend to
+prepare for the coming llinterpreter work, finishing on Monday
+evening.  Carl then worked on data structures needed for a
+translatable llinterpreter.
+
+Thursday:
+Consortium meeting + breakday
+
+Friday-Sunday:
+The stackless group reported good progress, having compiled a working
+pypy-c with stackless support and implemented stack overflow detection
+for non-stackless builds.  Unfortunately for the stackless builds,
+several CPOython tests expect infinite recursion to result in an error
+-- and do so fairly quickly, i.e. in less time than it takes to fill
+the entire heap with stack frames.  This groups work is basically
+done for this sprint, although Anders and Christian are going to work
+on compliancy testing with the new pypy-c.  While waiting for builds
+targeting compliancy tests, they are also going to investigate
+reorganizing code generation to improve locality.
+
+The ootype group is also progressing well.  The RTyper has mostly been
+refactored to be independent of the targeted type system and work is
+continuing on implementing the new OOType type system alongside the
+existing LLType target.  This group will be continuing, although with
+somehwat different membership -- Michael joining and half of each of
+Samuele and Arre leaving.
+
+Michael and Andrews work on the PPC backend has progressed to the
+point where essentially any function that only manipulates integers
+can be translated (with an exceedingly stupid register allocator).
+Further work depends to a large extent on the llinterpreter work (see
+below) so this work will wait until after the sprint.  Andrew is
+moving to work on implementing a Numeric-a-like for PyPy, together
+with Ludovic.
+
+The LLInterpreter grouplette (Carl and 0.5 Armins and a little Holger)
+did not produce much code since there are many decisions to be made
+and the implications of these decisions are not understood.  A
+discussion group of Carl, Armin, Samuele, Holger, Christian and Arre
+will try to shine lights into these shadows, and report after lunch.
+
+Valentino and Amaury are going to implement the socket module.  This
+is a step towards allowing Valentino to run Twisted on PyPy and thus
+make him very happy.
+
+This sprint is working in quite a different way to previous sprints --
+there is lots of discussion which isnt new, but the farming off of
+discussion to groups of 5-6 people who present a report to the larger
+group is a novelty and seems to be working well (15+ people is too
+many for a focussed technical discussion).  Another difference is a
+less strict emphasis on "pair" programming -- or, if you like, we are
+still pair programming but we have redefined "pair" to mean a group of
+two to six programmers :)
+
+On Friday morning another discussion group was founded and discussed -
+again - the state and future of the l3interpreter (l3 = lll = low low
+level), that is the translatable llinterpreter. The results were
+presented after lunch, together with some ideas about the JIT.
+Afterwards Carl gave a short talk on the results of his summer of code
+project on writing garbage collectors in RPython.
+
+Boris, Michael, Bert with help from Samuele spent the whole rest of the
+sprint working on the many open issues related to ootyping. Simple
+programs can now be ootyped, including inheritance, methods, instance
+attributes and right at the end some support for prebuilt instances. In
+addition they extended the llinterpreter to understand the ootype
+operations as well (we were worried that our names were starting to make
+sense).
+
+Armin spent the last days fixing different cases that crashed pypy-c
+which he found by running the CPython compliancy tests. In addition he
+helped various people to find their way around the codebase.
+
+Adrien and Arre worked on fixing compiler and parser issues that led to
+wrong line numbers and different issues that popped up.
+
+Ludovic and Adrien experimented with rewriting parts of the Numeric
+package in RPython.
+
+Valentino and Amaury continued on implementing the socket module which
+turned out (as expected) to be a platform dependent nightmare. They have
+a kind of complete socket module now, but some functions cannot yet be
+translated.
+
+Christian worked on an experiment to reorder functions in the created C
+code to improve code locality.
+
+Finally, after a week of srapped attemps, much headscratching and heated
+discussion there was some code written for the l3interpreter. On
+Saturday afternoon Holger and Carl wrote the basic model and managed to
+interpret interesting functions like x + 4. On Sunday Samuele and Carl
+continued and started on a graph converter that takes ll graphs and
+transforms into the form the l3interpreter expects.
+
+On Saturday afternoon there was a planning meeting where the actions of
+the following weeks were discussed. The EU-report writing was
+distributed to the different consortium members.
+Furthermore we discussed the various conference and sprints planned for autumn 2005
+and spring 2006.
+
+All in all it was a very productive sprint but of course we all have to
+recover for two weeks now.
+

@@ -1,0 +1,689 @@
+
+\documentclass{sigplanconf}
+
+% The following \documentclass options may be useful:
+
+% preprint      Remove this option only once the paper is in final form.
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% authoryear    To obtain author/year citation style instead of numeric.
+\synctex=-1
+
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Keine "Schusterjungen"
+\clubpenalty = 10000
+% Keine "Hurenkinder"
+\widowpenalty = 10000 \displaywidowpenalty = 10000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% listings
+\usepackage{float}
+\floatstyle{ruled}
+\newfloat{code}{tbp}{loa}
+\providecommand{\codename}{Listing}
+\floatname{code}{\protect\codename}
+
+
+% nice listings
+\usepackage{xcolor}
+\usepackage{newverbs}
+
+\usepackage{color}
+\definecolor{verylightgray}{rgb}{0.93,0.93,0.93}
+\definecolor{darkblue}{rgb}{0.2,0.2,0.6}
+\definecolor{commentgreen}{rgb}{0.25,0.5,0.37}
+\usepackage{letltxmacro}
+
+\usepackage{listings}
+
+\makeatletter
+\LetLtxMacro{\oldlstinline}{\lstinline}
+
+\renewcommand\lstinline[1][]{%
+  \Collectverb{\@@myverb}%
+}
+
+\def\@@myverb#1{%
+    \begingroup
+    \fboxsep=0.2em
+    \colorbox{verylightgray}{\oldlstinline|#1|}%
+    \endgroup
+}
+\makeatother
+
+
+\lstset{backgroundcolor={\color{verylightgray}},
+  basicstyle={\scriptsize\ttfamily},
+  commentstyle={\ttfamily\color{commentgreen}},
+  keywordstyle={\bfseries\color{darkblue}},
+  morecomment={[l]{//}},
+  tabsize=4,
+  morekeywords={foreach,in,def,type,dynamic,Int,
+    Boolean,infer,void,super,if,boolean,int,else,
+    while,do,extends,class,assert,for,switch,case,
+    private,protected,public,const,final,static,
+    interface,new,true,false,null,return}}
+\renewcommand{\lstlistingname}{Listing}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+\newcommand{\mynote}[2]{%
+  \textcolor{red}{%
+    \fbox{\bfseries\sffamily\scriptsize#1}%
+    {\small$\blacktriangleright$\textsf{\emph{#2}}$\blacktriangleleft$}%
+  }%
+}
+
+\newcommand\cfbolz[1]{\mynote{Carl Friedrich}{#1}}
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\conferenceinfo{ICOOOLPS'14}{July 28 2014, Uppsala, Sweden}
+\copyrightyear{2014}
+\copyrightdata{978-1-4503-2914-9/14/07}
+\doi{2633301.2633305}
+
+% Uncomment one of the following two, if you are not going for the
+% traditional copyright transfer agreement.
+
+%\exclusivelicense                % ACM gets exclusive license to publish,
+                                  % you retain copyright
+
+%\permissiontopublish             % ACM gets nonexclusive license to publish
+                                  % (paid open-access papers,
+                                  % short abstracts)
+
+%% \titlebanner{banner above paper title}        % These are ignored unless
+%% \preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{A Way Forward in Parallelising Dynamic Languages}
+%\subtitle{Position Paper, ICOOOLPS'14}
+
+\authorinfo{Remigius Meier}
+           {Department of Computer Science\\ ETH Zürich, Switzerland}
+           {remi.meier@inf.ethz.ch}
+\authorinfo{Armin Rigo}
+           {www.pypy.org}
+           {arigo@tunes.org}
+
+\maketitle
+
+\begin{abstract}
+  Dynamic languages became very popular in recent years. At some
+  point, the need for concurrency arose, and many of them made the
+  choice to use a single global interpreter lock (GIL) to synchronise
+  the interpreter in a multithreading scenario. This choice, however,
+  makes it impossible to actually run code in parallel.
+
+  Here we want to compare different approaches to replacing the GIL
+  with a technology that allows parallel execution. We look at
+  fine-grained locking, shared-nothing, and transactional memory (TM)
+  approaches. We argue that software-based TM systems are the most
+  promising, especially since they also enable the introduction of
+  large, parallelisable atomic blocks as a better synchronisation
+  mechanism in the language.
+\end{abstract}
+
+%\category{CR-number}{subcategory}{third-level}
+
+% general terms are not compulsory anymore,
+% you may leave them out
+%% \terms
+%% term1, term2
+
+\keywords
+transactional memory, dynamic languages, parallelism, global interpreter lock
+
+\section{Introduction}
+In a world where computers get more and more cores and single-thread
+performance increases less and less every year, many dynamic languages
+have a problem. While there is certainly a lot of popularity around
+languages like Python and Ruby, their ability to make use of multiple
+cores is somewhat limited. For ease of implementation, they chose to
+use a single, global interpreter lock (GIL) to synchronise the
+execution of code in multiple threads. While this is a
+straight-forward way to eliminate synchronisation issues in the
+interpreter, it prevents parallel execution. Code executed in multiple
+threads will be serialised over this GIL so that only one thread can
+execute at a time.
+
+There exist several solutions and workarounds to remove or avoid the
+GIL in order to benefit from multiple cores. We are going to discuss
+several of them and try to find the best way forward. The first
+approach uses fine-grained locking to replace the single GIL. Then
+there are shared-nothing models that use for example multiple
+processes with multiple interpreters and explicit message
+passing. Finally, one can also directly replace the GIL with
+transactional memory (TM), either software-based (STM) or
+hardware-based (HTM).
+
+The approach that wins in the end should perform similarly for
+single-threaded execution as compared to the GIL and be able to
+execute code in parallel on multiple cores. Furthermore, we will also
+take into account the compatibility with existing code that may already use
+threads for concurrency, as well as the changes that are required to
+the interpreter itself.
+
+These requirements are not easy to meet. The author's position is that
+STM provides the best way forward. While STM currently has a big
+performance problem, it gets more points in the other categories. We
+think that it is the only solution that also provides a better
+synchronisation mechanism to the application in the form of
+parallelisable atomic blocks.  In the following section, we try to
+present a balanced view of the compared approaches.
+
+
+\section{Discussion}
+
+In this section we first explain the motivation for using a GIL and
+then examine different approaches to remove or avoid it -- highlighting
+their advantages and disadvantages.
+
+
+\subsection{Why is there a GIL?}
+The GIL is a very simple synchronisation mechanism for supporting
+multithreading in an interpreter. The basic guarantee is that the GIL
+may only be released in between bytecode instructions\footnote{This
+also applies to Abstract Syntax Tree (AST) interpreters, where the GIL
+may only be released between interpreting two AST nodes.  We talk about
+``bytecode instructions'' in a general way as a basic step in the
+interpreter.}.  The interpreter
+can thus rely on complete isolation and atomicity for the
+instructions' execution. Also, accesses to data structures like
+dictionaries and lists happen atomically and do not need additional
+protection from data races when shared between threads.
+
+The GIL also provides the application with a sequential consistency
+model~\cite{lamport79}. This can be very valuable as it means less
+surprises for the programmer. For example in Table~\ref{tab:seq_cons},
+the programmer can expect the critical section to only be entered by
+one thread.  On the other hand, if the model allowed to buffer the
+writes, both threads may enter the critical section at the same time.
+
+\begin{table}[!ht]
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      Thread 1                      & Thread 2                      \\
+      \hline
+      \multicolumn{2}{|c|}{\texttt{A = B = 0}}                      \\
+      \hline
+      \texttt{A = 1}                & \texttt{B = 1}                \\
+      \texttt{if B == 0:}           & \texttt{if A == 0:}           \\
+      \multicolumn{2}{|c|}{only one thread enters here}             \\
+      \multicolumn{2}{|c|}{(e.g.\ critical section)}             \\
+      \hline
+    \end{tabular}
+    \caption{Critical section with a sequential consistency model.}
+    \label{tab:seq_cons}
+  \end{center}
+\end{table}
+
+As a consequence, applications can rely on certain operations to be
+atomic and that they will always be executed in the order in which
+they appear in the code. While depending on this may not always be a
+good idea, it is done in practice. A GIL-replacement should therefore
+uphold these guarantees, while preferably also be as easily
+implementable as a GIL for the interpreter. The latter can be
+especially important since many of these languages are developed and
+maintained by very large open-source communities, which are not easy
+to coordinate.
+
+The GIL also allows for easy integration with external C libraries that
+may not be thread-safe. For the duration of the calls, we
+simply do not release the GIL. External libraries that are explicitly
+thread-safe can voluntarily release the GIL themselves in order to
+still provide some parallelism. This is done for example for
+potentially long I/O operations. Consequently, I/O-bound,
+multithreaded applications can actually parallelise to some
+degree. Again, a potential solution should be able to integrate with
+external libraries with similar ease. We will however focus our
+argumentation more on running code in the interpreted language in
+parallel, not the external C code.
+
+Since the GIL is mostly an implementation detail of the interpreter,
+it is not exposed to the application running on top of it. To
+synchronise memory accesses in applications using threads, the
+state-of-the-art still means explicit locking everywhere. It is
+known that using locks for synchronisation can be hard at
+times~\cite{christopher10,victor11,shan08}. They are non-composable,
+have overhead, may deadlock, limit scalability, and add to the overall
+complexity of the program logic. For a better parallel programming
+model for dynamic languages, we propose another, well-known
+synchronisation mechanism called \emph{atomic
+  blocks}~\cite{tim03,tim05}. This is also suggested by
+\cite{christopher10,victor11} as an easier mechanism than locks.
+
+Atomic blocks are composable, deadlock-free, higher-level and expose
+useful atomicity and isolation guarantees to the application for a
+series of instructions. Interpreters using a GIL can simply guarantee
+that the GIL is not released during the execution of the atomic
+block. Of course, this still means that no two atomic blocks can
+execute in parallel or even concurrently.  Potential solutions are
+preferable if they provide a good way to implement atomic blocks
+(or another, comparable synchronisation mechanism) that
+are also able to be executed in parallel.
+
+
+
+\begin{table*}[ht]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+    & \textbf{GIL} & \textbf{Fine-grained locking}
+    & \textbf{Shared-nothing} & \textbf{HTM} & \textbf{STM}\\
+    \hline
+    Performance (single threaded) & ++   & +  & ++   & ++ & -{-} \\
+    \hline
+    Performance (multithreaded)   & -{-} & +  & +    & +  & +    \\
+    \hline
+    Existing applications         & ++   & ++ & -{-} & ++ & ++   \\
+    \hline
+    Better synchronisation        & o    & o  & +    & o  & ++   \\
+    \hline
+    Implementation                & ++   & -  & ++   & ++ & ++   \\
+    \hline
+    External libraries            & ++   & ++ & ++   & ++ & ++   \\
+    \hline
+  \end{tabular}
+  \caption{Comparison between the approaches (-{-}/-/o/+/++)}
+  \label{tab:comparison}
+\end{table*}
+
+
+
+\subsection{Potential Solutions}
+\label{sec:pot_solutions}
+
+For the discussion, we define a set of criteria to evaluate the
+potential solutions for removing or avoiding the GIL and its
+limitations:
+
+\begin{description}
+\item[Performance:] How much does the approach impact performance
+  on a single thread
+  and how much on multiple threads? Can it make use of parallelism?
+\item[Existing applications:] How big are the changes required to
+  integrate with and parallelise existing applications?
+\item[Better synchronisation:] Does the approach enable better,
+  parallelisable synchronisation mechanisms for applications
+  (e.g.\ atomic blocks)?  Many synchronisation mechanisms can be built on
+  top of all solutions (e.g.\  message passing, monitors). We look for mechanisms
+  that are directly enabled by the contending approaches.
+\item[Implementation:] How difficult is it to implement the approach
+  in the interpreter?
+\item[External libraries:] Does the approach allow for easy
+  integration of external libraries?
+\end{description}
+
+
+\subsubsection{Fine-Grained Locking}
+
+The first obvious candidate to replace the GIL is to use multiple
+locks instead of a single global lock. By refining the granularity of
+the locking approach, we gain the ability to run code that does not
+access the same objects in parallel. What we lose instead is the
+simplicity of the GIL approach. With every additional lock, the
+likeliness of deadlocks grows, as well as the overhead that acquiring
+and releasing locks produces. The former means that sometimes it is
+necessary to fall back to less fine-grained locking, preventing some
+potential parallelism in order to keep the complexity manageable.
+The latter means that we lose a bit of performance compared to the
+GIL, which requires much less acquire-release operations.
+
+Jython~\cite{webjython} is one project that implements an
+interpreter for Python on the Java Virtual Machine (JVM) and
+that uses fine-grained locking\footnote{The performance impact of
+fine-grained locking is milder on the JVM than it would be in a typical piece
+of C code; see e.g.~\cite{biased}.} to correctly synchronise the
+interpreter. For a language like Python, one needs quite a few,
+carefully placed locks -- every dictionary, list, instance, or mutable
+object in general needs a lock. Compared to e.g.\ Java, object
+attributes are backed by a dictionary. Accesses to it must be
+synchronised because the interpreter could crash otherwise.  Since
+there is no central location for all these locks, the
+complexity of the implementation is quite a bit larger compared to
+using a GIL. Integrating external, non-thread-safe libraries should
+however be very simple too. One can simply use one lock per library
+to avoid this issue.
+
+In the end, fine-grained locking can transparently replace the GIL and
+therefore parallelise existing applications, generally without any
+changes. An implementation has to follow the GIL semantics very
+closely, otherwise it may expose some latent data races in existing
+applications which are just not exposed with a GIL\footnote{There are
+  rare cases where not having atomic bytecodes actually changes the
+  semantics. E.g.\ in Jython, \texttt{dict1.update(dict2)} is not
+  atomic: it first reads data from \texttt{dict2} with \texttt{dict2}'s
+  lock, and then puts it into \texttt{dict1} with \texttt{dict1}'s
+  lock. A lot can happen in-between.}. This approach does however not
+provide a better parallelising synchronisation mechanism to the
+application and still requires explicit locking in the application.
+
+
+
+\subsubsection{Shared-Nothing}
+
+There are also approaches that work around the GIL instead of trying
+to replace it. If an application can be split into completely
+independent parts that only very rarely need to share something, or
+only do so via an external program like a database, then it is
+sensible to have one GIL per independent part. At the extreme, there
+are applications that parallelise perfectly simply by running
+independent processes; some web servers and some numeric computations
+do.
+
+We will consider here a slightly more general approach: the
+\emph{multiprocessing}~\cite{multiprocessing}
+module of Python. In essence, it uses process-forking to provide the
+application with multiple interpreters that can run in parallel.
+Communication is then done explicitly through pipes.\footnote{There
+are multiple alternative designs like e.g.\ actors or tuple spaces.
+Since they are similar and do not replace the GIL directly, we
+focus on the example of \emph{multiprocessing}.}
+
+The model of explicit communication is sometimes seen as a superior
+way to synchronise concurrent applications because of its explicitness.
+However, not every application fits well into this model and its
+applicability is therefore limited. Performance is good as
+long as the application does not need to communicate a lot, because
+inter-process communication is relatively expensive. Also the
+implementation of this approach is very cheap since one can
+actually take an unmodified GIL-supported interpreter and run
+several of them in parallel. That way, we also inherit the
+easy integration of external libraries without any changes.
+
+
+\subsubsection{Transactional Memory}
+Transactional memory (TM) can be used as a direct replacement for a
+single global lock. Transactions provide the same atomicity and
+isolation guarantees as the GIL provides for the execution of bytecode
+instructions. So instead of acquiring and releasing the GIL between
+these instructions, this approach runs the protected instructions
+inside transactions.
+
+TM can be implemented in software (STM) or in hardware (HTM). There
+are also hybrid approaches, which combine the two. We count these
+hybrid approaches as STM, since they usually provide the same
+capabilities as software-only approaches but with different
+performance characteristics. We will now first look at HTM, which
+recently gained a lot of popularity by its introduction in common
+desktop CPUs from Intel (Haswell generation)~\cite{odaira14,leis14}.
+
+\paragraph{HTM} provides us with transactions like any TM system does.
+It can be used as a direct replacement for the GIL~\cite{nicholas06,odaira14,fuad10}. However, as is
+common with hardware-only solutions, there are quite a few limitations
+that can not be lifted easily. For this comparison, we look at the
+implementation of Intel in recent Haswell generation CPUs.
+
+HTM in these CPUs works on the level of caches. This has a few
+consequences like false-sharing on the cache-line level, and most
+importantly it limits the amount of memory that can be accessed within
+a transaction. This transaction-length limitation makes it necessary
+to have a fallback in place in case this limit is reached. In recent
+attempts, the usual fallback is the GIL~\cite{odaira14,fuad10}. In our
+experiments, the current generation of HTM proved to be very fragile
+and thus needing the fallback very often. Consequently, scalability
+suffered a lot from this.
+
+The performance of HTM is pretty good as it does not introduce much
+overhead ($<40\%$~\cite{odaira14}). And it can transparently
+parallelise existing applications to some degree. The implementation
+is very straight-forward because it directly replaces the GIL in a
+central place. HTM is also directly compatible with any external
+library that needs to be integrated and synchronised for use in
+multiple threads. The one thing that is missing is support for a
+better synchronisation mechanism for the application. It is not
+reasonable in general to expose the hardware-transactions to the
+application in the form of atomic blocks, because doing so would
+require the system to support much longer transactions.
+
+%% - false-sharing on cache-line level\\
+%% - limited capacity (caches, undocumented)\\
+%% - random aborts (haswell)\\
+%% - generally: transaction-length limited (no atomic blocks)
+
+\paragraph{STM} provides all the same benefits as HTM except for its
+performance.  It is not unusual for the overhead introduced by STM to
+be between 100\% to even 1000\% ~\cite{cascaval08,drago11}. While STM
+systems often scale very well to a big number of threads and
+eventually overtake the single-threaded execution, they often provide
+no benefits at all for low numbers of threads (1-8). There are some
+attempts ~\cite{warmhoff13,spear09} that can reduce the overhead a lot,
+but scale badly or only for certain workloads. Often the benefits
+on more than one thread are too small in real world applications.
+
+However, STM compared to HTM does not suffer from the same restricting
+limitations. Transactions can in principle be arbitrarily long.  This makes it
+possible to expose transactions to the application in the
+form of atomic blocks -- thereby attacking the issues
+of parallelisation and synchronisation in a unified way. While many
+synchronisation mechanisms can be bolted on top of any GIL replacement,
+this is the only approach that directly enables a better, parallelising
+synchronisation mechanism than locks.  We think this is a very
+important point because it not only gives dynamic languages the
+ability to parallelise (already commonplace in most other languages),
+but also pushes parallel programming forward in a way that other
+approaches cannot. Together with sequential consistency, it provides an
+environment for parallel applications that has much less surprises than
+e.g.\ Java or C\#.
+
+On the implementation level,
+while one can argue that STM requires the insertion of read and write
+barriers in the whole interpreter, this can be done automatically and
+locally by a program transformation~\cite{felber07}. There are attempts
+to do the same for fine-grained locking~\cite{bill06} but they require
+a whole program analysis since locks are inherently non-composable
+--- and their effectiveness is doubtful in our use case,
+since we execute bytecode instructions in any order defined by a
+script only known at runtime. This makes it close to impossible to
+order locks consistently or to know in advance which locks a
+transaction will need.
+
+%% - overhead (100-1000\%) (barrier reference resolution, kills performance on low \#cpu)
+%% (FastLane: low overhead, not much gain)\\
+%% - unlimited transaction length (easy atomic blocks)
+
+
+
+\section{The Way Forward}
+
+
+Following the above argumentation for each approach, we assembled a
+general overview in Table \ref{tab:comparison}. The points were assigned
+according to the criteria described in \ref{sec:pot_solutions}. Since
+the criteria are defined intuitively, there are no formal justifications
+for the number of points. The reader is thus advised to take the result
+with a grain of salt and form their own opinion.
+
+The general picture is everything else than clear. It looks like HTM
+may be a good solution to replace the GIL in the near future. Current
+implementations are however far too limiting, not widely available,
+and do not provide good scaling.
+
+Allowing for parallel execution just means that dynamic languages
+catch up to all other languages that already provide real
+parallelism. This is why we think that only the STM approach is a
+viable solution in the long-term. It unifies both, the simple memory
+model (sequential consistency) and the synchronisation of memory accesses
+using composable atomic blocks. It is not \emph{just} a simple GIL
+replacement.
+
+Unfortunately, STM has a big performance problem, which currently
+makes it lose this comparison. Particularly, for
+our use case there is not much static information available since we
+are executing a program only known at runtime. Additionally, replacing
+the GIL means running every part of the application in transactions,
+so there is not much code that can run outside and that can be
+optimised better. The performance of the TM system is vital.
+
+One way to get more performance is to develop STM systems that make
+better use of low-level features in existing OS kernels.  We are
+currently working on an STM system that makes use of several such
+features like virtual memory and memory segmentation.  We further
+tailor the system to the discussed use case, which gives us an
+advantage over other STM systems that try to be more general or
+simply focus on other use cases. With this
+approach, initial results suggest that we can keep the overhead of STM
+well below 50\%. A hybrid TM system, which also uses HTM to accelerate
+certain tasks, looks like a very promising direction of research
+too.
+
+We think that further work to reduce the overhead of STM is
+very worthwhile. In fact, considering some analogies that have been
+drawn between garbage collection and transactional memory~\cite{dan07},
+we think that it is worthwhile to focus the STM research more
+specifically onto the context shown in this paper -- for use in
+implementations of high-level languages, rather than as a tool
+directly used by the programmer.
+
+
+%% possible solution:\\
+%% - use virtual memory paging to somehow lower the STM overhead\\
+%% - tight integration with GC and jit?
+
+
+%% \appendix
+%% \section{Appendix Title}
+
+%% This is the text of the appendix, if you need one.
+
+\acks
+We would like to thank Maciej Fijałkowski and Carl Friedrich Bolz for
+their valuable inputs and the many fruitful discussions.
+
+% We recommend abbrvnat bibliography style.
+
+\bibliographystyle{abbrvnat}
+
+% The bibliography should be embedded for final submission.
+
+\begin{thebibliography}{}
+\softraggedright
+
+\bibitem{dan07}
+  Dan Grossman. 2007. The transactional memory / garbage collection
+  analogy. \emph{In Proceedings of the 22nd annual ACM SIGPLAN
+    conference on Object-oriented programming systems and
+    applications} (OOPSLA '07).
+
+\bibitem{webjython}
+  The Jython Project, \url{www.jython.org}
+
+\bibitem{multiprocessing}
+  The Multiprocessing Module of Python,
+  \url{docs.python.org/2/library/multiprocessing.html}
+
+\bibitem{odaira14}
+  Odaira, Rei, Jose G. Castanos, and Hisanobu Tomari.  "Eliminating
+  global interpreter locks in Ruby through hardware transactional
+  memory."  \emph{Proceedings of the 19th ACM SIGPLAN symposium on
+    Principles and practice of parallel programming.} ACM, 2014.
+
+\bibitem{warmhoff13}
+  Jons-Tobias Wamhoff, Christof Fetzer, Pascal Felber, Etienne Rivière,
+  and Gilles Muller. 2013. FastLane: improving performance of software
+  transactional memory for low thread counts. \emph{SIGPLAN Not.} 48, 8
+  (February 2013), 113-122.
+
+\bibitem{drago11} Aleksandar Dragojević, Pascal Felber, Vincent
+  Gramoli, and Rachid Guerraoui. 2011. Why STM can be more than a
+  research toy. \emph{Commun. ACM} 54, 4 (April 2011), 70-77.
+
+\bibitem{cascaval08}
+  Calin Cascaval, Colin Blundell, Maged Michael, Harold W. Cain, Peng
+  Wu, Stefanie Chiras, and Siddhartha Chatterjee. 2008. Software
+  transactional memory: why is it only a research
+  toy?. \emph{Commun. ACM} 51, 11 (November 2008), 40-46.
+
+\bibitem{nicholas06}
+  Nicholas Riley and Craig Zilles. 2006. Hardware transactional memory
+  support for lightweight dynamic language evolution. \emph{In
+    Companion to the 21st ACM SIGPLAN symposium on Object-oriented
+    programming systems, languages, and applications} (OOPSLA
+  '06). ACM, New York, NY, USA
+
+\bibitem{fuad10}
+  Fuad Tabba. 2010. Adding concurrency in python using a commercial
+  processor's hardware transactional memory support. \emph{SIGARCH
+  Comput. Archit. News 38}, 5 (April 2010)
+
+\bibitem{felber07}
+  Pascal Felber and Torvald Riegel and Christof Fetzer and Martin
+  Süßkraut and Ulrich Müller and Heiko Sturzrehm. 2007. Transactifying
+  applications using an open compiler framework. \emph{TRANSACT}, August
+  (2007): 4-6.
+
+\bibitem{bill06}
+  Bill McCloskey, Feng Zhou, David Gay, and Eric
+  Brewer. 2006. Autolocker: synchronization inference for atomic
+  sections. \emph{In Conference record of the 33rd ACM SIGPLAN-SIGACT
+  symposium on Principles of programming languages (POPL '06)}. ACM,
+  New York, NY, USA
+
+\bibitem{spear09}
+  Luke Dalessandro, Dave Dice, Michael Scott, Nir Shavit, and Michael
+  Spear. 2010. Transactional mutex locks. In \emph{Proceedings of the
+    16th international Euro-Par conference on Parallel processing: Part
+    II} (Euro-Par'10), Pasqua D'Ambra, Mario Guarracino, and Domenico
+  Talia (Eds.). Springer-Verlag, Berlin, Heidelberg, 2-13.
+
+\bibitem{lamport79}
+  Lamport, Leslie. "How to make a multiprocessor computer that
+  correctly executes multiprocess programs." \emph{Computers, IEEE
+    Transactions} on 100.9 (1979): 690-691.
+
+\bibitem{victor11}
+  Victor Pankratius and Ali-Reza Adl-Tabatabai. 2011. A study of
+  transactional memory vs. locks in practice. In \emph{Proceedings of
+    the twenty-third annual ACM symposium on Parallelism in algorithms
+    and architectures} (SPAA '11). ACM, New York, NY, USA
+
+\bibitem{christopher10}
+  Christopher J. Rossbach, Owen S. Hofmann, and Emmett
+  Witchel. 2010. Is transactional programming actually
+  easier?. \emph{SIGPLAN} Not. 45, 5 (January 2010), 47-56.
+
+\bibitem{tim03}
+  Tim Harris and Keir Fraser. 2003. Language support for lightweight
+  transactions. \emph{In Proceedings of the 18th annual ACM SIGPLAN
+    conference on Object-oriented programing, systems, languages, and
+    applications} (OOPSLA '03).
+
+\bibitem{tim05}
+  Tim Harris, Simon Marlow, Simon Peyton-Jones, and Maurice
+  Herlihy. 2005. Composable memory transactions. \emph{In Proceedings
+    of the tenth ACM SIGPLAN symposium on Principles and practice of
+    parallel programming} (PPoPP '05).
+
+\bibitem{shan08}
+  Shan Lu, Soyeon Park, Eunsoo Seo, and Yuanyuan Zhou. 2008. Learning
+  from mistakes: a comprehensive study on real world concurrency bug
+  characteristics. \emph{SIGARCH Comput. Archit. News} 36, 1 (March 2008),
+  329-339.
+
+\bibitem{leis14}
+  Leis, Viktor, Alfons Kemper, and Thomas Neumann. "Exploiting
+  Hardware Transactional Memory in Main-Memory Databases."
+  \emph{Proc. of ICDE}. 2014.
+
+\bibitem{biased}
+  Kenneth Russell and David Detlefs. 2006. Eliminating
+  synchronization-related atomic operations with biased locking and
+  bulk rebiasing. \emph{In Proceedings of the 21st annual ACM SIGPLAN
+    conference on Object-oriented programing, systems, languages, and
+    applications} (OOPSLA '06).
+
+\end{thebibliography}
+
+
+\end{document}

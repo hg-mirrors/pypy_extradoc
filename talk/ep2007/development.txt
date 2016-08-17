@@ -1,0 +1,18 @@
+PyPy: Why and how did it (not) work? 
+-------------------------------------------------
+
+Some people have said that they have hardly seen a large
+project succeed with delivering to the original goals as much
+as the PyPy project did.  Others consider it a failure because
+it did not take over the world yet or is not usable for
+mainstream purposes.  Anyway, we'll talk about the mix of
+development processes, methods and infrastructure of the PyPy
+project.  We will summarize our experiences regarding the
+evolving development environment (version control, automated
+test-driven development, sprints, synchronization, "conceptual
+integrity", communication channels). We will also try to share
+our "learning by burnings" so that other projects can explore
+other creative problems and mistakes than maybe repeating the
+ones we explored in depth already during the last 4 years of
+PyPy development. 
+

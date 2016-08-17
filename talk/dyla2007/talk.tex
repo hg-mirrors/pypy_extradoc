@@ -1,0 +1,475 @@
+\documentclass[utf8x]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+
+  %\setbeamercovered{transparent}
+}
+
+
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\title{How to \underline{not} write Virtual Machines for \mbox{Dynamic Languages}}
+
+\author{Carl Friedrich Bolz and Armin Rigo}
+
+\institute[Heinrich-Heine-Universität Düsseldorf]
+{
+  Institut für Informatik\\
+  Heinrich-Heine-Universität Düsseldorf
+}
+
+\date{3rd Workshop on Dynamic Languages and Applications, July 31st 2007}
+
+%\pgfdeclareimage[height=0.5cm]{pypy-logo}{image/py-web.png}
+%\logo{\pgfuseimage{pypy-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Outline}
+%  \tableofcontents
+  % You might wish to add the option [pausesections]
+%\end{frame}
+
+\begin{frame}
+  \frametitle{Scope}
+  This talk is about:
+
+  \begin{itemize}
+  \item
+    implementing dynamic languages \par(with a focus on complicated ones)
+  \item
+    in a context of limited resources \par(academic, open source, or
+    domain-specific)
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Our points}
+    \begin{itemize}
+    \item
+      Do not write virtual machines ``by hand''
+    \item
+      Instead, write interpreters in high-level languages
+    \item
+      Meta-programming is your friend
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Common Approaches to Language Implementation}
+  \begin{block}{
+    Using C/C++ (potentially disguised as another language)}
+    \begin{itemize}
+    \item
+      CPython
+    \item
+      Ruby
+    \item
+      Spidermonkey (Mozilla's JavaScript VM)
+    \item
+      but also: Scheme48, Squeak
+    \end{itemize}
+  \end{block}
+  \pause
+  \begin{block}{
+    Building on top of a general-purpose OO VM}
+    \begin{itemize}
+    \item
+      Jython, IronPython
+    \item
+      JRuby, IronRuby
+    \item
+      various Prolog, Lisp, even Smalltalk implementations
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implementing VMs in C}
+  When writing a VM in C it is hard to reconcile:
+  \begin{itemize}
+  \item
+    flexibility, maintainability
+  \item
+    simplicity
+  \item
+    performance
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      \alert{CPython} is a very simple bytecode VM, performance not great
+    \item
+      \alert{Psyco} is a just-in-time-specializer, very complex, hard to
+      maintain, but good performance
+    \item
+      \alert{Stackless} is a fork of CPython adding microthreads. It was never
+      incorporated into CPython for complexity reasons
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fixing of Early Design Decisions}
+  \begin{itemize}
+  \item when starting a VM in C, many design decisions need to be made upfront
+  \item examples: memory management technique, threading model
+  \item such decisions are manifested throughout the VM source
+  \item very hard to change later
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      CPython uses reference counting, increfs and decrefs everywhere
+    \item
+      CPython uses OS threads with one global lock, hard to change to
+      lightweight threads or finer locking
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Compilers are a bad encoding of Semantics}
+  \begin{itemize}
+  \item to reach good performance levels, dynamic compilation is often needed
+  \item a compiler (obviously) needs to encode language semantics
+  \item this encoding is often obscure and hard to change
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      Psyco is a dynamic compiler for Python
+    \item
+      synchronizing with CPython's rapid development is a lot of effort
+    \item
+      many of CPython's new features not supported well
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implementing Languages on Top of OO VMs}
+  \begin{itemize}
+  \item
+    users wish to have easy interoperation with the general-purpose OO VMs used
+    by the industry (JVM, CLR)
+  \item
+    therefore re-implementations of the language on the OO VMs are started
+  \item
+    more implementations!
+  \item
+    implementing on top of an OO VM has its own set of benefits of problems
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      \alert{Jython} is a Python-to-Java-bytecode compiler
+    \item
+      \alert{IronPython} is a Python-to-CLR-bytecode compiler
+    \item
+      both are slightly incompatible with the newest CPython version (especially
+      Jython)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Benefits of implementing on top of OO VMs}
+  \begin{itemize}
+  \item
+    higher level of implementation
+  \item
+    the VM supplies a GC and mostly a JIT
+  \item
+    better interoperability than what the C level provides
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      both Jython and IronPython integrate well with their host OO VM
+    \item
+      Jython has free threading
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The problems of OO VMs}
+  \begin{itemize}
+  \item
+    most immediate problem: it can be hard to map
+    concepts of the dynamic language to
+    the host OO VM
+  \item
+    performance is often not improved, and can be very bad, because of the
+    semantic mismatch between the dynamic language and the host VM
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      Jython about 5 times slower than CPython
+    \item
+      IronPython is about as fast as CPython (but some stack introspection
+      features missing)
+    \item
+      Python has very different semantics for method calls than Java
+    \end{itemize}
+  \end{block}
+ 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implementation Proliferation}
+  \begin{itemize}
+  \item
+    restrictions of the original implementation lead to re-implementations,
+    forks
+  \item
+    all implementations need to be synchronized with language evolution
+  \item
+    lots of duplicate effort, compatibility problems
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Python Case}
+    \begin{itemize}
+    \item
+      several serious implementations: CPython, Stackless, Psyco, Jython,
+      IronPython, PyPy
+    \item
+      various incompatibilities
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{PyPy's Approach to VM Construction}
+  \emph{Goal: achieve flexibility, simplicity and performance together}
+
+  \begin{itemize}
+  \item
+    Approach: auto-generate VMs from high-level descriptions of the language
+  \item
+    ... using meta-programming techniques and \emph{aspects}
+  \item
+    high-level description: an interpreter written in a high-level language
+  \item
+    ... which we translate (i.e.\ compile) to a VM running in various target
+    environments, like C/Posix, CLR, JVM
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{PyPy}
+  \begin{itemize}
+  \item
+    PyPy = Python interpreter written in RPython + translation toolchain
+    for RPython
+  \end{itemize}
+  \pause
+  \begin{block}{
+    What is RPython}
+    \begin{itemize}
+    \item
+      RPython is a subset of Python
+    \item
+      subset chosen in such a way that type-inference can be performed
+    \item
+      still a high-level language (unlike SLang or PreScheme)
+    \item
+      ...really a subset, can't give a small example of code that
+      doesn't just look like Python :-)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Auto-generating VMs}
+  \begin{itemize}
+  \item
+    we need a custom \emph{translation toolchain} to compile the interpreter
+    to a full VM
+  \item
+    many aspects of the final VM are orthogonal from the interpreter source:
+    they are inserted during translation
+  \item
+    translation aspect $\cong$ monads, with more ad-hoc control
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Examples}
+    \begin{itemize}
+    \item
+      Garbage Collection strategy
+    \item
+      Threading models (e.g.\ coroutines with CPS...)
+    \item
+      non-trivial translation aspect: auto-generating a dynamic compiler from
+      the interpreter
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Good Points of the Approach}
+  {\bf Simplicity:}
+
+  \begin{itemize}
+  \item
+    dynamic languages can be implemented in a high level language
+  \item
+    separation of language semantics from low-level details
+  \item
+    a single-source-fits-all interpreter
+    \begin{itemize}
+      \item runs everywhere with the same semantics
+      \item no outdated implementations, no ties to any standard platform
+      \item less duplication of efforts
+    \end{itemize}
+  \end{itemize}
+  \pause
+  \begin{block}{PyPy}
+     arguably the most readable Python implementation so far
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Good Points of the Approach}
+  {\bf Flexibility} at all levels:
+
+  \begin{itemize}
+  \item
+    when writing the interpreter (high-level languages rule!)
+  \item
+    when adapting the translation toolchain as necessary
+  \item
+    to break abstraction barriers when necessary
+  \end{itemize}
+  \pause
+  \begin{block}{
+    Example}
+    \begin{itemize}
+    \item
+      boxed integer objects, represented as tagged pointers
+    \item
+      manual system-level RPython code
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Good Points of the Approach}
+  {\bf Performance:}
+
+  \begin{itemize}
+  \item
+    ``reasonable'' performance
+  \item
+    can generate a dynamic compiler from the interpreter
+    (work in progress, 60x faster on very simple Python code)
+  \end{itemize}
+  \pause
+  \begin{block}{
+    JIT compiler generator}
+    \begin{itemize}
+    \item
+      almost orthogonal from the interpreter source – applicable to many
+      languages, follows language evolution ``for free''
+    \item
+      based on Partial Evaluation techniques
+    \item
+      benefits from a high-level interpreter
+    \item
+      generating a dynamic compiler is easier than generating a static one!
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Drawbacks / Open Issues / Further Work}
+  \begin{itemize}
+  \item
+    writing the translation toolchain in the first place takes lots of effort
+    (but it can be reused)
+  \item
+    writing a good GC is still necessary. But: maybe we can reuse existing good
+    GCs (e.g.\ from the Jikes RVM)?
+  \item
+    dynamic compiler generation seems to work, but needs more efforts.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusion / Meta-Points}
+  \begin{itemize}
+  \item
+    VMs shouldn't be written by hand
+  \item
+    high-level languages are suitable to implement dynamic languages
+  \item
+    doing so has many benefits
+  \item
+    PyPy's concrete approach is not so important
+  \item
+    let's write more meta-programming toolchains!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Questions?}
+  \begin{block}{
+    PyPy}
+    \bigskip
+    \hskip 1cm \url{http://codespeak.net/pypy/}
+    \bigskip
+  \end{block}
+\end{frame}
+
+
+\end{document}
+
+

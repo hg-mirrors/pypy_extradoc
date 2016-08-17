@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="version" content="S5 1.1" />
+<title>How PyPy could be useful for Zope</title>
+<meta name="authors" content="Holger Krekel (merlinux GmbH) et al." />
+<style type="text/css">
+
+/*
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:Date: $Date: 2005-12-18 01:56:14 +0100 (Sun, 18 Dec 2005) $
+:Revision: $Revision: 4224 $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;
+  background-color: #eeeeee }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+tt.docutils {
+  background-color: #eeeeee }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<script src="ui/default/slides.js" type="text/javascript"></script>
+<link rel="stylesheet" href="ui/default/slides.css"
+      type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="ui/default/outline.css"
+      type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="ui/default/print.css"
+      type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="ui/default/opera.css"
+      type="text/css" media="projection" id="operaFix" />
+
+<style type="text/css">
+#currentSlide {display: none;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header">
+
+</div>
+<div id="footer">
+<h1>How PyPy could be useful for Zope</h1>
+<h2>Holger Krekel (merlinux GmbH)</h2>
+</div>
+</div>
+<div class="presentation">
+<div class="slide" id="slide0">
+<h1 class="title">How PyPy could be useful for Zope</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Authors:</th>
+<td>Holger Krekel (merlinux GmbH) et al.</td></tr>
+</tbody>
+</table>
+<!-- Definitions of interpreted text roles (classes) for S5/HTML data. -->
+<!-- This data file has been placed in the public domain. -->
+<!-- Colours
+======= -->
+<!-- Text Sizes
+========== -->
+<!-- Display in Slides (Presentation Mode) Only
+========================================== -->
+<!-- Display in Outline Mode Only
+============================ -->
+<!-- Display in Print Only
+===================== -->
+<!-- Incremental Display
+=================== -->
+
+</div>
+<div class="slide" id="what-is-pypy">
+<h1>What is PyPy?</h1>
+<ul class="simple">
+<li>A compiler metaprogramming toolchain for dynamic languages</li>
+<li>A flexible and fast Python Interpreter</li>
+<li>An open source project (MIT License)</li>
+<li>A (former) EU research project</li>
+<li>-&gt; PyPy-1.0 is a research result</li>
+</ul>
+</div>
+<div class="slide" id="paradigm">
+<h1>Paradigm</h1>
+<br><div align="center" class="align-center"><img alt="arch-overview.png" class="align-center" src="arch-overview.png" /></div>
+</div>
+<div class="slide" id="pypy-overview">
+<h1>PyPy Overview</h1>
+<br><img alt="dynlang.png" src="dynlang.png" />
+</div>
+<div class="slide" id="backends-runtime-integration">
+<h1>Backends / Runtime integration</h1>
+<ul class="simple">
+<li>single source program translates to:<ul>
+<li>Main target: C/Posix</li>
+<li>Main new target: .NET/CLI/CLR</li>
+<li>Work in progress: JVM</li>
+<li>Special target: Javascript for Web applications</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="clr-cli-backend">
+<h1>CLR/CLI Backend</h1>
+<ul class="simple">
+<li>full python interpreter generated for .NET</li>
+<li>support for CLR integration:<ul>
+<li>static RPython-level bindings</li>
+<li>on top dynamic bindings using reflection (clr module)</li>
+</ul>
+</li>
+</ul>
+<!-- - supports interpreter prototypes (using single source) -->
+</div>
+<div class="slide" id="more-high-level-backends">
+<h1>More high-level backends</h1>
+<ul class="simple">
+<li>emerging JVM target:<ul>
+<li>translates complex RPython programs</li>
+<li>no problems foreseen for full interpreter generation</li>
+</ul>
+</li>
+<li>Javascript target:<ul>
+<li>translates complex programs</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="python-interpreter-prototypes">
+<h1>Python Interpreter Prototypes</h1>
+<ul class="simple">
+<li>features are independent of backend</li>
+<li>Security / Taint Space</li>
+<li>Transparent Proxies:<ul>
+<li>Transparent Distribution</li>
+<li>Orthogonal Persistence</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="taint-space">
+<h1>Taint Space</h1>
+<ul class="simple">
+<li>control of information data flow:<ul>
+<li>label sensitive data</li>
+<li>avoid sensitive information leaks</li>
+<li>explicit primitive to declassify</li>
+</ul>
+</li>
+<li>easily implemented as an object space around
+the standard one securing all operations
+on objects</li>
+</ul>
+</div>
+<div class="slide" id="taint-space-diagram">
+<h1>Taint Space diagram</h1>
+<br><img alt="interpreterarch.png" src="interpreterarch.png" />
+<ul class="simple">
+<li>interactive prompt demo</li>
+</ul>
+</div>
+<div class="slide" id="transparent-proxies">
+<h1>Transparent Proxies</h1>
+<ul class="simple">
+<li>proxy: intercept any operation on an builtin object</li>
+<li>transparent: don't change object interface</li>
+<li>useful for implementing application level functionality
+orthogonally to usage of objects</li>
+<li>is the mechanism for distribution and persistence prototypes</li>
+<li>see also .NET TransparentProxy</li>
+</ul>
+</div>
+<div class="slide" id="transparent-distribution">
+<h1>Transparent Distribution</h1>
+<ul class="simple">
+<li>transparent lazy access to remote objects</li>
+<li>internally uses RPC-like protocol</li>
+<li>remote objects are presented through transparent proxies</li>
+<li>access to remote tracebacks, frames, etc. work as if local!</li>
+</ul>
+</div>
+<div class="slide" id="orthogonal-persistence">
+<h1>Orthogonal Persistence</h1>
+<ul class="simple">
+<li>persist Python objects &quot;invisibly&quot;</li>
+<li>interpose interception of changes to objects</li>
+<li>implement your own custom persistence scheme (e.g. using ZODB)</li>
+</ul>
+</div>
+<div class="slide" id="threading-in-pypy">
+<h1>Threading in PyPy</h1>
+<ul class="simple">
+<li>principal choice of os-threading models (GIL, no, ...)</li>
+<li>stackless <em>transform</em> / micro-threads:<ul>
+<li>suspending/resuming computations</li>
+<li>pickling/migration of computations</li>
+<li>unlimited recursion</li>
+<li><em>composable</em> greenlets, tasklets, co-routines</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="relative-speeds-to-cpython">
+<h1>Relative speeds to CPython</h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="43%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">&nbsp;</th>
+<th class="head">CPython 2.4.4</th>
+<th class="head">pypy-llvm</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>richards</td>
+<td>1.00</td>
+<td>1.17</td>
+</tr>
+<tr><td>pystone</td>
+<td>1.00</td>
+<td>1.55</td>
+</tr>
+<tr><td>templess</td>
+<td>1.00</td>
+<td>5.41</td>
+</tr>
+<tr><td>gadfly</td>
+<td>1.00</td>
+<td>6.38</td>
+</tr>
+<tr><td>mako</td>
+<td>1.00</td>
+<td>7.65</td>
+</tr>
+</tbody>
+</table>
+<p>(March 2007, improvements afterwards)</p>
+</div>
+<div class="slide" id="jit-compiler-generator">
+<h1>JIT Compiler Generator</h1>
+<ul class="simple">
+<li>generate JIT Compilers automatically!</li>
+</ul>
+</div>
+<div class="slide" id="id1">
+<h1>JIT Compiler Generator</h1>
+<ul class="simple">
+<li>generate JIT Compilers automatically!</li>
+<li>we began to apply it to the Python Interpreter
+(integer arithmetic)</li>
+<li>approach more complete than Psyco</li>
+<li>gets us in the range of C-speed (&quot;gcc -O0&quot;)!</li>
+</ul>
+</div>
+<div class="slide" id="python-interpreter-status-1-0">
+<h1>Python Interpreter Status (1.0)</h1>
+<ul class="simple">
+<li>compliant, 340 KLOC / 85 test KLOC</li>
+<li>single source for all platforms</li>
+<li>flexibel, fast, well-tested (11805 tests)</li>
+<li>new middleware features</li>
+<li>need more extension modules!</li>
+<li>better GCs and more JITting will even improve speed!</li>
+</ul>
+</div>
+<div class="slide" id="special-rpython-programs">
+<h1>Special RPython programs</h1>
+<ul class="simple">
+<li>webservers, web applications, algorithms</li>
+<li>can be translated to many targets</li>
+<li>can run up to 100 times faster compared
+to being interpreted through CPython</li>
+<li>very fast startup times!</li>
+<li>used for commercial purposes</li>
+</ul>
+</div>
+<div class="slide" id="rpython-advantages-over-c">
+<h1>RPython advantages over C</h1>
+<ul class="simple">
+<li>portable code</li>
+<li>high level data structures</li>
+<li>easy to test, quick to develop</li>
+<li>translates to various targets, including CPython extension module</li>
+</ul>
+</div>
+<div class="slide" id="py-lib-release">
+<h1>py lib release</h1>
+<ul class="simple">
+<li>py lib / py.test 0.9 release (Feb 2007):<ul>
+<li>project independent tool for automated testing</li>
+<li>lightweight no-boilerplate approach</li>
+<li>many development support features for PyPy</li>
+<li>includes distributed testing (started as SOP project)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="summary-1">
+<h1>Summary (1)</h1>
+<ul class="simple">
+<li>with PyPy it is easy to:<ul>
+<li>implement advanced Python Interpreter features</li>
+<li>write new backends / runtime targets</li>
+<li>implement new (non-python) interpreters</li>
+</ul>
+</li>
+<li>PyPy's rough edges: it is a research result!</li>
+<li>emerging as platform to implement dynamic languages</li>
+</ul>
+</div>
+<div class="slide" id="summary-2">
+<h1>Summary (2)</h1>
+<ul class="simple">
+<li>advantages of PyPy's meta-programming approach:<ul>
+<li>separation of lang implementation aspects</li>
+<li>integrates with today's mainstream platforms</li>
+<li>single source eases maintenance</li>
+<li>all interpreters benefit from advanced transformations</li>
+<li>all code at high abstraction level!</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="possible-zope-applications">
+<h1>Possible Zope applications</h1>
+<ul class="simple">
+<li>security + transparent proxies: persistence, distribution</li>
+<li>experiment with RPython to implement<ul>
+<li>Page Template Engine?</li>
+<li>AJAX/Javascript web applications?</li>
+<li>speedy extension modules?</li>
+</ul>
+</li>
+<li>use for web hosting (fast startup times)?</li>
+<li>synchronous instead of callback/event programming?</li>
+</ul>
+</div>
+<div class="slide" id="future">
+<h1>Future</h1>
+<ul class="simple">
+<li>caretaker/trusted contributors group (pypy-ct):<ul>
+<li>takes care for conceptual integrity</li>
+<li>negotiates (sprint) funding</li>
+</ul>
+</li>
+<li>pending community process:<ul>
+<li>many directions and interests</li>
+<li>consolidation phase?!</li>
+<li>settle on rough roadmap</li>
+</ul>
+</li>
+<li>more sprints! (19 so far)</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

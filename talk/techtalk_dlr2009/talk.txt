@@ -1,0 +1,383 @@
+.. include:: beamerdefs.txt
+
+==========
+PyPy Talk
+==========
+
+What is PyPy
+===================================
+
+- An alternate Python implementation
+  
+- running both in C/Posix, on top of .NET and the JVM
+
+- More generally, an environment to implement interpreters for various
+  (dynamic) languages
+
+Talk Outline
+===============
+
+- In-depth motivation for PyPy
+- PyPy's Approach to VM Construction
+- Status of PyPy's Python Implementation
+- PyPy's JIT Compiler
+
+Common Approaches to Language Implementation
+=============================================
+
+- Using C/C++ (potentially disguised as another language)
+
+  - CPython
+  - Ruby
+  - Most JavaScript VMs (V8, TraceMonkey, Squirrelfish)
+  - but also: Scheme48, Squeak
+
+|pause|
+
+- Building on top of a general-purpose OO VM
+
+  - Jython, IronPython
+  - JRuby, IronRuby
+  - various Prolog, Lisp, even Smalltalk implementations
+
+
+Writing VMs is (Still) Hard
+============================
+
+- good VMs for dynamic languages are very hard
+- when writing one, it is very hard to reconcile
+
+  - performance
+  - simplicity, maintainability
+  - flexibility, features
+
+- this is particularly true in an Open Source / research context
+
+Python Case
+============
+
+- **CPython** is a simple maintainable but slow VM, using a simple bytecode
+  interpreter
+- **Stackless** is a more featureful fork of CPython that was never merged for maintainability reasons
+- **Psyco** is a very complex JIT compiler for Python, which speeds up Python a lot
+
+
+Early Design Decisions
+========================
+
+fixing of early design decisions:
+
+- when writing a VM in C, some things have to be decided up front
+- examples are things like memory model, GC, threading model, etc.
+- decisions manifest throughout the source code
+- extremely hard to change later
+
+
+Python case
+==============
+
+- reference counting
+- OS threads
+
+Compilers are a bad encoding of Semantics
+=========================================
+
+- to reach good performance levels, dynamic compilation is often needed
+- a compiler (obviously) needs to encode language semantics
+- this encoding is often obscure and hard to change
+
+Python Case
+============
+
+- Psyco is a dynamic compiler for Python
+- synchronizing with CPython's rapid development is a lot of effort
+- many of CPython's new features not supported well
+
+Implementing Languages on Top of OO VMs
+========================================
+
+- users wish to have easy interoperation with the general-purpose OO VMs used
+- by the industry (JVM, CLR)
+- therefore re-implementations of the language on the OO VMs are started
+- more implementations!
+- implementing on top of an OO VM has its own set of benefits of problems
+
+Python Case
+=============
+
+- *Jython* is a Python-to-Java-bytecode compiler
+- *IronPython* is a Python-to-CLR-bytecode compiler
+- both are slightly incompatible with the newest CPython version
+
+Benefits of implementing on top of OO VMs
+===========================================
+
+- higher level of implementation
+- the VM supplies a GC and mostly a JIT
+- better interoperability than what the C level provides
+
+Python Case
+============
+
+- both Jython and IronPython integrate well with their host OO VM
+- Jython has free threading
+
+
+The problems of OO VMs
+=======================
+- most immediate problem: it can be hard to map 
+  concepts of the dynamic language to the host OO VM
+
+- performance is often not improved, and can be very bad, because of the
+  semantic mismatch between the dynamic language and the host VM
+
+Python Case
+============
+
+- Jython about 5 times slower than CPython
+- IronPython is about as fast as CPython (but some stack introspection
+  features missing)
+
+- Python has very different semantics for method calls than Java
+
+PyPy's Approach to VM Construction
+==================================
+
+**Goal: achieve flexibility, simplicity and performance together**
+
+- Approach: auto-generate VMs from high-level descriptions of the language
+- ... using meta-programming techniques and *aspects*
+- high-level description: an interpreter written in a high-level language
+  (called *RPython*)
+- ... which we translate (i.e. compile) to a VM running in various target
+  environments, like C/Posix, CLR, JVM
+
+PyPy's approach to VM construction
+==================================
+
+.. image:: dynlang.png
+   :scale: 50
+
+What is RPython
+===============
+
+- RPython is a subset of Python
+- subset chosen in such a way that type-inference can be performed
+- still a high-level language (unlike SLang or PreScheme)
+- ...really a subset, can't give a small example of code that
+  doesn't just look like Python :-)
+- fundamental restriction: no type mixing: ``l = [1, "string"]`` does not work
+
+Auto-generating VMs
+===================
+
+- we need a custom **translation toolchain** to compile the interpreter
+  to a full VM
+- many aspects of the final VM are orthogonal from the interpreter source:
+  they are inserted during translation
+
+|pause|
+
+Examples:
+
+- Garbage Collection strategy
+- Threading models (e.g. coroutines with CPS...)
+- non-trivial translation aspect: auto-generating a dynamic compiler from
+- the interpreter
+
+Good Points of the Approach
+===========================
+
+**Simplicity:**
+
+- dynamic languages can be implemented in a high level language
+- separation of language semantics from low-level details
+- a single-source-fits-all interpreter:
+
+ - runs everywhere with the same semantics
+ - no outdated implementations, no ties to any standard platform
+ - less duplication of efforts
+
+
+Good Points of the Approach
+===========================
+
+**Flexibility** at all levels:
+
+- when writing the interpreter (high-level languages rule!)
+- when adapting the translation toolchain as necessary
+  to break abstraction barriers
+
+Examples: 
+
+- boxed integer objects, represented as tagged pointers
+- manual system-level RPython code
+
+Good Points of the Approach
+===========================
+
+**Performance:**
+
+- "reasonable" performance: between 0.8 and 4 times slower than CPython
+- can generate a dynamic compiler from the interpreter (see end of talk)
+
+
+Drawbacks / Open Issues / Further Work
+======================================
+
+- writing the translation toolchain in the first place takes lots of effort
+  (but it can be reused)
+- writing a good GC is still necessary. The current one's are ok, but not great.
+- generating a dynamic compiler is hard (working on this since quite a while)
+
+
+Status of Python Interpreter
+=============================
+
+- 1.1 release
+- more than two years of work over 1.0
+- compatible to Python 2.5.2 (even most the obscure bits)
+- supporting ctypes, SQLite
+- well tested on Win/Linux 32 bit (but OS X and 64 bit should work as well)
+- running major packages unmodified 
+- easy_install/distutils working 
+- runs on Nokia's Maemo devices
+
+Software PyPy Can Run
+======================
+
+- Django
+- Pylons
+- Twisted & Nevow
+- pure Python should just work 
+- BitTorrent
+- PyPy translation toolchain
+- py lib 
+- sympy
+- various smaller things, templating engines
+
+Obscure details that people rely on
+=======================================
+
+- non-string keys in ``__dict__`` of types
+- exact naming of a list comprehension variable
+- relying on untested and undocumented private stuff
+- exact message matching in exception catching
+  code
+
+- refcounting details::
+
+      s = open(filename).read()
+
+Conclusion on Compatibility
+============================
+
+- lessons learned: *there is no feature obscure enough for people
+  not to rely on it.*
+
+- pypy-c interpreter probably the most compatible to CPython 2.5
+
+- main blocker for running apps will be missing external modules
+
+Extra Features
+===============
+
+features that CPython doesn't have:
+
+ - stackless support, including pickling of threadlets
+ - lazy evaluation
+ - transparent proxies
+ - ...
+
+Speed
+========
+
+- we're something between 0.8-4x slower than
+  CPython on various benchmarks without JIT
+
+- our JIT will be quite fast – we think 5x faster than now is a realistic goal
+
+- Idea for the JIT: don't write the JIT by hand, but auto-generate one
+
+- Should make it possible to apply it to other languages
+
+Speed - JIT generator
+=====================
+
+- language agnostic translation aspect
+- JIT automatically generated
+- needs a number of hints by the interpreter author
+- 5th generation of the JIT: using trace-based techniques
+- x86 and CLI/.NET backends
+- very easy to port to x86-64 (contributions welcome!)
+
+Main ideas (1)
+===============
+
+- tracing JIT compiler (like Mozilla's TraceMonkey)
+- 80/20 rule
+- 80% of the time is spent in 20% of the code
+- Optimize only that 20%
+
+
+Main ideas (2)
+===============
+
+- That 20% has to be composed of *loops*
+- Recognize **hot** loops
+- Optimize hot loops
+- Compile to native code
+- Execute :-)
+
+Speed - Current Status
+=======================
+
+- 20-30x faster on micro-benchmarks
+- nice proof of concept
+- completely separated from the interpreter
+- a bit of time (and funding) needed to speed up large Python programs
+- hope to get a release with "a JIT" out beginning next year
+  
+
+Conclusion
+============
+
+- PyPy is a general environment to implement dynamic languages
+- Python implementation fairly complete, covers CPython 2.5 features
+- JIT generator is getting somewhere, slowly
+
+.. raw:: latex
+
+    \begin{figure}[h]
+    \scalebox{0.8}{\includegraphics[width=80px]{../img/py-web.png}}
+    \end{figure}
+
+Contact
+==========================
+
+Carl Friedrich Bolz at the Heinrich-Heine-Universität Düsseldorf: http://codespeak.net/~cfbolz
+
+PyPy: http://codespeak.net/pypy
+
+Blog: http://morepypy.blogspot.com
+
+.. raw:: latex
+
+    \begin{figure}[h]
+    \scalebox{0.8}{\includegraphics[width=80px]{../img/py-web.png}}
+    \end{figure}
+
+
+Questions?
+============
+
+- PyPy is a general environment to implement dynamic languages
+- Python implementation fairly complete, covers CPython 2.5 features
+- JIT generator is getting somewhere, slowly
+
+
+.. raw:: latex
+
+    \begin{figure}[h]
+    \scalebox{0.8}{\includegraphics[width=80px]{../img/py-web.png}}
+    \end{figure}

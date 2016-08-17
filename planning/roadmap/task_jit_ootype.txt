@@ -1,0 +1,16 @@
+Port the JIT to ootype
+======================
+
+Status: 
+
+ - The JIT works only for low level backends
+
+Todo:
+
+ - port the hintannotator/timeshifter to ootype
+
+ - add new JIT backends for the JVM and/or the CLI
+
+Expected outcome:
+
+ - pypy-jvm-jit and pypy-cli-jit

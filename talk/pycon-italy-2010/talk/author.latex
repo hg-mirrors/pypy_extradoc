@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy 1.2]{PyPy 1.2: snakes never crawled so fast}
+\author[antocuni, arigato]
+{Antonio Cuni \\ Armin Rigo}
+
+\institute{Pycon Italia Qu4ttro}
+\date{May 8 2010}

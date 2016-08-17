@@ -1,0 +1,27 @@
+Specialized propagators for specialized finite domains
+======================================================
+
+Concerns WP09 (concurrent constraint & logic programming workpackage).
+
+We need specialized propagators for specialized finite domains (over
+numbers, sets, intervals, etc.). There are two ways to provide them :
+
+* rPython : which means implementing it entirely at intepreter level
+  in a strict subset of Python,
+
+* wrapping Gecode[1] : first finish the c-wrapper around Gecode
+  (unless interfacing PyPy with C++ becomes available), then use
+  rctypes to provide interpreter access to low-level Gecode
+  functionality, and finally integrate it into the existing
+  interpreter-level constraint solver.
+
+Rctypes is what PyPy offers, using the python ctypes API, to interface
+the interpreter with C code.
+
+One reasonable target could be running the simple send-more-money
+problem with very few actual search steps due to the efficient
+propagation happening on integer finite domains.
+
+
+[1] http://www.gecode.org/
+

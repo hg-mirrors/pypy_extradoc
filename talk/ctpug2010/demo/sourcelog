@@ -1,0 +1,140 @@
+[757bff8d2abb] {jit-log-opt-loop
+# Loop 0 : loop with 62 ops
+[p0, p1, p2, p3, i4, p5, p6, p7]
+debug_merge_point('<code object f, file 'source.py', line 5> #9 LOAD_FAST', 0)
+guard_nonnull_class(p7, ConstClass(W_IntObject), descr=<Guard2>) [p1, p0, p7, p2, p3, p5, p6]
+debug_merge_point('<code object f, file 'source.py', line 5> #12 LOAD_CONST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #15 COMPARE_OP', 0)
+i9 = getfield_gc_pure(p7, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+i11 = int_lt(i9, 10000)
+guard_true(i11, descr=<Guard3>) [p1, p0, p7, p2, p3]
+debug_merge_point('<code object f, file 'source.py', line 5> #18 JUMP_IF_FALSE', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #21 POP_TOP', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #22 LOAD_GLOBAL', 0)
+p12 = getfield_gc(p0, descr=<GcPtrFieldDescr pypy.interpreter.eval.Frame.inst_w_globals 8>)
+guard_value(p12, ConstPtr(ptr13), descr=<Guard4>) [p1, p0, p12, p2, p3, p7]
+p14 = getfield_gc(p12, descr=<GcPtrFieldDescr pypy.objspace.std.dictmultiobject.W_DictMultiObject.inst_r_dict_content 8>)
+guard_isnull(p14, descr=<Guard5>) [p1, p0, p14, p12, p2, p3, p7]
+p16 = getfield_gc(ConstPtr(ptr15), descr=<GcPtrFieldDescr pypy.objspace.std.celldict.ModuleCell.inst_w_value 8>)
+guard_nonnull_class(p16, ConstClass(Function), descr=<Guard6>) [p1, p0, p16, p2, p3, p7]
+debug_merge_point('<code object f, file 'source.py', line 5> #25 LOAD_FAST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #28 CALL_FUNCTION', 0)
+i18 = getfield_gc(p0, descr=<BoolFieldDescr pypy.interpreter.pyframe.PyFrame.inst_is_being_profiled 169>)
+guard_false(i18, descr=<Guard7>) [p1, p0, p16, p2, p3, p7]
+p19 = getfield_gc(p16, descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_code 24>)
+guard_value(p19, ConstPtr(ptr20), descr=<Guard8>) [p1, p0, p19, p16, p2, p3, p7]
+p21 = getfield_gc(p16, descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_w_func_globals 64>)
+p22 = getfield_gc(p16, descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_closure 16>)
+p24 = call(ConstClass(getexecutioncontext), descr=<GcPtrCallDescr>)
+guard_no_exception(, descr=<Guard9>) [p1, p0, p24, p2, p3, p16, p7, p21]
+i25 = getfield_gc(p24, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+i27 = getfield_gc(ConstPtr(ptr26), descr=<SignedFieldDescr pypy.module.sys.Module.inst_recursionlimit 64>)
+i28 = int_gt(i25, i27)
+guard_false(i28, descr=<Guard10>) [p1, p0, p24, p2, p3, p16, p7, p21]
+i30 = int_add(i25, 1)
+p31 = getfield_gc(p24, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_topframeref 56>)
+i32 = force_token()
+p33 = getfield_gc(p24, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_w_tracefunc 72>)
+setfield_gc(p24, i30, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+guard_isnull(p33, descr=<Guard11>) [p1, p0, p24, p33, p2, p3, p16, p7, p31, i32, p21]
+i34 = getfield_gc(p24, descr=<NonGcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_profilefunc 40>)
+i35 = int_is_zero(i34)
+guard_true(i35, descr=<Guard12>) [p1, p0, p24, p2, p3, p16, p7, p31, i32, p21]
+debug_merge_point('<code object g, file 'source.py', line 2> #0 LOAD_FAST', 1)
+debug_merge_point('<code object g, file 'source.py', line 2> #3 LOAD_CONST', 1)
+debug_merge_point('<code object g, file 'source.py', line 2> #6 BINARY_ADD', 1)
+i37 = int_add(i9, 1)
+debug_merge_point('<code object g, file 'source.py', line 2> #7 RETURN_VALUE', 1)
+i38 = int_is_true(i34)
+guard_false(i38, descr=<Guard13>) [p1, p0, p24, p2, p3, p16, p7, i37, p31, i32, p21]
+debug_merge_point('<code object f, file 'source.py', line 5> #31 LOAD_CONST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #34 BINARY_ADD', 0)
+i40 = int_add(i37, 1)
+debug_merge_point('<code object f, file 'source.py', line 5> #35 STORE_FAST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #38 JUMP_ABSOLUTE', 0)
+i42 = getfield_raw(32212256, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i44 = int_sub(i42, 9)
+setfield_raw(32212256, i44, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+setfield_gc(p24, i25, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+setfield_gc(p24, p31, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_topframeref 56>)
+i46 = int_lt(i44, 0)
+guard_false(i46, descr=<Guard14>) [p1, p0, p2, p3, i40, None, None, None, None]
+debug_merge_point('<code object f, file 'source.py', line 5> #9 LOAD_FAST', 0)
+p49 = new_with_vtable(ConstClass(W_IntObject))
+setfield_gc(p49, i40, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+jump(p0, p1, p2, p3, 9, ConstPtr(ptr51), ConstPtr(ptr52), p49, descr=<Loop0>)
+[757bffbe2de1] jit-log-opt-loop}
+[757bffc0423f] {jit-backend-counts
+[757bffc04bd5] jit-backend-counts}
+[757bfff6cfb7] {jit-log-opt-loop
+# Loop 1 : entry bridge with 64 ops
+[p0, p1, p2, p3, i4, p5, i6, p7, p8, p9]
+debug_merge_point('<code object f, file 'source.py', line 5> #9 LOAD_FAST', 0)
+guard_value(i4, 0, descr=<Guard15>) [i4, p1, p0, p2, p3, p5, i6, p7, p8, p9]
+guard_nonnull_class(p9, ConstClass(W_IntObject), descr=<Guard16>) [p1, p0, p9, p2, p3, p5, p7, p8]
+debug_merge_point('<code object f, file 'source.py', line 5> #12 LOAD_CONST', 0)
+guard_value(p2, ConstPtr(ptr12), descr=<Guard17>) [p1, p0, p2, p3, p5, p9, p8]
+debug_merge_point('<code object f, file 'source.py', line 5> #15 COMPARE_OP', 0)
+i13 = getfield_gc_pure(p9, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+i15 = int_lt(i13, 10000)
+guard_true(i15, descr=<Guard18>) [p1, p0, p9, p3, p5]
+debug_merge_point('<code object f, file 'source.py', line 5> #18 JUMP_IF_FALSE', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #21 POP_TOP', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #22 LOAD_GLOBAL', 0)
+p16 = getfield_gc(p0, descr=<GcPtrFieldDescr pypy.interpreter.eval.Frame.inst_w_globals 8>)
+guard_value(p16, ConstPtr(ptr17), descr=<Guard19>) [p1, p0, p16, p3, p5, p9]
+p18 = getfield_gc(p16, descr=<GcPtrFieldDescr pypy.objspace.std.dictmultiobject.W_DictMultiObject.inst_r_dict_content 8>)
+guard_isnull(p18, descr=<Guard20>) [p1, p0, p18, p16, p3, p5, p9]
+p20 = getfield_gc(ConstPtr(ptr19), descr=<GcPtrFieldDescr pypy.objspace.std.celldict.ModuleCell.inst_w_value 8>)
+guard_nonnull_class(p20, ConstClass(Function), descr=<Guard21>) [p1, p0, p20, p3, p5, p9]
+debug_merge_point('<code object f, file 'source.py', line 5> #25 LOAD_FAST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #28 CALL_FUNCTION', 0)
+i22 = getfield_gc(p0, descr=<BoolFieldDescr pypy.interpreter.pyframe.PyFrame.inst_is_being_profiled 169>)
+guard_false(i22, descr=<Guard22>) [p1, p0, p20, p3, p5, p9]
+p23 = getfield_gc(p20, descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_code 24>)
+guard_value(p23, ConstPtr(ptr24), descr=<Guard23>) [p1, p0, p23, p20, p3, p5, p9]
+p25 = getfield_gc(p20, descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_w_func_globals 64>)
+p26 = getfield_gc(p20, descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_closure 16>)
+p28 = call(ConstClass(getexecutioncontext), descr=<GcPtrCallDescr>)
+guard_no_exception(, descr=<Guard24>) [p1, p0, p28, p3, p5, p20, p9, p25]
+i29 = getfield_gc(p28, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+i31 = getfield_gc(ConstPtr(ptr30), descr=<SignedFieldDescr pypy.module.sys.Module.inst_recursionlimit 64>)
+i32 = int_gt(i29, i31)
+guard_false(i32, descr=<Guard25>) [p1, p0, p28, p3, p5, p20, p9, p25]
+i34 = int_add(i29, 1)
+p35 = getfield_gc(p28, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_topframeref 56>)
+i36 = force_token()
+p37 = getfield_gc(p28, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_w_tracefunc 72>)
+setfield_gc(p28, i34, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+guard_isnull(p37, descr=<Guard26>) [p1, p0, p28, p37, p3, p5, p20, p9, p35, i36, p25]
+i38 = getfield_gc(p28, descr=<NonGcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_profilefunc 40>)
+i39 = int_is_zero(i38)
+guard_true(i39, descr=<Guard27>) [p1, p0, p28, p3, p5, p20, p9, p35, i36, p25]
+debug_merge_point('<code object g, file 'source.py', line 2> #0 LOAD_FAST', 1)
+debug_merge_point('<code object g, file 'source.py', line 2> #3 LOAD_CONST', 1)
+debug_merge_point('<code object g, file 'source.py', line 2> #6 BINARY_ADD', 1)
+i41 = int_add(i13, 1)
+debug_merge_point('<code object g, file 'source.py', line 2> #7 RETURN_VALUE', 1)
+i42 = int_is_true(i38)
+guard_false(i42, descr=<Guard28>) [p1, p0, p28, p3, p5, p20, p9, i41, p35, i36, p25]
+debug_merge_point('<code object f, file 'source.py', line 5> #31 LOAD_CONST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #34 BINARY_ADD', 0)
+i44 = int_add(i41, 1)
+debug_merge_point('<code object f, file 'source.py', line 5> #35 STORE_FAST', 0)
+debug_merge_point('<code object f, file 'source.py', line 5> #38 JUMP_ABSOLUTE', 0)
+i46 = getfield_raw(32212256, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i48 = int_sub(i46, 9)
+setfield_raw(32212256, i48, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+setfield_gc(p28, i29, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+setfield_gc(p28, p35, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_topframeref 56>)
+i50 = int_lt(i48, 0)
+guard_false(i50, descr=<Guard29>) [p1, p0, p3, p5, i44, None, None, None, None]
+debug_merge_point('<code object f, file 'source.py', line 5> #9 LOAD_FAST', 0)
+p53 = new_with_vtable(ConstClass(W_IntObject))
+setfield_gc(p53, i44, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+jump(p0, p1, p3, p5, 9, ConstPtr(ptr55), ConstPtr(ptr56), p53, descr=<Loop0>)
+[757bfffa4e27] jit-log-opt-loop}
+[757c00042ed9] {jit-backend-counts
+0:2995
+1:2
+[757c00044cd5] jit-backend-counts}

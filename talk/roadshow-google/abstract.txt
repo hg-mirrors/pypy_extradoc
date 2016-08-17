@@ -1,0 +1,35 @@
+In Search of Speed and Flexibility.  PyPy and the Art of Generating Virtual Machines
+------------------------------------------------------------------------------------
+We all want our favourite dynamic language to be faster, to be even more
+dynamic and to pick up nifty ideas from its peers.
+
+But this is so much work!
+
+There ought to be a better way to implement dynamic languages that
+enables growth and necessary change with less effort and more ease.
+Writing yet another interpreter in C or even Java is not it.
+
+PyPy is a framework to implement dynamic languages that embraces this
+challenge. It allows us to write such languages in the form of simple
+interpreters, expressed in a rich subset of Python. This means that
+the resulting implementations can can be evolved with reasonable
+effort.  
+
+PyPy then generates a variety of virtual machines (VMs) from a single
+source.  We can therefore target a wide range of environments,
+including C/Posix, Java, or .NET.  This avoids the major source of
+fragmentation within a dynamic language community -- the need for a
+separate language implementation for each virtual machine.  It also
+means that languages as distinct as Python, Prolog and Smalltalk can
+share the bulk of our compiler machinery.
+
+The flexible toolchain which is necessary for virtual machine
+generation turns out to be good for other things as well.  Traditional
+implementations for dynamic languages have to make some very hard
+decisions early, which then become entrenched in the whole codebase,
+making it difficult or impossible to change later. It can be nice to
+experiment with different garbage collectors, but not if you have to
+write a complete new implementation of your favourite language for
+each one.  With PyPy you don't have to. You can also generate and
+tailor a JIT-compiler for the language at hand, putting to rest the
+notion that flexibility must come at the expense of speed.

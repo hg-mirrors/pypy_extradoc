@@ -1,0 +1,171 @@
+Sprint Planning DDorf  
+=========================================
+
+Before the sprint, there were two somewhat-similar, somewhat-conflicting
+goals: finish off wp7 functionality (stackless stuff, and more...) and
+getting the 0.9 release out of the door.  We decided that the priority
+of this sprint, or at least the next two days should be on wp7 and
+particularly stackless related features. 
+
+time plan: monday afternoon: breakday 
+           tuesday afternoon: EU technical project planning 
+
+
+Some things that don't really have issues yet:
+
+ * the ext compiler
+   (armin, carl, michael, arre, holger) 
+   * design user level usage + implement it   
+   * Document using ext-compiler getting-started
+   * readline support for translated PyPy 
+
+ * documentation
+
+ * running the compliance tests and getting results on the web again
+
+   (DONE) compliance is at 89% **Holger and Anders**
+
+ * ootypesystem stuff
+
+   ootype is mostly complete (r_dict missing)
+   **Nik and Antonio are working on ootype completion ** 
+   ** Maciek will join  later **
+
+Looking at the 0.9 issues, critical first:
+
+* 194	Advance rctypes approach to become usable
+
+  Basically done (ask Armin). 
+  open sub-issue: what about releasing the GIL? 
+
+* 197	implement __del__ support for framework gcs
+
+  Needs more testing (particularly with the stacklessgc), but we think this
+  works.
+
+  **Arre, cfbolz to do more testing**
+
+* ???   expose coroutine cloning to app level.
+ 
+  (Armin) 
+  * settle on APIs on RPython level 
+  * experiment a bit with exposing it to applevel
+  * document for 0.9 release 
+  
+  Shouldn't be too hard, needs to be done though.
+
+* 198	implement tasklet pickling
+
+  (christian) 
+
+  - (in-progress) finish needed object type pickling/unpickling
+  - (DONE) finish and integrate explict resume points support
+  - (christian, samuele) use the latter to implement restarting after unpickling
+    (likely hack! hack! hack! until it works)
+
+  Tasklet cloning has become completely different, that kind of works now
+  (needs more testing).
+
+  (armin) write up documentation on how to use tasklet cloning 
+
+
+* 199	finish app-level stackless support
+  (stephan is working on it) 
+  This should be rated 'critical'!  Not sure what the status is.
+
+  Greenlets could be done quickly.
+
+Now the bugs:
+
+* 137	Control-C runtime support
+
+  it is quite hard. 
+
+  (arre, cfbolz) 
+
+* 181	time module is incomplete
+
+  Will be done by the SoC ctypes project we hope :)
+
+* 182	compiler crash on windows
+
+  We need a windows user for this?
+
+* 183	windows build needs superuser
+
+  This too.
+
+* 184	compiled pypy-c is host dependent
+
+  How much of this do we want to do for 0.9?
+
+* 195	Make website doc generation more reliable
+
+  (done, could be better) Holger
+
+* 21	_file.py needs more tests
+
+  Yes, it does.
+
+* 22	app-level docstrings missing everywhere
+
+  Should be an easy sprint task.
+
+* 3	fix real bugs exposed by test_descr
+
+  We can do this now we have weakrefs, but it's a bonus point type task.
+  
+* 95	create a glossary for common PyPy terms
+
+  Should be done, at last.
+
+Features:
+
+* 101	Tool for discovering REV that broke translation	
+
+  We're surviving without it ok, eric's nightly benchmarks help.
+
+* 103	finish posix module
+
+  SoC!
+
+* 145	implement -m command line option
+
+  Probably not critical for 0.9.
+
+* 200	moving gcs
+
+  Another GC bonus point.  Probably not going to happen for 0.9.
+
+* 34	running translator goals per revision
+
+  See comments on issue101.
+
+* 41	roadmap till PyPy 1.x
+
+  Well, yes.  We need to have this by the end of the sprint, I guess.
+
+* 44	have a doc chapter for CPython-dev'ers
+
+  This is part of getting the ext-compiler to be usable in some sense.
+  There should be an "0.9 documentation" issue.
+
+* 74	come up with nice pictures/diagrams
+
+  It's not so much coming up with these things as actually linking to them
+  from the docs that remains to be done.
+
+Wish:
+
+* 133	remove unused files
+
+  Part of preparing for the release.
+
+* 4	code integrity in documentation
+
+  No closer to fixing the hard problems at the moment?
+
+* 6	Allow users to specify 'allwaysnosy'
+
+  postponed to 1.0, probably involves updating the tracker schema
+  on a larger scale. 

@@ -1,0 +1,51 @@
+
+People coming to the Louvain-la-Neuve Logic sprint 2006
+=======================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them. 
+ 
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Ludovic Aubry        ?              ?
+Aurélien Campéas     ?              ?          
+Nicolas Chauvat      ?              ?
+Adrien Di Mascio     ?              ?          
+Sylvain Thénault     ?              ?
+Anders Lehmann       6/3 - 10/3     Le Relais
+Samuele Pedroni      6/3 - 10/3     Le Relais
+Carl Friedrich Bolz  6/3 - 10/3     Le Relais
+==================== ============== =====================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Niklaus Haldimann    
+Brian Dorsey         
+Jan Balster          
+Wanja Saatkamp       
+Christian Tismer     
+Michael Hudson       
+Armin Rigo           
+Anders Chrigstroem   
+Beatrice Duering     
+Holger Krekel        
+Eric van Riet Paap   
+Gerald Klix          
+Stephan Diehl        
+Jacob Hallen         
+Holger Krekel        
+Richard Emslie       
+Andrew Thompson	     
+Laura Creighton      
+Lene Wagner          
+Johan Hahn           
+Amaury Forgeot d'Arc 
+Valentino Volonghi   
+Boris Feigin	     
+Bert Freudenberg     
+==================== ============== =====================

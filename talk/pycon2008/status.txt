@@ -1,0 +1,241 @@
+
+==============
+Status of PyPy
+==============
+
+:Author: Maciej Fijalkowski, merlinux GmbH
+:Title: PyPy from the user perspective
+:Date: 16 March 2008
+
+Next half an hour
+=================
+
+* PyPy motivation and status
+
+* What we're working on
+
+* A few examples of why it works
+
+* Where we're going
+
+* Why you should not use RPython
+
+* Implementation details available on Sunday evening
+
+PyPy - motivation
+=================================
+
+* CPython is nice, but not flexible enough
+
+* IronPython, Jython - bound to the specific VM
+
+* Separate language specification from low-level details,
+  such as GC or platform to run
+
+* Psyco and Stackless Python hard to maintain
+
+PyPy - user motivation
+=======================
+
+* One should never be forced to write anything in C
+  for performance reasons (with some exceptions: embedded
+  devices etc.)
+
+* Just-in-time compiler should make number-crunching
+  and static-enough code fast enough
+
+* One should never care about low-level details
+
+Status of PyPy
+==============
+
+* Very compliant language (to Python version 2.4/2.5)
+
+* Some modules from the stdlib are missing, no 3rd party
+  modules at all
+
+* Recent development - ctypes
+
+Status of PyPy backends
+=======================
+
+* We can compile to C and LLVM including threads (GIL),
+  stackless (but not both), different GCs and all modules
+
+* We can compile to CLI and JVM with a reduced set of modules,
+  no threads
+
+* Some bindings to .NET for CLI, working on getting
+  Java libraries to the JVM PyPy
+
+Status of speed in PyPy
+=======================
+
+* Hard to find decent python-only benchmarks in the wild
+
+* Pystone 1.5, Richards 1., gcbench 0.9 (compared to CPython version 2.5)
+
+* Real world apps usually 1.5-2., sometimes as slow as 3x.
+
+Pystone speed over time
+========================
+
+.. raw:: html
+
+   <img src="plot_pystone.png"/>
+
+.. XXX make sure you explain this while keeping in mind
+   that all texts in this image are probably too small
+   to be read by people
+
+Richards speed over time
+==========================
+
+.. raw:: html
+
+   <img src="plot_richards.png"/>
+
+Status of JIT in PyPy
+=====================
+
+* A lot of work has happened
+
+* Even more needs to happen
+
+* If your problem is similiar enough to counting Fibonacci numbers,
+  we're as fast as psyco
+
+* PyPy's JIT is way easier to extend than psyco (think PPC, think 64 bit,
+  think floats)
+
+Sandboxing
+==========
+
+* we analyze interpreter source (not user code) for
+  all external function calls and replace them with stubs
+
+* small piece of code to trust (no worry about 3rd party modules
+  or whatever)
+
+* very flexible policy
+
+* extra run-time checks for all possible buffer overflows
+  in interpreter source (still, not analyzing any user code)
+
+* cannot segfault (unlike CPython)
+
+.. XXX maybe put sandboxed.png on its own page and make it
+   twice bigger for readability
+
+More about sandboxing
+======================
+
+.. image:: sandboxed.png
+   :align: center
+
+Transparent proxy
+===================================
+
+* app-level code for controlling behavior of
+  any type (even frames or tracebacks)
+
+* very similiar concept to the  .NET VM transparent
+  proxy
+
+* demo
+
+Distribution prototype
+=========================================
+
+* a very simple distribution protocol built
+  on top of a transparent proxy
+
+* done in smalltalk in the 70s
+
+* can work on any type, so you can
+  raise a remote traceback and everything will be fine
+
+* nice experiment, ~700 lines of code
+
+* demo
+
+Distribution diagram
+=====================
+
+.. image:: distribution.png
+
+RPython
+=======
+
+* In short - syntax of Python, restrictions of Java, error
+  messages as readable as MUMPS
+
+* The static subset of Python which we used for implementing the
+  interpreter
+
+* Our compiler toolchain analyzes RPython (i.e. interpreter source code,
+  like C), not the user program
+
+* Our interpreter is a "normal Python" interpreter
+
+* Only PyPy implementers should know anything about RPython
+
+RPython (2)
+===========
+
+* It's not a general purpose language
+
+* One has to have a very good reason to use it
+
+* Clunky error messages
+
+* It's fast, it is pleasant not to code in C
+
+* Ideally, our JIT will achieve the same level of speed
+
+RPython - language
+==================
+
+* It's high level but only convenient if you want to write interpreters :-)
+
+* Usually tons of metaprogramming
+
+* Like C++ - you can write books about tricks
+
+* Hard to extend
+
+PyPy - future
+=============
+
+* Making 3rd party modules run on PyPy - you can help,
+  notably by porting some to ctypes
+
+* Making different programs run on PyPy - you can help,
+  even just by trying and telling us
+
+* We're thinking about providing different ways of getting
+  3rd party modules
+
+PyPy - JIT future
+=================
+
+* A lot of work happening (demos on Sunday)
+
+* Short term goal - more general Python programs seeing speedups
+
+* Machine code backend: needs support for floats, better assembler
+
+* A lot of benchmarking and tweaking
+
+* Yes, you can help as well
+
+PyPy - more info
+==================
+
+* http://codespeak.net/pypy - web page
+
+* http://morepypy.blogspot.com - blog
+
+* IRC channel #pypy on irc.freenode.net
+
+

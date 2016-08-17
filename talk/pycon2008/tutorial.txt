@@ -1,0 +1,172 @@
+Hands on PyPy - how to modify your virtual machine in 15 minutes
+================================================================
+
+Presenter name(s) & contact information
+=======================================
+
+Laura Creighton - lac@openend.se
+Maciej Fijalkowski - fijall@gmail.com
+
+Intended audience
+=================
+
+This tutorial is intended for people who desire to modify python's
+virtual machine.
+
+Perhaps you are uncomfortable with some design decisions? want an
+extra feature? desire fast modules but don't want to write them
+in C? or just wish to experiment?
+
+Attendees will be expected to be fluent in Python, preferably have prior
+experience with meta-programming.  No knowledge of C
+is needed nor required, although prior knowledge of any virtual
+machine construction (for example CPython) might be helpful.  If you are
+wondering 'what's a virtual machine' then this tutorial is not for you.
+
+Tutorial format description
+===========================
+
+A brief introduction to pypy codebase and concepts, then hands-on session
+with pre-prepared tasks.
+
+Recording
+=========
+
+I give permission to record and publish my PyCon tutorial for free
+distribution.
+
+Requirements
+============
+
+Attendees are welcome to bring they're own laptops, while one for a group
+should suffice. We would like to create codespeak.net accounts for people
+in advance, in order to provide smooth working on branches. Software
+requirements:
+
+* subversion
+
+* pypy checkout, from svn
+
+* python2.4 or 2.5
+
+Notes for Reviewers
+===================
+
+Note to the organisers:  This is a very advanced topic, and therefore
+it is hard to predict how many people will show up.  We realise that
+you reserve the right to cancel tutorials if fewer than 10 people 
+indicate an interest, and we think that this is a very real possibility
+in our case.  Should that occur, we would be willing to give the 
+tutorial for free.
+
+If there is a python-dev tutorial planned for python developers, then
+it would be a good idea if they did not conflict, because this
+tutorial exactly targets the same potential audience.
+
+Promotional summary
+===================
+
+Ever missed feature in your Python interpreter? Ever wondered how to write
+extensions in Python rather than C or Pyrex? Ever wondered how pypy works?
+
+This tutorial will give you detailed description how the PyPy python
+interpreter is constructed and how to change it to meet your needs.
+It'll also contain simple changes to the interpreter codebase in a live coding
+session. Afterwards, we will work in small groups to experiment on 
+attendee-selected changes to the interpreter.
+
+Attendees are welcome to bring their own laptops. 
+
+Outline
+=======
+
+* Introduction into pypy - 15 minutes
+
+  * Motivation - why Python in Python
+
+  * RPython - the restricted python
+
+  * The Objectspace concept
+
+  * Backends - how we can compile to all platforms
+
+* Skim over codebase - 15 minutes
+
+* Implementing example modification to the VM - 1h
+
+  * break
+
+* Hands-on pypy, 1.5h
+
+Examples
+++++++++
+
+We would like to present one or two examples of live-coding and changing
+the virtual machine during the talk and
+offer some tasks for people to experiment with. The exact details about
+the examples will be prepared later, when we get a sense of the interests
+of the attendees.
+
+One of the following might be especially good for the purpose of the tutorial:
+
+* (Re)implement the thunk objspace, the way to "freeze" computation as
+  long as they're not needed.
+
+* Implement specialized sort of tuples, optimized for small number
+  of elements (for example two), indistinguishable from
+  normal tuples from the application level code.
+
+* Implement dict.keys() as a lazily computed list.
+
+Hands-on session details
+++++++++++++++++++++++++
+
+The hands-on session would be organized in groups of 2-4 persons, hacking
+one particular task, preferable on one computer with the assistance of someone
+familiar with the pypy codebase. If the tutorial attendees greatly
+outnumber the pypy core team, then the people
+familiar with pypy would need to move between groups.
+
+We'd like tutorial attendees to suggest their own improvements, so that
+they get to scratch an itch that personally matters to them.  We will
+also provide a selected list of things we think would be interesting,
+in the off-chance that people either find this sort of imagining
+difficult, or can only think of tasks that would take more than
+1.5 hours to complete.  The idea is to give such people enough familiarity
+with pypy that they could attempt larger projects on their own.
+
+Given that tutorial members are not expected to be proficient with RPython,
+what is likely is that in the tutorial their solutions will only be
+prototyped (in Python).  Converting to RPython may have to wait for the
+post-conference Sprint.
+
+Tutorial outline for website publication
+========================================
+
+* Introduction into PyPy
+
+* Skim over codebase
+
+* Live coding session, modifying minor virtual machine aspect
+
+* Hands-on PyPy virtual machine
+
+Presenter Bio
+=============
+
+Maciej Fijalkowski has been a PyPy developer for the past two years.
+
+Laura Creighton is a founder of the Swedish company Open End AB,
+which develops products in python and was a member of the consortium
+which received EU Sixth Framework IST funding to develop PyPy.
+
+Previous experience
+===================
+
+Maciej Fijalkowski was giving talks at the EuroPython 2007 in Vilnius and
+Rupy 2007 in Poznan, as well as participating in PyPy sprints for the last
+two years.
+
+Laura Creighton was a partner with Jim Joyce in Jim Joyce's Unix
+bookstore/The Gawain Group.  She has designed hundreds of hands-on
+tutorials

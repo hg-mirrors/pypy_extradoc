@@ -1,0 +1,5 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+\title{PyPy: Jak uczynić pythona szybszym}
+\author[fijal]{Maciej Fijałkowski}
+\institute{SKA South Africa}
+\date{PyCon PL, 8.10.2010}

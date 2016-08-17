@@ -1,0 +1,126 @@
+
+Heidelberg sprint report 22nd-29th August 
+============================================= 
+
+The heidelberg sprint was announced_ late July 
+and around `13 people registered`_ and showed up
+at the nice Heidelberg physics institute where 
+Carl Friedrich Bolz had organized sprint facilities 
+for us. 
+
+The sprint was focused on getting a `0.7.0 release out`_ and
+improve and refine crucial areas like threading, GC and
+CPython compliancy.  Here is what people worked on in a
+somewhat chronological non-particular order and certainly
+not complete: 
+
+- Samuele and Carl worked on refactoring the parts of genc
+  that are responsible for the use of refcounting in the translation to make
+  it possible to compile with a different GC strategy. It turned out that
+  refcounting is kind of deeply embedded into genc so it took a lot
+  of time to introduce sensible hooks that other GCs could use.
+
+- Armin and Richard changed genc so that it can handle 
+  locks as external objects that Armin had to introduce to 
+  implement threading in PyPy. For now we have a simple GIL but it is not
+  deeply implanted in the interpreter so we should be able to
+  change that later. After two days of hacking they were finished 
+  although some more translation related issues popped up and
+  were fixed. 
+
+- Holger continously prepared the release infrastructure and refactored
+  the website and documentation to allow it to be presented 
+  by version in the future.  For the next time, we will nevertheless
+  continue to use only "dist" as we don't expect interesting 
+  or neccessaries branches/splits of documentation or website
+  content. 
+
+- Anders L. and Jacob worked on compliancy worked on compliancy: 
+  they fixed some failing tests related to unicode and codecs 
+  and binascii. 
+
+- Initially Ludovic and Nik worked on making more parts of our
+  compiler RPython and Ludovic continued this effort on "astcompiler" 
+  for some days before he focused on fixing compiler compliancy
+  bugs along with Holger and Samuele and a host of others 
+  who had fun with CPython's somewhat non-compliant compiler
+  package. 
+
+- Laura continued working on a docstring exctraction tool
+  and cared for getting docstrings into PyPy builtin 
+  type objects. 
+
+- Niklaus Heidimann moved his _sre implementation 
+  *incrementally* to interpreter level and succeeded 
+  to have it fully running and translateable for the
+  release! 
+
+- Richard Emslie and Eric van Riet Paap continously worked 
+  on improving and fixing LLVM.  They succeeded in reusing 
+  genc's external function implementations but had to setup
+  a build indirection  via codespeak: to compile llvm-files 
+  source code is sent to a CGI on codespeak and the result
+  is sent back to the client.  This makes it easier for
+  people who don't have a CVS version of LLVM installed. 
+  They discovered and communicated with llvm-dev about 
+  LLVM bugs.  In the end they managed they managed to 
+  have a full LLVM backend documented and running for 
+  the 0.7.0 release! 
+
+- Christian worked on implementing various external functions 
+  and hacked a "fakecompiler" compilation with the translated 
+  pypy-c that delegates bytecode compilation to a python 
+  process. The idea was to have running of tests on the 
+  translated PyPy work. Christian also worked on fixing
+  the build process for win32. 
+
+- Many of us worked on the break day (which just was too rainy) 
+  and increased test compliancy by 10%, fixing and tackling 
+  numerous issues.  Anders C. was one of the person who 
+  continously worked on classifying and fixing core tests. 
+  holger with help from Niklaus fixed a couple of conftest 
+  compliancy-testing related bugs. 
+
+- Ludovic and Holger refactored the compiler and parser option 
+  handling and added a README.compiling to make things slightly 
+  less obscure.  
+
+- Armin, Samuele and others refactored the translation entry
+  points  and also made the pypy-c/pypy-llvm entry points nicer
+  (adding --info and --version options).  Samuele also unified 
+  the way we specify which app/mixed modules should be used. 
+
+- Carl Friedrich and Holger updated a lot of documentation and  
+  release issues, worked on getting-started, wrote the release 
+  announcement, the LICENSE files and checked that examples still 
+  work and make sense. 
+
+- Carl also quickly implemented the 'errno' mixed module. 
+
+- Bea worked on coordination and management issues
+  and wrote a document describing our sprint development 
+  process. She also worked on a "dissemination plan" 
+  and talked to various interested parties regarding 
+  their plans for the future.  She also convened with
+  Jacob and Stephan on monday to talk about management
+  responsibilities in the near future.  There now is the 
+  "3rd amendment" to the EU contract scheduled for 
+  7th September.  
+  
+- Holger and Bea listed the steps required for getting 
+  Michael Hudson on the project through the University 
+  of Bristol.  Later on the management team met 
+  and evaluated the results of the EU-workshop organized
+  by Changemaker in Goteborg. 
+
+On sunday afternoon (basically the last day where mostly 
+everbody was there) we had a kind of sprint-conclusion 
+and what to do next meeting, originally planned as 
+the technical board meeting.  There we talked about
+the next areas for cleanup (partly listed in this 
+`pypy-dev mail`_). 
+
+.. _`13 people registered`: http://codespeak.net/pypy/extradoc/sprintinfo/heidelberg-people.html
+.. _`announced`: http://codespeak.net/pypy/extradoc/sprintinfo/Heidelberg-sprint.html
+.. _`0.7.0 release out`: http://codespeak.net/pipermail/pypy-dev/2005q3/002294.html
+.. _`pypy-dev mail`: http://codespeak.net/pipermail/pypy-dev/2005q3/002301.html

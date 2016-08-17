@@ -1,0 +1,635 @@
+.. include:: <s5defs.txt>
+
+========================================================================
+                                  PyPy
+========================================================================
+
+Automatic generation of VMs for dynamic languages - JIT included
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. raw:: html
+
+   <br>
+   <center>
+   <table border=0>
+   <tr><td>Samuele Pedroni</td><td>&nbsp;&nbsp;&nbsp;</td>
+       <td>Laura Creighton</td></tr>
+   <tr><td>Armin Rigo</td><td></td>
+       <td>Jacob Hallén</td></tr>
+   </table>
+   <a href="http://codespeak.net/pypy/">http://codespeak.net/pypy/</a>
+   </center>
+
+
+PyPy
+==================
+
+.. raw:: html
+
+   <br>
+   <br>
+   <center>
+
+**PyPy is a tool-chain for constructing dynamic languages.**
+
+.. raw:: html
+
+   </center>
+
+Interpreters
+==================
+
+...are good to implement dynamic languages:
+
+* Easy to write
+
+* Portable
+
+* Flexible and easy to evolve, if written in high-level language
+  (without low-level details)
+
+The PyPy Project
+==================
+
+We built enough infrastructure such that:
+
+* speed is regained
+
+* features requiring low-level manipulations are (re-)added as *aspects*
+
+* interpreters are kept simple and uncluttered
+
+Targets as different as C and the industry OO VMs (JVM, CLR) are supported.
+
+PyPy as a project
+===================
+
+We operate both as an open source with production usage aspirations and
+research project.
+
+We focus on the whole system.
+
+We want the tool-chain itself to be as simple as possible
+(but not simpler).
+
+Some of what we do is relatively straight-forward, some is challenging
+(generating dynamic compilers!).
+
+The Origin of PyPy
+=====================
+
+PyPy is a reaction to the frustrations, resource problems and
+duplicated efforts of how mainstream open-source languages (like
+Python) are implemented now.
+
+
+Folk Wisdom
+====================================================
+
+...about interpreters for Dynamic Languages:
+
+* There are unavoidable tradeoffs between flexibility, maintainability,
+  and speed
+
+* Fast, Maintainable, Flexible -- pick one
+
+What this means in Practice
+===========================
+
+Current popular open source dynamic language implementations:
+
+* are relatively slow
+
+* are not very flexible
+
+* are harder to maintain than we would like them to be
+
+Not very flexible
+=================
+
+- Low-level decisions permeate the entire code base.
+- Not ideal to experiment - cannot simply plug-in a new garbage collector,
+  memory model, or threading model
+- Early decisions come back to haunt you.
+
+Hard to maintain
+================
+
+because they are traditionally written in low-level languages:
+
+- the community generates experts in the dynamic language but
+  requires experts in C or C++ for its own maintenance
+- every time a new VM is needed, the language's community forks
+  (CPython - Jython - IronPython)
+
+
+PyPy Approach
+=============================
+
+.. raw:: html
+
+   <br>
+
+.. image:: overview1.png
+   :align: center
+
+Translation
+==============================================
+
+.. raw:: html
+
+   <br>
+
+Going from interpreters to VMs
+------------------------------
+
+In PyPy interpreters are written in RPython:
+
+* A subset of Python amenable to static analysis
+
+* Still fully garbage collected
+
+* Rich built-in types
+
+RPython is still close to Python.
+
+Translation
+==============================================
+
+.. raw:: html
+
+   <br>
+
+Going from interpreters to VMs (2)
+----------------------------------
+
+The translation tool-chain implements good static compilation
+of RPython to multiple targets.
+
+It has pluggable backends, and inserts low-level details
+as needed (*translation aspects*).
+
+Translation details
+=======================
+
+.. raw:: html
+
+   <table border=0><tr><td>
+
+- First, load and initialize RPython code inside a normal Python VM
+
+- RPython translation starts from the resulting "live" bytecode
+
+- Unified "intermediate code" representation:
+  a forest of *Control Flow Graphs*
+
+.. raw:: html
+
+   </td><td>&nbsp;</td><td><img src="flowgraph.png"></td></tr></table>
+
+Translation details (2)
+=======================
+
+PyPy uses abstract interpretation extensively:
+
+- to construct Flow Graphs
+- for type inference
+- to gather info for some optimisations
+- for Partial Evaluation in the generated Dynamic Compilers...
+
+also uses Flow Graph transformation and rewriting.
+
+Representation choice
+========================
+
+A complex part of RPython translation:
+
+* RPython types are still rich
+
+* we have to choose implementations and representations
+  that work for the target platforms (C vs. OO VMs)
+
+Type Systems
+=========================
+
+We model the different targets through different type systems:
+
+- LL (low-level C-like targets): data and function pointers, structures,
+  arrays...
+
+- OO (object oriented targets): classes and instances
+  with inheritance and dispatching
+
+Type systems (2)
+===========================
+
+Translation:
+
+* starts from *RPython Flow Graphs*
+
+* turns them into *LL Flow Graphs* or *OO Flow Graphs*
+
+* which are then sent to the backends.
+
+Type systems and helpers
+===========================
+
+We have emulation of the type systems that can run on top of CPython
+for testing but also for:
+
+- constructing and representing the prebuilt data that our approach involves
+  (we start from live objects)
+
+- helper functions (e.g. implementations of RPython types)
+  use the emulations which our translation knows about too
+
+
+Translation aspects
+========================
+
+The interpreters in RPython are free of low-level details
+(as required to target platforms as different as Posix/C
+and the JVM/.NET).
+
+- Advanced features related to execution should not need wide-spread
+  changes to the interpreters
+
+- Instead, the interpreters should use support from
+  the translation framework
+
+Translation aspects (2)
+========================
+
+Examples:
+
+- GC and memory management
+
+- memory layout
+
+- stack inspection and manipulation
+
+- unboxed integers as tagged pointers
+
+Implementation
+==================
+
+- Translation aspects are implemented as transformation of low-level
+  graphs
+
+- Calls to library/helper code can be inserted too
+
+- The helper code is also written in RPython and analyzed and translated
+
+GC Framework
+===============
+
+The LL Type System is extended with allocation and address manipulation
+primitives, used to express GC in RPython directly.
+
+- GCs are linked by substituting memory allocation operations with calls
+  into them
+
+- Transformation inserts bookkeeping code, e.g. to keep track of roots
+
+- Inline fast paths of allocation and barriers
+
+.. MMTk reference
+
+Stackless transformation
+=========================
+
+Inserts support code around calls such that the stack can be unwound.
+
+- Functions can store their current activation frame state to the heap
+
+- Chains of saved activation state can be resumed
+
+We have implemented coroutine switching using this.
+
+A special aspect
+==================================
+
+.. raw:: html
+
+   <br>
+   <br>
+   <center>
+
+**Generating JIT compilers**
+
+.. raw:: html
+
+   </center>
+
+JIT motivation
+==================================
+
+Flexibility vs. Performance:
+
+* Interpreters are easy to write and evolve
+
+* For high performance, dynamic compilation is required
+
+Traditional JIT compilers
+===============================
+
+* Huge resource investment
+* The richer the semantics, the harder to write
+* Poor encoding of language semantics
+* Hard to evolve
+
+Need for novel approaches!
+
+PyPy Approach: Goal
+=============================
+
+.. raw:: html
+
+   <br>
+
+.. image:: overview2.png
+   :align: center
+
+
+Basics
+=======================
+
+* Use partial evaluation techniques to generate a dynamic compiler
+  from an interpreter 
+* Inspiration: Psyco 
+* Our translation tool-chain was designed for trying this
+
+Futamura
+=====================
+
+* *Partial evalution of computation process -
+  an approach to a compiler-compiler*, 1971
+
+* Generating compilers from interpreters
+  with automatic specialization
+
+* Relatively little practical impact so far
+
+General idea
+================
+
+Partial evaluation (PE):
+
+* Assume the Python bytecode to be constant, and
+  constant-propagate it into the Python
+  interpreter.
+
+Challenges
+======================
+
+* Effective dynamic compilation requires feedback of runtime
+  information into compile-time
+
+* A shortcoming of PE is that in many cases not much can be really
+  assumed constant at compile-time: poor results
+
+* For a dynamic language: types are a primary example
+
+Solution: Promotion
+====================
+
+* Enhance PE with the ability
+  to "promote" run-time values
+  to compile-time
+
+* Leverage the dynamic setting
+
+
+Overall ingredients
+=====================
+
+The pieces to enable effective dynamic compiler generation
+in PyPy:
+
+- a few hints in the Python interpreter to guide the JIT
+  generator
+- *promotion*
+- lazy allocation of objects (only on escape)
+- use CPU stack and registers for the contents of the Python frame
+
+..  ("virtualizables")
+
+Language-agnostic
+====================
+
+* The dynamic generation process and primitives are language-agnostic.
+
+* The language implementations should be able to evolve up to
+  maintaining the hints.
+
+* By construction all interpreter/language features are supported
+
+pypy-c-jit
+======================
+
+.. where to put this? 
+
+PyPy 1.0 contains both the dynamic compiler generator and the start of
+its application to PyPy's Python intepreter.
+
+* included are backends for IA32 and PPC
+* integer arithmetic operations are optimized
+* for these, we are in the speed range of ``gcc -O0``
+* demo (63x faster than CPython)
+
+.. demo f1
+
+
+EXTRA MATERIAL
+==================
+
+* More about the JIT Generation:
+
+  - The *Timeshifting* transformation
+  - *Virtuals* and *Promotion*
+
+* More on the Stackless transformation
+
+  - *Resume points*
+
+* More on any other part that you are interested in
+
+* More demos
+
+
+The transformation
+==================================
+
+* The generation process is implemented as a
+  transformation of the low-level control flow graphs
+  of the interpreter
+
+* Guided by a binding time analysis ("color" of the graphs)
+
+* *"timeshifting"*
+
+Coloring
+=================
+
+* Green: compile-time value
+* Red: runtime value
+
+* The hints give constraints from which the colors
+  of all values are derived
+
+We reuse the type inference
+framework to propagate colors
+
+Timeshifting Basics
+====================
+
+* Green operations: unchanged, executed at compile-time
+
+* Red operations: converted into corresponding code emitting code
+
++-----------------------------------------------+-----------------------------------------+----------------------------------------------+
+| | ``def f(`` :green:`x`, :red:`y` ``):``      | | *(case x=3)*                          | | *(case x=10)*                              |
+| |   :green:`x2` = :green:`x` ``*`` :green:`x` | | ``def f_3(y):``                       | | ``def f_10(y):``                           |
+| |   :red:`y2`   = :red:`y`   ``*`` :red:`y`   | |   ``y2 = y * y``                      | |   ``y2 = y * y``                           |
+| |   ``return`` :green:`x2` ``+`` :red:`y2`    | |   ``return 9 + y2``                   | |   ``return 100 + y2``                      |
++-----------------------------------------------+-----------------------------------------+----------------------------------------------+
+
+Timeshifting Control Flow
+===========================
+
+- red split points: schedule multiple compilation states 
+- merge points: merge logic to reuse code for equivalent states
+
++-----------------------------+----------------------------+
+| | ``if`` :red:`x`:          | | :green:`(case y != 0)`   |
+| |   ``print "x is true"``   | | ``if x:``                |
+| | ``if`` :green:`y`:        | |   ``print "x is true"``  |
+| |   ``print "y is true"``   | | ``print "y is true"``    |
++-----------------------------+----------------------------+
+
+Promotion
+=================
+
+Promotion is implemented generating a switch that grows to cover the
+seen runtime values
+
+* First compilation stops at a promotion point and generates a switch
+  with only a default case.  The default will call back into
+  the compiler with runtime values.
+  
+* On callback the compiler adds one more case to the switch and
+  generate more code assuming the received value.
+
+.. need to save state in a compact form: paths
+
+Promotion (example)
+========================
+
++----------------------------------------------------------------------------+---------------------------------------------------------------+
+| | ``def f(`` :red:`x`, :red:`y` ``):``                                     |                                                               |
+| |   :green:`x1` = ``hint(``:red:`x`, ``promote=True)``                     | | ``def f_(x, y):``                                           |
+| |   ``return`` :green:`x1` ``*`` :green:`x1` ``+`` :red:`y` ``*`` :red:`y` | |   ``switch x:``                                             |
+|                                                                            | |     ``pass``                                                |
+|                                                                            | |   ``default:``                                              |
+|                                                                            | |     ``compile_more(value=x)``                               |
+|                                                                            | |                                                             |
+|                                                                            +---------------------------------------------------------------+
+|                                                                            | | ``def f_(x, y):``                                           |
+|                                                                            | |   ``switch x:``                                             |
+|                                                                            | |     *case 3:*                                               |
+|                                                                            | |       *return 9 + y*y*                                      |
+|                                                                            | |   ``default:``                                              |
+|                                                                            | |     ``compile_more(value=x)``                               |
+|                                                                            | |                                                             |
++----------------------------------------------------------------------------+---------------------------------------------------------------+
+
+Virtuals + Promotion
+=====================
+ 
+* Example from PyPy (simplified!):
+
++----------------------------------------------------------------------------------------+
+| | ``def add_python_objects(``:red:`obj1`, :red:`obj2` ``):``                           |
+| |     :green:`obj1cls` = ``hint(``:red:`obj1`. ``__class__, promote=True)``            |
+| |     :green:`obj2cls` = ``hint(``:red:`obj2`. ``__class__, promote=True)``            |
+| |     ``if`` :green:`obj1cls` ``is IntObject and`` :green:`obj2cls` ``is IntObject:``  |
+| |         :red:`x` = :red:`obj1`. ``intval``                                           |
+| |         :red:`y` = :red:`obj2`. ``intval``                                           |
+| |         :red:`z` = :red:`x` ``+`` :red:`y`                                           |
+| |         ``return IntObject(intval=``:red:`z` ``)``                                   |
++----------------------------------------------------------------------------------------+
+
+Virtuals + Promotion
+=====================
+
+| *The factorial for the Toy Language interpreter:*
+|                                  ``PUSH 1   #  accumulator``
+|                                  ``PUSHARG``
+|                              ``start:``
+|                                  ``PICK 0``
+|                                  ``PUSH 1``
+|                                  ``LE``
+|                                  ``BR_COND exit``
+|                                  ``SWAP``
+|                                  ``PICK 1``
+|                                  ``MUL``
+|                                  ``SWAP``
+|                                  ``PUSH 1``
+|                                  ``SUB``
+|                                  ``PUSH 1``
+|                                  ``BR_COND start``
+
+.. tlc example results
+
+Conclusion (JIT)
+================
+
+Effective dynamic compiler generation make flexibility and ease of
+evolution mostly **orthogonal to the performance question**.
+
+Implementers are free to implement languages as **understandable interpreters**.
+
+PyPy proves this a viable approach worth of further exploration.
+
+
+.. backend material: not for the general talk
+.. virtualizables: not for general talk
+.. state of gc framework
+
+Open Issues
+==============
+
+- inlining control
+
+- promotion switch explosion fallbacks
+
+- jit only the hot-spots
+
+- more hints needed in PyPy's Python
+
+Virtualizable Frames
+======================
+
+- frames need to live in the heap
+  (tracebacks ...) and be introspectable
+- jit code wants local variables to live in registers
+  and on the stack
+- => mark the frame class as "virtualizable"
+- jit code uses lazy allocation and stores
+  some contents (local variables...) in register
+  and stack
+- outside world access gets intercepted
+  to be able to force lazy virtual data into the heap
+
+
+Resume points
+===============
+
+Based on the Stackless Transformation:
+
+- this transformation can also insert code that allows to construct
+  artificial chains of activation states corresponding to labeled points in the
+  program
+
+- we use this to support resuming serialized language-level coroutines
+

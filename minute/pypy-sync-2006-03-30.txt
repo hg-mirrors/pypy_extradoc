@@ -1,0 +1,154 @@
+what: weekly pypy-sync meeting
+where: #pypy-sync on freenode
+when: 2006-03-30, 5pm Central European Time for 30 minutes
+who: all active PyPy developers
+
+topics:
+
+- activity reports
+- the status of uthreads. It is needed by the logic implementation.
+- is it premature to think about setting up a buildbot, and is builbot the right tool
+
+- next pypy-sync meeting. I propose that the next pypy-sync meeting will be at april 20. due to Leysin sprint and easter.
+
+
+Cheers,
+ale
+
+16:45
+stedi67 has quit the server saying: Remote closed the connection
+stedi67 has joined the channel
+16:55
+ericvrp has joined the channel
+17:00
+arigo has joined the channel
+auc has joined the channel
+arigo: hi
+auc: hi
+stedi67: hallo
+aleale: hi
+aleale: I guess arre, pedronis are not coming. hpk ?
+ericvrp: hi
+Gromit has joined the channel
+aleale: I think we can start with our 3 lines
+auc: LAST : refactoring of the Logic Space
+auc: NEXT : choice : integration of constraint code into PyPy's core, or making logic space compilable
+auc: BLOCKER : logic space -> bug-free greenlets/threads, constraints -> picklable greenlets/threads
+aleale: PREV: trying to understand OWL semanticsNEXT: Sprintblockers: too small mental bandwith
+ericvrp: LAST: pyllvm using ctypes
+ericvrp: NEXT: more of that and write tools to aid C++ -> C api
+ericvrp: BLOCKERS: -
+arigo: PREV: a bit on the JIT
+arigo: NEXT: more on the JIT, before the official sprint begins
+arigo: BLOCKERS: -
+aleale: any one else ? mwh is on holliday I guess
+stedi67: LAST: complex/set impl
+Gromit: PREV: trying to register ctypes structures with the extrigistry
+stedi67: NEXT: refactoring of these
+17:05
+stedi67: BLOCKERS: my brain
+aleale: The only blocker we can address is actually the next topic
+aleale: - the status of uthreads. It is needed by the logic implementation.
+Gromit: NEXT: trying harder
+Gromit: BLOCKERS: not mucht time till the sprint
+aleale: Does anyone have a comment on the status ?
+auc: yes
+auc: we will need working greenlets real soon now
+cfbolz has joined the channel
+auc: true micro threads can wait
+auc: and could be postponed for a while
+arigo: good to know
+aleale: hi Carl
+cfbolz: sorry
+arigo: but it seems that nobody here can comment on the current status of the greenlets
+auc: afaik samuele or christian could
+aleale: Carl and Samuele did something in Belgium
+auc: samuele seems to know what's missing to have them working
+auc: maybe carl knows too
+cfbolz: arigo: I can a little bit
+auc: aleale: that's what i've been refactoring
+cfbolz: there are still problems with the framestate, I think
+cfbolz: plus, they are not really well exposed to applevel
+nikh has joined the channel
+cfbolz: but the basic mechanisms are there and work well
+nikh: hi! sorry for being late ...
+cfbolz: the most work will be to make nice interfaces
+auc: cfbolz: it's quite easy to hit the framestate stuff
+17:10
+cfbolz: yes
+cfbolz: christian knows how to solve it, I think
+auc: what are your thoughts abou nice interfaces ?
+cfbolz: we have to get him to do it
+auc: (the current one ... sort of satisfies me)
+cfbolz: auc: well, I think it makes sense with interfaces that exist already
+cfbolz: like the stackless module, greenlets
+cfbolz: coroutines
+cfbolz: auc: logic variables are in a way another interface to microthreads
+auc: hmm
+auc: not sure i understand this
+cfbolz: why?
+auc: but i personnally see no special problem with this interface stuff ...
+cfbolz: well
+cfbolz: it is part of wp7
+auc: will christian be at leysin ?
+arigo: who knows?
+cfbolz: nobody
+auc: he seems to be quite busy with stuff unrelated with coroutines/stackless/...
+aleale: He hasnot put his name in people.txt yet
+ericvrp: he mentioned to me this he probably will not be able to make it to Leysin
+auc: so i read it as : won't be there
+Gromit: according to my last chat with him, chris will be at leysin
+Gromit: ericvrp, sigh
+arigo: that's what I meant by "who knows"
+cfbolz: 
+ericvrp: Gromit, so we are still unsure
+Gromit: yep
+cfbolz: I advise to put it into the minutes that work on coroutines is getting essential
+17:15
+Gromit: managing programmers is like herding cats
+auc: he doesn't show up to often on #pypy either
+auc: s/to/too
+aleale: I will put it in the minutes that we need Christian to look into this
+cfbolz: auc: he does, just at american times
+aleale: Next topic ?
+cfbolz: fine with me
+aleale: Buildbot - to premature ? not the right tool ?
+aleale: s/to/too
+cfbolz: I think it might not perfectly fit our problem
+arigo: what is precisely our problem?
+aleale: Many options that needtesting
+aleale: but maybe we should wait till we closer at be "production" ready
+cfbolz: I know that holger has worked on some stuff in that direction recently for hp
+cfbolz: using execnet
+aleale: cool
+17:20
+cfbolz: I guess our problem is that we don't know the problem we want to solve yet 
+cfbolz: who proposed the topic?
+aleale: I did - had to invent some topic
+auc: pypy is traversing some sort of crisis ...
+cfbolz: auc: huh? why?
+auc: lack of topic at pypy-sync is a sure sign ...
+auc: 
+cfbolz: rather a lack of activity, I would say
+Gromit: yep, cfbolz
+cfbolz: arigo: but indeed, sometimes it would be cool to be able to do translation/tests faster. although it has not become a fundamental problem that hinders work
+auc: does this mean we are done for today ?
+aleale: One more topic
+aleale: next pypy-sync meeting. I propose that the next pypy-sync meeting will be at april 20. due to Leysin sprint and easter.
+cfbolz: when is easter?
+nikh: easter is 16./17. april
+arigo: 16th
+cfbolz: ah
+17:25
+aleale: Who will moderate it ? I am not able to do it
+auc: i can do that probably
+cfbolz: great
+aleale: I n Denmark the 13/14 is a holiday too
+aleale: great 
+aleale: Anymore topics ( my list is exhausted )?
+aleale: else: See you in Leysin
+Gromit: bye
+Gromit has left the channel saying: "Leaving"
+auc: bye
+ericvrp: bye
+

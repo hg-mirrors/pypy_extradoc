@@ -1,0 +1,7 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy 1.1]{PyPy 1.1 - Present and Future}
+\author[Antonio Cuni]{Antonio Cuni\\DISI - Università di Genova\\Merlinux GmbH}
+
+\institute[PyCon Tre]{PyCon Tre 2009 - Firenze}
+\date{May 9 2009}

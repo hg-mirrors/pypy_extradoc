@@ -1,0 +1,44 @@
+Abstract
+--------
+
+In this talk, we will see an intro and status of two projects: PyPy, an
+alternative Python-in-Python implementation; and CFFI, an alternative to
+using the standard C API to extend Python.  These two projects are very
+different, but CFFI is a possible solution to a problem that hits
+notably PyPy --- the CPython C API.
+
+The CPython C API was great and contributed to the present-day success
+of Python, together with tools built on top of it like Cython and SWIG.
+I will argue that it may be time to look beyond it.
+
+
+Full description
+----------------
+
+We will see an intro and status of these two projects (the speaker is
+involved in both):
+
+    PyPy: http://pypy.org/
+
+    CFFI: http://cffi.readthedocs.org/
+
+PyPy is an alternative Python implementation.  It features a JIT
+compiler that gives important speed-ups over CPython, for almost any
+program that runs for any amount of time (at least some seconds).
+
+One of the main issues with PyPy is its forever-alpha-status "cpyext"
+module.  It is the part that loads and executes CPython extension
+modules --- and occasionally segfaults if the stars are not correctly
+aligned.  The C API is very large, exposes the most obscure
+implementation details, and assumes a memory model (reference counting)
+that is often different in non-CPython implementations of Python.  Thus
+"cpyext" is the best-effort solution available for PyPy, but is a hack.
+(IronPython has a similar capability.)
+
+This was partly the motivation for developing CFFI: it is a minimal
+layer that allows direct access to C from Python, with no fixed
+intermediate C API.  It is available for CPython and for PyPy and could
+be ported to more implementations.  It shares ideas from Cython, ctypes,
+and LuaJIT's ffi, but the non-dependence on any fixed C API is a central
+point.  Some high-visibility projects like Cryptography have switched
+to it.

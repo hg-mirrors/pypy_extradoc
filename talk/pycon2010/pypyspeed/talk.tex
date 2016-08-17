@@ -1,0 +1,235 @@
+
+\documentclass[utf8x, 14pt]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+}
+
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{tikz}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+
+\title{The speed of PyPy}
+
+\author{Maciej Fijałkowski}
+
+\institute[merlinux GmbH]
+{ merlinux GmbH }
+
+\date{Pycon 2010, February 20th 2010, Atlanta}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \begin{figure}
+    \begin{tabular}{c c c}
+    \includegraphics[width=.30\textwidth]{../common/pypy-logo.png}
+    &
+    \hspace{2cm}
+    &
+    \includegraphics[width=.25\textwidth]{../common/merlinux-logo.png}
+    \end{tabular}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How fast is PyPy?}
+  \pause
+  \begin{itemize}
+    \item pretty fast, in places
+    \item slower than cpython in other places
+    \item overall, it depends
+    \item graphs
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{JIT - what's that about?}
+  \begin{itemize}
+      \pause
+    \item {\bf JIT is not a magical device!}
+      \pause
+    \item removes bytecode overhead
+    \item removes frame overhead
+    \item can make runtime decisions
+    \item more classic optimization that can follow
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The main idea}
+  \begin{itemize}
+    \item python has advanced features (frame introspection,
+      arbitrary code execution, overloading globals)
+    \item with JIT, you don't pay for them if you don't use
+      them
+    \item however, you pay if you use them, but they work
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A piece of advice}
+  \begin{itemize}
+    \item don't use advanced features if you don't have to
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tracing JIT}
+  \begin{itemize}
+    \item compiler traces the actual execution of Python program
+    \item then compiles linear path to assembler
+    \item example
+    \item mostly for speeding up loops and to certain extent
+      recursion
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Removing frame overhead}
+  \begin{verbatim}
+x = y + z
+  \end{verbatim}
+  \begin{itemize}
+    \item above has 5 frame accesses
+    \item they can all be removed (faster!)
+      \pause
+    \item {\bf this enables further optimizations}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Removing object boxing}
+  \begin{verbatim}
+i = 0
+while i < 100:
+  i += 1
+  \end{verbatim}
+  \begin{itemize}
+    \item for each iteration we do a comparison and addition
+    \item xxx integers on valuestack and xxx integers in locals
+    \item all boxing can be removed
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Variable access costs}
+  \begin{itemize}
+    \item local access costs nothing
+    \item global access is cheap, if you don't change global {\ttfamily \_\_dict\_\_} too much XXX rephrase
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Frame escapes}
+  \begin{itemize}
+    \item {\bf JIT} normally removes frame overhead, but
+    \item calling {\ttfamily sys.\_getframe()}, {\ttfamily sys.exc\_info()}
+    \item exception escaping
+    \item prevents a lot of optimizations
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Shared dicts (aka hidden classes)}
+  \begin{itemize}
+    \item instance {\ttfamily \_\_dict\_\_ } lookup becomes an array lookup
+    \item if you're evil, it'll bail back to dict lookup
+      \pause
+    \item {\bf only for newstyle classes}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Version tags}
+  \begin{itemize}
+    \item dicts on types are version-controlled
+    \item this means method lookup can be removed
+      \pause
+    \item ... if you don't modify them too often
+    \item counters on classes are bad
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Call costs}
+  \begin{itemize}
+    \item calls can be inlined
+    \item simple arguments are by far the best
+    \item avoid {\ttfamily *args} and {\ttfamily **kwds}
+    \item however, {\ttfamily f(a=3, b=c)} is fine
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Allocation patterns}
+  \begin{itemize}
+    \item PyPy uses a moving GC (like JVM, .NET, etc.)
+    \item pretty efficient for usecases with a lot of
+      short-living objects
+    \item objects are smaller than on CPython
+    \item certain behaviors are different than on CPython
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Differencies}
+  \begin{itemize}
+    \item no refcounting semantics
+    \item {\ttfamily id(obj)} can be expensive as it's a complex
+      operation on a moving GC
+    \item a large list of new objects is a bad case behavior
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{General rules}
+  \begin{itemize}
+    \item don't try to outsmart your compiler
+    \item simple is better than complex
+    \item metaprogramming is your friend
+    \item measurment is the only meaningful way to check
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problems}
+  \begin{itemize}
+    \item long traces - tracing is slow
+    \item megamorphic calls
+    \item metaclasses
+    \item class global state
+      \pause
+    \item years of optimizations against CPython
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Future}
+  \begin{block}{release end March}
+    \begin{itemize}
+      \item will contain a working JIT
+      \item will not speed up all cases
+      \item might eat all your memory
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{That's all!}
+  \begin{itemize}
+    \item Q \& A
+    \item http://morepypy.blogspot.com
+    \item http://pypy.org
+    \item http://merlinux.eu
+  \end{itemize}
+\end{frame}
+
+\end{document}

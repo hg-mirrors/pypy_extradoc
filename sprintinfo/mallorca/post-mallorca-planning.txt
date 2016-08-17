@@ -1,0 +1,45 @@
+===========================================
+Rough planning between Mallorca and PyCon
+===========================================
+
+Preparation for PyCon
+======================
+
+- sprint announcement (soon, i.e. by Friday 3rd Feb)
+- updated tutorial
+- talks
+
+JIT
+======
+
+- more JIT work :)
+
+GC integration
+=====================
+
+- continue Michael and Carl's genc-vs-gc refactoring
+- use and improve GCs written with the framework
+
+Concurrency 
+==================
+
+- finish high-level interfaces for greenlets and tasklets (nearly done?)
+- open: performance with GIL threading: 
+  this seems to have improved quite a bit: using our battery of microbenchmarks we
+  now get for a version with GIL threads enabled vs. without::
+
+        python2.4 microbench.py ../goal/pypy-c-23188 ../goal/pypy-c-23188-th
+        exe: ../goal/pypy-c-23188
+        exe: ../goal/pypy-c-23188-th
+        ...
+        1.26x slower on test_dispatch.test_dispatch_nop()
+- still to do: release GIL around sys calls
+- open: free threading
+- open: tasklet pickling
+
+Compiling double use (PyPy+CPython) extensions
+========================================================
+
+- annotation and compilation of such double use extension modules
+- rctypes
+

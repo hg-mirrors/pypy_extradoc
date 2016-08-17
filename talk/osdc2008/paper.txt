@@ -1,0 +1,283 @@
+The PyPy Project And You
+========================
+
+:author: Michael Hudson <micahel@gmail.com>
+
+
+.. contents::
+
+Abstract
+--------
+
+  PyPy aims to provide a common translation and support framework for
+  producing implementations of dynamic languages, emphasising a clean
+  separation between language specification and implementation
+  aspects and a compliant, flexible and fast implementation of the
+  Python Language using the above framework to enable new advanced
+  features without having to encode low level details into it.
+
+  This paper gives a brief overview of the motivation and status of
+  PyPy and attempts to explain why anyone who cares about the
+  implementation of dynamic languages should be interested in it.
+
+
+What is PyPy?
+-------------
+
+PyPy is:
+
+ * An implementation of Python in Python
+ * A very flexible compiler framework (with some features that are
+   especially useful for implementing dynamic languages)
+ * An open source project (MIT license)
+ * A lot of fun!
+
+PyPy was also:
+
+ * A Structured Targeted REsearch Proposal (STREP), partly funded by
+   the European Union
+ * The funding period ended at the end of March 2007
+ * In May 2007 we had our final technical review, and "[PyPy] fully
+   achieved its objectives and tech goals and has even exceeded
+   expectations"
+
+Nowadays PyPy is both an open source project that people work on in
+their spare time and as part of their studies and also a project seeking
+funding from various companies to improve certain parts of the
+project.
+
+
+Motivation
+----------
+
+The beginnings PyPy can be traced to the first EuroPython conference
+in 2002, where some of the people who ultimately became involved in
+the project met in person for the first time, and realized they had a
+common interest: we were all much more interested in *implementing*
+the Python language, rather than the language itself, which was and
+still is the usual topic of discussion on the python-dev list.
+
+Most of us had done a fair amount of work on and with the default, C,
+implementation of Python, which is often called CPython.  There is
+nothing deeply wrong with CPython, which is written in a
+straightforward style in clear C, but there are some inherent issues:
+
+ * Being written in C, it is not useful for implementing Python on
+   platforms such as the JVM or CLI.
+
+ * Extensions to the language like Stackless, which adds coroutines
+   and other non-traditional control flow to Python, or Pysco, Armin
+   Rigo's specializing compiler, have to be painfully kept up to date
+   with language changes as they are made.
+
+ * Some implementation decisions, such as using reference counting for
+   memory management or a Global Interpreter Lock for threading, are
+   a lot of work to change.
+
+More or less independently, we'd all decided we wanted something more
+flexible.
+
+PyPy's Big Idea And The PyPy Meta-Platform
+------------------------------------------
+
+In broad brush terms, PyPy's idea is quite simple:
+
+ * Take a description of the Python programming language
+ * Analyze this description
+ * Take various implementation decisions, for example:
+
+  * Whether to include stackless- or psyco-like features
+  * Whether to optimize for memory footprint or performance
+  * Select the target platform
+
+ * Translate to a lower-level, efficient form
+
+.. image:: bigidea.png
+   :scale: 50
+
+We chose to specify the Python language by writing an implementation
+of Python in a restricted strict subset of Python that is amenable to
+analysis, which had a practical advantage: we could test the
+specification/implementation simply by running it as a Python program.
+
+This means that almost from the start, PyPy has had two major
+components:
+
+  * An implementation of Python, written in a "static enough" subset
+    of Python.
+
+  * The code that analyses this, now revealed in its true colours to
+    basically be a compiler for this restricted subset of Python.
+
+The development of the two parts was heavily inter-twined of course:
+for example, the definition of "static enough" was a compromise
+between making writing the interpreter pleasant and what was practical
+to implement in the compiler.
+
+
+The *LxOxP* problem
+-------------------
+
+After several years of work on the project, we'd written this compiler
+framework, with only one expected non-trivial input (our Python
+interpreter).  Finally, we realized that our compiler would be
+suitable for implementations of other dynamically-typed programming
+languages...
+
+Now have implementations of Prolog, JavaScript, Smalltalk and Scheme
+(to varying extents) as well as a mostly working Gameboy emulator.
+
+This leads to one of PyPy's meta-goals, ameliorating the so-called
+LxOxP problem: given
+
+  * L dynamic languages
+
+    * for example Python, Scheme, Ruby...
+
+  * O target platforms
+
+    * for example C/POSIX, CLI, JVM...
+
+  * P implementation decisions
+
+    * for example include a JIT, a moving garbage collector,
+      stackless-style features...
+
+we don't want to have to write LxOxP different interpreters by hand.
+PyPy aims to reduce this to an L+O+P problem:
+
+ * Implement L language front-ends
+ * Write backends for O platforms
+ * Take P implementation decisions
+
+Then let the magic of PyPy(TM) tie it all together :-)
+
+Status
+------
+
+PyPy's dual nature means that it does not have a single status, so we
+consider various parts in turn...
+
+The Python Interpreter
+++++++++++++++++++++++
+
+PyPy's Python interpreter is an extremely conforming implementation of
+Python 2.4.  As evidence, PyPy can run, unmodified:
+
+ * Django
+ * Pylons
+ * Twisted
+ * Nevow
+
+as well as 98% of CPython's 'core' tests -- roughly speaking those
+tests that do not depend on extension modules (Google's Open Source
+office recently funded some work on running "real" applications on
+PyPy).
+
+By far the most common incompatibility is the lack of extension modules.
+PyPy supports a fair selection of the commonest extension modules --
+socket, select, ctypes, zlib, struct, ... -- but by no means all.
+
+Compatibility with Python 2.5 is almost complete in a branch.  2.6
+shouldn't be too hard.  No Python 3 yet :)
+
+
+The Compiler
+++++++++++++
+
+PyPy's compiler has working backends that target C + POSIX (on Linux,
+Windows and OS X), the JVM and the CLI, and backends in various states
+of completeness for LLVM and JavaScript.
+
+When targeting C/POSIX, it supports a range of garbage collection
+options, including:
+
+ * Using the Boehm-Demers-Weiser conservative garbage collector.
+ * Naive refcounting (used only in tests, really).
+ * A mark and sweep garbage collector.
+ * A copying semi-space collector.
+ * A copying generational collector.
+ * A 'hybrid' generational collector that uses a semi-space for the
+   intermediate generations and mark and sweep for the oldest generation.
+
+The hybrid collector has the best performance.
+
+The compiler supports threading with a GIL-like model.
+
+The Compiled Interpreter
+++++++++++++++++++++++++
+
+When compiled with all optimizations enabled, PyPy translated to C has
+performance roughly comparable to CPython, from 20% faster to 5 times
+slower, with most programs clocking in at about half CPython's speed
+(without any JIT magic).
+
+Unique Stuff
+++++++++++++
+
+PyPy has a number of unique features that hint at the flexibility it's
+architecture brings.
+
+ * The JIT: PyPy's Just-in-time compiler is still experimental, but
+   can run certain carefully designed programs sixty times faster than
+   CPython.  The *really* interesting thing about PyPy's JIT is that
+   it was *automatically generated* from the interpreter
+   implementation.
+
+ * Sandboxed execution: it is possible to compile a version of PyPy
+   that has all calls to external functions replaced with *requests*
+   to another process which can choose how to interpret this reqest.
+   In this way it's possible to build an interpreter which has a very
+   limited view of the file system and can only use a prescribed
+   amount of CPU and memory. The thing which differentiates it from
+   other sandboxed python implementations is that it doesn't restrict
+   language features at all.
+
+
+Future
+------
+
+I think that the bulk of the work on PyPy so far has being laying the
+groundwork for the really fun stuff.
+
+As mentioned above, one of the basic goals of PyPy is to allow
+separation of language and implementation.  For example, today if you
+want a language implementation for use in a low memory situation, you
+might choose Lua over Ruby or Python for this reason.  But maybe one
+day, you will be able to chose to compile a version of, say, Ruby
+using PyPy making decisions to save memory and use that instead.
+
+In a similar vein, the sandboxing mentioned above might widen the
+choice of languages suitable for scripting a game, or running code in
+a web browser.
+
+However, the area with the most exciting potential is probably the
+JIT.  PyPy has already extended the state of the art in automatically
+generating a JIT compiler for an implementation of a dynamic language.
+
+Down at the more nuts and bolts implementation level, something I'm
+interested in myself is stealing ideas -- and maybe even code -- from
+garbage collectors developed by the Jikes RVM project.
+
+Something we'd really really like to see are implementations of other
+dynamic languages -- Ruby being an obvious example :) -- which would,
+when the JIT magic is more advanced, get a Just in Time compiler
+almost for free, and be sandboxable.
+
+
+Getting involved
+----------------
+
+Like most open source projects, PyPy has a website:
+
+     http://codespeak.net/pypy/
+
+with, perhaps not so usually, extensive documentation.  We also have
+an active IRC channel, #pypy on freenode, and a reasonably low-volume
+mailing list, pypy-dev.
+
+Acknowledgements
+----------------
+
+Thanks to Maciek Fijalkowski, Jonathan Lange, Holger Krekel and Carl
+Friedrich Bolz for comments on drafts.

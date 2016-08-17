@@ -1,0 +1,48 @@
+The speed of PyPy's Python
+==============================
+
+Summary:
+
+The first part of the talk will cover PyPy's speed achievements resulting 
+from the last year's work on the Just-In-Time Compiler.  I'll present 
+and discuss a number of benchmarks and compare against other Python-speed 
+projects. I'll also cover the basics of how the JIT works and what 
+sort of programs it can greatly speedup (and which ones it can't).
+
+Description:
+
+PyPy's JIT has been in development for some years now.  More recently
+it became more practical and begins to be `faster than Psyco`_ on some
+examples.  This is the status in September 2009 and currently it's fast-paced
+development so we expect to have even more interesting results for
+February 2010, worth discussing and comparing.  If possible
+a 45 minute talk would be cool due to the "explaining the JIT"
+bit of the talk. 
+
+Proposed talk agenda:
+
+* Show various benchmarking data for comparison of different
+  Python interpreters (5 minutes)
+
+* Describe what is JIT with some examples (10 minutes)
+
+* A bit of introduction into how PyPy's JIT work (it's a generated tracing JIT,
+  like the tracemonkey JS interpreter, unlike Psyco or JVM JITs). (5 minutes)
+
+* Tracing JITs focus on often executed loops. Which kind of programs
+  will the PyPy JIT speed-up, which constructs we know it is currently poor at.
+  (15 minutes)
+
+* Future plans for PyPy, especially JIT-wise.
+  (5 minutes)
+
+* Q&A (5 minutes)
+
+.. _`faster than Psyco`: http://morepypy.blogspot.com/2009/09/first-results-of-jit.html
+
+The main part of the talk would focus on a detailed explanation what
+information JIT can use (at the time of talk) or at all and what
+constructs it'll be poor at.
+
+Also, the talk will be focused on intermediate audience, hence prolonged
+timeline for explanation of what is JIT and how it works.

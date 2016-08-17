@@ -1,0 +1,198 @@
+
+\documentclass[utf8x, 14pt]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+}
+
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{tikz}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+
+\setbeamerfont{big}{size*={64pt}{0pt}}
+
+\title{The status of PyPy}
+
+\author{Maciej Fijałkowski}
+
+\institute[merlinux GmbH]
+{ merlinux GmbH }
+
+\date{Pycon 2010, February 20th 2010, Atlanta}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \begin{figure}
+    \begin{tabular}{c c c}
+    \includegraphics[width=.30\textwidth]{../common/pypy-logo.png}
+    &
+    \hspace{2cm}
+    &
+    \includegraphics[width=.25\textwidth]{../common/merlinux-logo.png}
+    \end{tabular}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Introduction}
+  \begin{itemize}
+    \item What we did in the last year?
+    \item What we achieved?
+    \item Plans for near future
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Last year highlights}
+  \pause
+  \usebeamerfont{big}
+  speed (JIT)
+\end{frame}
+
+\begin{frame}
+  \frametitle{February 2009}
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [shift={(1cm, -4cm)}] at (current page.north west) {
+      \begin{tikzpicture}[remember picture, overlay, font={\fontsize{8pt}{0pt} \ttfamily}]
+        \node [shift={(-1cm, 1.4cm)}, above right] {
+          \includegraphics[width=.15\textwidth]{../common/pypy-logo.png}};
+        \draw [thick, ->] (1.2cm, 2.5cm) -- (10cm, 2.5cm);
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}
+  \begin{itemize}
+    \item we merge experiments into mainline PyPy
+      \pause
+    \item compiles assembler, slows things down
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{March 2009}
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [shift={(1cm, -4cm)}] at (current page.north west) {
+      \begin{tikzpicture}[remember picture, overlay, font={\fontsize{8pt}{0pt} \ttfamily}]
+        \node [shift={(-1cm, 1.4cm)}, above right] {
+          \includegraphics[width=.15\textwidth]{../common/pypy-logo.png}};
+        \draw [thick, ->] (1.2cm, 2.5cm) -- (10cm, 2.5cm);
+        \draw [fill=blue!20,very thin] (1.7cm, 2.5cm) circle (.06cm);
+        \draw (1.7cm, 2.44cm) -- (1.7cm, 2.0cm);
+        \draw (1.5cm, 1.5cm) node [rotate=45] {JIT merge};  
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}
+  \begin{itemize}
+    \item first python example works!
+      \begin{verbatim}
+i = 0
+while i < 1000000:
+  i = i + 1
+      \end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{September 2009}
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [shift={(1cm, -4cm)}] at (current page.north west) {
+      \begin{tikzpicture}[remember picture, overlay, font={\fontsize{8pt}{0pt} \ttfamily}]
+        \node [shift={(-1cm, 1.4cm)}, above right] {
+          \includegraphics[width=.15\textwidth]{../common/pypy-logo.png}};
+        \draw [thick, ->] (1.2cm, 2.5cm) -- (10cm, 2.5cm);
+        \draw [fill=blue!20,very thin] (1.7cm, 2.5cm) circle (.06cm);
+        \draw (1.7cm, 2.44cm) -- (1.7cm, 2.0cm);
+        \draw (1.5cm, 1.5cm) node [rotate=45] {JIT merge};
+        \draw [fill=blue!20,very thin] (4.3cm, 2.5cm) circle (.06cm);
+        \draw (4.3cm, 2.44cm) -- (4.3cm, 2.0cm);
+        \draw (3.95cm, 1.5cm) node [rotate=45] {first example};  
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}
+  \begin{itemize}
+    \item we manage to speed first non-trivial benchmark
+    \item {\bf richards} - a simple, object oriented code
+    \item a variety of optimizations involved
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{February 2010 - now}
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [shift={(1cm, -4cm)}] at (current page.north west) {
+      \begin{tikzpicture}[remember picture, overlay, font={\fontsize{8pt}{0pt} \ttfamily}]
+        \node [shift={(-1cm, 1.4cm)}, above right] {
+          \includegraphics[width=.15\textwidth]{../common/pypy-logo.png}};
+        \draw [thick, ->] (1.2cm, 2.5cm) -- (10cm, 2.5cm);
+        \draw [fill=blue!20,very thin] (1.7cm, 2.5cm) circle (.06cm);
+        \draw (1.7cm, 2.44cm) -- (1.7cm, 2.0cm);
+        \draw (1.5cm, 1.5cm) node [rotate=45] {JIT merge};
+        \draw [fill=blue!20,very thin] (4.3cm, 2.5cm) circle (.06cm);
+        \draw (4.3cm, 2.44cm) -- (4.3cm, 2.0cm);
+        \draw (3.95cm, 1.5cm) node [rotate=45] {first example};  
+        \draw [fill=blue!20,very thin] (7.3cm, 2.5cm) circle (.06cm);
+        \draw (7.3cm, 2.44cm) -- (7.3cm, 2.0cm);
+        \draw (6.95cm, 1.5cm) node [rotate=45] {richards};  
+      \end{tikzpicture}
+    };
+  \end{tikzpicture}
+  We run a variety of benchmarks nightly. Pictures!
+\end{frame}
+
+\begin{frame}
+  \frametitle{Status}
+  \begin{block}{Status of today}
+    \begin{itemize}
+    \item JIT is fairly good
+      \pause
+    \item can consume a lot of memory
+      \pause
+    \item can recompile code too many times
+      \pause
+    \item GCs are pretty good
+      \pause
+    \item runtime algorithms are not as polished as CPython
+      ones (eg strings, regexes)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Near future}
+  \begin{itemize}
+    \item release March 2010
+      \pause
+    \item first PyPy release to contain a working JIT!
+    \item mostly to try it out
+      \pause
+    \item we're actively looking for {\bf sponsoring} to continue PyPy development
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Come to my next talk!}
+  \begin{block}{speed of PyPy}
+    ... or how to write programs that play well with the JIT
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{That's all}
+  Thank you for your attention
+  \begin{itemize}
+    \item http://morepypy.blogspot.com
+    \item http://pypy.org
+    \item http://merlinux.eu
+    \item these slides are already online:
+    \item http://tinyurl.com/pypyslides
+  \end{itemize}
+\end{frame}
+
+\end{document}

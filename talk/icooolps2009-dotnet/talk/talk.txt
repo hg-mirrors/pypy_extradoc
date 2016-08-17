@@ -1,0 +1,446 @@
+.. include:: beamerdefs.txt
+
+==============
+Faster than C#
+==============
+
+Introduction
+-------------
+
+- Dynamic languages are nice
+
+  * e.g., Python
+
+- so are .NET and the JVM
+
+- Problem: slow!
+
+- Solution: make them faster :-)
+
+- We concentrate our efforts on .NET
+
+
+State of the art
+-----------------
+
+- IronPython
+
+- Jython
+
+- JRuby, Groovy, ...
+
+|pause|
+
+- **Self**
+
+- Javascript: TraceMonkey, V8
+
+- ...
+
+
+Why so slow?
+-------------
+
+- Hard to compile efficiently
+
+- Lack of type information at compile-time
+
+- VMs not optimized to run them
+
+- .NET is a multi-language VM? |pause|
+
+  * Sure, as long as the language is C#
+
+|pause|
+
+- JVM is in a better shape, but still heavily optimized for Java
+
+
+JIT compiler
+----------------------
+
+- Wait until you know what you need
+
+- Interweave compile-time and runtime
+
+- Exploit runtime information
+
+|pause|
+
+|alert<| JIT on top of .NET |>|
+
+- JIT layering
+
+- How to extend existing code?
+
+- Fight the VM
+
+|end_alert|
+
+
+PyPy
+----
+
+- Python in Python
+
+- (lots of features and goals)
+
+- **JIT compiler generator**
+
+- Python semantics for free
+
+- JIT frontend
+
+  * Not limited to Python
+
+- JIT backends
+
+  - x86 backend
+
+  - **CLI/.NET backend**
+
+|pause|
+
+- Note: this talk is about JIT v2
+
+
+Partial evaluation (PE)
+-----------------------
+
+* Assume the Python bytecode to be constant
+
+* Constant-propagate it into the Python interpreter.
+
+* Colors
+
+  - :green:`Green`: compile-time value
+
+  - :red:`Red`: runtime value
+
+
+Partial Evaluation with Colors
+------------------------------
+
+* :green:`Green operations`: unchanged, executed at compile-time
+
+* :red:`Red operations`: converted into corresponding code emitting code
+
+|pause|
+|column1|
+|example<| Example |>|
+
+.. raw:: latex
+
+   \smallskip
+   \begin{rtbliteral}
+   def~f(\green{x},~\red{y}):~\\
+   ~~\green{x2}~=~\green{x}~*~\green{x}~\\
+   ~~\red{y2}~=~\red{y}~*~\red{y}~\\
+   ~~return~\green{x2}~+~\red{y2}
+   \end{rtbliteral}
+   \smallskip
+
+|end_example|
+
+|pause|
+|column2|
+|alert<| case x=10 |>|
+::
+
+  def f_10(y):    
+    y2 = y * y   
+    return 100 + y2
+
+|end_alert|
+|end_columns|
+
+
+Challenges
+----------------------
+
+* A shortcoming of PE is that in many cases not much can be really
+  assumed constant at compile-time: poor results
+
+* Effective dynamic compilation requires feedback of runtime
+  information into compile-time
+
+* For a dynamic language: types are a primary example
+
+Solution: Promotion
+--------------------
+
+* "Promote" run-time values to compile-time
+
+* Promotion guided by few hints in the interpreter
+
+* Stop the compilation at promotions
+
+* Execute until promotion points
+
+* Compile more
+
+
+
+Promotion (example)
+------------------------
+
+|example<| Example |>|
+
+.. raw:: latex
+
+   \smallskip
+   \begin{rtbliteral}
+   def~f(\red{x},~\red{y}):\\
+   ~~\green{x1}~=~hint(\red{x},~promote=True)\\
+   ~~return~\green{x1}*\green{x1}~+~\red{y}*\red{y}
+   \end{rtbliteral}
+   \smallskip
+
+|end_example|
+
+|small|
+|pause|
+|column1|
+|alert<| original |>|
+::
+
+  def f_(x, y):
+    switch x:
+      pass
+    default:
+      compile_more(x)
+
+|end_alert|
+
+|pause|
+|column2|
+|alert<| augmented |>|
+::
+
+  def f_(x, y):
+    switch x:
+      case 3:
+        return 9 + y*y
+    default:
+      compile_more(x)
+
+|end_alert|
+|end_columns|
+|end_small|
+
+
+Promotion on .NET
+------------------
+
+- Flexswitch
+
+  * Growable switch
+
+  * Can add new cases at runtime
+
+- Ideally as efficient as a jump
+
+- No support from the VM
+
+- Very costly
+
+- Still effective as long as it's not in the hot path
+
+
+Flexswitch example
+------------------
+
+|column1|
+
+.. image:: ../flexswitch1.png
+   :scale: 45
+
+|column2|
+
+|end_columns|
+
+
+Flexswitch example
+------------------
+
+|column1|
+
+.. image:: ../flexswitch1.png
+   :scale: 45
+
+|column2|
+
+.. image:: ../flexswitch2.png
+   :scale: 45
+
+|end_columns|
+
+
+Flexswitch for CLI
+-------------------
+
+- Unit of compilation: method
+
+- Flowgraphs split into multiple methods
+
+- Primary method
+
+  * Contains a trampoline
+
+  * Array of delegates
+
+- Secondary methods
+
+  * Stored into that array
+
+- Jumps between secondary methods go through the trampoline
+
+- Hard (and slow!) to pass arguments around
+
+
+TLC
+-----------
+
+- Python not (yet) supported :-(
+
+- Dynamic toy language
+
+- Designed to be "as slow as Python"
+
+- Stack manipulation
+
+- Boxed integers
+
+- Dynamic lookup of methods
+
+
+Benchmarks (1)
+--------------
+
+.. raw:: latex
+
+    \begin{table}[ht]
+      \begin{center}
+    
+      \begin{tabular}{l|rrrrrr}
+        \multicolumn{5}{c}{\textbf{Factorial}} \\ [0.5ex]
+    
+        \textbf{$n$}          & $10$  & $10^7$           & $10^8$         & $10^9$         \\
+        \hline
+        \textbf{Interp}       & 0.031 & 30.984           & N/A            & N/A            \\
+        \textbf{JIT}          & 0.422 &  0.453           & 0.859          & 4.844          \\
+        \textbf{JIT 2}        & 0.000 &  0.047           & 0.453          & 4.641          \\
+        \textbf{C\#}          & 0.000 &  0.031           & 0.359          & 3.438          \\
+        \textbf{Interp/JIT 2} & N/A   & \textbf{661.000} & N/A            & N/A            \\
+        \textbf{JIT 2/C\#}    & N/A   & \textbf{1.500}   & \textbf{1.261} & \textbf{1.350} \\ [3ex]
+        
+      \end{tabular}
+    
+      \end{center}
+    \end{table}
+
+
+Benchmarks (2)
+--------------
+
+.. raw:: latex
+
+    \begin{table}[ht]
+      \begin{center}
+    
+      \begin{tabular}{l|rrrrrr} 
+        \multicolumn{5}{c}{\textbf{Fibonacci}} \\ [0.5ex]
+    
+        \textbf{$n$}          & $10$  & $10^7$           & $10^8$         & $10^9$         \\
+        \hline
+        \textbf{Interp}       & 0.031 & 29.359           & N/A            & N/A            \\
+        \textbf{JIT}          & 0.453 &  0.469           & 0.688          & 2.953          \\
+        \textbf{JIT 2}        & 0.000 &  0.016           & 0.250          & 2.500          \\ 
+        \textbf{C\#}          & 0.000 &  0.016           & 0.234          & 2.453          \\
+        \textbf{Interp/JIT 2} & N/A   & \textbf{1879.962}& N/A            & N/A            \\
+        \textbf{JIT 2/C\#}    & N/A   & \textbf{0.999}   & \textbf{1.067} & \textbf{1.019} \\
+       
+      \end{tabular}
+    
+      \end{center}
+    \end{table}
+
+
+Benchmars (3)
+--------------
+
+|small|
+
+::
+
+    def main(n):
+        if n < 0:
+            n = -n
+            obj = new(value, accumulate=count)
+        else:
+            obj = new(value, accumulate=add)
+        obj.value = 0
+        while n > 0:
+            n = n - 1
+            obj.accumulate(n)
+        return obj.value
+    
+    def count(x):
+        this.value = this.value + 1    
+    def add(x):
+        this.value = this.value + x
+
+|end_small|
+
+
+Benchmars (4)
+--------------
+
+.. raw:: latex
+
+    \begin{table}[ht]
+      \begin{center}
+    
+      \begin{tabular}{l|rrrrrr}
+        \multicolumn{5}{c}{\textbf{Accumulator}} \\ [0.5ex]
+    
+        \textbf{$n$}          & $10$  & $10^7$           & $10^8$         & $10^9$         \\
+        \hline
+        \textbf{Interp}       & 0.031 & 43.063           & N/A            & N/A            \\
+        \textbf{JIT}          & 0.453 &  0.516           & 0.875          & 4.188          \\
+        \textbf{JIT 2}        & 0.000 &  0.047           & 0.453          & 3.672          \\
+        \textbf{C\#}          & 0.000 &  0.063           & 0.563          & 5.953          \\
+        \textbf{Interp/JIT 2} & N/A   & \textbf{918.765} & N/A            & N/A            \\
+        \textbf{JIT 2/C\#}    & N/A   & \textbf{0.750}   & \textbf{0.806} & \textbf{0.617} \\
+    
+      \end{tabular}
+      \end{center}
+    \end{table}
+
+
+Future work
+-------------
+
+- Non local jumps are terribly slow
+
+- Good results only if they are not in the inner loop
+
+- Recompile hot non-local jumps?
+
+- Tracing JIT?
+
+  * You have just seen it in the previous talk :-)
+
+
+Contributions
+--------------
+
+- JIT layering works
+
+  * Optimize different levels of overhead
+
+  * .NET's own JIT could be improved
+
+- Current VMs are limited
+
+  * How to make them more friendly to dynamic languges?

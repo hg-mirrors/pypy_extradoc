@@ -1,0 +1,32 @@
+
+* PyPy architecture
+
+* space proxying and operation control:
+
+   - thunk
+   - taint
+
+* easy to add new bytecode operations
+
+* potentially we should be able to implement a large range
+  of security polices
+
+* our jit architecture should allow to remove some checks overhead
+
+------------------------------------------------------------
+
+
+* open design issues:
+
+ - pure dynamic implementation: what kind of rules to avoid control
+   flow information leaks
+
+   - label restriction propagation
+   - label restriction enforcing
+   - how to attach "credentials" to executed code
+
+- simple labels principals model (for prototyping)
+
+ 
+
+ 

@@ -1,0 +1,285 @@
+=============================================
+pypy-sync developer meeting 23rd March 2006
+=============================================
+
+
+Attendees:
+  - Anders C.
+  - Anders L.
+  - Armin
+  - Aurelien Campeas
+  - Carl Friedrich
+  - Christian
+  - Holger
+  - Michael (minutes)
+  - Nik
+  - Richard
+  - Samuele
+
+Summary
+=======
+
+ - activity reports
+
+   See `the log`_ below.
+
+ - status of tokyo sprint
+
+   Samuele reported that the sprint announcement is nearly ready and
+   should go out soon.  Planning is hampered by the fact that we don't
+   really know how many Japanese participants there will be there, and
+   it's not even certain how many PyPy-ers will be travelling over.
+   This last bit we can actually do something about, so:
+
+       If you're in `extradoc/sprintinfo/tokyo/people.txt`_, could you
+       please update that file with your real intentions.
+
+   .. _`extradoc/sprintinfo/tokyo/people.txt`: 
+           http://codespeak.net/svn/pypy/extradoc/sprintinfo/tokyo/people.txt
+
+ - goals of the 0.9 release
+
+   We agreed to relase 0.9 fairly soon, probably in the second week of
+   June.  The main focus of the release will be "WP07 stuff" in EU
+   jargon, which is to say stackless features (including tasklet
+   pickling), but the release should also include previews of the
+   optimization/JIT/logic work.  Sorting out the details of this was
+   delegated to the Leysin sprinters.
+
+ - status and work planning for the next few weeks
+
+   Basically we all know what we're working on at the moment
+   (logic/GC/JIT) and we'll continue to work on these things as much
+   as we're able to (holidays and bureaucracy permitting) until and
+   during Leysin.
+
+ - targetting non-Python conferences
+
+   Fairly recently, we've missed the paper submission deadlines for
+   OOPSLA and OSCON.  We need to get a handle on which conferences
+   we're targetting sufficiently far in advance that we actually make
+   these deadlines.  The poster deadline for OOPSLA is 30th June, we
+   should try to make that...
+
+ - moderation of the next #pypy-sync meeting
+
+   As I am going to be on holiday, Anders Lehmann will moderate the
+   pypy-sync meeting next week.
+
+.. _`the log`:
+
+Complete Log
+============
+
+This is the full log of the meeting::
+
+    [16:02] stakkars: hi
+    [16:03] hpk: hi christian!
+    [16:03] hpk: hi all
+    [16:03] aleale: hi
+    [16:04] rxe joined the chat room.
+    [16:04] cfbolz: should we maybe start with activivty lines?
+    [16:04] cfbolz: hi richard!
+    [16:04] rxe: Hi all!
+    [16:05] stakkars: ok I'll start
+    [16:06] hpk: ok, i guess i can take over
+    [16:06] stakkars: DONE: stackless contexts (little), extension building
+    [16:06] hpk: i mailed about the topcis earlier anyway
+    [16:06] stakkars: NEXT: the raymond module :-)
+    [16:06] stakkars: BLOCK: five lines of docs of current state and scope of gctransform would have saved 2 days
+    [16:07] auc: LAST : work on logic objspace
+    [16:07] auc: NEXT : idem
+    [16:07] auc: BLOCKER : possibly greenlet stuff
+    [16:07] nikh: LAST: gensqueak
+    [16:07] nikh: NEXT: gensqueak: tuples, maybe other data structures
+    [16:07] nikh: BLOCKERS: none
+    [16:07] mwh: hello
+    [16:07] cfbolz: LAST: GC work
+    [16:07] cfbolz: NEXT: more GC work, personal stuff
+    [16:07] cfbolz: BLOCKERS: personal issues
+    [16:07] hpk: LAST: US trip (hp/py.test consulting), amendment-4 and (TB) communications, codespeak problems
+    [16:07] hpk: NEXT: non-pypy, still a bit of amendment work
+    [16:07] hpk: BLOCKERS: exhaustion or something
+    [16:07] mwh: sorry for being late...
+    [16:07] aleale: PREV: working on making the official OWL test pass
+    [16:07] aleale: NEXT: more of the above
+    [16:07] aleale: BLOCKERS:  -
+    [16:07] pedronis: LAST: make ootype more static, some jit work, helper GC stuff
+    [16:07] pedronis: NEXT: more helping GC stuff, jit work, leysin sprint,
+    [16:07] pedronis: BLOCKERS: -
+    [16:08] mwh: i have an activity report from eric:
+    [16:08] arre: PREV: Non-PyPy-work, some JIT-work, travel-planing
+    [16:08] arre: NEXT: More JIT and Leysin-sprint
+    [16:08] arre: BLOCKERS: -
+    [16:08] mwh: LAST: got LLVM JIT codegenerator working with rgenop.py graphs
+    [16:08] mwh: NEXT: extend pyllvm, maybe convert it to using ctypes
+    [16:08] mwh: BLOCKERS: ctypes misses C API for LLVM
+    [16:08] mwh: for myself:
+    [16:08] mwh: LAST: c/exceptions/gc hacking
+    [16:08] mwh: NEXT: holiday
+    [16:08] mwh: BLOCKERS: -
+    [16:09] hpk: goden, xorAxAx: anything?
+    [16:09] cfbolz: rxe: you?
+    [16:09] hpk: all others except the pybot delivered i think
+    [16:09] rxe: no :-(
+    [16:10] hpk: then next topic?
+    [16:10] arigo joined the chat room.
+    [16:10] mwh: so i don't see any blockers that can be resolved here
+    [16:11] cfbolz: yes
+    [16:11] cfbolz: hi armin!
+    [16:11] arigo: joined "pypy-snc" by mistake
+    [16:11] mwh: heh
+    [16:11] stakkars: moin
+    [16:11] mwh: first topic is: "status of tokyo sprint"
+    [16:12] hpk: i haven't dealt with this since a number of weeks - do you have news, samuele?
+    [16:12] pedronis: we got the logistic information, and an announcement has been drafted
+    [16:12] mwh: my impression is that things are under control but as i'm not going i haven't really been paying attention
+    [16:12] pedronis: we need to decide what are the technical goals/topics for it
+    [16:12] pedronis: to finish it and send it out
+    [16:12] pedronis: should happen before the weekend
+    [16:13] pedronis: it's of course a bit unclear what to propose
+    [16:13] hpk: any info about the participants (number/likely interests)?
+    [16:13] pedronis: because things are so in flux in general right now
+    [16:13] pedronis: there may be 20 japanese
+    [16:13] hpk: i remember that bea/me tried to extract some information and one feedback was "might be up to 20 people" but it didn't get more concrete i think
+    [16:13] pedronis: form our side it would nice
+    [16:13] pedronis: if people updated people.txt
+    [16:14] pedronis: with their real intententions
+    [16:14] hpk: yip, currently there are 9 people
+    [16:14] pedronis: do know how many of "us" are really going to be there
+    [16:15] arre: Jacob and Laura are not certain they can make it.
+    [16:15] hpk: nikh, aleale, stakkars: you plan to go as listed in the people.txt?
+    [16:15] nikh: yep, i will come
+    [16:15] aleale: yep
+    [16:15] stakkars: It is not clear because something else is going on.  I need to add another subtopic, just to increase confusion:
+    [16:16] stakkars: EWT is considering to do a sprint in Iceland, late May. They will sponsor it.!!
+    [16:16] auc: EWT ?
+    [16:16] hpk: stakkars: i think we have lots of topic already, can it wait until next week?
+    [16:16] stakkars: a company which I'm consulting for, interested in PyPy
+    [16:16] CyDefect joined the chat room.
+    [16:17] mwh: yes, this is a very packed meeting
+    [16:17] auc: stakkars: but what EWT does stand for ? (if not indiscrete)
+    [16:17] mwh: stakkars: is this supposed to be public information yet?
+    [16:17] stakkars: hpk: I expected this to come. I only wanted to inject the information now, so people get a picture about the schedule
+    [16:17] CyDefect is now known as Gromit.
+    [16:18] hpk: pedronis: can you trigger bea to re-check with the japanase people and try to get the announcement finished by the weekend?
+    [16:18] mwh: i'd like to move along pretty sharpish, so any concrete things to be done about tokyo ?
+    [16:18] hpk: stakkars: sure, it's great - you can also post it to pypy-dev and we can discuss it there e.g.
+    [16:18] mwh: like hpk just said
+    [16:18] aleale: auc : see http://ewtcareers.com/
+    [16:18] pedronis: hpk: that's the plan, although I think we will get more feedback form japanese side when the announcement is out
+    [16:19] auc: aleale: thanks
+    [16:19] stakkars: mwh: not exactly, they are discussing, it will be organized by STeve Holden, I will talk to him today. I just needed to say this now, just in case it is a bad idea
+    [16:19] mwh: stakkars: ok
+    [16:19] mwh: i won't make a song and dance about it in the minutes then
+    [16:19] mwh: ---------
+    [16:19] mwh: - goals of the 0.9 release
+    [16:19] mwh: i'm guessing this is mostly going to be a stackless/gc/wp07 release
+    [16:20] mwh: maybe logicobjectspace too?
+    [16:20] cfbolz: gc/stackless/wp07: definitively
+    [16:20] auc: mwh: depends on the timeframe
+    [16:20] hpk: also it should include early or progressed optimization works
+    [16:20] mwh: auc: to be released late may/early june
+    [16:20] hpk: like JIT and things on object level (WP06 in EU jargon)
+    [16:20] auc: mwh: that could be ok
+    [16:21] auc: mwh: but not sure about *all* the constraint solving stuff
+    [16:21] cfbolz: of course not
+    [16:21] mwh: auc: sure
+    [16:21] mwh: but some kind of meaningful preview would be cool
+    [16:21] hpk: timeframe is June ... mid June like around 15th?
+    [16:21] mwh: hpk: don't know if the JIT is going to be releasable for this release
+    [16:22] mwh: would be cool if it was, of course
+    [16:22] hpk: mwh: "include early or progressed optimization works" leaves this open
+    [16:22] mwh: hpk: well, yes
+    [16:22] hpk: having some results on the toy language should be feasible
+    [16:23] cfbolz: we should, at least
+    [16:23] mwh: i guess
+    [16:23] cfbolz: next topic?
+    [16:23] mwh: anyway, we don't really have time for that discussion
+    [16:23] mwh: -------------
+    [16:23] mwh: - status and work planning for the next few weeks
+    [16:24] hpk: mwh: we can also delegate
+    [16:24] mwh: hpk: true
+    [16:24] hpk: in this case i'd say we agree on the June timeframe and mabye set the 15th June
+    [16:24] mwh: hpk: do we want to do that?
+    [16:24] hpk: and delegate to the Leysin group to define the scope and contents of the release
+    [16:24] hpk: if everybody is fine with that
+    [16:24] mwh: maybe a little earlier?
+    [16:24] arre: Ok with me.
+    [16:24] mwh: (no real reason)
+    [16:24] pedronis: Ok
+    [16:24] mwh: but fine with the delegation
+    [16:24] stakkars: yup
+    [16:25] hpk: ok, we can still adapt (10th june might be sensible as well)
+    [16:25] mwh: for my part i can pretty accurately estimate how much work i'm going to do between now and leysin: none, as i go on holiday tomorrow
+    [16:25] mwh: (late tomorrow, but...)
+    [16:25] hpk: until leysin i will not be invovled much either except for amendment-4 and some non-core stuff, i am afraid
+    [16:26] mwh: i'm guessing leysin will be jit/gc stuff
+    [16:26] mwh: tasklet pickling?
+    [16:26] cfbolz: yes!
+    [16:26] hpk: mwh: and whatever we determine worthwhile
+    [16:26] mwh: more wp09 stuff
+    [16:26] stakkars: I hope I can make it to Leysin. That's a tough one
+    [16:26] mwh: hpk: well, yes...
+    [16:26] mwh: hpk: it was you that suggested this as a #pypy-sync topic :)
+    [16:27] hpk: yes, what do you imply?
+    [16:28] mwh: just that if you wanted to talk about it here, that you had some thing more to say than "and whatever we determine worthwhile"
+    [16:28] stedi67 joined the chat room.
+    [16:28] mwh: that hardly requires discussion...
+    [16:28] hpk: mwh: that was refering to Leysin
+    [16:28] mwh: no biggie
+    [16:28] mwh: ok
+    [16:28] hpk: and to the JIG/GC mentioning
+    [16:28] mwh: so, last-but-one topic:
+    [16:28] mwh: - targetting non-Python conferences
+    [16:28] mwh: the oopsla deadline just sailed past us
+    [16:29] mwh: how do we stop this happening again?
+    [16:29] hpk: and what non-python conferences are left?
+    [16:29] auc: what about ECOOP ?
+    [16:29] pedronis: well, the idea is still to target the dynamic lang workshop at OOPSLA
+    [16:29] mwh: a good start would be to get conference and deadlines on to the pypy calendar
+    [16:29] pedronis: that has a later and different deadline than the main track
+    [16:29] mwh: but i don't really know when they are
+    [16:30] mwh: pedronis: ah hah
+    [16:30] hpk: arigo, pedronis: i think we once said that you two would keep an eye on those conferences - can you try to list deadlines and identify worthwhile conferences from your perspective?
+    [16:30] cfbolz: pedronis: ah, cool!
+    [16:30] mwh: maybe i should mail pypy-dev and ask for some dates?
+    [16:30] pedronis: most of the conferences had deadlines
+    [16:30] pedronis: at the end of last year
+    [16:30] pedronis: (nov dec)
+    [16:31] mwh: argh
+    [16:31] hpk: ECOOP has passed as well
+    [16:32] hpk: pedronis: should we mail Roel to ask him about worthwhile conferences (explaining that we missed the deadlines nov/dec 2005)?
+    [16:32] mwh: points at the clock
+    [16:33] mwh: who's going to moderate next week?
+    [16:33] hpk: mwh: we started 17:05 or 07 or so
+    [16:33] mwh: hpk: i know
+    [16:33] hpk: will probably (but not certainly) be on travel during that time next week
+    [16:33] pedronis: bah, it seems that for this year dyn lang workshop
+    [16:33] pedronis: they have only invited talks
+    [16:34] cfbolz: pedronis: wasn't that what roel said?
+    [16:34] pedronis: I forgot then
+    [16:34] pedronis: too many things
+    [16:34] cfbolz: yes :-(
+    [16:34] cfbolz: pedronis: I guess we could still talk to him again
+    [16:35] hpk: cfbolz: do you feel like asking him? I can review any mails
+    [16:35] auc: maybe i'm just dense ... i can see submission deadlines for ecoop 2006 workshops around 1st April ... (2006)
+    [16:35] hpk: didn't look at the workshops
+    [16:35] cfbolz: hpk: sorry, not really :-(
+    [16:36] pedronis: for oopsla what's left are posters
+    [16:36] mwh: points at the clock, again
+    [16:36] mwh: we can continue this discussion in #pypy
+    [16:37] hpk: ok
+    [16:37] mwh: who is going to moderate next week?
+    [16:37] auc: http://icooolps.loria.fr/
+    [16:37] mwh: it's not hpk (probably) and it's not me
+    [16:37] auc: http://prog.vub.ac.be/~wdmeuter/RDL06/
+    [16:37] auc: (roel is part of this one)
+    [16:37] aleale: I can do the moderation
+    [16:38] cfbolz: ok, see you all next week then
+    [16:38] hpk: see you
+    [16:38] rxe: Bye!
+    [16:38] mwh: aleale: thank you
+    [16:38] nikh: bye bye
+    [16:38] mwh: meeting over
+    [16:38] mwh: thanks for coming, sorry for the late start (again...)

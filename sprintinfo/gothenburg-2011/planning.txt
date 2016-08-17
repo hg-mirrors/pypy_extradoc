@@ -1,0 +1,35 @@
+people present:
+    - Armin
+    - Laura
+    - Lukas
+    - Romain
+    - Dario
+
+tasks:
+- release 1.5 DONE
+- start playing with stack slicing (Armin, Kristján) STARTED
+
+- branches to be integrated/finished afterwards
+    - 32-on-64
+    - lukas' branches: list-strategies/dict-strategies TALK WITH CARL-FRIEDRICH
+    - lukas' branches: set-object (lukas) IN PROGRESS
+    - out-of-line guards TO BE MERGED
+    - refactor-not-in-translator READY?
+    - håkan's branches NEEDS TESTS
+    - jitypes2
+
+- other tasks
+    - look into cython
+    - investigate Open End software on top of PyPy DONE
+    - (feedback to wesley chun's paragraphs: Armin, Laura)
+
+- presentations/discussions
+    - what are håkan's branches doing? WHERE ARE THE SLIDES?
+    - codespeak migration
+        - save files: see codespeak doc
+        - mailinglists: python.org
+        - pypy.org
+        - where to store builds, releases?
+        - buildbot
+        - issue tracker: OpenEnd investigate?
+    - EuroPython keynote/training (Anto, Armin)

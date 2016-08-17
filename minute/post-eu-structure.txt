@@ -1,0 +1,90 @@
+post-EU PyPy organisation discussion
+----------------------------------------
+
+Attendants: 
+
+Samuele Pedroni, Anders Chrigström, Christian Tismer, Anders
+Sigfridsson, Michael Hudson, Antonio Cuni, Richard Emslie, 
+Stephan Diel, Alexander Schremmer, Georg Brandl, 
+Maciej Fijalkowski, Guido Wesdorp, Carl Friedrich Bolz, 
+Armin Rigo, Holger Krekel, Lene Wagner 
+
+*disclaimer*: Below are keypoint results of the sprint discussion 
+about the organisation of the open-source PyPy project after
+the EU funding period.  
+
+
+- PyPy's future as an open-source project should be shaped
+  by the community and the people contributing and involved with it
+
+- development and communication continues as before: 
+  - pypy-dev
+  - IRC 
+  - sprints (fewer, though, likely) 
+  - #pypy-sync (maybe on a fixed date like 1st thursday each month)
+  - meetings of interested people involved with a particular topic
+  - in case of unresolved conflicts: caretakers 
+
+- make http://pypy.org the new main entry point to
+  pypy, and make the website a bit more independent of 
+  {dist,trunk,release}/pypy/doc structure.  That might
+  also make sense for the 1.0 release already. 
+
+- have a "caretakers" group of people for the next year of 
+  PyPy development (so until 1st april 2008 - 1st april
+  is a good day for project news, anyway),
+
+- the name is open for discussion
+
+  "care for the next year of PyPy development" means: 
+  - keeping conceptual integrity of the code base and project
+  - settling roadmaps / dev targets / new releases 
+  - organising communication within the community 
+    (including regulating commit rights/structure) 
+  - talking to / negotiating with external parties
+    (including the EU partner organisations) 
+
+  Regarding the caretaker people/group: 
+    - group may get extended by the group if everybody agrees
+    - agree to working with each other
+	- everbody is free to leave
+    - members should employ an overall project perspective 
+    - confirmation from community (sprint, pypy-sync) 
+    - may include non-technical persons on a regular basis
+    - consensus decisions, or majority decisions after a break
+	- non-attending people may re-raise a topic/decision
+      if they disagree with the decision of the attending people
+
+  infrastructure: 
+  - mailing list
+  - protected subversion area for mail drafts, internal issues
+
+  suggested candidates: 
+  samuele, cf, armin, hpk, michael 
+  (bea, lene integrated and others 
+   consulting/joining on case-by-case basis)
+
+- make statements to the community about future plans soon,
+  particulary noticing that the development pace will slowdown. 
+
+- start determining how to go about external funding opportunities
+
+
+
+Background notes 
+----------------------
+
+- full-time codespeak.net maintenance is going to end 1st April, 
+  Martin (merlinux) may care a bit after that. 
+  There will be some (shared?) physical hosting costs and hopefully multiple
+  volunteers helping out with sys maintenance/care.  Martin would
+  probably also be happy to continue somewhat professionally 
+  for a fee to maintain the server. 
+  background: merlinux as a company will do some sort of break/sabbatical
+  starting around april-june, lasting until end of the year, 
+  but nevertheless considers future project opportunities. 
+
+- major focus of march-may will still be EU related goals and deadlines 
+
+- next sprint likely not before EuroPython
+

@@ -1,0 +1,244 @@
+
+pypy-sync 20th April 2006, 05:30 PM (UTC+2)
+=====================================================
+
+attendants: michael, anto, carl, samuele, christian, richard, 
+            eric, aurelien, gromit, arre, anders l.
+
+- activity reports + blockers 
+  everybody posted (see at the end of these minutes) 
+
+- summer of X, how do we go about it? 
+
+  we quickly agreed to 
+  a) go for being mentors through PSF at Google's Summe of Code campaign 
+  b) determined mentors 
+  c) to create a directory in extradoc/soc-2006 listing all info (mentors, topics) 
+  d) next week Michael will communicate all the info to Neal / PSF / SoC 
+
+- what needs to be done until Iceland (21st May) for 0.9? 
+
+  There was some initial and involved discussion on this topic, 
+  which quickly moved to sorting out EU tasks and 
+  responsibilities for some involved people.  
+  
+  Also related to the brief pypy-dev discussion between Armin
+  and Holger, we determined a need to settle and agree on a
+  distribution of tasks until and after Iceland.  This we
+  agreed to do at a specific meeting for EU developers on 
+  
+    TUESDAY, 25th April, 5pm (UTC+2) 
+  
+  where Christian, Michael, Samuele, Holger, Carl, Aurelien, Anders L., 
+  and Gromit agreed to attend already. 
+
+
+IRC log
+-------------------------------
+
+:: 
+
+    Apr 20 17:28:55 <mwh>	stakkars: hi!
+    Apr 20 17:29:25 <stakkars>	hi friends
+    Apr 20 17:29:59 <stakkars>	I'll give rxe a call
+    Apr 20 17:30:25 <hpk>	hi all!
+    Apr 20 17:30:33 stakkars stedi67 Apr 20 17:30:37 <hpk>	stakkars: want to wake him up? :)
+    Apr 20 17:30:45 <Gromit>	hi
+    Apr 20 17:30:53 <mwh>	T-0 according to me
+    Apr 20 17:30:58 <hpk>	yip
+    Apr 20 17:31:01 <mwh>	who is moderating? hpk ?
+    Apr 20 17:31:06 <hpk>	yes, i guess so 
+    Apr 20 17:31:17 <hpk>	topics:
+    Apr 20 17:31:17 <hpk>	* activity reports
+    Apr 20 17:31:17 <hpk>	* summer of X
+    Apr 20 17:31:17 <hpk>	* work until iceland for 0.9 topics
+    Apr 20 17:31:17 <hpk>	* assigning major 0.9 topics
+    Apr 20 17:31:23 <stakkars>	he's early, probably in the company, swamped with work
+    Apr 20 17:31:43 <hpk>	so let's start with activity reports (and we can see who is actually really here on the channel active :) 
+    Apr 20 17:31:59 <arre>	PREV: vacation, configuring new laptop
+    Apr 20 17:31:59 <arre>	NEXT: Tokyo sprint
+    Apr 20 17:31:59 <arre>	BLOCKERS: -
+    Apr 20 17:32:05 <aleale>	PREV: Vacation
+    Apr 20 17:32:06 <hpk>	LAST: Leysin Sprint, iceland organisation, some testing and playing around
+    Apr 20 17:32:06 <hpk>	NEXT: work on testing and build environment
+    Apr 20 17:32:06 <hpk>	BLOCKERS: -
+    Apr 20 17:32:06 <mwh>	LAST: slept off leysin, ACCU
+    Apr 20 17:32:07 <mwh>	NEXT: stackless transform?
+    Apr 20 17:32:07 <mwh>	BLOCKERS: insane busyness
+    Apr 20 17:32:09 <auc>	LAST: investigating translatability of constraint stuff
+    Apr 20 17:32:10 <auc>	NEXT: playing with choose()
+    Apr 20 17:32:10 <auc>	BLOCKERS: working, clonable coroutines
+    Apr 20 17:32:13 <ericvrp>	LAST: travelling
+    Apr 20 17:32:13 <ericvrp>	NEXT: Tokyo sprint
+    Apr 20 17:32:13 <ericvrp>	BLOCKERS: -
+    Apr 20 17:32:16 <aleale>	NEXT: Sprint
+    Apr 20 17:32:18 <aleale>	BLOCKERS: -
+    Apr 20 17:32:23 <stedi67>	LAST: set implementation, finding bugs
+    Apr 20 17:32:23 <stedi67>	NEXT: finding and documenting more bugs...
+    Apr 20 17:32:23 <stedi67>	BLOCKERS: -
+    Apr 20 17:32:26 <antocuni>	LAST: completed rlist support for ootypesystem
+    Apr 20 17:32:27 <antocuni>	NEXT: more works on ootypesystem (probably rdict)
+    Apr 20 17:32:29 <antocuni>	BLOCKER: my still poor knowledge of pypy internals :-)
+    Apr 20 17:32:34 <cfbolz>	LAST: GC work, optimizations
+    Apr 20 17:32:35 <cfbolz>	NEXT: uni stuff, trying to implement __del__ with the framework
+    Apr 20 17:32:35 <cfbolz>	BLOCKERS: new environment, time constraints
+    Apr 20 17:32:43 <pedronis>	LAST: {}[[]], tweaks and fixing various transformation problems, rested during easter
+    Apr 20 17:32:45 <pedronis>	NEXT: tokyo sprint
+    Apr 20 17:32:46 <pedronis>	BLOCKERS: -
+    Apr 20 17:33:03 *	auc is away for 5 minutes
+    Apr 20 17:33:07 <hpk>	auc: how badly do you depend on "clonable coroutines" and in which way? 
+    Apr 20 17:33:11 <hpk>	oh, never mind then 
+    Apr 20 17:33:37 <hpk>	ok, let's head on then
+    Apr 20 17:33:43 <hpk>	* summer of X
+    Apr 20 17:34:05 <hpk>	from in-between discussions and opinions i gather that we are all leaning towards participating in SoC as mentors through PSF
+    Apr 20 17:34:11 <mwh>	yes
+    Apr 20 17:34:12 <stakkars>	DONE: wrapping
+    Apr 20 17:34:12 <stakkars>	NEXT: finalizing, prepare next PyPy work
+    Apr 20 17:34:12 <stakkars>	BLOCK: complexity
+    Apr 20 17:34:12 <hpk>	is that correct or are there other opinions? 
+    Apr 20 17:34:35 <cfbolz>	sounds good to me
+    Apr 20 17:34:51 <aleale>	ditto
+    Apr 20 17:34:56 <arre>	+1
+    Apr 20 17:35:00 <pedronis>	+1
+    Apr 20 17:35:04 <hpk>	fine, then let's see how we go about it 
+    Apr 20 17:35:05 <hpk>	a) mentors 
+    Apr 20 17:35:06 <hpk>	b) topics 
+    Apr 20 17:35:15 <Gromit>	hpk: just removed last years's mentorship entry from the wiki
+    Apr 20 17:35:21 <hpk>	i suggest that we open a soc-2006 directory in extradoc with such information 
+    Apr 20 17:35:32 <mwh>	everyone willing to mentor should email neal norwitz
+    Apr 20 17:35:35 <hpk>	(Aurelien already committed something today to pypy/doc) 
+    Apr 20 17:35:48 <hpk>	mwh: i think we should gather on our side and then someone sends all the info 
+    Apr 20 17:36:02 <hpk>	should gather info 
+    Apr 20 17:36:04 <mwh>	if you need "personal references" as on the python.org wiki, feel free to mention me :)
+    Apr 20 17:36:05 <stakkars>	+1
+    Apr 20 17:36:11 <mwh>	hpk: if you like
+    Apr 20 17:36:24 <mwh>	i'm already signed up as a mentor, cause i was one last year
+    Apr 20 17:36:44 <hpk>	mwh: ok, carl is as well i think 
+    Apr 20 17:37:03 <cfbolz>	or will soon be
+    Apr 20 17:37:06 <hpk>	ok, then let's put all info into soc-2006 and send info off on the weekend 
+    Apr 20 17:37:15 <cfbolz>	just to get a quick impression:
+    Apr 20 17:37:16 <mwh>	is there a deadline for mentoring?
+    Apr 20 17:37:20 <cfbolz>	who would mentor?
+    Apr 20 17:37:25 <cfbolz>	mwh: yes, there is one
+    Apr 20 17:37:32 <hpk>	1st may i think
+    Apr 20 17:37:38 <mwh>	cfbolz: me, you, armin for certain
+    Apr 20 17:37:40 <hpk>	(but i may confuse the various deadlines) 
+    Apr 20 17:37:56 <mwh>	hpk: i thought 1 may was the deadline for being a mentoring *organization*
+    Apr 20 17:37:57 <hpk>	i would also mentor but preferably to py.test, build-tool stuff i guess 
+    Apr 20 17:38:06 <cfbolz>	hpk: neal writes "soon" :-)
+    Apr 20 17:38:17 <hpk>	mwh: ok, might well be, whatever, let's just get this sorted and communicate to them 
+    Apr 20 17:38:25 <mwh>	hpk: sure
+    Apr 20 17:38:28 <mwh>	it shouldn't be hard
+    Apr 20 17:38:48 <cfbolz>	anybody else?
+    Apr 20 17:39:07 <hpk>	i am sure that aurelien or so would be interested
+    Apr 20 17:39:10 <arre>	Add me as well
+    Apr 20 17:39:16 <aleale>	I would prefer not to
+    Apr 20 17:39:31 <hpk>	eric also said that he would not like to 
+    Apr 20 17:39:41 <hpk>	ok, then that's it for now 
+    Apr 20 17:39:44 <stakkars>	I would, of course
+    Apr 20 17:39:46 <ericvrp>	I would like to b a mentor but I think it would not be a good idea (indeed)
+    Apr 20 17:39:49 <mwh>	pedronis, i guess
+    Apr 20 17:40:03 <hpk>	let's just open the soc-2006 directory and put info there 
+    Apr 20 17:40:08 <mwh>	hpk: are you going to be the one who checks this in?
+    Apr 20 17:40:17 <pedronis>	mwh: ye
+    Apr 20 17:40:17 <hpk>	cfbolz: can you make this happen and make sure we communicate next week to them? 
+    Apr 20 17:40:34 <cfbolz>	hpk: not before sunday, no
+    Apr 20 17:41:00 <hpk>	ok, then i start but would like you or someone else to communicate to the SoC people (Neal) 
+    Apr 20 17:41:08 <hpk>	eventually
+    Apr 20 17:41:12 <hpk>	as i haven't been involved there 
+    Apr 20 17:41:23 <cfbolz>	mwh: do you know neal?
+    Apr 20 17:41:34 <mwh>	cfbolz: i talked to him a bit at pycon
+    Apr 20 17:41:45 <mwh>	i can do the communicating
+    Apr 20 17:41:52 <hpk>	cool, thanks
+    Apr 20 17:41:57 <mwh>	i am away 29 apr -> 8 may (ish)
+    Apr 20 17:42:02 <mwh>	so i'll do it before then :)
+    Apr 20 17:42:06 <hpk>	ok, let's try to do it before then 
+    Apr 20 17:42:07 <hpk>	yes
+    Apr 20 17:42:10 <hpk>	next topic 
+    Apr 20 17:42:24 <hpk>	* 0.9 related work until iceland 
+    Apr 20 17:42:44 -->	rxe (n=rxe@66.151.59.5) has joined #pypy-sync
+    Apr 20 17:42:47 <hpk>	hi richard :) 
+    Apr 20 17:42:57 <rxe>	Hi everyone! :-)
+    Apr 20 17:42:59 <stakkars>	:-)
+    Apr 20 17:43:01 <ericvrp>	hey richard
+    Apr 20 17:43:02 <rxe>	sorry it has been a long time
+    Apr 20 17:43:03 <mwh>	hey rxe
+    Apr 20 17:43:48 <hpk>	so there has been a bit of discussion on pypy-dev 
+    Apr 20 17:44:05 <hpk>	what do the others think? 
+    Apr 20 17:45:31 <cfbolz>	the truth is somewhere in the middle. there is definitively more to do than just stackless pickling
+    Apr 20 17:45:51 <ericvrp>	My feeling is that a 0.9 version should be almost a 1.0 version (which I consider a "this is it" version) does that make sense?
+    Apr 20 17:46:07 <ericvrp>	which I think we are not quiet yet
+    Apr 20 17:46:08 <cfbolz>	like finishing the stackless-applevel exposure
+    Apr 20 17:46:33 <hpk>	the major topics of the 0.9 release are the ext-module compiler and stackless features 
+    Apr 20 17:46:37 <pedronis>	well, there's also other stuff in the WP7 tasks which is explcitly listed
+    Apr 20 17:46:48 <cfbolz>	yes, __del__, weakref
+    Apr 20 17:47:09 <stakkars>	that's just work. pickling is hard since I still don't know how
+    Apr 20 17:47:10 <pedronis>	I don't think WP7 says anything about __dell__ or weakrefr
+    Apr 20 17:47:26 <pedronis>	well, even just work takes time
+    Apr 20 17:47:31 <cfbolz>	pedronis: then not :-)
+    Apr 20 17:47:33 <cfbolz>	pedronis: indeed
+    Apr 20 17:47:53 <stakkars>	yes but I can distribute if I know how
+    Apr 20 17:48:06 <mwh>	stakkars: what are you working planning on working on?
+    Apr 20 17:48:21 <mwh>	damn timezones mean i don't get to chat much...
+    Apr 20 17:49:02 <stakkars>	well pickling first thing, although it might depend on the new transform
+    Apr 20 17:49:05 <hpk>	cfbolz: the thing regarding "middle ground": we really only have 7 months left for tons of stuff we want to do - just postponing things from a "we don't neccessarily need to do it" will backfire IMO 
+    Apr 20 17:49:21 <hpk>	so we should strike a good balance 
+    Apr 20 17:49:26 stakkars stedi67 Apr 20 17:49:33 <pedronis>	cfbolz: the fact is that some unfinished WP7ish stuff is really WP5 leftovers
+    Apr 20 17:49:34 <hpk>	stakkars: note that the new transform is not fully integrated 
+    Apr 20 17:49:45 <mwh>	stakkars: have you looked at the transforrm code?
+    Apr 20 17:49:45 <hpk>	it just mostly works but certainly requires work 
+    Apr 20 17:50:10 <stakkars>	that's what I'm saying, might be blocker
+    Apr 20 17:50:25 <cfbolz>	pedronis: what is a wp5 leftover?
+    Apr 20 17:50:35 <pedronis>	cfbolz: well part of the GC stuff
+    Apr 20 17:50:53 <hpk>	stakkars: michael and me worked on stackless to support you, not to block you :) 
+    Apr 20 17:50:58 <mwh>	i mean, maybe in the short term it makes sense for stakkars to work on channels and greenlets, and for me to try to polish the stackless transform
+    Apr 20 17:51:00 <pedronis>	stakkars: you have 9 mm in WP7
+    Apr 20 17:51:19 *	auc is back (ouch)
+    Apr 20 17:51:28 <stakkars>	gosh. I appreciate of course.
+    Apr 20 17:51:30 <mwh>	by "short term" i mean "for a week"
+    Apr 20 17:51:59 <stakkars>	I just didn't realize that it's necessary,, before i saw pedronis message
+    Apr 20 17:52:21 <hpk>	the idea of the current topic is that we identify the issues and assign responsible persons
+    Apr 20 17:52:30 <hpk>	i am not sure we can achieve it in some minutes 
+    Apr 20 17:52:40 <hpk>	but we should aim for getting that clarified latest next week 
+    Apr 20 17:53:23 <cfbolz>	yes
+    Apr 20 17:53:35 <hpk>	because not discussing it will not help either :) 
+    Apr 20 17:53:47 <mwh>	indeed :)
+    Apr 20 17:53:54 <stakkars>	mwh: that makes a lot of sense
+    Apr 20 17:53:56 <pedronis>	stakkars: is really your workpackage. Helping you is shifting things around. It may even become a serious issue after a point.
+    Apr 20 17:54:25 <pedronis>	but is not the right forum for that discussion
+    Apr 20 17:54:29 <hpk>	yes, i agree
+    Apr 20 17:55:10 <stakkars>	pedronis:I considered the grapg transform as an add-on, nice to have. as said, didn't know
+    Apr 20 17:55:27 <cfbolz>	stakkars: well, it will be necessary for graph pickling
+    Apr 20 17:55:35 <cfbolz>	stakkars: so it is not an addon
+    Apr 20 17:55:36 <hpk>	so we need a discussion next week about this specific "how to tackle 0.9 tasks" topic and to define the scope 
+    Apr 20 17:55:46 <mwh>	cfbolz: necessary is a strong word, but i more or less agree
+    Apr 20 17:56:03 <mwh>	another point that isn't entirely irrelevant is that i'm enjoying working on 'stackless style' stuff
+    Apr 20 17:56:12 <mwh>	:)
+    Apr 20 17:56:12 *	hpk too actually
+    Apr 20 17:56:14 <pedronis>	anyway task pickling plus the other missing stuff is not a small task
+    Apr 20 17:56:19 <hpk>	yes
+    Apr 20 17:56:24 <pedronis>	to finish in less than a month
+    Apr 20 17:56:50 <pedronis>	that we are so late was not expected
+    Apr 20 17:56:58 <hpk>	ok, as we are discussing things mostly from an EU perspective i'd like to invite to a specific meeting for EU developers early next week 
+    Apr 20 17:57:15 <pedronis>	yes, this is not the right forum
+    Apr 20 17:57:21 <hpk>	tuesday? 
+    Apr 20 17:57:28 <hpk>	big thing is to find the right time for everyone :) 
+    Apr 20 17:57:35 <mwh>	tuesday would be fine
+    Apr 20 17:57:38 <hpk>	5pm seems likes the best compromise 
+    Apr 20 17:57:44 <hpk>	midnight in japan, 8am in CA 
+    Apr 20 17:57:45 <mwh>	(i will be in düsseldorf)
+    Apr 20 17:57:58 stakkars stedi67 Apr 20 17:58:20 <hpk>	mwh, stakkars, cfbolz, pedronis, auc, aleale, arre, ...: fine for you? 
+    Apr 20 17:58:23 <stakkars>	for me, the other way goes as well (midnight +)
+    Apr 20 17:58:35 <aleale>	ok
+    Apr 20 17:58:37 <mwh>	yes
+    Apr 20 17:59:00 stakkars stedi67 Apr 20 17:59:05 <auc>	ok
+    Apr 20 17:59:14 <cfbolz>	ok
+    Apr 20 17:59:28 <stakkars>	ok
+    Apr 20 17:59:45 <hpk>	great, than we close this topic (and the next one, which relates to it) 
+    Apr 20 17:59:46 <Gromit>	ok
+    Apr 20 17:59:58 <hpk>	see you all, i will mail to pypy-dev to not forget anyone 
+    Apr 20 18:00:31 <hpk>	auc:  you are available for mentoring as well, right? 
+    Apr 20 18:00:36 <hpk>	auc: mentoring SoC 
+    Apr 20 18:01:12 -->	Gromit_ (n=bear@does-d9b90ad6.pool.mediaWays.net) has joined #pypy-sync
+    Apr 20 18:01:49 <auc>	hpk: i guesss so ...
+    Apr 20 18:02:12 <auc>	but not necessarily about all of what i posted in pypy/doc

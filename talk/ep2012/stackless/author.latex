@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[The Story of Stackless Python]{The Story of Stackless Python}
+\author[tismer, nagare]
+{Christian Tismer, Hervé Coatanhay}
+
+\institute{EuroPython 2012}
+\date{July 4 2012}

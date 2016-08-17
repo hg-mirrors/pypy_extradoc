@@ -1,0 +1,59 @@
+===========================================================
+PyPy's Python Interpreter Architecture and its Applications
+===========================================================
+
+Introduction
+============
+
+ - some kind of intro about Python
+   - object-oriented imperative language 
+   - rich library of builtin-types
+   - complex dispatching rules for operations
+
+ - and PyPy:
+   - Python implementation in RPython
+   - translate RPython to other languages
+   - try to reach extremely good compatibility
+   - also try to get a simple and flexible interpreter architecture
+
+
+The Object Space Architecture
+=============================
+
+ - PyPy Python-interpreter architecture
+   - interpreter split into two parts:
+     - normal bytecode interpreter
+       - responsible for control flow
+       - treats all objects as black boxes
+       - only way to gain information: typed unwraps, particularly is_true
+     - object space
+       - is responsible for object implementation and operation semantics
+       - knows nothing about execution
+
+Applications
+============
+
+ - flow object space
+   - goal: derive control flow of functions
+   - abstract interpretation
+   - flow object space is a new value domain: Variables and Constants
+
+ - compile-time meta-programming, comprehensive changes
+   - thunk object space
+   - reflective object space
+
+Prior Work
+==========
+
+ - interpreter architecture
+   - compare to CPython, Jython and IronPython?
+   - parallels to the typical eval/apply model of Scheme interpreters
+
+ - flow graph construction
+   - usually through parsing
+
+ - lazy computation
+   - XXX find some papers
+
+ - reflective object space
+   - reflective towers

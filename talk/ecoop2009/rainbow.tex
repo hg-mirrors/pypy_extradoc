@@ -1,0 +1,295 @@
+\section{Automatic Unboxing of Intermediate Results}
+\label{sec:virtuals}
+
+Interpreters for dynamic languages typically continuously allocate a lot of small
+objects, for example due to boxing. This makes arithmetic operations extremely
+inefficient. For this reason, we
+implemented a way for the compiler to try to avoid memory allocations in the
+residual code as long as possible. The idea is to try to keep new
+run-time instances \emph{exploded}: instead of a single run-time object allocated on
+the heap, the object is \emph{virtualized} as a set
+of fresh local variables, one per field. Only when the object can be accessed by from
+somewhere else is it actually allocated on the heap. The effect of this is similar to that of
+escape analysis \cite{Blanchet99escapeanalysis}, \cite{Choi99escapeanalysis},
+which also prevents allocations of objects that can be proven to not escape a
+method or set of methods (the algorithms however are a lot more advanced than
+our very simple analysis).
+
+It is not always possible to keep instances virtual.  The main
+situation in which it needs to be \emph{forced} (i.e. actually allocated at
+run-time) is when the pointer escapes to some non-virtual location like
+a field of a real heap structure.  Virtual instances still avoid the run-time
+ allocation of most short-lived objects, even in non-trivial situations.  
+
+In addition to virtual instances, the compiler can also handle virtual
+containers, namely lists and dictionaries\footnote{(R)Python's dictionaries
+  are equivalent to .NET \lstinline{Hashtable}s}.  If the indexing operations
+can be evaluated at compile-time (i.e., if the variables holding the indexes
+are green), the compiler internally keeps track of the state of the container
+and store the items as local variables.
+
+Look again at figure \ref{fig:tlc-folded}: the list in the \lstinline{stack}
+variable never escapes from the function.  Moreover, all the indexing
+operations (either done explicitly or implicitly by \lstinline{append} and
+\lstinline{pop}) are evaluable at compile-time.  Thus, the list is kept
+\emph{virtual} and its elements are stored in variables $v_n$, where $n$
+represents the index in the list.  Figure \ref{fig:tlc-folded-virtualized}
+show how the resulting code looks like; to ease the reading, the state of the
+\lstinline{stack} as kept by the compiler is shown in the comments.
+
+\begin{figure}[h]
+\begin{center}
+\input{tlc-folded-virtualized.py}
+\caption{The result of virtualizing the \lstinline{stack} list}
+\label{fig:tlc-folded-virtualized}
+\end{center}
+\end{figure}
+
+Even if not shown in the example, \lstinline{stack} is not the only
+virtualized object.  In particular the two objects created by
+\lstinline{IntObj(0)} are also virtualized, and their fields are stored as
+local variables as well.  Virtualizion of instances is important not only
+because it avoids the allocation of unneeded temporary objects, but also
+because it makes possible to optimize method calls on them, as the JIT
+compiler knows their exact type in advance.
+
+
+\section{Promotion}
+\label{sec:promotion}
+
+In the sequel, we describe in more details one of the main new
+techniques introduced in our approach, which we call \emph{promotion}.  In
+short, it allows an arbitrary run-time (i.e. red) value to be turned into a
+compile-time (i.e. green) value at any point in time.  Promotion is thus the central way by
+which we make use of the fact that the JIT is running interleaved with actual
+program execution. Each promotion point is explicitly defined with a hint that
+must be put in the source code of the interpreter.
+
+From a partial evaluation point of view, promotion is the converse of
+the operation generally known as \emph{lift}.  Lifting a value means
+copying a variable whose binding time is compile-time into a variable
+whose binding time is run-time – it corresponds to the compiler
+``forgetting'' a particular value that it knew about.  By contrast,
+promotion is a way for the compiler to gain \emph{more} information about
+the run-time execution of a program. Clearly, this requires
+fine-grained feedback from run-time to compile-time, thus a
+dynamic setting.
+
+Promotion requires interleaving compile-time and run-time phases,
+otherwise the compiler can only use information that is known ahead of
+time. It is impossible in the ``classical'' approaches to partial
+evaluation, in which the compiler always runs fully ahead of execution.
+This is a problem in many realistic use cases.  For example, in an
+interpreter for a dynamic language, there is mostly no information
+that can be clearly and statically used by the compiler before any
+code has run.
+
+A very different point of view on promotion is as a generalization of
+techniques that already exist in dynamic compilers as found in modern virtual
+machines for object-oriented language, like \emph{Polymorphic Inline Cache}
+(PIC, \cite{hoelzle_optimizing_1991}) and its variations, whose main goal is
+to optimize and reduce the overhead of dynamic dispatching and indirect
+invocation: the dynamic lookups are cached and the corresponding generated
+machine code contains chains of compare-and-jump instructions which are
+modified at run-time.  These techniques also allow the gathering of
+information to direct inlining for even better optimization results. Compared
+to PICs, promotion is more general because it can be applied not only to
+indirect calls but to any kind of value, including instances of user-defined
+classes or integer numbers.
+
+In the presence of promotion, dispatch optimization can usually be
+reframed as a partial evaluation task.  Indeed, if the type of the
+object being dispatched to is known at compile-time, the lookup can be
+folded, and only a (possibly even inlined) direct call remains in the
+generated code.  In the case where the type of the object is not known
+at compile-time, it can first be read at run-time out of the object and
+promoted to compile-time.  As we will see in the sequel, this produces
+machine code very similar to that of polymorphic inline
+caches.
+
+The essential advantage of promotion is that it is no longer tied to the details of
+the dispatch semantics of the language being interpreted, but applies in
+more general situations.  Promotion is thus the central enabling
+primitive to make partial evaluation a practical approach to language
+independent dynamic compiler generation.
+
+Promotion is invoked with the use of a hint as well:
+\lstinline{v2 = hint(v1, promote=True)}.
+This hint is a \emph{local} request for \texttt{v2} to be green, without
+requiring \texttt{v1} to be green.  Note that this amounts to copying
+a red value into a green one, which is not possible in classical
+approaches to partial evaluation. A slightly different hint can be used to
+promote the \emph{class} of an instance. This is done with
+\lstinline{hint(v1, promote_class=True)}. It does not have an effect on the
+bindings of any variable.
+
+
+\subsection{Implementing Promotion}
+\label{sec:implementing-promotion}
+
+The implementation of promotion requires a tight coupling between
+compile-time and run-time: a \emph{callback}, put in the generated code,
+which can invoke the compiler again.  When the callback is actually
+reached at run-time, and only then, the compiler resumes and uses the
+knowledge of the actual run-time value to generate more code.
+
+The new generated code is potentially different for each run-time value
+seen.  This implies that the generated code needs to contain some sort
+of updatable switch, or \emph{flexswitch}, which can pick the right code path based on the
+run-time value.
+
+Let us look again at the TLC example.  To ease the reading, figure
+\ref{fig:tlc-main} showed a simplified version of TLC's main loop, which did
+not include the hints.  The implementation of the \lstinline{LT} opcode with
+hints added is shown in figure \ref{fig:tlc-main-hints}.
+
+\begin{figure}[h]
+\begin{center}
+\begin{tabular}{l|l}
+\begin{lstlisting}
+def interp_eval(code, pc, args, pool):
+  code_len = len(code)
+  stack = []
+  while pc < code_len:
+      opcode = ord(code[pc])
+      opcode = hint(opcode, concrete=True)
+      pc += 1
+
+      if opcode == PUSH:
+          ...
+      elif opcode == LT:
+        a, b = stack.pop(), stack.pop()
+        hint(a, promote_class=True)
+        hint(b, promote_class=True)
+        stack.append(IntObj(b.lt(a)))
+\end{lstlisting}
+&
+\hspace{2pt}
+\begin{lstlisting}
+class IntObj(Obj):
+
+  def lt(self, other): 
+    return (self.value < 
+            other.int_o())
+
+  def sub(self, other):
+    return IntObj(self.value -
+                  other.int_o())
+
+  def int_o(self):
+    return self.value
+
+  ...
+\end{lstlisting}
+\end{tabular}
+\end{center}
+\caption{Usage of hints in TLC's main loop and excerpt of the \lstinline{IntObj} class}
+\label{fig:tlc-main-hints}
+\end{figure}
+
+By promoting the class of \lstinline{a} and \lstinline{b}, we tell the JIT
+compiler not to generate code until it knows the exact RPython class of both.
+Figure \ref{fig:tlc-abs-promotion-1} shows the
+code\footnote{\lstinline{switch} is not a legal (R)Python statement, it is
+  used here only as a pseudocode example.} generated while compiling the usual
+\lstinline{abs} function: note that, compared to figure
+\ref{fig:tlc-folded-virtualized}, the code stops just before the call
+\lstinline{b.lt(a)}.
+
+\begin{figure}[h]
+\begin{center}
+\begin{lstlisting}[language=Python]
+def interp_eval_abs(args):
+    v0 = args[0]
+    v1 = IntObj(0)
+    a, b = v0, v1
+    # hint(a, promote_class=True) implemented as follows:
+    cls_a = a.__class__
+    switch cls_a:
+        default: 
+            continue_compilation(jitstate, cls_a)
+\end{lstlisting}
+\caption{Promotion step 1}
+\label{fig:tlc-abs-promotion-1}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\begin{lstlisting}[language=Python]
+def interp_eval_abs(args):
+    v0 = args[0]
+    v1 = IntObj(0)
+    a, b = v0, v1
+    # hint(a, promote_class=True) implemented as follows:
+    cls_a = a.__class__
+    switch cls_a:
+        IntObj:
+            # hint(b, promote_class=True) needs no code
+            v0 = IntObj(b.value < a.value)
+            cond = v0
+            if cond.value:
+                return a
+            else:
+                v0 = IntObj(0)
+                v1 = args[0]
+                a, b = v0, v1
+                v0 = IntObj(b.value - a.value)
+                return v0
+        default: 
+            continue_compilation(jitstate, cls_a)
+\end{lstlisting}
+\caption{Promotion step 2}
+\label{fig:tlc-abs-promotion-2}
+\end{center}
+\end{figure}
+
+The first time the flexswitch is executed, the \lstinline{default} branch is
+taken, and the special function \lstinline{continue_compilation} restarts the
+JIT compiler, passing it the just-seen value of \lstinline{cls_a}.  The JIT
+compiler generates new specialized code, and \emph{patches} the flexswitch to
+add the new case, which is then executed.
+
+If later an instance of \lstinline{IntObj} hits the flexswitch again, the
+code is executed without needing more calls to the JIT compiler.  On the
+other hand, if the flexswitch is hit by an instance of some other class, the
+\lstinline{default} branch will be selected again and the whole process will
+restart.
+
+Now, let us examine the content of the \lstinline{IntObj} case: first, there
+is a hint to promote the class of \lstinline{b}.  Although in general
+promotion is implemented through a flexswitch, in this case it is not needed
+as \lstinline{b} holds a \emph{virtual instance}, whose class is already
+known (as described in the previous section).
+
+Then, the compiler knows the exact class of \lstinline{b}, thus it can inline
+the calls to \lstinline{lt}.  Moreover, inside \lstinline{lt} there is a
+call to \lstinline{a.int_o()}, which is inlined as well for the very same
+reason.  Moreover, as we saw in section \ref{sec:virtuals}, the \lstinline{IntObj}
+instance can be virtualized, so that the subsequent \lstinline{BR_COND} opcode
+can be compiled efficiently without needing any more flexswitch.
+
+Figure~\ref{fig:tlc-abs-final} shows the final, fully optimized version of the
+code, with all the instances virtualized and the unneeded temporary variables
+removed.
+
+\begin{figure}[h]
+\begin{center}
+\begin{lstlisting}[language=Python]
+def interp_eval_abs(args):
+    a = args[0]
+    cls_a = a.__class__
+    switch cls_a:
+        IntObj:
+            # 0 is the constant "value" field of the virtualized IntObj(0)
+            if 0 < a.value:
+                return a
+            else:
+                return IntObj(0 - a.value)
+        default: 
+            continue_compilation(jitstate, cls_a)
+\end{lstlisting}
+\caption{Final optimized version of the \lstinline{abs} example}
+\label{fig:tlc-abs-final}
+\end{center}
+\end{figure}

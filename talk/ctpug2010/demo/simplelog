@@ -1,0 +1,29 @@
+[2f4327f16cb] {jit-log-opt-loop
+# Loop 0 : loop with 20 ops
+[p0, p1, p2, p3, i4, p5, p6, i7]
+debug_merge_point('<code object f, file 'simple.py', line 2> #9 LOAD_FAST', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #12 LOAD_CONST', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #15 COMPARE_OP', 0)
+i9 = int_lt(i7, 10000)
+guard_true(i9, descr=<Guard2>) [p1, p0, p2, p3, i7]
+debug_merge_point('<code object f, file 'simple.py', line 2> #18 JUMP_IF_FALSE', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #21 POP_TOP', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #22 LOAD_FAST', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #25 LOAD_CONST', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #28 INPLACE_ADD', 0)
+i11 = int_add(i7, 1)
+debug_merge_point('<code object f, file 'simple.py', line 2> #29 STORE_FAST', 0)
+debug_merge_point('<code object f, file 'simple.py', line 2> #32 JUMP_ABSOLUTE', 0)
+i13 = getfield_raw(32212256, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i15 = int_sub(i13, 1)
+setfield_raw(32212256, i15, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i17 = int_lt(i15, 0)
+guard_false(i17, descr=<Guard3>) [p1, p0, p2, p3, i11, None]
+debug_merge_point('<code object f, file 'simple.py', line 2> #9 LOAD_FAST', 0)
+jump(p0, p1, p2, p3, 9, ConstPtr(ptr20), ConstPtr(ptr21), i11, descr=<Loop0>)
+[2f4328431d5] jit-log-opt-loop}
+[2f432865e55] {jit-backend-counts
+[2f4328667f7] jit-backend-counts}
+[2f4328eaaf1] {jit-backend-counts
+0:9000
+[2f4328ec522] jit-backend-counts}

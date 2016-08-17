@@ -1,0 +1,16 @@
+Security issues in Python and approaches in PyPy
+==================================================
+
+Python in its design favors expressivity, full reflection and
+dynamism. In its current incarnation it has no form of encapsulation.
+So far, two ways to approach security issues have been tried: sandboxing
+(generally at the level of the OS process), and some delicate C-level
+proxying together with language restrictions.
+
+In this talk, we will present PyPy's architecture - a Python interpreter
+written in Python, aiming for flexibility - and discuss how it can
+provide better alternatives to security issues in particular.  It is
+easy in PyPy to add a layer controlling all operations at run-time.  We
+will discuss how this can be used to experiment with approaches like
+attaching security labels to objects and execution frames, forbidding
+access to I/O built-ins to code without enough priviledges, etc.

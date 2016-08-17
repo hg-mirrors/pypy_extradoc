@@ -1,0 +1,33 @@
+PyPy 1.2: snakes never crawled so fast
+======================================
+
+PyPy 1.2 has been recently released: the highlight of the new version is on
+the new JIT compiler, which can hugely increase the performances of Python
+programs.
+
+In this talk we explain how the JIT compiler is implemented, and most
+importantly how it works from the point of view of the user: in particular, we
+see which kind of programs can benefit most from the presence of the JIT.
+
+Finally, we present a way to integrate PyPy into existing applications based
+on CPython, to gradually make the performance critical parts to be executed by
+PyPy and get its benefits already now.
+
+
+
+Italian translation
+-------------------
+
+PyPy 1.2 è stato da poco rilasciato: la caratteristica saliente dalla nuova
+versione è il nuovo compilatore JIT, che può incrementare notevolmente le
+prestazione dei programmi in Python.
+
+In questo talk, spiegheremo come il compilatore JIT è implementato e, aspetto
+più importante, come funziona dal punto di vista dell'utente: in particolare,
+vedremo quali tipi di programma possono trarre i maggiori benefici dalla
+presenza del JIT.
+
+Infine, presenteremo un modo per integrare PyPy all'interno applicazioni già
+esistenti basate su CPython, per far sì che gradualmente le parti più critiche
+per le prestazioni siano eseguite da PyPy, in modo da poter godere dei suoi
+benefici fin da subito.

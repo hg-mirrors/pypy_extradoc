@@ -1,0 +1,22 @@
+PyPy 1.0 and Beyond
+--------------------
+
+Speakers: Armin Rigo, Samuele Pedroni
+ 
+Abstract
+----------
+
+PyPy released 1.0 in March of this year. PyPy contains a very
+compliant Python interpreter, and with 1.0 the first
+incarnation of a Just-In-Time compiler which is generated
+from the interpreter automatically with novel techniques.  
+
+In this talk we are going to give a brief introduction
+to PyPy and its motivation. After recapitulating PyPy 
+architecture we are going to give an overview of
+how the JIT generation is achieved, through examples
+and introducing the general ideas.
+
+In the last part we are going to reflect on the current
+status of PyPy's Python interpreter and our thoughts
+about its future and further progress on the JIT compiler.

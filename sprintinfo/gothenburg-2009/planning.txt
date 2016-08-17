@@ -1,0 +1,152 @@
+
+People present:
+    - Samuele
+    - Maciek
+    - Carl Friedrich
+    - Benjamin
+    - Mikael
+    - Anto
+    - Armin
+    - Iko
+    - Bea
+
+later:
+
+discussions to be had:
+    - what benchmarks do we want for the prototype DONE
+    - things we know are missing DONE
+    - state of the tests DONE
+
+    - how will Eurostars work, how will work be organized (today at 16.00)
+    - what to do with ootype (Anto, Maciek, Armin, Samuele; on Sunday)
+
+
+Goals/Benchmarks
+-----------------
+
+Goal: be somehow faster than CPython in real programs
+
+Benchmarks:
+    - Richards
+    - Pystone
+    - mako, gadfly, templess
+    - port some of the JS benchmarks?
+    - look at unladden-swallow benchmarks
+    - Sympy
+    - Simpy?
+    - Pyrolog
+    
+later:
+    - translate.py
+
+- there should be a unified way to run these benchmark
+- benchmarks should be run nightly
+- we might need a benchmarking server
+
+
+State of Tests
+---------------
+
+- coverage holes in metainterp/optimizer
+- coverage of x86 backend needs many random runs – check this!
+- need more direct tests of the x86 backend
+- some funniness in test_ll2ctypes.py
+- run random tests for x86 nightly
+- we need tests for pypy-jit behaviour that explicitely check whether the loops
+  make sense
+- the tragedy of the skipped tests
+
+things we know are missing
+---------------------------
+
+metainterp/frontend:
+- virtualizables are not finished
+- there is no restriction on the length of the trace
+- proper inlining logic
+- loop nesting (across calls)
+- we need to do something about constantness
+- we need to do something about assert isinstance(x, Class)
+- more backendopt before jitting, assert removal
+- many ooisnull guards in a row
+- remove the numerous checks for frame.vable_rti in the
+  interpreter (non-JITting) part
+
+- speed of tracing and fallbacks?
+
+backend:
+- recompilation after every bridge is bad
+- jump backward in x86 backend is inefficient
+- memory management for the code
+- speed of backend?
+
+Python interpreter:
+- lookups of various kinds
+- calls‽
+
+ootype discussion
+------------------
+
+- try to unify interfaces to make doing the right thing for ootype easier
+- different constraints for different groups of people
+- what to do with ootype jit support after Anto finished his PhD?
+
+inlining discussion
+--------------------
+
+- need to trace aggressively
+- give up when trace becomes too long
+- need to remember when we gave up
+- need to reset counters
+- tracing aggressively will put pressure on the speed of tracing
+- what should we do about recursive calls?
+- connecting compiled loops accross a call?
+
+
+TASKS
+-----
+
+look at tests
+
+ - run tests on branch concerned with the framestack removal and merge if
+   none fail (Armin)
+ - merge the compiler branch (Benjamin, Armin)
+ - write sprint blog post (Maciek, Carl Friedrich)
+ 
+ - set up test_ll_random to run nightly with x86 backend
+ - update things in metainterp/doc
+
+ - compare backend vs gcc quality
+ - make x86 not recompile everything
+    - think about code memory management
+
+ - constant specnode support DONE
+
+ - general wizardry
+ - look at calls performance‽ PROGRESS EXISTS
+ - fix the GC backend tests DONE
+ - get rid of pups and poshes at the end of the loop in x86 backend DONE
+ - investigate lib-python tests DONE
+ - decide on benchmarks that represent calls (Benjamin)
+ - decide what to do with resizable lists DONE
+
+ - find out what's really going on with richards DONE
+ - write small tests that cover virtualizables and inlining in conjunction
+   (Armin, Benjamin)
+ - fix ll2ctypes (Samuele, Maciek)
+ - look into virtualizables on ootype (Anto, Carl Friedrich)
+
+
+
+After the Sprint
+-----------------
+
+- migrate tasks to extradoc/planning/jit.txt
+- merge the jit branch to trunk
+- upgrade python on wyvern
+- improve test running, compile only once
+- sort out a benchmark infrastructure. graphs!!!
+- investigate test coverage
+- inlining on the Python level
+- streamline calls
+- stability‽
+- nightly run of checks on output of pypy-c-jit

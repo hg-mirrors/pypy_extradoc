@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy]{Django and PyPy: performant is a word}
+\author[Alex Gaynor]
+{Alex Gaynor}
+
+\institute{DjangoCon.eu 2011}
+\date{6 June 2011}

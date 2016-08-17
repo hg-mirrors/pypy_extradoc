@@ -1,0 +1,18 @@
+\begin{lstlisting}[mathescape, numbers=right, escapechar=|, firstnumber=-1]
+[$j_1$, $a_1$]                              |\setcounter{lstnumber}{24}|
+$j_2$ = int_add($j_1$, 1)                   |\setcounter{lstnumber}{25}|
+guard_nonnull($a_1$)                        |\setcounter{lstnumber}{27}|
+guard_class($a_1$, Even)                    |\setcounter{lstnumber}{16}|
+$i_1$ = getfield_gc($a_1$, descr='value')   |\setcounter{lstnumber}{16}|
+$i_2$ = int_rshift($i_1$, 2)                |\setcounter{lstnumber}{17}|
+$b_1$ = int_eq($i_2$, 1)                    |\setcounter{lstnumber}{17}|
+guard_false($b_1$)                          |\setcounter{lstnumber}{5}|
+$i_3$ = int_and($i_2$, 1)                   |\setcounter{lstnumber}{5}|
+$i_4$ = int_is_zero($i_3$)                  |\setcounter{lstnumber}{5}|
+guard_true($i_4$)                           |\setcounter{lstnumber}{6}|
+$a_2$ = new(Even)                           |\setcounter{lstnumber}{2}|
+setfield_gc($a_2$, descr='value')           |\setcounter{lstnumber}{23}|
+$b_2$ = int_lt($j_2$, 100)                  |\setcounter{lstnumber}{23}|
+guard_true($b_2$)                           |\setcounter{lstnumber}{-2}|
+jump($j_2$, $a_2$)
+\end{lstlisting}

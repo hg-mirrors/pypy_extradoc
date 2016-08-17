@@ -1,0 +1,131 @@
+=============================================
+pypy-sync developer meeting 16th March 2006
+=============================================
+
+
+Attendees:  Samuele
+            Anders C.
+            Anders L. (arrived late)
+            Aurelien Campeas
+            Carl Friedrich
+            Michael (minutes)
+            Nik
+            Eric
+
+Summary
+=======
+
+ - activity reports (LAST WEEK/NEXT WEEK/BLOCKERS)
+
+   See `the log`_ below.
+
+ - leysin sprint details
+
+   See the mail to pypy-dev, etc.  As this is an internal only sprint
+   somewhere we've been before, organization is not expected to be a
+   major chore.
+
+ - this "week" in pypy
+
+   We would like to resurrect the 'this week in pypy newsletter', but
+   probably with a reduced, and maybe less regular, frequency.  We
+   have one almost ready to go, but it depends on Armin writing a JIT
+   section and finishing up the PyCon sprint report.
+
+.. _`the log`:
+
+Complete Log
+============
+
+Complete IRC log::
+
+  [16:09] mwh: hello
+  [16:09] arigo: :-)
+  [16:09] nikh: hola
+  [16:09] ericvrp: :) summertime in england?
+  [16:09] mwh: am i still supposed to be running the meeting
+  [16:09] cfbolz: yes
+  [16:09] mwh: ericvrp: no, i'm just at my parents' house, different distractions than normal ...
+  [16:10] mwh: right, activity reports please
+  [16:10] cfbolz: LAST: logic sprint, GC work
+  [16:10] cfbolz: NEXT: more GC work
+  [16:10] cfbolz: BLOCKERS: personal issues
+  [16:10] arigo: LAST: not much (setting up new laptop)
+  [16:10] arigo: NEXT: JIT: virtual structures, more general thinking...
+  [16:10] arigo: BLOCKERS: whiteness of the landscape
+  [16:10] arre: PREV: Bug hunting, improve performance of attribute access, some JIT work.
+  [16:10] arre: NEXT: More JIT.
+  [16:10] arre: BLOCKERS: -
+  [16:10] ericvrp: LAST: pyllvm setup script
+  [16:10] ericvrp: NEXT: pyllvm setup using llvm build tools
+  [16:10] ericvrp: BLOCKERS: None
+  [16:10] nikh: LAST: pushing gensqueak ahead
+  [16:10] nikh: NEXT: more pushing and pulling
+  [16:10] nikh: BLOCKERS: none
+  [16:10] auc: last : big cleanup
+  [16:10] auc: next : figure out how to implement 'choice' with spaces
+  [16:10] auc: blockers : nil
+  [16:10] pedronis: LAST: sprint, bug hunting, some opt and jit work, helping others
+  [16:10] pedronis: NEXT: more jit, more helping
+  [16:10] pedronis: BLOCKERS: a bit hard to focus
+  [16:11] mwh: LAST: GC debugging
+  [16:11] mwh: NEXT: more of same
+  [16:11] mwh: BLOCKERS: personal issues too
+  [16:11] mwh: i think arigo has the best blockers
+  [16:11] mwh: pedronis: does strakt have minders who can drag him back to gtbg?
+  [16:12] cfbolz: let's produce some global warming, that will fix the problem
+  [16:12] pedronis: I think Strakt has at least one person that would like to join him
+  [16:12] arre: We do have snow, just not much of it :(
+  [16:12] mwh: pedronis: is your 'a bit hard to focus' because all and sundry keep bugging you for help?
+  [16:13] pedronis: yes, there's a lot of stuff going on on all front
+  [16:13] mwh: i don't suppose there's much that can be done about that
+  [16:13] cfbolz: well, we can try to bug him less
+  [16:13] pedronis: no, just pointing it out as a fact
+  [16:14] mwh: having armin around more might shift some of the load off
+  [16:14] mwh: fair enough
+  [16:14] mwh: what else was on the agenda?
+  [16:14] mwh: leysin seems to be happening
+  [16:14] mwh: given that it's internal and we've been there before it shouldn't be the biggest of deals
+  [16:15] arigo: yes, I can confidently say "feel free to bug me about it" and not expect too much to happen
+  [16:16] nikh: what's the deadline for registering for leysin? i will be there 2 - 3 days, but don't know which yet
+  [16:16] mwh: i guess the only potential issue is accomodation
+  [16:16] mwh: do we have a block booking or something/
+  [16:16] mwh: ?
+  [16:16] arigo: yes, there is a common booking
+  [16:16] arigo: there is no fixed deadline
+  [16:16] mwh: cool
+  [16:17] nikh: good. i will try to fix dates beginning next week
+  [16:17] arigo: I will send to the housekeeper, Arianne, the people's information as they come along
+  [16:17] mwh: the other topic is 'this "week" in pypy'
+  [16:17] mwh: we'd like to resurrect it, but probably not actually weekly
+  [16:18] arre: arigo: What information do you need from us?
+  [16:19] arigo: dates, and possibly if you'd agree to share with more than two for a couple of days (week-end days) in case of booking pressure
+  [16:19] arigo: mwh: monthly, or fromtimetotimely ?
+  [16:19] cfbolz: the latter probably
+  [16:19] mwh: arigo: fortnightly, maybe ?
+  [16:20] mwh: but perhaps not fixed
+  [16:20] mwh: arigo: fwiw, i have no problem with sharing with whoever
+  [16:21] cfbolz: anyway the point for having this "this week..." topic is to ask people to write about stuff
+  [16:21] arigo: there is also an extra bed at the place where I am staying, which I'd like to reserve for a non-funded person
+  [16:21] nikh: given that sprints are coming up pretty regularly, maybe the sprint reports could be combined with a report about what happened in the weeks before a sprint
+  [16:21] cfbolz: armin told me he would write a bit about the jit
+  [16:22] arigo: yes, I should do that as a way to come back to the topic
+  [16:22] arigo: until tomorrow
+  [16:22] cfbolz: nikh: well, I would like to keep the sprint report separate
+  [16:23] nikh: sure
+  [16:23] cfbolz: ah, I see what you mean
+  [16:24] nikh: it would imply a certain fixed schedule for the "this week in ..." reports
+  [16:24] cfbolz: yes
+  [16:24] cfbolz: but on the other hand, "this week" could complement the sprint reports
+  [16:24] cfbolz: and it should be a bit more common than sprints
+  [16:24] aleale joined the chat room.
+  [16:26] mwh: aleale: i guess you know you're late, but do you have an activity report?
+  [16:27] aleale: yes, sorry about that - you are not finished yet
+  [16:27] mwh: not quite :)
+  [16:27] mwh: it started late because i forgot too ...
+  [16:27] aleale: PREV: recovering from back to back sprinting
+  [16:27] aleale: NEXT: continue refactoring of pyontology
+  [16:27] aleale: blockers: -
+  [16:29] mwh: but it's now nearly half past, any other topics?
+  [16:29] mwh: otherwise: expect to be bugged about this week in pypy
+  [16:29] mwh: and see you next week!

@@ -1,0 +1,63 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2005/cfp.html
+DEADLINE: 31st September 2005 (friday)
+
+Title:  agile open-source methods <-> business/EU-funding 
+
+Subtitle: Sprint driven development in Open Source projects - 
+          agile methods in open-source related companies 
+
+Section: Hacker(ethik), (or Culture? or Community?)
+
+Talkers: Beatrice Düring, Holger Krekel 
+
+Abstract (max 250 letters): 
+
+    There is a growing number of open-source developers
+    organized and connected to company and money related work.
+    We report our experiences from the first year of the PyPy
+    project which has a 7 company/university consortium and a
+    1.3 Million Euro research grant from the European Union.
+
+Description (250-500 words): 
+
+    We'd like to present and discuss models and experiences
+    for connecting open-source/hacking culture driven development 
+    to money related projects and goals with the audience.  
+
+    We are going to briefly describe the organisation of the PyPy project, 
+    showing how formal stakeholders and OSS Python community interact 
+    through agile practices like sprinting.  We will also reflect on the 
+    aspect of diversity, combining technical and non technical people and 
+    skills and learnings from this.
+
+    We will relate the various agile techniques used in PyPy
+    and other projects/companies to the agile practices known from 
+    the work in the Agile Alliance (XP, Scrum, Crystal) and tell
+    you what we know of how other projects are doing it.  
+
+    Lastly we will also share our experience of various challenges and 
+    possibilities when integrating the different cultures and skills from 
+    the OSS perspective, EU perspective and the Chaos Pilot/process management 
+    perspective - managing diversities.   
+
+Statement: We intend to submit a paper (PDF) for the 22C3 proceedings. 
+Statement: We intend to submit a slides PDF as well. 
+
+Duration of your talk: 45 minutes + questions 
+
+Language of your talk: english 
+
+Links to background information on the talk:  
+    http://codespeak.net/pypy/dist/pypy/doc/dev_method.html
+    http://codespeak.net/pypy/dist/pypy
+
+Target Group: Advanced Users, Pros 
+
+Resources you need for your talk: digital projector, internet 
+
+Related talks at 22C3 you know of: PyPy - the new Python implementation on the block 
+
+A lecture logo, square format, min. 128x128 pixels (optional): 
+    http://codespeak.net/pypy/img/py-web1.png 
+    (please scale it down a bit :-) 
+

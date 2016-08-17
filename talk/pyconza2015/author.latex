@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[How PyPy runs your programs]{How PyPy runs your programs}
+\author[fijal]
+{Maciej Fijałkowski}
+
+\institute{PyCon ZA 2015}
+\date{Oct 2nd, 2015}

@@ -1,0 +1,85 @@
+========================================
+PyPy and Py-lib Debian packaging meeting
+========================================
+
+Attendees:
+ - Alexandre
+ - Sylvain
+ - Michael
+ - Carl Friedrich (minutes)
+
+The Py-lib
+==========
+
+Basic package is working, some patches necessary.
+
+ * greenlets only on platforms where they are supported
+
+Open issue:
+ 
+ * should the unittests be in the package?
+   yes, since it does not cost much and is actually easier than removing them
+
+
+
+PyPy
+====
+
+packages:
+
+ * pypy-dev
+ * pypy-lib
+ * pypy-docs
+ * binary packages (pypy-stackless, pypy-logic, pypy-jit) using the C backend
+
+Goals:
+ 
+ * get dependencies right
+ * pypy-dev:
+     * run py.py
+     * pypy-translate.py
+         * what to do with the targets?
+     * pypy-jscompile.py
+         * would be nice
+
+Dependencies:
+ 
+ * required (things to run py.py)
+   * Python
+   * py-lib
+
+ * recommended (for translate.py)
+   * pypy-doc
+   * pygame
+   * python-dev
+   * gcc
+   * mono
+   * boehm
+   * graphviz
+   * python-ctypes
+   * spidermonkey
+   * common lisp (which one?)
+   * jasmin (in suggested?)
+   * llvm?
+   * libbz2-dev
+   * ctypes
+
+
+Solved problems:
+
+ * pypy/_cache is symlinked to /var/pypy_cache (or whatever)
+
+
+still to do:
+
+ * rewrite getting started to work with debian
+
+
+Issues to fix in PyPy:
+ 
+ * maybe remove the logic object space target?
+
+ * what do to with geninterp (in general)
+ 
+ * be able to specify an executable name for translate.py
+

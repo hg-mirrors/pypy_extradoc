@@ -1,0 +1,65 @@
+Bern Squeak/PyPy sprint October 22 - October 26 2007
+=====================================================
+
+We are proud to announce the first Squeak-PyPy-collaboration-sprint.
+The plan is to bring people from the Squeak/Smalltalk and the
+PyPy/Python communities together to learn about each others projects and
+to think about collaboration possibilies.  The sprint will be hosted by
+the Software Composition Group of the University of Bern from the 22nd
+to the 26th of October 2007.
+
+
+Topics and goals
+----------------
+
+The general technical goal of the sprint is to explore implementing the
+bytecode interpreter as well as the primitives of Squeak in RPython.
+This should make it eventually possible to auto-generate a JIT for
+Squeak with the help of PyPy technologies.
+
+The other important goal of the sprint is to teach the
+first-time-sprinters the sprint-driven-development methodology.
+
+The first day of the sprint will be a tutorial day, were talks about
+PyPy, Squeak and sprint-driven-development will be given. The further
+days will be sprinting days.
+
+Of course the most important goal of the sprint is to get to know each
+other and have some fun :-).
+
+Topics of the sprint:
+
+- learning about:
+
+  - PyPy
+  - the internals of Squeaks VM
+  - sprint-driven-development
+
+- exploring ways to implement Squeaks bytecode-interpreter and the
+  primitives in Python
+
+- or (maybe alternatively) implement a Squeak-backend for PyPy
+
+- think about how to load and store of images in PyPy
+
+
+Location
+--------
+
+The sprint will take place in a seminar room at the University of Bern.
+Further details of how to get there will be announced before the sprint.
+
+
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More 
+organisational information will be send to that list.  We'll keep a list
+of `people`_ which we'll update (which you can do so yourself if you
+have codespeak commit rights).  If you have no clue where to stay in
+Bern ask around on the list, maybe we can help you find something or
+find some other solution.
+
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`people`: http://codespeak.net/pypy/extradoc/sprintinfo/bern2007/people.html

@@ -1,0 +1,269 @@
+=============================================
+pypy-sync developer meeting 4th August 2005
+=============================================
+
+Attendees::
+         Samuele Pedroni, 
+         Adrien Di Mascio, 
+         Carl Friedrich Bolz, 
+         Armin Rigo, 
+         Samuele Pedroni,
+         Anders Lehmann,
+         Niklaus Heidimann,
+         Eric van Riet Paap,
+         Holger Krekel (minutes/moderation)
+
+with pre info::
+        Richard Emslie, Ludovic Aubry, 
+
+Regular Topics 
+====================
+
+- roll call. holger opens the meeting. 
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No direct conflicts were discovered. Compliancy work was
+  discussed under its own topic. 
+
+Topics of the week
+===================
+
+"regular" more closed sprints? 
+---------------------------------
+
+In a private conversation Bea asked Holger how the developer group
+thinks of the hildesheim2-sprint type (which was similar
+to the Pre-EP sprint in Gotenburg).  A question is: 
+do we think we want to regularly do sprints where we
+only invite developers who are at least half up to 
+speed with PyPy?  Should sprints around conferences always
+be completely open and some of the sprints in between 
+then possibly more closed? 
+
+The group agrees that the actual issue is not so much about
+being "closed" per se but about the active developers being
+able to pair among themselves.  Also it is agreed that interested 
+developers, especially ones close to the sprint venue, should not
+be excluded even from restricted sprints.  Around conferences
+we always want to invite and prepare for developers completely 
+new to PyPy, whereas between we'd sometime like to 
+restrict the sprints to active developers.   It is also
+clear that we don't want to go against the open source
+spirit of allowing interested people to participate. 
+
+0.6.2 release: dropping the idea and just going for 0.7 ...
+----------------------------------------------------------------------------
+
+It has basically been decided by the hildesheim2 sprint group
+that Heidelberg should tackle a 0.7 self-contained PyPy version. 
+It seems that we then probably want to drop the idea of a 
+0.6.2 release.  But the release goal for 0.6.2, namely
+the compliancy goal of again reaching 90% compliancy 
+for our 2.4.1 based tree, should then be shifted to 0.7. 
+
+The attendants quickly agreed that we drop the 0.6.2 release
+and go for 0.7 directly, including the 0.6.2 release goals. 
+
+fixing compliancy bugs 
+------------------------------------
+
+It has been decided by the hildesheim2 sprint group 
+that we want to have a text file in lib-python 
+that lists the problems with failing test modules
+so that we can share analysis. 
+
+After a short discussion we reach agreement on 
+
+a) we add progress information regarding single compliancy 
+   tests to lib-python/failure_list.txt.  If anyone works 
+   longer on a compliancy test then it should be noted
+   in the file to avoid duplication of work. 
+
+b) fixing a compliancy test should usually be accompanied 
+   by adding a small test in our pypy/ hierarchy. Only
+   if the test is too obscure to be reproduced nicely 
+   it is ok to not add such a test. 
+  
+c) we may need to prepare a bit that we count the failing/suceeding
+   compliancy tests more correctly.  This can probably still 
+   be done at the heidelberg sprint if neccessary. 
+
+Closing 
+------------------
+
+Holger closes the meeting in time at 13:30pm. 
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+
+    Aug 04 12:54:29 -->	You are now talking on #pypy-sync
+    Aug 04 12:58:42 <arigo>	should we start?  (we're 6 minutes behind already)
+    Aug 04 12:58:53 <hpk>	ups, my clock says 12:58
+    Aug 04 12:59:00 <hpk>	sorry
+    Aug 04 12:59:04 <hpk>	then sure, let's start right ahead
+    Aug 04 12:59:06 <hpk>	and hi
+    Aug 04 12:59:09 <cfbolz>	hi!
+    Aug 04 12:59:11 <ericvrp2>	hi
+    Aug 04 12:59:16 <arigo>	hi :-)
+    Aug 04 12:59:16 <pedronis>	hi
+    Aug 04 12:59:17 <adim>	Hi
+    Aug 04 12:59:20 <nik>	hi as well
+    Aug 04 12:59:36 <hpk>	ok, let's go, here is the agenda:
+    Aug 04 12:59:44 <hpk>	- roll call.
+    Aug 04 12:59:44 <hpk>	- activity reports (3 prepared lines of info).
+    Aug 04 12:59:44 <hpk>	- resolve conflicts/blockers
+    Aug 04 12:59:44 <hpk>	* Topics of the week *
+    Aug 04 12:59:44 <hpk>	- regularly more closed sprints?
+    Aug 04 12:59:44 <hpk>	- 0.6.2 release: dropping the idea and just going for 0.7?!
+    Aug 04 12:59:44 <hpk>	- fixing compliancy bugs
+    Aug 04 12:59:44 <hpk>	- (re)assignments
+    Aug 04 13:00:04 <hpk>	(i will be pretending, my clock is right, so it's exactly 13:00 now :-) 
+    Aug 04 13:00:11 <hpk>	activity reports, i supposed the following order:
+    Aug 04 13:00:11 <cfbolz>	:-)
+    Aug 04 13:00:22 <hpk>	rxe,hpk,ericvrp2,nik,adim,arigo,aleale,cfbolz,pedronis,adim
+    Aug 04 13:00:28 ---	You are now known as rxe
+    Aug 04 13:00:36 <rxe>	LAST: llvm work with Eric (pbc, operations, bpnn, richards, readability of source
+    Aug 04 13:00:36 <rxe>	NEXT: would be nice to translate pypy itself - not too far off - but will probably be busy wit
+    Aug 04 13:00:36 <rxe>	h other stuff
+    Aug 04 13:00:36 <rxe>	BLOCKERS: none
+    Aug 04 13:00:41 ---	You are now known as hpk
+    Aug 04 13:00:50 <ericvrp2>	LAST: exception handling in llvm backend
+    Aug 04 13:00:51 <ericvrp2>	NEXT: operator exceptions (divzero,etc)
+    Aug 04 13:00:51 <ericvrp2>	BLOCKERS: a lot of XXX in llvm backend, might need to refactor first
+    Aug 04 13:00:55 <hpk>	LAST: hildesheim2-sprint + after-work/reporting, small fixes + cleanup here and there
+    Aug 04 13:00:55 <hpk>	NEXT: codespeak-migration, (maybe) improve test-report/translation tools
+    Aug 04 13:00:55 <hpk>	BLOCKERS: time pressure regarding migration
+    Aug 04 13:01:02 <nik>	LAST: integrating _sre and array
+    Aug 04 13:01:10 <nik>	NEXT: app-level optimizations for _sre, some array improvements. after that (= next week) i'm probably be free for work on general compliance.
+    Aug 04 13:01:14 <nik>	BLOCKERS: -
+    Aug 04 13:01:27 <adim>	LAST: gave a course 
+    Aug 04 13:01:27 <adim>	NEXT: continue astbuilder (only since today)
+    Aug 04 13:01:27 <adim>	BLOCKERS: no really blockers, byt small problems for some isntructions
+    Aug 04 13:01:32 ---	adim is now known as luda1
+    Aug 04 13:01:39 <luda1>	LAST: vacation
+    Aug 04 13:01:39 <luda1>	NEXT: vacation
+    Aug 04 13:01:39 <luda1>	BLOCKERS: none
+    Aug 04 13:01:45 ---	luda1 is now known as adim
+    Aug 04 13:01:52 <arigo>	LAST: fixing bugs in translate_pypy; getting a stand-alone executable instead of an ext module
+    Aug 04 13:01:52 <arigo>	NEXT: clean-ups (e.g. the Translator class); work on compliance tests; more bugs shown by translate_pypy
+    Aug 04 13:01:52 <arigo>	BLOCKERS: -
+    Aug 04 13:01:56 <aleale>	prev: Compliance tests, getting settled in at DFKI
+    Aug 04 13:01:58 <aleale>	next: Compliance tests
+    Aug 04 13:01:59 <aleale>	blockers: none
+    Aug 04 13:02:07 <cfbolz>	LAST: Hildesheim sprint, lltypesimulation on top of memory simulator, looking ways to integrate lltypesimulation with llinterp
+    Aug 04 13:02:07 <cfbolz>	NEXT: integrating lltypesimulation into lltinterp, enhancing llinterp to be able to use simulated GC (finding roots)
+    Aug 04 13:02:07 <cfbolz>	BLOCKERS: none
+    Aug 04 13:02:30 <pedronis>	Last: sprint, fix obscure(tm) intermittent annotator problem, fix what prevented "import code" to succeed
+    Aug 04 13:02:32 <pedronis>	Next: work on open issues
+    Aug 04 13:02:33 <pedronis>	Issues: when we try very clever approaches we should try to think of and add sanity checks
+    Aug 04 13:03:00 <hpk>	ok, that's activity reports, there are no immediate blockers ... 
+    Aug 04 13:03:15 <hpk>	however, we should talk a bit about how to approach compliancy under its own topic
+    Aug 04 13:03:46 <hpk>	so on to: regularly doing more closed sprints?
+    Aug 04 13:03:56 <hpk>	Bea mailed me and there were discussions here and there
+    Aug 04 13:04:06 <hpk>	what do people think about having two types of sprints 
+    Aug 04 13:04:22 <hpk>	like one completely open and more "closed"? 
+    Aug 04 13:04:49 <cfbolz>	how closed would "closed" be?
+    Aug 04 13:05:03 <aleale>	I think I only have tried the "closed" one
+    Aug 04 13:05:29 <hpk>	cfbolz: i'd suggest to define closed as "enough room for the active developers to pair with each other"
+    Aug 04 13:05:56 <hpk>	because i think that is really the issue, the more newbies or not-up-to-speed people the less the active developers can pair with each other
+    Aug 04 13:06:01 <cfbolz>	sounds good :-)
+    Aug 04 13:06:08 <arigo>	yes
+    Aug 04 13:06:28 <cfbolz>	hildesheim was very productive
+    Aug 04 13:07:04 <hpk>	any other agreeing/disagreeing opinions on this? 
+    Aug 04 13:07:48 <adim>	Keeping sprints open around conferences seems a good idea, but having more "closed" ones around "deadlines" should be possible too
+    Aug 04 13:07:56 <ericvrp2>	I think that it goes somewhat against the opensource idea
+    Aug 04 13:08:19 <cfbolz>	not really. depends on definition of "active developers"
+    Aug 04 13:08:21 <ericvrp2>	I would suggest at least 1-2 days for people that might live nearby and want to get the feeling
+    Aug 04 13:08:33 <hpk>	ericvrp2: i see your point
+    Aug 04 13:09:03 <hpk>	for example, i am not worried about heidelberg, because there are quite a lot of people registered that know PyPy reasonably well
+    Aug 04 13:09:28 <hpk>	so if we had 2-4 newbies showing up, that should be quite ok
+    Aug 04 13:09:54 <cfbolz>	so by your definition it would even be a closed sprint :-)
+    Aug 04 13:10:04 <hpk>	cfbolz: psst! :-)
+    Aug 04 13:11:07 <cfbolz>	no, I agree. Open would mean something like after EP where really lots of people showed up rather spontaneously
+    Aug 04 13:11:08 <hpk>	ok, i would like to summarize that the general opinion is that closed sprints are ok, but we want to be careful to a) not do them to often  b) not harshly exclude interested developers c) look that we don't go against the open-source spirit
+    Aug 04 13:11:19 <arigo>	makes sense to always allow nearby people to show up.  We should only recommend to other people to fly to an "open" sprint if they have to fly anyway
+    Aug 04 13:11:37 <adim>	seems good
+    Aug 04 13:12:01 <ericvrp2>	fine!
+    Aug 04 13:12:11 <arigo>	ok for me.
+    Aug 04 13:12:46 <hpk>	nik: does it also make sense to you? 
+    Aug 04 13:13:08 <nik>	yep, fine with me
+    Aug 04 13:13:32 <hpk>	pedronis, aleale: i presume you don't object either (until you do)
+    Aug 04 13:13:50 <aleale>	correct
+    Aug 04 13:14:06 *	hpk 's clock is 13:14 now
+    Aug 04 13:14:20 <hpk>	next topic: 0.6.2 release: dropping the idea and just going for 0.7 ...
+    Aug 04 13:14:27 <hpk>	it's probably uncontroversial
+    Aug 04 13:14:37 <hpk>	but i want to follow up on earlier discussions/decisions
+    Aug 04 13:14:54 <hpk>	i guess that we don't go for any 0.6 release anymore and directly tackle 0.7 at heidelberg
+    Aug 04 13:15:07 <hpk>	everybody fine with this?
+    Aug 04 13:15:11 <aleale>	yes
+    Aug 04 13:15:16 <nik>	what would have been the focus of 0.6.2?
+    Aug 04 13:15:29 <cfbolz>	switch to CPython 2.4.1
+    Aug 04 13:15:42 <nik>	i see
+    Aug 04 13:15:44 <hpk>	nik: compliance, move to 2.4.1 and the parser running on top of cpython both 2.4 and 2.3
+    Aug 04 13:16:09 <hpk>	those goals would be shifted to 0.7
+    Aug 04 13:16:32 <arigo>	agreed
+    Aug 04 13:16:38 <pedronis>	yes
+    Aug 04 13:16:50 <ericvrp2>	ok
+    Aug 04 13:16:54 <adim>	ok with this
+    Aug 04 13:17:00 <cfbolz>	I'm fine with that
+    Aug 04 13:17:08 <hpk>	great, then the next topic (we still have 13 minutes according to my clock)
+    Aug 04 13:17:18 <hpk>	Plans for fixing compliancy bugs
+    Aug 04 13:17:49 <hpk>	there now is a first incomplete text file failure_list.txt in lib-püython
+    Aug 04 13:18:25 <hpk>	the question is a bit a) how we distribute the tasks/analysis
+    Aug 04 13:18:43 <hpk>	b) how we tackle fixing compliancy issues (adding tests or not?)
+    Aug 04 13:19:06 <hpk>	c) do we urgently need to count differently then by failing test file? 
+    Aug 04 13:19:22 <arigo>	a) I propose that whoever starts seriously looking at a test, says so in the failure_list.txt
+    Aug 04 13:19:52 <arigo>	and then he follows up there too when he found the problem, and finally says if/when the problem is fixed or if he can't fix it
+    Aug 04 13:20:38 <arigo>	b) let's add tests to our own suite unless they are really too obscure
+    Aug 04 13:20:57 <arigo>	c) I personally don't care too much about counting tests differently
+    Aug 04 13:21:13 <cfbolz>	arigo: but the EU might :-)
+    Aug 04 13:22:01 <arigo>	the revision xxx before the 2.4.1 switch passed 90% of tests
+    Aug 04 13:22:01 <hpk>	cfbolz: but counting a whole test file just containing one failure as a complete failure is certainly "good for the EU" :-)
+    Aug 04 13:22:13 <nik>	do they mandate a figure, like 95% compliancy?
+    Aug 04 13:22:20 <hpk>	nik: we promised 90% compliancy
+    Aug 04 13:22:23 <cfbolz>	hpk: of course :-)
+    Aug 04 13:23:03 <hpk>	arigo: i agree to a) and b) but regarding c): i think we should prepare for counting differently before heidelberg - just in case
+    Aug 04 13:23:14 <aleale>	Lets wait until Heidelberg and see if it is needed 
+    Aug 04 13:23:55 <arigo>	hpk: ok
+    Aug 04 13:24:00 <cfbolz>	yes, but armin's point is valid as well: no matter how we count, it's annoying that a lot of tests fail now that passed once
+    Aug 04 13:24:15 <hpk>	cfbolz: i am not even sure about that: 2.4.1 has maybe just added tests? 
+    Aug 04 13:24:36 <cfbolz>	maybe
+    Aug 04 13:24:40 <nik>	that may be true
+    Aug 04 13:24:44 <nik>	i noticed several times
+    Aug 04 13:24:49 <nik>	that stuff isn't tested in CPython
+    Aug 04 13:24:49 <ericvrp2>	counting differently sound alot like early optimization to me
+    Aug 04 13:25:26 <hpk>	ericvrp2: well, we are really counting wrong currently
+    Aug 04 13:26:02 <hpk>	ericvrp2: consider one test file with 10000 tests all failing, and one test file with 1 test passing -> compkliancy 50% 
+    Aug 04 13:26:52 <cfbolz>	although most of the time it's really the other way round right now
+    Aug 04 13:26:54 <ericvrp2>	hpk: I agree with you, but changing that now (unless 5 minutes work) doesn't sound very productive
+    Aug 04 13:26:59 <arigo>	hpk: fixing the counting should be easy to do at Heidelberg if needed
+    Aug 04 13:27:21 <arigo>	hpk: I think that time is better spent trying to fix the tests themselves, for now
+    Aug 04 13:27:51 <hpk>	ok, fine by me (but i still want to to look _a bit_ into the test reporting, anyway, so i might give that a look as well)
+    Aug 04 13:28:07 <arigo>	sure
+    Aug 04 13:28:28 <hpk>	there are at least curerntly encoding-problems which prevent test reports 
+    Aug 04 13:28:35 <nik>	one suggestion: it would help if the whole compliancy suite was run daily on some server
+    Aug 04 13:28:40 <nik>	and the results checked in
+    Aug 04 13:28:54 <hpk>	nik: yes, i had that on codespeak.net but stopped it when the server was getting unstable
+    Aug 04 13:29:08 <hpk>	ok, i think we have a conclusion on this
+    Aug 04 13:29:10 <cfbolz>	hpk: I can do that here, if you give me your script
+    Aug 04 13:29:20 <hpk>	cfbolz: ok, will tell you off-this-meeting
+    Aug 04 13:29:27 <cfbolz>	ok
+    Aug 04 13:29:36 *	hpk is about to close the meeting
+    Aug 04 13:30:02 <hpk>	thanks all for coming, and see you on the neighbour channel :-) 
+    Aug 04 13:30:05 <cfbolz>	:-)
+    Aug 04 13:30:08 <cfbolz>	bye
+    Aug 04 13:30:17 <hpk>	bye
+    Aug 04 13:30:28 <adim>	Bye
+    Aug 04 13:30:36 <ericvrp2>	bye
+    Aug 04 13:30:40 <nik>	byebye
+    Aug 04 13:30:47 <arigo>	bye
+    Aug 04 13:31:06 <--	arigo (~arigo@arigo.sustaining.supporter.pdpc) has left #pypy-sync
+    Aug 04 13:31:14 <--	cfbolz (~test@zenon.physi.uni-heidelberg.de) has left #pypy-sync ("Leaving")
+    Aug 04 13:31:36 <--	nik (~chatzilla@253.71.77.83.cust.bluewin.ch) has left #pypy-sync
+    Aug 04 13:31:45 <--	aleale (~chatzilla@clogs.dfki.uni-sb.de) has left #pypy-sync
+    Aug 04 13:32:16 <--	adim (~adim@logilab.net2.nerim.net) has left #pypy-sync

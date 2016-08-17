@@ -1,0 +1,151 @@
+Nothing official, but as I'm stting here waiting for the others to
+arrive, I thought I'd wirte a little bit about what we did yesterday
+(all my own opninions and recollections, corrections welcome :-).
+
+The people present and hacking were: Armin, Samuele, Christian,
+Holger, Michael, Anders (C) and Anders (L).
+
+We started by writing:
+
+http://codespeak.net/svn/pypy/extradoc/sprintinfo/pre-ep2005-planning.txt
+
+(which actually started as a mail Armin sent to pypy-dev a week or so
+ago, and was edited during the day to reflect progress).
+
+Then in a pretty informal way we paired or tripled up and got
+cracking.  Generally speaking, it was encouraging how quickly everyone
+became productive, it says good things about the current design of
+codebase (and also indicates how much work there is left to do...).
+
+Almost all of the work happened at the rtyper level:
+
+http://codespeak.net/pypy/index.cgi?doc/translation.html#the-rpython-typer
+
+that sits between the annotator and the language backends.
+
+Samuele and Michael mostly worked on string operations in rpython,
+implementing conversions from ints to strings and limited string
+formatting operations, did a couple of easy builtins and worked out
+which were going to be hard.
+
+Anders (L) and Christian worked mostly on rpython lists and tuples,
+and also did string slicing.
+
+Anders (C), Holger and Armin mostly worked on rpython dictionaries
+(the ones that will hold keyword arguments during argument processing,
+among a few other things), and nearly finished it.
+
+Right, the others are hear now, so it's time to start hacking again...
+
+Cheers,
+mwh
+
+Yesterday was less obviously productive than day 1, possibly because
+you now have to go quite a lot higher up the tree to find the lowest
+fruit by now...
+
+Arre and Holger finished off string-keyed dictionary stuff.
+
+Anders and Samuele did the list builtin.
+
+Armin and Michael did isinstance.
+
+Michael and Armin wrote some grotty float parsing code and removed the
+only use of the float builtin on a string (if anyone has some nice and
+less numerically naive float parsing code or wants to write some, feel
+free -- it's a fairly self contained task).
+
+Christian worked on reducing the use of import * in rpython/ (though
+really we should have less 'from module import thing ... thing' and
+more 'import module ... module.thing', but this still an improvement).
+
+Holger and Armin removed some of the uses of dictionaries in the
+to-be-translated code.
+
+Michael and Samuele implemented a very limited str for instances.
+
+Arre and Anders implemented a 'unicode character' for the rtyper and c
+backend.
+
+Michael and Samuele investigated issues preventing the translation of
+demo/bpnn.py.
+
+Holger and Armin worked on functions like Cache.getorbuild which need
+to be treated specially by the annotator and rtyper (because the
+'build' part is not allowed to happen at runtime).
+
+Then Michael, Samuele and the two Anders went to a midsomar party, and
+at 1pm the day after, Samuele hasn't been seen since...
+
+Cheers,
+mwh
+Yesterday was another good day at the pre-EP sprint.
+
+We mostly started by polishing stuff from the day before -- unicode
+characters, pre-built caches.
+
+Holger and Michael removed by writing boring code a use of
+specialize:memo we weren't feeling intelligent enought to support in
+the rtyper.
+
+Armin and Anders made yet another pass through the list of partially
+supported 'builtins'[1] and made some decisions about whether support
+should be removed, finished or ignored for now.
+
+The we had bit of a planning session and decided that (Christian and
+Arre) and (Anders and Armin) would pair on supporting builtins and
+Holger, Samuele and Michael would work on translator issues.
+
+Holger and Michael implemented for the C translator the few remaining
+unsupported float operations the rtyper could emit.
+
+Arre and Christian implemented a few more operations on rdicts.
+
+Armin and Anders worked on the list of builtins in the usual fashion:
+sometimes removing code now deemed to be not rpython, sometimes by
+removing special-casing code that was no longer necessary and
+sometimes by adding code to the rtyper.
+
+Holger, Michael and Samuele attempted to translate demo/bpnn.py and
+fixed the problems they ran into; this included obscure behaviour when
+the rtyper hit code calling a statically known bound method of a
+Constant, the same when the Constant was of a class that was only seen
+by the RTyper as a class of such a Constant and not elsewhere.
+
+Holger and Armin refactored some of the rtyper code in the area of
+equality.
+
+Michael and Samuele fixed some broken code in the c translator in the
+area of calling C functions not implemented by us.
+
+Anders with help from Armin implemented is_true for PBC and fixed some
+bugs.
+
+Holger and Armin implemented yet another sort of dictionary:
+'constant' dicts that are built at initialization time and only
+queried thereafter.
+
+Then we called it a day and went for dinner.
+
+Today, we plan to carry on the above and do a little planning for the
+post-EP sprint (which I won't be at, as I'll be involved in the
+much-more-entertaining task of moving house) and maybe, maybe, writing
+a talk for that conference we hear is happening quite soon.
+
+Cheers,
+mwh
+
+Apart from the presprint, which is already reported, there was an open 
+post-Europython sprint. At the open sprint there were 24 people on the first 
+day and activities happened on may fronts. A large group of people focused on 
+porting PyPy to support Python2.4. This work was 3/4 finished by the end of 
+the sprint. Christian and Jacob worked on support for floats and Jacob did a 
+bunch of work on binascii and related modules. I think there was also a bunch 
+of work going into annotation, translation and the C and llvm backends. Nick 
+worked on his sre Summer of Code project. There was also work being done on 
+the AST compiler.
+
+People I remember being there: All the regulars plus Anders Qvist and Marius 
+Gedminas.
+
+Jacob

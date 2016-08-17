@@ -1,0 +1,87 @@
+Claims we want to make:
+- STM replaces GIL with overhead < 50% on single thread
+- STM on 2-4 threads is faster than GIL, on some benchmarks
+- (adding threads makes things at most ?x times slower)
+- It works for real programs
+- maybe: combination of GC & STM is essential?
+
+
+Title suggestions:
+Memory system assisted STM for dynamic language VMs?
+Virtual memory assisted STM for dynamic language VMs?
+
+
+What should be in?
+
+Alternative 1:
+- STM-C7 library explanation (technical details)
+- Some explanation of how STM replaces the GIL
+- why STM-GC combination is good
+- Mention the JIT, but don't describe integration
+- Evaluate against Jython, CPython, etc. with JIT (maybe add duhton)
+- Overhead breakdown
+
+Alternative 2:
+- STM-C7 as a C library (tech details)
+- Some explanation of how STM replaces the GIL
+- why STM-GC combination is good
+- use in Duhton & PyPy
+- Evaluate duhton & pypy against their GIL versions, maybe also include CPython (we lose against Jython)
+- Overhead breakdown
+(then next paper would be integration with RPython & JIT and evaluation against Jython, CPython?)
+(maybe people don't care enough if we just compare against our own stuff)
+
+Should we talk about atomic blocks much?
+
+
+Abstract
+========
+
+We introduce a new STM that focuses on dynamic languages in order to replace the GIL, thereby enabling parallelism. Closely working together with the hardware and integrating with the GC allows us to lower the overhead of STM to levels where it makes sense to use it even on low numbers of CPUs. We show how our approach compares to the GIL and to fine-grained locking as used in Jython.
+Furthermore, we introduce atomic blocks to Python as a better synchronization mechanism for many areas where one normally uses locks.
+
+
+Introduction
+============
+
+Problem Statement
+~~~~~~~~~~~~~~~~~
+
+Contributions:
+- Viable GIL replacement
+- New STM system for dynamic langs
+- STM-GC integration (overflow objects)
+- Well performing STM system for low #CPUs
+
+Why STM and GC integration is a good idea
+=========================================
+
+
+
+Background
+==========
+
+
+Method
+======
+
+Model
+~~~~~
+
+Implementation
+~~~~~~~~~~~~~~
+
+Detailed Implementation
+~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Evaluation
+==========
+
+
+Related Work
+============
+
+
+Conclusions
+===========

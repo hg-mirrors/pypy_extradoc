@@ -1,0 +1,24 @@
+PyPy - automatic generation of VMs for dynamic languages - JIT included
+------------------------------------------------------------------------
+
+PyPy is a framework written in Python for generating virtual machines
+for dynamic languages.  The VMs are flexibly produced from a
+high-level "specification" in the form of a simple interpreter for the
+dynamic language. The interpreters are written in a high-level static
+subset of Python.
+ 
+Low-level details like memory allocation and object layout and stack
+inspection are not encoded manually, but inserted by the VM generation process.
+This allows us to produce VMs that run within a wide range of execution
+environments (from C-like to JVM/.NET). 
+
+The framework has the ability to automatically generate a dynamic compiler
+from the interpreter too. A pragmatic application of partial evaluation
+techniques guided by a few hints is used for the task.
+
+Crucial for the effectiveness of dynamic compilation is
+the use of run-time information to improve compilation results: in our
+approach, a powerful primitive called "promotion" that
+"promotes" run-time values to compile-time is used to that effect.
+
+

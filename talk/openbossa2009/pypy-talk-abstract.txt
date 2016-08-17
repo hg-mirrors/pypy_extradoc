@@ -1,0 +1,12 @@
+
+PyPy: status and mobile perspectives 
+-----------------------------------------
+
+This talk will discuss the new PyPy Python implementation with
+respect to RAM usage, startup time and speed.  Numbers are
+taken from the recent port to the Maemo platform.  We'll 
+assess compliancy and features of the imminent 1.1 release, 
+and about its unique sandboxing and OS-virtualization features. 
+Eventually we present and discuss next steps for making it a
+replacement for CPython and for extending Python usage on 
+mobile phones in general. 

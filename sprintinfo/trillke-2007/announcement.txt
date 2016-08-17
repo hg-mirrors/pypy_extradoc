@@ -1,0 +1,119 @@
+=========================================================================
+PyPy Trillke "EU and beyond!" sprints (25-28th Feb, 1-5th March 2006)
+=========================================================================
+..    image:: http://www.trillke.net/images/HausPanorama0304_113kb.jpg
+
+Some two years and some thousands of commits later, the EU
+project period of the PyPy (http://codespeak.net/pypy) project
+is about to close ...  and a new period to begin: we are going
+for a sprint of three days of focusing on EU reports and
+administrative issues, and another three day sprint of happy 
+hacking on the numerous interesting open ends of PyPy, 
+the source code.    
+
+We also intend to discuss and state our view on the time after
+the EU period (March 2007 is the last EU funded month),
+because clearly the project will not stop after our successful
+(knock knock!) completion of the EU project.  It's already
+clear that some of us seriously plan for a relaxation time, 
+i.e. one without having many obligations.  But that should
+not keep us from thinking and envisioning the development 
+from April on.  
+
+So to the Sprint: we have two parts of the sprint, first the EU 
+and second the public all-invited part:: 
+
+    26th Feb - 28th Feb     EU reports and adminstrative sprint
+    1st March               break day / arrival for coding sprint
+    2nd March - 4th March   public coding "beyond EU" sprint days
+
+All days are meant as full days, so please arrive 25th Feb / 1st March 
+and leave 5th March if you can (this help us with pairing, introductions 
+and logistical planning). 
+
+---------------------------------------------
+Possible Topics for the coding sprint 
+---------------------------------------------
+
+* working on .NET, Java and other backends 
+
+* working on the Javascript, Prolog or a new frontend
+
+* Tuning the JIT, refining approaches `[1]`_
+
+* Fixing PyPy-1.0 problems / improving it (PyPy-1.0 is
+  scheduled for Mid February, btw)
+
+* improving the py lib/py.test, build environments, preparing 
+  for server administration efforts from April on 
+
+* Work on/with prototypes that use the new features that PyPy enables:
+  distribution `[2]`_ (based on transparent proxying `[3]`_),
+  security `[4]`_, persistence `[5]`_, etc. `[6]`_.
+
+* discussion about the time after March, and how to
+  organize/co-ordinate ourselves 
+
+* all topics that are of interest otherwise (including
+  maybe working on some particular EU related topics still!) 
+
+.. _[1]: http://codespeak.net/pypy/dist/pypy/doc/jit.html
+.. _[2]: http://codespeak.net/svn/pypy/dist/pypy/lib/distributed/
+.. _[3]: http://codespeak.net/pypy/dist/pypy/doc/proxy.html
+.. _[4]: http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html#security
+.. _[5]: http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html#persistence
+.. _[6]: http://codespeak.net/pypy/dist/pypy/doc/project-ideas.html
+
+-----------------------
+Location 
+-----------------------
+
+The sprint takes place at the 
+
+    Trillke Gut 
+    Steinbergstr. 42
+    Hildesheim, Germany 
+    http://www.trillke.net
+
+If you come to Hildesheim main station, take the 
+
+    Bus Number 3 (Hildesheimer Wald)
+
+and get out at "Waldquelle".  Walking back a 100 meters gets you
+to a small street on the right leading to a big white building, the
+Trillke Gut. 
+
+We'll have at least one larger room for sprinting,
+and a kitchen for our use.  
+
+-----------------------
+Accomodation 
+-----------------------
+
+We can probably arrange for some cheap or no-cost private 
+accomodation, in private rooms located up in the house 
+(and being part of "living groups" of 5-10 people).  
+
+There also is a nice Guest house that has been used
+during recent events: 
+
+    http://www.gaestehaus-klocke.de/
+
+and a four-star hotel 500 meters away from the Trillke:
+
+    http://www.berghoelzchen.de/
+
+-----------------------
+Registration
+-----------------------
+
+please subscribe to the pypy-sprint mailing list 
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+and register by subversion: 
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/trillke-2007/people.txt
+
+or - if you have no checkin-rights - post to the pypy-sprint list
+above. 

@@ -1,0 +1,154 @@
+Hi pypy-dev!
+
+Unusually for the end of a sprint, everyone here is wide awake and fully
+alert here in the wonderfully pretty but remarkably snow-free ski resort
+of Leysin, in the Ermina B&B we have sprinted at three times before.
+
+Only joking, we are as tired as we always are.
+
+This sprint really is unusual in the sense that not very many new things
+were started. Slowly approaching the end of the EU-funded period, we are
+more in finalizing mode and try to get the results we promised (actually
+we had several EU related meetings to discuss some report writing plans
+and how to go about things in the next few weeks).
+
+It was no surprise that a lot of time went into making the JIT actually
+speed up code (a goal that is still not attained). There were two large
+subsections of this work: the relatively easy to explain task of
+improving the quality of the machine code the JIT produces and The Other
+One. Armin and Michael started the sprint with refactoring the interface
+to the code generators to make the lives of the backends easier,
+especially with regard to register allocation. This obviously broke all
+the backends, so the refactoring and the fixing of existing code took a
+day or so. Then Michael (with some later help from Niko), Armin and Eric
+worked on the PPC, i386, and LLVM backends respectively. They all ended
+up banging their heads fairly hard against various flat surfaces,
+especially Armin who had the wonderfully clean, regular and well
+designed i386 instruction set to work with.
+
+Arre and Samuele worked in the Terminology Production department, coming
+up with the wonderful concept of "virtualizable structures". Apparently
+it was much harder to implement them than to invent a term for them, so
+they mostly spent the whole week on it (and arrived only at "the easy
+part of the hard part"). To offer some hint of an explanation,
+virtualizable structures are data structures that live in the JIT world
+but can still be accessed by non-jitted code from the outside.
+
+Niko, who is funded as part of the Summer-of-PyPy program (so that's why
+we don't have snow: the Summer of PyPy is stronger than the Winter of
+Switzerland), was working with Anto on the Java backend he had started
+in Duesseldorf. By now a fair set of tests is passing and they managed
+to translate rpystone to Java bytecode (the result being roughly 20
+times slower than the C version currently. although without many
+optimizations). After a few days Niko got fed up with Java and helped in
+the PowerPC efforts.  The goal of Niko's project is to translate all of
+PyPy some time in the next few months and it seems to be well on course.
+
+A large amount of sprint energy was poured into making the Py-lib ready
+for release (but we all only believe it when we see it :-) ). Holger,
+Maciek, Guido, Carl Friedrich, Alexandre and Sylvain all worked on
+polishing, writing doc strings, documentation etc. for the various
+pieces of the package. Also a lot of functions were "unexported" to not
+have to deal with backward compatibility forever (which mostly broke
+Armin's large collection of strange conftest files in his deep and scary
+hack directory). Two sub-projects deserve special mention: Sylvain and
+Alexandre produced a debian package (which is confusingly called
+python-codespeak-lib, thanks to strange debian policies), including
+producing the mandatory man-pages for the various py-lib scripts.
+Otherwise the main thing the debian patches do is removing assorted
+cleverness from the py-lib to do with finding itself, as task which is
+obviously easier when you've been installed into a known location!
+
+After the success with packaging the py-lib, Sylvain and Alexandre set
+themselves the way scarier goal of packaging PyPy for Debian in a
+meaningful way. Almost disappointingly, they are dealing with the
+problem just fine and have a pretty good plan of how approach things:
+there will be a pypy-dev package which is for people developing in
+RPython, one or more binary packages that contain pre-translated PyPy
+versions (for example with stackless) and a pypy-lib package that will
+contain the common parts of both. An interesting point is that of
+dependencies: the pypy-dev package will "Depend" on those packages
+required to be able to run py.py, "Recommend" those packages that a
+developer wishing to work in RPython would need and "Suggest" some of
+the more eclectic packages PyPy sometimes uses. This will mean that if
+you set up a debian machine for working with PyPy, even if you plan to
+use the svn head version, installing pypy-dev will be an easy way to get
+all the dependencies right.
+
+The other py-lib sub-project that saw some serious polishing is the API
+documentation generator, "apigen". It's approach is very different from
+every other doc generator that we know of: instead of inspecting the
+source / AST / live objects and getting information from that, the tool
+runs all the tests of the project and observes what is happening using a
+trace hook. This means that it can present information about types that
+is inaccessible to other approaches (the information is not totally
+precise, of course). This also gives yet another reason for having
+thorough tests, since everything that is not tested will not be
+documented (as well as broken, as per "that which is not tested is
+broken").  A slightly out-of-date version of the resulting web pages can
+be seen at: http://johnnydebris.net/pyapi/
+
+Another thing which was presented to the wider public for the first time
+is the build tool that Guido has been working on in the last months. The
+basic idea is that people can donate spare cycles on their machines by
+hooking them up to codespeak. Other people can then schedule PyPy
+translations which are distributed to one of the free machines. This has
+now reached the point where it basically works, but a lot of rough edges
+remain. So far it proved very useful to shine some, but not enough,
+light on a rather vicious and old annotation bug. We expect this tool to
+be useful for exploring the rather large configuration space of
+translation options, especially when it comes to inlining, which now has
+three more or less independent parameters.
+
+Samuele and Carl Friedrich ignored the fact that it was the breakday to
+work a bit more in the Terminology Production department. What they came
+up with is "shadow tracking" which does not have anything to do with
+OpenGL or real-time shading but is cool anyway. The idea is that every
+instance knows whether it shadows any attribute of any class in its MRO.
+This is useful information because it allows skipping the lookup in the
+instance dictionary if the attribute was already found in the class (a
+class lookup is already the first thing that is done, because of data
+descriptors).  This led to a speedup of something like 10% for the
+richards benchmark, nearly no change for Pystone (which is hardly
+surprising since it is not an object oriented benchmark). Later they
+tried to implement method caching to save the lookup on the type too, at
+least for the most commonly called methods. This was a bit painful and
+lead to a rather small speedup of about 4% for richards. The hope is
+that this sort of optimization might also help the JIT later.
+
+Our other Summer-of-PyPy student (he is from Brazil, so it is summer for
+him), Leonardo, continued to explore the dark corners of the ECMAScript
+"specification". Antonio, Guido, Maciek and Armin all gave him moral
+support at various points in the sprint. A large success was that he
+managed (once) with Anto's help to translate the interpreter to .NET and
+C. It is still relying on Narcissus and Spidermonkey for parsing
+(parsing is boooring!). Leonardo is now working on increasing
+conformance and finding ambiguities in the specification.
+
+The subject of run-time modifiable syntax has been around for a long
+time in the PyPy world, and after a dormant period is waking up again.
+If you restrict yourself to py.py you can now for example add a do-while
+loop at runtime and during the sprint, a mixed on-/off-site team of
+Adrien, Michael and Sylvain worked on making this code translatable
+again, which involved the usual multi-layer confusions.
+
+Anto worked on improving the speed of pypy-cli by adapting and debugging
+various backend optimization to work with ootypes. The resulting fastest
+pypy-cli he got (involving --faassen and the Microsoft runtime) is
+roughly 10 times slower than CPython and 6 times slower than IronPython
+(again on the richards benchmark). Antoher step on the road to world
+domination.
+
+For the non-technical part, the sprint has also seen quite some skiing,
+long walks through the snowy landscape, star-gazing, several evenings of
+watching strange movies (polish karate being the strangest), lusting
+after Swiss Army knives with USB sticks built in and a whole night of
+"just one more game" of Durak (a russian card game Carl Friedrich wasted
+his school years with).
+
+Atenciosamente,
+
+Carl Friedrich & mwh
+
+
+

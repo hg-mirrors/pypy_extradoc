@@ -1,0 +1,7 @@
+\begin{titlepage}
+\begin{figure}[h]
+\includegraphics[width=64px,height=64px]{merlinux-logo.jpg}
+\qquad
+\includegraphics[width=80px]{../../img/py-web.png}
+\end{figure}
+\end{titlepage}

@@ -1,0 +1,89 @@
+[753449cdb5df] {jit-log-opt-loop
+# Loop 0 : loop with 80 ops
+[p0, p1, p2, p3, i4, p5, p6, p7, p8, p9, p10]
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #19 FOR_ITER', 0)
+guard_class(p5, 17375104, descr=<Guard2>) [p1, p0, p5, p2, p3, p6, p7, p8, p9, p10]
+p12 = getfield_gc(p5, descr=<GcPtrFieldDescr pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_w_seq 16>)
+guard_nonnull(p12, descr=<Guard3>) [p1, p0, p5, p12, p2, p3, p6, p7, p8, p9, p10]
+i13 = getfield_gc(p5, descr=<SignedFieldDescr pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_index 8>)
+p14 = getfield_gc(p12, descr=<GcPtrFieldDescr pypy.objspace.std.rangeobject.W_RangeListObject.inst_w_list 32>)
+guard_isnull(p14, descr=<Guard4>) [p1, p0, p5, i13, p12, p14, p2, p3, p6, p7, p8, p9, p10]
+i15 = getfield_gc(p12, descr=<SignedFieldDescr pypy.objspace.std.rangeobject.W_RangeListObject.inst_length 8>)
+i16 = int_ge(i13, i15)
+guard_false(i16, descr=<Guard5>) [p1, p0, p5, i13, p12, p2, p3, p6, p7, p8, p9, p10]
+i17 = getfield_gc(p12, descr=<SignedFieldDescr pypy.objspace.std.rangeobject.W_RangeListObject.inst_start 16>)
+i18 = getfield_gc(p12, descr=<SignedFieldDescr pypy.objspace.std.rangeobject.W_RangeListObject.inst_step 24>)
+i19 = int_mul(i13, i18)
+i20 = int_add(i17, i19)
+i22 = int_add(i13, 1)
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #22 STORE_FAST', 0)
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #25 LOAD_GLOBAL', 0)
+p23 = getfield_gc(p0, descr=<GcPtrFieldDescr pypy.interpreter.eval.Frame.inst_w_globals 8>)
+setfield_gc(p5, i22, descr=<SignedFieldDescr pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_index 8>)
+guard_value(p23, ConstPtr(ptr24), descr=<Guard6>) [p1, p0, p23, p2, p3, p5, p7, p8, p9, i20]
+p25 = getfield_gc(p23, descr=<GcPtrFieldDescr pypy.objspace.std.dictmultiobject.W_DictMultiObject.inst_r_dict_content 8>)
+guard_isnull(p25, descr=<Guard7>) [p1, p0, p25, p23, p2, p3, p5, p7, p8, p9, i20]
+p27 = getfield_gc(ConstPtr(ptr26), descr=<GcPtrFieldDescr pypy.objspace.std.celldict.ModuleCell.inst_w_value 8>)
+guard_value(p27, ConstPtr(ptr28), descr=<Guard8>) [p1, p0, p27, p2, p3, p5, p7, p8, p9, i20]
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #28 LOAD_FAST', 0)
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #31 LOAD_FAST', 0)
+guard_nonnull(p9, descr=<Guard9>) [p1, p0, p9, p2, p3, p5, p27, p8, i20]
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #34 CALL_FUNCTION', 0)
+i29 = getfield_gc(p0, descr=<BoolFieldDescr pypy.interpreter.pyframe.PyFrame.inst_is_being_profiled 169>)
+guard_false(i29, descr=<Guard10>) [p1, p0, p27, p2, p3, p5, p9, i20]
+p30 = getfield_gc(ConstPtr(ptr28), descr=<GcPtrFieldDescr pypy.objspace.std.typeobject.W_TypeObject.inst__version_tag 24>)
+guard_value(p30, ConstPtr(ptr31), descr=<Guard11>) [p1, p0, p30, p2, p3, p5, p9, i20]
+p33 = getfield_gc(ConstPtr(ptr32), descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_code 24>)
+guard_value(p33, ConstPtr(ptr34), descr=<Guard12>) [p1, p0, p33, p2, p3, p5, p9, i20]
+p35 = getfield_gc(ConstPtr(ptr32), descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_w_func_globals 64>)
+p36 = getfield_gc(ConstPtr(ptr32), descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_closure 16>)
+p37 = getfield_gc(ConstPtr(ptr32), descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_name 40>)
+p38 = getfield_gc(ConstPtr(ptr32), descr=<GcPtrFieldDescr pypy.interpreter.function.Function.inst_defs_w 32>)
+p40 = call(ConstClass(getexecutioncontext), descr=<GcPtrCallDescr>)
+guard_no_exception(, descr=<Guard13>) [p1, p0, p40, p2, p3, p5, p9, p35, i20]
+i41 = getfield_gc(p40, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+i43 = getfield_gc(ConstPtr(ptr42), descr=<SignedFieldDescr pypy.module.sys.Module.inst_recursionlimit 64>)
+i44 = int_gt(i41, i43)
+guard_false(i44, descr=<Guard14>) [p1, p0, p40, p2, p3, p5, p9, p35, i20]
+i46 = int_add(i41, 1)
+p47 = getfield_gc(p40, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_topframeref 56>)
+i48 = force_token()
+p49 = getfield_gc(p40, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_w_tracefunc 72>)
+setfield_gc(p40, i46, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+guard_isnull(p49, descr=<Guard15>) [p1, p0, p40, p49, p2, p3, p5, p9, p47, i48, p35, i20]
+i50 = getfield_gc(p40, descr=<NonGcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_profilefunc 40>)
+i51 = int_is_zero(i50)
+guard_true(i51, descr=<Guard16>) [p1, p0, p40, p2, p3, p5, p9, p47, i48, p35, i20]
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #0 LOAD_FAST', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #3 LOAD_FAST', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #6 STORE_ATTR', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #9 LOAD_FAST', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #12 LOAD_FAST', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #15 STORE_ATTR', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #18 LOAD_CONST', 1)
+debug_merge_point('<code object __init__, file 'mapdict.py', line 3> #21 RETURN_VALUE', 1)
+i52 = int_is_true(i50)
+guard_false(i52, descr=<Guard17>) [p1, p0, p40, p2, p3, p5, p9, p47, i48, p35, i20]
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #37 STORE_FAST', 0)
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #40 JUMP_ABSOLUTE', 0)
+i54 = getfield_raw(32212256, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i56 = int_sub(i54, 18)
+setfield_raw(32212256, i56, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+setfield_gc(p40, i41, descr=<SignedFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_framestackdepth 24>)
+setfield_gc(p40, p47, descr=<GcPtrFieldDescr pypy.interpreter.executioncontext.ExecutionContext.inst_topframeref 56>)
+i58 = int_lt(i56, 0)
+guard_false(i58, descr=<Guard18>) [p1, p0, p2, p3, p5, p9, None, None, None, i20]
+debug_merge_point('<code object f, file 'mapdict.py', line 7> #19 FOR_ITER', 0)
+p61 = new_with_vtable(17402248)
+p63 = new_with_vtable(ConstClass(W_IntObject))
+setfield_gc(p63, i20, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+setfield_gc(p61, p63, descr=<GcPtrFieldDescr pypy.objspace.std.mapdict.W_ObjectObjectSize5.inst__value0 8>)
+setfield_gc(p61, p9, descr=<GcPtrFieldDescr pypy.objspace.std.mapdict.W_ObjectObjectSize5.inst__value1 16>)
+setfield_gc(p61, ConstPtr(ptr64), descr=<GcPtrFieldDescr pypy.objspace.std.mapdict.W_ObjectObjectSize5.inst_map 48>)
+jump(p0, p1, p2, p3, 19, p5, ConstPtr(ptr66), ConstPtr(ptr67), ConstPtr(ptr68), p61, p63, descr=<Loop0>)
+[753449d79c95] jit-log-opt-loop}
+[753449d9bc25] {jit-backend-counts
+[753449d9c5e5] jit-backend-counts}
+[75344a0a1909] {jit-backend-counts
+0:172
+[75344a0a39f7] jit-backend-counts}

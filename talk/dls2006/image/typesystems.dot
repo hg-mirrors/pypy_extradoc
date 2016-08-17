@@ -1,0 +1,9 @@
+digraph lattice {
+    "RPython" [shape=octagon];
+    "LL Type System" [shape=octagon];
+    "OO Type System" [shape=octagon];
+    "Raw Addresses" [shape=octagon];
+
+    "RPython" -> "LL Type System" -> "Raw Addresses";
+    "RPython" -> "OO Type System";
+}

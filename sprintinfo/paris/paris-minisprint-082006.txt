@@ -1,0 +1,42 @@
+Minisprint in Paris from 7 to 11 August 2006
+============================================
+
+Participants: 
+-------------
+
+* Anders Lehmann
+* Aurélien Campéas
+
+Objectives:
+-----------
+
+*  advance WP09
+
+Achievements:
+-------------
+
+We implemented most of the necessary primitives for solving logic and
+constraint problems (tell, ask, choose, commit). The missing one is
+clone.
+
+We adapted the current constraint solver components (domains,
+constraint propagators, distributors) to make it fit the requirements
+of logic programming (they share the same basic primitives).
+
+Logic variables are used internally as a coordination mechanism
+between threads. The current implementation would not support
+preemptive threading -- that would need even more coordination of this
+kind.
+
+So right now, it is possible to explore exactly one branch of the
+search tree at a time.
+
+Next:
+-----
+
+* translatability
+
+* make cloning work
+
+* adapt OWL reasoner to the current solver API
+

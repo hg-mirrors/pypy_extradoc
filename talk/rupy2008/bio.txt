@@ -1,0 +1,14 @@
+Maciej Fijalkowski is a core developer of PyPy - 
+a Python Interpreter and Compiler and of py.test, 
+a popular testing tool.  He has successfully completed a 
+Summer of Code project and was contracted by merlinux (germany) 
+for several tasks in the PyPy EU research project.  He gave 
+talks at international European and US Python community conferences. 
+
+Carl Friedrich Bolz is one of the core developers of PyPy. He is studying
+computer science at the University of Düsseldorf. Currently he is working on
+his Master's thesis, which is about making PyPy as fast as possible and proving
+that dynamic languages can be almost as fast as static ones. In his spare time
+he plays the bassoon.
+
+

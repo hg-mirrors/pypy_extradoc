@@ -1,0 +1,109 @@
+People present
+---------------
+
+Carl Friedrich
+Anto
+Ronan
+Richard
+Armin
+Richard2
+Sarah
+Laurie
+Rami
+Manuel
+Lukas
+
+People not present
+-------------------
+
+Edd
+Maciej
+Romain
+Remi
+Marko
+Olmo
+Tom
+
+Tasks
+-----
+
+* fix the issue with the os.xyz attributes not showing up depending on
+  which host we use during translation.
+  Maybe revive branch 'missing-os-functions'.
+
+* cffi 1.0: think about how to separate compilation from execution of
+  the script (e.g. a separate foo.c file, and "python -m cffi foo.c")
+
+* cffi: think about and collect which C-extensions we would like to bring to cffi
+
+* PYPYLOG output: they need to be disentangled when the process uses
+  threads or greenlets, probably by adding a thread-or-greenlet number
+  prefix (see branch stmgc-c4 where we already add a thread num prefix)
+
+* general STM things ONE STEP FORWARD, ONE STEP BACK
+
+* general Numpy things NO HARD BUGS IN TRACKER
+
+* make numpy.unicode_ not segfault IN PROGRESS
+
+* track raw array out of bounds in lldebug builds (Anto) IN PROGRESS
+
+* PyOpenCL FIRST DEMO RUNNING ON PYPY
+
+* fix some of the RPython nits that Edd found SOME PROGRESS
+
+* continue less-stringly-ops and other RPython cleanups MERGED
+
+* even better error messages for RPython DONE
+
+* programming (all)
+
+* JIT for xlispx (Richard, Carl Friedrich around) KIND OF TAIL RECURSIVE
+
+* explore Laurie's crazy scheme of persisting loop entry counts EXPERIMENTING
+
+* progress on refactoring resume data UNKNOWN QUANTUM STATE
+
+* progress on the documentation branch NICER GETTING STARTED/INTRODUCTION, RESHUFFLED SOME DOCS
+
+* Python 3 benchmarks (Richard2) PULL REQUEST SENT
+
+* meditate on benchmarking infrastructure (Richard2, Maciej around)
+
+* start branch for Python 3.3
+
+* Python 2.7.5 branch (Rami, Richard2) MANY TESTS FAILING
+
+* review the pypy-pyarray branch (Anto, Romain) REVIEWED
+
+* general wizardry (Carl Friedrich; Armin)
+
+* try going back to the empty strategy (Lukas, Carl Friedrich around) PROBABLY USELESS
+
+* look at this: https://bitbucket.org/pypy/pypy/pull-request/176/fixed-support-for-re-stdlib-274/diff
+
+* document how to mark failed tests that we would like to pass at some point (Armin, Ronan)
+
+* some tuning of jitviewer (Richard2) UNCLEAR
+
+* CSP integration with tiny language (Sarah, Armin around) CONTROL FLOW, JITTING, REFACTORING, TESTING
+
+* refactoring PyPy's bytecode dispatch loop DONE
+
+* refactor-translator branch (Manuel, Ronan, Laurie)
+
+* sanity check about jit hint placement (Richard, Carl Friedrich)
+
+* write sprint blog post (Carl Friedrich)
+
+
+Discussions planned
+--------------------
+
+* STM dissemination round
+* roadmap planning
+* do we want pip installed on downloadable pypys? YES! Rami will try to do it, Anto will be around
+* generalize jitviewer to other languages (Edd, Richard2, Maciek)
+* how to deal with really long-running processes (Anto) DONE
+* LLVM discussion DONE
+

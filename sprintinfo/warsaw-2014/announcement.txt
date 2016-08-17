@@ -1,0 +1,60 @@
+=====================================================================
+         PyPy Warsaw Sprint (October 21-25th, 2014)
+=====================================================================
+
+The next PyPy sprint will be in Warsaw, Poland for the first
+time. This is a fully public sprint. PyPy sprints are a very good way
+to get into PyPy development and no prior PyPy knowledge is necessary.
+
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+For newcomers:
+
+* Bring your application or library and we'll help you port it to PyPy
+  (if needed), benchmark and profile.
+
+* The easiest way to start hacking on PyPy is to write support for
+  some missing Python 3.3 functionality, or to work on numpy.
+
+We'll also work on more specific topics, depending on who is here
+and what their interest is, like some missing GC/JIT optimizations,
+software transactional memory, etc.
+
+
+-----------
+Exact times
+-----------
+
+The work days should be October 21st - 25th, 2014.  There might be
+a day or an afternoon of break in the middle.  We'll typically start
+at 10:00 in the morning.
+
+
+------------
+Location
+------------
+
+The sprint will happen within a room of Warsaw University.  The
+address is Pasteura 5 (which is a form of "Pasteur street"), dept. of
+Physics, room 450.  The person of contact is Maciej Fijalkowski.
+
+
+--------------
+Registration
+--------------
+
+If you want to attend, please register by adding yourself to the
+"people.txt" file in Mercurial::
+
+  https://bitbucket.org/pypy/extradoc/
+  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/warsaw-2014
+
+or on the pypy-dev mailing list if you do not yet have check-in rights::
+
+  http://mail.python.org/mailman/listinfo/pypy-dev
+
+Remember that Poland is a regular Schengen zone EU country, with
+main-EU-zone power adapters.

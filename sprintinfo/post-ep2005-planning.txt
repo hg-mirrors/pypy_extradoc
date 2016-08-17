@@ -1,0 +1,138 @@
+
+PyPy EuroPython 2005 sprint planning (1st-7th July)
+-------------------------------------------------------
+
+overall time planning:: 
+
+    1st-3rd July (both including) we sprint at Chalmers from 10am-open 
+
+    4th July is "break" time, afternoon visiting sites together? 
+
+    5th July sprint from 10am-open at Laura's house 
+             (Goetabergsgatan 22)
+    -7th sprint continues from 10am-open at laura's house 
+
+3rd July evening: Going to Hitchhikers Guide? 
+
+
+
+1st July start at 10am:: 
+    - holger starts the session 
+
+    - introduction to PyPy 
+        high level architecture (Armin or Holger?)
+
+    - introduction to Annotation + RTyping?  (Samuele or Armin)
+        working on examples
+
+    - introduction to LLVM2 + status 
+        Carl, holger
+
+    - status of Parser efforts
+
+    - introduction to GenC + status
+        Armin 
+
+other suggested events:: 
+    3rd July 5pm: Bert talks about Squeak's VM architecture 
+
+we decide about pairing at the venue (after everybody tells 
+what he/she is interested in). These are the people expected currently:: 
+
+    Carl Friedrich Bolz   until 5th afternoon
+    Richard Emslie        whole-time (until 10th)
+    Armin Rigo            whole-time  
+    Anders Chrigstroem    whole-time (likely) 
+    Anders Qvist          whole-time (likely)
+    Holger Krekel         whole-time 
+    Jacob Hallen          whole-time
+    Christian Tismer      whole-time 
+    Laura Creighton       whole-time
+    Samuele Pedroni       whole-time  
+    Eric van Riet Paap    until 8th 
+    Bert Freudenberg      whole-time
+
+    Beatrice Duering   (visiting, 5th-)
+
+Translation tasks 
+------------------
+
+* fix floats::
+    - objspace/std/floatobject.py needs some clean-ups:
+      look for XXX, for %reimplement% and for all try:except: blocks.
+
+
+Move to Python 2.4.1
+----------------------- 
+
+* revert 'bisect' module to the 2.3 version (or 2.5)
+
+* revert 'heapq' module to the 2.3 version (2.5)
+
+* check that test results page still works (and fix) after
+  we merged 2.4.1 branch 
+  
+
+Misc
+-------- 
+
+* (medium) write a tool that discovers which revision of the pypy tree 
+  broke the high level annotator (in that it produced SomeObjects). 
+  Consider distributing the actual annotation to multiple hosts. 
+
+* (Christian, cfbolz) (medium) finish objspace/std/longobject.py.
+  - (MOSTLY DONE) div implementation (christian, jacob)
+
+* fix Windows-related issues
+
+* '%'-formatting rounding errors  (  '%.3f' % (2.999999,))
+
+* (mostly done) add missing docstrings on app-level built-in types and 
+  functions, etc. (Laura): there now is a program that generates the 
+  docstrings into the appropriate places but it needs prettification. 
+
+Rewriting important C functionality in Python 
+--------------------------------------------------
+
+* parsing/compiling  
+
+    * (PROGRESS): translate to C (fix annotation problems by either
+      tweaking the code or extending the annotator on 
+      a case-by-case basis).  
+      - (DONE) Parser is fully annotable
+      - not translated and run in C, yet. 
+
+    * (DONE) parser integrated in PyPy ("py.py --pyparse" for
+      non-interactive usage), needs more testing. 
+
+    * (progress, Ludovic, Adrien) try to make 2.4.1 compiler 
+      package work for PyPy and using the parser. 
+        
+    * move towards a rpython compliant (translatable) compiler 
+
+* rewrite in Python a C module you are familiar with
+  (partial list of missing/incomplete modules: math, array (Nik),
+  regular expressions (Nik))
+
+* DONE: binascii implementation, needs more tests 
+        (but compliancy tests already pass) 
+
+* implement Python 2.3's import hook extensions (zip-imports etc.)
+
+* (hard) weakrefs (but this requires discussion and planning on pypy-dev
+  before the sprint! feel free to start such a discussion, though.)
+
+
+LLVM Backend
+-------------------
+
+- (PROGRESS) make prebuilt values work 
+
+- implement exceptions  
+
+after 9am at Lauras place: 
+Niklaus, Adrien, Arre, Christian, Ludovic, (Samuele and Eric for a bit), 
+
+next sprint: in heidelberg end of august: very likely 22nd-29th August 
+(Carl will try to fix this until 15th July) 
+next sprint after that: supposedly in Paris, no dates yet 

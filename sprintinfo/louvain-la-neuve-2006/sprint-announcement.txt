@@ -1,0 +1,105 @@
+Louvain-la-Neuve Logic Sprint: Monday March 6th - Friday March 10th 2006 
+========================================================================
+
+Where PyPy meets Oz !
+
+Monday and Tuesday to work on PyPy (WP10: logic programming).
+Wednesday and Thursday to meet with the people behind Oz.
+Friday to work on PyPy.
+
+Goals and topics of the sprint 
+------------------------------
+
+While attendees of the sprint are of course welcome to work on what
+they wish, we offer these ideas:
+
+  - Experiment with the constraint store and dataflow variables added
+    as a library to PyPy.
+
+  - Investigate lazy evaluation and concurrency in Python using
+    coroutines and stackless features.
+
+  - Discuss possible syntactical integration of the new logic-related 
+    features
+
+  - Come to a shared understanding of what can and cannot be imported
+    from Oz
+
+  - more if possible...
+
+PyPy/Oz meeting Agenda
+----------------------
+
+See `PyPy/Oz Agenda`_.
+
+.. _`PyPy/Oz Agenda`: http://codespeak.net/pypy/extradoc/sprintinfo/louvain-la-neuve-2006/pypy-oz-agenda.txt
+
+Location
+--------
+
+The sprint will be held at
+
+Département d'Ingénierie Informatique (INFO),
+place St Barbe 2,
+1348 Louvain-la-Neuve
+
+http://www.info.ucl.ac.be/Bienvenue/acces.php
+http://www.ucl.ac.be/LLN/acces-lln-en.html
+
+Exact times 
+-----------
+
+The sprint will be held from Monday March 6th noon to Friday March 10th 
+(included).
+
+
+Attending
+---------
+
+If you know that you definitely want to attend our sprint, please
+subscribe to the `PyPy sprint mailing list`_, introduce yourself and
+post a note that you want to come.  Feel free to ask any questions or
+make suggestions there!
+
+There is a separate `Logic Sprint people`_ page tracking who is already
+planning to come.  If you have commit rights on codespeak then you can
+modify yourself a checkout of
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/louvain-la-neuve-2006/people.txt
+
+.. _`PyPy sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`Logic Sprint people`: http://codespeak.net/pypy/extradoc/sprintinfo/louvain-la-neuve-2006/people.txt
+
+
+Accomodation
+------------
+
+For accomodation on site or nearby:
+
+http://www.ucl.ac.be/inforville/horeca.html
+If you choose "Le Relais", you will be at 12 minutes walk to the
+department (and 2 minutes from the train station).
+With the hotel "Mercure", it is a 20-30 minutes walk.
+
+you can find a pdf map of louvain-la-neuve at
+http://www.dom.ucl.ac.be/down/plan_lln.pdf
+The Relai is in D6, the Mercure in B-C4 and the Dept. in E8.
+
+If you choose to stay in Brussels, it takes around 50 minutes to get
+here by train.
+Train schedules are available at:
+http://ari.b-holding.be/root2/default.asp?langue=3
+Bus schedules are at:
+http://www.infotec.be/index.aspx?PageId=631734023237830544
+
+Network
+-------
+
+Grégoire Dooms asks:
+
+"""
+With respect to internet connectivity, is wavelan ok or do
+you need wired access. What traffic/ports should be opened? I have to
+make arrangements with the network management team so it would be best
+to have this info asap.
+"""

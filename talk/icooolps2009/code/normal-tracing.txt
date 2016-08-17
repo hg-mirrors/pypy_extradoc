@@ -1,0 +1,10 @@
+{\small
+\begin{verbatim}
+loop_start(a0, regs0, bytecode0, pc0)
+opcode0 = strgetitem(bytecode0, pc0)
+pc1 = int_add(pc0, Const(1))
+guard_value(opcode0, Const(7))
+a1 = int_sub(a0, Const(1))
+jump(a1, regs0, bytecode0, pc1)
+\end{verbatim}
+}

@@ -1,0 +1,23 @@
+Title
+=====
+
+(Snappy title, e.g. Fly Fishing and Python 3000).
+
+Summary
+=======
+
+(One line summary, e.g. How the new version of Python will affect your bait).
+
+Abstract
+========
+
+(Please explain what your talk will cover in a couple of paragraphs).
+
+Proposed Length of talk required
+================================
+
+(e.g. 30, 45 or 60 minutes).
+
+Brief Biography
+===============
+

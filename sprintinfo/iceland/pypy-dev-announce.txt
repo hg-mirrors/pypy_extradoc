@@ -1,0 +1,46 @@
+Hi folks, 
+
+We're pleased to announce the next PyPy sprint in Iceland from 21st
+(arrival) to 28th (depature) of May 2006.  This sprint is kindly hosted
+and sponsored by EWT and CCPgames and thus we should be able to arrange
+funding for travels and accomodation for interested people.  There are
+also non-PyPy activities going on -- see the full `EWT announcement`_
+and people such as Tim Peters and other python-dev core developers plan
+to attend.  If you'd like to help and join PyPy hacking around some
+geysers (actually we are meeting in Reykjavik, but well :), please mail
+us, preferrably on the `pypy-sprint mailing list`_.  Please state your
+interest *until end this week* (friday 21st) to help the organizers
+plan for the sprint.
+
+The sprint goals for PyPy are, as usual, kept open to the interest of
+the participants, especially more so that there will be many non-PyPy
+people at the sprint to talk to.  However, it is also likely that we
+will have to keep some focus on the goals of the upcoming June 0.9
+release:
+
+* The extension module compiler.  The goal is to be able to use a single
+  RPython source code as an extension module for both PyPy and CPython.
+  The means to get there is -- most likely -- by compiling ctypes-based
+  modules into either pypy-c or a CPython dll/so.
+
+* Write some more modules in this style with ctypes.  Sockets come to
+  mind :-)
+
+* Stackless: the big missing feature is pickling running tasklets.
+  There is also some smaller work that needs to be done, like exposing
+  all the existing RPython-level interfaces to app-level
+  (e.g. greenlets).
+
+* Write more documentation.
+
+* Misc topics, depending on interests: back-ends (CLI, Squeak), testing
+  framework, modified semantics (security/sandboxing...), etc.
+
+
+A bientot, 
+
+    Armin + Holger 
+
+
+.. _`EWT announcement`: http://mail.python.org/pipermail/python-announce-list/2006-April/004849.html
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint

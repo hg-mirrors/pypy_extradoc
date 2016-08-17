@@ -1,0 +1,38 @@
+Implementing missing standard modules
+=====================================
+
+Status: 
+
+ - A lot of standard modules such as ``socket`` don't work on top of
+   pypy-jvm and pypy-cli
+
+Todo:
+
+ - Implement relevant modules using the API offered by the hosting
+   virtual machine (either at app-level or interp-level). E.g.,
+   implement ``socket`` on top of JVM/.NET sockets.
+
+ - Maybe it would be possible to reuse existing modules from Jython_
+   and FePy_.
+
+Expected outcome:
+
+ - Having a better coverage of the Python standard library
+
+Dependencies:
+
+ - `Separate compilation`_
+
+ - `Refactor RPython external objects interface`_
+
+ - `Integration with the hosting virtual machine`_
+
+
+.. _Jython: http://www.jython.org/
+
+.. _FePy: http://fepy.sourceforge.net/
+
+
+.. _`Separate compilation`: task_separate_compilation.html
+.. _`Refactor RPython external objects interface`: task_external_objects.html
+.. _`Integration with the hosting virtual machine`: task_integration_vm.html

@@ -1,0 +1,85 @@
+=====================================================================
+         PyPy London Sprint (August 26 - September 1 2013)
+=====================================================================
+
+The next PyPy sprint will be in London, United Kingdom for the first
+time. This is a fully public sprint. PyPy sprints are a very good way
+to get into PyPy development and no prior PyPy knowledge is necessary.
+
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+For newcomers:
+
+* bring your application/library and we'll help you port it to PyPy,
+  benchmark and profile
+
+* come and write your favorite missing numpy function
+
+* help us work on developer tools like jitviewer
+
+We'll also work on:
+
+* refactoring the JIT optimizations
+
+* STM and STM-related topics
+
+* anything else attendees are interested in
+
+-----------
+Exact times
+-----------
+
+The work days should be August 26 - September 1 2013 (Monday-Sunday).
+The official plans are for people to arrive on the 26th, and
+to leave on the 2nd. There will be a break day in the middle.
+We'll typically start at 10:00 in the morning.
+
+
+------------
+Location
+------------
+
+The sprint will happen within a room of `King's College's`_ `Strand
+Campus`_ in `Central London, UK`_. There are some travel instructions `how to
+get there`_. We are being hosted by `Laurence Tratt`_ and the `Software
+Development Team`_.
+
+.. _`King's College's`: http://www.kcl.ac.uk/
+.. _`Central London, UK`: http://goo.gl/maps/Qz0zz
+.. _`Strand Campus`: http://www.kcl.ac.uk/campuslife/campuses/strand/StrandCampusLocation.aspx
+.. _`how to get there`: http://www.kcl.ac.uk/campuslife/campuses/directions/strand.aspx
+.. _`Laurence Tratt`: http://tratt.net/laurie
+.. _`Software Development Team`: http://soft-dev.org
+
+------------
+Demo Session
+------------
+
+If you don't want to come to the full sprint, but still want to chat a
+bit, we are planning to have a demo session on Tuesday August 27. We
+will announce this separately on the blog. If you are interested, please
+leave a comment.
+
+--------------
+Registration
+--------------
+
+If you want to attend, please register by adding yourself to the
+"people.txt" file in Mercurial::
+
+  https://bitbucket.org/pypy/extradoc/
+  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/london-2013
+
+or on the pypy-dev mailing list if you do not yet have check-in rights::
+
+  http://mail.python.org/mailman/listinfo/pypy-dev
+
+Remember that you may need a (insert country here)-to-UK power adapter.
+Please note that UK is not within the Schengen zone, so non-EU and
+non-Switzerland citizens may require specific visa. Please check `travel
+regulations`_. Also, the UK uses pound sterling (GBP).
+
+.. _`travel regulations`: http://www.ukba.homeoffice.gov.uk/visas-immigration/do-you-need-a-visa/

@@ -1,0 +1,77 @@
+PyPy - what is it? 
+=================================
+
+* a Python Interpreter
+* a VM Generator
+
+Python Interpreter
+=================================
+
+* single source "specification" in RPython 
+* PyPy compiles it to native C, .NET, JVM
+
+RPython: static subset of Python 
+=======================================
+
+* static subset of Python 
+* we do whole-program type-inference
+
+Interpreters written in RPython
+=======================================
+
+* directly testable on top of CPython 
+
+* GC, threading, **JIT-Compiler** added automatically! 
+
+Garbage Collection framework
+====================================
+
+* write GC in RPython
+* test in simulation (with pdb!) 
+* weave into translation of *any* interpreter
+
+stackless / threading 
+====================================
+
+* stackless transform for rpython programs (*any* interpreter)
+* infinite recursion, greenlets, co-routines in Python! 
+
+JIT-Compiler Generator 
+====================================
+
+* written in RPython
+* test in simulation (with pdb!) 
+* weave into translation of *any* interpreter
+
+JIT-generator for Python 
+====================================
+
+* removes object boxing, frame objects penalties
+* but can present them if needed!
+* current speedup: 20 times for simple examples 
+
+Any Interpreter or VM? 
+====================================
+
+.. image:: mario.png
+   :scale: 100
+   :align: center
+
+Strong points 
+========================================
+
+* large automated test suite, good debugging tools 
+* Generating *efficient* Interpreters 
+* works for Python, a relatively complex language
+
+Challenges 
+========================================
+
+* improve the JIT generator until it can generate a
+  good JIT-Compiler for Python! 
+
+* release and distribute Python Interpreter 
+
+* get some more funding 
+
+

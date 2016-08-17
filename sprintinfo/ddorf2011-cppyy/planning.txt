@@ -1,0 +1,25 @@
+people:
+
+ - Sven
+ - Armin
+ - Carl Friedrich
+ - Wim
+ - Lukas
+ - David
+
+tasks:
+
+cppyy
+ - memory management
+ - split between rpython/python (Carl Friedrich)
+ - fast path improvements DONE
+ - test fast path (Carl Friedrich)
+ - global data members
+ - code duplication: IN PROGRESS
+ - array problems: IN PROGRESS (Armin, Wim)
+
+
+auxilliary tasks
+
+ - look more into PPC (Sven, David)
+ - list/set improvements (Lukas)

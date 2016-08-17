@@ -1,0 +1,35 @@
+Template for sprint reports
+Author: Beatrice Düring
+Date:20050827
+Version:1.0
+
+Comment: The purpose of this template is to get some kind of conformity in the 
+content of the sprint reports. This template in it self doesnt have to be used but please
+try to follow the guidelines for content mentioned here.
+------------------------------------------------------------------------------------------
+
+Author:
+Date:
+
+Sprint report:
+Place, Country
+Period of days
+
+- Short introduction about venue and local organisers.
+
+- Participants (name + email adress)
+
+- Goal of the sprint
+
+- Rough calendar structure of the sprint (working when, break when.., working hours etc)
+
+- Brief summary of work per day and who worked on what (coding, documentation etc)
+
+- Next sprint (when/where/who) and rough view of potential content
+
+  
+
+
+
+
+

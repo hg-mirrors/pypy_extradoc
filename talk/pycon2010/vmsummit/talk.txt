@@ -1,0 +1,59 @@
+.. include:: <s5defs.txt>
+
+=========================================================
+PyPy and Its Generated Tracing JIT
+=========================================================
+
+:Authors: Samuele Pedroni (Open End AB), Maciej Fijałkowski (merlinux GmbH)
+:Date: VM Summit '10
+
+What is PyPy?
+===================
+
+- Python in Python
+- Translation (RPython -> e.g. C)
+- Generating dynamic compilers
+- Open Source: MIT
+
+=> Toolkit for building dynamic languages
+
+Generating a Tracing JIT
+===========================
+
+- produce traces: (meta)interpreter through low-level operations
+                  that make up the language interpreter 
+- identify loops: hints for start of dispatch loop, backedges
+
+Optimisations
+================= 
+
+- unify head and tail of the loop data-flow, find non-escaping values:
+  virtual objects instead of allocations
+- virtualizables: e.g. mirror Python frames of the CPU stack
+
+Trace example
+===============
+
+Results (current)
+==================
+
+benchmarks
+
+Challenges
+==============
+
+- megamorphic sites/complex control flow
+- unmerged tails of control flow
+- too long traces
+- always failing guards
+- bookkeeping memory consumption
+- GC pressure
+
+Links
+============
+
+Status blog
+http://morepypy.blogspot.com
+
+Website
+http://codespeak.net/pypy

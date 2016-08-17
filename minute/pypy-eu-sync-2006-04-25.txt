@@ -1,0 +1,605 @@
+
+EU pypy-sync 25th April 2006, 05:10-06:30 PM (UTC+2)
+=====================================================
+
+attendants: Michael Hudson, Armin Rigo, Christian Tismer, Carl Friedrich Bolz
+            Samuele Pedroni, Aurelien Campeas,  Anders Chrigstroem, 
+            Anders Lehmann, Jan Balster, Stephan Diehl, Gerald Klix,
+            Niklaus Haldimann, Holger Krekel (moderation, minutes) 
+
+The meeting's purpose was to synchronise work efforts related to the 
+PyPy EU project and more specifically to structure and plan work for 
+the 0.9 release.  The meeting invitation resulted from
+discussions on the 20th April pypy-sync meeting.  Further
+below is the IRC log of the roughly 1.5 hour long session.
+Holger suggested a list of 0.9 topics which was accepted and
+then discussed one by one: 
+
+1. stackless support / WP07
+------------------------------
+
+Christian has produced a partial draft on his stackless 
+and "thread pickling" ideas in pypy/doc/discussion/howtoimplementstackless.txt. 
+This got discussed especially in relation to what we currently
+have in our pypy translation tool chain.  It was noted that 
+the current PyPy stackless approach does not directly map 
+to the new description.  Some partial agreements and
+open questions were identified and the final discussion and decision
+about the 0.9 stackless approach was delegated to Christian Tismer, 
+Michael Hudson, Samuele Pedroni and Armin Rigo (Armin will care about 
+inviting and making sure that a proper description about the approach 
+and the tasks is provided and agreed upon).  The decision should be 
+taken in consensus with a deadline of end april.  Christian plans to 
+spend his time after 1st May fully working on this support.  
+
+Holger additionally notes that WP07 has more tasks than
+tasklet pickling and all those tasks are promised to be
+finished until June and raises the question if this is 
+still feasible. 
+
+Aurelien notes that WP09 (logic engine) depends on the ability to
+clone threads.  Christian thinks that the upcoming stackless support
+will allow the required usages.  Aurelien promises to write up
+documentation about his implementation approaches and goals and the
+needed features but also notes that the need for tasklet cloning was
+mentioned two months ago.
+
+
+2. ext compiler being able to produce extensions for CPython and PyPy
+------------------------------------------------------------------------
+
+Armin has done a lot of progress on the revised WP03 approach
+which we communicated to the EU with the fourth amendment
+of our contract.  The rctypes approach is already working quite well 
+and he is currently working on a cpyobjspace which is then used 
+for writing and testing mixed modules.  We are going to 
+require explicit wrapping, i.e. users will need to care explicitely 
+for the interp/applevel distinction and cannot expect 
+automatic wrapping.  However, it is envisioned that for past
+0.9 development we might investigate "automatic" approaches on which
+Christian has done some work already.  
+
+For 0.9 everyone agrees and settles on the explicit approach.  
+
+Armin will take care to bring the code to the point where we
+have a command line tool which can produce CPython or PyPy
+extension modules from a single (mixed module) source.  
+
+3. GC framework integration + __del__ and maybe weakref
+------------------------------------------------------------------------
+
+For 0.9 Carl will continue his GC framework integration work
+and also try to implement __del__ and a new approach for weakref 
+support to work with all GCs.  Especially the weakref support 
+needs to be discussed and experimented with further.  Some
+approaches lead to rather large performance penalties so
+this remains a matter of experimentation. 
+
+4. high-level backend snapshots + documentation?
+------------------------------------------------------------------------
+
+We have a number of sub projects going on to implement high level
+backends on top of ootype model: .NET, Squeak and recently a Common
+Lisp one.  After short discussions everybody welcomed the idea and
+would be glad to include a snapshot of the high-level backend works.
+For 0.9 this requires writing documentation.  Holger will care to ask
+Antonio and Samuele will ask Seo about it.  Niklaus already mentioned
+at the meeting that he will try to write some documentation about
+ootypes.
+
+
+5. logic/constraint related goals?
+------------------------------------------------------------------------
+
+Aurelien states that basic constraint coding work has been done though
+he asserts that it is not currently translatable.  He sees a
+(non-vital) dependency on WP10 work and also mentions that he will
+need some help wrt translatability.  Holger notes that the D9.1 report
+is thought to have an intermediate draft ready in June (as the
+original deliverable "initial constraint satisfaction engine" was
+scheduled for that time).  Aurelien agreed to document their current
+approaches so that they can be advertised and snapshotted with 0.9 and
+also state missing/blocking features.
+
+
+6. _some_ amount of release polishing and updating documentation, fixing issues
+---------------------------------------------------------------------------------------
+
+Holger reminded everyone that we have some 20-30 open issues for 0.9 
+in the tracker at http://codespeak.net/issue/pypy-dev/ . 
+It was commonly agreed that everyone goes through the list and
+takes responsibility for some issues. 
+
+
+last
+--------
+
+we are going to to have a follow up eu sync meeting mid may or maybe
+at the Iceland sprint to assess ongoing and remaining 0.9 work
+as well as develop plans for the remainder of the EU project. 
+This is connected to an assessment of resource and time usage
+at consortium-level. 
+
+IRC log
+--------------------------
+
+:: 
+
+ Apr 25 17:02:28 <hpk>	arre: hi arre, is samuele going to join soon? 
+ Apr 25 17:02:51 <arre>	+I don't know. We have separate rooms.
+ Apr 25 17:03:05 <hpk>	i wouldn't think he sleeps already :)
+ Apr 25 17:03:24 -->	nikh (n=nikh@222-151-092-147.jp.fiberbit.net) has joined #pypy-sync
+ Apr 25 17:04:09 <arigo>	+we need to wait for Chsritian, I suspect
+ Apr 25 17:04:14 <arigo>	+Christian sorry
+ Apr 25 17:04:18 <hpk>	and samuele 
+ Apr 25 17:04:25 <arigo>	+yes
+ Apr 25 17:04:30 <hpk>	otoh we can at least start and see how we want to go about things 
+ Apr 25 17:04:43 <hpk>	without deciding any content topic 
+ Apr 25 17:04:50 <hpk>	because i think that part of the problem is sorting issues and topics out
+ Apr 25 17:04:52 <mwh>	+hello
+ Apr 25 17:05:09 <hpk>	hi michael
+ Apr 25 17:05:47 <hpk>	can everyone here state already how long you have time or at which time you would like to limit this meeting? 
+ Apr 25 17:06:02 <mwh>	+i have an hour, easily
+ Apr 25 17:06:20 <auc>	+no limit ...
+ Apr 25 17:06:35 <cfbolz>	+I have no real limit, except that it might be hard to get home at one point :-)
+ Apr 25 17:07:12 <mwh>	+there's a #europython meeting at 6, but i don't know who is going to turn up
+ Apr 25 17:07:18 <mwh>	+and they can be overlapped
+ Apr 25 17:07:34 -->	aleale (n=aleale@222-151-094-211.jp.fiberbit.net) has joined #pypy-sync
+ Apr 25 17:07:34 -->	stakkars (n=tismer@66.151.59.5) has joined #pypy-sync
+ Apr 25 17:07:38 <arre>	+Since its 0:07 here, shorter meeting => more sleep.
+ Apr 25 17:07:47 <cfbolz>	+:-)
+ Apr 25 17:07:51 stakkars stedi67 Apr 25 17:07:51 <mwh>	+arre: :)
+ Apr 25 17:08:00 <hpk>	stakkars: morning christian!
+ Apr 25 17:08:16 <stakkars>	+sorry for being late - my battery is broken, so I had to move to the office
+ Apr 25 17:08:19 <arre>	+Thiugh 1 hour wont hurt too much.
+ Apr 25 17:08:24 <aleale>	+sorry I am late - networktrouble
+ Apr 25 17:08:33 <stakkars>	+and this was not a nice night at all - nevermind
+ Apr 25 17:08:34 <hpk>	ok, i'll try to keep the meeting at around 1 hour
+ Apr 25 17:08:53 <hpk>	up front, i'd like to not try to resolve every topic that turns up 
+ Apr 25 17:09:09 <hpk>	but rather resolve to delegation and organising who cares for which area in separate chats 
+ Apr 25 17:09:17 -->	pedronis (n=Samuele_@222-151-092-147.jp.fiberbit.net) has joined #pypy-sync
+ Apr 25 17:09:29 <stakkars>	+that's the way to go!
+ Apr 25 17:09:51 <hpk>	ok, then let me suggest a bit of structure
+ Apr 25 17:09:59 <hpk>	pedronis: evening samuele! 
+ Apr 25 17:10:18 <hpk>	the main issue is organising work for 0.9 
+ Apr 25 17:10:26 <hpk>	which is scheduled to happen first half june 
+ Apr 25 17:10:50 <stakkars>	+ACTION nods and grabs coffee
+ Apr 25 17:11:12 <hpk>	regarding having a deeper look into the remainder of the EU project 
+ Apr 25 17:11:24 <hpk>	we might not cover it during this meeting although it plays a role in the background 
+ Apr 25 17:11:59 <hpk>	for the latter i suggest that we work on getting a full picture (until december) in May 
+ Apr 25 17:12:18 <hpk>	which also co-incides with the consortium-level assessment of resources 
+ Apr 25 17:12:27 <hpk>	resource usage and time 
+ Apr 25 17:12:40 <mwh>	+i guess by may you mean "in iceland" ?
+ Apr 25 17:12:49 <hpk>	maybe, yes, that might make sense 
+ Apr 25 17:13:14 <hpk>	but logilab won't be there, i think, for xample 
+ Apr 25 17:13:27 <auc>	+yup
+ Apr 25 17:13:37 <mwh>	+hrm
+ Apr 25 17:14:11 <hpk>	if there are no objections i suggest to discuss 0.9 now 
+ Apr 25 17:14:13 <mwh>	+ still, it's going to be the largest in person gathering for a while
+ Apr 25 17:14:17 <mwh>	+hpk: yes
+ Apr 25 17:14:26 <hpk>	mwh: yes, we will certainly make some use of that 
+ Apr 25 17:14:55 <hpk>	here is a list of topics that i suggest to discuss one after another and deciding what we do about it regaridng 0.9 
+ Apr 25 17:15:08 <stakkars>	+mwh: my babelfish is sleeping. what do you mean by "still, it's going to be the largest in person gathering for a while"
+ Apr 25 17:15:21 <auc>	+lots of people ?
+ Apr 25 17:15:27 <auc>	+(will be there)
+ Apr 25 17:15:29 stakkars stedi67 Apr 25 17:15:42 <mwh>	+yes
+ Apr 25 17:15:45 <hpk>	stakkars: 8-9 EU püroject related people are there 
+ Apr 25 17:16:09 <hpk>	ok, here is the list:
+ Apr 25 17:16:13 <hpk>	1. stackless support
+ Apr 25 17:16:13 <hpk>	2. ext compiler being able to produce extensions for CPython and PyPy
+ Apr 25 17:16:13 <hpk>	3. GC framework integration + __del__ and maybe weakref
+ Apr 25 17:16:13 <hpk>	4. high-level backend snapshots + documentation?
+ Apr 25 17:16:13 <hpk>	5. logic/constraint related goals?
+ Apr 25 17:16:13 <hpk>	6. _some_ amount of release polishing and updating documentation, fixing issues
+ Apr 25 17:16:33 <hpk>	are you fine with going through them one by one and deciding about their 0.9 fate? 
+ Apr 25 17:16:42 <stakkars>	+sure
+ Apr 25 17:16:58 <arigo>	+yes
+ Apr 25 17:17:05 <hpk>	is there anything more you'd like to add as a major topic? 
+ Apr 25 17:17:14 <auc>	+hpk: ...
+ Apr 25 17:17:25 <auc>	+what do you mean by logic/constraint "related goals" ?
+ Apr 25 17:17:41 <hpk>	the question what (if anything) 0.9 should include 
+ Apr 25 17:17:51 <hpk>	regarding wp09/wp10 
+ Apr 25 17:17:51 <auc>	+constraint : yes
+ Apr 25 17:17:58 <auc>	+logic : probably not
+ Apr 25 17:18:03 <hpk>	auc: please not now, i'd like to try to keep some structure :) 
+ Apr 25 17:18:10 <hpk>	but thanks anyway
+ Apr 25 17:18:19 <hpk>	ok, first topic then is stackless support 
+ Apr 25 17:18:29 <hpk>	which also has a report due in June IIRC 
+ Apr 25 17:19:03 <mwh>	+well, i've now read stakkars's document
+ Apr 25 17:19:16 <stakkars>	+I did some work on structuring this, and it turns out to be doable in rather short time.
+ Apr 25 17:19:29 <auc>	+pickling ?
+ Apr 25 17:19:33 <mwh>	+you think so?
+ Apr 25 17:19:38 <mwh>	+auc: yes
+ Apr 25 17:19:53 <hpk>	stakkars: you mean the full wp07? 
+ Apr 25 17:20:06 <stakkars>	+given that - yes - we are able to identify and remove blocks in tail-position, this is the blocker, if any.
+ Apr 25 17:20:20 <mwh>	+stakkars: you would seem to be approaching things from rather the other end of things than the current "stackless" code in pypy does
+ Apr 25 17:21:05 <stakkars>	+no, the stackless code in PyPy approaches things from the other side that Stgackless does, and this is the reference :-)
+ Apr 25 17:21:19 <mwh>	+well, ok
+ Apr 25 17:21:30 <hpk>	either way, there is not a common approach yet 
+ Apr 25 17:21:37 <mwh>	+but which side do you think tasklet pickling in pypy should come from?
+ Apr 25 17:21:38 <stakkars>	+sure there is
+ Apr 25 17:21:50 <arigo>	+can be make the precise goals more explicit?
+ Apr 25 17:22:03 <arigo>	+s/be/we
+ Apr 25 17:22:03 <mwh>	+(there is also other stackless stuff: channels, greenlets, maybe)
+ Apr 25 17:22:07 <stakkars>	+sorry that I could not finish my document last nite.
+ Apr 25 17:22:25 <stakkars>	+please let's stick with one topic at the time
+ Apr 25 17:22:44 <mwh>	+ok
+ Apr 25 17:23:24 <stakkars>	+the missing spot with stackless PyPy is that we create very many activation records which are not needed. 95 percent of them can be removed.
+ Apr 25 17:23:52 <stakkars>	+and my approach is to exactly allow pickling in a context where this removal is possible.
+ Apr 25 17:24:00 <arigo>	+stakkars: I'd still like to state the goals we are seeking more precisely
+ Apr 25 17:24:19 <stakkars>	+was I not precise?
+ Apr 25 17:24:19 <pedronis>	-well, is rather unclear how to do that, without changing the interpreter
+ Apr 25 17:24:35 <stakkars>	+I don't think so.
+ Apr 25 17:24:41 <pedronis>	-arigo: I think stakkars goals is to pickle as mostly a chain of python-level frames
+ Apr 25 17:25:18 <stakkars>	+yes. going further would drive us into deeper problems right now, since we have no interface at all.
+ Apr 25 17:25:30 <stakkars>	+the onlöy valid interface IMHO is the python frame.
+ Apr 25 17:25:36 <arigo>	+but more precisely: is our first goal to pickle only chains of Python-level frames and give up in other cases, or cover the general case inefficiently and then progress to make it more efficient for the common case?
+ Apr 25 17:26:12 <auc>	+arigo: what would be "other cases" ?
+ Apr 25 17:26:33 <stakkars>	+from a POV about what we promised, I see no direct reason to go any further than Stackless did in the past.
+ Apr 25 17:26:35 <arigo>	+auc: any situation where a Python function is not called just by a direct function call from another Python function
+ Apr 25 17:27:03 <stakkars>	+arigo: actually, these cases do not differ so much.
+ Apr 25 17:27:21 <stakkars>	+there is a hand-ful of real cases, where extra information is needed.
+ Apr 25 17:27:51 <stakkars>	+this is when a series of calles cannot unwind without keepin state.
+ Apr 25 17:27:59 <arigo>	+I somehow disagree with that, but that answers my question
+ Apr 25 17:28:03 <stakkars>	+for instance: think about map()
+ Apr 25 17:28:57 <pedronis>	-well, but some builtin are app-level defined
+ Apr 25 17:29:01 <stakkars>	+there are ways to handle such cases, if it is worth the effort.
+ Apr 25 17:29:24 <stakkars>	+one way is to move the problem to app-level, exactly.
+ Apr 25 17:29:51 <arigo>	+I just wanted to make it clear that there was a very different approach of pickling at RPython level, which is general but full of other problems, which is not the approach you want
+ Apr 25 17:29:57 <stakkars>	+another one is to create special frames or structures which take care.
+ Apr 25 17:31:04 <arigo>	+so the work here is: implement normal pickling for various things, and provide an interface for RPython code to at least check the RPython call chain
+ Apr 25 17:31:09 <stakkars>	+I understand that. In PyPy's current state, I can't see how to do this in a generally useful way.
+ Apr 25 17:31:17 <arigo>	+...to check that we're in a simple case.
+ Apr 25 17:31:42 <stakkars>	+this seems to be the simplest possible approach for now, yes.
+ Apr 25 17:31:44 <arigo>	+stakkars: yes, I agree that pickling RPython frames is full of problems and somehow very fragile
+ Apr 25 17:31:45 <mwh>	+ok
+ Apr 25 17:31:56 <mwh>	+yes
+ Apr 25 17:32:13 <mwh>	+you could do full-image dumping with only moderately extreme amounts of effort
+ Apr 25 17:32:26 <mwh>	+but, well, who cares
+ Apr 25 17:32:46 <stakkars>	+and I agree that I did not tell the full story, since my paper isn't finished. There are a handfulof different cases which need to be handled.
+ Apr 25 17:32:47 <arigo>	+that's a feature I tend to consider mostly useless...
+ Apr 25 17:32:54 <mwh>	+it's not that interesting a solution imho
+ Apr 25 17:32:59 <arigo>	+indeed
+ Apr 25 17:33:06 <pedronis>	-arigo: but even in the simple case you need ways to recreate the c stack or avoid it to be there
+ Apr 25 17:33:16 <stakkars>	+mwh: I would agree with this if we had a flexible backend, where programs are data.
+ Apr 25 17:33:18 <pedronis>	-Ã¯s unclear to me how the intepreter needs to change to get that
+ Apr 25 17:33:28 <arigo>	+pedronis: ah yes, we need to throw it away or rebuild it
+ Apr 25 17:33:40 <Gromit>	+mwh, what do you mean by full image dump?
+ Apr 25 17:33:58 <mwh>	+well, avoiding callbacks from external libraries, we can recreate the c stack
+ Apr 25 17:34:11 <mwh>	+because this is how the stackless-in-pypy works
+ Apr 25 17:34:12 <cfbolz>	+Gromit: being able to safe the _whole_ program
+ Apr 25 17:34:12 <auc>	+Gromit: maybe something a la smalltalk/lisp
+ Apr 25 17:34:21 <arigo>	+mwh: the problem is how to know which RPython-level values to put back into the RPython frames
+ Apr 25 17:34:36 <Gromit>	+so i understood it right, well I would care
+ Apr 25 17:34:39 <pedronis>	-arigo: yes
+ Apr 25 17:34:42 <stakkars>	+mwh: I consider dumping the binary a fake solution.
+ Apr 25 17:34:49 <mwh>	+i don't see why this is sooooooo hard
+ Apr 25 17:34:51 <mwh>	+but also!
+ Apr 25 17:34:54 <mwh>	+it's a dead topic
+ Apr 25 17:34:54 <pedronis>	-unless we make the intepreter itself sort of stackless
+ Apr 25 17:35:01 <xorAxAx>	+Gromit: nobody of them has tried smalltalk :)
+ Apr 25 17:35:04 <mwh>	+feel free to enlighten me later
+ Apr 25 17:35:09 <hpk>	anyway
+ Apr 25 17:35:21 <hpk>	i don't think we can fully resolve this without sorting out some more details in written form 
+ Apr 25 17:35:25 <auc>	+going this road would kill parts of wp9
+ Apr 25 17:35:33 <auc>	+(as we see it)
+ Apr 25 17:35:35 <hpk>	so here is a suggestion
+ Apr 25 17:35:36 stakkars stedi67 Apr 25 17:36:01 <hpk>	stakkars should complete his document some more until end of the week 
+ Apr 25 17:36:15 <hpk>	and others may want to amend it or describe a different approach 
+ Apr 25 17:36:20 <stakkars>	+better today, or it won't happen :-)
+ Apr 25 17:36:46 <hpk>	and then at least stakkars, arigo, mwh and pedronis get together and agree on an approach (and anyone can join who wants to in this discussion)
+ Apr 25 17:36:55 <stakkars>	+I will try to describe how to identify removable code paths.
+ Apr 25 17:36:57 <hpk>	is that agreeable? 
+ Apr 25 17:37:00 <mwh>	+stakkars: are you able to devote serious time between now and iceland on implementing this stuff?
+ Apr 25 17:37:08 <mwh>	+hpk: yes
+ Apr 25 17:37:29 <stakkars>	+sure! I want all this stuff off my table until then.
+ Apr 25 17:38:04 <mwh>	+cool
+ Apr 25 17:38:30 <stakkars>	+on the other question: the missing stackless interface will be done by an expert on this.
+ Apr 25 17:38:32 <hpk>	we need a common approach and i want at least the four people i mentioned to agree on it, so arigo and pedronis, are you fine with that as well? 
+ Apr 25 17:38:33 <mwh>	+btw
+ Apr 25 17:38:37 <mwh>	+i am on holiday next week
+ Apr 25 17:38:53 <mwh>	+don't expect me to comment when i'm backpacking in the highlands :)
+ Apr 25 17:39:19 <hpk>	well, you should try to resolve it until end this week, i'd say 
+ Apr 25 17:39:22 <arigo>	+hpk: yes, though I now see pedronis' objections as important
+ Apr 25 17:39:39 <arigo>	+but that should not be discussed here
+ Apr 25 17:39:48 <stakkars>	+which objectioms? did I forget something?
+ Apr 25 17:40:37 <hpk>	arigo: i wasn't implying a consensus or that everyone agrees already
+ Apr 25 17:41:01 <hpk>	the fact is that tasklet pickling is just _one_ issue we are dealing with 
+ Apr 25 17:41:06 <arigo>	+stakkars: no, I think you've mostly thought it out, but we'll need to state it clearly: how to rebuild the interp-level frames when restoring (not now, put it in the docs)
+ Apr 25 17:41:27 <arigo>	+hpk: I know, I wanted to see if there was a critical problem, but not necessarily
+ Apr 25 17:41:35 <stakkars>	+ok ok, I'll do the fine-print :-)
+ Apr 25 17:41:36 <arigo>	+hpk: so we can move on as far as I'm concerned
+ Apr 25 17:41:41 <hpk>	pedronis: are you ok with being part of the decision group? 
+ Apr 25 17:41:52 <arigo>	+stakkars: :-)
+ Apr 25 17:41:57 <pedronis>	-yes
+ Apr 25 17:42:03 <hpk>	ok, then we are settled for that 
+ Apr 25 17:42:15 <pedronis>	-(tomorrow is break day here btw)
+ Apr 25 17:42:19 <stakkars>	+what was auc's concern, was there a contradiction?
+ Apr 25 17:42:34 <hpk>	mwh: can you care to co-ordinate this decision and make an appointment / posting it to pypy-dev? 
+ Apr 25 17:42:56 <stakkars>	+pedronis: did you just invite me for discussion, or the opposite?
+ Apr 25 17:42:57 <hpk>	otherwise let me note that WP07 contains more issue than just tasklet pickling 
+ Apr 25 17:43:02 <auc>	+stakkars: we think we depend on stackless pickling mecanisms to make part of wp9 work
+ Apr 25 17:43:02 stakkars stedi67 Apr 25 17:43:12 <mwh>	+given the amount of rushing around i'm doing, i'm not sure i'm the best man for the job
+ Apr 25 17:43:21 <auc>	+stakkars: note that i don't understand anything about the issues involved
+ Apr 25 17:43:23 <hpk>	i see, arigo, can you care? 
+ Apr 25 17:43:25 <stakkars>	+this is a thing I wished you had told me some months ago.
+ Apr 25 17:43:27 <arigo>	+stakkars, auc: the conclusion was that full-program dumping is not useful for wp9, which is fine
+ Apr 25 17:43:36 <auc>	+and possible you were talking about some mecanisms which do not conern us
+ Apr 25 17:43:40 <stakkars>	+until now, nobody every relied on this feature.
+ Apr 25 17:43:48 *	hpk Äwould really like to have for all the issues exact people caring for things and not just leave things in the air 
+ Apr 25 17:44:08 stakkars stedi67 Apr 25 17:44:18 <auc>	+stakkars: we stated, months ago that thread pickling was a dependency for us
+ Apr 25 17:44:23 <cfbolz>	+yes
+ Apr 25 17:44:27 <auc>	+but no problem
+ Apr 25 17:44:29 <pedronis>	-stakkars: no, that tomorrow I'm not going to be around
+ Apr 25 17:44:43 <arigo>	+hpk: I'll send a note with a meeting time on Thursday then
+ Apr 25 17:44:51 <stakkars>	+you'll get it, but probably not more than Stackless can give you
+ Apr 25 17:44:58 <xorAxAx>	+auc: is it documented? :)
+ Apr 25 17:44:58 <arigo>	+if that's fine with all of you
+ Apr 25 17:45:16 <auc>	+xorAxAx: not published, but i can do something about that
+ Apr 25 17:45:24 <hpk>	ok, so the tasklet pickling issue is delegated to arigo, stakkars, pedronis and mwh to sort out and agree on 
+ Apr 25 17:45:42 <mwh>	+hpk: +1
+ Apr 25 17:45:44 <stakkars>	+aye aye
+ Apr 25 17:45:48 <auc>	+we'de like to know more in details the feature set ...
+ Apr 25 17:46:06 <hpk>	auc: you may also write down some features you need, if you like, ok? 
+ Apr 25 17:46:14 <arigo>	+ok
+ Apr 25 17:46:15 <auc>	+i'll post them soon
+ Apr 25 17:46:19 <hpk>	good, thanks
+ Apr 25 17:46:43 <stakkars>	+I guess they want to pickle from interpreter-level, which I think is doable as well with similar restrictions
+ Apr 25 17:47:03 <hpk>	just so we don't forget it: wp07 contains more (pointer tagging, pre-emptive scheduler, study memory<->speed tradeoffs, object layout, multimethod optimisations) 
+ Apr 25 17:47:16 <stakkars>	+it is just necessary to tame myriads of activation records, this is all I'm saying.
+ Apr 25 17:47:29 <hpk>	and i'd dare to say it's doubtful we'll get all that until June including an EU report, or does anyone disagree? :) 
+ Apr 25 17:48:01 <stakkars>	+I can take the pre-emptive scheduler as well.
+ Apr 25 17:48:20 <stakkars>	+having that ready before June.
+ Apr 25 17:48:26 <hpk>	i'd like to not discuss that now, but we should not think that WP07 is done by caring/resolving tasklet pickling 
+ Apr 25 17:48:29 <mwh>	+well, we can argue we've done _some_ of those things
+ Apr 25 17:48:33 <hpk>	yes, i know 
+ Apr 25 17:48:53 <hpk>	still we need to look into things a bit more there
+ Apr 25 17:49:07 <hpk>	latest in May (when we plan for the rest of the project) 
+ Apr 25 17:49:19 <hpk>	ok, so topic 1. for release 0.9 is so fr handled 
+ Apr 25 17:49:21 <hpk>	let's head on 
+ Apr 25 17:49:28 <hpk>	2. ext compiler being able to produce extensions for CPython and PyPy
+ Apr 25 17:50:06 <--	auc has quit (Remote closed the connection)
+ Apr 25 17:50:06 <hpk>	here again, we need agreement on how we go about it for 0.9, including the actual approach 
+ Apr 25 17:50:25 <hpk>	i presume that everyone is familiar with the pypy-dev posts related to the topic 
+ Apr 25 17:50:27 <stakkars>	+what is the actual approach
+ Apr 25 17:50:54 -->	auc (n=auc@logilab.net2.nerim.net) has joined #pypy-sync
+ Apr 25 17:51:03 <arigo>	+at the moment I'm progressing on the cpyobjspace
+ Apr 25 17:51:04 <stakkars>	+you don't mean the half-way that I've taken, but Armin's new approach, I guess?
+ Apr 25 17:51:20 <arigo>	+the two approaches can converge at some point
+ Apr 25 17:51:24 <stakkars>	+(which I like very much)
+ Apr 25 17:51:32 <hpk>	i was just refering to the pypy-dev posts and indeed armin did describe his ideas there to some detail 
+ Apr 25 17:51:35 <arigo>	+for now the first goal would be to translate a simple MixedModule to CPython
+ Apr 25 17:51:45 <arigo>	+with no SomeObjects :-)
+ Apr 25 17:51:58 <arigo>	+well, progress is good, basically
+ Apr 25 17:52:11 <stakkars>	+I wanted, but then didn't try to defend mine, since I agree that Armin's is the way to go.
+ Apr 25 17:52:50 <hpk>	ok, so we'll base the ext-compiler on the rctypes+cpyobjspace+explicit wrapping approach.
+ Apr 25 17:53:00 <arigo>	+stakkars: keep your code in a corner, I know that removing some of this space.xyz() boilerplate will be nice later :-)
+ Apr 25 17:53:19 <stakkars>	+on the other hand, I would appreciate to send SomeObjects into never-never-land
+ Apr 25 17:53:28 <mwh>	+i had a vague thought about this a few days ago, but this probably isn't the place...
+ Apr 25 17:53:53 <mwh>	+(for a SomeGenericObject as well as the "i don't know" SomeObject)
+ Apr 25 17:54:01 <hpk>	ok, i don't hear any disagreements so far 
+ Apr 25 17:54:03 <hpk>	a question: 
+ Apr 25 17:54:20 <hpk>	how exactly is a user supposed to use the "ext-compiler"? 
+ Apr 25 17:54:30 <stakkars>	+me too, I'd like to keep the annotation instead of loosing it. Well, wrong place...
+ Apr 25 17:54:49 <arigo>	+mwh, stakkars: seems like we all thought about this
+ Apr 25 17:55:15 <stakkars>	+you bet why I can't sleep since weeks
+ Apr 25 17:55:16 <arigo>	+hpk: for now, the goal is: write a MixedModule for PyPy and run a command-line utility
+ Apr 25 17:55:21 <mwh>	+arigo: ok
+ Apr 25 17:55:22 <mwh>	+later!
+ Apr 25 17:55:37 <hpk>	arigo: which can produce a cpython ext
+ Apr 25 17:55:44 <arigo>	+hpk: yes, you get a .so for CPython with no extra effort
+ Apr 25 17:56:02 <hpk>	ok
+ Apr 25 17:56:15 <arigo>	+there will also be a simple way to import and test the MixedModule directly on top of CPython
+ Apr 25 17:56:27 <arigo>	+by running it with the CPyObjSpace, which works well already in simple tests
+ Apr 25 17:56:28 <stakkars>	+ok, modulo a non-existent space variable, and if you use the interp-level part, only, then I have something like that ready
+ Apr 25 17:56:29 <hpk>	arigo: are you going to care for that up to the point that this works reasonably? (i know you are far but still :)) 
+ Apr 25 17:56:52 arigo arre Apr 25 17:56:57 <hpk>	arigo: the testing part sounds great :) 
+ Apr 25 17:57:00 <arigo>	+actually I don't think I'm that far any more, so yes :-)
+ Apr 25 17:57:01 <stakkars>	+and I'm of course happy to move things to CPyObjSpace
+ Apr 25 17:57:20 <mwh>	+hehe
+ Apr 25 17:57:34 <hpk>	ok, so arigo heads off and finishes this and maybe should then post to pypy-dev (well ahead of 0.9) so that people can feedback and try it out on some things (maybe also in iceland) 
+ Apr 25 17:57:34 <arigo>	+it all falls into place magically also thanks to all the pyobj.py magic that creates the correct wrappers in genc
+ Apr 25 17:57:59 <hpk>	everybody fine with this? 
+ Apr 25 17:58:06 <arigo>	+ACTION agrees
+ Apr 25 17:58:19 <stakkars>	+ACTION wonders but of course agrees
+ Apr 25 17:58:28 <pedronis>	-+1
+ Apr 25 17:59:24 <stakkars>	+I need a short break -- my stomach...
+ Apr 25 18:00:11 <hpk>	ok, i take it that the others at least don't disagree, but wouldn't mind to hear explicit opinions 
+ Apr 25 18:00:20 <cfbolz>	+I agree, fwiw
+ Apr 25 18:00:34 <mwh>	+i agree
+ Apr 25 18:00:36 <auc>	+no opinion
+ Apr 25 18:00:37 <aleale>	++1
+ Apr 25 18:00:45 <stakkars>	+tis++
+ Apr 25 18:01:00 <hpk>	thanks :)
+ Apr 25 18:01:08 <hpk>	next topic then 
+ Apr 25 18:01:11 <hpk>	3. GC framework integration + __del__ and maybe weakref
+ Apr 25 18:01:36 <hpk>	cfbolz: following up on your gc integration work with samuele, you are now heading for __del__, right? 
+ Apr 25 18:01:54 <cfbolz>	+I am currently working on testing the gcs differently, which is a mess, but basically yes
+ Apr 25 18:02:12 <stakkars>	+I didn't understand that one. There is  __del__, isn't it? Or dependent from which gc it is?
+ Apr 25 18:02:21 <cfbolz>	+stakkars: yes, not for all gcs yet
+ Apr 25 18:02:37 -->	Gromit_ (n=gek@codespeak.net) has joined #pypy-sync
+ Apr 25 18:02:56 <cfbolz>	+stakkars: it works for boehm and refcounting
+ Apr 25 18:03:01 <cfbolz>	+but not for mark and sweep
+ Apr 25 18:03:05 <hpk>	question is if we shouldn't at least try to get a weakref module working 
+ Apr 25 18:03:20 <hpk>	it may not be crucial for 0.9 exactly but it's a long standing issue and it's good to have that resolved at some point 
+ Apr 25 18:03:31 <--	Gromit has quit (Nick collision from services.)
+ Apr 25 18:03:51 ---	Gromit_ is now known as Gromit
+ Apr 25 18:03:52 <hpk>	any opinions on that? 
+ Apr 25 18:03:55 <arigo>	+what is the status of the idea of implementing weakrefs purely at interp-level, by playing with __del__?
+ Apr 25 18:03:56 <stakkars>	+I'd like to understand why weakref is a problem.      wrong list, I know
+ Apr 25 18:04:08 <cfbolz>	+arigo: it works, but is extremely slow for boehm
+ Apr 25 18:04:12 <mwh>	+arigo: wasn't it that it murdered performance?
+ Apr 25 18:04:23 <arigo>	+what about using extra objects?
+ Apr 25 18:04:25 <stakkars>	+well, I am (hust) using weakrefs. :->
+ Apr 25 18:04:36 stakkars stedi67 Apr 25 18:04:40 <arigo>	+as in, we have a field that is usually NULL but can point to an object with a __del__...
+ Apr 25 18:04:41 <cfbolz>	+arigo: ?
+ Apr 25 18:04:50 <cfbolz>	+ah
+ Apr 25 18:04:58 <arigo>	+then we pay the __del__ penalty only if there is a weakref actually taken to that object
+ Apr 25 18:05:10 <cfbolz>	+yes, could possibly work
+ Apr 25 18:05:20 <arigo>	+then it's a quick hack to try
+ Apr 25 18:05:21 <cfbolz>	+and could be tried reasonably easy, I guess
+ Apr 25 18:05:25 <cfbolz>	+:-)
+ Apr 25 18:05:28 <hpk>	ok, let's do that then :) 
+ Apr 25 18:05:38 <stakkars>	+right now we are missing an operation that would handle this field correctly
+ Apr 25 18:05:49 <arigo>	+stakkars: no, I don't think so
+ Apr 25 18:05:59 <cfbolz>	+the cool thing about this approach would be that it wporks for all gcs that support __del__
+ Apr 25 18:06:03 <arigo>	+it's just a plain RPython trick
+ Apr 25 18:06:06 <cfbolz>	+yes
+ Apr 25 18:06:40 <stakkars>	+I'm always happy to get enlightened   (again not here of course)
+ Apr 25 18:06:46 <hpk>	me too 
+ Apr 25 18:06:58 <cfbolz>	+I guess I could write that done until end this week
+ Apr 25 18:07:05 <cfbolz>	+or maybe even just try it
+ Apr 25 18:07:18 <hpk>	ok, try it out then. 
+ Apr 25 18:07:41 <stakkars>	+ACTION sorry have to leave for 3 minutes
+ Apr 25 18:07:44 <hpk>	i think we should find out how we can get to supporting weakref some time not too far away
+ Apr 25 18:08:02 <mwh>	+ok, that all sounds good :)
+ Apr 25 18:08:06 <hpk>	so i think we can close the topic for now 
+ Apr 25 18:08:07 <cfbolz>	+indeedy
+ Apr 25 18:08:10 <cfbolz>	+think so
+ Apr 25 18:08:29 <hpk>	4. high-level backend snapshots + documentation?
+ Apr 25 18:09:10 <hpk>	i suggest we ask Antonio (and maybe Seo) to document in May the status and usability of their ootype-based backends and that we mention it in the release 
+ Apr 25 18:09:50 <hpk>	it's not strictly EU related but it's part of the project and we should thus think of it accordingly 
+ Apr 25 18:10:02 <arigo>	+yes, I think it will attract people too to see things compiled for very different platforms
+ Apr 25 18:10:10 <arigo>	+maybe Jython people too
+ Apr 25 18:10:27 <arigo>	+(there was a Parrot guy the other day on #pypy)
+ Apr 25 18:10:34 <hpk>	yes, in some sense "0.9" is a "community release" :) 
+ Apr 25 18:10:38 <--	mwh has quit (Remote closed the connection)
+ Apr 25 18:11:07 -->	mwh (n=mwh@fwstups.cs.uni-duesseldorf.de) has joined #pypy-sync
+ Apr 25 18:11:18 <hpk>	if everyone is fine with it, i'll ask Antonio (who needs to write up stuff for his thesis early July anyway :)
+ Apr 25 18:12:07 <arigo>	+yes, also if other people want to step in they are welcome (nikh, ericvrp... hint hint)
+ Apr 25 18:12:07 <hpk>	pedronis, arre: isn't Seo heading into a CL backend based on ootypes as well? 
+ Apr 25 18:12:11 <mwh>	+hehe
+ Apr 25 18:12:41 <pedronis>	-hpk: yes, the work happening here on the CL backend is ootype based
+ Apr 25 18:13:10 <hpk>	pedronis: can you see at the end of the sprint where things are and if Seo or someone else wants to work further on it and document it for 0.9? 
+ Apr 25 18:13:41 <pedronis>	-will ask
+ Apr 25 18:13:43 <nikh>	+ACTION wakes up
+ Apr 25 18:13:58 <hpk>	nikh: hey nikh, indeed i forgot to ask you about gensqueak :) 
+ Apr 25 18:14:05 <nikh>	+unfortunately i won't have much time in may/june for pypy ... but maybe i can help a bit with ootypesystem documentation.
+ Apr 25 18:14:26 <auc>	+i'd happily hack some bits of gencl
+ Apr 25 18:14:41 <hpk>	sounds all good, ok then, i think that settles this topic 
+ Apr 25 18:14:53 <hpk>	5. logic/constraint related goals?
+ Apr 25 18:15:21 <hpk>	origianlly we promised to have an "initial constraint satisfaction engine" ready in May i think 
+ Apr 25 18:15:31 <auc>	+basic constraint stuff is there
+ Apr 25 18:15:35 <auc>	+without doubt
+ Apr 25 18:15:45 <auc>	+ah, but does it translate ?
+ Apr 25 18:16:05 <auc>	+i postponed this when i reached eval()
+ Apr 25 18:16:26 <auc>	+which should disappear with the help of wp10 (maybe)
+ Apr 25 18:16:32 <auc>	+s/should/might
+ Apr 25 18:16:36 <hpk>	ok
+ Apr 25 18:17:10 <auc>	+logic programming needs help
+ Apr 25 18:17:11 <stakkars>	+re
+ Apr 25 18:17:21 <hpk>	auc: i think d09.1 is a good candidate for an intermediate EU report, btw
+ Apr 25 18:17:27 <auc>	+and we decided it would come from tasklet *cloning*
+ Apr 25 18:17:33 <hpk>	because originally the deadline for an initial engine was May or June 
+ Apr 25 18:18:06 <auc>	+it's ok
+ Apr 25 18:18:15 <auc>	+well it depends
+ Apr 25 18:18:17 <stakkars>	+cloning will be possible. Not supporting continuations in the first place, but virtually
+ Apr 25 18:18:20 <auc>	+it does not translate
+ Apr 25 18:18:28 <stakkars>	+by unpicklijng. I will elaborate on that.
+ Apr 25 18:18:49 <auc>	+cloning by pickling, yes
+ Apr 25 18:18:56 <auc>	+sounds heavy and performance killing
+ Apr 25 18:18:58 <auc>	+but ...
+ Apr 25 18:19:02 <auc>	+we want features first
+ Apr 25 18:19:11 <stakkars>	+gee, not at all.
+ Apr 25 18:19:23 <auc>	+ah ?
+ Apr 25 18:19:26 <auc>	+nice, then
+ Apr 25 18:19:55 <stakkars>	+pickling can be made very cheap, especially if you avoid to create the pickle at all.
+ Apr 25 18:20:00 <auc>	+stakkars: because when doing search we might want to clone a lot ...
+ Apr 25 18:20:12 <auc>	+stakkars: absolutely we're not intersted in the pickle
+ Apr 25 18:20:37 <auc>	+so that's good news
+ Apr 25 18:20:41 <stakkars>	+you just use the interface to reak the object into its spare parts, then re-assemble it. No strings attached :-)
+ Apr 25 18:20:48 <stakkars>	+break
+ Apr 25 18:20:49 <hpk>	auc: ok, but regarding 0.9: can you write up your status and begin to document your approaches so they can be advertised and snapshotted with 0.9? Together with missing/blocking features from your perspectives? 
+ Apr 25 18:21:04 <auc>	+hpk: yes
+ Apr 25 18:21:16 <hpk>	thanks
+ Apr 25 18:21:30 <hpk>	then i think that we can head to the last topic for 0.9 
+ Apr 25 18:21:42 <hpk>	6. _some_ amount of release polishing and updating documentation, fixing issues
+ Apr 25 18:22:07 <stakkars>	+auc: the tiny difference to continuations is that I can produce a clone for you, which is not identical. The latter would be an order of magnitude harder, see Stackless 10
+ Apr 25 18:22:35 <auc>	+what do you mean by 'not identical' ?
+ Apr 25 18:22:44 <hpk>	here i note that not many people signed up for any issues currently marked as 0.9 in the tracker
+ Apr 25 18:22:49 <cfbolz>	+stakkars, auc: next topic :-)
+ Apr 25 18:23:13 <stakkars>	+a different object. continuations keep object identity, re-startable many times.
+ Apr 25 18:23:17 <stakkars>	+oki
+ Apr 25 18:23:31 <auc>	+hm, we'll see
+ Apr 25 18:23:40 <auc>	+it'l be fine
+ Apr 25 18:24:19 <stakkars>	+ACTION hopes so, since everything requiring full continuations has turned out to be insane during the last 7 years
+ Apr 25 18:25:00 <auc>	+stakkars: don't worry
+ Apr 25 18:25:24 <hpk>	so are there any suggestions? 
+ Apr 25 18:25:33 <auc>	+uh ?
+ Apr 25 18:25:36 <hpk>	i personally don't believe that 0.9 will just magically ship :)
+ Apr 25 18:25:45 <stakkars>	+about what? sorry I lost track
+ Apr 25 18:25:51 stakkars stedi67 Apr 25 18:25:58 <hpk>	stakkars: i called for the last topic and discussing it 
+ Apr 25 18:26:04 <hpk>	6. _some_ amount of release polishing and updating documentation, fixing issues
+ Apr 25 18:26:05 <stakkars>	+ah, strategy about how to go for 0.9?
+ Apr 25 18:26:23 <hpk>	we have some 20-30 issues for 0.9, not all of them crucial so can be postponed if neccessary
+ Apr 25 18:26:29 <hpk>	however, postponing all of them is probably not a good idea 
+ Apr 25 18:26:43 <hpk>	and we need everybody to go through the list and sign up for some 
+ Apr 25 18:26:47 <hpk>	in order to distribute the work a bit 
+ Apr 25 18:26:52 <hpk>	i think it's sensible to ask this of everyone 
+ Apr 25 18:26:54 <cfbolz>	+would it make sense to do a round of everybody grabing issues that he feels like doing in the next two days and we see what's left
+ Apr 25 18:26:59 <cfbolz>	+?
+ Apr 25 18:27:31 <hpk>	yes, that makes sense IMO
+ Apr 25 18:27:56 <arre>	+ACTION nods.
+ Apr 25 18:27:57 <arigo>	+yes
+ Apr 25 18:28:15 <cfbolz>	+but I also think we should devote some time to nice docs
+ Apr 25 18:28:21 <cfbolz>	+to make the release accessible
+ Apr 25 18:28:34 <cfbolz>	+otherwise there is not much sense in releasing :-)
+ Apr 25 18:28:36 <hpk>	which mainly - i think - refers to updating the translation documentation 
+ Apr 25 18:28:39 <mwh>	+note that thanks to holiday i won't grab any in the next days
+ Apr 25 18:28:43 <hpk>	and writing some about the ext-compiler and stackless support 
+ Apr 25 18:28:48 <cfbolz>	+hpk: yes
+ Apr 25 18:28:53 <mwh>	+and will see what remains ungrabbed when i get back
+ Apr 25 18:29:03 <cfbolz>	+:-)
+ Apr 25 18:29:05 <hpk>	ok, but please take this seriously 
+ Apr 25 18:29:13 <hpk>	if we all work on it a bit it's much easier to get something nice 
+ Apr 25 18:29:34 <stakkars>	+I'd love to help with this - will do!
+ Apr 25 18:29:59 <hpk>	ok, then i thank everybody for coming and for discussing constructively 
+ Apr 25 18:30:14 <stakkars>	+bussies from LA
+ Apr 25 18:30:33 <hpk>	and suggest that we get together around mid may latest in this constellation to assess how far we are and what remains
+ Apr 25 18:30:52 <mwh>	+yes
+ Apr 25 18:30:54 <nikh>	+ACTION -> bed
+ Apr 25 18:30:55 <--	nikh has quit ("zzzz")
+ Apr 25 18:30:57 <stakkars>	+are we doing a meeting on Thursday?
+ Apr 25 18:31:05 <cfbolz>	+stakkars: probably
+ Apr 25 18:31:06 <mwh>	+0.9 is aimed for ~9 june?
+ Apr 25 18:31:11 <hpk>	mwh: yes, around that 
+ Apr 25 18:31:27 <mwh>	+so work like crazy for a few weeks, assess again in iceland, then work to the release?
+ Apr 25 18:31:30 <mwh>	+ok
+ Apr 25 18:31:35 <stakkars>	+yup
+ Apr 25 18:31:36 <hpk>	yes
+ Apr 25 18:31:48 stakkars stedi67 Apr 25 18:32:14 <hpk>	i'd rather do a pypy-sync the next week and would send a note to pypy-dev accordingly
+ Apr 25 18:32:24 <stakkars>	+I think meeting time could be more convenient for people if we let it happen at midnight LA time?
+ Apr 25 18:32:50 <hpk>	unless anyone thinks we have some immediate pressing topics for this thursday
+ Apr 25 18:32:54 <cfbolz>	+stakkars: well, the tokyo sprint is only this week, so the problem does not really occur again
+ Apr 25 18:33:29 <arigo>	+it would, for next Thursday
+ Apr 25 18:33:37 <hpk>	?
+ Apr 25 18:33:39 <hpk>	right
+ Apr 25 18:33:47 <cfbolz>	+yes, sorry
+ Apr 25 18:34:02 <hpk>	that's why (and because of today's meeting and the ongoing tokyo sprint) i propose to go for the next meeting next week 
+ Apr 25 18:34:32 <hpk>	mwh, cfbolz: please remind everyone regarding SoC btw :) 
+ Apr 25 18:34:33 <arigo>	+stakkars: but LA midnight is quite early in the morning for Europe I fear
+ Apr 25 18:34:47 <cfbolz>	+hpk: ah, yes
+ Apr 25 18:34:51 <stakkars>	+and my idea is to try to get the largest time gap to where most people are sleeping.
+ Apr 25 18:34:52 <Gromit>	+arigo, 9am AFAIK
+ Apr 25 18:35:07 <stakkars>	+no, it is nine'o clock, which is an advantage
+ Apr 25 18:35:15 <cfbolz>	+which is not a realistic time for me at _any_ weekday (lectures)
+ Apr 25 18:35:47 <--	arre has quit (Remote closed the connection)
+ Apr 25 18:36:01 <hpk>	can we go for 06:00 pm (UTC+2) next thursday 4th May? 
+ Apr 25 18:36:25 <cfbolz>	+fine for me
+ Apr 25 18:36:53 <arigo>	+ok here
+ Apr 25 18:37:05 <stakkars>	+fine with me. Why this late, is anybody travelling, then?
+ Apr 25 18:37:12 <Gromit>	+probably not
+ Apr 25 18:37:20 <hpk>	stakkars: so that you don't have to get up too early :) 
+ Apr 25 18:37:26 <hpk>	and can grab a coffee and such 
+ Apr 25 18:37:30 <stakkars>	+I'm back on the 1st or 2nd of May
+ Apr 25 18:37:39 <hpk>	aha, sorry i missed this 
+ Apr 25 18:37:54 <hpk>	then it's all a bit less critical 
+ Apr 25 18:38:16 <stakkars>	+you're nice.   No, I have to go back and save my son's ass.
+ Apr 25 18:38:27 <hpk>	yeah, heard about that ... not easy 
+ Apr 25 18:38:50 <hpk>	fwiw: the meeting is closed from my side (if it is not closed already)
+ Apr 25 18:39:10 <arigo>	+thanks all
+ Apr 25 18:39:16 <pedronis>	-ok, going to bed here
+ Apr 25 18:39:19 <pedronis>	-bye
+ Apr 25 18:39:23 <hpk>	good night
+ Apr 25 18:39:25 <cfbolz>	+pedronis: night!
+ Apr 25 18:39:44 <auc>	+bye

@@ -1,0 +1,84 @@
+.. include:: <s5defs.txt>
+
+=========================================================
+PyPy Technologies
+=========================================================
+
+:Author: Samuele Pedroni, Open End AB
+:Date: January '10
+
+
+
+Generated Tracing JIT compiler
+=================================
+
+Template: use the streamlined approach introduced by tracing JITs
+
+- identify hot loops
+- produce linear traces with stay-on-trace checks (guards), follow calls!
+- compile the traces to assembler which run the loop
+
+- exploit when heap allocation can be forgone, mirror Python frames on
+  the CPU stack
+
+Example
+=========
+
+
+Status
+=======
+
+- Intel x86-32
+- Small and some medium examples run
+- Good results for algorithmic code, see benchmarks
+- Reasonable heuristic when traces get too long
+
+Benchmarks
+============
+
+Stackless Python features
+==========================
+
+- C stack frame chains can be migrated back and forth to the heap
+- coroutines
+- tasklets and channels (inspired by Limbo and predecessors)
+
+
+Memory Management and GC
+=========================
+
+Pluggable GCs 
+
+- generational GC with semi-space 2nd generation
+- experimented with mark-and-compact GC
+
+.. refcounting: not really
+.. Recent work in real-time GCs could be incorporated (Metronome GC)
+
+Footprint
+=======================
+
+- larger basic footprint (code generation overhead, more extensions
+  compiled in by default)
+
+- smaller layout for many objects though (e.g. shared dicts for object
+  instances)
+
+QA
+=====
+
+- writing tests first for new code
+- 10 thousands of tests
+- nightly run of tests, both own plus running tests with translated PyPy
+- running against CPython own test suite
+
+.. challenges: testing code generation, testing behavior vs. form
+
+Links
+============
+
+Status blog
+http://morepypy.blogspot.com
+
+Website
+http://codespeak.net/pypy

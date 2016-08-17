@@ -1,0 +1,19 @@
+Hotspot's deoptimizer
+=====================
+
+It works in surprisingly related manner. The main differences are:
+a) we have it structured, so it's not that messy and ad-hoc (I think)
+b) we have less separation between debugger and user program
+c) we don't know how long we need to keep stuff alive
+
+Smalltalk
+=========
+
+Smalltalk has both frame introspection (everything is an object) and optimizes
+its frame objects heavily in some implementations:
+http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.42.6597
+
+Psyco
+=====
+
+???

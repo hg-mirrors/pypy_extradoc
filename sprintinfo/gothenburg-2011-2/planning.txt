@@ -1,0 +1,29 @@
+people present:
+    Christian Timser
+    Hakan Ardo
+    
+
+
+done so far:
+
+    Christian works on win64 support, continuing the job started in Genua
+
+    Hakan refactors unrolling: adds a TARGET resoperation that can be used
+    in the middle of loops, and that defines a possible JUMP target.
+
+    Armin did random stuff including progress on the STM branch.
+
+    Mark worked on specializing 2-tuples to contain int/floats/strings.
+
+    Andrew Dalke and Sam Lade worked on the previous days on numpy
+    integration, looking at f2py
+
+
+today:
+    
+    the TARGET resoperation: Hakan, Armin
+
+    win64: Christian
+
+    specialized 2-tuples: Mark, Anto
+

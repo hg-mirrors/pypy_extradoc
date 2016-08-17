@@ -1,0 +1,28 @@
+
+people present:
+  - Armin
+  - Samuele
+  - Carl Friedrich
+  - Maciek
+
+TASKS
+======
+
+  - directly call assembler for residual portal calls POSTPONED
+  - compress the virtuals part of resume data more (Samuele, Carl Friedrich) POSTPONED
+  - try to do something non-insane about Python-level exceptions IN-PROGRESS (Maciek, Armin)
+  - make the assembler produced by generate_failure smaller POSTPONED
+  - put the class into the structure to get only one promote when using an
+    instance
+  - look into failing pypy-c-jit apptests, pypy-c-jit translate.py POSTPONED
+
+  - write blog post DONE
+
+  - at the end of the sprint, migrate tasks to jit.txt DONE
+
+Talks
+-----
+
+ - JIT introduction Monday 17.00
+ - py.test update Thursday 15.00
+ - discuss benchmarking a bit

@@ -1,0 +1,19 @@
+Make pypy-jvm and pypy-cli multithreaded
+========================================
+
+Status: 
+
+ - pypy-jvm and pypy-cli don't support multiple threads
+
+Todo:
+
+ - add the relevant locks to the Python interpreter in order to make
+   pypy-jvm and pypy-cli thread-safe;
+
+ - this task would be probably also useful for implementing a GIL-free
+   threading model for low level backends;
+
+Expected outcome:
+
+ - ability to use use free threading in pypy-jvm and pypy-cli
+

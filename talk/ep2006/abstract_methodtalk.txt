@@ -1,0 +1,16 @@
+Abstract for Agile track at Europython 2006
+--------------------------------------------
+
+Kill -1: process refactoring in the PyPy project
+=================================================
+
+In this talk we will present the experiences of running a collaborative
+OSS project within a EU-funded consortium structure. We will briefly present 
+the initial decision process for integrating the community and the commercial 
+aspects of the PyPy project. We will show how agile practices within the 
+development team, primarily sprint-driven methodology resulted in a need for 
+process refactoring and how a new agile management approach was 
+implemented. We will spice up the analysis of the main drivers behind this 
+change by refererring to Hershey-Blanchards Situational Leadership model.
+
+Author: Beatrice Düring

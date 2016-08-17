@@ -1,0 +1,305 @@
+\documentclass[utf8x]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+
+  %\setbeamercovered{transparent}
+}
+
+
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\title{PyPy – Status and Next Goals}
+
+\author{Carl Friedrich Bolz}
+
+\institute[Heinrich-Heine-Universität Düsseldorf]
+{
+  Institut für Informatik\\
+  Heinrich-Heine-Universität Düsseldorf
+}
+
+\date{Ruby \& Python Conference, April 12th 2008, Poznań}
+
+%\pgfdeclareimage[height=0.5cm]{pypy-logo}{image/py-web.png}
+%\logo{\pgfuseimage{pypy-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Outline}
+%  \tableofcontents
+  % You might wish to add the option [pausesections]
+%\end{frame}
+
+\begin{frame}
+  \frametitle{What is PyPy?}
+  ... pretty pictures and demos
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{What is PyPy?}
+  \begin{itemize}
+  \item
+    A flexible toolkit for writing interpreters
+    \begin{itemize}
+      \item
+        geared at dynamic languages
+      \item
+        giving you lots of help
+      \item
+        translation to various of environments (C, .NET, Java)
+      \item
+        a mostly good GC
+      \item
+        libraries
+      \item
+        a JIT
+    \end{itemize}
+  \pause
+  \item
+    a Python interpreter
+    \begin{itemize}
+      \item
+        using the toolkit
+      \item
+        implementing Python 2.4 semantics fully
+      \item
+        extra features
+      \item
+        stackless
+      \item
+        various introspection enhancements
+      \item
+        experimental things like lazy evaluation
+    \end{itemize}
+  \item most important goal: flexibility at all levels
+  \item
+    Open Source project (MIT licenced)
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Last year's developments}
+  \begin{itemize}
+  \item
+    cleanups
+  \item
+    implementing CTypes
+  \item
+    .NET integration
+  \item
+    GC improvements
+  \item
+    JIT improvements
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Cleanups}
+  \begin{itemize}
+  \item PyPy got EU funding for 2.5 years
+  \item in that time many features were added because the proposal required them
+  \item not all of them were implemented well
+  \item many of them were unmaintained
+  \item some of them were preventing progress in other areas
+  \item so we killed those
+  \item improvements and cleanups everywhere, to get ready for the next round of features
+  \item example: better implementation for unicode strings
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{CTypes}
+  \begin{itemize}
+  \item CTypes is a libffi wrapper for CPython
+  \item no need to write C code to interface with libraries
+  \item can be used to wrap C libraries rather effortlessly
+  
+  \end{itemize}
+  \pause
+  \begin{block}{
+    CTypes implementation for PyPy}
+    \begin{itemize}
+    \item two parts
+    \item a very thin wrapper around libffi
+    \item normal Python code for all the CTypes logic
+    \item some things missing but already very useful
+    \item ... demo
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{.NET Integration}
+  \begin{itemize}
+  \item giving PyPy.NET similar capabilities as CPython
+  \item accessing .NET libraries seamlessly from PyPy
+  \item various improvements
+  \item ... demo
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Garbage Collection}
+  \begin{itemize}
+  \item RPython itself is garbage collected
+%        XXX this is the first time you mention RPython, that's
+%        XXX either too late, or not mention it at all
+%        no, it is mentioned in the pictures part
+  \item when translating to C, a GC is integrated into the program
+  \item GCs are completely written in RPython
+  \item two fast GCs: semispace, generational
+  \item lots of care to get the semantics right:
+    \begin{itemize}
+    \item finalizers, weakrefs
+    \item id function
+    \item identity hashes
+    \end{itemize}
+  \item performance pretty good
+  \item memory-bound benchmarks faster than CPython
+  \item ... tiny demo
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Currently Working on: Just-in-Time Compiler}
+  Problems:
+  \begin{itemize}
+  \item writing good JITs for dynamic languages is hard work
+  \item good performance needs lots of care
+  \item keeping up with new language features is hard
+  \item compilers are a bad encoding for language semantics
+  \pause
+  \begin{block}{
+    Existing hand-written JITs}
+    \begin{itemize}
+    \item Psyco (mostly unmaintained)
+    \item LuaJit (slightly simpler language, genius at work)
+    \item Tamarin (company support, who knows how good it is)
+    \item Self
+    \item Smalltalk VMs
+    \end{itemize}
+  \end{block}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{If you cannot write them, grow your own}
+  \begin{itemize}
+  \item If you cannot write a JIT, don't do that then
+  \pause
+  \item Idea: Automatically generate the JIT from the interpreter
+  \pause
+  \end{itemize}
+  \begin{block}{
+    Partial Evaluation}
+    \begin{itemize}
+    \item old idea from CS research
+    \item transforms an interpreter into a static compiler
+    \item never worked well for real-life examples
+    \item key insight: generating a JIT is \emph{easier} than a static compiler
+    \end{itemize}
+  \end{block}
+ 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Advantages of JIT Generation}
+  Writing a JIT generator is hard, but:
+  \begin{itemize}
+  \item You only need to do it once
+  \item can keep up with language evolution
+  \item the JIT is correct by construction
+  \item retargetting the JIT is possible (e.g. to .NET, as Antonio Cuni is doing right now)
+  \item make the JIT behave radically differently is much easier with a generator
+  \item it's fun too
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{JIT Generation: Current Status}
+  \begin{itemize}
+  \item we had a working prototype at the end of the EU project
+  \item speeds up simple arithmetic functions \emph{a lot}
+  \item had limitations that were hard to fix
+  \pause
+  \item refactoring happened in the last two months to improve the situation
+  \item still in progress, but already allows experimentation
+  \item we used the new flexibility to try new, advanced things
+  \item goes into the direction of a tracing JIT
+  \item right now we are starting to hit the hard bits
+  \item we hope to get really good results for more general code in a few months
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusion}
+  \begin{itemize}
+  \item PyPy approaching real world usefulness
+  \item using CTypes to interface with the outside
+  \item hopefully with a JIT soon
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Help Wanted!}
+  we are looking for new contributors!
+  \begin{itemize}
+  \item try out your own apps that don't require extension modules
+  \item use CTypes to implement missing modules
+  \item experiment with extending Python (logic, distribution, what suits you)
+  \item write a new JIT backend (x86-64 anyone?)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Questions?}
+  \begin{block}{
+    PyPy}
+    \bigskip
+    \hskip 1cm \url{http://codespeak.net/pypy/}
+    \bigskip
+  \end{block}
+\end{frame}
+
+
+\end{document}
+
+

@@ -1,0 +1,48 @@
+
+People coming to the PyPy Trillke 2007 sprint 
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Beatrice Duering     25th-3rd       Klocke
+Samuele Pedroni      25th-5th       Parkhotel Berghölzchen
+Anders Chrigström    25th-5th       Parkhotel Berghölzchen
+Christian Tismer     28th-5th       Klocke
+Anders Sigfridsson   1st-5thth      klocke
+Michael Hudson       27th-5th       klocke
+Antonio Cuni         25th-5th       klocke
+Richard Emslie       27thh          klocke
+Stefan Busemann      26th-28th      klocke
+Stephan Diehl        2nd-4th        private/shared alex
+Alexander Schremmer  1st-5th        private/shared stephan
+Georg Brandl         1st-5th        private
+Maciej Fijalkowski   28-6th+X       private
+Guido Wesdorp        26th-5th       private 
+Carl Friedrich Bolz  25th-6th       private 
+Armin Rigo           26th-6+X       private
+Jens-Uwe Mager       1st-4th??      private
+Holger Krekel        25th-8th       private
+Alix Einfeldt        25th-8th       private
+Lene Wagner          25th-8th       private
+==================== ============== =====================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Johan Hahn           ?              ?
+Niko Matsakis        ?              ?
+==================== ============== =====================

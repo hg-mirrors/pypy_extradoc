@@ -1,0 +1,9 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy : A fast Python Virtual Machine]{PyPy : A fast Python Virtual Machine}
+\author[rguillebert]
+{Romain Guillebert\\
+\includegraphics[width=80px]{../img/py-web-new.png}}
+
+\institute{Pycon IE}
+\date{October 12th, 2014}

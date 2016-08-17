@@ -1,0 +1,262 @@
+.. include:: <s5defs.txt>
+
+=================================================
+PyPy - Implementing Python in Python 
+=================================================
+
+:Authors: Armin Rigo, Samuele Pedroni & Carl Friedrich Bolz 
+:Date: 27th January 2006 
+:Location: UIB, Palma de Mallorca
+
+
+.. Samuele 
+
+Python implementation facts 
+===========================
+
+- Parser/Compiler produces bytecode
+- Virtual Machine interprets bytecode 
+- strongly dynamically typed
+- clean object model at Python and C level 
+
+Python implementations 
+===========================
+
+- CPython: main Python version (BDFL'ed by Guido)
+- Jython: compiles to Java Bytecode
+- IronPython (MS): compiles to .NET's CLR 
+- PyPy: self-contained - self-translating - flexible
+
+PyPy project facts 
+=======================
+
+- started 2003 as a grass-root effort
+- aims: flexibility, research, speed 
+- test-driven development 
+- received EU-funding from end 2004 on  
+- 350 subscribers to pypy-dev, 150.000 LOCs, 20.000 visitors per month, 
+- MIT license
+
+three public releases
+=====================
+
+- 0.6 quite compliant python implementation 
+- 0.7 compliant self-contained python implementation 
+- 0.8 full parser and compiler, "10-50 times" better speed
+
+lots of documentation
+====================== 
+- http://codespeak.net/pypy
+- 23rd December: release of 10 PyPy reports to the EU 
+- talks, papers, slides available on the site 
+
+PyPy development method
+========================
+
+- sprints
+- agile
+- test-driven 
+- open source culture 
+
+PyPy implementation facts
+============================
+
+- implements Python language in Python itself 
+- parts implemented in a restricted subset: RPython 
+- "static enough" for full-program type inference
+- at boot time we allow unrestricted python! 
+
+PyPy/Python architecture 
+=============================
+
+- parser and compiler
+- bytecode interpreter 
+- Standard Object Space / Type implementations 
+- Python VM = interpreter + Standard Object Space
+- builtin and fundamental modules 
+
+PyPy/Python architecture picture
+==================================
+
+.. image:: interpreter-overview.png
+
+
+Parser and Compiler
+===================
+
+- parses python source code to AST 
+- compiles AST to code objects (bytecode) 
+- works from the CPython grammar definition 
+- can be modified/extended at runtime (almost) 
+- [interactive command line dis-example] ... 
+
+Bytecode interpreter
+====================
+
+- interprets bytecode/code objects through Frame objects 
+- Frames tie to global and local variable scopes
+- implements control flow (loops, branches, exceptions, calls)
+- dispatches all operations on objects to an Object Library
+  or "Object Space"
+
+Object Spaces
+=============
+
+- library of all python types and operations on them 
+- encapsulates all knowledge about app-level objects 
+- is not concerned with control flow or bytecode 
+- e.g. enough control to implement lazy evaluation 
+
+Builtin and Fundamental Modules
+===============================
+
+- around 200 builtin functions and classes 
+- fundamental modules like 'sys' and 'os' implemented 
+- quite fully compliant to CPython's regression tests 
+- a number of modules missing or incomplete (socket ...)
+
+Animation on Interpreter/Objspace interaction 
+===============================================
+
+- shown on pygame-window ... 
+
+
+.. Carl 
+
+
+PyPy/Translation architecture
+============================= 
+
+- bytecode interpreter 
+- Abstract Interpretation (Flow Object Space)
+- Type Inference (Annotation)
+- Specialising to lltypesystem / ootypesystem 
+- C and LLVM Backends to lltypesystem 
+
+PyPy/Translation overview
+=========================
+
+.. image:: translation-overview.png
+   :height: 422
+   :width: 760
+
+Abstract Interpretation
+========================
+
+- bytecode interpreter dispatches to Flow Object Space
+- Flow Object Space implements abstract operations
+- produces flow graphs as a side effect
+- starts from "live" byte code NOT source code
+- pygame demonstration
+
+Type Inference 
+===============
+
+- performs forward propagating type inference
+- is used to infer the types in flow graphs
+- needs types of the entry point function's arguments
+- assumes that the used types are static
+- goes from very special to more general values
+
+Specialization
+===========================
+
+- annotated flow graphs are specialized for language families
+- lltypesystem (for C like languages): C, LLVM
+- ootypesystem (for OO languages): Java, Javascript, Smalltalk
+- result is specialized flow graphs
+- these contain operations at target level
+
+Backends 
+==========
+
+- produce code out of specialized flow graphs
+- complete backends: C, LLVM
+- ongoing: JavaScript, Squeak
+- foreign function calls: manually written glue snippets
+- big example
+
+.. Armin
+
+Translation Aspects
+====================
+
+- implementation decisions (GC, threading, CC) at translation time 
+- most other language implementations do a "fixed" decision 
+- translation aspects are weaved into the produced code
+- independent from language semantics (python interpreter)
+
+Aspects: Memory Models
+===================================
+
+- Currently implemented: refcounting, Boehm-collector
+- more general exact GCs (not yet integrated)
+    - copying
+    - mark & sweep
+    - ... 
+- different allocation strategies - not yet
+
+Aspects: Threading Models
+=================================
+
+- currently implemented: single thread and global interpreter lock 
+- future plans: free threading models
+- stacklessness: don't use the C stack for user-level recursion
+- Continuation Passing Style (CPS) 
+- implemented as a part of the backends
+
+comparison to other approaches 
+===============================
+
+========== =========== ============ =============
+Project    languages   environments impl aspects 
+========== =========== ============ =============
+PyPy       1 (for now) variable     variable        
+JVM/Java   variable    1            semi-variable
+.NET       variable    1            semi-variable
+========== =========== ============ =============
+
+- environments: language backends, standard runtime
+  environments
+- implementation aspects: GC, threading, calling
+  conventions, security, ...
+
+technical outlook 2006
+======================
+
+- specialising JIT-compiler, processor backends
+- stackless/non-C calling conventions (CPS)
+- GC / threading integration + extensions
+- orthogonal persistence and distribution (see thunk example)
+- built-in security (e-lang ...)
+
+
+Just-in-time compilation
+=================================
+
+- we progressed in generating a JIT from the PyPy interpreter
+- we have an experimental "specializer" for low-level graphs
+  (see next slide)
+- we also started a PowerPC back-end
+
+JIT Overview
+========================================================
+
+.. raw:: html
+
+    <br>
+
+:done: a specializer for low-level graphs based on
+       on-line partial evaluation
+       (input = the PyPy interpreter)
+:soon: generate a run-time equivalent for JIT use,
+       with off-line P.E.
+:open: integration (machine code generation, bookkeeping, much more...)
+
+- get Just-In-Time Compilers for your favorite language for free :-)
+
+
+
+
+.. |bullet| unicode:: U+02022
+.. footer:: Samuele Pedroni, Carl Friedrich Bolz, Armin Rigo |bullet| UIB |bullet| 27th January 2006

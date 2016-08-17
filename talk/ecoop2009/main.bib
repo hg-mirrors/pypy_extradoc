@@ -1,0 +1,231 @@
+@string{lncs="Lecture Notes in Computer Science"}
+
+@InProceedings{AACM-DLS07,
+  Author         = {Ancona, D. and Ancona, M. and Cuni, A and Matsakis, N.},
+  Title          = {R{P}ython: a {S}tep {T}owards {R}econciling
+                   {D}ynamically and {S}tatically {T}yped {OO} {L}anguages},
+  BookTitle      = {O{OPSLA} 2007 {P}roceedings and {C}ompanion, {DLS}'07:
+                   {P}roceedings of the 2007 {S}ymposium on {D}ynamic
+                   {L}anguages},
+  Pages          = {53--64},
+  Publisher      = {ACM},
+  year           = 2007
+}
+
+@InProceedings{BolzEtAl08,
+  author    = {C. F. Bolz and
+               A. Kuhn and
+               A. Lienhard and
+               N. D. Matsakis and
+               O. Nierstrasz and
+               L. Renggli and
+               A. Rigo and
+               T. Verwaest},
+  title     = {Back to the Future in One Week - Implementing a Smalltalk
+               VM in {P}y{P}y},
+  booktitle = {Self-Sustaining Systems, First Workshop, S3 2008, Potsdam, Revised Selected Papers},
+  series    = lncs,
+  volume    = {5146},
+  year      = {2008},
+  pages     = {123--139},
+}
+
+@Article{Futamura99,
+ author = {Yoshihiko Futamura},
+ title = {Partial Evaluation of Computation Process, Revisited},
+ journal = {Higher Order Symbol. Comput.},
+ volume = {12},
+ number = {4},
+ year = {1999},
+ pages = {377--380},
+ publisher = {Kluwer Academic Publishers},
+ }
+
+@InProceedings{RigoPedroni06,
+author    = {A.~Rigo and
+               S.~Pedroni},
+title     = {Py{P}y's approach to virtual machine construction},
+booktitle = {OOPSLA Companion},
+year      = {2006},
+pages     = {944-953},
+}
+
+@inproceedings{hoelzle_optimizing_1991,
+	title = {Optimizing Dynamically-Typed Object-Oriented Languages With Polymorphic Inline Caches},
+	isbn = {3-540-54262-0},
+	url = {http://portal.acm.org/citation.cfm?id=679193\&dl=ACM\&coll=portal},
+	booktitle = {Proceedings of the European Conference on Object-Oriented Programming},
+	publisher = {Springer-Verlag},
+	author = {Urs H{\"o}lzle and Craig Chambers and David Ungar},
+	year = {1991},
+	pages = {21-38}
+}
+
+@book{Jones:peval,
+   author =    {Jones, Neil D. and Gomard, Carsten K. and Sestoft, Peter},
+   title =     {Partial Evaluation and Automatic Program Generation},
+   publisher = {Prentice Hall},
+   year =      1993,
+}
+
+@inproceedings{DBLP:conf/pepm/Rigo04,
+  author    = {Armin Rigo},
+  title     = {Representation-based just-in-time specialization and the
+               psyco prototype for python},
+  booktitle = {PEPM},
+  year      = {2004},
+  pages     = {15-26},
+  ee        = {http://doi.acm.org/10.1145/1014007.1014010},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+
+@inproceedings{gal_hotpathvm_2006,
+	address = {Ottawa, Ontario, Canada},
+	title = {{HotpathVM}: an effective {JIT} compiler for resource-constrained devices},
+	isbn = {1-59593-332-6},
+	url = {http://portal.acm.org/citation.cfm?doid=1134760.1134780},
+	doi = {10.1145/1134760.1134780},
+	abstract = {We present a just-in-time compiler for a Java VM that is small enough to fit on resource-constrained devices, yet is surprisingly effective. Our system dynamically identifies traces of frequently executed bytecode instructions (which may span several basic blocks across several methods) and compiles them via Static Single Assignment (SSA) construction. Our novel use of SSA form in this context allows to hoist instructions across trace side-exits without necessitating expensive compensation code in off-trace paths. The overall memory consumption (code and data) of our system is only 150 kBytes, yet benchmarks show a speedup that in some cases rivals heavy-weight just-in-time compilers.},
+	booktitle = {Proceedings of the 2nd international conference on Virtual execution environments},
+	publisher = {ACM},
+	author = {Andreas Gal and Christian W. Probst and Michael Franz},
+	year = {2006},
+	keywords = {dynamic compilation,embedded and resource-constrained systems,mixed-mode interpretive compiled systems,software trace scheduling,static single assignment form,virtual machines},
+	pages = {144-153}
+}
+
+
+@techreport{gal_incremental_2006,
+	title = {Incremental Dynamic Code Generation with Trace Trees},
+	abstract = {The unit of compilation for traditional just-in-time compilers is the method. We have explored trace-based compilation, in which the unit of compilation is a loop, potentially spanning multiple methods and even library code. Using a new intermediate representation that is discovered and updated lazily on-demand while the program is being executed, our compiler generates code that is competitive with traditional dynamic compilers, but that uses only a fraction of the compile time and memory footprint.},
+	institution = {Donald Bren School of Information and Computer Science, University of California, Irvine},
+	author = {Andreas Gal and Michael Franz},
+	month = nov,
+	year = {2006},
+	pages = {11}
+}
+
+
+@techreport{chang_efficient_2007,
+	title = {Efficient Just-In-Time Execution of Dynamically Typed Languages
+Via Code Specialization Using Precise Runtime Type Inference},
+	abstract = {Dynamically typed languages such as JavaScript present a challenge to just-in-time compilers. In contrast to statically typed languages such as JVML, in which there are specific opcodes for common operations on primitive types (such as iadd for integer addition), all operations in dynamically typed language such as JavaScript are late-bound. Often enough, types cannot be inferred with certainty ahead of execution. As a result, just-in-time compilers for dynamically typed languages have tended to perform worse than their statically-typed counterparts. We present a new approach to compiling dynamically typed languages in which code traces observed during execution are dynamically specialized for each actually observed run-time type. For most benchmark programs, our prototype JavaScript virtual machine outperforms every other JavaScript platform known to us.},
+	institution = {Donald Bren School of Information and Computer Science, University of California, Irvine},
+	author = {Mason Chang and Michael Bebenita and Alexander Yermolovich and Andreas Gal and Michael Franz},
+	year = {2007},
+	keywords = {dynamic,javascript,JIT,traces}
+}
+
+
+
+@inproceedings{DBLP:conf/popl/ConselN96,
+  author    = {Charles Consel and
+               Fran\c{c}ois No{\"e}l},
+  title     = {A General Approach for Run-Time Specialization and its Application
+               to {C}},
+  booktitle = {POPL},
+  year      = {1996},
+  pages     = {145-156},
+  ee        = {http://doi.acm.org/10.1145/237721.237767},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+@inproceedings{DBLP:conf/dagstuhl/ConselHNNV96,
+  author    = {Charles Consel and
+               Luke Hornof and
+               Fran\c{c}ois No{\"e}l and
+               Jacques Noy{\'e} and
+               Nicolae Volansche},
+  title     = {A Uniform Approach for Compile-Time and Run-Time Specialization},
+  booktitle = {Dagstuhl Seminar on Partial Evaluation},
+  year      = {1996},
+  pages     = {54-72},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@article{grant_dyc_2000,
+	title = {{DyC}: an expressive annotation-directed dynamic compiler for {C}},
+	volume = {248},
+	url = {http://citeseer.ist.psu.edu/grant97dyc.html},
+	journal = {Theoretical Computer Science},
+	author = {Brian Grant and Markus Mock and Matthai Philipose and Craig Chambers and Susan J. Eggers},
+	year = {2000},
+	keywords = {unread},
+	pages = {147-199}
+},
+
+@inproceedings{sullivan_dynamic_2001,
+	title = {Dynamic Partial Evaluation},
+	isbn = {3-540-42068-1},
+	url = {http://portal.acm.org/citation.cfm?id=668117},
+	booktitle = {Proceedings of the Second Symposium on Programs as Data Objects},
+	publisher = {Springer-Verlag},
+	author = {Gregory T. Sullivan},
+	year = {2001},
+	pages = {238-256}
+}
+
+@INPROCEEDINGS{Blanchet99escapeanalysis,
+    author = {Bruno Blanchet},
+    title = {Escape Analysis for Object Oriented Languages. Application to Java},
+    booktitle = {In Proceedings of the 14th Annual Conference on Object-Oriented Programming Systems, Languages and Applications},
+    year = {1999},
+    pages = {20--34}
+}
+
+@INPROCEEDINGS{Choi99escapeanalysis,
+    author = {Jong-deok Choi and Manish Gupta and Mauricio Serrano and Vugranam C. Sreedhar and Sam Midkiff},
+    title = {Escape Analysis for Java},
+    booktitle = {In Proceedings of the 14th Annual Conference on Object-Oriented Programming Systems, Languages and Applications},
+    year = {1999},
+    pages = {1--19},
+    publisher = {ACM Press}
+}
+
+@inproceedings{RiBo07_223,
+ author = {Armin Rigo and Carl Friedrich Bolz},
+ title = {{How to not write Virtual Machines for Dynamic Languages 
+}},
+ booktitle = {Proceeding of Dyla 2007 (to appear)},
+ abstract = {Typical modern dynamic languages have a growing number of
+                  implementations. We explore the reasons for this situation,
+                  and the limitations it imposes on open source or academic
+                  communities that lack the resources to fine-tune and
+                  maintain them all. It is sometimes proposed that
+                  implementing dynamic languages on top of a standardized
+                  general-purpose ob ject-oriented virtual machine (like Java
+                  or .NET) would help reduce this burden. We propose a
+                  complementary alternative to writing custom virtual machine
+                  (VMs) by hand, validated by the PyPy pro ject: flexibly
+                  generating VMs from a high-level specification, inserting
+                  features and low-level details automatically – including
+                  good just-in-time compilers tuned to the dynamic language at
+                  hand.  We believe this to be ultimately a better investment
+                  of efforts than the development of more and more advanced
+                  general-purpose object oriented VMs. In this paper we
+                  compare these two approaches in detail.},
+pages = {--},
+ year = {2007},
+}
+
+@inproceedings{hoelzle_type_feedback_1994,
+ author = {Urs H\"{o}lzle and David Ungar},
+ title = {Optimizing dynamically-dispatched calls with run-time type feedback},
+ booktitle = {PLDI '94: Proceedings of the ACM SIGPLAN 1994 conference on Programming language design and implementation},
+ year = {1994},
+ isbn = {0-89791-662-X},
+ pages = {326--336},
+ location = {Orlando, Florida, United States},
+ doi = {http://doi.acm.org/10.1145/178243.178478},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ }
+
+@techreport{PyPyJIT,
+    title = "{JIT} Compiler Architecture",
+    author = {Armin Rigo and Samuele Pedroni},
+    year = "2007",
+    institution = "PyPy Consortium",
+    number = "D08.2",
+    note = "http://codespeak.net/pypy/dist/pypy/doc/index-report.html"
+}

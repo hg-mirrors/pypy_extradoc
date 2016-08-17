@@ -1,0 +1,111 @@
+PyPy Göteborg Post-Hallowe'en Sprint Nov 2nd - Nov 9th
+=========================================================
+
+The next PyPy sprint will be in Gothenburg, Sweden. It is a public sprint, 
+suitable for newcomers.  We'll focus on making a public kickoff for
+both the `numpy/pypy integration project`_
+and the `Py3k support project`_,
+as well as whatever interests the Sprint attendees.  Since both of these
+projects are very new, there will be plenty of work suitable for newcomers
+to PyPy.
+ 
+.. _`numpy/pypy integration project`: http://pypy.org/numpydonate.html
+.. _`Py3k interpreter project`: http://pypy.org/py3donate.html
+
+Other topics might include:
+
+- Helping people get their code running with PyPy
+
+- work on a FSCons talk?
+
+- state of the STM Vinnova project (We most likely, but not for certain will
+  know whether or not we are approved by this date.)
+
+Other Useful dates
+------------------
+GothPyCon_ - Saturday Oct 29.
+
+.. _GothPyCon: http://www.meetup.com/GothPy/events/32864862/
+
+FSCONS_ Friday Nov 11 - Sunday Nov 12.
+
+.. _FSCONS: http://fscons.org/
+
+Location
+--------
+
+The sprint will be held in the apartment of Laura Creighton and Jacob Hallén
+which is at Götabergsgatan 22 in Gothenburg, Sweden.  Here is a map_.  This is
+in central Gothenburg.  It is between the tram_ stops of Vasaplatsen and 
+Valand, (a distance of 4 blocks) where many lines call -- the 2, 3, 4, 5,
+7, 10 and 13.
+
+.. _tram: http://www.vasttrafik.se/en/
+
+.. _map: http://bit.ly/grRuQe
+
+Probably cheapest and not too far away is to book accomodation at `SGS
+Veckobostader`_. The  `Elite Park Avenyn Hotel`_ is a luxury hotel just a 
+few blocks away. There are scores of hotels a short walk away from the
+sprint location, suitable for every budget, desire for luxury, and desire
+for the unusual.  You could, for instance, stay on a `boat`_.  Options are
+too numerous to go into here. Just ask in the mailing list or on the blog.
+
+.. _`SGS Veckobostader`: http://www.sgsveckobostader.se/en
+.. _`Elite Park Avenyn Hotel`: http://www.elite.se/hotell/goteborg/park/
+.. _`boat`: http://www.liseberg.se/en/home/Accommodation/Hotel/Hotel-Barken-Viking/
+
+Hours will be
+from 10:00 until people have had enough.  It's a good idea to arrive a
+day before the sprint starts and leave a day later.  In the middle of
+the sprint there usually is a break day and it's usually ok to take
+half-days off if you feel like it.  Of course, many of you may be interested
+in sticking around for FSCons, held the weekend after the sprint.
+
+
+Good to Know
+------------
+
+Sweden is not part of the Euro zone. One SEK (krona in singular, kronor
+in plural) is roughly 1/10th of a Euro (9.36 SEK to 1 Euro).
+
+The venue is central in Gothenburg.  There is a large selection of
+places to get food nearby, from edible-and-cheap to outstanding.  We
+often cook meals together, so let us know if you have any food allergies,
+dislikes, or special requirements.
+
+Sweden uses the same kind of plugs as Germany. 230V AC.
+
+
+Getting Here
+------------
+If are coming train, you will arrive at the `Central Station`_.  It is
+about 12 blocks to the site from there, or you can take a tram_. 
+
+There are two airports which are local to Göteborg, `Landvetter`_ (the main
+one) and `Gothenburg City Airport`_ (where some budget airlines fly).
+If you arrive at `Landvetter`_  the airport bus stops right downtown at
+`Elite Park Avenyn Hotel`_ which is the second stop, 4 blocks from the
+Sprint site, as well as the end of the line, which is the `Central Station`_.
+If you arrive at `Gothenburg City Airport`_ take the bus to the end of the
+line.  You will be at the  `Central Station`_.
+
+You can also arrive by ferry_, from either Kiel in Germany or Frederikshavn
+in Denmark.
+
+.. _`Central Station`: http://bit.ly/fON43p
+
+.. _`Landvetter`: http://swedavia.se/en/Goteborg/Traveller-information/Traffic-information/
+.. _`Gothenburg City Airport`: http://www.goteborgairport.se/eng.asp
+
+.. _ferry: http://www.stenaline.nl/en/ferry/
+
+Who's Coming?
+--------------
+
+If you'd like to come, please let us know when you will be arriving and 
+leaving, as well as letting us know your interests  We'll keep a list
+of `people`_ which we'll update (which you can do so yourself if you
+have bitbucket pypy commit rights).
+
+.. _`people`: https://bitbucket.org/pypy/extradoc/src/tip/sprintinfo/gothenburg-2011/people.txt

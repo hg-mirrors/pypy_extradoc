@@ -1,0 +1,18 @@
+Third party module support
+==========================
+
+status:
+
+todo:
+
+ - There are some third party modules that would bring early adopters
+   to PyPy. They would also serve as code coverage cases. Our time
+   estimate is a guess on how much time we would need to spend to get
+   enough traction in the community. 
+
+expected outcome:
+
+dependencies:
+
+ - We should have our infrastucture for extension modules in place before
+   deciding what modules make most sense to port.

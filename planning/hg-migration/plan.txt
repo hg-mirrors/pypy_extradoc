@@ -1,0 +1,55 @@
+.. -*- mode: rst -*-
+
+Mercurial migration plan
+========================
+
+- Convert repo from SVN to Mercurial, including all the branches that we can
+  find.  IN-PROGRESS (ronny)
+
+- Put the repo on bitbucket/google code:
+  https://bitbucket.org/pypy/pypy-tentative (note that it is a bit outdated)
+
+- Adapt buildbot to pull from hg instead of svn (DONE):
+
+    * https://bitbucket.org/pypy/bot2
+
+    * live version at: http://wyvern.cs.uni-duesseldorf.de:8099/ (which pulls
+      from the ``pypy-tenative`` above)
+
+- Map codespeak usernames to real name/emails: see usermap.txt:
+
+    * by default, we map each username to just its real name using the info in
+      /etc/passwd on codespeak: this should not be an issue for the privacy,
+      as the real names are listed in contributor.txt anyway.
+
+    * If people want to put their emails as well, they are welcome to edit
+      usernames.txt and put it.  I **strongly** suggest everyone to do it, as
+      it is the "standard" way to keep track of authors in the repositories.
+      **NOTE**: it is not possible to add the email *after* the conversion has
+      been completed.
+
+    * It is important to use the same email address that it is used also for
+      e.g. the bitbucket account, so that it is easier for the system to link
+      the two correctly.
+
+    * I left "anna", "gintas" and "ignas" out of usermap.txt, because they
+      explicitly chose not to be in the contributor list.  Their hg username
+      will be simply left untouched (i.e., without real name).
+
+- Email diff: bitbucket has a builtin service to send email diff. It is not
+  perfect because the sender of the email is always
+  ``commits-noreply@bitbucket.org``.  Personally, I prefer the codespeak way
+  to put the author of the commit as the sender, as it simplifies searching in
+  the emails.  I think that to start with, the builtin service is enough, but
+  in the future we might want to write our own hook to send emails in the
+  "codespeak way".
+
+- I tentatively tried to send the commits of the bot2 repo to
+  pypy-svn@codespeak.net, but they did not arrive.  Probably because the
+  mailing list blocks mails if the author is not subscribed?
+  <hpk> i added *@bitbucket.org to allowed addresses.
+  <anto> cool, it works :-)
+
+- IRC bot: bitbucket has a builtin hook for CIA.vc; alternatively, we can try
+  to adapt kenaan: who owns it?
+  <hpk> exarkun ASFAIK

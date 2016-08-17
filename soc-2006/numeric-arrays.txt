@@ -1,0 +1,6 @@
+Provide efficient builtin numeric arrays 
+========================================
+
+Implements numeric arrays (as in numeric/numpy/numarray) as builtin
+types of pypy so that numeric operations on arrays are recognized by
+the annotator, rtyper and backends and translated optimally.

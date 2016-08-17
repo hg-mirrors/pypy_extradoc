@@ -1,0 +1,9 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy 2016]{PyPy 2016}
+\author[mattip]
+{Matti Picus\\
+\includegraphics[width=80px]{../img/py-web-new.png}}
+
+\institute{Scipy Israel 2016}
+\date{May 2nd, 2016}

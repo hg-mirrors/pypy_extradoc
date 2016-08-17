@@ -1,0 +1,144 @@
+a sprint report (actually a mail from Holger Krekel on pypy-dev)
+
+Hi Florian,
+
+[Florian Schulze Sat, Oct 04, 2003 at 10:34:25PM +0200]
+
+  Hi!
+
+  How well did the sprint work out?
+ 
+  I have seen that there is some pyrex code generation now and there are
+  tests, but what where the results in this area during the sprint?
+ 
+  Just a very short mail with some information would be grately
+  appreciated.
+
+Here is my take. Other mileages may vary so excuse me if i miss anything.
+
+On Monday morning we made a few design decision which led to the
+implementation of the following abstractions in the next two days:
+
+- a new FlowObjSpace which does abstract interpretation
+  plus some very nice tricks (which we came up with during a
+  long-winded discussion in a restaurant :-) to construct
+  a FunctionGraph.  This functiongraph (fully) represents the abstract
+  or symbolic execution of a function.   e.g. for this function::
+
+      def while_func(i):
+          total = 0
+          while i > 0:
+              total = total + i
+              i = i - 1
+          return total
+
+  the following graph is generated (shown here in an slightly
+  optimized version):
+
+        http://codespeak.net/~hpk/while_func.ps
+
+
+- the pyrex-translator also takes this objectmodel (in flowmodel.py) and
+  generates Pyrex-Code from it.  The generated code looks pretty low-level
+  but this is expected as we eventually want to generate C or assembly
+  directly.  For the above function the following pyrex-source code is
+  generated (again with some easy optimizations applied)::
+
+    def while_func(object v413):
+      v419, v420 = v413, 0
+      cinline "Label1:"
+      v422 = v419 > 0
+      if v422:
+        v424 = v420 + v419
+        v425 = v419 - 1
+        v419, v420 = v425, v424
+        cinline "goto Label1;"
+      else:
+        return v420
+
+  btw, the 'cinline' statement is a hack to pyrex and allows to insert
+  arbitrary C-code. An objectspace cannot really identify loops
+  and so we need "goto". We consider goto to be useful unless you have
+  to type and understand them manually :-)
+
+- translator/annotation.py also takes the flowmodel and applies a
+  new technique for type inference: it uses space-operations to
+  note 'assertions' about variables and relaxes those assertions
+  during analysis of the flowgraph.  IOW we didn't come up with
+  yet another type-system (which is the classical approach) but
+  reuse the notion of "space-operations" which we had from the beginning
+  of the project. Btw, Armin thinks that this type-inference algorithm
+  is worth a scientific paper but more about this either later and/or
+  from him.
+- we adapted Jonathan David Riehl's Python-Parser (written completly
+  in python using its own "rex"-approach) and adapted it so that
+  it will be a drop-in replacement for CPython's current parser
+  (living the boring life of a C-extension). Actually Jonathan's
+  larger 'basil' project is now in the codespeak-repository and
+  we can easily link it into PyPy or branch off it if neccessary.
+
+So alltogether the Flowgraph/Functiongraph/flowmodel (there is no
+completly fixed terminology yet) is the central point for several
+independent algorithms that - if combined - eventually produce typed C-code.
+
+To sum it up there are the following abstractions:
+
+============    ===============================================================
+interpreter     interpreting bytecode, dispatching operations on objects to
+objectspace     implementing operations on boxed objects
+stdobjspace     a concrete space implementing python's standard type system
+flowobjspace    a conrete space performing abstract/symbolic interpretation and
+                producing a (bytecode-indepedent) flowmodel of execution
+annotator       analysing the flowmodel to infer types.
+genpyrex        taking the (annotated) flowmodel to generate pyrex-code
+pyrex           translating into an C-extension
+============    ===============================================================
+
+As a consequence the former Ann(otation)Space has been ripped apart
+(partly into flowobjspace) and is gone now. Long live the flowspace.
+
+A really nice property of the above abstractions is that they allow
+development and testing *independently* from one another which was
+of invaluable help. Thanks here go to Greg Ewing for Pyrex and sorry
+for the evil cinline-hack :-)
+
+Anybody interested in helping with the next steps might look into
+the TODO file in the pypy-root directory.  We also have discussed
+yesterday evening a refactored flowmodel which we want to employ
+soon.
+
+Big thanks go to Tomek Meka and Christian Tismer for organizing the
+sprint and Stephan Diehl and Dinu Gherman for their help in various
+organizational areas. And especially to Jonathan David Riehl who
+made it from Chicago. We hope he can stay with us more often. And
+here is a (hopefully complete) list of people who attended and made
+all of the above possible:
+
+- Armin Rigo
+- Christian Tismer
+- Dinu Gherman
+- Guenter Jantzen
+- Jonathan David Riehl
+- Samuele Pedroni
+- Stephan Diehl
+- Tomek Meka
+
+and shame on me if i forgot anyone (i am tired ...)
+
+And of course many many thanks to Laura Creighton (AB Strakt),
+Nicolas Chauvat (Logilab) and Alistair Burt (DFKI) who tried hard to
+work with us on EU-funding-issues.  Actually we came up with a nice technical
+2-year plan but a lot of business issues still need to be resolved
+and fixed. Let's hope that the EU-funding effort is as successful as
+our coding sprints this year has been.  Ah yes, the next sprint we hope
+to do mid-december probably in Amsterdam.  If all goes well (some more
+people helping between the sprints that is :-) we might even do a first
+public release with PyPy prototypically running as a C-extension to CPython.
+
+That's it for now from me.  (sprinters: Please correct/fix any issues i
+misrepresented)
+
+cheers,
+
+    holger
+

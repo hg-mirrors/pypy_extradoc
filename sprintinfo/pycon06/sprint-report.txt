@@ -1,0 +1,172 @@
+Post-PyCon 2006 Sprint Report
+=============================
+
+After PyCon this year, we held four days of sprints, from 27th of
+February to the 2nd of March 2006.  There were lots of people new to
+PyPy and a couple of old friends we hadn't seen for a while.
+
+Here is the list of people participating in the sprint:
+
+  * Gene Oden
+  * Bob Ippolito
+  * Josh Gilbert
+  * Geroge Paci
+  * Pat Maupin
+  * Martin Blais
+  * Stuart Williams
+  * Jiwon Seo
+  * Michael Twomey (Mick)
+  * Anders Lehmann (Anders)
+  * Nik Haldimann
+  * Samuele Pedronis
+  * Armin Rigo
+  * Michael Hudson (Michael)
+  * Wanja Saatkamp
+  * Beatrice Düring
+  * Anders Chrigstrom (Arre)
+  * Richard Emslie
+  * (Christian Tismer -- worked mostly on stackless)
+  * (Holger Krekel -- was unfortunately ill for most of the sprint)
+
+Not all people participated for the full sprint; attendance generally
+tailed off over the course of the four days.
+
+The announced goals for the sprint were:
+
+  - Work on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+  - Writing ctypes implementations of modules to be used by the above
+    tool. 
+
+  - Experimenting with different garbage collection strategies.
+
+  - Implementing Python 2.5 features in PyPy
+
+  - Implementation of constraints solvers and integration of dataflow
+    variables to PyPy.
+
+  - Implement new features and improve the 'py' lib and py.test 
+    which are heavily used by PyPy (doctests/test selection/...).
+
+  - Generally experiment with PyPy -- for example, play with
+    transparent distribution of objects or coroutines and stackless
+    features at application level.
+
+Day 1
+-----
+
+Monday began with a 45 minute introduction/tutorial by Michael (which
+was videoed -- watch for it arriving on codespeak soon-ish) and then a
+planning session, where we divided up into pairs or threes and decided
+what we'd be working on for the rest of the day.
+
+Armin and three PyPy newcomers -- Mick, Gene and Joshua -- dived into
+the ever popular rctypes. They worked on annotation for all ctypes
+types. This turned out to involve implementing a new registry
+mechanism for external functions, which also will let us eliminate
+some of the approximately 42 steps required to add a new external
+function.
+
+The two Canadian newcomers -- Stuart and Martin -- got introduced to
+PyPy by Arre, implementing the new 2.5 builtins any() and all().  Then
+they went on to implementing conditional expressions which, despite
+some parser/compiler hairiness, apparently went quite smoothly.
+
+Anders L. and George took a tour of the logic programming facilities
+in PyPy and worked on a Sudoku solver using the computation space, but
+they were slowed down quite a bit by bugs. The code was not checked in
+until after the sprint.
+
+Richard and Pat -- who was hooked on PyPy at the Amsterdam sprint back
+in 2003 -- hacked the LLVM backend back into shape (it was broken due
+to ongoing work in the GC area). Various compatibility issues with
+LLVM versions were also tackled.
+
+Samuele and Nik picked up the lately neglected ootypesystem and
+ported PBC tests over from lltypesystem, fixing various loose ends
+like __init__ and keyword arguments support.
+
+We should not forget the py.lib sub-sprint happening in the same room
+as the PyPy sprint, starring Holger, Jan and Brian. Unfortunately the
+Texas Mystery Disease was making the rounds, and both Holger and Brian
+weren't feeling well so there was only a little progress, generally
+improving the py.lib's story on win32.
+
+Day 2
+-----
+
+The Tuesday began with a status meeting where we talked about what
+we'd acheived the day before and basically decided that most of us
+would carry on with the same things.
+
+Armin, Mick and Gene, having broken all the rctypes tests the day
+before, started to use the new 'extregistry' to get things to start
+working again.
+
+Nik, Michael and Samuele continued to move rtyper tests from being
+lltypesystem-only to running on both typesystems, and implementing the
+support thus required in the ootypesystem.  The hardest part off this
+was supporting class attributes, as this is not something we assume
+the to-be-targeted supports natively (this wasn't finished until
+Wednesday).
+
+Arre, Stuart and Anders implemented more Python 2.5 features, in
+particular those described by PEP 343.
+
+Bob and Richard played with the LLVM JIT.  The hardest part of this
+seemed to be working out which libraries to link against...
+
+Later in the day Moshe and Michael played around with the stackless
+features, in particular coroutines, and in the end made their play
+into a new test.
+
+Day 3
+-----
+
+By Wednesday, the sprint was thinning out, but a fair amount of work
+still got done.
+
+Samuele and Nik finished off and merged the short-lived ooclassattrs
+branch, sorted out some exception issues and moved on to the feared topic
+of 'specialized methods' -- when one method in the input source
+becomes more than one method in the backend's view.  This didn't turn
+out to be as bad as suspected, and by the end of the day the main thing the
+ootypesystem lacked was an actual backend...
+
+Richard took Michael on a quick tour of LLVM and then they both worked
+on adding support for the various offset types to LLVM, a prerequisite
+for LLVM being able to use the framework GCs.
+
+Armin and Gene worked more on rctypes, using the work of the previous
+two days to make it work again in a nicer and hopefully more
+sustainable way than before.
+
+Anders, Stuart and Arre worked on more Python 2.5 PEPs, finishing the
+343 work and generally tidying some things up.
+
+In the afternoon, Michael compiled a fresh Python from SVN HEAD (many
+many new features had been implemented by the Python code sprint in
+the room next door) and attempted to run the PyPy test suite with it.
+This uncovered a number of problems both in PyPy and in Python, some
+of which were easier to fix than others.
+
+Day 4
+-----
+
+The sprinters who had lasted this long were mostly in shutdown mode by
+now, with many of them flying out in the afternoon. There wasn't any
+formal planning meeting. Some code was written anyway: Armin worked on
+SpaceOperation.cleanup; Gene and Armin on rctypes specialization;
+Samuele and Nik on __del__ support for ootypesystem; Arre, Anders
+L. and Stuart on making the parser and compiler translatable again;
+and Richard on running LLVM tests with the isolate tool.
+
+Most people left during the afternoon. The remaining handful hung out
+at the hotel pool and were later joined by people from other sprints
+for a beer and pizza session. The PyCon organizers even pointed a
+wireless router from one of their hotel rooms at the pool, for those
+who couldn't stop sprinting even at 9 pm, lying in a deck chair,
+typing single-handedly since one hand was clasping a beer ...
+
+We'll be back next year!

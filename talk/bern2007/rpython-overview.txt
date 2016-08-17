@@ -1,0 +1,154 @@
+=====================
+Overview over RPython
+=====================
+
+RPython
+=======
+
+ - implementation language of the PyPy Python interpreter
+ - restrictions necessary to allow efficient translation
+ - quite close to Python: e.g. fully garbage collected
+ - fully testable on top of CPython
+ - feels a bit like Java without the type annotations
+ - "being RPython" is a whole-program property
+
+
+
+Guide to writing RPython programs
+=================================
+
+ - *Important*: First make it work on top of CPython, then worry about RPython
+
+
+Type restrictions
+=================
+
+You cannot arbitrarily mix types. The following is not allowed::
+
+    # NOT RPYTHON
+    if condition:
+        x = 42
+    else:
+        x = "fortytwo"
+
+This, however is fine::
+    
+    x = 42
+    x = "fortytwo"
+
+(not that it's useful)
+
+
+Control Flow
+============
+
+ - all control flow statements allowed
+ - no generators (yield) and generator expressions
+ - global variables are constant
+ - closures are not supported
+
+Classes
+=======
+
+ - single inheritance::
+
+    class A(object):
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+        def method(self):
+            return self.a + self.b
+
+    class B(A):
+        def __init__(self, a, b, c):
+            A.__init__(self, a, b)
+            self.c = c
+        def method(self):
+            return A.method(self) + self.c
+
+
+
+Data Types
+==========
+
+ - immutable:
+
+   - ``int``, ``float``, ``bool``
+   - tuples: (1, 2, 3)
+   - ``string``
+
+ - mutable:
+  
+   - ``list``
+   - ``dict``
+
+
+Numerical Types
+===============
+
+ - Python ``int`` are C ``long``
+ - have kind of the obvious C/Java-like behaviour
+ - difference between Python and RPython: RPython ``int`` wrap around silently
+
+
+Strings
+=======
+
+Fully supported in RPython::
+
+      >>> a = "hello"
+      >>> b = " world"
+      >>> print a + b * 2
+      hello world world
+
+Most string methods work fine
+
+
+Lists
+=====
+
+Restriction: Lists must be homogeneous::
+
+    >>> l = []
+    >>> l.append(1)
+    >>> l.extend([5, 7, 9])
+    >>> l[0] = "this is wrong" # NOT RPYTHON
+
+Otherwise, most list methods supported (apart from sorting)
+
+Dicts
+=====
+
+Restriction: Dictionary keys and values must each be homogeneous::
+
+    >>> d = {"hello": 1, "world": 2}
+    >>> d["moon"] = 3
+    >>> del d[5] # NOT RPYTHON
+
+The backends typically create specialized versions suited for the keys and
+values.
+
+
+Init-time metaprogramming
+=========================
+
+ - analysis starts from live objects
+ - before analysis starts, you can do all sorts of non-RPython thing
+ - can use init-time metaprogramming::
+
+    def adder(x): # NOT RPYTHON
+        def add(y):
+            return x + y
+        return add
+
+    add4 = adder(4)
+    # now add4 is RPython
+
+
+Things you also can do (but usually don't)
+==========================================
+
+ - manipulate raw memory addresses (to write GCs)
+ - explicit specialization of functions
+ - explicit loop unrolling
+

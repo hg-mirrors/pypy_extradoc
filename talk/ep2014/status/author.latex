@@ -1,0 +1,10 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy Status Talk]{PyPy Status Talk\\\small{(no no, PyPy is not dead)}}
+\author[arigo, rguillebert]
+{Armin Rigo, Romain Guillebert\\
+based on a PyCon Italia talk by Antonio Cuni\\
+\includegraphics[width=80px]{../../img/py-web-new.png}}
+
+\institute{EuroPython}
+\date{July 22, 2014}

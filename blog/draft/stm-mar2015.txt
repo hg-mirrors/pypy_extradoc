@@ -1,0 +1,103 @@
+=============================
+PyPy-STM 2.5.1 - Mawhrin-Skel
+=============================
+
+We're pleased to announce PyPy-STM 2.5.1, codenamed Mawhrin-Skel.
+This is the second official release of PyPy-STM.  You can download
+this release here (64-bit Linux only):
+
+    http://pypy.org/download.html
+
+Documentation:
+
+    http://pypy.readthedocs.org/en/latest/stm.html
+
+PyPy is an implementation of the Python programming language which focuses
+on performance. So far we've been relentlessly optimizing for the single
+core/process scenario. PyPy STM brings to the table a version of PyPy
+that does not have the infamous Global Interpreter Lock, hence can run
+multiple threads on multiple cores. Additionally it comes with a set
+of primitives that make writing multithreaded applications a lot easier,
+as explained below (see TransactionQueue) and in the documentation.
+
+Internally, PyPy-STM is based on the Software Transactional Memory
+plug-in called stmgc-c7.  This version comes with a relatively
+reasonable single-core overhead but scales only up to around 4 cores
+on some examples; the next version of the plug-in, stmgc-c8, is in
+development and should address that limitation (as well as reduce the
+overhead).  These versions only support 64-bit Linux; we'd welcome
+someone to port the upcoming stmgc-c8 to other (64-bit) platforms.
+
+This release passes all regular PyPy tests, except for a few
+special cases.  In other words, you should be able to drop in
+PyPy-STM instead of the regular PyPy and your program should still
+work.  See `current status`_ for more information.
+
+This work was done by Remi Meier and Armin Rigo.  Thanks to all donors
+for `crowd-funding the STM work`_ so far!  As usual, it took longer
+than we would have thought.  I really want to thank the people that
+kept making donations anyway.  Your trust is greatly appreciated!
+
+.. _`current status`: http://pypy.readthedocs.org/en/latest/stm.html#current-status-stmgc-c7
+.. _`crowd-funding the STM work`: http://pypy.org/tmdonate2.html
+.. _`July 2014 release`: http://morepypy.blogspot.ch/2014/07/pypy-stm-first-interesting-release.html
+
+
+What's new?
+-----------
+
+Compared to the `July 2014 release`_, the main addition is a way to
+get reports about STM conflicts.  This is an essential new feature.
+
+To understand why this is so important, consider that if you already
+played around with the previous release, chances are that you didn't
+get very far.  It probably felt like a toy: on very small examples it
+would nicely scale, but on any larger example it would not scale at
+all.  You didn't get any feedback about why, but the underlying reason
+is that, in a typical large example, there are some STM conflicts that
+occur all the time and that won't be immediately found just by
+thinking.  This prevents any parallelization.
+
+Now PyPy-STM is no longer a black box: you have a way to learn about
+these conflicts, fix them, and try again.  The tl;dr version is to run::
+
+    PYPYSTM=stmlog ./pypy-stm yourprogr.py
+    ./print_stm_log.py stmlog
+
+More details in `the STM user guide`_.
+
+
+Performance
+-----------
+
+The performance is now more stable than it used to be.  More
+precisely, the best case is still "25%-40% single-core slow-down with
+very good scaling up to 4 threads", but the average performance seems
+not too far from that.  There are still dark spots --- notably, the
+JIT is still slower to warm up, though it was improved a lot.  These
+are documented in the `current status`_ section.  Apart from
+that, we should not get more than 2x single-core slow-down in the
+worst case.  Please report such cases as bugs!
+
+
+TransactionQueue
+----------------
+
+As explained before, PyPy-STM is more than "just" a Python without
+GIL.  It is a Python in which you can do minor tweaks to your
+existing, *non-multithreaded* programs and get them to use multiple
+cores.  You identify medium- or large-sized, likely-independent parts
+of the code and to ask PyPy-STM to run these parts in parallel.  An
+example would be every iteration of some outermost loop over all items
+of a dictionary.  This is done with a new API:
+``transaction.TransactionQueue()``.  See ``help(TransactionQueue)`` or
+read more about it in `the STM user guide`_.
+
+This is not a 100% mechanical change: very likely, you need to hunt
+for and fix "STM conflicts" that prevent parallel execution (see
+docs_).  However, at all points your program runs correctly, and you
+can stop the hunt when you get acceptable performance.  You don't get
+deadlocks or corrupted state.
+
+.. _`the STM user guide`: http://pypy.readthedocs.org/en/latest/stm.html#user-guide
+.. _docs: http://pypy.readthedocs.org/en/latest/stm.html#transaction-transactionqueue

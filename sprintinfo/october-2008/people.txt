@@ -1,0 +1,64 @@
+        
+People coming to the PyPy sprint 5-13th September 
+=====================================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== ============================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== ============================
+Antonio Cuni         2-sys.maxint   private
+Holger Krekel        5-13th         Hotel Schumann 
+Maciej Fijalkowski   5-15 possible  antos's flat
+Armin Rigo           3-inf          private
+Carl Friedrich Bolz  3rd Oct - ???  my flat
+Alexander Schremmer  5-15 possible  carl's flat
+Samuele Pedroni      5-13           Hotel Blaettler
+Anders Hammarqvist   5-13           Hotel Blaettler
+Jakub Gustak         6-9            carl's flat
+John Witulski        living there   living there
+==================== ============== ============================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Antonio Cuni         
+Holger Krekel        
+Maciej Fijalkowski  
+Jakub Gustak       
+Stephan Diehl     
+Samuele Pedroni 
+Carl Friedrich Bolz  ?              ?
+Alexander Schremmer  ?              ?
+Holger Krekel        ?              ?
+Toon Verwaest        ?              ?
+Camillo Bruni        ?              ?
+Christian Tismer     ?              ?
+Michael Hudson       ?              ?
+Anders Lehmann       ?              ?
+Niklaus Haldimann    ?              ?
+Lene Wagner          ?              ?
+Amaury Forgeot d'Arc ?              ?
+Valentino Volonghi   ?              ?
+Boris Feigin	     ?              ?
+Andrew Thompson      ?              ?
+Bert Freudenberg     ?              ?
+Beatrice Duering     ?              ?
+Richard Emslie       ?              ?
+Johan Hahn           ?              ?
+Niko Matsakis        ?              ?
+Anders Chrigstroem   ?              ?
+Eric van Riet Paap   ?              ?
+Jacob Hallen         ?              ?
+Laura Creighton      ?              ?
+Guido Wesdorp        ?              ?
+Leonardo Santagada   ?              ?
+Alexandre Fayolle    ?              ?
+Sylvain Thénault     ?              ?
+Toby Watson          ?              ?
+Paul deGrandis       ?              ?
+==================== ============== =====================

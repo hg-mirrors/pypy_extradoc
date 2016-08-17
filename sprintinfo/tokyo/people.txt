@@ -1,0 +1,38 @@
+﻿People coming to the Tokyo sprint 2006
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them. 
+ 
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Beatrice Düring      21/4 - 25/4
+Eric van Riet Paap   18/4 - 1/5     Akihabare Washington Hotel
+Anders Lehmann       23/4 - 1/5     Akihabare Washington Hotel
+Niklaus Haldimann    20/4 - 1/5     Akihabare Washington Hotel
+Anders Chrigström    22/4 - 30/4    Akihabare Washington Hotel
+Samuele Pedroni      22/4 - 30/4    Akihabare Washington Hotel
+Valentino Volonghi   22/4 - 1/5     Hotel Edoya (Ueno)
+Seo Sanghyeon        22/4 - 29/4
+==================== ============== =====================
+
+People on the following list were present at previous sprints: 
+
+==================== ============== =====================
+       Name          Arrive/Depart  Accomodation 
+==================== ============== =====================
+Armin Rigo            not coming
+Christian Tismer      not coming
+Jacob Hall�n          not coming
+Laura Creighton       not coming
+Ludovic Aubry             
+Adrien Di Mascio               
+Laura Creighton             
+Lene Wagner          
+Johan Hahn           
+Amaury Forgeot d'Arc 
+Boris Feigin	     
+Bert Freudenberg     
+==================== ============== =====================

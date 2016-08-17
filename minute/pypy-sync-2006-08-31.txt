@@ -1,0 +1,253 @@
+#pypy-sync 31st August 2006 
+=====================================================
+
+attendants: Anders Lehmann, Antonio Cuni, Armin Rigo, 
+            Aurelien Campeas, Maciej Fijalkowski, 
+            Guido Wesdorp (partly), Holger Krekel (mods + minutes), 
+            Samuele Pedroni, Alexander Schremmer,
+            Carl Friedrich Bolz, Eric van Riet Paap
+
+time: 4-4:30pm UTC+2
+
+activity reports
+----------------------------------
+
+see IRC log 
+
+Rough Sprint planning 
+------------------------------
+
+we agreed on the following timing schedule together
+with some location suggestions. 
+
+  30th October - 5th November 2006, HHU Duesseldorf 
+
+  8th-14th January 2007, Poland (fijal checks) or GBorg 
+  
+  26th feb-4th March 2006, Hildesheim / Trillke (offered, or somewhere else)
+
+concrete sprint planning beginning November/HHU Duesseldorf
+----------------------------------------------------------------
+
+* takes place at HHU Duesseldorf, Germany 
+* 30th October first day, 5th November 2006 last day (breaks in between) 
+* Carl to care for a room starting next week
+* Armin to prepare the announcement, to be send out as soon as the
+  room is clear 
+* many people at the meeting already said they think they can come
+* we should consider SOP attendants 
+
+security prototype/workshop time plan
+--------------------------------------------
+
+possibility: early january where Armin and Samuele
+could attend cause they are in Switzerland anyway.
+Otherwise another date in January or February (obviously
+not the sprint date) should be fine. 
+
+Implementation approach should be settled latest 
+at next sprint at HHU. 
+
+ 
+IRC logs 
+-------------
+
+::
+
+    Aug 31 16:00:21 <hpk>	hi everybody! 
+    Aug 31 16:00:34 <mwh>	hello
+    Aug 31 16:00:41 <antocuni>	hi
+    Aug 31 16:00:44 <cfbolz>	hi!
+    Aug 31 16:00:46 <pedronis>	hi
+    Aug 31 16:01:12 <ericvrp>	hi!
+    Aug 31 16:01:30 <fijal>	hi
+    Aug 31 16:01:43 <hpk>	great that you are all here, here are the topics: 
+    Aug 31 16:01:46 <hpk>	* activity reports
+    Aug 31 16:01:46 <hpk>	* rough sprint planning till March 2007
+    Aug 31 16:01:46 <hpk>	* concrete sprint planning beginning November/HHU Duesseldorf
+    Aug 31 16:01:46 <hpk>	* security prototype/workshop time plan
+    Aug 31 16:01:52 <arigo>	hi!
+    Aug 31 16:01:59 <hpk>	and anything else there might be at the end
+    Aug 31 16:02:08 <hpk>	so: activity reports now
+    Aug 31 16:02:16 <arigo>	LAST: jit (basic 386 code generator working)
+    Aug 31 16:02:16 <arigo>	NEXT: jit
+    Aug 31 16:02:16 <arigo>	BLOCKERS: -
+    Aug 31 16:02:33 <aleale>	PREV: wp9
+    Aug 31 16:02:33 <aleale>	NEXT: wp9 SPARQL, testing with DFKI ontology
+    Aug 31 16:02:33 <aleale>	Blockers: -
+    Aug 31 16:02:39 <antocuni>	LAST: none
+    Aug 31 16:02:41 <antocuni>	NEXT: none
+    Aug 31 16:02:42 <antocuni>	BLOCKER: some job to be done befero my departure
+    Aug 31 16:02:44 <hpk>	LAST: ireland sprint, prepare distributed testing merge, spr
+    Aug 31 16:02:44 <hpk>	int planning
+    Aug 31 16:02:44 <hpk>	NEXT: distributed testing merge, settling sprint and workshop dates
+    Aug 31 16:02:44 <hpk>	BLOCKERS: -
+    Aug 31 16:02:47 <fijal>	LAST: web interface for distributed py.test, bugfixes. Some graph transforms.
+    Aug 31 16:02:47 <fijal>	NEXT: more graph transforming, some helpers to do it before rtyping
+    Aug 31 16:02:47 <fijal>	BLOCKERS: lack of proper interface for manipulating graphs before rtyping.
+    Aug 31 16:02:54 <mwh>	LAST: sprint recovery, removing zeroing
+    Aug 31 16:03:05 <mwh>	NEXT: moving flats, killing keepalives
+    Aug 31 16:03:15 <mwh>	BLOCKERS: will be offline a bit this week
+    Aug 31 16:03:17 <ericvrp>	last: pypy-js TurboGears integration, non-pypy
+    Aug 31 16:03:17 <ericvrp>	next: more of the above
+    Aug 31 16:03:17 <ericvrp>	blockers: none
+    Aug 31 16:03:41 <hpk>	xorAxAx: anything you might want to report? 
+    Aug 31 16:03:51 <pedronis>	LAST: jit
+    Aug 31 16:03:53 <pedronis>	NEXT: jit
+    Aug 31 16:03:54 <pedronis>	BLOCKERS: (a bit laptop blues)
+    Aug 31 16:03:59 <xorAxAx>	hpk: no, nothing done since last meeting
+    Aug 31 16:03:59 -->	cfbolz_ (n=cfbolz@fwstups.cs.uni-duesseldorf.de) has joined #pypy-sync
+    Aug 31 16:04:01 <xorAxAx>	nothing planned
+    Aug 31 16:04:12 <cfbolz_>	LAST: vacation
+    Aug 31 16:04:14 <cfbolz_>	NEXT: finish my paper, config things
+    Aug 31 16:04:16 <cfbolz_>	BLOCKERS: None
+    Aug 31 16:04:34 <hpk>	ok, thanks, let's head on then to the rough sprint planning part
+    Aug 31 16:04:47 <hpk>	there was discussion in ireland about it, and a rough three remaining bigger sprints 
+    Aug 31 16:04:57 <hpk>	and possibly a few smaller meetups between people
+    Aug 31 16:05:22 <hpk>	first one around early november (next topic for details), and then the next two ones ... 
+    Aug 31 16:05:39 <hpk>	i suggest that we try to fix time frames rather soon and try to get people like tim Peters and Chris lattner there
+    Aug 31 16:05:50 <hpk>	the earlier we know details the more likely we can get them there
+    Aug 31 16:05:52 <hpk>	what do you think? 
+    Aug 31 16:06:37 <hpk>	would early november, January and March make sense to you for those sprints?
+    Aug 31 16:06:49 <fijal>	I might try to organise sprint in lets say January in Poland
+    Aug 31 16:06:56 <fijal>	November seems to soon
+    Aug 31 16:07:02 <ericvrp>	Any news from those Nokia people? Will they attempt to join in november?
+    Aug 31 16:07:15 <hpk>	right, november there is hhu most likely already for various reasons 
+    Aug 31 16:07:17 <cfbolz_>	they want to join a sprint?
+    Aug 31 16:07:24 <hpk>	ericvrp: not clear 
+    Aug 31 16:07:29 <mwh>	some idea of when i can expect to be in or out of the country would be nice :-)
+    Aug 31 16:07:32 <mwh>	+1, in other words
+    Aug 31 16:07:48 <aleale>	+1, auc and I are planning a mini-sprint in Paris late september
+    Aug 31 16:08:13 <mwh>	when would you be thinking of the two?
+    Aug 31 16:08:15 <mwh>	mid jan, late feb?
+    Aug 31 16:08:27 <cfbolz_>	hm, I couldn't make it mid jan
+    Aug 31 16:08:34 cfbolz cfbolz_ Aug 31 16:08:40 <hpk>	cfbolz_ would early jan be better? 
+    Aug 31 16:08:53 <cfbolz_>	14-15 jan is padl, the conference where I submit my paper
+    Aug 31 16:09:25 <hpk>	i could imagine that we target 8-14th january 
+    Aug 31 16:09:43 <mwh>	hpk: those times make sense for me
+    Aug 31 16:10:04 <hpk>	maybe poland, maybe gborg, i'd suggest
+    Aug 31 16:10:10 <ericvrp>	I have no clue if I can make it to the sprints after november. The november sprint I do plan to attend as much as possible
+    Aug 31 16:10:31 <cfbolz_>	hpk: then I would have to leave earlier, but otherwise ok
+    Aug 31 16:10:37 <hpk>	could everyone briefly feedback if 8-14th january would be fine as seen from now? 
+    Aug 31 16:10:51 <mwh>	fine for me
+    Aug 31 16:10:53 <aleale>	+0
+    Aug 31 16:10:54 <arigo>	fine here
+    Aug 31 16:10:58 <fijal>	fine for me (for now)
+    Aug 31 16:11:03 <antocuni>	fine for me, too
+    Aug 31 16:11:55 <hpk>	and then 26th feb-4th March 
+    Aug 31 16:12:03 *	ericvrp unclear (usually :0 )
+    Aug 31 16:12:26 <hpk>	(i think if we know the times ahead everybody has an easier time for planning)
+    Aug 31 16:12:28 <arigo>	no preference so far, all fine
+    Aug 31 16:12:48 <mwh>	fine, yes
+    Aug 31 16:12:50 <pedronis>	I think those dates are fine
+    Aug 31 16:12:57 <cfbolz_>	fine with me
+    Aug 31 16:12:58 <hpk>	i'd be fine with doing that sprint here at trillke, btw (four years after the very first pypy sprint :) 
+    Aug 31 16:13:07 <cfbolz_>	:-)
+    Aug 31 16:13:13 <mwh>	(i bought a ticket for a concert on dec 13, and was then worried, i'd like to not have that again :)
+    Aug 31 16:13:20 <fijal>	and November terms are any exact?
+    Aug 31 16:13:26 <hpk>	november comes next 
+    Aug 31 16:13:43 <hpk>	so let's take those january and feb/march time as the current plan, i'll write it into the minutes 
+    Aug 31 16:14:08 <hpk>	fijal looks for a place in that time in poland, but gborg is fine as well, i think (or leysin :) 
+    Aug 31 16:14:22 <hpk>	topic closed then
+    Aug 31 16:14:30 <hpk>	next: november sprint
+    Aug 31 16:14:40 <hpk>	i think everybody is fine with DDorf, right? 
+    Aug 31 16:14:46 <fijal>	right
+    Aug 31 16:14:52 <pedronis>	yes
+    Aug 31 16:14:59 <antocuni>	yes
+    Aug 31 16:15:03 <aleale>	ok
+    Aug 31 16:15:04 <mwh>	yes
+    Aug 31 16:15:10 -->	guido_w (n=johnny@debris.demon.nl) has joined #pypy-sync
+    Aug 31 16:15:10 <ericvrp>	yes
+    Aug 31 16:15:12 <hpk>	so what about 30th October-5th November? 
+    Aug 31 16:15:17 <cfbolz_>	well, I have not really looked for a room yet
+    Aug 31 16:15:19 cfbolz cfbolz_ Aug 31 16:15:20 <arigo>	the plan was earlier than that, but fine too
+    Aug 31 16:15:35 <hpk>	arigo: was it? we said late october/early november, after OOPSLA 
+    Aug 31 16:15:43 <cfbolz_>	when is oopsla?
+    Aug 31 16:15:53 <hpk>	22-26th Oct or so? 
+    Aug 31 16:16:09 <cfbolz_>	we could do it beginning october, before lectures start
+    Aug 31 16:16:42 <--	cfbolz has quit (Nick collision from services.)
+    Aug 31 16:16:44 ---	cfbolz_ is now known as cfbolz
+    Aug 31 16:16:54 <hpk>	the focus was on having those sprints newcomer friendly 
+    Aug 31 16:17:03 <hpk>	is that sensible for early october? 
+    Aug 31 16:17:15 <cfbolz>	why is that a time question?
+    Aug 31 16:17:17 <mwh>	beginning october less good for me for selfish reasons
+    Aug 31 16:17:21 <cfbolz>	:-)
+    Aug 31 16:17:45 <cfbolz>	I will try to investigate the room situation next week, but I am also confident that we can find something even end october
+    Aug 31 16:17:46 <hpk>	cfbolz: four weeks is rather soon for getting the word out, people planning to fly in, also consdiering that the annoucnement will take some more days :) 
+    Aug 31 16:18:04 <cfbolz>	hpk: ah, sorry
+    Aug 31 16:18:06 <arigo>	end October makes sense, indeed
+    Aug 31 16:18:11 <cfbolz>	hpk: I forgot that part
+    Aug 31 16:18:20 <fijal>	for me as well october begin is not good point
+    Aug 31 16:18:25 <cfbolz>	ok, ok :-)
+    Aug 31 16:18:39 <hpk>	so 30th-5th? 
+    Aug 31 16:18:48 <mwh>	works for me
+    Aug 31 16:19:01 <fijal>	ok
+    Aug 31 16:19:03 <aleale>	+1
+    Aug 31 16:19:10 <ericvrp>	ok
+    Aug 31 16:19:10 <arigo>	ok
+    Aug 31 16:19:12 <antocuni>	ok
+    Aug 31 16:19:13 <pedronis>	ok
+    Aug 31 16:19:16 <hpk>	ok, cool 
+    Aug 31 16:19:24 <hpk>	cfbolz cares for getting a room, then, i guess until next week 
+    Aug 31 16:19:30 <hpk>	and let's get an announcement out early next week 
+    Aug 31 16:19:35 <hpk>	and ask Richard and others to join as well 
+    Aug 31 16:19:47 <hpk>	Stephan Diehl will also re-enter, he mailed me and will try to make the sprint 
+    Aug 31 16:19:51 <cfbolz>	I will _start_ next week, won't find anybody this week
+    Aug 31 16:20:07 <hpk>	cfbolz: ok, sorry :) 
+    Aug 31 16:20:13 <cfbolz>	np :-)
+    Aug 31 16:20:20 <hpk>	anyway, it's somewhat safe to assume that we find a room, i'd hope
+    Aug 31 16:20:39 <hpk>	cfbolz: otherwise alarm us as early as possible 
+    Aug 31 16:20:55 <cfbolz>	hpk: yes, I think so
+    Aug 31 16:20:57 <cfbolz>	will do
+    Aug 31 16:20:59 <hpk>	so last bit: who prepares and reviews an announcement? 
+    Aug 31 16:21:07 <cfbolz>	what are the topics anyway?
+    Aug 31 16:21:31 <hpk>	i think it's rather wide open, isn't it? 
+    Aug 31 16:21:46 <cfbolz>	like at ep?
+    Aug 31 16:22:15 <hpk>	maybe we could try to ask all attendants to state more clearly their intentions/interests 1-2 weeks ahead 
+    Aug 31 16:22:26 <cfbolz>	good plan
+    Aug 31 16:22:29 <hpk>	so that we can think/discuss how to do it (considering that it might become a rather large sprint)
+    Aug 31 16:22:46 <arigo>	not sure about that
+    Aug 31 16:22:58 <arigo>	why do you expect it to become a rather large sprint?
+    Aug 31 16:23:13 <hpk>	anyway, SOP prospects will need to clearly state their work intentions, btw
+    Aug 31 16:23:28 <cfbolz>	do we have any in sight?
+    Aug 31 16:23:45 <hpk>	there is one pending from brazil (porting modules and a js frontend) 
+    Aug 31 16:23:56 <hpk>	but the announcement might stir new ones, who knows 
+    Aug 31 16:23:59 <arigo>	he dropped the js bit, didn't he?
+    Aug 31 16:24:07 <cfbolz>	he dropped it, yes
+    Aug 31 16:24:09 <cfbolz>	:-*
+    Aug 31 16:24:12 <hpk>	didn't read anything explicit, but ok
+    Aug 31 16:24:22 <hpk>	arigo: because we are already like 10 people known to come now, i gather
+    Aug 31 16:24:41 <hpk>	but true, i don't actually know 
+    Aug 31 16:24:49 <hpk>	anyway, who writes the announcement? 
+    Aug 31 16:24:52 <hpk>	arigo: you want to? :) 
+    Aug 31 16:25:43 <arigo>	ok
+    Aug 31 16:26:02 <hpk>	i can review if its ready before monday next week 
+    Aug 31 16:26:25 <hpk>	and if the room is safe enough we send out next week 
+    Aug 31 16:26:31 <hpk>	topic closed then 
+    Aug 31 16:26:39 <hpk>	last one is the security workshop 
+    Aug 31 16:27:04 <hpk>	current plan is to do it between sometime january/february 
+    Aug 31 16:27:28 <hpk>	one of the IBM guys from the US might be around christmas + new years eve actually
+    Aug 31 16:27:46 <hpk>	but that might be too early, consdidering my earlier discussions with pedronis and arre 
+    Aug 31 16:28:08 <hpk>	it's like it's going to be in Zuerich
+    Aug 31 16:28:38 <mwh>	how many of us would be expected to attend?
+    Aug 31 16:28:45 <hpk>	2-3 people should be enough 
+    Aug 31 16:29:21 <hpk>	arigo, pedronis: would it make sense to do one early january, considering that you might be in switzerland anyway? 
+    Aug 31 16:29:44 <hpk>	we do not need to present anything finished, just show that we can do something useful and discuss with them, that's it i'd say
+    Aug 31 16:29:45 <arigo>	yes, makes sense to me
+    Aug 31 16:29:47 <pedronis>	that could work
+    Aug 31 16:29:56 <hpk>	ok, i'll check that out and keep you mailed 
+    Aug 31 16:30:02 <hpk>	otherwise later january/february i suspect 
+    Aug 31 16:30:07 <hpk>	good skiing time in leysin, hum :) 
+    Aug 31 16:30:23 <hpk>	let's settle on an implementation approach by the time of the next sprint
+    Aug 31 16:30:47 <hpk>	meeting is closed then from my side 
+    Aug 31 16:30:53 <hpk>	thanks all for coming!
+    Aug 31 16:31:00 <cfbolz>	thanks for moderating
+    Aug 31 16:31:09 <mwh>	thank you
+    Aug 31 16:31:15 <ericvrp>	bedankt!
+    Aug 31 16:31:43 <arigo>	good bye
+    Aug 31 16:31:47 <fijal>	bye
+    Aug 31 16:31:57 <aleale>	bye
+    Aug 31 16:32:00 <ericvrp>	bye
+    Aug 31 16:32:01 <--	ericvrp has quit ("Leaving")
+    Aug 31 16:32:17 <--	cfbolz (n=cfbolz@fwstups.cs.uni-duesseldorf.de) has left #pypy-sync ("Leaving")
+    Aug 31 16:32:20 <antocuni>	bye

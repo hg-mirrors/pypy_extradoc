@@ -1,0 +1,108 @@
+
+What do you want PyPy to do? 
+Open Space session at EP2007 2007-07-11
+================================================
+Purpose:
+- collect information about needs from PyPy and 
+  would-be PyPy users
+- answers from PyPy developers when/where applicable
+
+How was it done:
+- everyone present wrote their primary question
+  and/or interest on a post-it
+- these were grouped to identify overlapping areas
+  interest, largest areas were adressed first
+- a summary of the questions/interests grouped per
+  area can be found below and the "answers" discussed
+
+Areas of questions/interests:
+
+RPython: stand alone and/or interfacing external libraries
+--------------------------------------------------------------
+Questions/interests:
+- using RPython in CPython (unless PyPy can run all my Python 
+  2 code next month)
+- how many are interested in RPython (in CPython, support 
+  available, stability)
+- RPython for Python extensions
+- external library interfacing (extension modules)
+- 3D graphics: Fast floating points? Fast math?
+
+Answers/comments:
+- CPython API support in PyPy is slow
+- Not much attention went into improving refcounting.
+- The state of RCtypes (support it, refactor and change
+  direction, future at all) is unclear - needs discussions
+  (how - to use ctypes at (PyPy) application level?) 
+- we need strategic discussions regarding how to interface
+  with external c libraries, to be discussed during sprint
+- general need for refactoring - timespan will be roughly
+  a year to have a PyPy that usable (while still not covering
+  all extension modules)
+- for stand alone RPython applications there is need for usability
+  fixes (shared interest) and speed/IO extensions 
+  (app-level solution)
+- regarding the question on 3D graphics (fast floating points, fast
+  math) the answer is that it is fairly easy to add this and there is 
+  a matching interest in the PyPy dev-team in this area. 
+  The need to display/visualize is then a matter of general C extension
+  interfacing
+    
+Suggestions: 
+- RCtypes: let´s experiment here and discuss approaches during the sprint
+
+Javascript backend/related areas
+-------------------------------------
+Questions:
+- I want to write a parser in Python and port it to javascript
+- usable javascript backend
+- emulate pygame on flash player
+
+Answers/comments:
+- a parser is doable but you could encounter bugs, report them
+  and they will be fixed - there is a matching interest here
+  in the PyPy dev-team
+- there is also a document on http://codespeak.net/pypy/dist/pypy/doc/rlib.html#parsing
+  regarding parser creation
+- regarding emulating PyGame on a flahs player - this is doable
+  but work needed, some rough estimates discussed were between
+  2-4 months because it´s connected to tweaking a backend or
+  creating a new backend (which is an area we know a lot about;-)
+  So doable, requires work and we are not too sure about the results ;-)
+  
+Refactoring/usability
+--------------------------------
+Questions:
+- how pypy goes about maintaining parts?
+- SLES/Solaris package? Light production usage?
+- be less  hackish to use?
+- pypy 1.1.0 planning, which cleanups are we to tackle
+  and who?
+- fixing/improving stackless, pickling and OO-support
+
+Answers/comments:
+- this was not discussed in particular due to time constraints
+- was also not prioritized because it contained several PyPy
+  developers interests and we prioritized to try to answer
+  "users/would-be "users" interests
+- it was apparent though during the entire discussion that
+  we where discussing answers in the form of "doable" and
+  "refactoring needed" which is what this area is all about
+
+Suggestions:
+- general refactoring/technical direction discussion in 
+  connection to the sprint
+  
+
+Other areas of interests/questions
+-------------------------------------
+Questions:
+- reducing the memory footprint of the Python interpreter
+  (I want to run preferable several, securely separated interpreters
+  on a resource constrained system (a phone specifically)
+- different language interpreters/front-ends
+
+Answers/comments:
+- these were not discussed due to time constraints
+- they will be taken into account when discussing general
+  refactoring/technical direction

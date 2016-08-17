@@ -1,0 +1,30 @@
+*PyPy mini-sprint*
+
+On Satuday the 5th or March, and Sunday the 6th, from 10 a.m. until
+whenever, there will be a PyPy mini-sprint hosted at Noisebridge.  For
+those unfamiliar with the term Sprint -- a Sprint is a time when
+developers of a project get together to collaborate intensely.
+Sometimes the focus is to 'break the back' of some hard problem that
+the project faces, but in this case the focus will be on introducing
+people to the project in a hands-on, practical way.  PyPy is the
+Python interpreter written in Python which you can read about here:
+http://morepypy.blogspot.com/  Everybody is welcome.  The goal is to
+show off and work on whatever parts of PyPy people are interested in.
+Possible areas include, but are not limited to the Just-in-Time
+Compiler, Garbage Collectors, Stackless Python, or the Python 2.7
+language compatibility.  A sprint is the best way for would-be contributors
+to get involved with the project.  Come and bring your laptop.
+
+Note:  On Wednesday March the 2nd, at 16:15 Armin Rigo will be giving a talk
+about PyPy at the Stanford EE Computer Systems Colloquium 
+http://www.stanford.edu/class/ee380/winter-schedule-20102011.html , and
+on Thursay March the 3rd at 18:00 he will give another public talk at Yelp,
+706 Mission St 9th Floor, San Francisco, California.  While attending
+these talks is in no way mandatory, they might be of interest to those
+planning on attending the Mini Sprint.
+
+We expect to have between 6 and 12 people at this Sprint, but it is
+possible that we will have many more.  We need wireless access,
+electricity, chairs and tables which are set up so that we can
+pair-program, a whiteboard, and some flat surface where we can use a
+projector.  We have our own projector.

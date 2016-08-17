@@ -1,0 +1,41 @@
+Topics
+======
+
+* cffi.verify dlopen flag - TO BE MERGED
+
+* PyPy/CPython Bridge (Romain, kostia) - MORE PROGRESS
+
+* Profiler (Antonio, Armin) - IN PROGRESS
+
+* Merge improve-docs (Manuel, Ronan) - IN PROGRESS
+
+* Merge kill-multimethod remove-remaining-smm  (Manuel, Antonio, fijal) - MERGED remove-remaining-smm, kill-multimethod WAITING FOR REVIEW
+
+* STM presentation (Everybody) - DONE
+
+* Refactor annotator/rtyper (Ronan?) - LOOKING FOR PAIRING
+
+* Python 3.3 - IN PROGRESS
+
+* look into merging gc pinning (fijal, arigo) - ALMOST READY, more debugging needed
+
+* investigate -fPIC slowdown (fijal, arigo) - IN PROGRESS, complete mess
+
+* NumPyPy discussion (everybody) DONE
+
+* Trying stuff on PyPy-STM (Antonio, Kostia)
+
+* convincing anto why resume refactoring is a good idea
+
+* switchify chains of guard_value (Armin, Romain...)
+
+People
+=====
+
+Antonio
+Armin
+Kostia
+Ronan
+Romain
+Manuel
+Maciej

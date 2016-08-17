@@ -1,0 +1,65 @@
+
+Introducing PyPy 1.2 release
+============================
+
+We are pleased to announce `PyPy's 1.2 release`_.
+This version 1.2 is a major milestone and it is the first release to ship
+a **Just-in-Time compiler** that is known to be faster than CPython
+(and unladen swallow) on some real-world applications (or the best benchmarks
+we could get for them). The main theme for the 1.2 release is **speed**.
+
+The JIT is stable and we don't observe crashes. Nevertheless we would
+recommend you to treat it as beta software and as a way to try out the JIT
+to see how it works for you.
+
+Highlights:
+
+* The JIT compiler.
+
+* Various interpreter optimizations that improve performance as well as help
+  save memory. Read our `various`_ `blog`_ `posts`_ about achievements.
+
+* Introducing a `new PyPy website`_ at pypy.org made by `tav`_ and improved
+  by the PyPy team.
+
+* Introducing `speed.pypy.org`_, a new service that monitors our performance
+  nightly.
+
+* There will be ubuntu packages on `PyPy's PPA`_ made by Bartosz Skowron,
+  however various troubles prevented us from having them as of now.
+
+Known JIT problems (or why you should consider this beta software) are:
+
+* The only supported platform is 32bit x86 for now, we're looking for help with
+  other platforms.
+
+* It is still memory-hungry.  There is no limit on the amount of RAM that
+  the assembler can consume; it is thus possible (although unlikely) that
+  the assembler ends up using unreasonable amounts of memory.
+
+If you want to try PyPy, go to the `download page`_ on our excellent new site
+and find the binary for your platform. If the binary does not work (e.g. on
+Linux, because of different versions of external .so dependencies), or if
+your platform is not supported, you can `try building from the source`_.
+
+The PyPy release team,
+
+    Armin Rigo, Maciej Fijalkowski and Amaury Forgeot d'Arc
+
+Together with
+
+    Antonio Cuni, Carl Friedrich Bolz, Holger Krekel and Samuele Pedroni
+
+and `many others`_.
+
+.. _`many others`: http://codespeak.net/pypy/dist/pypy/doc/contributor.html
+.. _`PyPy's 1.2 release`: http://pypy.org/
+.. _`new PyPy website`: http://pypy.org/
+.. _`various`: http://morepypy.blogspot.com/2010/03/hello.html
+.. _`blog`: http://morepypy.blogspot.com/2010/01/nightly-graphs-of-pypys-performance.html
+.. _`posts`: http://morepypy.blogspot.com/2009/11/some-benchmarking.html
+.. _`tav`: http://tav.espians.com/
+.. _`download page`: http://pypy.org/download.html
+.. _`try building from the source`: http://pypy.org/download.html#building-from-source
+.. _`PyPy's PPA`: https://launchpad.net/~pypy/+archive/ppa
+.. _`speed.pypy.org`: http://speed.pypy.org

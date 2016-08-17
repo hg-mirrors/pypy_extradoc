@@ -1,0 +1,18 @@
+Mini Sprint at Logilab
+--------------------------------
+
+Possible topics
+----------------------
+
+
+    Finish exposing the Grammar at application level
+    
+    Work on the constraint solving engine
+        
+        The goal of the week is to have a first version of a Oz like "computation space".
+        This means that we need to advance the "store" already in the repository, and make
+        the current implementation of "variables" safe for concurrency.
+        
+    Write a document detailing the goals for WP10 (Aspects and contracts)
+        
+

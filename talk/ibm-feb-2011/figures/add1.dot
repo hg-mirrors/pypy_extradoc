@@ -1,0 +1,21 @@
+digraph G {
+    a -> b_int [label="Integer"];
+    a -> b_float [label="Float"];
+
+    a [label="a", shape=box];
+    b_int [label="b", shape=box];
+    b_float [label="b", shape=box];
+
+    b_int -> int [label="Integer"];
+    b_int -> float [label="Float"];
+
+    b_float -> float [label="Float"];
+    b_float -> float [label="Integer"];
+
+    int [label="Integer\laddition"];
+    float [label="Float\laddition"];
+
+    int -> x;
+    float -> x;
+    x [label="x", shape=box];
+}

@@ -1,0 +1,15 @@
+diff -r eb1c7d3b91a5 pypy/jit/metainterp/compile.py
+--- a/pypy/jit/metainterp/compile.py	Tue Aug 07 09:15:31 2012 +0000
++++ b/pypy/jit/metainterp/compile.py	Tue Aug 07 16:01:15 2012 +0200
+@@ -519,6 +519,11 @@
+             self._counter = cnt | i
+ 
+     def handle_fail(self, metainterp_sd, jitdriver_sd):
++        descr_num = metainterp_sd.cpu.get_fail_descr_number(self)
++        debug_start("jit-guard-failure")
++        debug_print("Guard", descr_num)
++        debug_stop("jit-guard-failure")
++
+         if self.must_compile(metainterp_sd, jitdriver_sd):
+             self.start_compiling()
+             try:

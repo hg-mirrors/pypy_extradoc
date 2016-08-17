@@ -1,0 +1,197 @@
+
+
+\documentclass[utf8x, 14pt]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+}
+
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{tikz}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+
+\title{How to write cross-interpreter programs}
+
+\author{Maciej Fijałkowski}
+
+\institute[merlinux GmbH]
+{ merlinux GmbH }
+
+\date{Pycon 2010, February 19th 2010, Atlanta}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \begin{figure}
+    \begin{tabular}{c c c}
+    \includegraphics[width=.20\textwidth]{../common/pypy-logo.png}
+    &
+    \hspace{2cm}
+    &
+    \includegraphics[width=.18\textwidth]{../common/merlinux-logo.png}
+    \end{tabular}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This talk}
+  \begin{itemize}
+    \item most people only target CPython (or Jython or IronPython)
+    \item sometimes, you want your program to run on each of those
+    \item libraries are more often cross-interpreter
+      \pause
+    \item hope to give you more reasons tomorrow
+      \pause
+    \item won't talk about py3k
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{My background}
+  \begin{itemize}
+    \item worked a lot with PyPy compatibility issues
+    \item helped to port twisted, django and other projects to run on PyPy
+    \item a lot of cooperation with Jython people
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Have a way to verify compatibility}
+  \begin{itemize}
+    \item extensive test suite
+    \item good coverage
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Exceptions}
+  \begin{itemize}
+    \item TypeError vs AttributeError change often between implementations,
+      even CPython versions
+    \item don't rely on exception string messages (they may differ)
+  \end{itemize}
+  \begin{verbatim}
+try:
+  ...
+except ImportError, ie:
+  if str(ie) != '...':
+    raise
+  \end{verbatim}
+  \pause
+  \begin{itemize}
+    \item also means - don't use doctests
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Subclasses of builtin types}
+  \begin{itemize}
+    \item in general overridden methods on subclassed builtin types are not 
+      invoked by preexisting other methods
+      \begin{verbatim}
+class d(dict):
+  def __getitem__(self, e):
+    ...
+      \end{verbatim}
+    \item would {\ttfamily keys()} go via this getitem?
+    \item tests are your friend
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Access to 3rdy party libraries}
+  \begin{itemize}
+    \item there is no good story here
+    \item ctypes based access is going to be supported by all Pythons
+    \item are there pure Python replacements/options?
+    \item separate out dependencies/especially optional ones
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Don't rely on refcounting}
+  \begin{itemize}
+    \item example
+      \begin{verbatim}
+open('x', 'w').write('stuff')
+      \end{verbatim}
+    \item on refcounting, flushes file immediately
+    \item on any other GC, it might be deferred for
+      a while
+    \item the single most-common problem when porting twisted to PyPy
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\_\_del\_\_}
+  \begin{itemize}
+    \item resurrection on CPython will call {\ttfamily \_\_del\_\_} multiple times,
+      other Pythons exactly once
+    \item cycles with {\ttfamily \_\_del\_\_}s are not collected by CPython,
+      PyPy breaks them randomly instead
+    \item in PyPy and Jython {\ttfamily \_\_del\_\_} cannot be attached to classes after creation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Use new-style classes}
+  \begin{itemize}
+    \item 3.x ready
+    \item much faster on PyPy, too
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{{\ttfamily sys.prefix}}
+  XXX think about
+  \begin{itemize}
+    \item implementations may have different installation layouts
+    \item open issue, at least for PyPy, has compatibility consequences with
+  setuptools
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{IO bytes vs unicode}
+  \begin{itemize}
+    \item convert/decode as soon as possible, keep text and bytes apart
+    \item for 2.x Pythons use str for bytes and unicode for text
+    \item the distinction is deeper in 3.x ({\ttfamily str} is {\ttfamily unicode}, {\ttfamily bytes} exist with
+  slightly different interface than old {\ttfamily str})
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Don't concatenate strings}
+  \begin{itemize}
+    \item use {\ttfamily "".join(...)}
+    \item if you care about performance, try this and {\ttfamily cStringIO}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Obscure corners}
+  \begin{itemize}
+    \item non-string keys in type dictionaries
+    \item introspection results, implementation objects (e.g. builtin methods
+      etc), may have different types
+    \item exact naming of things (like list-comprehension variable)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Questions?}
+  \begin{itemize}
+    \item http://morepypy.blogspot.com
+    \item http://pypy.org
+  \end{itemize}
+\end{frame}
+
+\end{document}

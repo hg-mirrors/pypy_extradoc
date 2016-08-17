@@ -1,0 +1,39 @@
+PyPy: JIT (and more) for free
+=============================
+
+The PyPy project has recently gathered a lot of attention for its progress in
+speeding up the Python language -- it is the fastest, most compatible and most
+stable 'alternative´ Python interpreter.  No longer merely a research
+curiosity, PyPy is now suitable for production use.  Since 2009, the PyPy
+project has received funding from the Eurostars Eureka program, which targets
+small European firms which produce research.  (See:
+http://www.eurostars-eureka.eu/)
+
+We will discuss what the PyPy project has achieved, with a particular
+focus on the past two years' work  in the area of dynamic (Just-in-Time) 
+interpreters:
+
+* most Python benchmarks run much faster than with CPython or Psyco
+* the real-world PyPy compiler toolchain itself (200 KLocs) runs twice as fast
+* already supports 64bit and is in the process of supporting ARM
+* full compatibility with  CPython (more than Jython/IronPython)
+* full (and JIT-ed) ctypes support to call C libraries from Python
+* supports Stackless Python (in-progress)
+* experimental JVM and .NET backend (to get alternatives to Jython and IronPython)
+* new "cpyext" layer which integrates existing CPython C extensions
+* an experimental super-fast JIT-compilation of calls to C++ libraries
+
+Moreover, PyPy is not only a Python implementation, but also a general
+framework to implement dynamic languages and get many features for free, such
+as a JIT compiler and a fast GC.  In addition to the Python interpreter, which
+is the main focus of the core development team, there are experimental
+Smalltalk, Prolog and Javascript implementations (and even a Gameboy emulator)
+for PyPy, with different degrees of completeness.
+
+This talk will be divided in two parts, with different target audience:
+
+  * for Python developers: why (and how) to use PyPy instead of CPython?
+
+  * for language implementors: why should you use PyPy for implementing your
+    revolutionary dynamic language?
+

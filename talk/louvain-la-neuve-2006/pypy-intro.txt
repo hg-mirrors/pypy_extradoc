@@ -1,0 +1,160 @@
+.. include:: <s5defs.txt>
+
+========================
+PyPy: Python in Python
+========================
+
+:Authors: Samuele Pedroni, PyPy Team
+
+Basic facts 
+==================================
+
+* Reimplementation of Python in Python
+* Specifically we use a subset of Python:
+  RPython
+* RPython static enough to allow type inference
+  and translation to low-level languages
+* Open source, MIT license
+* EU funded in FP6
+
+
+Basic facts (ii)
+====================================
+
+* Two parts:
+
+  - Interpreter implementation
+  - Translation and analysis tool-chain
+
+* Interpreter: compliant,
+  50 KLOCs implementation + 10 KLOCs tests
+* Tool chain: using Abstract interpretation,
+  the rest of the total 160 KLOCs  
+
+
+Goals
+===================
+
+* Approaches to simplify implementation of flexible/efficient
+  interpreters. 
+* Try to make the interpreter more accessible to its users.
+* Weave low-level features (GC, concurrency support, object layout,
+  even JIT Compiler ...) at translation time
+* Explore adding new features/paradigms leveraging the flexibility
+
+Architecture Diagrams
+======================
+
+* arch-pypy-basic.pdf
+* arch-translation.pdf
+
+Interpreter / Object Space interface
+=================================================
+::
+
+    def STORE_SUBSCR(f):
+        "obj[subscr] = newvalue"
+        w_subscr = f.valuestack.pop()
+        w_obj = f.valuestack.pop()
+        w_newvalue = f.valuestack.pop()
+        f.space.setitem(w_obj, w_subscr, 
+                        w_newvalue)
+
+Object Space interface: operations
+====================================
+
+* add, sub ...
+* getattr, setattr, getitem ...
+* call_args
+* RPython -> boxed: wrap(.)
+* boxed -> RPython: is_true(.), int_w(.),
+  str_w(.), ...
+
+* Clean interface.
+
+Standard Object Space
+=======================
+
+* Implements all builtin types.  
+* Python has a lookup&bind/call dispatch: (obj.meth)() 
+* This is used for builtin operations too:
+  ``1+1`` uses ``int.__add__``, ``2*[1]`` uses ``list.__rmul__``
+* Standard Object space implements space operations by
+  lookup&bind/call.
+* Builtin types expose the required methods as
+  is usual in Python.
+
+Standard Object Space (MM)
+============================
+
+* Bytecode Interpreter is ignorant of types.
+* Standard Object Space internally uses multi-methods.
+* Exposed methods are constructed by
+  restriction on the relevant slices of the hierarchy.
+* Approach enables: multiple implementations for the same exposed 
+  language type, remapping to an implementation suiting
+  the translation target.
+
+Builtin Modules
+=================
+
+* Implemented at application and/or interpreter level.
+* Some fundamental builtin modules have been
+  implemented (sys, os, ...).
+
+Builtin Modules (ii)
+======================
+
+* Instantiated at bootstrap time.
+* "gateways" expose app-level functions to interpreter
+  level and the reverse. 
+* Gateways can implement automatic
+  boxing/unboxing and type checking.
+  Enforces safety and type constraints.
+
+Bytecode Compiler and Parser
+=============================
+
+* Parser is recursive descent,
+  parses to ASTs.
+* Grammar description is loaded
+  at bootstrap time.
+* Grammar should become runtime
+  modifiable (work in progress).
+* AST compiler is based on standard
+  library compiler package, ported
+  to RPython
+
+Thunk Object Space: lazy computed objects
+==========================================
+::
+
+  >>>> def f():
+  ....   print "computing..."
+  ....   return 42
+  .... 
+  >>>> l=[thunk(f)]
+  >>>> len(l)
+  1
+  >>>> l
+  computing...
+  [42]
+
+Important points
+=====================
+
+* No low-level decisions, for example
+  about target platform, encoded in
+  the source (e.g. different from Squeak
+  which assumes C targeting much more
+  directly).
+* Translation fills in low-level details
+  intentionally missing
+* Progressive abstraction level removal
+  increases flexibility
+
+.. |bullet| unicode:: U+02022
+.. footer:: Samuele Pedroni (AB Strakt), PyPy Team
+
+
+

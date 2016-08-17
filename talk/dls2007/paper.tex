@@ -1,0 +1,1082 @@
+\documentclass{acm_proc_article-sp}
+
+\begin{document}
+
+\title{Get Your Own Just-In-Time Specializing Compiler For Free}
+
+\numberofauthors{2}
+\author{
+\alignauthor Armin Rigo\\
+       \affaddr{Heinrich-Heine-Universität Düsseldorf}\\
+       \affaddr{Institut für Informatik}\\ 
+       \affaddr{Universitätsstra{\ss}e 1}\\
+       \affaddr{D-40225 Düsseldorf}\\
+       \affaddr{Deutschland}\\
+       \email{arigo@tunes.org}
+\alignauthor Samuele Pedroni\\
+       \affaddr{Open End AB}\\
+       \affaddr{Norra Ågatan 10A}\\
+       \affaddr{416 64  Göteborg}\\
+       \affaddr{Sweden}\\
+       \email{pedronis@strakt.com}
+}
+\date{31 May 2007}
+\maketitle
+
+%\category{D.3.4}{Programming Languages}{Processors}[code generation,
+%interpreters, run-time environments]
+%\category{F.3.2}{Logics and Meanings of Programs}{Semantics of Programming
+%Languages}[program analysis]
+
+\begin{abstract}
+PyPy's translation tool-chain -- from the interpreter written in RPython
+to generated VMs for low-level platforms -- is now able to extend those
+VMs with an automatically generated dynamic compiler, derived from the
+interpreter. This is achieved by a pragmatic application of partial
+evaluation techniques guided by a few hints added to the source of the
+interpreter. Crucial for the effectiveness of dynamic compilation is
+the use of run-time information to improve compilation results: in
+our approach, a novel powerful primitive called "promotion" that "promotes"
+run-time values to compile-time is used to that effect.  In this paper,
+we describe it along with other novel techniques that allow the approach
+to scale to something as large as PyPy's Python interpreter.
+\footnote{This research was partially supported by the EU funded
+ project: IST 004779 PyPy (PyPy: Implementing Python in Python).}
+\end{abstract}
+
+\section{Introduction}
+
+Dynamic compilers are resource costly to write and hard to maintain,
+but highly desirable for competitive performance. Straight-forward
+bytecode interpreters are easier to write. Hybrid approaches have been
+experimented with \cite{REJIT}, but this is clearly an area in need of
+research and innovative approaches.
+
+One of the central goals of the PyPy project \cite{PyPy} is to automatically
+produce dynamic compilers from an interpreter, with as little
+modifications of the interpreter code base itself as possible.
+
+PyPy contains a complete interpreter for the Python language, written in
+a high-level language, RPython, which is a subset of Python amenable to
+static analysis.  It also contains a translation toolchain for compiling
+this interpreter to either C (or C-like) environments, or to the higher
+level environments provided by general-purpose virtual machines like
+Java's and .NET.  The translation toolchain can input any RPython
+program, although our focus was on the translation of RPython programs
+that are interpreters for dynamic languages.\footnote{We also have an
+interpreter for Prolog and the beginning of one for JavaScript.}
+
+The translation framework uses control flow graphs in SSI format as its
+intermediate representation (SSI is a stricter subset of SSA).  The
+details of this process are beyond the scope of the present paper, and
+have been presented in \cite{pypyvmconstruction}.
+The present paper describes a
+special optional transformation that we integrated with this translation
+framework: deriving a dynamic compiler from the interpreter.  In other
+words, our translation framework is able to input an interpreter for any
+language (it works best for dynamic languages); as long as it is
+written in RPython and contains a small number of extra hints, then it
+can produce from it a complete virtual machine
+\emph{that contains a just-in-time compiler for the dynamic language.}
+
+Partial evaluation techniques should, at least theoretically,
+allow such a derivation of a compiler from an interpreter
+\cite{partial-evaluation}, but it
+is not reasonable to expect the code produced for an input program by
+a compiler derived using partial evaluation to be very good,
+especially in the case of a dynamic language.  Essentially, the input
+program doesn't contain enough information to generate good code; for
+example the input program contains mostly no kind of type
+information in that case.
+
+What is really desired is not to produce a compiler doing static
+ahead-of-time compilation, as classical partial evaluation would do,
+but one capable of dynamic compilation, exploiting run-time
+information in its result. Compilation should be able to suspend, let
+the produced code run to collect run-time information (for example
+language-level types), and then resume with this extra information.
+This will allows the compiler to generate code optimized for the
+effective run-time behaviour of the program.
+
+Inspired by Psyco \cite{psyco-paper}, which is a hand-written dynamic compiler
+based on partial evaluation for Python, we developed a technique -
+\emph{promotion} - for our dynamic compiler generator. Simply put, promotion
+on a value stops compilation and waits until the run-time reaches this
+point.  When it does, the actual run-time value is promoted into a
+compile-time constant, and compilation resumes with this extra
+information.
+
+Promotion is an essential technique to be able to generate really
+dynamic compilers that can exploit run-time information.
+Besides promotion (section \ref{promotion}),
+the novel techniques introduced by PyPy that allow
+the approach to scale are virtualizable structures
+(section \ref{virtualizable}) and need-oriented
+binding time analysis (section \ref{bta}).
+
+
+\subsection{Overview of partial evaluation}
+
+\def\code#1{\texttt{#1}}
+
+Partial evaluation is the process of evaluating a function, say \code{f(x,
+y)}, with only partial information about the values of its arguments,
+say the value of the \code{x} argument only.  This produces a \emph{residual}
+function \code{g(y)}, which takes less arguments than the original -- only
+the information not specified during the partial evaluation process needs
+to be provided to the residual function, in this example the \code{y}
+argument.
+
+Partial evaluation (PE) comes in two flavors:
+%
+\begin{enumerate}
+
+\item\emph{On-line PE:} a compiler-like algorithm takes the source code of the
+  function \code{f(x, y)} (or its intermediate representation, i.e.\ its
+  control flow graph in PyPy's terminology), and some partial
+  information, e.g.\ \code{x=5}.  From this, it produces the residual
+  function \code{g(y)} directly, by following in which operations the
+  knowledge \code{x=5} can be used, which loops can be unrolled, etc.
+
+\item\emph{Off-line PE:} in many cases, the goal of partial evaluation is to
+  improve performance in a specific application.  Assume that we have a
+  single known function \code{f(x, y)} in which we think that the value of
+  \code{x} will change slowly during the execution of our program -- much
+  more slowly than the value of \code{y}.  An obvious example is a loop
+  that calls \code{f(x, y)} many times with always the same value \code{x}.
+  We could then use an on-line partial evaluator to produce a \code{g(y)}
+  for each new value of \code{x}.  In practice, the overhead of the partial
+  evaluator might be too large for it to be executed at run-time.
+  However, if we know the function \code{f} in advance, and if we know
+  \emph{which} arguments are the ones that we will want to partially evaluate
+  \code{f} with, then we do not need a full compiler-like analysis of \code{f}
+  every time the value of \code{x} changes.  We can precompute once and for
+  all a specialized function \code{f1(x)}, which when called produces the
+  residual function \code{g(y)} corresponding to \code{x}.  This is
+  \emph{off-line partial evaluation;} the specialized function \code{f1(x)}
+  is called a \emph{generating extension.}
+
+\end{enumerate}
+
+The PyPy JIT generation framework is based on off-line partial
+evaluation.  The function called \code{f(x, y)} above is typically the main
+loop of some interpreter written in RPython.  The size of the interpreter can range
+from a three-liner used for testing purposes to the whole of PyPy's
+Python interpreter.  In all cases, \code{x} stands for the input program
+(the bytecode to interpret) and \code{y} stands for the input data (like a
+frame object with the binding of the input arguments and local
+variables).  Our framework is capable of automatically producing the
+corresponding generating extension \code{f1(x)}, which takes an input
+program only and produces a residual function \code{g(y)}.  This \code{f1(x)}
+is a compiler\footnote{
+    What we get in PyPy is more precisely a \emph{just-in-time compiler:}
+    if promotion is used, compiling ahead of time is not possible.
+}
+for the very same language for which \code{f(x, y)} is
+an interpreter.
+
+Off-line partial evaluation is based on \emph{binding-time analysis,} which
+is the process of determining among the variables used in a function (or
+a set of functions) which ones are going to be known in advance and
+which ones are not.  In the example of \code{f(x, y)}, such an analysis
+would be able to infer that the constantness of the argument \code{x}
+implies the constantness of many intermediate values used in the
+function.  The \emph{binding time} of a variable determines how early the
+value of the variable will be known.
+
+Once binding times have been determined, one possible approach to
+producing the generating extension itself is by self-applying on-line
+partial evaluators.  This is known as the second Futamura projection
+\cite{Futamura}.  So far it is unclear if this approach can lead to optimal
+results, or even if it scales well.  In PyPy we selected a more direct
+approach: the generating extension is produced by transformation of the
+control flow graphs of the interpreter, guided by the binding times.  We
+call this process \emph{timeshifting.}
+
+
+\subsection{Related work}
+
+XXX PE; Psyco; REJIT; ?
+
+
+\section{Architecture and Principles}
+
+PyPy contains a framework for generating just-in-time compilers using
+off-line partial evaluation.  As such, there are three distinct phases:
+%
+\begin{enumerate}
+
+\item\emph{Translation time:} during the normal translation of an RPython
+  program, say PyPy's Python interpreter, we perform binding-time
+  analysis and off-line specialization ("timeshifting") of the
+  interpreter.  This produces a generating extension, which is linked
+  with the rest of the program.
+
+\item\emph{Compile time:} during the execution of the program, when a new
+  bytecode is about to be interpreted, the generating extension is
+  invoked instead.  As the generating extension is a compiler, all the
+  computations it performs are called compile-time computations.  Its
+  sole effect is to produce residual code.
+
+\item\emph{Run time:} the normal execution of the program (which includes the
+  time spent running the residual code created by the generating
+  extension).
+
+\end{enumerate}
+
+Translation time is a purely off-line phase; compile time and run time
+are actually highly interleaved during the execution of the program.
+
+
+\subsection{Binding Time Analysis}
+\label{bta}
+
+At translation time, PyPy performs binding-time analysis of the source
+RPython program after it has been turned to low-level graphs, i.e.\ at
+the level at which operations manipulate pointer-and-structure-like
+objects.
+
+The binding-time terminology that we are using in PyPy is based on the
+colors that we use when displaying the control flow graphs:
+%
+\begin{itemize}
+\item\emph{Green} variables contain values that are known at compile-time;
+\item\emph{Red} variables contain values that are not known until run-time.
+\end{itemize}
+
+The binding-time analyzer of our translation tool-chain is based on the
+same type inference engine that is used on the source RPython program,
+the annotator.  In this mode, it is called the \emph{hint-annotator;} it
+operates over input graphs that are already low-level instead of
+RPython-level, and propagates annotations that do not track types but
+value dependencies and manually-provided binding time hints.
+
+The normal process of the hint-annotator is to propagate the binding
+time (i.e.\ color) of the variables using the following kind of rules:
+%
+\begin{itemize}
+
+\item For a foldable operation (i.e.\ one without side effect and which
+  depends only on its argument values), if all arguments are green,
+  then the result can be green too.
+
+\item Non-foldable operations always produce a red result.
+
+\item At join points, where multiple possible values (depending on control
+  flow) are meeting into a fresh variable, if any incoming value comes
+  from a red variable, the result is red.  Otherwise, the color of the
+  result might be green.  We do not make it eagerly green, because of
+  the control flow dependency: the residual function is basically a
+  constant-folded copy of the source function, so it might retain some
+  of the same control flow.  The value that needs to be stored in the
+  fresh join variable thus depends on which branches are taken in the
+  residual graph.
+
+\end{itemize}
+
+\subsubsection*{Hints}
+
+Our goal in designing our approach to binding-time analysis was to
+minimize the number of explicit hints that the user must provide in
+the source of the RPython program.  This minimalism was not pushed to
+extremes, though, to keep the hint-annotator reasonably simple.  
+
+The driving idea was that hints should be need-oriented.  Indeed, in a
+program like an interpreter, there are a small number of places where it
+would be clearly beneficial for a given value to be known at
+compile-time, i.e.\ green: this is where we require the hints to be
+added.
+
+The hint-annotator assumes that all variables are red by default, and
+then propagates annotations that record dependency information.
+When encountering the user-provided hints, the dependency information
+is used to make some variables green.  All
+hints are in the form of an operation \code{hint(v1, someflag=True)}
+which semantically just returns its first argument unmodified.
+
+The crucial need-oriented hint is
+$$\code{v2 = hint(v1, concrete=True)}$$
+which should be used in places where the programmer considers the
+knowledge of the value to be essential.  This hint is interpreted by
+the hint-annotator as a request for both \code{v1} and \code{v2} to be green.  It
+has a \emph{global} effect on the binding times: it means that not only
+\code{v1} but all the values that \code{v1} depends on -- recursively --
+are forced to be green.  The hint-annotator complains if the
+dependencies of \code{v1} include a value that cannot be green, like
+a value read out of a field of a non-immutable structure.
+
+Such a need-oriented backward propagation has advantages over the
+commonly used forward propagation, in which a variable is compile-time
+if and only if all the variables it depends on are also compile-time.  A
+known issue with forward propagation is that it may mark as compile-time
+either more variables than expected (which leads to over-specialization
+of the residual code), or less variables than expected (preventing
+specialization to occur where it would be the most useful).  Our
+need-oriented approach reduces the problem of over-specialization, and
+it prevents under-specialization: an unsatisfiable \code{hint(v1,
+concrete=True)} is reported as an error.
+
+In our context, though, such an error can be corrected.  This is done by
+promoting a well-chosen variable among the ones that \code{v1} depends on.
+
+Promotion is invoked with the use of a hint as well:
+\code{v2 = hint(v1, promote=True)}.
+This hint is a \emph{local} request for \code{v2} to be green, without
+requiring \code{v1} to be green.  Note that this amounts to copying
+a red value into a green one, which is not possible in classical
+approaches to partial evaluation.  See section \ref{promotion} for a
+complete discussion of promotion.
+
+For examples and further discussion on how the hints are applied in practice
+see \emph{Make your own JIT compiler} at
+\code{http://codespeak.net/pypy/dist/pypy/doc/jit.html}. % XXX check url
+
+\subsection{Timeshifting}
+
+Once binding times (colors) have been assigned to all variables in a
+family of control flow graphs, the next step is to mutate the graphs\footnote{
+    One should keep in mind that the program described as the "source RPython
+    program" in this document is typically an interpreter -- the canonical
+    example is that it is the whole PyPy Standard Interpreter.  This
+    program is meant to execute at run-time, and directly compute the
+    intended result and side-effects. The translation process transforms
+    it into a forest of flow graphs.  These are the flow graphs that
+    timeshifting processes (and not the application-level program, which typically
+    cannot be expressed as low-level flow graphs).
+}
+accordingly in order to produce a generating extension.  We call
+this process \emph{timeshifting} because it changes the time at
+which the graphs are meant to be run, from run-time to compile-time.
+
+Despite the execution time and side-effects shift to produce only
+residual code, the timeshifted graphs have a shape (flow of control)
+that is closely related to that of the original graphs.  This is because
+at compile-time the timeshifted graphs go over all the operations that
+the original graphs would have performed at run-time, following the same
+control flow; some of these operations and control flow constructs are
+constant-folded at compile-time, and the rest is turned into equivalent
+residual code.  Another point of view is that as the timeshifted graphs
+form a generating extension, they perform the equivalent of an abstract
+interpretation of the original graphs over a domain containing
+compile-time values and run-time value locations.
+
+The rest of this section describes this timeshifting process in more
+detail.
+
+\subsubsection*{Red and Green Operations}
+
+The basic idea of timeshifting is to transform operations in a way that
+depends on the color of their operands and result.  Variables themselves
+need to be represented based on their color:
+%
+\begin{itemize}
+
+\item The red (run-time) variables have abstract values at compile-time;
+  no actual value is available for them during compile-time. For them
+  we use a boxed representation that can carry either a run-time storage
+  location (a stack frame position or a register name) or an immediate
+  constant (for when the value is, after all, known at compile-time).
+
+\item On the other hand, the green variables are the ones that can carry
+  their value already at compile-time, so they are left untouched during
+  timeshifting.
+
+\end{itemize}
+
+The operations of the original graphs are then transformed as follows:
+%
+\begin{itemize}
+
+\item If an operation has no side effect nor any other run-time dependency, and
+  if it only involves green operands, then it can stay unmodified in the
+  graph.  In this case, the operation that was run-time in the original
+  graph becomes a compile-time operation, and it will never be generated
+  in the residual code.  (This is the case that makes the whole approach
+  worthwhile: some operations become purely compile-time.)
+
+\item In all other cases, the operation might have to be generated in the
+  residual code.  In the timeshifted graph it is replaced by a call
+  to a helper which will generate a residual operation manipulating
+  the input run-time values and return a new boxed representation
+  for the run-time result location.
+
+\end{itemize}
+
+These helpers will constant-fold the operation if the inputs
+are immediate constants and if the operation has no side-effects. Immediate constants can occur even though the
+corresponding variable in the graph was red: a variable can be
+dynamically found to contain a compile-time constant at a particular
+point in (compile)-time, independently of the hint-annotator
+proving that it is always the case.
+In Partial Evaluation terminology, the timeshifted graphs are
+performing some \emph{on-line} partial evaluation in addition to the
+off-line job enabled by the hint-annotator.
+
+\subsubsection*{Merges and Splits}
+
+The timeshifted code carries around an object that stores the
+compilation-time state -- mostly the current bindings of the variables.
+This state is used to shape the control flow of the generated residual
+code, as follows.
+
+After a \emph{split,} i.e.\ after a conditional branch that could not be
+folded at compile-time, the compilation state is duplicated and both
+branches are compiled independently.  Conversely, after a \emph{merge point,}
+i.e.\ when two control flow paths meet each other, we try to join the two
+paths in the residual code.  This part is more difficult because the two
+paths may need to be compiled with different variable bindings --
+e.g.\ different variables may be known to take different compile-time constant
+values in the two branches.  The two paths can either be kept separate
+or merged; in the latter case, the merged compilation-time state needs
+to be a generalization \emph{(widening)} of the two already-seen states.
+Deciding when to do each is a classical problem of partial evaluation,
+as merging too eagerly may loose important precision and not merging
+eagerly enough may create too many redundant residual code paths (to the
+point of preventing termination of the compiler).
+
+So far, we did not investigate this problem in detail.  We settled for a
+simple widening heuristic: two different compile-time constants merge as
+a run-time value, but we try to preserve the richer models of run-time
+information that are enabled by the techniques described in the sequel
+(promotion (\ref{promotion}), virtual structures (\ref{virtual})...).
+This heuristic seems to work
+for PyPy to some extent.
+
+\subsubsection*{Calls and inlining}
+
+For calls timeshifting can either produce code to generate a residual
+call operation or recursively invoke the timeshifted version of the
+callee.  The residual operations generated by the timeshifted callee
+will grow the compile-time produced residual function; this
+effectively amounts to the compile-time inlining of the original callee into
+its caller. This is the default behaviour for calls within the
+user-controlled subset of original graphs of the interpreter that are
+timeshifted. Inlining only stops at re-entrant calls to the
+interpreter main loop; the net result is that at the level of the
+interpreted language, each function (or method) gets compiled into
+a single piece of residual code.
+
+\subsection{Promotion}
+\label{promotion}
+
+In the sequel, we describe in more details one of the main new
+techniques introduced in our approach, which we call \emph{promotion.}  In
+short, it allows an arbitrary run-time value to be turned into a
+compile-time value at any point in time.  Each promotion point is
+explicitly defined with a hint that must be put in the source code of
+the interpreter.
+
+From a partial evaluation point of view, promotion is the converse of
+the operation generally known as "lift".  Lifting a value means
+copying a variable whose binding time is compile-time into a variable
+whose binding time is run-time -- it corresponds to the compiler
+"forgetting" a particular value that it knew about.  By contrast,
+promotion is a way for the compiler to gain \emph{more} information about
+the run-time execution of a program. Clearly, this requires
+fine-grained feedback from run-time to compile-time, thus a
+dynamic setting.
+
+Promotion requires interleaving compile-time and run-time phases,
+otherwise the compiler can only use information that is known ahead of
+time. It is impossible in the "classical" approaches to partial
+evaluation, in which the compiler always runs fully ahead of execution
+This is a problem in many large use cases.  For example, in an
+interpreter for a dynamic language, there is mostly no information
+that can be clearly and statically used by the compiler before any
+code has run.
+
+A more theoretical way to see the issue is to consider that the
+possible binding time for each variable in the interpreter is
+constrained by the binding time of the other variables it depends on.
+For some kind of interpreters this set of constraints may have no
+interesting global solution -- if most variables can ultimately depend
+on a value, even in just one corner case, which cannot be
+compile-time, then in any solution most variables will be run-time.
+In the presence of promotion, though, these constraints can be
+occasionally violated: corner cases do not necessarily have to
+influence the common case, and local solutions can be patched
+together.
+
+A very different point of view on promotion is as a generalization of
+techniques that already exist in dynamic compilers as found in modern
+object-oriented language virtual machines.  In this context feedback
+techniques are crucial for good results.  The main goal is to
+optimize and reduce the overhead of dynamic dispatching and indirect
+invocation.  This is achieved with variations on the technique of
+polymorphic inline caches \cite{polymorphic-inline-caches}:
+the dynamic lookups are cached and
+the corresponding generated machine code contains chains of
+compare-and-jump instructions which are modified at run-time.  These
+techniques also allow the gathering of information to direct inlining for even
+better optimization results.
+
+In the presence of promotion, dispatch optimization can usually be
+reframed as a partial evaluation task.  Indeed, if the type of the
+object being dispatched to is known at compile-time, the lookup can be
+folded, and only a (possibly inlined) direct call remains in the
+generated code.  In the case where the type of the object is not known
+at compile-time, it can first be read at run-time out of the object and
+promoted to compile-time.  As we will see in the sequel, this produces
+very similar machine code.\footnote{
+    This can also be seen as a generalization of a partial
+    evaluation transformation called "The Trick" (see e.g.\ \cite{partial-evaluation}),
+    which again produces similar code but which is only
+    applicable for finite sets of values.
+}
+
+The essential advantage is that it is no longer tied to the details of
+the dispatch semantics of the language being interpreted, but applies in
+more general situations.  Promotion is thus the central enabling
+primitive to make timeshifting a practical approach to language
+independent dynamic compiler generation.
+
+\subsubsection*{Promotion in practice}
+
+The implementation of promotion requires a tight coupling between
+compile-time and run-time: a \emph{callback,} put in the generated code,
+which can invoke the compiler again.  When the callback is actually
+reached at run-time, and only then, the compiler resumes and uses the
+knowledge of the actual run-time value to generate more code.
+
+The new generated code is potentially different for each run-time value
+seen.  This implies that the generated code needs to contain some sort
+of updatable switch, which can pick the right code path based on the
+run-time value.
+
+While this describes the general idea, the details are open to slight
+variations.  Let us show more precisely the way the JIT compilers
+produced by PyPy 1.0 work.  Our first example is purely artificial:
+%
+\begin{verbatim}
+    ...
+    b = a / 10
+    c = hint(b, promote=True)
+    d = c + 5
+    print d
+    ...
+\end{verbatim}
+
+In this example, \code{a} and \code{b} are run-time variables and \code{c} and
+\code{d} are compile-time variables; \code{b} is copied into \code{c} via a
+promotion.  The division is a run-time operation while the addition is a
+compile-time operation.
+
+The compiler derived from an interpreter containing the above code
+generates the following machine code (in pseudo-assembler notation),
+assuming that \code{a} comes from register \code{r1}:
+%
+\begin{verbatim}
+ ...
+    r2 = div r1, 10
+ Label1:
+    jump Label2
+    <some reserved space here>
+
+ Label2:
+    call continue_compilation(r2, <state data ptr>)
+    jump Label1
+\end{verbatim}
+
+The first time this machine code runs, the function called
+\code{continue\_compilation()}
+resumes the compiler.  The two arguments to the function are
+the actual run-time value from the register \code{r2}, which the compiler
+will now consider as a compile-time constant, and an immediate pointer
+to data that was generated along with the above code snippet and which
+contains enough information for the compiler to know where and with
+which state it should resume.
+
+Assuming that the first run-time value taken by \code{r1} is, say, 42, then
+the compiler will see \code{r2 == 4} and update the above machine code as
+follows:
+%
+\begin{verbatim}
+ ...
+    r2 = div r1, 10
+ Label1:
+    compare r2, 4            # patched
+    jump-if-equal Label3     # patched
+    jump Label2              # patched
+    <less reserved space left>
+
+ Label2:
+    call continue_compilation(r2, <state data ptr>)
+    jump Label1
+
+ Label3:                     # new code
+    call print(9)            # new code
+    ...
+\end{verbatim}
+
+Notice how the addition is constant-folded by the compiler.  (Of course,
+in real examples, different promoted values typically make the compiler
+constant-fold complex code path choices in different ways, and not just
+simple operations.)  Note also how the code following \code{Label1} is an
+updatable switch which plays the role of a polymorphic inline cache.
+The "polymorphic" terminology does not apply in our context, though, as
+the switch does not necessarily have to be on the type of an object.
+
+After the update, the original call to \code{continue\_compilation()}
+returns and execution loops back to the now-patched switch at
+\code{Label1}.  This run and all following runs in which \code{r1} is between
+40 and 49 will thus directly go to \code{Label3}.  Obviously, if other
+values show up, \code{continue\_compilation()} will be invoked again, so new
+code will be generated and the code at \code{Label1} further patched to
+check for more cases.
+
+If, over the course of the execution of a program, too many cases are
+seen, the reserved space after \code{Label1} will eventually run out.
+Currently, we simply reserve more space elsewhere and patch the final
+jump accordingly.  There could be better strategies which which we did
+not implement so far, such as discarding old code and reusing their slots
+in the switch, or sometimes giving up entirely and compiling a general
+version of the code in which the value remains run-time.
+
+
+\subsubsection*{Implementation notes}
+
+The state data pointer in the example above contains a snapshot of the
+state of the compiler when it reached the promotion point.  Its memory
+impact is potentially large -- a complete continuation for each generated
+switch, which can never be reclaimed because new run-time values may
+always show up later during the execution of the program.
+
+To reduce the problem we compress the state into a so-called \emph{path.}
+The full state is only stored at a few specific points.\footnote{
+    More precisely, at merge points that the user needs to mark
+    as "global".  The control flow join point corresponding to the
+    looping of the interpreter main loop is a typical place to put
+    such a global merge point.
+}
+The compiler
+records a trace of the multiple paths it followed from the last full
+snapshot in a lightweight tree structure.  The state data pointer is
+then only a pointer to a node in the tree; the branch from that node to
+the root describes a path that let the compiler quickly \emph{replay} its
+actions (without generating code again) from the latest full snapshot to
+rebuild its internal state and get back to the original promotion point.
+
+For example, if the interpreter source code contains promotions inside a
+run-time condition:
+%
+\begin{verbatim}
+        if condition:
+            ...
+            hint(x, promote=True)
+            ...
+        else:
+            ...
+            hint(y, promote=True)
+            ...
+\end{verbatim}
+
+then the tree will contain three nodes: a root node storing the
+snapshot, a child with a "True case" marker, and another child with a
+"False case" marker.  Each promotion point generates a switch and a call
+to \code{continue\_compilation()} pointing to the appropriate child node.
+The compiler can re-reach the correct promotion point by following the
+markers on the branch from the root to the child.
+
+
+\subsection{Virtual structures}
+\label{virtual}
+
+Interpreters for dynamic languages typically allocate a lot of small
+objects, for example due to boxing.  For this reason, we
+implemented a way for the compiler to generate residual memory
+allocations as lazily as possible.  The idea is to try to keep new
+run-time structures "exploded": instead of a single run-time pointer to
+a heap-allocated data structure, the structure is "virtualized" as a set
+of fresh variables, one per field.  In the compiler, the variable that
+would normally contain the pointer to the structure gets instead a
+content that is neither a run-time value nor a compile-time constant,
+but a special \emph{virtual structure} -- a compile-time data structure that
+recursively contains new variables, each of which can again store a
+run-time, a compile-time, or a virtual structure value.
+
+This approach is based on the fact that the "run-time values" carried
+around by the compiler really represent run-time locations -- the name of
+a CPU register or a position in the machine stack frame.  This is the
+case for both regular variables and the fields of virtual structures.
+It means that the compilation of a \code{getfield} or \code{setfield}
+operation performed on a virtual structure simply loads or stores such a
+location reference into the virtual structure; the actual value is not
+copied around at run-time.
+
+It is not always possible to keep structures virtual.  The main
+situation in which it needs to be "forced" (i.e.\ actually allocated at
+run-time) is when the pointer escapes to some non-virtual location like
+a field of a real heap structure.
+
+Virtual structures still avoid the run-time allocation of most
+short-lived objects, even in non-trivial situations.  The following
+example shows a typical case.  Consider the Python expression \code{a+b+c}.
+Assume that \code{a} contains an integer.  The PyPy Python interpreter
+implements application-level integers as boxes -- instances of a
+\code{W\_IntObject} class with a single \code{intval} field.  Here is the
+addition of two integers:
+%
+\begin{verbatim}
+  def add(w1, w2):          # w1, w2 are instances
+      value1 = w1.intval    # of W_IntObject
+      value2 = w2.intval
+      result = value1 + value2
+      return W_IntObject(result)
+\end{verbatim}
+
+When interpreting the bytecode for \code{a+b+c}, two calls to \code{add()} are
+issued; the intermediate \code{W\_IntObject} instance is built by the first
+call and thrown away after the second call.  By contrast, when the
+interpreter is turned into a compiler, the construction of the
+\code{W\_IntObject} object leads to a virtual structure whose \code{intval}
+field directly references the register in which the run-time addition
+put its result.  This location is read out of the virtual structure at
+the beginning of the second \code{add()}, and the second run-time addition
+directly operates on the same register.
+
+An interesting effect of virtual structures is that they play nicely with
+promotion.  Indeed, before the interpreter can call the proper \code{add()}
+function for integers, it must first determine that the two arguments
+are indeed integer objects.  In the corresponding dispatch logic, we
+have added two hints to promote the type of each of the two arguments.
+This produces a compiler that has the following behavior: in the general
+case, the expression \code{a+b} will generate two consecutive run-time
+switches followed by the residual code of the proper version of
+\code{add()}.  However, in \code{a+b+c}, the virtual structure representing
+the intermediate value will contain a compile-time constant as type.
+Promoting a compile-time constant is trivial -- no run-time code is
+generated.  The whole expression \code{a+b+c} thus only requires three
+switches instead of four.  It is easy to see that even more switches can
+be skipped in larger examples; typically, in a tight loop manipulating
+only integers, all objects are virtual structures for the compiler and
+the residual code is theoretically optimal -- all type propagation and
+boxing/unboxing occurs at compile-time.
+
+
+\subsection{Virtualizable structures}
+\label{virtualizable}
+
+In the PyPy interpreter there are cases where structures cannot be
+virtual -- because they escape, or are allocated outside the
+JIT-generated code -- but where we would still like to keep the
+"exploding" effect and carry the fields of the structure as local
+variables in the generated code.
+
+It is likely that the same problem occurs more generally in many
+interpreters: the typical example is that of frame objects, which stores
+among other things the value of the local variables of each function
+invocation.  Ideally, the effect we would like to achieve is to keep the
+frame object as a purely virtual structure, and the same for the array
+or dictionary implementing the bindings of the locals.  Then each local
+variable of the interpreted language can be represented as a separate
+run-time value in the generated code, or be itself further virtualized
+(e.g.\ as a virtual \code{W\_IntObject} structure as seen above).
+
+The issue is that the frame object is sometimes built in advance by
+non-JIT-generated code; even when it is not, it immediately escapes into
+the global list of frames that is used to support the frame stack
+introspection primitives that Python exposes.  In other words, the frame
+object cannot be purely virtual because a pointer to it must be stored
+into a global data structure (even though in practice most of frame
+objects are deallocated without ever having been introspected).
+
+To solve this problem, we introduced \emph{virtualizable structures,} a mix
+between regular run-time structures and virtual structures.  A virtualizable structure is a
+structure that exists at run-time in the heap, but that is
+simultaneously treated as virtual by the compiler.  Accesses to the
+structure from the code generated by the JIT are virtualized away,
+i.e.\ don't involve run-time copying.  The trade-off is that in order
+to keep both views synchronized, accesses to the run-time structure
+from regular code not produced by the JIT needs to perform an extra
+check.
+
+Because of this trade-off, a hint needs to be inserted manually to mark
+the classes whose instances should be implemented in this way -- the
+class of frame objects, in the case of PyPy.  The hint is used by the
+translation toolchain to add a hidden field to all frame objects, and to
+translate all accesses to the object fields into low-level code that
+first checks the hidden field.  This is the only case so far in which
+the presence of the JIT compiler imposes a global change to the rest of
+the program during translation.\footnote{
+    This is not a problem per se, as it is anyway just a small
+    extension to the translation framework, but it imposes a performance
+    overhead to all code manipulating frame objects.  To mitigate this, we
+    added a way to declare during RPython type inference that the
+    indirection check is not needed in some parts of the code where we know
+    that the frame object cannot have a virtual counterpart.
+}
+
+The hidden field is set when the frame structure enters JIT-generated
+code, and cleared when it leaves.  When a recursive call to
+non-JIT-generated code finds a structure with the field set, it invokes
+a JIT-generated callback to perform the reading or updating of the field
+from the point of view of its virtual structure representation.  The
+actual fields in the heap structure are not used during this time.
+
+The effect that can be obtained in this way is that although frame
+objects are still allocated in the heap, most of them will always remain
+essentially empty.  A pointer to these empty frames is pushed into and
+popped off the global frame list, allowing the introspection mechanisms
+to still work perfectly.
+
+
+\subsection{Other implementation details}
+
+We quickly mention below a few other features and implementation details
+of the implementation of the JIT generation framework.  More information
+can be found in the on-line documentation \cite{PyPy}.  % => ref to web site
+%
+\begin{itemize}
+
+\item There are more user-specified hints available, like \emph{deep-freezing,}
+  which marks an object as immutable in order to allow accesses to
+  its content to be constant-folded at compile-time.
+
+\item The compiler representation of a run-time value for a non-virtual
+  structure may additionally remember that some fields are actually
+  compile-time constants.  This occurs for example when a field is
+  read from the structure at run-time and then promoted to compile-time.
+
+\item In addition to virtual structures, lists and dictionaries can also be
+  virtual.
+
+\item Exception handling is achieved by inserting explicit operations into
+  the graphs before they are timeshifted.  Most of these run-time
+  exception manipulations are then virtualized away, by treating the
+  exception state as virtual.
+
+\item Timeshifting is performed in two phases: a first step transforms the
+  graphs by updating their control flow and inserting pseudo-operations
+  to drive the compiler; a second step (based on the RTyper \cite{D05.1})
+  replaces all necessary operations by calls to support code.
+
+\item The support code implements the generic behaviour of the compiler,
+  e.g.\ the merge logic.  It is about 3500 lines of RPython code.  The
+  rest of the hint-annotator and timeshifter is about 3800 lines of
+  Python code.
+
+\item The machine code backends (two so far, Intel IA32 and PowerPC) are
+  about 3500 further lines of RPython code each.  There is a
+  well-defined interface between the JIT compiler support code and the
+  backends, making writing new backends relatively easy.  The unusual
+  part of the interface is the support for the run-time updatable
+  switches.
+
+\end{itemize}
+
+
+\section{Results}
+
+The following test function is an example of purely arithmetic code
+written in Python, which the PyPy JIT can run extremely fast:
+%
+\begin{verbatim}
+   def f1(n):
+       "Arbitrary test function."
+       i = 0
+       x = 1
+       while i<n:
+           j = 0
+           while j<=i:
+               j = j + 1
+               x = x + (i&j)
+           i = i + 1
+       return x
+\end{verbatim}
+
+We measured the time required to compute \code{f1(2117)} on the following
+interpreters:
+%
+\begin{itemize}
+
+\item Python 2.4.4, the standard CPython implementation.
+
+\item A version of pypy-c (our Python interpreter translated to a stand-alone
+  executable via C) including a generated JIT compiled.
+
+\item gcc 4.1.1 compiling the above function rewritten in C (which, unlike
+  the other two, does not do any overflow checking on the arithmetic
+  operations).
+
+\end{itemize}
+
+The relative results have been found to vary by 25\% depending on the
+machine.  On our reference benchmark machine, a 4-cores Intel(R)
+Xeon(TM) CPU 3.20GHz with 5GB of RAM, we obtained the following results
+(the numbers in parenthesis are the slow-down ratio relative to the
+unoptimized gcc compilation):
+
+\begin{tabular}{|l|ll|}
+\hline
+Interpreter & \multicolumn{2}{|c|}{Seconds per call} \\
+\hline
+Python 2.4.4                            & 0.82   & (132x)   \\
+Python 2.4.4 with Psyco 1.5.2           & 0.0062 & (1.00x)  \\
+pypy-c with the JIT turned off          & 1.77   & (285x)   \\
+pypy-c with the JIT turned on           & 0.0091 & (1.47x)  \\
+gcc                                     & 0.0062 & (1x)     \\
+gcc -O2                                 & 0.0022 & (0.35x)  \\
+\hline
+\end{tabular}
+
+This table shows that the PyPy JIT is able to generate residual code
+that runs within the same order of magnitude as an unoptimizing gcc.  It
+shows that all the abstraction overhead has been correctly removed from
+the residual code; the remaining slow-downs are only due to a suboptimal
+low-level machine code generation backend.  We have thus reached our
+goal of automatically generating a JIT whose performance is similar to
+the hand-written Psyco without having its limitations.\footnote{
+    As mentioned above, Psyco gives up compiling Python functions
+    if they use constructs it does not support, and is not 100\%
+    compatible with introspection of frames.  By construction the
+    PyPy JIT does not have these limitations.  The PyPy JIT is
+    also easier to retarget, and already supports more architectures
+    than Psyco does, namely the Intel Mac OS/X and the PowerPC Mac OS/X.
+}
+
+In particular, the ratio of 1.47x between the unoptimizing gcc and the
+PyPy JIT matches the target of 1.5x that we set ourselves as our goal
+within the duration of the EU project.  We should also mention that on
+an Intel-based Mac OS/X machine we have measured this ratio to be as low
+as 1.15x.
+
+
+\section{Future work}
+
+Here are what we think are the most important points that will need
+attention in order to make the approach more robust:
+%
+\begin{itemize}
+
+\item The timeshifted graphs currently compile many branches eagerly.  This
+  can easily result in residual code explosion.  Depending on the source
+  interpreter this can also result in non-termination issues, where
+  compilation never completes.  The opposite extreme would be to always
+  compile branches lazily, when they are about to be executed, as Psyco
+  does.  While this neatly sidesteps termination issues, the best
+  solution is probably something in between these extremes.
+
+\item As described in the Promotion section (\ref{promotion}),
+  we need fall-back solutions for when the
+  number of promoted run-time values seen at a particular point becomes
+  too large.
+
+\item We need more flexible control about what to inline or not to inline in
+  the residual code.
+
+\item The widening heuristics for merging needs to be refined.
+
+\item The JIT generation framework needs to be made aware of some other
+  translation-time aspects in order to produce the correct residual code
+  (e.g.\ code calling the correct Garbage Collection routines or
+  supporting Stackless-style stack unwinding \cite{D07.1}).
+
+\item We did not work yet on profile-directed identification of program hot
+  spots.  Currently, the interpreter must decide when to invoke the JIT
+  or not (which can itself be based on explicit requests from the interpreted
+  program).
+
+\item The machine code backends can be improved.
+
+\end{itemize}
+
+The latter point opens an interesting future research direction: can we
+layer our kind of JIT compiler on top of a virtual machine that already
+contains a lower-level JIT compiler?  In other words, can we delegate
+the difficult questions of machine code generation to a lower
+independent layer, e.g.\ inlining, re-optimization of frequently executed
+code, etc.?  What changes would be required to an existing virtual
+machine, e.g.\ a Java Virtual Machine, to support this?
+
+
+\section{Conclusion}
+
+Producing the results described in the previous section requires the
+generated compiler to completely cut the overhead and fold at
+compile-time some rather involved lookup algorithms like Python's binary
+operation dispatch.  Promotion proved itself to be sufficiently
+powerful to achieve this.  Other features we introduced allowed to
+preserve information about intermediate value types, to avoid their
+boxing and to propagate them in the CPU stack and registers.
+
+Some slight reorganisation of the interpreter main loop without semantics
+influence, marking the frames as virtualizable
+(section \ref{virtualizable}), and adding hints at
+a few crucial points was all that was necessary for our Python
+interpreter.
+
+We think that our results make viable an approach to implement dynamic
+languages that needs only a straight-forward bytecode interpreter to
+be written. Dynamic compilers would be generated automatically guided
+by the placement of hints.
+
+These implementations should stay flexible and evolvable.  Dynamic
+compiler would be robust against language changes up to the need to
+maintain and possibly change the hints.
+
+We consider this as a major breakthrough in term of the possibilities it
+opens for language design and implementation; it was one of the main
+goals of the research program within the PyPy project.  Only groups with
+very large amounts of resources can affort the high costs of writing
+just-in-time compilers from scratch.  Communities with limited available
+resources for the implementation and maintenance of a language, such as,
+generally, academic and open source projects, cannot afford such costs
+-- and even when experimental just-in-time compilers exist, the mere
+fact of having to maintain them in parallel with other implementations
+is taxing for such communities, particularly when the languages in
+question evolve quickly.  In the PyPy approach, from a single simple
+implementation for the language, we can generate stand-alone virtual
+machines whose performance far excess that of traditional hand-written
+virtual machines (like CPython, the reference C implementation of
+Python); with the generation of a dynamic compiler, we achieve
+state-of-the-art performance.
+
+% XXX balance columns
+
+
+%.. References (title not necessary, latex generates it)
+%
+%.. [D05.1] `Compiling Dynamic Language Implementations`, PyPy EU-Report, 2005
+%
+%.. [D05.4] `Encapsulating Low-Level Aspects`, PyPy EU-Report, 2005
+%
+%.. [D07.1] `Support for Massive Parallelism, Optimisation results, Practical
+%           Usages and Approaches for Translation Aspects`, PyPy EU-Report,
+%           2006
+%
+%.. [D08.1] `Release a JIT Compiler for PyPy Including Processor Backends
+%           for Intel and PowerPC`, PyPy EU-Report, 2007
+%
+%.. [FU]    `Partial evaluation of computation process -- an approach to a
+%           compiler-compiler`, Yoshihito Futamura, Higher-Order and
+%           Symbolic Computation, 12(4):363-397, 1999.  Reprinted from
+%           Systems Computers Controls 2(5), 1971
+%
+%.. [PE]   `Partial evaluation and automatic program generation`,
+%           Neil D. Jones, Carsten K. Gomard, Peter Sestoft,
+%           Prentice-Hall, Inc., Upper Saddle River, NJ, 1993
+%
+%.. [REJIT] `Retargeting JIT Compilers by using C-Compiler Generated
+%           Executable Code`, M. Anton Ertl, David Gregg, Proc. of 
+%           the 13th Intl. Conf. on Parallel Architectures and 
+%           Compilation Techniques, 2004.
+%
+%.. [PIC] `Optimizing Dynamically-Typed Object-Oriented Languages With
+%         Polymorphic Inline Caches`, U. HÃ¶lzle, C. Chambers, D. Ungar,
+%         ECOOP'91 Conference Proceedings, Geneva, 1991.
+%
+%.. [PSYCO] `Representation-based just-in-time specialization and the
+%           psyco prototype for python`, Armin Rigo, in PEPM '04: Proceedings
+%           of the 2004 ACM SIGPLAN symposium on Partial evaluation and
+%           semantics-based program manipulation, pp. 15-26, ACM Press, 2004
+%
+%.. [VMCDLS]  `PyPy's approach to virtual machine construction`, Armin Rigo,
+%           Samuele Pedroni, in OOPSLA '06: Companion to the 21st ACM SIGPLAN
+%           conference on Object-oriented programming languages, systems, and
+%           applications, pp. 944-953, ACM Press, 2006
+
+% ---- Bibliography ----
+\bibliographystyle{abbrv}
+\bibliography{paper}
+
+\end{document}

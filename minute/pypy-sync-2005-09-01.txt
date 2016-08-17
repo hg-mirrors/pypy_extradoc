@@ -1,0 +1,254 @@
+=============================================
+pypy-sync developer meeting 1st September 
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync 
+
+Attendees::
+
+         Samuele Pedroni, 
+         Anders Lehmann,
+         Ludovic Aubrien,
+         Adrien Di Mascio, 
+         Christian Tismer, 
+         Armin Rigo, Carl Friedrich Bolz (later) 
+         Holger Krekel (minutes/moderation)
+         Eric van Riet Paap
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No conflicts were discovered.
+
+Topics of the week
+===================
+
+Recap of discussed development areas until October 
+-------------------------------------------------------
+
+Everyone agreed that we want to deal with cleanups
+and simplification refactorings until the Paris 
+Sprint rather than optimizations.  Optimizations should only 
+be tackled for "low hanging fruits" which is defined to have
+a good ratio of LOCs against speedup.  For example, 
+the recent specializations of function calls which lead
+to a speed-up by 2-3 times were considered as having
+a good ratio.  Moreover we looked in more detail 
+at the following cleanup/refactoring issues: 
+
+- bringing the compiler to good state.  Ludovic and 
+  Adrien with help from Samuele and Arre will work
+  on making the current 'astcompiler' the (translateable) 
+  and compliant default compiler. 
+
+- the translation driving (translate_pypy.py and friends) 
+
+  Anders Lehmann is going to work on this and Armin has
+  some refactored code and intends to help Anders along
+  with Samuele. Eric will keep an eye on having LLVM 
+  properly integrated. 
+ 
+- improved test/reporting support.  Holger intends to 
+  work on this. 
+
+
+Paris Sprint announcement 
+-----------------------------------------------
+
+Ludovic is going to prepare a Paris Sprint announcement
+tomorrow with help from Holger.  The meeting reconfirms 
+the following sprint topics: 
+
+    - threading and GC 
+    - refactoring/translation features 
+    - start on JIT/optimizations/stackless 
+
+Preparation/Moderation Next pypy-sync meeting 
+--------------------------------------------------
+
+Armin, Anders L. and Christian are ready to prepare 
+the next three pypy-sync meetings, respectively: 
+
+    8th September: Armin
+    15th September: Christian 
+    22rd September: Anders L. 
+
+We'll see who is going to do the next pypy-sync 
+meetings after that.  
+
+Closing 
+------------------
+
+Holger closes the meeting in time at 13:26pm.
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+
+    **** BEGIN LOGGING AT Thu Aug 18 12:59:41 2005
+
+    Sep 01 12:53:14 -->	You are now talking on #pypy-sync
+    Sep 01 12:56:18 -->	pedronis (n=Samuele_@c-398b70d5.022-54-67626719.cust.bredbandsbolaget.se) has joined #pypy-sync
+    Sep 01 12:56:24 -->	stakkars (i=pyanan@i577B4CC6.versanet.de) has joined #pypy-sync
+    Sep 01 13:02:03 <hpk>	i guess we start (hope arigo drops over soon)
+    Sep 01 13:02:18 <hpk>	here is the agenda (as mailed yesterday):
+    Sep 01 13:02:21 <hpk>	- activity reports (3 prepared lines of info).
+    Sep 01 13:02:21 <hpk>	- resolve conflicts/blockers
+    Sep 01 13:02:21 <hpk>	*Topics of the week*
+    Sep 01 13:02:21 <hpk>	- Recap of discussed development areas until October
+    Sep 01 13:02:21 <hpk>	- Paris Sprint announcement
+    Sep 01 13:02:21 <hpk>	- Preparation/Moderation next pypy-sync meeting
+    Sep 01 13:02:22 -->	ludal (n=ludal@logilab.net2.nerim.net) has joined #pypy-sync
+    Sep 01 13:02:53 <hpk>	let's start with activity reports in this order:
+    Sep 01 13:03:02 <hpk>	adim,aleale,ericvrp,hpk,ludal,pedronis,stakkars
+    Sep 01 13:03:24 <adim>	LAST: none
+    Sep 01 13:03:24 <adim>	NEXT: astcompiler
+    Sep 01 13:03:24 <adim>	BLOCKERS: none
+    Sep 01 13:03:28 <aleale>	This week: recover from Heidelberg, clean-up _codecs, planning of wp 9 and 10
+    Sep 01 13:03:30 <stakkars>	how about reverse,mine is in the clipboad
+    Sep 01 13:03:37 <aleale>	Next week: more cleanups, more planning, some compliancy issues
+    Sep 01 13:03:45 <aleale>	Blockers : -
+    Sep 01 13:03:52 <hpk>	LAST: heidelberg sprint, reporting, mailing
+    Sep 01 13:03:52 <hpk>	NEXT: steps towards better test reporting and general refactoring
+    Sep 01 13:03:52 <hpk>	BLOCKERS: None
+    Sep 01 13:04:03 <ericvrp>	last: slotified llvm backend, bugfixes, added gc atomic calls to genc
+    Sep 01 13:04:04 <ericvrp>	next: test experimental llvm escape analysis
+    Sep 01 13:04:06 <ericvrp>	blockers: -
+    Sep 01 13:04:30 <hpk>	stakkars: go ahead if you can't keep your clipboard content :)
+    Sep 01 13:04:30 <pedronis>	LAST: sprint, small fixes, looked a bit at performance
+    Sep 01 13:04:32 <pedronis>	NEXT: report planning with Armin, cleanups/help with compiler
+    Sep 01 13:04:33 <pedronis>	BLOCKERS: how we want to distribute cleanups work/design
+    Sep 01 13:04:55 <ludal>	Last week: sprint then none
+    Sep 01 13:04:55 <ludal>	Next week: astcompiler
+    Sep 01 13:04:55 <ludal>	blockers:  none
+    Sep 01 13:05:18 <stakkars>	DONE: reimplemented list overallocation in low-level, removing it from listobject
+    Sep 01 13:05:25 <stakkars>	NEXT: making dictionaries low-level, maybe looking into trusted refcounting.
+    Sep 01 13:05:31 <stakkars>	BLOCK: maybe a missing interface between lowlevel types that prevents malicious use of fields
+    Sep 01 13:06:07 <hpk>	ok, pedronis's blocker is a topic of this meeting
+    Sep 01 13:06:19 <hpk>	and stakkars blocker should be discussed on #pypy i guess 
+    Sep 01 13:06:40 <stakkars>	yes
+    Sep 01 13:06:49 <hpk>	ok, first topic of the week: 
+    Sep 01 13:06:54 <hpk>	Recap of discussed development areas until October
+    Sep 01 13:07:14 <hpk>	we said that we want to focus on cleanups/refactoring until we start with otpm,ization wp06-XX efforts in october 
+    Sep 01 13:07:29 <hpk>	the three areas i wrote down at last sprint: 
+    Sep 01 13:07:33 <hpk>	compiler
+    Sep 01 13:07:34 <hpk>	translation driving
+    Sep 01 13:07:42 <hpk>	testing stuff
+    Sep 01 13:07:51 <hpk>	is there anything that is missing or different opinions? 
+    Sep 01 13:08:13 <aleale>	consolodating the use of _codecs
+    Sep 01 13:08:28 <hpk>	in which sense? 
+    Sep 01 13:08:41 <aleale>	The same algoritm of escaped strings is at least 33 places
+    Sep 01 13:08:49 <aleale>	s/33/3
+    Sep 01 13:09:18 <aleale>	there might be more
+    Sep 01 13:09:20 <pedronis>	at least the string one needs to be at interp-level for bootstrapping reason
+    Sep 01 13:09:47 <aleale>	ok lets defer it #pypy
+    Sep 01 13:09:52 <hpk>	ok
+    Sep 01 13:09:53 -->	arigo (n=arigo@pdpc/supporter/sustaining/arigo) has joined #pypy-sync
+    Sep 01 13:10:12 <hpk>	ludal,adim: you are aware that arre and samuele are willing to help with astcompiler and the compiler efforts? 
+    Sep 01 13:10:31 <ludal>	now yes :)
+    Sep 01 13:10:49 <hpk>	ludal: it also is in the technical board minutes from heidelberg 
+    Sep 01 13:11:00 <hpk>	jsut so you know
+    Sep 01 13:11:14 <ludal>	it needs to become translatable, and probably we'll then have to repass the compliance tests
+    Sep 01 13:11:28 <hpk>	stakkars: so simplifying/unifying our dict implementations also goes in the camp of refactoring/cleanups i guess
+    Sep 01 13:11:45 <stakkars>	quick question: how clear is what we are doing when? Do we want to work sequentially or do some
+    Sep 01 13:11:58 <stakkars>	optimization in parallel? I'm asking since this has happened already.
+    Sep 01 13:12:15 <hpk>	i know, i am more in the camp of not tackling too much optimization
+    Sep 01 13:12:32 <hpk>	but rather get our code base into better shape 
+    Sep 01 13:13:04 <stakkars>	I think there are different opinions form what I see happending. We should be clear about this.
+    Sep 01 13:13:07 <hpk>	it is open who is going to work on improving translate_pypy and friends 
+    Sep 01 13:13:22 <pedronis>	the optimisation that was done had an enormous number of lines/efforts speed  up ratio
+    Sep 01 13:13:37 <pedronis>	unless there is some other such very low hanging fruit
+    Sep 01 13:13:50 <pedronis>	I think cleanups take precedence
+    Sep 01 13:13:57 <hpk>	yes, i agree
+    Sep 01 13:14:12 <pedronis>	othewise they risk to never to be done
+    Sep 01 13:14:12 <stakkars>	I se, it was the "very much issue". Then I will trash my list overallocation.
+    Sep 01 13:14:28 <hpk>	everyone else agrees with "only very good ratios of LoC/speed ups" are ok? 
+    Sep 01 13:14:32 <ludal>	maybe looking at the possible optimization would help coming up with a more flexible design
+    Sep 01 13:14:51 <pedronis>	stakkars: ?
+    Sep 01 13:15:02 <pedronis>	trashing done work doesn't seem a good idea
+    Sep 01 13:15:12 <stakkars>	at least we should do considerations. I found some corner cases on list allocation,
+    Sep 01 13:15:23 <aleale>	I aggree to only addres low hanging fruits at this time
+    Sep 01 13:15:30 <stakkars>	which need a bit of discussion, because optimization is hard wihtout knowledge of GC
+    Sep 01 13:16:01 <hpk>	is anyone here ready to tackle translate_pypy cleanups? 
+    Sep 01 13:16:02 <stakkars>	low-hanging fruit is ok. What do I do if the fruit wasn't that sleshy, after all? :-)
+    Sep 01 13:16:08 <stakkars>	yes
+    Sep 01 13:16:36 <aleale>	hpk: yes
+    Sep 01 13:16:47 <arigo>	I started some time ago something about cleaning up Translator
+    Sep 01 13:17:00 <arigo>	but I'm not sure I'd like to finish it right now (it looks like work)
+    Sep 01 13:17:15 <hpk>	arigo: :-)
+    Sep 01 13:17:22 <arigo>	for me, outlining the reports' content and starting on them is higher priority
+    Sep 01 13:17:38 <stakkars>	on cleaning up dictionaries, this gives both speed and nicer source.Postpone as well?
+    Sep 01 13:17:39 <aleale>	makes sense
+    Sep 01 13:17:55 <hpk>	right, ok. then aleale can give it a go and whoever wants to join.
+    Sep 01 13:18:12 <pedronis>	I can help
+    Sep 01 13:18:17 <hpk>	great
+    Sep 01 13:18:20 <hpk>	i think we can close this topic now (there also is and should be discussion on pypy-dev regarding some of the topics)
+    Sep 01 13:18:26 <pedronis>	but it has less priority than reports and compiler
+    Sep 01 13:18:27 <ericvrp>	I will keep checking if it's still llvm compatible
+    Sep 01 13:18:34 <hpk>	pedronis: sure
+    Sep 01 13:18:35 <stakkars>	ok, I misunderstood the sudden massive speedup-checkins, it was just a big fruit, right?
+    Sep 01 13:18:51 <hpk>	yes, a factor of 2-3 speedup in pystones
+    Sep 01 13:19:03 <pedronis>	and richards
+    Sep 01 13:19:06 <stakkars>	(and I got just 5 percent)
+    Sep 01 13:19:11 <arigo>	pedronis: what do you mean by compiler ?
+    Sep 01 13:19:27 <hpk>	arigo: we discussed this earlier, the translateable astcompiler 
+    Sep 01 13:19:28 <pedronis>	helping logilab making it translatable
+    Sep 01 13:19:30 <ludal>	translate it
+    Sep 01 13:19:34 <arigo>	hpk: ah, sorry of course
+    Sep 01 13:19:40 <hpk>	please next topic: Paris Sprint announcement
+    Sep 01 13:20:04 <hpk>	adim, ludal: do you intend to draft up an annoucnement in extradoc/sprintinfo/paris-annoucnement.txt? 
+    Sep 01 13:20:20 <ludal>	yes, I'll do that tomorrow
+    Sep 01 13:20:35 <hpk>	ok, i can help you a bit. 
+    Sep 01 13:20:44 <hpk>	do we still agree on the topics? 
+    Sep 01 13:20:50 <hpk>	    - threading and GC
+    Sep 01 13:20:50 <hpk>	    - refactoring/translation features
+    Sep 01 13:20:50 <hpk>	    - start discussing/heading for JIT/optimizations/stackless
+    Sep 01 13:20:53 <ludal>	thanks
+    Sep 01 13:21:26 <arigo>	yes
+    Sep 01 13:21:31 <aleale>	yes
+    Sep 01 13:21:40 <adim>	seems good to me
+    Sep 01 13:21:54 <ludal>	yes
+    Sep 01 13:22:16 <arigo>	"finish up reports in a hurry" shouldn't probably be announced :-)
+    Sep 01 13:22:24 <pedronis>	:)
+    Sep 01 13:22:37 <hpk>	one more thing i'd like to consider (but it needn't go into the announcement) is the issue of easing porting of C-modules for developers new to pypy
+    Sep 01 13:22:54 <pedronis>	yes, also refactoring Translator is probably related what we want to do in phase2
+    Sep 01 13:23:01 <pedronis>	so maybe it can partly wait for paris
+    Sep 01 13:23:01 <hpk>	yes
+    Sep 01 13:23:28 <hpk>	ok, that's it for the paris sprint/annoucnement for now, i guess.
+    Sep 01 13:23:42 <hpk>	last topic: Preparation/Moderation Next pypy-sync meeting
+    Sep 01 13:24:11 -->	cfbolz (n=carlson@hdlb-d9b945fb.pool.mediaWays.net) has joined #pypy-sync
+    Sep 01 13:24:14 <hpk>	who would like to do it the next time? (Can be multiple people so we can rotate a bit)
+    Sep 01 13:24:18 <hpk>	cfbolz: good morning
+    Sep 01 13:24:26 <arigo>	I could do it
+    Sep 01 13:24:28 <cfbolz>	sorry
+    Sep 01 13:24:35 <stakkars>	i can do it.
+    Sep 01 13:24:42 <aleale>	I'd like to volonteer
+    Sep 01 13:25:03 <stakkars>	ok, let's pick a random number.
+    Sep 01 13:25:08 <ericvrp>	42
+    Sep 01 13:25:17 <stakkars>	49. mine is higher.
+    Sep 01 13:25:29 <hpk>	great, then maybe just arigo, stakkars, aleale in that order?
+    Sep 01 13:25:40 <hpk>	let me just note that so far i had to come up with topics for the meetings myself
+    Sep 01 13:25:46 <stakkars>	wise man spoke :-)
+    Sep 01 13:26:39 <stakkars>	4 minutes left, is there some opne point?
+    Sep 01 13:26:42 <arigo>	ok, then I will do the next week one
+    Sep 01 13:27:00 <hpk>	and it would probably help the new moderators if at least sometimes topics are pushed to them
+    Sep 01 13:27:10 <arigo>	indeed :-)
+    Sep 01 13:27:28 <hpk>	but part of the game is identifying what would benefit from pypy-sync attention and decisions
+    Sep 01 13:27:37 <hpk>	:-)
+    Sep 01 13:27:52 <hpk>	ok, then let me close my last pypy-sync meeting for a few weeks :-) 
+    Sep 01 13:28:06 *	arigo claps
+    Sep 01 13:28:08 <cfbolz>	should I post my lines?
+    Sep 01 13:28:17 <stakkars>	do it,not ask
+    Sep 01 13:28:19 <cfbolz>	LAST: worked on/finished summer of code project on GC
+    Sep 01 13:28:19 <cfbolz>	NEXT: PyPy unrelated stuff (another exam)
+    Sep 01 13:28:19 <cfbolz>	BLOCKER: some sort of strange behaviour under python 2.3
+    Sep 01 13:28:33 <hpk>	cfbolz: congrats, btw! 
+    Sep 01 13:28:59 <stakkars>	cfbolz: please tell about the behavior on #pypy
+    Sep 01 13:29:04 <cfbolz>	:-)
+    Sep 01 13:29:35 <cfbolz>	ok
+    Sep 01 13:29:39 <--	cfbolz (n=carlson@hdlb-d9b945fb.pool.mediaWays.net) has left #pypy-sync ("Verlassend")

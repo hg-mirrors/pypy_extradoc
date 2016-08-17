@@ -1,0 +1,76 @@
+Hi pypy-dev!
+
+Welcome to a slightly unconventional sprint report
+(only fair for this slightly unconventional sprint):
+The first three days of the Trillke-sprint were fully
+dedicated to EU-reporting, considering
+that it may be slightly more fun to write them
+knowing that everybody else is doing the same,
+and that's what this report is about.
+
+The coding sprint report will follow, once the writers
+will have managed to travel home and recover a bit.
+
+Each of the 14 work packages that PyPy promised
+to do to the EU will conclude with at least
+one report due in the next month, and the target
+of the report sprint was to wrap up most of them
+and even deliver some to the EU already, also
+to have some spare time for coding works in March.
+
+In addition, there were the so-called 'review
+recommendations' - some first project period
+feedback by the Commission, requesting that the
+reports should meet scientific standards, include
+references and in general be useful for other than
+filling the EU's archives purposes.
+
+So, everybody was busy collecting papers, writing
+footnotes and consider overall sense-making strategies
+of the EU-reports, many of the results can be found here:
+
+http://codespeak.net/pypy/dist/pypy/doc/index-report.html
+
+A big effort went into the D12 report (prototypes,
+backends) taken care of by Samuele, Arre, Anto, Guido,
+Armin and overall coordinated by Holger, who also got
+Niko on the boat for remotely writing a section
+on the JVM backend.
+
+And then there were D02.1, D14.2, D01.2-4, D13.1, D03.1,
+D09.1 not to speak of the periodic/final EU management related
+reports and (sigh) the D06.1 report, being worked on by
+Holger, Anto, Arre, Stephan, Samuele, Lene, Carl Friedrich,
+Bea, Armin, Niko, Guido, and even the jet-lagged Michael and
+Richard helped with reviews and consultancy.
+
+Carl Friedrich, the very patient report release manager,
+took care for overall finalization and pdf-ing of reports
+apart from driving and starting the D06.1 report.
+
+Bea, Holger and Lene sat together dicussing ideas for
+overall activity reporting. On Wednesday, we finally managed
+to send out a pile of reports to the EU project officer,
+also presenting a commonly discussed table of planned
+report deliveries.
+
+And then the OLPC laptop came - introduced by Christian
+bringing it directly from Pycon to the
+PyPy group - which more or less stopped all report writing
+in exchange for people gathering around the machine
+and starting hacking. But luckily it was only
+Wednesday afternoon when it arrived and the belly-
+dancers were about to conquer the sprint room anyway  :) 
+
+(Actually, Armin continued working with the OLPC on the
+breakday and managed to port the Bub-n-Bros client to it,
+getting one step closer to the PyPy3000 goal of running
+Bub-n-Bros on every imaginable platform.)
+
+Cheers,
+
+Lene
+
+
+
+

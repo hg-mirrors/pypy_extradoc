@@ -1,0 +1,32 @@
+Integration with the hosting virtual machine
+============================================
+
+Status: 
+
+ - pypy-cli can access and use .NET classes, through the clr module,
+   but in a limited way. Advanced features such as delegates and
+   inheritance from .NET classes are not supported yet.
+
+ - pypy-jvm cannot access JVM classes.
+
+Todo:
+
+ - improve the clr module
+
+ - refactor it so that most of the code can be shared between pypy-cli
+   and pypy-jvm
+
+ - create the equivalent for the JVM
+
+
+Expected outcome:
+
+ - ability to access to JVM and .NET classes as Jython and IronPython
+   users expect
+
+
+Dependencies:
+
+ - `Refactor RPython external objects interface`_
+
+.. _`Refactor RPython external objects interface`: task_external_objects.html

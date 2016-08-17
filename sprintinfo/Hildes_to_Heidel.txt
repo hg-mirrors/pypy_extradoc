@@ -1,0 +1,83 @@
+planning for the time between the Hildesheim and Heidelberg sprints
+===================================================================
+
+
+clean-up areas
+--------------
+
+the following issues are meant to be 0.7 issues.
+
+- FILED translate_pypy and 
+
+- FILED the translator class need some cleanup
+
+- FILED initialization of the object space is still messy
+
+- move bits around in the annotator to make different uses
+  more pluggable ?
+
+- reorganizing some wrongly named things ?
+
+- FILED erasing useless files
+
+- FILED cleanup of import dependencies
+
+- ONGOING preparing the next release
+
+
+filed as issues
+-----------------
+
+- DONE rtyper problem: exceptions are no longer always at the end of a code
+  block because of the lowlevel rewriting
+
+- DONE translation problem: frozen ids used as hashes are broken
+  in the post-translation program
+
+- DONE better support of math and float exceptions
+
+- FILED documentation about external function calls and implementing
+  builtin modules
+
+- DONE prefixing all the C macros and names with pypy
+
+- DONE support producing a windows binary, choose a suitable compiler
+
+- OPEN related to the previous: documenting how interplevel marshal
+  is plugged into the system
+
+- FILED support for tests from external users and different platforms
+
+
+other issues
+---------------------
+FILED
+
+storing bound method on instances confuses the annotator (we can probably live with this limitation
+right now, I'm not sure but it may require a large refactoring to support this)
+
+>>> class H:
+...   def h():
+...    pass
+... 
+>>> class C:
+...   def __init__(self, func):
+...      self.f = func
+...   def do(self):
+...     self.f()
+... 
+>>> def g():
+...   h = H()        
+...   c = C(h.h)
+...   c.do()
+... 
+>>> t=Translator(g)
+>>> t.annotate([])
+
+
+
+Additional wild ideas
+---------------------
+
+- thinking of an RPython flowgraph interpreter as an executable?
+

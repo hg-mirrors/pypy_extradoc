@@ -1,0 +1,243 @@
+=============================================
+pypy-sync developer meeting 8th September 
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync 
+
+Attendees::
+
+         Holger Krekel,
+         Christian Tismer, 
+         Anders Lehmann,
+         Adrien Di Mascio,
+         Samuele Pedroni,
+         Anders Chrigstroem,
+         Ludovic Aubrien,
+         Armin Rigo (minutes/moderation),
+         Carl Friedrich Bolz,
+         Eric van Riet Paap,
+         Michael Hudson (lurking)
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No conflicts were discovered.
+
+Topics of the week
+===================
+
+Documentation and reports: status, assignment
+----------------------------------------------
+
+Samuele and Armin drafted some content for the EU reports (related
+to WP5) in eu-tracking/deliverable/D05-reports-planning.txt.
+
+Holger and Carl want to help with these reports, but not before,
+respectively, the 3rd part of the month, and October.  Holger also
+suggested that the four of us could meet in Paris one day before the
+sprint starts.
+
+We'll coordinate a bit on #pypy.
+
+Setting up another PyPy server
+-------------------------------
+
+We will soon have a Linux PC to be used as a general computation
+server for PyPy (snake.cs.uni-duesseldorf.de).  Armin will set it up,
+also to do things like automated testing and PyPy translation. Holger
+proposed some help.  We will probably copy all codespeak accounts to
+snake.  The machine is a 2x 3.2GHz, 1GB RAM (soon 2GB), and it
+compiles C/C++ or -- more interestingly -- translates PyPy extremely
+fast.
+
+Meeting time
+------------------
+
+A number of people are not too happy about the time (1pm) of the
+pypy-sync meetings, but discussions for a different time show more
+problems than solutions.  Next meeting is still at 1pm.
+
+
+Closing 
+------------------
+
+Armin closes the meeting in time at 1:30pm.
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+
+    Session Start (pypy:#pypy-sync): Thu Sep 08 12:59:52 2005
+    [12:59] *** #pypy-sync was created on Thu Sep 08 12:39:51 2005.
+    [13:02] *** ludal has joined #pypy-sync.
+    [13:05] hpk: hum, i guess armin is busy with some HHU admin or so 
+    [13:06] hpk: shall we just start anyway?
+    [13:06] stakkars: so let's play the PyPy rock, until we start.  (proposals for the melody?)
+    [13:06] aleale: I guess
+    [13:06] adim: +1 for me
+    [13:07] stakkars: DONE: boehm under Windows, lots of benchmarks, rewrote rlist and listobject
+    [13:07] stakkars: BLOCK: rtyper behavior which didn't match the implementation
+    [13:07] stakkars: NEXT: maybe a single dict implementation, removing it from interp-level, report templates, open for other tasks
+    [13:07] aleale: prev: trying to clean up translate_pypy
+    [13:07] aleale: next: first draft of plan for WP9, more translate_pypy
+    [13:07] aleale: blockers: -
+    [13:07] pedronis: LAST: planning report with Armin, compiler with Logilan and Arre, annotator err reporting, a bit of translate_pypy, more convenience commands in its debugger
+    [13:07] hpk: last: EU issues, website/codespeak stuff, mentoring
+    [13:07] hpk: next: non-pypy stuff, codespeak migration second go
+    [13:07] hpk: blockers: -
+    [13:07] pedronis: NEXT: reports, more of the rest
+    [13:07] pedronis: BLOCKERS: -
+    [13:08] adim: LAST: astcompiler
+    [13:08] adim: NEXT: astcompiler
+    [13:08] adim: BLOCKERS: none
+    [13:08] arre:     LAST: Vacation and working on astcompiler with Samuele.
+    [13:08] arre:     NEXT: More work in astcompiler.
+    [13:08] arre: BLOCKERS: No known.
+    [13:08] ludal: this week: some pairing with Adrien, also played a bit with compile options
+    [13:08] ludal: next week: same
+    [13:08] ludal: blockers: none
+    [13:08] *** arigo has joined #pypy-sync.
+    [13:08] arigo: oups, failed to speed up my eating
+    [13:08] arigo: sorry
+    [13:08] cfbolz: LAST: inlining functions
+    [13:08] cfbolz: NEXT: pypy unrelated
+    [13:08] cfbolz: BLOCKERS: None
+    [13:08] *** cfbolz has left #pypy-sync.
+    [13:08] ericvrp: last: talk with llvm team about their escape analysis
+    [13:08] ericvrp: next: prepare usage of heap2stack
+    [13:08] *** cfbolz has joined #pypy-sync.
+    [13:08] ericvrp: blockers: am a bit unfocused at the moment
+    [13:08] hpk: arigo: we are in activity reports, still lots to go :-)
+    [13:09] stakkars: should we paste it all again forArmin? It's quick
+    [13:09] hpk: i send him the log later
+    [13:09] arigo: yes
+    [13:09] ludal: we could also consider moving next meetings out of lunchtime
+    [13:10] arigo: LAST: drafted EU reports, not much else (minor illness)
+    [13:10] arigo: NEXT: EU reports
+    [13:10] arigo: BLOCKERS: -
+    [13:10] cfbolz: -1
+    [13:10] arigo: any status lines missing?
+    [13:10] hpk: don't think so
+    [13:10] arigo: any blockers/conflicts ?
+    [13:11] hpk: apparently not :-)
+    [13:11] arigo: ok :-)
+    [13:11] stakkars: I only saw a little unfocusedness and my problems which are solved.
+    [13:11] arigo: ok
+    [13:11] arigo: we'll talk about the time later, I should manage to eat a bit earlier
+    [13:11] arigo: let's move to topics of the week
+    [13:12] arigo: Documentation and reports: status, assignments
+    [13:12] arigo: pedronis: do you want to give a quick summary?
+    [13:12] ludal: well, It's not about you, I'm personnally fed up with eating sandwiches every thursday
+    [13:13] arigo: ludal: ok, let's move it as topic 3 then
+    [13:13] pedronis: we drafted the some outline of the contents
+    [13:13] *** mwh has joined #pypy-sync.
+    [13:14] pedronis: it's in D05-reports-planning.txt
+    [13:14] pedronis: in eu-tracking/deliverables
+    [13:14] arigo: the question at the moment is if this is going to be written by Samuele and me only, or not
+    [13:14] arigo: the D05.1 "report about translating a very-high-level description
+    [13:14] arigo:   of a language into low level code by building on "abstract interpretation" and
+    [13:14] arigo:   PyPy's separation of the interpreter and the object space in particular") is probably going to be
+    [13:15] hpk: i am willing to help but probably only in the last third of the month
+    [13:15] hpk: (can't say which parts at the moment)
+    [13:15] cfbolz: me as well from beginning of october
+    [13:16] hpk: pedronis, cfbolz, arigo: what about meeting one day earlier in paris and trying to work on that together?
+    [13:16] cfbolz: fine with me!
+    [13:16] arigo: and always open, the question of what kind of format we should aim for
+    [13:16] hpk: first please ReST 
+    [13:16] arigo: I mean contentwise
+    [13:16] hpk: otherwise it's a pain to collaborate
+    [13:16] hpk: ah ok, sorry
+    [13:17] pedronis: arigo: there was some info about that
+    [13:17] pedronis: in the minutes
+    [13:17] pedronis: of the management meeting
+    [13:17] * hpk hopes to get examples of reports next week
+    [13:17] pedronis: in Heildeberg
+    [13:17] arigo: ah ok
+    [13:18] hpk: idea: we should generally try to think of stuff we could link from Wikipedia to the pypy pages
+    [13:19] hpk: wikipedia really has nice terms and there are other projects like Scheme interweaved and mentioned a lot
+    [13:19] hpk: (this is regarindg the "publish" part of the deliverable)
+    [13:19] stakkars: and btw., WIkipedia already has an idea about Stackless, but PyPy is missing...
+    [13:20] arigo: ok (I can't drive this any more right now, as I didn't see the minutes in question)
+    [13:21] arigo: next topic is: I'm setting up a server here at HHU
+    [13:21] hpk: arigo, pedronis, cfbolz, hpk: we should try to remain in contact/discussion about this
+    [13:21] cfbolz: hpk: indeed
+    [13:21] arigo: (yes, I'll try to catch up and let's continue this on #pypy)
+    [13:21] arigo: the HHU server should be open to any of us
+    [13:22] hpk: that's good, there actually is an easy way to setup all pypy/codspeak users up on that machine
+    [13:22] arigo: as I said on #pypy it's a good but normal PC, 2x3.2GHz, 1GB RAM (soon 2GB)
+    [13:22] arigo: it compiles very quickly so we could use it for background testing/translating
+    [13:22] stakkars: dual processor, great
+    [13:22] hpk: sounds good.
+    [13:23] hpk: i have some scripts to regularly run tests. maybe we can hack a bit on this together some time soon.
+    [13:23] arigo: hpk: yes
+    [13:23] arigo: also, what is the status of the automated translation-runner, doing a binary search?
+    [13:23] hpk: nothin, only a design draft was done in Goetheborg (from Anders Q. IIRC)
+    [13:24] arigo: I thought there was some code
+    [13:24] hpk: code in the sense of classes and methods but all unimplemented
+    [13:24] arigo: ah ok
+    [13:25] arigo: fine, I guess that's it for this meeting -- next meeting:
+    [13:25] arigo: change the time?  what about 1:30?
+    [13:26] * hpk would prefer earlier but is fine with 01:30 
+    [13:26] arigo: it could be anything actually, e.g. 1:20-1:50
+    [13:26] cfbolz: 1:30 is ok but not later
+    [13:26] arigo: or of course 1:12-1:42
+    [13:26] aleale: ok by me - would prefer 11.30
+    [13:26] hpk: ludal: what is your opinion?
+    [13:26] ludal: is there a particular reason to be between 12h-14h
+    [13:26] stakkars: bad for me,I'dprefer earlier as well
+    [13:26] ludal: 11h30 or 13h30 is fine
+    [13:26] ericvrp: I would prefer earlier then 13:00
+    [13:27] hpk: ok, so what about 11:30 ? 
+    [13:27] ericvrp: +
+    [13:27] ludal: i'm just wondering maybe someone has obligations outside
+    [13:27] cfbolz: earlier is bad for me --> lectures
+    [13:27] ludal: hpk: +1
+    [13:27] arigo: 12:00 ?
+    [13:27] cfbolz: they end at 13.00 :-(
+    [13:27] pedronis: 11:30 -1
+    [13:28] ludal: no up yet ;)
+    [13:28] ludal: s/no/not/
+    [13:28] arigo: hum, difficult
+    [13:28] hpk: well, let's all send arigo times we prefer per mail and he can figure it out and invite accordingly :-)
+    [13:28] arre: 11:00 would be even better for me.
+    [13:29] ludal: ok so constraints are ericvrp < 13:00; cfbolz >= 13:00 ...
+    [13:29] hpk: ludal: or you use your constraint solver or whatever :-) 
+    [13:29] aleale: we could leave to the moderator of the week to decide
+    [13:29] ludal: I don't think it can manage that :)
+    [13:29] aleale: s/leave/leave it
+    [13:29] arigo: Christian, you are next week
+    [13:29] hpk: i don't think changing the time each week is a great idea
+    [13:29] arigo: (at least you proposed yourself as such, last time)
+    [13:30] adim: hpk: +1
+    [13:30] ericvrp: if we go for 13:30, I will leave at 13:55
+    [13:30] arigo: I suggest that 1pm is still the proposed time (least conflicting)
+    [13:30] aleale: arigo:+1
+    [13:30] ericvrp: fine
+    [13:30] stakkars: so Ido the meeting at 1pmnext week.
+    [13:30] arigo: but we could all send constrains to Christian (precise constrains, e.g. <= 13:25 is fine)
+    [13:30] hpk: arigo: +1 ( until next week where we can resolve this maybe)
+    [13:30] stakkars: and I'll bring some more spaces
+    [13:30] arigo: ok
+    [13:31] arigo: fine, let's keep 1pm for next Thursday as well
+    [13:31] arigo: stakkars:  :-)
+    [13:31] arigo: thanks all :-)
+    [13:31] cfbolz: see you
+    [13:31] ludal: bye
+    [13:31] adim: see ou
+    [13:31] *** cfbolz has left #pypy-sync.
+    [13:31] aleale: see you
+    [13:31] hpk: bye
+    [13:31] *** adim has left #pypy-sync.
+    [13:31] *** hpk has left #pypy-sync.
+    [13:31] stakkars: I wished I could send my notebook in for repair, but then I don't have any
+    [13:31] *** ludal has left #pypy-sync.
+    [13:32] *** aleale has left #pypy-sync.
+    [13:32] arigo: stakkars: do you have a log?
+    [13:32] stakkars: yes
+    [13:32] arigo: thanks
+    Session Close (#pypy-sync): Thu Sep 08 13:32:32 2005

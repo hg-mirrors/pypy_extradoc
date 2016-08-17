@@ -1,0 +1,13 @@
+\begin{lstlisting}[mathescape, numbers=right, escapechar=|, firstnumber=-1]
+label($j_2$, $i_2$, descr=label1)           |\setcounter{lstnumber}{24}|
+$j_3$ = int_add($j_2$, 1)                   |\setcounter{lstnumber}{16}|
+$i_5$ = int_rshift($i_2$, 2)                |\setcounter{lstnumber}{17}|
+$b_3$ = int_eq($i_5$, 1)                    |\setcounter{lstnumber}{17}|
+guard_false($b_3$)                          |\setcounter{lstnumber}{5}|
+$i_6$ = int_and($i_5$, 1)                   |\setcounter{lstnumber}{5}|
+$b_4$ = int_is_zero($i_6$)                  |\setcounter{lstnumber}{5}|
+guard_true($b_4$)                           |\setcounter{lstnumber}{23}|
+$b_5$ = int_lt($j_3$, 100)                  |\setcounter{lstnumber}{23}|
+guard_true($b_5$)                           |\setcounter{lstnumber}{-2}|
+jump($j_3$, $i_5$, descr=label1)
+\end{lstlisting}

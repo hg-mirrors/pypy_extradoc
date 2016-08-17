@@ -1,0 +1,176 @@
+.. include:: <s5defs.txt>
+
+=================================================
+PyPy Introduction
+=================================================
+
+:Authors: PyPy Team
+:Date: 5th October 2006
+:Location: AB Strakt, Gothenburg
+
+What it is?
+===================
+
+- Python implementation
+- Open source project (MIT license)
+- An EU cofunded research project (~2 years)
+- A compiler tool chain
+
+Goals (i)
+======================
+
+An Architecture for flexibility
+
+- some decisions are invasive
+  and fixed in CPython (e.g.
+  refcounting, the GIL)
+
+- some extensions are possible
+  but hard to maintain:
+
+  * stackless
+  * psyco
+
+Goals (ii)
+=======================
+
+An architecture for speed
+
+- generate a psyco-like JIT
+
+(right now without a JIT
+we can be 2.7x-6x slower than
+CPython, depending on features
+etc, we can still improve on
+this too)
+
+Goals (iii)
+=======================
+
+Multiple targets
+
+- POSIX/C (like CPython)
+- .NET (like IronPython)
+- JavaScript
+
+How
+=====================
+
+- Python interpreter written
+  in Python, low-level details
+  left out (30000 LOC)
+- a subset static enough
+  to allow analysis (RPython)
+- translated to low-level targets
+  filling in the details (C, .NET,
+  ...)
+
+The Basic Architecture
+=======================
+
+
+.. image:: arch-pypy-basic.png
+   :align: center
+
+Status
+==========================
+
+- conformant interpreter
+  (95% of core tests)
+- translates to C, LLVM
+  (since August last year)
+- 0.9 was the last release
+- PyPy translated to .NET
+  (no .NET gluing, much work
+  left)
+
+0.9
+=========================
+
+- more speed improvements (3x 0.8, without JIT)
+- our own GCs
+- stackless features: tasklets,
+  channels, coroutine, cloning of coroutines,
+  pickling of tasklets
+- start of logic, search and constraint
+  programming features
+- ext-compiler
+
+Ext-Compiler
+=========================
+
+- we can glue with C using
+  a ctypes-like interface from RPython
+  (rctypes)
+- extension modules for both PyPy and
+  CPython
+- work in progress
+
+PyPy/Translation overview
+=========================
+
+.. image:: arch-translation.png
+   :align: center
+   :width: 500
+   :height: 500
+
+Abstract Interpretation
+========================
+
+- bytecode interpreter dispatches to Flow Object Space
+- Flow Object Space implements abstract operations
+- produces flow graphs as a side effect
+- starts from "live" byte code NOT source code
+
+Type Inference 
+===============
+
+- performs forward propagating type inference
+- is used to infer the types in flow graphs
+- needs types of the entry point function's arguments
+- assumes that the used types are static
+- goes from very special to more general values
+
+RTyping
+===========================
+
+- annotated flow graphs are specialized for language families
+- choose runtime representations: express these with
+  low-level type systems
+- lltypesystem (for C like languages): C, LLVM
+- ootypesystem (for OO languages): .NET CLI, (Javascript...)
+- result is specialized flow graphs: operations at target level
+
+Translation Aspects
+====================
+
+- implementation decisions (GC, threading, CC) at translation time 
+- most other language implementations do a "fixed" decision 
+- translation aspects are weaved into the produced code
+- independent from language semantics (python interpreter)
+
+
+A Special Aspect: Just-in-time Compilation
+===========================================
+
+- transform interpreters into compilers
+  (and just-in-time compilers)
+- work in progress
+
+JIT Diagram
+============
+
+.. image:: arch-jit-gen.png
+   :align: center
+   :width: 500
+   :height: 500
+
+Website
+===========
+
+http://codespeak.net/pypy
+
+
+.. |bullet| unicode:: U+02022
+.. footer:: PyPy |bullet| AB Strakt |bullet| 5th October 2006
+

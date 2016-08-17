@@ -1,0 +1,84 @@
+.. include:: beamerdefs.txt
+
+=============================================================================
+Writing Interpreters for Dynamic Languages Using PyPy (and Getting Them Fast)
+=============================================================================
+
+Motivation
+================
+
+- good VMs for dynamic languages are very hard
+- when writing it is very hard to reconcile
+
+  - performance
+  - simplicity, maintainability
+  - flexibility, features
+
+- this is particularly true in an Open Source / research context
+
+Python Case
+============
+
+- **CPython** is a simple maintainable but slow VM, using a simple bytecode
+  interpreter
+- **Stackless** is a more featureful fork of CPython that was never merged for maintainability reasons
+- **Psyco** is a very complex JIT compiler for Python, which speeds up Python a lot
+
+  
+Motivation (2)
+================
+
+fixing of early design decisions:
+
+- when writing a VM in C, some things have to be decided up front
+- examples are things like memory model, GC, threading model, etc.
+- decisions manifest throughout the source code
+- extremely hard to change later
+
+|pause|
+|alert<| Python case |>|
+
+- reference counting
+- OS threads
+
+|end_alert|
+
+PyPy's approach to VM construction
+==================================
+
+Goal: achieve flexibility, simplicity and performance together
+
+- Approach: auto-generate VMs from high-level descriptions
+  of the language
+- high-level description: an interpreter written in a high-level
+  language
+- ... which we translate (i.e. compile) to VMs running in
+  various target environments, like C/Posix, CLR, JVM
+
+|pause|
+
+- the high-level language that is used to implement the interpreters is called *RPython*
+
+PyPy's approach to VM construction
+==================================
+
+.. image:: dynlang.png
+   :scale: 50
+
+Receipe for a PyPy-based VM
+============================
+
+ #. write an interpreter for your language in RPython
+ #. test it in pure Python until it works and is bug-free
+ #. try to compile it to C and fix the type-bugs that this finds
+ #. apply the JIT generator (optional and experimental step)
+
+What is RPython
+===============
+
+A subset of the Python language on which type inference can be performed
+
+- single inheritance with mixin support
+- most of Python's builtin data structures are supported
+- no type mixing: ``l = [1, "string"]`` does not work
+- don't think about it too hard, it feels a lot like Python still

@@ -1,0 +1,42 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2006/cfp.html
+DEADLINE: 15th September 2006 (friday)
+
+Name: holger krekel 
+
+Public Name: holger krekel 
+
+Other Names: hpk on irc.freenode.org 
+
+Primary E-Mail address: krekel@merlinux.de 
+
+Phone number(s): +49 171 464 8622  
+
+A photo, square format, min. 128x128 pixels (optional): 
+    http://merlinux.de/~hpk/holger.jpg
+    (maybe i can find a better one, this is the one from 
+    last 21C3 conference) 
+   
+Statement: publishing contact info except for the phone number 
+           is fine with me. 
+
+Public home page, weblog and other speaker-related websites: 
+    
+    http://codespeak.net/pypy
+
+Short Info: 
+
+    Holger Krekel, founder and core developer of PyPy, technical lead merlinux GmbH. 
+
+Bio: 
+
+    Holger started with game and general computer hacking ages ago, went through
+    university, some bank/insurance contracting until finally arriving at working
+    in free software environments fulltime now.  He founded merlinux in 2004, which
+    is operating with and employing a world-wide set of open-source specialists. 
+    Other merits are a well known python testing framework (http://codespeak.net/py) 
+    and operating the http://codespeak.net open-source hosting site itself. 
+
+Postal address: merlinux GmbH, Holger Krekel, Steinbergstr. 42, 31139 Hildesheim
+Bank information: 
+Expected day of arrival and departure: 27th-30th December. 
+

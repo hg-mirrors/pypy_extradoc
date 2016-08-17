@@ -1,0 +1,692 @@
+Implementing Python in Python 
+==============================
+
+A report from the PyPy project
+******************************
+The PyPy_ [#]_ project aims at producing a simple runtime-system for
+the Python_ language, written in Python itself.  **C** and **Lisp**
+are elder examples of languages which are self-hosting.  More
+recently, we have seen implementations of **Scheme** in Scheme_, [#]_
+and **Squeak**, [#]_ [#]_ a Smalltalk_ implementation of Smalltalk_.
+The desire to implement your favourite language *in* your
+favourite language is quite understandable.  Every significant
+computer language has a certain expressiveness and power, and it is
+frustrating to not be able to use that expressiveness and power when
+writing the language itself.
+
+.. _PyPy: http://www.codespeak.net/pypy/
+.. _Python: http://www.python.org/
+.. _Scheme: http://www.swiss.ai.mit.edu/projects/scheme/
+.. _Squeak: http://www.squeak.org
+.. _Smalltalk: http://www.smalltalk.org/
+
+Thus we aim to produce a minimal core which is *simple* and
+*flexible*, and no longer dependent on CPython [#]_.  This should make
+PyPy_ easier than CPython to analyze, change and debug. We will take
+care that PyPy will integrate easily with Psyco_ [#]_ and Stackless_, [#]_ 
+while trying to avoid unwitting C dependencies in our thinking.
+
+.. _Psyco: http://psyco.sourceforge.net/
+.. _Stackless: http://www.stackless.com/
+
+We should be able to produce different versions of PyPy which run
+on different architectures,  for instance one that runs on the 
+Java Virtual Machine, much as Jython_ [#]_ does today.  
+
+.. _Jython: http://www.jython.org/
+
+By keeping things *simple* and *flexible* we can produce code that has
+attractions for both industry and academia.  Academics will find that
+this Python is even easier to teach concepts of language design with.
+Industry will be pleased to know that ending the dependence on CPython
+means that we can produce a Python with a smaller footprint.
+Eventually, we would like to produce a faster Python , which should
+please all.  We are very far from that now, because speed is a distant
+goal.  So far we have only worked on making PyPy *simple* and
+*flexible*.
+
+Most of you know what happens if you type::
+     
+     import this
+
+at your favourite Python prompt.  You get *The Zen of Python*, [#]_
+written by Tim Peters.  It starts::
+
+     Beautiful is better than ugly.
+     Explicit is better than implicit.
+
+and ends with::
+
+     Namespaces are one honking great idea -- let's do more of those!
+
+This raises an interesting question.  What would *doing more of those*  
+mean?  The PyPy project takes one approach.
+
+
+Terminology (a short digression)
+********************************
+
+In PyPy there is a distinction between **application level code**, which
+is the world that PyPy is interpreting, and which can use the full features 
+of the language, and the **interpreter level code** which is the world
+that CPython is interpreting.  The interpreter level code
+needs to be written in a restricted subset of Python.
+(Currently you are mainly restricted to immutable objects; no dicts, you can
+use globals but you cannot modify them.  *What defines Restricted Python?*
+is a matter of current debate.)
+
+In a Python-like language, a running interpreter has three main parts:
+  
+  * the main loop, which shuffles data around and calls the operations defined in the object library according to the bytecode.
+  * the compiler, which represents the static optimization of the source code into an intermediate format, the bytecode;  and
+  * the object library, implementing the various types of objects and their semantics;
+
+In PyPy, the three parts are clearly separated and can be replaced
+independently.  The main loop generally assumes little about the semantics
+of the objects: they are essentially black boxes (PyObject pointers). The
+interpreter stack and the variables only contain such black boxes.
+Every operation is done via calls to the object library, such as
+PyNumber_Add().  We haven't done much to make the compiler and the main
+loop into explicit concepts (yet),  because we have been concentrating
+on making separable object libraries.
+
+We call the separable object library, an *Object Space*.
+We call the black boxes of an Object Space *Wrapped Objects*.
+
+One exciting thing is that while existing languages implement _one_
+Object Space, by separating things we have produced an architecture
+which will enable us to run more than one Object Space in the same
+interpreter at the same time.  This idea has some interesting implications.
+
+But first let us dream for a bit.  (Aside from having fun, why should
+we spend our time writing PyPy?)
+
+Goals:
+++++++
+or Dreams, if you prefer
+
+
+A Slimmer Python
+++++++++++++++++
+People who write code for handhelds and other embedded devices often
+wish that they could have a much smaller footprint.  With PyPy it
+would be possible to load a Tiny Object Space which only implements
+the behaviour which they need, and skips the parts that they do not.
+
+A Native Reference Language
++++++++++++++++++++++++++++
+Currently, we have two widely-used implementations of Python, CPython,
+and Jython.  Whenever they differ, the question always comes up: Is
+Jython *wrong*?  By this, people mean, is this behaviour which exists
+in CPython, a matter of the language definition, which Jython ought to
+support, or is it instead an irrelevant detail, the historical
+accident of how things happened to be implemented in CPython, which
+Jython is free to ignore?  It would be useful to have an independent
+Reference Language, written in Python itself to stand as the model of
+what is compliant Python.  A PyPy Object Space will provide this.
+Moreover, people who would like to experiment with a proposed Python
+language change will have an easier task.  Proposed new language
+features, could profit from first being written in PyPy so that more
+people could use, comment, and modify them before final approval or
+rejection.
+
+Getting better use of machines with multiple CPUs
+++++++++++++++++++++++++++++++++++++++++++++++++++
+(Also known as *Killing the Global Interpreter Lock*).  We believe
+that we have barely scratched the surface of what can be done with
+the new hardware architectures we have created.  The old idea of
+*one machine, one CPU* persists, so it is difficult to partition the
+work in such a way to keep all the CPUs occupied.  We hope to be able
+to design our interpreter so that each CPU could be busy with its own
+Object Space.
+
+Running different Object Spaces on different machines
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Well, why not?  Whenever the time needed to do the calculating exceeds
+the time needed to communicate between the various calculators, you
+will benefit by adding more CPUS.  Thus PyPy will provide you with an
+alternative way to write a Cluster.  (`The Beowulf Cluster`_ is
+probably the most famous of Cluster architectures).  Right now 'network
+computing' is in its infancy.  We don't know how to take advantage of
+the resources we have.  Ideally, one could begin a computation on a
+small device, say a mobile phone, and have the interpreter notice that
+the device is underpowered for such a computation and transparently
+forward the computation to a machine with more computational power.
+You could have *peak computing machines* in the same way that
+electrical utilities have plants which are expensive to
+run and only come on-line when demand is extremely high.  As computers
+become ubiquitous, we will *need* such demand based load sharing.
+
+.. _The Beowulf Cluster: http://www.beowulf-underground.org/index.html
+
+Multiple, Dynamically Changing Implementations of a Single Type
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Consider the question: *What is the best way to implement a dict*?
+
+How one answers depends on how much data one intends to store.
+If the dict is never expected to have more than a half dozen items, a
+really fast list may be best.  Larger dicts might best be implemented
+as hashes.  For storing enormous amounts of data, a binary tree
+might be just what you desire.  In principle, there is
+nothing to stop your interpreter from keeping statistics on how it is
+being used, and to move from strategy to strategy at runtime.  You
+could implement this in CPython, but we intend to make it a lot
+*easier* to do this in PyPy to encourage such experimentation.
+
+A better teaching vehicle
++++++++++++++++++++++++++
+Python has proven to be an excellent first programming language.
+However, once the student develops a desire to see the nuts and bolts
+of how one implements a language, when they look under the hood, they
+find C, sometimes the sort of C one writes when speed optimisation is
+of paramont importance.  For pedagological purposes, one would prefer
+a language implementation whose chief virtue is *clarity* so that the
+concepts are illustrated cleanly.
+
+However, academic computer science is littered with tiny teaching
+languages.  Every time we get a few new ideas in language design or
+pedagogical theory we itch to create a language to express these
+ideas.  While understandable, this is wasteful.  Many languages are
+implemented which are more novel than useful, and too many are begun
+with insufficient new ideas.  At one extreme, we end up force-feeding
+our poor students with too many computer languages, too quickly --
+each language designed to teach a particular point.  Alas, many of our
+languages are particularly weak on everything *except* the point we
+wish to make.
+
+At the other extreme, many students go to university and end up only
+learning how to program in commercially successful languages.  This
+reduces university to a Giant Trade School, where it is possible to
+avoid learning Computer Science altogether.  What we need is a the
+middle way, a Pythonic way between purity and practicality, theory and
+practice.
+
+PyPy may be able to help.  The separation should make learning concepts
+easier, and the ability to create one's own Object Spaces provides a
+useful way to compare and contrast different techniques.  Finally, we
+could reasonably ask our students to **implement** interesting
+theories in Python, producing slightly different Object Spaces which
+could leave the bulk of the language implementation unchanged.
+
+There is no better way to learn about compiler writing, than writing
+compilers, but much of today's education in compiler writing leaves a
+huge gap between 'the theory that is in the book which the student is
+expected to learn' and 'what is reasonable for a student to implement
+as coursework'.  Students can spend all semester overcoming
+difficulties in *actually getting the IO to work*, and *interfacing
+with the runtime libraries*, while only spending a fraction of the
+time on the concepts which you are trying to teach.
+
+Object Spaces could provide a better fit between the the abstract
+concepts we wish to teach and the code written to implement just that.
+
+Runtime Adaptation of C-Libraries and System-Calls
+++++++++++++++++++++++++++++++++++++++++++++++++++
+Python is already widely used for integrating and driving C-libraries
+(for numerical computation, 3D-modeling etc.).  We dream
+of introducing runtime mechanisms that allow PyPy to directly setup and
+execute "native" calls on a machine.  For this to work we need
+"trampolin" (assembler-) functions that build a C-like stackframe
+and trigger a call directly into e.g. the linux kernel or 
+any C-library without having to use a C-compiler.  This technique
+would clearly be of great value to embedded devices but also
+to regular python applications that could more easily use C-libraries
+once they obtain a pythonic description of the library (possibly
+generated from ``.h`` files).
+
+A Smarter, more Dynamic Interpreter
++++++++++++++++++++++++++++++++++++ 
+A Virtual Machine written in Python, should be easier to maintain and
+optimise. By recording statistics and analysing the bytecodes that are
+running through the machine, it is possible to find a shorter, and
+faster way to run a script - the essence of optimisation. Native code
+compilers do it all the time, but obviously only once at compilation
+time. Interpreters can optimise in exactly same way, but at *run
+time*. `The Hotspot Java Virtual Machine`_ already does this.
+
+.. _The Hotspot Java Virtual Machine: http://java.sun.com/products/hotspot/docs/whitepaper/Java_Hotspot_v1.4.1/Java_HSpot_WP_v1.4.1_1002_1.html
+
+Faster Python
++++++++++++++
+(Okay, you've caught us ...)
+While we are writing an adaptive, smarter compiler, we ought to be able
+to make it faster.  We think we can produce a Just-In-Time compiler which
+is faster than C Python without destroying the clarity in our architecture.
+Indeed, the ability to run different object spaces at the same time, in the
+same interpreter will be most useful in this application.  Psyco already
+uses similar techniques to great effect.
+
+Speaking of Running different Object Spaces at the Same Time
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+This dream is a bit far-fetched, but it is worth investigating.  Code
+migration currently involves going through one's entire codebase
+looking for conflicts.  This makes converting to newer versions of the
+language both expensive and difficult.  There is a trade-off between
+getting the new features which contribute to increased productivity in
+program design, and having to fix piles of old code that wasn't broken
+until the language changed.  With multiple Object Spaces approach it
+may be possible to have your cake and eat it too.
+
+You could load your existing modules with the Object Space they were
+developed for while immediately using new features in new code that
+you develop.  It would be up to the PyPy interpreter to see that these
+Object Spaces communicate with each other transparently.  Only modules
+that would particularly benefit from having the new features, would
+be modified.  The rest could sleep peacefully, unchanged.
+
+This leads to:
+
+World Domination
+++++++++++++++++
+And if we don't pull this off, we will have at least learned a lot. This
+in itself makes the project worth doing.  Plus it's fun...
+
+But away from the dreams and back to what do we currently have?
+
+We now have a pretty good working interpreter which implements
+advanced language features such as nested scopes, generators and
+metaclasses.  Most **types** and **builtins** are either completely
+implemented or nearly there.  We have extensive unit tests, since we
+believe in test driven design, even though we don't always practice
+it.  
+
+We currently have three object spaces at least partially implemented.
+
+
+The Trivial Object Space
+++++++++++++++++++++++++
+A PyPy interpreter using the Trivial Object Space is an
+interpreter with its own main loop (written in Python), and nothing
+else.  This main loop manipulates real Python objects and all
+operations are done directly on the Python objects. For example, "1"
+really means "1" and when the interpreter encounters the BINARY_ADD
+bytecode instructions the Trivial Object Space will just add two real
+Python objects together using Python's "+". The same for lists,
+dictionaries, classes ... we just use Python's own.  Delegate Object
+Space might have been a better name for this Object Space.
+
+This Object Space is only useful for testing the concept of Object Spaces,
+and our interpreter, or even interpreting different kinds of bytecodes.
+This is already implemented; it is funny to watch *dis.dis* disassembling 
+itself painfully slowly.
+
+Getting this to work was a goal of the Hildesheim Sprint February 16-23.
+It demonstrated that our Object Space Concept was viable, and that our
+interpreter worked.
+
+The Standard Object Space
+++++++++++++++++++++++++++
+The Standard Object Space is the object space that works just like
+Python's, that is, the object space whose black boxes are real Python
+objects that work as expected. Getting the Standard Object Space to
+work was a goal of the Gothenburg Sprint May 24 - 31.
+
+The Standard Object Space defines an abstract parent class, W_Object,
+and a bunch of subclasses like W_IntObject, W_ListObject, and so on. A
+wrapped object (a *black box* for the interpreter main loop) is thus
+an instance of one of these classes. When the main loop invokes an
+operation, say the addition, between two wrapped objects w1 and w2,
+the StandardObjectSpace does some internal dispatching (similar to
+"Object/ abstract.c" in CPython) and invokes a method of the proper
+W_XyzObject class that can do the operation. The operation itself is
+done with the primitives allowed by Restricted Python. The result is
+constructed as a wrapped object again.
+
+The following was our first trivial program::
+
+ ### our first trivial program ###
+ 
+ aStr = 'hello world'
+ print len(aStr)
+
+to run.  We needed types and builtins to work.  This ran, slowly.
+
+We began testing and adding types and builtins.
+
+Getting this code to work was the second goal.::
+
+ ### a trivial program to test strings, lists, functions and methods ###
+ 
+ def addstr(s1,s2):
+     return s1 + s2
+
+ str = "an interesting string"
+ str2 = 'another::string::xxx::y:aa'
+ str3 = addstr(str,str2)
+ arr = []
+ for word in str.split():
+     if word in str2.split('::'):
+        arr.append(word)
+ print ''.join(arr)
+ print "str + str2 = ", str3
+
+This we accomplished by mid-week.
+
+By the end of the Sprint we produced our first Python program [#]_ that
+ran under PyPy which simply 'did something we wanted to do' and wasn't
+an artificial goal.  It calculated the week long foodbill, and divided
+the result by the 9 Sprint participants.::
+
+ ### the first real PyPy Program ###
+
+ slips=[(1, 'Kals MatMarkn', 6150, 'Chutney for Curry', 'dinner Saturday'),
+        (2, 'Kals MatMarkn', 32000, 'Spaghetti, Beer', 'dinner Monday'),
+        (2, 'Kals MatMarkn', -810, 'Deposit on Beer Bottles', 'various'),
+        (3, 'Fram', 7700, 'Rice and Curry Spice', 'dinner Saturday'),
+        ( ... )
+        (23, 'Fram', 2975, 'Potatoes', '3.5 kg @ 8.50SEK'),
+        (23, 'Fram', 1421, 'Peas', 'Thursday dinner'),]
+
+ print (reduce(lambda x, y: x+y, [t[2] for t in slips], 0))/900
+
+Pypy said: 603 SEK, or approximately 75 USD.   Don't believe people who
+tell you that Sprints are too expensive to hold. 
+
+The Annotation Object Space
++++++++++++++++++++++++++++
+Our third Sprint was held at Louvain-la-Neuve, Belgium (near
+Brussels), June 21 - 24.  Great progress was made with the The
+Annotation Object Space, and began abstract, symbolic interpretation.
+(We also spent a lot of time firming up the Standard Object Space, and
+improving our documentation, and our documentation tools).
+
+In the two object spaces so far, application-level objects are
+represented in the interpreter as objects that represent a value.
+This is so obvious as to not need pointing out, except for the fact
+that the Annotation space does something completely different.
+
+Here the interpreter-level object corresponding to a application-level
+variable does not describe the value of the variable, but rather the
+state of knowledge about the contents of the variable.
+For example, after the code::
+
+ x = 1
+ y = 2
+ z = x + y
+
+we know exactly what *x*, *y* and *z* contain: the integers *1*, *2* and *3*
+respectively, and this is how the annotation object space represents
+them: there is a class W_Constant that represents totally known values.
+
+However in::
+
+  def f(x, y):
+      z = x + y
+      
+  f(1, 2)
+  f(2, 3)
+
+we know less.  We know that x and y only contain integers, but their
+values are no longer entirely fixed.  In this case, the annotation
+object space could chose to represent the variable in the body of f
+as *either* the constant *1* or the constant *2*, but at present it punts
+and simply represents it as an instance of W_Integer.
+
+The eventual hope is to run all of the code that implements PyPy's
+interpreter and the standard object space with the annotation object
+space and gain sufficient knowledge of the values involved to generate
+efficient code (in C, Pyrex_, O'Caml, Java or whatever) to do the same
+job.
+
+If you're wondering how we expect to get a speed up of 20000 times by
+this translation when a speed up of 100 or so times is all that
+usually obtained by rewriting in C, you have to understand that the
+main reason for the standard object space's current slowness is the
+computation of which code to execute each time a multimethod is
+called.  The knowledge gathered by the Annontation Object Space should
+be sufficient to remove or at least substantially reduce this computation 
+for most of the call sites.
+
+Current plans are to use the information gathered from the Annotation Object 
+Space to emit Pyrex_ code which itself will generate a CPython extension.
+
+.. _Pyrex: http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/
+
+Types
++++++
+Types are implemented by the class W_TypeObject. This is where
+inheritance and the Method Resolution Order are defined, and where
+attribute look-ups are done.
+
+Instances of user-defined types are implemented as W_UserObjects. A
+user-defined type can inherit from built-in types (maybe more than
+one, although this is incompatible with CPython). The W_UserObject
+delegator converts the object into any of these "parent objects" if
+needed. This is how user-defined types appear to inherit all built-in
+operator implementations.
+
+Delegators should be able to invoke user code; this would let us
+implement special methods like __int__() by calling them within a
+W_UserObject -> int delegator.
+
+Multimethods
+++++++++++++
+Interpreter-level classes correspond to implementations of
+application-level types.  The hierarchy among the classes used for the
+implementations is convenient for implementation purposes. It is not
+related to any application-level type hierarchy.  Multimethods
+dispatch by looking in a set of registered functions. Each registered
+function has a signature, which defines which object implementation
+classes are accepted at the corresponding argument position.
+
+Specifics of multimethods
++++++++++++++++++++++++++
+Multimethods dispatch more-specific-first, left-to-right (i.e. if
+there is an exact match for the first argument it will always be tried
+first).
+
+Delegators are automatically chained (i.e. A -> B and B -> C would be
+combined to allow for A -> C delegation).
+
+Delegators do not publish the class of the converted object in
+advance, so that the W_UserObject delegator can potentially produce
+any other built-in implementation. This means chaining and chain loop
+detection cannot be done statically (at least without help from an
+analysis tool like the translator-to-C). To break loops, we can assume
+(unless a particular need arises) that delegators are looping when
+they return an object of an already-seen class.
+
+Registration
+++++++++++++
+The register() method of multimethods adds a function to its database
+of functions, with the given signature. A function that raises
+FailedToImplement causes the next match to be tried.
+
+'delegate' is the special unary multimethod that should try to convert
+its argument to something else. For greater control, it can also
+return a list of 2-tuples (class, object), or an empty list for
+failure to convert the argument to anything. All delegators will
+potentially be tried, and recursively on each other's results to do
+chaining.
+
+Multimethod slicing
++++++++++++++++++++
+Multimethods are visible to user code as (bound or unbound) methods
+defined for the corresponding types. (At some point built-in functions
+like *len()* and the *operator.xxx()* should really directly map to the
+multimethods themselves, too.)
+
+To build a method from a multimethod (e.g. as in *l.append* or
+*int.__add__*), the result is actually a "slice" of the whole
+multimethod, i.e. a sub-multimethod in which the registration table
+has been trimmed down. (Delegation mechanisms are not restricted for
+sliced multimethods.)
+
+Say that C is the class the new method is attached to (in the above
+examples, respectively, C=type(l) and C=int). The restriction is based
+on the registered class of the first argument ('self' for the new
+method) in the signature. If this class corresponds to a fixed type
+(as advertized by 'statictype'), and this fixed type is C or a
+superclass of C, then we keep it.
+
+Some multimethods can also be sliced along their second argument,
+e.g. for __radd__().
+
+A Word of History
++++++++++++++++++
+
+The PyPy project was started in January of 2003 by Armin Rigo,
+Christian Tismer and Holger Krekel. The latter organized the initial
+Coding-Sprint in Hildesheim, Germany where the interpreter and the
+Trivial Object Space were implemented and people first got together.
+The second sprint in Göteborg, Sweden was organized by Jacob Hallén and
+Laura Creighton and it resulted in much of today's Standard Object Space
+implementation.  Benjamin Henrion and Godefroid Chapelle organized the
+third sprint in Louvain-La-Neuve, Belgium which led to a pretty complete
+Standard ObjectSpace and interpreter and the beginnings of Abstract
+Interpretation (Annotation Object Space).  These three coding
+sprints in the course of half a year brought PyPy to existence, though
+there was some off-sprint development and discussions going on.
+
+Participants
+++++++++++++
+
+..  line-block::
+
+ Laura Creighton
+ Stephan Diehl
+ Dinu Gherman
+ Jacob Hallén
+ Michael Hudson
+ Günter Jantzen
+ Holger Krekel
+ Anders Lehmann
+ Jens-Uwe Mager
+ Alex Martelli
+ Tomek Meka
+ Rocco Morretti
+ Samuele Pedroni
+ Anna Ravencroft
+ Armin Rigo
+ Guido van Rossum
+ Christian Tismer
+
+Conclusions
++++++++++++
+It is a little early for conclusions, but our architecture seems to be
+working so far.  Sprints are a lot of fun, and a great way to write
+code, and meet interesting people.  We're productively lazy, and so
+have created a few tools that could possibly be useful to other
+projects ... parts of our test rig, for example, and automatic ReST
+processing on checkins.  An Infastructure mini-Sprint, again at
+Hildesheim, is planned which may produce tools good enough to package
+and release separately.  
+
+Thank you
++++++++++
+As was to be expected we are using Python web applications (mailman_,
+roundup_, moinmoin_) to host our project.
+
+.. _mailman: http://www.list.org/
+.. _roundup: http://roundup.sourceforge.net/
+.. _moinmoin: http://moin.sourceforge.net/
+
+The members of the PyPy team are especially grateful to RyanAir_, without
+which holding Sprints would be prohibitively expensive, freenode.net_
+which lets us communicate with each other on the #pypy channel, and the
+Subversion_ development team, without whom restructuring the entire universe
+whenever we feel like it would have been close to impossible.
+
+.. _freenode.net: http://www.freenode.net/
+.. _RyanAir: http://www.ryanair.com/
+.. _Subversion: http://subversion.tigris.org/
+
+
+.. [#] The PyPy homepage: http://www.codespeak.net/pypy/
+.. [#] See for instance, Scheme48's PreScheme
+.. [#] The Squeak homepage: http://www.squeak.org/
+.. [#] See *Back to the Future The Story of Squeak, A Practical 
+       Smalltalk Written in Itself* ftp://st.cs.uiuc.edu/Smalltalk/Squeak/docs/OOPSLA.Squeak.html
+.. [#] CPython is what we call the commonly available Python_ which you
+       can download from http://www.python.org .  This is to distinguish it
+       from other implementations of the Python_ language, such as
+       Jython_, which is written for the Java virtual machine.
+.. [#] The Psyco homespage: http://psyco.sourceforge.net/
+.. [#] The Stackless homespage: http://www.stackless.com/
+.. [#] The Jython homespage: http://www.jython.org/
+.. [#] The complete text is as follows:
+ 
+..  ::
+
+   *The Zen of Python*
+    
+    by Tim Peters
+   
+..  ::
+
+   *Beautiful is better than ugly.
+   Explicit is better than implicit.
+   Simple is better than complex.
+   Complex is better than complicated.
+   Flat is better than nested.
+   Sparse is better than dense.
+   Readability counts.
+   Special cases aren't special enough to break the rules.
+   Although practicality beats purity.
+   Errors should never pass silently.
+   Unless explicitly silenced.
+   In the face of ambiguity, refuse the temptation to guess.
+   There should be one-- and preferably only one --obvious way to do it.
+   Although that way may not be obvious at first unless you're Dutch.
+   Now is better than never.
+   Although never is often better than _right_ now.
+   If the implementation is hard to explain, it's a bad idea.
+   If the implementation is easy to explain, it may be a good idea.
+   Namespaces are one honking great idea -- let's do more of those!*
+
+.. [#] The full text for historians and other curious people is:: 
+
+       slips=[
+       (1, 'Kals MatMarkn', 6150, 'Chutney for Curry', 'dinner Saturday'),
+       (2, 'Kals MatMarkn', 32000, 'Spaghetti, Beer', 'dinner Monday'),
+       (2, 'Kals MatMarkn', -810, 'Deposit on Beer Bottles', 'various'),
+       (3, 'Fram', 7700, 'Rice and Curry Spice', 'dinner Saturday'),
+       (4, 'Kals MatMarkn', 25000, 'Alcohol-Free Beer, sundries', 'various'),
+       (4, 'Kals MatMarkn', -1570, "Michael's toothpaste", 'none'),
+       (4, 'Kals MatMarkn', -1690, "Laura's toothpaste", 'none'),
+       (4, 'Kals MatMarkn', -720, 'Deposit on Beer Bottles', 'various'),
+       (4, 'Kals MatMarkn', -60, 'Deposit on another Beer Bottle', 'various'),
+       (5, 'Kals MatMarkn', 26750, 'lunch bread meat cheese', 'lunch Monday'),
+       (6, 'Kals MatMarkn', 15950, 'various', 'dinner Tuesday and Thursday'),
+       (7, 'Kals MatMarkn', 3650, 'Drottningsylt, etc.', 'dinner Thursday'),
+       (8, 'Kals MatMarkn', 26150, 'Chicken and Mushroom Sauce', 'dinner Wed'),
+       (8, 'Kals MatMarkn', -2490, 'Jacob and Laura -- juice', 'dinner Wed'),
+       (8, 'Kals MatMarkn', -2990, "Chicken we didn't cook", 'dinner Wednesday'),
+       (9, 'Kals MatMarkn', 1380, 'fruit for Curry', 'dinner Saturday'),
+       (9, 'Kals MatMarkn', 1380, 'fruit for Curry', 'dinner Saturday'),
+       (10, 'Kals MatMarkn', 26900, 'Jansons Frestelse', 'dinner Sunday'),
+       (10, 'Kals MatMarkn', -540, 'Deposit on Beer Bottles', 'dinner Sunday'),
+       (11, 'Kals MatMarkn', 22650, 'lunch bread meat cheese', 'lunch Thursday'),
+       (11, 'Kals MatMarkn', -2190, 'Jacob and Laura -- juice', 'lunch Thursday'),
+       (11, 'Kals MatMarkn', -2790, 'Jacob and Laura -- cereal', 'lunch Thurs'),
+       (11, 'Kals MatMarkn', -760, 'Jacob and Laura -- milk', 'lunch Thursday'),
+       (12, 'Kals MatMarkn', 18850, 'lunch bread meat cheese', 'lunch Friday'),
+       (13, 'Kals MatMarkn', 18850, 'lunch bread meat cheese', 'guestimate Sun'),
+       (14, 'Kals MatMarkn', 18850, 'lunch bread meat cheese', 'guestimate Tues'),
+       (15, 'Kals MatMarkn', 20000, 'lunch bread meat cheese', 'guestimate Wed'),
+       (16, 'Kals MatMarkn', 42050, 'grillfest', 'dinner Friday'),
+       (16, 'Kals MatMarkn', -1350, 'Deposit on Beer Bottles', 'dinner Friday'),
+       (17, 'System Bolaget', 15500, 'Cederlunds Caloric', 'dinner Thursday'),
+       (17, 'System Bolaget', 22400, '4 x Farnese Sangiovese 56SEK', 'various'),
+       (17, 'System Bolaget', 22400, '4 x Farnese Sangiovese 56SEK', 'various'),
+       (17, 'System Bolaget', 13800, '2 x Jacobs Creek 69SEK', 'various'),
+       (18, 'J and Ls winecabinet', 10800, '2 x Parrotes 54SEK', 'various'),
+       (18, 'J and Ls winecabinet', 14700, '3 x Saint Paulin 49SEK', 'various'),
+       (18, 'J and Ls winecabinet', 10400, '2 x Farnese Sangioves 52SEK','cheaper when we bought it'),
+       (18, 'J and Ls winecabinet', 17800, '2 x Le Poiane 89SEK', 'various'),
+       (18, 'J and Ls winecabinet', 9800, '2 x Something Else 49SEK', 'various'),
+       (19, 'Konsum', 26000, 'Saturday Bread and Fruit', 'Slip MISSING'),
+       (20, 'Konsum', 15245, 'Mooseburgers', 'found slip'),
+       (21, 'Kals MatMarkn', 20650, 'Grilling', 'Friday dinner'),
+       (22, 'J and Ls freezer', 21000, 'Meat for Curry, grilling', ''),
+       (22, 'J and Ls cupboard', 3000, 'Rice', ''),
+       (22, 'J and Ls cupboard', 4000, 'Charcoal', ''),
+       (23, 'Fram', 2975, 'Potatoes', '3.5 kg @ 8.50SEK'),
+       (23, 'Fram', 1421, 'Peas', 'Thursday dinner'),
+       (24, 'Kals MatMarkn', 20650, 'Grilling', 'Friday dinner'),
+       (24, 'Kals MatMarkn', -2990, 'TP', 'None'),
+       (24, 'Kals MatMarkn', -2320, 'T-Gul', 'None')
+       ]
+
+     print [t[2] for t in slips]
+     print (reduce(lambda x, y: x+y, [t[2] for t in slips], 0))/900

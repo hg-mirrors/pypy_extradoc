@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy status talk]{PyPy status talk}
+\author[H. Krekel, M. Fijalkowski]{Holger Krekel \and Maciej Fijalkowski\\
+Merlinux GmbH}
+
+\institute[PyCon UK 2008]{PyCon UK 2008 - Birmingham}
+\date{September 13 2008}

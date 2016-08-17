@@ -1,0 +1,28 @@
+I want to present some rough ideas where PyPy's flexible architecture
+makes good usecase examples and some overview of that architecture.
+
+Details:
+
+1. Stackless features, composable deterministic concurrency, picklable
+   coroutines, an overview how this is implemented
+
+2. Transparent proxy, remote objects. Need to make examples work under
+   pypy-c (especially py.execnet)
+
+3. Digging deeper - compiler toolchain overview, what is RPython, why
+   C considered harmfull.
+
+4. Multiple backend choice, (in)flexibility of RPython, duality, CLI,
+   JVM etc.
+
+!!! 5. Extension compiler
+
+6. JavaScript backend, unittest under python run on browser (not-completed).
+
+7. (in)famous offline partial evaluation, JIT, some demos.
+
+8. Prolog interp as an example of using compiler toolchain?
+
+Method:
+
+Some RPython written - presentation viewer???

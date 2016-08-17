@@ -1,0 +1,620 @@
+\documentclass{llncs}
+
+\usepackage{makeidx}
+\usepackage{graphicx}
+\sloppy
+
+\begin{document}
+
+\pagestyle{headings}
+
+\title{How to \emph{not} write Virtual Machines for Dynamic Languages}
+
+%\titlerunning{XXX}     % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+
+\author{Carl Friedrich Bolz and Armin Rigo}
+
+\authorrunning{Bolz and Rigo}   % abbreviated author list (for running head)
+
+%%%% modified list of authors for the TOC (add the affiliations)
+\tocauthor{Bolz and Rigo (D\"usseldorf)}
+
+\institute{ Lehrstuhl Softwaretechnik und Programmiersprachen\\
+Institut f\"{u}r Informatik, Universit\"at D\"usseldorf, Germany\\
+  \email{ cfbolz@gmx.de, arigo@tunes.org}}
+
+\maketitle
+
+\begin{abstract}
+
+Typical modern dynamic languages have a growing number of
+implementations.  We explore the reasons for this situation, and the
+limitations it imposes on open source or academic communities that lack
+the resources to fine-tune and maintain them all.  It is sometimes
+proposed that implementing dynamic languages on top of a standardized
+general-purpose object-oriented virtual machine (like Java or .NET)
+would help reduce this burden.  We propose a complementary alternative
+to writing custom virtual machine (VMs) by hand, validated by the PyPy
+project: flexibly generating VMs from a high-level ``specification'',
+inserting features and low-level details automatically -- including good
+just-in-time compilers tuned to the dynamic language at hand.  We
+believe this to be ultimately a better investment of efforts than the
+development of more and more advanced general-purpose object oriented
+VMs.  In this paper we compare these two approaches in detail.
+\footnote{This research was partially supported by the EU funded
+ project: IST 004779 PyPy (PyPy: Implementing Python in Python).} \\
+
+\end{abstract}
+
+\section{Introduction}
+
+Dynamic languages are traditionally implemented by writing a virtual
+machine (VM) for them in a low-level language like C or in a language that
+can relatively easily be turned into C.  The VM implements an
+object model supporting the high level dynamic language's objects.  It
+typically provides features like automatic garbage collection.  Recent
+languages like Python, Ruby, Perl and JavaScript have complicated
+semantics which are most easily mapped to a naive interpreter operating
+on syntax trees or bytecode; simpler languages\footnote
+{
+In the sense of the primitive semantics.  For example, in Python most
+primitive operations have complicated semantics; by contrast, in Common
+Lisp complex features like the reader and printer can in theory be
+implemented in terms of simpler primitives as library code.
+}
+like Lisp, Smalltalk and Self typically have more
+efficient implementations based on code generation.
+
+The effort required to build a new virtual machine is relatively
+large.  This is particularly true for languages which are complicated
+and in constant evolution. Language implementation communities from an
+open-source or academic context have only limited resources. Therefore they
+cannot afford to have a highly complex implementation and often choose simpler
+techniques even if that entails lower execution speed. Similarly, fragmentation
+(for example because of other implementations of the same language) is a
+problem because it divides available resources. All these points also apply to
+the implementation of domain-specific languages where it is important to keep
+the implementation effort small.
+
+For these reasons writing a virtual machine in C is problematic because it
+forces the language implementer to deal with many low-level details (like
+garbage collection and threading issues). If a language becomes popular,
+limitations of the C implementation eventually
+lead to alternative implementations which draw
+resources from the reference implementation. An alternative to writing
+implementations in C is to build them on top of one of the newer
+general-purpose object-oriented
+virtual machines (``OO VM'') such as the JVM (Java Virtual Machine) or the
+CLR (Common Language Runtime of the .NET framework). This is often wanted by
+the community anyway, since it leads to the ability to re-use the libraries of
+these platforms. However, if a C implementation existed before the
+implementation of such a VM is started, this enters into conflict with the goal of
+having to maintain essentially a single, simple enough implementation for a
+given programming language: as the language becomes popular, there will be a
+demand to have it run on various platforms -- high-level VMs as well as
+C-level environments.
+
+In this paper, we will argue that it is possible to
+benefit from and integrate with OO VMs while keeping the dynamic
+language implemented as a single, simple source code base.  The idea is
+to write an interpreter for that language in another sufficiently
+high-level but less dynamic language.  This interpreter plays the role
+of a specification for the dynamic language.  With a sufficiently capable
+translation toolchain we can then generate whole virtual machines from
+this specification -- either wholly custom VMs for C-level operating
+systems or as a layer on top of various OO VMs.  In other words,
+meta-programming techniques can be used to successfully replace a
+foreseeable one-OO-VM-fits-all standardization attempt.
+
+The crux of the argument is that VMs for dynamic languages should not be
+written by hand!  The PyPy project \cite{pypy} is the justification,
+proving that the approach is
+feasible in practice.  Just as importantly, it also brings new insights
+and concrete benefits in term of flexibility and performance that go
+beyond the state of the art.
+
+PyPy contains a Python interpreter implemented in Python, from which
+Python VMs can be generated.  The reader is referred to
+\cite{pypyvmconstruction} for a technical presentation.  Let us emphasis
+that the argument we make in the present paper is \emph{not} that
+VMs for dynamic languages should be written in their own host language
+(as many projects like Squeak \cite{Squeak} and others have done) but
+instead that VMs should not be \emph{written} in the first place -- they
+should be generated from simple interpreters written in any suitable
+high-level\footnote{``High-level'' is taken by opposition to languages
+like Scheme48's PreScheme \cite{kelsey-prescheme} or Squeak's \cite{Squeak}
+SLang, which use the syntax and
+meta-programming facilities of a high-level language but encode
+low-level details like object layout and memory management.} language.
+
+In section \ref{sect:approaches} we will explore the way VMs are typically
+implemented in C and on top of OO VMs and some of the problems of these
+approaches, using various Python implementations as the main example. In
+section \ref{sect:meta-programming} we will describe our proposed
+meta-programming approach and compare the two solutions.  We summarize
+our position and conclude in section \ref{sect:conclusion}.
+
+
+\section{Approaches to Dynamic Language Implementation}
+\label{sect:approaches}
+
+\def\implname#1{\emph{#1}}
+
+Limitations of a C-based implementation of a dynamic
+language lead to the emergence of additional implementations --
+this observation is clear
+in the case of Python.  The reference implementation, \implname{CPython}
+\cite{cpy251}, is a simple recursive interpreter.  \implname{Stackless
+Python} \cite{stackless} is a fork that adds micro-threading
+capabilities to CPython. One of the reasons for not incorporating it back
+into CPython was that it was felt that this would make the
+implementation too complex. Another implementation of the Python
+language is \implname{Psyco} \cite{psyco-software}, an extension of
+CPython which adds a JIT-compiler.  Finally, \implname{Jython} is a
+re-implementation for the Java VM and \implname{IronPython}
+a re-implementation for
+the CLR.  All of these ultimately need to be kept synchronized with the
+relatively fast evolution of the language.
+
+With the emergence of the CLR and the JVM as interesting language
+implementation platforms, it is sometimes argued that
+communities should only develop an implementation of their language
+for one of these platforms (preferably the argument author's favourite
+one).
+
+\subsection{Assessing the Advantages of Implementing a Language on Top of OO
+VMs}
+
+Implementing a language on top of an existing OO VM is in many ways easier than
+implementing it in C. Let's take a look at the advantages that are usually
+cited for basing a
+language implementation of a dynamic language on a standard object oriented
+virtual machine.
+
+\begin{itemize}
+\item
+\emph{Better interoperability than the C level:} Since the VM offers a standard
+object model and all the languages implemented on top of it are using it, it is
+easier to integrate the languages that are running on top of the VM. This
+allows reuse of libraries between all the implemented languages. This is
+typically the most important reason to want an implementation on the VM in
+the first place.
+
+\item
+\emph{Cross-platform portability:} Only the underlying VM has to be ported to
+various hardware architectures and operating systems. The languages implemented
+on top of it can then be run without change in various environments.
+
+\item
+\emph{Better tools:} Better and cross-language IDEs, debuggers and profilers.
+
+\item
+\emph{Better implementation of low-level issues like garbage collection,
+threading:} Since an OO VM is expected to be widely used and usually backed by
+a company, it becomes worthwhile and possible to spend a lot of effort tuning
+its garbage collector, threading model, exception support and other low-level
+implementation details.
+
+\item
+\emph{Better performance:} Similarly, object-oriented VMs usually come with a
+highly tuned just-in-time compiler to make them perform well without requiring
+ahead-of-time compilation to machine language. This, in addition to the
+previous point, leads to much better performance of the languages running on top
+of the VM.
+
+\item
+\emph{Ease of implementation:} The implementation of a language on top of an OO
+VM is easier because it starts at a higher level than C. Usually a
+high-level language like Java or C\# is used for the language implementation,
+both of which offer the language implementer a much higher level of abstraction
+than when implementing in C. 
+
+\item
+\emph{A single unified implementation base:} The CLR and JVM are trying
+to position themselves as all-encompassing platforms; if one succeeds,
+implementations of the dynamic language for other platforms might no longer
+be required.
+\end{itemize}
+
+
+\noindent
+The central theme of the benefits of OO VMs is the ability to
+implement certain hard things only once and share the benefits between
+all language implementations on top of the OO VM.  At a closer look,
+some of these advantages are not quite true in practice:
+
+\begin{itemize}
+\item
+\emph{Better performance:} So far it seems that performance of highly dynamic
+languages is not actually significantly improved on OO VMs. 
+Jython is around 5
+times slower than CPython; for IronPython (which
+gives up on at least one feature -- frame objects -- to improve performance)
+the figures vary but it is mostly
+within the same order of magnitude as CPython. The most important reason for
+this is that the VM's JIT compilers are optimized for specific usage patterns
+that are common in the primary language of the OO VM. To achieve good speeds, the
+language implementers would have to carefully produce code that matches these
+usage patterns, which is not a simple task.
+
+\item
+\emph{Better GCs:} While this is obvious in theory, OO VMs tend to have a
+higher memory overhead to start with.  For example, an instance of Sun's
+JVM which just loaded Jython consumes between 34 and 42 MB of memory
+(Linux/IA32), while on the same machine a CPython process fits into 3 to 4
+MB.
+
+\item
+\emph{Cross-platform portability:} While this is true to some extent, the
+situation with regard to portability is not significantly improved compared to
+e.g.  C/POSIX, which is relatively portable as well. Also, portability sometimes
+comes at the price of performance, because even if the OO VM is running on a
+particular hardware architecture it is not clear that the JIT is tuned for this
+architecture (or working at all), leading to significantly reduced
+speed.
+
+\item
+\emph{Ease of implementation:} This point is disputable. On the one hand, OO
+VMs typically allow the language implementer to start at a higher level. On the
+other hand, they also enforce a specific object and execution model. This means
+that the concepts of the implemented language need to be mapped to the
+execution model of the underlying VM, which may or may not be easy, depending very
+much on the language in question.  In many cases, the mismatch between
+the abstractions provided by the underlying VM and the semantics of the
+dynamic language is too deep to allow a natural and/or efficient
+implementation.
+
+An example where this mapping does not work very well is Prolog. While there
+exist several implementations of Prolog on top of the JVM \cite{prologcafe}
+\cite{InterProlog} and one on .NET \cite{psharp},
+they are not particularly efficient, especially when compared to good Prolog VMs
+written in C. This is mostly because the Prolog execution model, which
+involves backtracking and deep recursion, does not fit the JVM and .NET very
+well. Therefore the Prolog implementations on top of OO VMs resort to models
+that are quite unnatural both for the OO VM and for Prolog.
+
+Another important point that makes implementation of languages on top of OO VMs
+harder is that typically general-purpose OO VMs don't support meta-programming
+very well, or do so only at the bytecode level.
+\end{itemize}
+
+Nevertheless, some of the benefits are real and very useful, the most
+prominent of which being easy interaction with the rest of the VM. Furthermore, there
+is better tool support and better GCs. Also, for languages where the execution
+model fits the OO VM well, many of the disadvantages disappear.
+
+
+\subsection{The Cost of Implementation-Proliferation}
+
+The described proliferation of language implementations is a large problem for
+language communities. Although most individual implementations exist for good
+reasons, the sum of all of them and the need to keep them synchronized with the
+reference implementation leads to a significant amount of duplicated work and division of
+effort; this is especially true for open source languages, which tend to evolve
+quickly. At any one point in time some of the implementations will lag behind;
+for developers, this makes writing code which can work on all of the
+implementations harder.
+
+Implementing a language on top of a OO VM has many advantages, so some
+people propose the solution of standardizing on one particular OO VM in order
+to not have
+to maintain implementations for several of them. While this would in theory
+alleviate the problem it is unlikely to happen. On the one hand, many political
+issues are involved in such a decision. On the other hand, deciding on a single
+object and execution model would not be an equally good fit for all languages.
+
+In the next section, we explore a different approach for implementing
+dynamic languages that we believe is able to solve many of the problems that
+implementers face, including the issue of the explosion of the number
+of implementations.
+
+\section{Meta-Programming Is Good}
+\label{sect:meta-programming}
+
+The present paper proposes to approach the implementation of dynamic
+languages from a meta-level: virtual machines for such languages should
+not be written by hand, but generated automatically ``around'' an
+interpreter\footnote
+{
+We do not explore the possibility of starting from even
+higher-level descriptions like declarative semantics; while interesting in
+theory, there are many open issues that make it impractical so far, from
+the question of whether it is feasible at all for large dynamic languages
+to the issue of how to compile such a description to efficient code.
+}
+playing the role of a high-level description of the language.  We
+argue that this approach gives many of the benefits usually expected by
+an implementer when he decides to target an existing object-oriented
+virtual machine.  It also gives other benefits that we will describe --
+mostly in term of flexibility.  Most importantly, it lets a
+community write a single source implementation of the language, avoiding
+the time-consuming task of keeping several of them synchronized.  The single
+source can be used to generate either custom VMs for C-like
+environments or interpreters running on top of OO VMs.  This makes it
+practical to experiment with large changes to the language and with
+entirely new languages, such as domain-specific languages, while at any
+time being able to run the implemented language in a variety of
+environments, from C/POSIX to the JVM to .NET.
+
+\subsection{PyPy's architecture}
+
+We implemented this idea in the PyPy project \cite{pypy}.  The dynamic language
+for which we wrote an interpreter is Python.  It is a language which,
+because of its size and rather intricate semantics, is a good target for
+our approach in the following sense: its previous re-implementations
+(Jython for the JVM and IronPython for .NET) have each proved to be very
+time-consuming to maintain.  Our implementation is, by construction,
+easier to maintain and extremely portable (including to C/POSIX, to the
+JVM and to .NET).
+
+In the terminology of meta-programming, the PyPy architecture is as follows:
+
+\begin{itemize}
+
+\item
+We use a very expressive \emph{object language} (RPython -- an analyzable
+subset of Python) as the language in which the complete Python
+interpreter is written, together with the implementation of its
+built-in types.  The language is still close to Python, e.g.  it is
+object-oriented, provides rich built-in types and has automatic memory
+management.  In other words, the source code of our complete Python
+interpreter is mostly free of low-level details -- no explicit memory
+management, no pieces of C or C-level code.  Any RPython code is also
+valid Python code, so for testing and bootstrapping it can be run
+directly on top of another Python implementation like CPython.
+
+\item
+We use a very expressive metalanguage (namely regular Python) to
+perform the analysis of RPython code (control flow and data flow
+construction, type inference, etc.) and its successive
+transformations.
+
+\item
+This meta-programming component of PyPy is called the \emph{translation
+framework}, as it translates RPython source code (i.e. the full Python
+interpreter) into lower-level code.  Its purpose is to add aspects to
+and specialize the interpreter to fit a selectable virtual or hardware
+runtime environment.  This either turns the interpreter into a
+standalone virtual machine or integrates it into an existing OO VM.
+The necessary support code -- e.g. the garbage collector when
+targeting C -- is itself written in RPython in much the same spirit
+that the Jikes RVM's GCs are written in Java \cite{JikesGC}; this
+support code is
+translated together with the interpreter to form the final custom VM.
+\end{itemize}
+
+A detailed description of this translation process is beyond the scope of the
+present paper; it can be found in \cite{pypyvmconstruction}.  The actual Python
+interpreter of PyPy and the results we achieved by translating it to C, LLVM
+\cite{LLVM} and .NET are described in \cite{architecture} \cite{translationdoc}.
+These results show that the
+approach is practical and gives results whose performance is within the same
+order of magnitude (within a factor of 2 and improving) of the hand-written,
+well-tuned CPython, the C reference implementation.  These figures do not
+include the spectacular speed-ups that PyPy obtains in some cases using the
+JIT compiler generator
+described in section \ref{subsect:dynamic_compilers}.
+
+In the sequel, we will focus on the relative advantages and
+inconveniences of the PyPy approach compared to
+hand-writing a language implementation on top of an OO VM.
+
+
+\subsection{A single source}
+
+Our approach -- a single ``meta-written'' implementation -- naturally
+leads to language implementations that have various advantages over the
+``hand-written'' implementations.  Firstly, it is a single-source
+approach -- we explicitly seek to solve the problem of proliferation of
+implementations.  In the sequel, we will show that this goal can be
+achieved without giving up the advantages of hand-written
+implementations for OO VMs.  Moreover, there are additional advantages which,
+in our opinion, are significant enough to hint that meta-programming,
+though not widely used in general-purpose programming, is an essential
+tool in a language implementer's toolbox.
+
+\subsection{Writing the interpreter is easier}
+
+A first point is that it makes interpreters easy to write, update and
+generally experiment with.  More expressiveness helps at all levels: our
+Python interpreter is written in RPython as a relatively simple
+interpreter and is, in some respects, easier to understand than CPython.  We are
+using its high level and flexibility to quickly experiment with features
+or implementation techniques in ways that would, in a traditional
+approach, require pervasive changes to the source code.  For example,
+PyPy's Python interpreter can optionally provide lazily computed objects
+-- a 150-lines extension in PyPy that would require global changes in
+CPython.  Further examples can be found in our technical reports; we
+should notably mention an extension adding a state-of-the-art security
+model for Python based on data flow tacking \cite{D12.1}, and general
+performance improvements found by extensive experimentation \cite{D06.1}, some
+of which were back-ported to CPython.
+
+\subsection{Separation of concerns}
+
+At the level of the translation framework, the ability to change or
+insert new whole-program transformations makes some aspects of the
+interpreter easier to deal with.  By ``aspect'' we mean, in the original
+AOP sense, a feature that is added to an object program by a
+meta-program.  The most obvious example in our context is the insertion
+of a garbage collector (chosen among several available ones) for the
+target environments that lack it.  Another example is the translation of
+the interpreter into a form of continuation-passing style (CPS), which
+allows the translated interpreter to provide coroutines even though its
+source is written in a simple highly recursive style.  For more details
+and other examples of translation-level transformations, see
+\cite{D07.1}.
+
+%A more subtle example of separation of concerns is the way our generated
+%implementations can be integrated with a host OO VM.  As mentioned
+%above, an implementer deciding to directly target a specific OO VM needs
+%not only good knowledge of the OO VM in question and its object model --
+%he must fit the language into the imposed models.  Instead, in our
+%approach this task is done at two levels: in a first step, a stand-alone
+%interpreter is written -- which, if translated to a given OO VM, would
+%simply give an interpreter for the dynamic language which is unable to
+%communicate with the host VM.  Integration comes as a second step, and
+%occurs at a different level, by introducing mappings between the
+%relevant classes of the interpreter and the corresponding classes of the
+%OO VM.
+
+\subsection{The effort of writing a translation toolchain}
+
+What are the efforts required to develop a translation toolchain capable
+of analyzing and transforming the high-level source code and generating
+lower-level output in various languages?
+
+Although it is able to generate, among other things, a complete, custom
+VM for C-like environments, we found that the required effort that must
+be put into the translation toolchain was still much lower than that of
+writing a good-quality OO VM.  A reason is that a translation toolchain
+operates in a more static way, which allows it to leverage good C
+compilers.  It is self-supporting: pieces of the implementation can be
+written in RPython as well and translated along with the rest of the
+RPython source, and they can all be compiled and optimized by the C
+compiler.  In order to write an OO VM in this style you need to start by
+assuming an efficient dynamic compiler.
+
+Of course, the translation toolchain, once written, can also be reused
+to implement other languages, and tailored on a case-by-case
+basis to fit the specific needs of a language.  The process is
+incremental: we can add more features as needed instead of starting from
+a maximal up-front design, and gradually improve the quality of the
+tools, the garbage collectors, the various optimizations, etc.
+
+Writing a good garbage collector remains hard, though.  At least, it is
+easy to experiment with various kind of GCs, so we started by just using
+the conservative Boehm \cite{Boehm} collector for C and moved up to a
+range of simple custom collectors -- reference counting, mark-and-sweep,
+etc.  Ultimately, though, more advanced GCs will be needed to get the
+best performance.  It seems that RPython, enhanced with support for
+direct address manipulations, is a good language for writing GCs, so it
+would be possible for a GC expert to write one for our translation
+framework.  However, this is not the only way to obtain good GCs:
+existing GCs could also be reused.  Good candidates are the GCs written in
+the Jikes RVM \cite{JikesGC}.  As they are written in Java, it should be
+relatively straightforward to design a translation step that turns them
+into RPython (or directly into our RPython-level intermediate
+representation).  Our translation toolchain could then integrate any one
+of these GCs into the VMs it generates.
+
+In summary, developing a meta-programming translation toolchain requires
+work, but it can be done incrementally, it can reuse existing code, and
+it results in a toolchain that is itself highly reusable and flexible in
+nature.
+
+\subsection{Dynamic compilers}
+\label{subsect:dynamic_compilers}
+
+As mentioned above, the performance of the VMs generated by our
+translation framework is quite acceptable -- e.g. the Python VM
+generated via C code is much faster than Jython running on the best
+JVMs.  Moreover, the JIT compilers in these JVMs are essential to
+achieve even this performance, which further proves the point that
+writing good general-purpose OO VMs -- especially ones meant to support dynamic
+languages -- is a lot of work.
+
+The deeper problem with the otherwise highly-tuned JIT compilers of the
+OO VMs is that they are not a very good match for running arbitrary dynamic
+languages.  It might be possible to tune a general-purpose JIT compiler
+enough and write the dynamic language implementation accordingly so
+that most of the bookkeeping work involved in running the dynamic
+language can be removed -- dispatching, boxing, unboxing...  However
+this has not been demonstrated yet.\footnote
+{Still in the draft stage, a proposed
+extension to the Java bytecode \cite{invokedynamic} might help achieve
+better integration between the Java JITs and some class of dynamic languages
+running on top of JVMs.}
+
+By far the fastest Python implementation, Psyco \cite{psyco-software}
+contains a hand-written language-specific dynamic compiler.  It works by
+specializing (parts of) Python functions based on runtime information
+fed back into the compiler (typically, but not exclusively, object types).
+The reader is referred to \cite{Psyco-paper} for more details.
+
+PyPy abstracts on this approach: its translation tool-chain is able to
+extend the generated VMs with an \emph{automatically generated} dynamic
+compiler that uses techniques similar to those of Psyco, derived from
+the interpreter.  This is achieved by a pragmatic application of partial
+evaluation techniques guided by a few hints added to the source of the
+interpreter.  In other words, it is possible to produce a reasonably
+good language-specific JIT compiler and insert it into a VM, along
+with the necessary support code and the rest of the regular interpreter.
+
+This result was one of the major goals and motivations for the whole
+approach.  By construction, the JIT stays synchronized with its VM
+and with the language when it evolves.  Also by construction, the JIT
+immediately supports (and is correct for) arbitrary input code.
+Some very simple Python examples run more than
+100 times faster.  At the time of this writing this is still rather
+experimental, and the techniques involved are well beyond the scope of
+the present paper.  The reader is referred to \cite{D08.2} for more
+information.
+
+
+\section{Conclusion}
+\label{sect:conclusion}
+
+Here are the two central points that we have asserted in the present
+paper:
+
+%XXX doesn't look entirely nice
+\begin{itemize}
+\item \emph{High-level languages are suitable to implement dynamic languages.}
+They allow an interpreter to be written more abstractly, which has many
+advantages.  Among these, it avoids the proliferation of diverging
+implementations, and gives implementers better ways to combine flexibility
+with efficiency.
+Moreover, this is not incompatible with targeting and benefiting from
+existing high-quality object-oriented virtual machines like those of the
+Java and .NET.
+
+\item \emph{Do not write VMs ``by hand''.}
+In other words, write an \emph{interpreter} but not a
+\emph{virtual machine} for the language.
+Writing language-specific virtual machines is a time-consuming task for
+medium to large languages.  Unless large amounts of resources can be
+invested, the resulting VMs are bound to have limitations which lead to
+the emergence of many implementations, a fact that is taxing precisely
+for a community with limited resources.  This is of course even more
+true for VMs that are meant to be general-purpose.
+\end{itemize}
+
+\noindent
+As a better alternative, we advocate a more general usage of
+meta-programming:
+
+\begin{itemize}
+\item \emph{Let's write more meta-programming translation toolchains.}
+Aside from the advantages described in section
+\ref{sect:meta-programming}, a translation toolchain need not be
+standardized for inter-operability but can be tailored to the needs of
+each project.
+\item \emph{Diversity is good.}  Meta-programming translation
+toolchains offset the need for standardization of general-purpose OO VMs.
+\end{itemize}
+
+The approach we outlined is actually just one in a very large, mostly
+unexplored design space; it is likely that some of the choices made in
+PyPy will turn out to be suboptimal.  We are hoping that other
+toolchains will emerge over time, exploring other aspects and proposing
+other solutions.  By their ``meta'' nature, these multiple approaches
+should be easier to bridge together than, say, multiple OO VMs with
+different object and runtime models.  We believe that further research
+in this area might open the door to better solutions for
+interoperability in general -- e.g. high-level bridges instead of
+(virtual-)machine-level ones, enabled by cross-translation.
+
+We believe this to be ultimately a better investment of efforts than the
+development of more advanced general-purpose OO VMs.
+
+
+% ---- Bibliography ----
+%\begin{small}
+\bibliographystyle{abbrv}
+\bibliography{dyla}
+%\end{small}
+
+\end{document}

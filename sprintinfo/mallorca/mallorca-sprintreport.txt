@@ -1,0 +1,140 @@
+Hi all!
+
+This is the first report of the challenging Mallorca sprint. On the one 
+hand getting here proved to be quite an ordeal for some of the sprinters 
+due to bad weather at airports and uncooperative ferry companies. On the 
+other hand it seems that we have finally run out of even vaguely easy 
+tasks to do and are thus involved in serious head-scratching and the 
+making of strange noises as we contemplate what we have to do.
+
+The sprint is hosted in the GNU/Linux lab of the Universitat de les 
+Illes Balears in Palma de Mallorca. We are very thankful to them for 
+letting us disturb their undergraduates in their attempts to use the 
+computers.
+
+On the first day some of the strangest noises were produced by Samuele 
+who started together with Gerald and Stephan to work on a static version 
+of ctypes for rpython. On Tuesday evening, after lots of tedious work on 
+all levels of the translation toolchain, they managed (with some 
+cheating) to got an example calling atoi to run.
+
+Michael and Arre started extending the l3interpreter to support 
+operations involving heap-structures in a way that could be run on top 
+of the llinterpreter and after translation to C. After some argument 
+with Samuele, who, as usual, turned out to be right, they were 
+successful in their goals. This means that the l3intepreter can now 
+perform reasonably complex operations involving pointers but not 
+subtract two integers.
+
+Carl Friedrich and Richard started refactoring the gc framework to use 
+the new facilities Michael and Arre had written. Progress there was 
+extreeeemely slow, so that in the evening of the first day only marginal 
+progress was achieved.
+
+Christian, Eric and later Jacob started exposing PyPy's stackless 
+features to application level. While doing this they found a few 
+problems in the interp-level code and refactored it a bit. On the second 
+and third day Christian and Jacob continued with this. They managed to 
+expose simple coroutines on Wednesday and are now continuing to create 
+nicer interfaces following the stackless module of stackless Python. One 
+of the problems there turned out to be testing turnaround time, since 
+the functionality can only be tested after a full translation has been 
+run. There might be some ways around this involving slimy hacks.
+
+On the second day most pairs continued as before. Armin and Carl 
+Friedrich worked on the JIT. They started defining an interface to 
+generate code at runtime (see 
+http://codespeak.net/svn/pypy/dist/pypy/doc/discussion/draft-jit-ideas.txt) 
+and then using this same interface in the low level abstract 
+interpreter. This turned out to be quite difficult in the sense that 
+most of the time was spent re-redesigning the interface yet another time.
+
+On the third day Armin swapped with Samuele and continued with Gerald 
+and Stephan to work on rctypes, with slow but steady progress. They are 
+now able to annotate simple cases that use structures.
+
+Arre and Samuele tied themselves to the JIT treadmill and continued the 
+work of Armin and Carl. A lot of "wuah!"'s and "arrgh!"'s can be heared 
+from their direction -- we assume they are having fun.
+
+Carl Friedrich and Michael thought about how to integrate the currently 
+only simulated GC framework with the backends. This looked and still 
+looks like it will be *a lot of* work but they were able to at least 
+clarify some issues and get somewhat started.
+
+Eric and Richard tried to finally remove the dependency on pyrex (!) in 
+genllvm which is a relict from the old days of the first LLVM backend 
+(which was pre-rtyper!). They are also working on removing some 
+hand-written C code from genllvm.
+
+So while we're not seeing super-rapid progress there are still 
+interesting changes continuously arriving. Tomorrow is a day off, but 
+given the bunch of obsessives we are there might still be some checkins. 
+There will still be three full days of sprinting afterwards.
+
+Cheers from sunny Palma,
+
+Michael & Carl Friedrich
+
+We greet you once again from the Aula Linux lab of the UIB in Palma de
+Mallorca.  There is one more day of sprinting, but as many people have
+had to leave slightly early, it's probably safe to attempt some kind
+of summary.
+
+Thursday was the break day, which didn't stop some mad people from
+doing a little work on rctypes and the JIT.  The sane ones among us
+went hiking or to artists' studios instead :)
+
+Friday was not the most productive of days, partly becase we gave a
+talk to some people from the university and the local free software
+user group in the afternoon.  Also contributing to the lack of results
+were the general difficulty of the tasks and some amazing getting-lost
+skills ("getting lost" here refers to the physical world for a change).
+
+Armin, Arre and Samuele worked on the JIT, the idea being to write an
+"abstract abstract interpreter", which would specialize an abstract
+interpreter of low-level graphs for a particular set of low-level
+graphs.  At lunch they told a hilarious joke that they weren't going
+to do this at all and would instead re-use the annotator to extract
+the needed information.  This then turned out to not be a joke at all,
+and is exactly what they did for the next two days (apparently they
+plan to re-use the rtyper as well, but this is just preposterous).
+
+Christian worked on coroutines and other stackless-like functionality,
+with good results: you can now build a version of pypy that can use
+and freely intermingle raw coroutines, tasklets and greenlets all at
+once.  Apparently this is all fairly natural in the implementation,
+but must allow for the possibility of some *deeply* obscure user
+code... (obfuscated pypy contests, anyone?)
+
+Michael and Carl repeatedly bashed their heads onto the topic of gc
+integration, the desk, reference counting details, walls, genc and so
+on.  The basic goal was to express the logic behind placing incref and
+decref operations as a nice and fairly clear transformation of the
+flow graphs, as opposed to backend-specific incomprehensible hacks.
+This task was made considerably harder by exceptions (who uses them,
+anyway?) but hopefully by the time we've finished writing this report
+we'll have built a pypy-c in the new style.  This work should allow
+(finally) the integration of the GC framework Carl wrote as his Summer
+of Code project, and mere mortals to understand genc.
+
+Gerald and Stephan continued to work on "rctypes" -- a static version
+of ctypes for RPython.  Reasonably complex ctypes declarations can now
+be annotated.
+
+Eric and Richard worked on a transformation to replace some of the
+operation that can raise exceptions with direct_call operations --
+something that will be very useful for the GC work mentioned above,
+because operations that can raise an exception need special treatment
+-- so the fewer the better!
+
+And finally, some really interesting news: Armin plans to release
+Bub-n-Bros 1.5, the play testing of which delayed this morning's
+status meeting considerably :)
+
+To sum up, this sprint has seen a fair amount of work on very
+challenging tasks.  As usual we all need to sleep for a week, so it's
+time to leave this wonderful island (also, it's raining).
+
+Cheers,
+mwh and Carl Friedrich

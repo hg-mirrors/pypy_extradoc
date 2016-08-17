@@ -1,0 +1,25 @@
+
+People present
+--------------
+
+* Armin Rigo
+* Romain Guillebert
+* David Schneider
+
+Things we want to do
+--------------------
+
+* some skiing (DONE)
+
+* review the JVM backend pull request (DONE)
+
+* py3k (romain) (little bit of progress)
+
+* Debug the ARM backend (bivab, armin around) (some more progress)
+
+* STM
+  - refactored the RPython API (DONE)
+  - app-level transaction module (DONE)
+  - start work on the GC (armin)
+
+* lightweight tracing experiment (DONE but still experimental)

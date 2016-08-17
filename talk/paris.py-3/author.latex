@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy : l'implémentation la plus rapide de Python]{PyPy : l'implémentation la plus rapide de Python}
+\author[rguillebert]
+{Romain Guillebert}
+
+\institute{Paris.py}
+\date{15 octobre 2013}

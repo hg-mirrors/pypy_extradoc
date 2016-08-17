@@ -1,0 +1,71 @@
+Duesseldorf PyPy sprint October 30 - November 5 2006
+=====================================================
+
+The next PyPy sprint will be held in the Computer Science department of
+Heinrich-Heine Universitaet Duesseldorf from the 30th of October to the 5th of
+November 2006.
+
+Topics and goals
+----------------
+
+The topics of the sprints are not fixed yet.  We will progress on the subjects
+that we are currently working on, while giving a special priority to any topic
+that "non-core" people find interesting.  There are many topics that could fit
+both category :-)  Here are some examples:
+
+* Just-In-Time work.  Two sub-topics:
+
+  - write and/or optimize a machine-code backend (we have 386 only so far)
+  - work on turning simple interpreters into JIT compilers (we cannot do
+    this for the whole of the PyPy interpreter yet, we're getting there
+    small step by small step).
+
+* Optimization of core Python data types, making full 
+  use of PyPy's flexible architecture and python-implemented  
+  (and then translated) type system.  (We have already various dict and
+  str implementations.)
+
+* "Next-step stuff" that will requires some thinking and design:
+
+  - distribution (where a single program runs on multiple machines)
+  - persistence (save an "image" of a running program, or a part of it)
+  - security (in many possible senses of the word)
+
+* Working on py.test testing tool: 
+
+  - py.test recently grew some distribution features which are still rough
+    around the edges and could use improvement
+
+  - there are some more ideas for features of py.test around, like adding
+    profiling capabilities (and more)
+
+* Work on the PyPy build tool: There are some plans to provide a tool that
+  allows one to flexibly configure PyPy and to also request builds from a set
+  of build servers. If there is interest there could be work in this area.
+
+* and as always, there is the topic of implementing or completing core
+  extension modules (e.g. socket...).  This is hacking with a mix of
+  ctypes and RPython.
+
+
+Location
+--------
+
+The sprint will (probably) take place in a seminar room of
+the geography department (which is getting assimilated by the cs
+department and is below it).  It is in the building 25.12 of the
+university campus. For travel instructions see
+
+    http://stups.cs.uni-duesseldorf.de/anreise/esbahn.php
+
+Registration
+------------
+
+If you'd like to come, please subscribe to the `pypy-sprint mailing list`_
+and drop a note about your interests and post any questions.  More 
+organisational information will be send to that list.  We'll keep
+a list of `people`_ which we'll update (which you can do so yourself
+if you have codespeak commit rights). 
+
+.. _`pypy-sprint mailing list`: http://codespeak.net/mailman/listinfo/pypy-sprint
+.. _`people`: http://codespeak.net/pypy/extradoc/sprintinfo/ddorf2006b/people.html

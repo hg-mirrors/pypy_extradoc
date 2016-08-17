@@ -1,0 +1,97 @@
+Goals and topics of the sprint 
+------------------------------
+
+While attendees of the sprint are of course welcome to work on what
+they wish, we offer these ideas:
+
+  - Work on an 'rctypes' module aiming at letting us use a ctypes
+    implementation of an extension module from the compiled pypy-c.
+
+    MONDAY: (armin, michael t, joshua, gene)
+              work on compatibility with various ctypes versions,
+              in particular cleaning up the ways of teaching the
+              annotator about stuff
+
+    TUESDAY: (armin, michael t, gene)
+             More cleanups, and eventually adding a feature:
+             beginnings of rtyping arrays.
+
+    TODAY: (armin, gene)
+           More of same.
+
+  - Writing ctypes implementations of modules to be used by the above
+    tool. 
+
+    PROGRESS: none
+
+  - Implementing Python 2.5 features in PyPy
+
+    MONDAY: (arre, stuart, martin)
+            Tour of PyPy, implemented builtins all() and any()
+            Then implemented PEP 308, reminding Arre about the
+            parser mess, but succeeded.
+
+    TUESDAY: (arre, stuart, anders)
+             Some untangling of the stable compiler mess.
+             Implemented 'with' from PEP 343, missing some tests
+             and the __future__ support.
+
+    TODAY: (arre, sturart, anders)
+           Continue, maybe PEP 342.
+
+  - Implementation of constraints solvers and integration of dataflow
+    variables to PyPy.
+    
+    PROGRESS: (anders, george)
+              Tour of existing work, work on sudoku solver, but
+              kept bumping into bugs.
+
+  - Implement new features and improve the 'py' lib and py.test 
+    which are heavily used by PyPy (doctests/test selection/...).
+
+    PROGRESS: (brian, jan)
+              Work on making tests pass or skip on win32, packaging
+              Unfortunately, Brian is unwell.
+             
+    TUESDAY: (pat)
+             Working on template stuff
+    TODAY: (pat)
+           More documentation, and checking in.
+
+  - JIT stuff
+
+    PROGRESS: none
+
+  - LLVM backend work
+
+    PROGRESS: (richard, pat)
+              Unbroke the backend, some cleaning up, LLVM compatibility
+              work, ctypes investigation.
+
+    TUESDAY: (richard, bob)
+             Some exploration of LLVM's JIT (but mainly LLVM's build
+             system)
+
+    TODAY: (richard)
+           ?
+
+  - ootypesystem improvements/smalltalk/lisp backend
+
+    MONDAY: (nik, samuele)
+              Keyword arguments for methods, partial __init__ support.
+
+    TUESDAY: (nik, samuele, michael h)
+             More PBC, __init__ support.  Fought with class attributes.
+
+    TODAY: (nik, samuele, mwh)
+           More fighting.
+ 
+  - Generally experiment with PyPy -- for example, play with
+    transparent distribution of objects or coroutines and stackless
+    features at application level.
+
+    TUESDAY: (moshez, mwh)
+             Played with coroutines a bit.  Wrote a new test.
+
+  - Have fun!
+

@@ -1,0 +1,20 @@
+People coming to the Warsaw sprint 2014
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available from them.
+
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Armin Rigo           20/10-28/10    with fijal
+Maciej Fijalkowski   20/10-30/10    private
+Romain Guillebert    19/10-26-10    ibis Reduta with mjacob
+Manuel Jacob         20/10-26/10    ibis Reduta with rguillebert
+Kostia Lopuhin
+Antonio Cuni         20/10-26/10    ibis Reduta http://www.ibis.com/gb/hotel-7125-ibis-warszawa-reduta/index.shtml
+Matti Picus          20/10-20/10    just a long layover between flights
+Ronan Lamy           19/10-26/10    ibis Reduta
+==================== ============== =======================

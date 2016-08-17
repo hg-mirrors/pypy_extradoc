@@ -1,0 +1,43 @@
+Reference/Call For Papers: http://www.ccc.de/congress/2005/cfp.html
+DEADLINE: 30th September 2005 (friday)
+
+Name: Christian Tismer
+
+Public Name: Christian Tismer
+
+Other Names: stakkars on irc.freenode.org
+
+Primary E-Mail address: tismer@stackless.com
+
+Phone number(s): +49 173 24 18 776
+
+A photo, square format, min. 128x128 pixels (optional): 
+    http://codespeak.net/pypy/extradoc/talk/22C3/christian_tismer.jpg
+
+Statement: publishing contact info except for the phone number 
+           is fine with me. 
+
+Public home page, weblog and other speaker-related websites: 
+    
+    http://codespeak.net/pypy
+    http://www.stackless.com
+
+Short Info: 
+
+    Christian Tismer, co-founder and developer of PyPy, CEO tismerysoft GmbH. 
+
+Bio: 
+
+    Christian studied math, physics and IS at the Free University of Berlin.
+    He spent a decade on pharmaceutical research, generating reports, doing
+    EEG recording software, power spectra analysis and wavelet transforms.
+    He then became a software consultant, and invented Stackless Python
+    which he continues to maintain until it becomes obsolete by PyPy.
+    He founded tismerysoft in 2004 with the intent to participate in
+    PyPy as a core developer and to build applications and consulting
+    services on top of PyPy.
+
+Postal address: tismerysoft GmbH, Christian Tismer, Johannes-Niemeyer-Weg 9A, 14109 Berlin
+Bank information: 
+Expected day of arrival and departure: 27th-30th December. 
+

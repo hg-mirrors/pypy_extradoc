@@ -1,0 +1,64 @@
+XXX Understanding PyPy, and How It Lets You Do Things You Have Only Dreamed About. (*)
+XXX The PyPy way and the tales of nice features and pleasant design
+================================================================================
+(* for particularly nerdy dreams :-) )
+
+Summary (max 100 words, for the website):
+
+In this talk we will outline some of PyPy's unique features, namely
+sandboxing, transparent proxying, our distribution prototype and our security
+prototype (also known as the taint prototype). We would also like to 
+present and summarise the design
+decisions which makes it so easy to implement such features.
+
+One additional benefit of our design decisions is that low-level
+decisions do not permeate the codebase.  Thus, these features are not
+platform-dependent.  They work out of the box on different PyPy target
+platforms (C/POSIX, .NET, JVM) from a single interpreter source.
+
+Description and outline:
+
+In this talk, we would like to present our paradigm-shifting architecture
+for dynamic languages and some features which are exclusively available in
+PyPy due to our novel approach. These  features
+are available on all of our target platforms (C/POSIX, .NET, JVM) and are
+independent of other decisions (garbage collector, stackless, JIT, etc.)
+The result is an unprecidented ability to mix-and-match low-level
+internal implementation details so that we can really serve you a
+'Python as you like it'.
+
+Talk outline:
+
+* Quick recap of our motivation for creating PyPy.
+
+* The transparent proxy, which allows programmers to create
+  indistinguishable proxies for any type in Python (including built-in
+  python types like frames), with various demos including one for
+  our completely transparent remote access scheme.
+
+* the PyPy Sandbox, which allows one to run a full python
+  interpreter (including free imports) in a controlled environment with a
+  custom safety policy, restrained on calls to C level.
+
+* The Taint Object Space, which allows programmers to make sure that sensitive
+  information does not cross I/O barriers.
+
+All the features mentioned above would be presented together
+with immediate usecase live demos how these features work and how
+to use them in the real-world applications.
+
+We conclude with a little bit of philosophy.
+
+* Why our approach of doing pervasive changes to semantics does not
+  require pervasive changes to the interpreter core.
+  Why our design allows us to describe a broad class of such changes
+  as a "proxying operation" and finally, why design matters when you want
+  to get a butterfly out of a caterpillar instead of just a bigger,
+  healthier caterpillar.
+
+Bio
+===
+
+Maciej Fijalkowski is a PyPy developer for two years now. He has been
+presenting PyPy at the EuroPython 2007 in Vilnius as well as Rupy
+2007 in Poznan.

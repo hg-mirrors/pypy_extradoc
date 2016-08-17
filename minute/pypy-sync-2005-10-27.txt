@@ -1,0 +1,308 @@
+=============================================
+pypy-sync developer meeting 27th October
+=============================================
+
+Time & location: 1pm (30 minutes) at #pypy-sync
+
+Attendees::
+
+         Samuele Pedroni
+         Armin Rigo (left early)
+         Holger Krekel 
+         Eric van Riet Paap
+         Michael Hudson
+         Carl Friedrich Bolz
+         Bert Freudenberg 
+
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+"this week on #pypy"
+--------------------------
+
+Michael volunteered to write a short "This week in pypy-land" text every week
+(which would include the events in #pypy and other interesting stuff). This
+would make e.g. navigating the #pypy-logs a lot easier but is also quite a lot
+of work. Holger suggested that we should have a file in svn where everybody can
+insert paragraphs. This was considered a good ideal. Michael plans to summarize
+everything at the end of the week and send mails to pypy-dev.
+
+
+new release
+--------------------------
+
+Samuele brought up the issue of another making another release (0.8.0) soon
+that highlights the translatable parser/compiler.  He wants this because some
+of the reportwriting he has to do is blocked by the fact that this release did
+not happen yet.  The features of the release would be working/translatable
+astcompiler, translatable thunk object space, cleaned up translate_pypy and a
+bit more speed.
+
+The idea was to try make a small release that should not take too much work.
+One of the biggest problems is that Holger is not really avaiable next week
+which is when Samuele planned to do the release. Holger did a lot of the
+infrastructure work for the last releases. Samuele noted that this release is a
+bit different since we don't have new features that we want to rush in in the
+last minute. It was decided that we should try to make a release friday next
+week (November 4th, 2005), making a release branch on October, 28th. Over the
+weekend the compliancy tests will be run to see whether compliancy got worse.
+If this is the case we might have to reconsider.  On Monday (October, 31th)
+there will be a planning meeting.  All in all there don't seem to be that many
+people avaiable for the release: Samuele, Michael, Anders L., Arre(?), Carl
+Friedrich (maybe a little), Christian (a bit).
+
+
+gothenburg sprint topics
+--------------------------
+
+topic deferred to next pypy-sync.
+
+.. _`IRC-Log`:
+
+Complete IRC log
+=================
+
+complete log::
+
+    **** BEGIN LOGGING AT Thu Oct 27 12:58:02 2005
+
+    Oct 27 12:58:02 *	Now talking on #pypy-sync
+    Oct 27 12:58:18 *	hpk (n=hpk@adsl-236-175-192-81.adsl2.iam.net.ma) has joined #pypy-sync
+    Oct 27 13:00:29 cfbolz	hi all!
+    Oct 27 13:00:34 hpk	hi!
+    Oct 27 13:00:38 cfbolz	it's 1 on my clock, so shall we start?
+    Oct 27 13:00:55 hpk	fine for me. let's see if some others are awake :) 
+    Oct 27 13:01:02 cfbolz	:-)
+    Oct 27 13:01:02 pedronis	hi, yes
+    Oct 27 13:01:05 mwh	hello
+    Oct 27 13:01:06 arigo	hi!
+    Oct 27 13:01:36 cfbolz	ok, everybody post their activity reports!
+    Oct 27 13:01:39 ericvrp	hi~
+    Oct 27 13:01:48 arigo	LAST: holidays + reports + a stackless RPython interface
+    Oct 27 13:01:48 arigo	NEXT: holidays + finish report draft-dynamic-etc + choose new laptop
+    Oct 27 13:01:48 arigo	BLOCKERS: -
+    Oct 27 13:01:58 ericvrp	Last: some genjs, mostly non-PyPy
+    Oct 27 13:01:59 ericvrp	Next: dito
+    Oct 27 13:02:01 ericvrp	Blockers: -
+    Oct 27 13:02:09 cfbolz	LAST: statistic gathering, pypy unrelated
+    Oct 27 13:02:09 cfbolz	NEXT: report
+    Oct 27 13:02:09 cfbolz	BLOCKERS: none
+    Oct 27 13:02:27 hpk	LAST: eu dissemniation/talk planning, codespeak admin.  NEXT: pycon proposals, finalizing dissemination planning.  BLOCKERS: somewhat non-permanent internet connection
+    Oct 27 13:02:46 pedronis	LAST: some release prep, D04.4, looked at other reports, some other rep writing,rtyper level opts/code reductions
+    Oct 27 13:02:48 pedronis	NEXT: release, finish D04.4, help with other reports
+    Oct 27 13:02:49 pedronis	BLOCKERS: -
+    Oct 27 13:03:37 mwh	last week: got a job!  making and using refactoring tools
+    Oct 27 13:03:37 mwh	next week: more of same
+    Oct 27 13:03:37 mwh	blockers: -
+    Oct 27 13:04:14 mwh	oh, and pycon proposals for next week
+    Oct 27 13:04:17 *	aleale (n=andersle@clogs.dfki.uni-sb.de) has joined #pypy-sync
+    Oct 27 13:04:20 hpk	bertf: ? 
+    Oct 27 13:04:39 cfbolz	aleale: your activity report?
+    Oct 27 13:04:42 aleale	PREV: Writing report
+    Oct 27 13:04:54 aleale	NEXT: WP9
+    Oct 27 13:05:00 aleale	BLockers:-
+    Oct 27 13:05:11 bertf	LAST: following svn activities NEXT: report BLOCKERS: -
+    Oct 27 13:05:31 cfbolz	ok, let's proceed then to the regular topics
+    Oct 27 13:05:36 cfbolz	there don't seem to be blockers
+    Oct 27 13:05:39 cfbolz	"this week on #pypy"
+    Oct 27 13:05:39 cfbolz	--------------------------
+    Oct 27 13:06:05 cfbolz	michael volunteered to write something weekly about the ongoings of #pypy but would like to be notified about interesting stuff
+    Oct 27 13:06:38 hpk	probably makes sense to have a weekly svn-commit file where people can insert paras? 
+    Oct 27 13:07:01 mwh	that makes sense so long as people actually do it :)
+    Oct 27 13:07:10 cfbolz	indeed. and I fear they don't :-)
+    Oct 27 13:07:21 hpk	well, all things need a bit of time to establish 
+    Oct 27 13:07:25 mwh	but yes, let's keep an activity log in svn
+    Oct 27 13:07:37 hpk	but offering a structure makes it easier and point people to it 
+    Oct 27 13:07:43 mwh	and basically i'll summarize it and send it to pypy-dev each week
+    Oct 27 13:07:46 hpk	should theey complain that a particular topic wasn't included 
+    Oct 27 13:07:56 cfbolz	makes sense
+    Oct 27 13:08:00 mwh	i'll probably mostly maintain it as well to start with
+    Oct 27 13:08:42 *	stakkars (n=tismer@ip-80-226-246-109.vodafone-net.de) has joined #pypy-sync
+    Oct 27 13:08:43 mwh	extradoc/weekly or something?
+    Oct 27 13:08:51 cfbolz	sounds good!
+    Oct 27 13:08:54 hpk	mwh: yes, irc-weekly maybe 
+    Oct 27 13:09:06 cfbolz	does that approach make sense for everybody?
+    Oct 27 13:09:13 aleale	yes
+    Oct 27 13:09:14 arigo	yes
+    Oct 27 13:09:14 hpk	yip
+    Oct 27 13:09:32 pedronis	ok
+    Oct 27 13:09:37 mwh	hpk: i was hoping to include more than what happens in irc..
+    Oct 27 13:09:46 ericvrp	yeys
+    Oct 27 13:09:46 *	arigo must leave, sorry
+    Oct 27 13:09:48 mwh	though of course, that's currently the hardest thing to find
+    Oct 27 13:09:52 hpk	mwh: ok, also ping me sometime so we make this more visible on the web page 
+    Oct 27 13:09:58 *	arigo has quit (Remote closed the connection)
+    Oct 27 13:10:04 mwh	but, yes, agreed for now, let's move on
+    Oct 27 13:10:16 cfbolz	good!
+    Oct 27 13:10:16 cfbolz	"this week on #pypy"
+    Oct 27 13:10:16 cfbolz	--------------------------
+    Oct 27 13:10:20 cfbolz	sorry :-)
+    Oct 27 13:10:30 cfbolz	new release
+    Oct 27 13:10:30 cfbolz	-------------------------- 
+    Oct 27 13:10:30 stakkars	should I post?
+    Oct 27 13:10:35 cfbolz	stakkars: ok
+    Oct 27 13:11:03 stakkars	DONE: benchmarks, some stackless optimizations
+    Oct 27 13:11:22 stakkars	plus some windows stuff
+    Oct 27 13:11:24 stakkars	NEXT: reviews, 2 weeks Beverly Hills
+    Oct 27 13:11:35 stakkars	BLOCK: None (except for my mother's cancer)
+    Oct 27 13:11:53 cfbolz	sorry for that
+    Oct 27 13:12:05 stakkars	:( thx
+    Oct 27 13:12:11 cfbolz	ok, on to the release!
+    Oct 27 13:12:28 pedronis	I have started updating getting started
+    Oct 27 13:12:45 pedronis	I can write the release announcement
+    Oct 27 13:13:07 pedronis	the question is what to highlight, and when to freeze
+    Oct 27 13:13:21 cfbolz	and how much work should go in
+    Oct 27 13:13:24 *	hpk still needs to catch up regarding the release planning, apparently
+    Oct 27 13:13:42 cfbolz	hpk: no, it's new to everybody :-)
+    Oct 27 13:13:49 hpk	ah ok. 
+    Oct 27 13:14:07 cfbolz	basically this is the first big mention since paris
+    Oct 27 13:14:10 mwh	the highlight of this release is the working/translatable astcompiler?
+    Oct 27 13:14:12 aleale	I think speed and compiler are the highlights
+    Oct 27 13:14:19 hpk	ok, so the idea is to do a 0.8 release and main features are - compiler integration and more speed? 
+    Oct 27 13:14:22 pedronis	well we have add quiite a few improvement since 0.7
+    Oct 27 13:14:39 stakkars	include stackless?
+    Oct 27 13:14:41 pedronis	but it also driven by EU things
+    Oct 27 13:14:43 cfbolz	hpk: yes, and better translate_pypy, translatable thunks
+    Oct 27 13:14:49 hpk	cfbolz: yip 
+    Oct 27 13:14:57 mwh	how well does "a flexible parser/compiler implementation" describe our situation?
+    Oct 27 13:15:05 mwh	stakkars: that's phase 2 isn't it? :)
+    Oct 27 13:15:09 pedronis	stakkars: that's a question, because stackless is not user visible
+    Oct 27 13:15:22 mwh	and yes, no app level interface yet afaik
+    Oct 27 13:15:23 hpk	i'd like to keep the release small and mean 
+    Oct 27 13:15:27 hpk	also to not incur too much work 
+    Oct 27 13:15:30 cfbolz	hpk: I agree
+    Oct 27 13:15:41 aleale	hpk: I agree
+    Oct 27 13:15:42 pedronis	hpk: the plan is to package what we have
+    Oct 27 13:15:43 stakkars	it has no interface yet but by not crashing. But do we announce it as part of the release?
+    Oct 27 13:15:46 mwh	i agree
+    Oct 27 13:15:58 *	hpk wouldn't include stackless at this point 
+    Oct 27 13:16:06 mwh	what work needs to be done?  who should do it?
+    Oct 27 13:16:06 pedronis	we may need to disable some socket stuff
+    Oct 27 13:16:07 hpk	but rather go for a 0.9 later in december (x-mas release) or so 
+    Oct 27 13:16:13 pedronis	which is very unstable
+    Oct 27 13:16:27 pedronis	I mean failing tests
+    Oct 27 13:16:30 mwh	i'm not amazingly busy, but need to be told what to do :)
+    Oct 27 13:16:52 pedronis	mwh do you want to do more refactoring 
+    Oct 27 13:16:54 hpk	i guess i will need to be around during the release time so i'd actually first like to get an idea of the timing 
+    Oct 27 13:16:57 mwh	copy dist to release/0.8.x, disable socket on the branch, write an announce,ent?
+    Oct 27 13:16:59 *	ericvrp would like to know when 0.8 is scheduled
+    Oct 27 13:17:01 mwh	pedronis: yes
+    Oct 27 13:17:16 pedronis	well, I think it should happen next week
+    Oct 27 13:17:22 hpk	to state things upfront from my side: basically only 11th-15th if somewhat feasilbe as a release time, if i should be of much help. 
+    Oct 27 13:17:39 mwh	it would be good to get it done before then, imho
+    Oct 27 13:17:44 hpk	pedronis: next week? uh.
+    Oct 27 13:17:50 pedronis	hpk: yes
+    Oct 27 13:18:06 cfbolz	how much is holger neede?
+    Oct 27 13:18:10 cfbolz	needed
+    Oct 27 13:18:42 cfbolz	or is everybody fine with 11-15?
+    Oct 27 13:18:49 stakkars	maybe he can fork?
+    Oct 27 13:18:50 hpk	why the rush? last times when i pushed for releases, we had like 3-
+    Oct 27 13:18:50 hpk	i basically did much of the ground work the last times 
+    Oct 27 13:19:16 *	hpk thinks he _may_ be able to make it next week, is still in marocco though, but is a bit un-happy about the sudden rush 
+    Oct 27 13:19:16 pedronis	cfbolz: I need the release done
+    Oct 27 13:19:26 pedronis	to finish the report
+    Oct 27 13:19:36 cfbolz	pedronis: I see
+    Oct 27 13:19:57 pedronis	and 11-15 I'm holiday myself (finally)
+    Oct 27 13:20:01 stakkars	I'm only very little available until the 15th,at least.
+    Oct 27 13:20:04 cfbolz	oh
+    Oct 27 13:20:27 cfbolz	so basically next week michael, samuele and (maybe) me would be there. of the people here today
+    Oct 27 13:20:32 cfbolz	aleale: what are your plans?
+    Oct 27 13:20:42 mwh	how much work is a release?
+    Oct 27 13:20:47 aleale	I am available
+    Oct 27 13:20:57 mwh	if the answer is "not much" then ...
+    Oct 27 13:21:00 cfbolz	mwh: depends on whether you want to look at compliancy?
+    Oct 27 13:21:00 pedronis	hpk: it seems the part that needs you is uploading? or can that be done by someone else?
+    Oct 27 13:21:10 aleale	mostly next week - less the week after
+    Oct 27 13:21:18 hpk	mwh: it used to be quite a lot (some full 5 days from my side in the very last time) 
+    Oct 27 13:21:29 hpk	mwh: but i think it could be less now, i prepared some scripts and such by now 
+    Oct 27 13:21:53 hpk	pedronis: not quite, there are some details, have to think about it.  but maybe you could all do it. 
+    Oct 27 13:22:14 pedronis	hpk:  I also think is good think that releases don't depend on a single person
+    Oct 27 13:22:21 hpk	pedronis: of course !
+    Oct 27 13:22:24 cfbolz	:-)
+    Oct 27 13:22:29 hpk	pedronis: i am pushing for that for a long time, mind you
+    Oct 27 13:22:36 cfbolz	good training opportunity then
+    Oct 27 13:22:45 stakkars	ping (checking if my GPRS modem is still online,train is moving)
+    Oct 27 13:22:49 aleale	could we do a dry run in the weekend ?
+    Oct 27 13:23:04 hpk	pedronis: and so far, my tries to get some ahead-planning for releases have met skepticism, haven't they? 
+    Oct 27 13:23:06 mwh	as in two days time?
+    Oct 27 13:23:13 mwh	i am away climbing
+    Oct 27 13:23:31 pedronis	mwh: when can we freeze
+    Oct 27 13:23:46 pedronis	it seems it depends when you are happy with refactorings you are doing?
+    Oct 27 13:23:49 stakkars	I can help on the weekend and Monday
+    Oct 27 13:23:57 cfbolz	so do we try to get the release out, say, friday next week?
+    Oct 27 13:24:00 mwh	pedronis: i can easily just stop for a few days
+    Oct 27 13:24:18 pedronis	I would freeze tomorrow then and run the tests
+    Oct 27 13:24:31 cfbolz	ok, so very fast :-)
+    Oct 27 13:24:44 mwh	fine with me
+    Oct 27 13:24:49 pedronis	well running the compliancy tests take some time
+    Oct 27 13:25:07 pedronis	and we are in a situation when we can package what we have
+    Oct 27 13:25:08 stakkars	why disable socket,toomuch missing or too many bugs?
+    Oct 27 13:25:17 pedronis	failing tests
+    Oct 27 13:25:21 pedronis	some even with segfaults
+    Oct 27 13:25:22 cfbolz	segfaults
+    Oct 27 13:25:31 stakkars	mupf
+    Oct 27 13:25:41 mwh	platform dependent crap too
+    Oct 27 13:25:41 pedronis	unless someone has a lot of time to put in that
+    Oct 27 13:25:47 pedronis	is safer to disable
+    Oct 27 13:25:54 cfbolz	I would say we disable
+    Oct 27 13:25:56 mwh	pedronis: +1 to disable fro 0.8
+    Oct 27 13:26:00 pedronis	is not really a release highlight and is far from finished
+    Oct 27 13:26:04 *	hpk is not too happy about being mostly ignored 
+    Oct 27 13:26:20 stakkars	?
+    Oct 27 13:27:17 pedronis	hpk: our previous releases and always been charaterize by having to finish features at the last minute
+    Oct 27 13:27:23 pedronis	s/and/have
+    Oct 27 13:27:57 *	mwh points at the time
+    Oct 27 13:27:58 stakkars	not so tjhis time if we infact throw out what isn't finished.
+    Oct 27 13:28:00 *	ericvrp proposes to disable translator/js too
+    Oct 27 13:28:20 cfbolz	hpk: you still there?
+    Oct 27 13:28:23 hpk	yes
+    Oct 27 13:28:30 pedronis	erivrp: yes, I tried to install js and lots of tests indeed fail
+    Oct 27 13:28:44 *	hpk is thinking about if/how it all fits together.  
+    Oct 27 13:29:07 cfbolz	not at all :-(
+    Oct 27 13:29:14 stakkars	what about llvm
+    Oct 27 13:29:18 hpk	pedronis: the thing is, for example, that there is currently some migration regarding the codespeak backup underway 
+    Oct 27 13:29:29 stakkars	part of the release? disable the opaque stuff or finish?
+    Oct 27 13:29:48 cfbolz	could we decide how to decide? some more decision at 2 on #pypy?
+    Oct 27 13:29:49 ericvrp	stakkars: pypy-llvm works
+    Oct 27 13:29:50 hpk	pedronis: i suggest to _try_ going for a friday release next week 
+    Oct 27 13:30:09 pedronis	hpk: that's ok
+    Oct 27 13:30:14 stakkars	ericvrp: already? whow!
+    Oct 27 13:30:15 hpk	pedronis: but merlinux also has another deadline on that very day :( (and the consortium meeting is there as well) 
+    Oct 27 13:30:16 cfbolz	ok, everybody fine with that?
+    Oct 27 13:30:27 aleale	ok
+    Oct 27 13:30:32 stakkars	ok
+    Oct 27 13:30:34 ericvrp	ok
+    Oct 27 13:30:39 mwh	ok
+    Oct 27 13:30:46 pedronis	hpk: we should try to have a finalized tag before then
+    Oct 27 13:30:57 pedronis	such that is a matter of pushing it out
+    Oct 27 13:31:04 hpk	pedronis: of course.  a ctually i sugest a planning meeting on monday or so 
+    Oct 27 13:31:19 hpk	pedronis: trust me, it is or at least used to be quite a lot of work to get a release out 
+    Oct 27 13:31:26 pedronis	hpk: makes sense
+    Oct 27 13:31:38 pedronis	I still plan to make a branch tomorrow
+    Oct 27 13:31:42 cfbolz	ok, let's close the meeting now
+    Oct 27 13:31:45 *	hpk is off to another meeting 
+    Oct 27 13:31:46 pedronis	so that on monday we can see
+    Oct 27 13:31:50 cfbolz	see you all later on #pypy!
+    Oct 27 13:31:52 cfbolz	bye!
+    Oct 27 13:31:57 aleale	bye
+    Oct 27 13:32:04 pedronis	whether we have serious compliancy regressions
+    Oct 27 13:32:11 *	aleale (n=andersle@clogs.dfki.uni-sb.de) has left #pypy-sync
+    Oct 27 13:32:16 *	pedronis hopes not
+    Oct 27 13:32:20 ericvrp	bye
+    Oct 27 13:32:25 mwh	bye
+    Oct 27 13:32:28 *	mwh (n=user@82-33-200-181.cable.ubr01.azte.blueyonder.co.uk) has left #pypy-sync ("ERC Version 5.0 (CVS) $Revision: 1.771 $ (IRC client for Emacs)")
+    Oct 27 13:32:34 *	ericvrp (n=chatzill@ericvrp.demon.nl) has left #pypy-sync
+    Oct 27 13:37:00 *	bertf has quit ()
+    Oct 27 13:56:09 *	stakkars has quit (Read error: 110 (Connection timed out))
+    **** ENDING LOGGING AT Thu Oct 27 14:03:31 2005
+

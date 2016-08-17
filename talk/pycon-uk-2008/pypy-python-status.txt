@@ -1,0 +1,28 @@
+PyPy's Python status and plans
+====================================
+
+In this talk we'd like to discuss the status and plans 
+for the near and mid-term future of PyPy's Python Interpreter,
+particularly its upcoming 1.1 release.  We'll look at what 
+kind of applications you can already run and where more
+work and help is needed.  The talk also aims to clarify what 
+is the "PyPy technology cloud".  There also should be room to 
+discuss and demo some current highlights such as PyPy's 
+robust virtualization/sandboxing approach for Python programs. 
+
+level: beginner to intermediate
+duration: 45 minutes
+
+biography
+------------
+
+Holger Krekel is a co-founder of the PyPy project and
+participates on many levels in it.  He is the initiator and
+maintainer of the popular py.test and a few other tools.  In
+2004 he founded merlinux, a company organising itself
+virtually, mostly with european developers from PyPy and
+py.test contexts. 
+
+Contact: holger@merlinux.eu 
+
+

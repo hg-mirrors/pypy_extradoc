@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy: A Flexible VM for Python]{PyPy: A Flexible Virtual Machine for Python and Other Dynamic Languages}
+\author[cfbolz]
+{Carl Friedrich Bolz}
+
+\institute{University of Düsseldorf}
+\date{DLR Tech Talk, 11.08.09}

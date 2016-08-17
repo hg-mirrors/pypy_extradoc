@@ -1,0 +1,108 @@
+PyPy Sprint before PYCON 2005 in Washington
+-------------------------------------------
+
+In the four days from 19th March till 22th March (inclusive)
+the PyPy team will host a sprint on their new Python-in-Python
+implementation.   The PyPy project was granted funding by the
+European Union as part of its Sixth Framework Program,
+and is now on track to produce a stackless Python-in-Python
+Just-in-Time Compiler by December 2006.  Our Python
+implementation, released under the MIT/BSD license, already
+provides new levels of flexibility and extensibility at the
+core interpreter and object implementation level.
+
+Armin Rigo and Holger Krekel will also give talks about PyPy
+and the separate  py.test tool (used to perform various kinds
+of testing in PyPy) during the conference. 
+
+Naturally, we are eager to see how the other re-implementation
+of Python, namely IronPython, is doing and to explore
+collaboration possibilities.  Of course, that will depend on
+the degree of openness that Microsoft wants to employ. 
+
+The Pycon2005 sprint is going to focus on reaching
+compatibility with CPython (currently we target version 2.3.4)
+for our PyPy version running on top of CPython. One goal of
+the sprint is to pass 60% or more of the unmodified regression
+tests of mainline CPython.  It will thus be a great way to get
+to know CPython and PyPy better at the same time!  Other
+possible work areas include: 
+
+- translation to C to get a first working lower-level representation 
+  of the interpreter "specified in Python" 
+
+- integrating and implementing a full parser/compiler chain
+  written in Python maybe already targetting the new
+  AST-branch of mainline CPython 
+
+- fixing various remaining issues that will come up while
+  trying to reach the compatibility goal 
+
+- integrate or code pure python implementations of some Python modules 
+  currently written in C. 
+
+- whatever issues you come up with! (please tell us
+  before hand so we can better plan introductions etc.pp.) 
+
+Besides core developers, Bea Düring will be present to help
+improving and document our sprint and agile development
+process. 
+
+We are going to give tutorials about PyPy's basic concepts and
+provide help to newcomers usually by pairing them with
+experienced pypythonistas. However, we kindly ask newcomers to 
+be present on the first day's morning (19th of March) of the
+sprint to be able to get everyone a smooth start into the
+sprint. So far most newcomers had few problems in getting a
+good start into our codebase.  However, it is good to have the
+following preparational points in mind: 
+
+- some experience with programming in the Python language and 
+  interest to dive deeper 
+
+- subscription to  pypy-dev and  pypy-sprint at 
+
+    http://codespeak.net/pypy/index.cgi?lists
+
+- have a subversion-client, Pygame and graphviz installed on 
+  the machine you bring to the sprint. 
+
+- have a look at our current  documentation, especially the 
+  architecture and  getting-started documents under 
+    
+    http://codespeak.net/pypy/index.cgi?doc
+
+The pypy-dev and pypy-sprint lists are also the contact points
+for raising questions and suggesting and discussing sprint
+topics beforehand. We are on #pypy on irc.freenode.net most 
+of the time. Please don't hesitate to contact us or introduce
+yourself and your interests! 
+
+
+Logistics 
+---------
+
+Organizational details will be posted to pypy-sprint and are 
+or will be available in the Pycon2005-Sprint wiki here: 
+
+    http://www.python.org/moin/PyConDC2005/Sprints
+
+Registration 
+------------
+
+send mail to pypy-sprint@codespeak.net, stating the days
+you can be present and any specific interests if applicable. 
+
+Registered Participants
+-----------------------
+
+all days: 
+
+     Jacob Hallén 
+     Armin Rigo 
+     Holger Krekel 
+     Samuele Pedroni 
+     Anders Chrigström 
+     Bea Düring 
+     Christian Tismer 
+     Richard Emslie 

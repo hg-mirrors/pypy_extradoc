@@ -1,0 +1,45 @@
+
+.. _`Paris Sprint`: http://codespeak.net/pypy/index.cgi?extradoc/sprintinfo/Paris-2005-sprint.html 
+
+People coming to the `Paris Sprint`_ 
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them. 
+ 
+==================== ============== =====================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =====================
+Ludovic Aubry        10/10 - 16/10  Private
+Adrien Di Mascio     10/10 - 16/10  Private
+Jacob Hallen          8/10 - 17/10  Hotel Lenox, 15 Rue Delambre(+33 1 43353450)
+Laura Creighton       8/10 - 17/10  Hotel Lenox, 15 Rue Delambre(+33 1 43353450)
+Beatrice Duering      9/10 - 17/10  flat
+Armin Rigo            8/10 - 17/10  Hotel de l'Avenir, 65 rue Madame(+33 1 45 48 84 54)
+Samuele Pedroni       9/10 - 17/10  Hotel Lenox, 15 Rue Delambre(+33 1 43353450)
+Anders Chrigstroem    9/10 - 17/10  Hotel Lenox, 15 Rue Delambre(+33 1 43353450)
+Holger Krekel         6th-17th Oct  flat 
+Lene Wagner          12th-13th Oct  flat 
+Michael Hudson        9/10 - 17/10  flat
+Carl Friedrich Bolz  7/10? - 16/10  flat
+Bert Freudenberg     09/10 - 17/10  Hotel de l'Avenir, 65 rue Madame(+33 1 45 48 84 54)
+Anders Lehmann       09/10 - 14/10  Hotel Porte de Versailles
+Boris Feigin	     09/10 - 16/10  hotel
+Amaury Forgeot d'Arc 10/10 - 16/10  Private
+Andrew Thompson      09/10 - 17/10  Citea Vanves Portes de Versailles
+Christian Tismer     09/10 - 16/10  Hotel de l'Avenir, 65 rue Madame(+33 1 45 48 84 54)
+Valentino Volonghi   9/10  - 16/10  flat
+==================== ============== =====================
+
+People on the following list are likely to come and were
+present at the previous sprints: 
+
+=================== ============== =====================
+       Name         Arrive/Depart  Accomodation 
+=================== ============== =====================
+Niklaus Haldimann   ?              ?
+Eric van Riet Paap  ?              ?
+Richard Emslie      ?              ?
+Christian Tismer    ?              ?
+=================== ============== =====================

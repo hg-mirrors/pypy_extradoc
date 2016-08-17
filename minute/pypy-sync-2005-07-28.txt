@@ -1,0 +1,89 @@
+=============================================
+pypy-sync developer meeting 28th July 2005
+=============================================
+
+Attendees:  
+         Samuele Pedroni, Armin Rigo, Anders Lehmann, 
+         Holger Krekel (minutes), Richard Emslie 
+         Christian Tismer, Eric van Riet Paap (posted
+         info after the meeting)
+         
+Regular Topics 
+====================
+
+- roll call. holger opens the meeting. 
+
+- activity reports (3 prepared lines of info). 
+  All Attendees submitted activity reports (see `IRC-Log`_ 
+  at the end and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers
+  No conflicts were discovered. 
+
+Topics of the week
+===================
+
+codespeak migration planned early august 
+----------------------------------------------------------------------------
+
+There is a migration of codespeak.net to new hardware and
+a new hosting environment planned beginning of August. 
+Make sure that you are subscribe to `codespeak announce`_ list. 
+
+.. _`codespeak announce`: http://codespeak.net/mailman/listinfo/codespeak-ann
+
+re-assigning tasks (related to NEXT activities)
+-----------------------------------------------------
+
+none. 
+
+Closing 
+------------------
+
+closed at 1:10 (because we were mostly sprint-people on 
+the pypy-sync channel anyway) 
+
+.. _`IRC-log`: 
+
+Here is the full IRC log:: 
+    hpk well, ok, i guess we start (and make it quick)
+    hpk here is the agenda: (...)
+    hpk roll call
+    hpk activity reports
+    hpk resolve conflicts/blockers
+    hpk codespeak migration
+    hpk re/assigning work tasks
+    hpk let's start with activity reports in this order hpk,aleale,arigo,pedronis,rxe,stakkars
+    hpk LAST: hildesheim2-sprint orga + participation
+    hpk NEXT: hildesheim2-sprint, codespeak migration
+    hpk BLOCKERS: too many issues and unanwsered mail
+    aleale  last week: worked on math (superseeded by the sprint), compliance tests
+    aleale  next: compliance tests
+    aleale  blockers: Mac os x unfamiliarity
+    arigo   DONE: fixed remaining TyperErrors, helped in removing faking
+    arigo   NEXT: try translating PyPy
+    arigo   BLOCKERS: -
+    pedronis    Last: work on rtyping PyPy, sprint
+    pedronis    Next: sprint, after depends on sprint results
+    pedronis    Issues: umphishness
+    rxe LAST: sprint: start getting rid of fake files / various importing problems
+    rxe NEXT: more sprint stuff
+    rxe BLOCKERS: none
+    -->|    __alex (~alex@141.22.64.4) has joined #pypy-sync
+    stakkars    DONE: fixing many bugs, pyc file stuff, which turns out to be slow
+    stakkars    NEXT: continue on translation (and maybe write interplevel marshal in spare time)
+    stakkars    BLOCKERS: we have waytoo much applevel code, which strikes back, now.
+    hpk ok, then it appears we have no conflicts
+    hpk so only topic is: codspeak migration
+    hpk most of you know alreada that beginning of august there is a codespeak hardware/hosting migration planned
+    hpk (make sure you are subscribed to codespeak-ann (announce list)
+    hpk then: that ends the ritual this time!
+    hpk see you next week
+    aleale  bye
+
+    ericvrp2    hi richard, did I miss the action?
+    rxe yes - short and sweet. :-) do you have 3 lines to paste?
+    ericvrp2    Last/current: holiday/llvm exception handling
+    ericvrp2    Next: impl. some llvm external functions
+    ericvrp2    Blockers: none
+

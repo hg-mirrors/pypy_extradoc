@@ -1,0 +1,7 @@
+.. include:: beamerdefs.txt
+
+PyPy and The Art of Generating Virtual Machines
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: motivation.txt
+.. include:: technical.txt

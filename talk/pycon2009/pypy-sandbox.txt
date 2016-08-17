@@ -1,0 +1,56 @@
+Title: Python in a sandbox
+Presenter: Holger Krekel <holger@merlinux.eu>
+Recording: i give permission to record and publish my PyCon talk for free distribution. 
+Talk length: 30 minutes, if possible 45 minutes 
+Intended Audience: advanced python programmers
+Format of talk: interactive lecture, questions welcome at all times
+Categories: Core, Other Implementations/PyPy, Embedding and extending Python
+
+Presenter bio: 
+
+Holger Krekel is a co-founder of the PyPy project and
+participates on many levels in it.  He is the initiator and
+maintainer of the popular py.test and a few other tools.  In
+2004 he founded merlinux, a company focusing on PyPy and py.test 
+developments.  Holger has talks at many EuroPython and 
+PyCon confereces and gave well received testing 
+tutorials at EuroPython 2008 and Pycon-UK 2008. 
+
+Talk summary: 
+
+Old questions, news answers. How to run untrusted Python code? 
+We'll showcase the PyPy virtualization approach which allows 
+to control all IO, syscalls, CPU and RAM resources of a Python
+interpreter.  We'll discuss the usage model, shortcomings and 
+future possibilities.  
+
+description: 
+
+In the 17 years of Python existence there have been numerous 
+approaches to "sandbox" Python, Zope's RestrictedPython 
+and Google AppEngine being popular examples.  PyPy takes 
+a fresh approach and allows to systematically control 
+all access to IO and each syscall or call into a C library. 
+Apart from restricting access control is reach enough to construct 
+a fully virtualized system environment to a Python process.  For 
+example a Python program cannot easily detect that its file 
+objects are in fact provided by another Python process. 
+
+Apart from IO access and syscalls one can also restrict RAM 
+and CPU usage.  The PyPy sandboxing model thus provides a
+a secure environment for running untrusted code without 
+without placing restrictions on language usage.  The talk 
+will showcase and discuss usage of these features and
+mention open issues and questions.  If time is not sufficient
+we'll schedule Open Space time. 
+
+simple slide outline:
+
+- Sandboxing movitation 
+- PyPy's sandboxing large picture 
+- virtualizing IO access 
+- virtualizing syscalls 
+- controler and sandboxed process 
+- Demo 
+- managing RAM and CPU restrictions
+- shortcomings & future directions

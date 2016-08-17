@@ -1,0 +1,4198 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% IEEE standard conference template; to be used with:
+%   spconf.sty  - LaTeX style file, and
+%   IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+
+\usepackage{spconf}
+\usepackage{multicol}
+
+% bold paragraph titles
+\newcommand{\mypar}[1]{{\bf #1.}}
+
+% Title.
+% ------
+\title{C7: Fast software transactional memory for dynamic languages}
+%
+% Single address.
+% ---------------
+%\name{Markus P\"uschel\thanks{The author thanks Jelena Kovacevic. This paper
+%is a modified version of the template she used in her class.}} 
+%\address{Department of Computer Science\\ ETH Z\"urich\\Z\"urich, Switzerland}
+
+% For example:
+% ------------
+%\address{School\\
+%		 Department\\
+%		 Address}
+%
+% Two addresses (uncomment and modify for two-address case).
+% ----------------------------------------------------------
+\twoauthors
+ 		{Remi Meier}
+ 		{Department of Computer Science\\
+ ETH Zürich\\
+ 		Switzerland}
+  		{Armin Rigo}
+ 		{...}
+
+% nice listings
+\usepackage{xcolor}
+\usepackage{newverbs}
+
+\usepackage{color}
+\definecolor{verylightgray}{rgb}{0.93,0.93,0.93}
+\definecolor{darkblue}{rgb}{0.2,0.2,0.6}
+\definecolor{commentgreen}{rgb}{0.25,0.5,0.37}
+\usepackage{letltxmacro}
+
+\usepackage{listings}
+\makeatletter
+\LetLtxMacro{\oldlstinline}{\lstinline}
+
+\renewcommand\lstinline[1][]{%
+\Collectverb{\@@myverb}%
+}
+
+\def\@@myverb#1{%
+    \begingroup
+    \fboxsep=0.2em
+    \colorbox{verylightgray}{\oldlstinline|#1|}%
+    \endgroup
+}
+\makeatother
+\end_preamble
+\use_default_options false
+\begin_modules
+enumitem
+theorems-std
+fixltx2e
+\end_modules
+\maintain_unincluded_children false
+\begin_local_layout
+#\DeclareLyXModule{gmlists}
+#DescriptionBegin
+#Adds quoted-list and condensed list environments.
+#DescriptionEnd
+#Requires: enumitem
+#Author: Günter Milde <mi...@users.sf.net>
+Format 49
+# Input enumitem.module
+# Style Variants
+# ==============
+Style Enumerate-Alpha
+CopyStyle    Enumerate
+LatexParam   "[label=\emph{\alph*}),ref=\emph{\alph*},fullwidth,itemsep=1ex]"
+Margin       First_Dynamic
+LeftMargin   x
+LabelType    Static
+LabelCounter enumi
+LabelString  "\alph{enumi})"
+LabelFont
+Series              Medium
+Shape               Italic
+EndFont
+End
+# Description with italic label was a failed experiment:
+Style Description-Italic
+ObsoletedBy    Description
+End
+# Indented compact LyX-List environment
+Style Quoted-Labeling
+CopyStyle       Labeling
+LatexName       qlyxlist
+ItemSep         0
+ParSep          0
+LabelIndent     MMM
+Preamble
+% labeling-like list based on enumitem's description list with
+% mandatory second argument (label-pattern) and indent of 2em:
+\newenvironment{qlyxlist}[2][]%
+{\settowidth{\lyxlabelwidth}{#2}
+\addtolength{\lyxlabelwidth}{1.5em}
+\description[font=,style=sameline,
+leftmargin=\lyxlabelwidth,
+noitemsep, labelindent=1.5em,
+#1]}
+{\enddescription}
+EndPreamble
+End
+Style Quoted-List
+ObsoletedBy    Quoted-Labeling
+End
+# Dense (condensed) list environments
+# ===================================
+Style Itemize-Compact
+CopyStyle             Itemize
+LatexParam            [noitemsep]
+ParSep                0
+TopSep                0.4
+BottomSep             0.4
+End
+Style Enumerate-Compact
+CopyStyle             Enumerate
+LatexParam            [noitemsep]
+ParSep                0
+TopSep                0.4
+BottomSep             0.4
+End
+Style Description-Compact
+CopyStyle             Description
+LatexParam            [noitemsep]
+ParSep                0
+TopSep                0.4
+BottomSep             0.4
+End
+Style Compact-Itemize
+ObsoletedBy    Itemize-Compact
+End
+Style Itemize-Dense
+ObsoletedBy    Itemize-Compact
+End
+Style Compact-Enumerate
+ObsoletedBy   Enumerate-Compact
+End
+Style Enumerate-Dense
+ObsoletedBy   Enumerate-Compact
+End
+Style Compact-Description
+ObsoletedBy   Description-Compact
+End
+Style Description-Dense
+ObsoletedBy   Description-Compact
+End
+\end_local_layout
+\language english
+\language_package none
+\inputencoding utf8
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\float_placement h
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\listings_params "backgroundcolor={\color{verylightgray}},basicstyle={\scriptsize\ttfamily},commentstyle={\ttfamily\color{commentgreen}},keywordstyle={\bfseries\color{darkblue}},morecomment={[l]{//}},morekeywords={foreach,in,def,type,dynamic,Int,Boolean,infer,void,super,if,boolean,int,else,while,do,extends,class,assert,for,switch,case,private,protected,public,const,final,static,interface,new,true,false,null,return}"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+ninept
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+...
+ 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Dynamic languages like Python, PHP, Ruby, and JavaScript
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+ are usually regarded as very expressive but also very slow.
+ In recent years, the introduction of just-in-time compilers (JIT) for these
+ languages (e.g.
+ PyPy, V8, Tracemonkey
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+) started to change this perception by delivering good performance that
+ enables new applications.
+ However, a parallel programming model was not part of the design of those
+ languages.
+ Thus, the reference implementations of e.g.
+ Python and Ruby use a single, global interpreter lock (GIL) to serialize
+ the execution of code in threads.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+While this GIL prevents any parallelism from occurring, it also provides
+ some useful guarantees.
+ Since this lock is always acquired while executing bytecode instructions
+ and it may only be released in-between such instructions, it provides perfect
+ isolation and atomicity between multiple threads for a series of instructions.
+ Another technology that can provide the same guarantees is transactional
+ memory (TM).
+\end_layout
+
+\begin_layout Standard
+There have been several attempts at replacing the GIL with TM
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+.
+ Using transactions to enclose multiple bytecode instructions, we can get
+ the very same semantics as the GIL while possibly executing several transaction
+s in parallel.
+ Furthermore, by exposing these interpreter-level transactions to the applicatio
+n in the form of 
+\emph on
+atomic blocks
+\emph default
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+, we give dynamic languages a new synchronization mechanism that avoids
+ several of the problems of locks
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+ as they are used now.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+introduction needs work
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our contributions include:
+\end_layout
+
+\begin_layout Itemize-Compact
+We introduce a new software transactional memory (STM) system that performs
+ well even on low numbers of CPUs.
+ It uses a novel combination of hardware features and garbage collector
+ (GC) integration in order to keep the overhead of STM very low.
+\end_layout
+
+\begin_layout Itemize-Compact
+This new STM system is used to replace the GIL in Python and is then evaluated
+ extensively.
+\end_layout
+
+\begin_layout Itemize-Compact
+We introduce atomic blocks to the Python language to provide a backwards
+ compatible, composable synchronization mechanism for threads.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Do not start the introduction with the abstract or a slightly modified version.
+ It follows a possible structure of the introduction.
+ Note that the structure can be modified, but the content should be the
+ same.
+ Introduction and abstract should fill at most the first page, better less.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Motivation
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ The first task is to motivate what you do.
+ You can start general and zoom in one the specific problem you consider.
+ In the process you should have explained to the reader: what you are doing,
+ why you are doing, why it is important (order is usually reversed).
+\end_layout
+
+\begin_layout Plain Layout
+For example, if my result is the fastest sorting implementation ever, one
+ could roughly go as follows.
+ First explain why sorting is important (used everywhere with a few examples)
+ and why performance matters (large datasets, realtime).
+ Then explain that fast implementations are very hard and expensive to get
+ (memory hierarchy, vector, parallel).
+\end_layout
+
+\begin_layout Plain Layout
+Now you state what you do in this paper.
+ In our example: presenting a sorting implementation that is faster for
+ some sizes as all the other ones.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Related work
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Next, you have to give a brief overview of related work.
+ For a report like this, anywhere between 2 and 8 references.
+ Briefly explain what they do.
+ In the end contrast to what you do to make now precisely clear what your
+ contribution is.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Background
+\end_layout
+
+\begin_layout Subsection
+Transactional Memory
+\end_layout
+
+\begin_layout Standard
+Transactional memory (TM) is a concurrency control mechanism that comes
+ from database systems.
+ Using transactions, we can group a series of instructions performing operations
+ on memory and make them happen atomically and in complete isolations from
+ other transactions.
+ 
+\emph on
+Atomicity
+\emph default
+ means that all these instructions in the transaction and their effects
+ seem to happen at one, undividable point in time.
+ Other transactions never see inconsistent state of a partially executed
+ transaction which is called 
+\emph on
+isolation
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+If we start multiple such transactions in multiple threads, the TM system
+ guarantees that the outcome of running the transactions is 
+\emph on
+serializable
+\emph default
+.
+ Meaning, the outcome is equal to some sequential execution of these transaction
+s.
+ Overall, this is exactly what a single global lock guarantees while still
+ allowing the TM system to run transactions in parallel as an optimization.
+\end_layout
+
+\begin_layout Subsection
+Python
+\end_layout
+
+\begin_layout Standard
+We implement and evaluate our system for the Python language.
+ For the actual implementation, we chose the PyPy
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+ interpreter because replacing the GIL there with a TM system is just a
+ matter of adding a new transformation to the translation process of the
+ interpreter.
+\end_layout
+
+\begin_layout Standard
+Over the years, Python added multiple ways to provide concurrency and parallelis
+m to its applications.
+ We want to highlight two of them, namely 
+\emph on
+threading 
+\emph default
+and 
+\emph on
+multiprocessing
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Threading
+\emph default
+ employs operating system (OS) threads to provide concurrency.
+ It is, however, limited by the GIL and thus does not provide parallelism.
+ At this point we should mention that it is indeed possible to run external
+ functions written in C instead of Python in parallel.
+ Our work focuses on Python itself and ignores this aspect as it requires
+ writing in a different language.
+\end_layout
+
+\begin_layout Standard
+The second approach, 
+\emph on
+multiprocessing
+\emph default
+, uses multiple instances of the interpreter itself and runs them in separate
+ OS processes.
+ Here we actually get parallelism because we have one GIL per interpreter,
+ but of course we have the overhead of multiple processes / interpreters
+ and also need to exchange data between them explicitly and expensively.
+\end_layout
+
+\begin_layout Standard
+We focus on the 
+\emph on
+threading 
+\emph default
+approach.
+ This requires us to remove the GIL from our interpreter in order to run
+ code in parallel on multiple threads.
+ One approach to this is fine-grained locking instead of a single global
+ lock.
+ Jython
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+references
+\end_layout
+
+\end_inset
+
+ and IronPython are implementations of this.
+ It requires great care in order to avoid deadlocks, which is why we follow
+ the TM approach that provides a 
+\emph on
+direct 
+\emph default
+replacement for the GIL.
+ It does not require careful placing of locks in the right spots.
+ We will compare our work with Jython for evaluation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+python, ways to parallelize (multi-process vs.
+ threading, fine-grained locking jython)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Synchronization
+\end_layout
+
+\begin_layout Standard
+It is well known that using locks to synchronize multiple threads is hard.
+ They are non-composable, have overhead, may deadlock, limit scalability,
+ and overall add a lot of complexity.
+ For a better parallel programming model for dynamic languages, we want
+ to add another, well-known synchronization mechanism: 
+\emph on
+atomic blocks
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Atomic blocks are composable, deadlock-free, higher-level and expose useful
+ atomicity and isolation guarantees to the application for a series of instructi
+ons.
+ An implementation using a GIL would simply guarantee that the GIL is not
+ released during the execution of the atomic block.
+ Using TM, we have the same effect by guaranteeing that all instructions
+ in an atomic block are executed inside a single transaction.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+atomic blocks, AME
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+STM, how atomicity & isolation
+\end_layout
+
+\begin_layout Standard
+reasons for overhead
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Give a short, self-contained summary of necessary background information.
+ For example, assume you present an implementation of sorting algorithms.
+ You could organize into sorting definition, algorithms considered, and
+ asymptotic runtime statements.
+ The goal of the background section is to make the paper self-contained
+ for an audience as large as possible.
+ As in every section you start with a very brief overview of the section.
+ Here it could be as follows: In this section we formally define the sorting
+ problem we consider and introduce the algorithms we use including a cost
+ analysis.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Sorting
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Precisely define sorting problem you consider.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Sorting algorithms
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Explain the algorithm you use including their costs.
+\end_layout
+
+\begin_layout Plain Layout
+As an aside, don't talk about 
+\begin_inset Quotes eld
+\end_inset
+
+the complexity of the algorithm.
+\begin_inset Quotes erd
+\end_inset
+
+ It's incorrect, problems have a complexity, not algorithms.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Method
+\end_layout
+
+\begin_layout Subsection
+Transactional Memory Model
+\end_layout
+
+\begin_layout Standard
+In this section, we describe the general model of our TM system.
+ This should clarify the general semantics using commonly used terms from
+ the literature.
+\end_layout
+
+\begin_layout Subsubsection
+Conflict Handling
+\end_layout
+
+\begin_layout Standard
+Our conflict detection works with 
+\emph on
+object granularity
+\emph default
+.
+ Conceptually, it is based on 
+\emph on
+read 
+\emph default
+and 
+\emph on
+write sets 
+\emph default
+of transactions.
+ Two transactions conflict if they have accessed a common object that is
+ now in the write set of at least one of them.
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+concurrency control 
+\emph default
+works partly 
+\emph on
+optimistically
+\emph default
+ for reading of objects, where conflicts caused by just reading an object
+ in transactions are detected only when the transaction that writes the
+ object actually commits.
+ For write-write conflicts we are currently 
+\emph on
+pessimistic
+\emph default
+: Only one transaction may have a certain object in its write set at any
+ point in time, others trying to write to it will have to wait or abort.
+\end_layout
+
+\begin_layout Standard
+We use 
+\emph on
+lazy version management 
+\emph default
+to ensure that modifications by a transaction are not visible to another
+ transaction before the former commits.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Conflicts detected with 
+\emph on
+object granularity 
+\emph default
+conceptually using read and write sets
+\end_layout
+
+\begin_layout Itemize
+Concurrency control is:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+optimistic for reading: a transaction checks on commit all other transactions
+ for read-write conflicts and aborts them or itself if necessary
+\end_layout
+
+\begin_layout Itemize
+pessimistic for write-write conflicts: in the write barrier, we check if
+ some other transaction already modifies this object.
+ If this is the case, we or the other one will abort (this may change in
+ the future).
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\emph on
+Lazy version management: 
+\emph default
+it is always ensured that modifications by a transaction are not visible
+ to other transactions before the former commits.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Semantics
+\end_layout
+
+\begin_layout Standard
+As required for TM systems, we guarantee complete 
+\emph on
+isolation 
+\emph default
+and 
+\emph on
+atomicity 
+\emph default
+for transactions at all times.
+ Furthermore, the isolation provides full 
+\emph on
+opacity 
+\emph default
+to always guarantee a consistent read set.
+\end_layout
+
+\begin_layout Standard
+We support the notion of 
+\emph on
+inevitable transactions 
+\emph default
+that are always guaranteed to commit.
+ There is always at most one such transaction running in the system.
+ We use this kind of transaction to provide 
+\emph on
+strong isolation
+\emph default
+ by running non-transactional code in the context of inevitable transactions
+ and to still provide the 
+\emph on
+serializability
+\emph default
+ of all transaction schedules.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+
+\emph on
+Atomicity 
+\emph default
+and 
+\emph on
+isolation 
+\emph default
+are guaranteed at all times
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+Opacity 
+\emph default
+guarantee an always-consistent read set
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+Strong isolation 
+\emph default
+is provided by using inevitable transactions
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+Inevitable transactions 
+\emph default
+are transactions that are guaranteed to commit.
+ Turning inevitable when doing I/O is one way to ensure strong isolation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Contention Management
+\end_layout
+
+\begin_layout Standard
+When a conflict is detected, we perform some simple contention management.
+ First, inevitable transactions always win.
+ Second, the older transaction wins.
+ Different schemes are possible.
+\end_layout
+
+\begin_layout Subsubsection
+Software Transactional Memory
+\end_layout
+
+\begin_layout Standard
+Generally speaking, the system is fully implemented in software.
+ However, we exploit some more advanced features of current CPUs, especially
+ 
+\emph on
+memory segmentation, virtual memory, 
+\emph default
+and the 64-bit address space.
+\end_layout
+
+\begin_layout Subsection
+Implementation
+\end_layout
+
+\begin_layout Standard
+In this section, we will present the general idea of how the TM model is
+ implemented.
+ Especially the aspects of providing isolation and atomicity, as well as
+ conflict detection are explained.
+ We try to do this without going into too much detail about the implementation.
+ The later section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Low-level-Implementation"
+
+\end_inset
+
+ will discuss it in more depth.
+\end_layout
+
+\begin_layout Subsubsection
+Memory Segmentation
+\end_layout
+
+\begin_layout Standard
+A naive approach to providing complete isolation between threads is to partition
+ the virtual memory of a process into 
+\begin_inset Formula $N$
+\end_inset
+
+ segments, one per thread.
+ Each segment then holds a copy of all the memory available to the program.
+ Thus, each thread automatically has a private copy of every object that
+ it can modify in complete isolation from other threads.
+\end_layout
+
+\begin_layout Standard
+To get references to objects that are valid in all threads, we will use
+ the object's offset inside the segment.
+ Since all segments are copies of each other, the 
+\emph on
+Segment Offset (SO)
+\emph default
+ will point to the private version of an object in all threads/segments.
+ To then translate this SO to a real virtual memory address when used inside
+ a thread, we need to add the thread's segment start address to the SO.
+ The result of this operation is called a 
+\emph on
+Linear Address (LA)
+\emph default
+.
+ This is illustrated in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Segment-Addressing"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To make this address translation efficient, we use the segment register
+ 
+\begin_inset Formula $\%gs$
+\end_inset
+
+.
+ When this register points to a thread's segment start address, we can instruct
+ the CPU to perform the above translation from a reference of the form 
+\begin_inset Formula $\%gs{::}SO$
+\end_inset
+
+ to the right LA on its own.
+\end_layout
+
+\begin_layout Standard
+In summary, we can use a single SO to reference the same object in all threads,
+ and it will be translated by the CPU to a LA that always points to the
+ thread's private version of this object.
+ Thereby, threads are fully isolated from each other.
+ However, 
+\begin_inset Formula $N$
+\end_inset
+
+ segments require 
+\begin_inset Formula $N$
+\end_inset
+
+-times the memory and modifications on an object need to be propagated to
+ all segments.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename segment addressing.pdf
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segment Addressing
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Segment-Addressing"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Partition virtual memory into N segments
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+1 segment per thread
+\end_layout
+
+\begin_layout Itemize
+each segment is a copy of the whole memory
+\end_layout
+
+\begin_layout Itemize
+objects referenced through 
+\emph on
+segment offset (SO)
+\end_layout
+
+\begin_layout Itemize
+in this model: each thread has private copy
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Translate SO to 
+\emph on
+linear address (LA)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+%gs segment register holds thread's segment start address
+\end_layout
+
+\begin_layout Itemize
+CPU translates %gs::SO as 
+\begin_inset Formula $\%gs+SO$
+\end_inset
+
+ to a LA
+\end_layout
+
+\begin_layout Itemize
+LA different when translated in different threads --> always points to private
+ copy
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+N-copies are inefficient
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Page Sharing
+\end_layout
+
+\begin_layout Standard
+In order to eliminate the prohibitive memory requirements of keeping around
+ 
+\begin_inset Formula $N$
+\end_inset
+
+ segment copies, we share memory between them.
+ The segments are initially allocated in a single range of virtual memory
+ by a call to 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+mmap()
+\end_layout
+
+\end_inset
+
+.
+ As illustrated in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mmap()-Page-Mapping"
+
+\end_inset
+
+, 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+mmap()
+\end_layout
+
+\end_inset
+
+ creates a mapping between a range of virtual memory pages and virtual file
+ pages.
+ The virtual file pages are then mapped lazily by the kernel to real physical
+ memory pages.
+ The mapping generated by 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+mmap()
+\end_layout
+
+\end_inset
+
+ is initially linear but can be changed arbitrarily.
+ Especially, we can remap so that multiple virtual memory pages map to a
+ single virtual file page.
+ This is what we use to share memory between the segments since then we
+ also only require one page of physical memory.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename mmap pages.pdf
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\family typewriter
+mmap()
+\family default
+ Page Mapping
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:mmap()-Page-Mapping"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As illustrated in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Page-Remapping"
+
+\end_inset
+
+, in our initial configuration (I) all segments are backed by their own
+ range of virtual file pages.
+ This is the share-nothing configuration.
+\end_layout
+
+\begin_layout Standard
+We then designate segment 0 to be the 
+\emph on
+Sharing-Segment
+\emph default
+.
+ No thread gets this segment assigned to it, it simply holds the pages shared
+ between all threads.
+ So in (II), we remap all virtual pages of the segments 
+\begin_inset Formula $>0$
+\end_inset
+
+ to the file pages of our sharing-segment.
+ This is the fully-shared configuration.
+\end_layout
+
+\begin_layout Standard
+During runtime, we can then privatize single pages in segments 
+\begin_inset Formula $>0$
+\end_inset
+
+ again by remapping single pages as seen in (III).
+\end_layout
+
+\begin_layout Standard
+Looking back at address translation for object references, we see now that
+ this is actually a two-step process.
+ First, 
+\begin_inset Formula $\%gs{::}SO$
+\end_inset
+
+ gets translated to different linear addresses in different threads by the
+ CPU.
+ Then, depending on the current mapping of virtual pages to file pages,
+ these LAs can map to a single file page in the sharing-segment, or to privatize
+d file pages in the corresponding segments.
+ This mapping is also performed efficiently by the CPU and can easily be
+ done on every access to an object.
+\end_layout
+
+\begin_layout Standard
+In summary, 
+\begin_inset Formula $\%gs{::}SO$
+\end_inset
+
+ is translated efficiently by the CPU to either a physical memory location
+ which is shared between several threads/segments, or to a location in memory
+ private to the segment/thread.
+ This makes the memory segmentation model for isolation memory efficient
+ again.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename page remapping.pdf
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Page Remapping: (I) after 
+\family typewriter
+mmap()
+\family default
+.
+ (II) remap all pages to segment 0, fully shared memory configuration.
+ (III) privatize single pages.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Page-Remapping"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+share pages between segments
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+mmap()ed region can be remapped by remap_file_pages()
+\end_layout
+
+\begin_layout Itemize
+designate a segment (segment 0) to hold SHARED pages
+\end_layout
+
+\begin_layout Itemize
+unsharing a page: remap & copy --> private page in segment >= 1
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+2-step address translation
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+first memory segmentation: %gs::SO --> LA
+\end_layout
+
+\begin_layout Itemize
+second MMU virtual address mapping: LA --> shared or private physical page
+\end_layout
+
+\begin_layout Itemize
+done on every access to objects!
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+SO can translate to shared or private version of an object (completely in
+ hardware)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Isolation: Copy-On-Write
+\end_layout
+
+\begin_layout Standard
+We now use these mechanisms to provide isolation for transactions.
+ Using write barriers, we implement a 
+\emph on
+Copy-On-Write (COW) 
+\emph default
+on the level of pages.
+ Starting from the initial fully-shared configuration (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Page-Remapping"
+
+\end_inset
+
+, (II)), when we need to modify an object without other threads seeing the
+ changes immediately, we ensure that all pages belonging to the object are
+ private to our segment.
+\end_layout
+
+\begin_layout Standard
+To detect when to privatize pages, we use write barriers before every write.
+ When the barrier detects that the object is not in a private page (or any
+ pages that belong to the object), we remap and copy the pages to the thread's
+ segment.
+ From now on, the translation of 
+\begin_inset Formula $\%gs{::}SO$
+\end_inset
+
+ in this particular segment will resolve to the private version of the object.
+ Note, the SO used to reference the object does not change during that process.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+if object in SHARED page, privatize & copy the page
+\end_layout
+
+\begin_layout Itemize
+no change of SO!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Isolation: Barriers
+\end_layout
+
+\begin_layout Standard
+The job of barriers is to ensure complete isolation between transactions
+ and to register the objects in the read or write set.
+ We insert read and write barriers before reading or modifying an object
+ except if we statically know an object to be readable or writable already.
+ 
+\end_layout
+
+\begin_layout Description
+Read
+\begin_inset space ~
+\end_inset
+
+Barrier: Adds the object to the read set of the current transaction.
+ Since our two-step address translation automatically resolves the reference
+ to the private version of the object on every access anyway, this is not
+ the job of the read barrier anymore.
+\end_layout
+
+\begin_layout Description
+Write
+\begin_inset space ~
+\end_inset
+
+Barrier: Adds the object to the read and write set of the current transaction
+ and checks if all pages of the object are private, doing COW otherwise.
+\begin_inset Newline newline
+\end_inset
+
+Furthermore, we currently allow only one transaction modifying an object
+ at a time.
+ To ensure this, we acquire a write lock on the object and also eagerly
+ check for a write-write conflict at this point.
+ If there is a conflict, we do some contention management to decide which
+ transaction has to wait or abort.
+ Eagerly detecting this kind of conflict is not inherent to our system,
+ future experiments may show that we want to lift this restriction.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+read barrier
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+SO automatically translated to right (PRIVATE or SHARED) version of the
+ object
+\end_layout
+
+\begin_layout Itemize
+add object to read set
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+write barrier
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+if object is in SHARED page, COW
+\end_layout
+
+\begin_layout Itemize
+acquire write lock (w-w conflict detection and contention management)
+\end_layout
+
+\begin_layout Itemize
+add to read & write set
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Atomicity: Commit & Abort
+\end_layout
+
+\begin_layout Standard
+To provide atomicity for a transaction, we want to make changes visible
+ on commit.
+ We also need to be able to completely abort a transaction without a trace,
+ like it never happened.
+\end_layout
+
+\begin_layout Description
+Commit: If a transaction commits, we synchronize all threads so that all
+ of them are waiting in a safe point.
+ In the committing transaction, we go through all objects in the write set
+ and check if another transaction in a different segment read the same object.
+ Conflicts are resolved again by either the committing or the other transaction
+ waiting or aborting.
+\begin_inset Newline newline
+\end_inset
+
+We then push all changes of modified objects in private pages to all the
+ pages in other segments, including the sharing-segment (segment 0).
+\end_layout
+
+\begin_layout Description
+Abort: On abort the transaction will forget about all the changes it has
+ done.
+ All objects in the write set are reset by copying their previous version
+ from the sharing-segment into the private pages of the aborting transaction.
+\end_layout
+
+\begin_layout Description
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Commit
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+go through write set: check r-w conflicts in other segments (contention
+ management)
+\end_layout
+
+\begin_layout Itemize
+modifications in private pages: copy to other segments (object-level, not
+ page-level)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Abort
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+look in SHARED segment 0 and reset all modifications in private pages
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Summary
+\end_layout
+
+\begin_layout Standard
+We provide isolation between transactions by privatizing the pages of the
+ segments belonging to the threads the transactions run in.
+ To detect when and which pages need privatization, we use write barriers
+ that trigger a COW of one or several pages.
+ Conflicts, however, are detected on the level of objects; based on the
+ concept of read and write sets.
+ Barriers before reading and writing add objects to the corresponding set;
+ particularly detecting write-write conflicts eagerly.
+ On commit, we resolve read-write conflicts and push modifications to other
+ segments.
+ Aborting transactions simply undo their changes by copying from the sharing-seg
+ment.
+\end_layout
+
+\begin_layout Subsection
+Low-level Implementation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Low-level-Implementation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this section, we will provide details about the actual implementation
+ of the system and discuss some of the issues that we encountered.
+\end_layout
+
+\begin_layout Subsubsection
+Architecture
+\end_layout
+
+\begin_layout Standard
+Our TM system is designed as a library that covers all aspects around transactio
+ns and object management.
+ The library consists of two parts: (I) It provides a simple interface to
+ starting and committing transactions, as well as the required read and
+ write barriers.
+ (II) It also includes a 
+\emph on
+garbage collector (GC) 
+\emph default
+that is closely integrated with the TM part (e.g.
+ it shares the write barrier).
+ The close integration helps in order to know more about the lifetime of
+ an object, as will be explained in the following sections.
+\end_layout
+
+\begin_layout Subsubsection
+Application Programming Interface
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Application-Programming-Interfac"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize\ttfamily},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+void stm_start_transaction(tl, jmpbuf)
+\end_layout
+
+\begin_layout Plain Layout
+
+void stm_commit_transaction()
+\end_layout
+
+\begin_layout Plain Layout
+
+void stm_read(object_t *obj)
+\end_layout
+
+\begin_layout Plain Layout
+
+void stm_write(object_t *obj)
+\end_layout
+
+\begin_layout Plain Layout
+
+object_t *stm_allocate(ssize_t size_rounded)
+\end_layout
+
+\begin_layout Plain Layout
+
+STM_PUSH_ROOT(tl, obj)
+\end_layout
+
+\begin_layout Plain Layout
+
+STM_POP_ROOT(tl, obj)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_start_transaction()
+\end_layout
+
+\end_inset
+
+ starts a transaction.
+ It requires two arguments, the first being a thread-local data structure
+ and the second a buffer for use by 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+setjmp()
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_commit_transaction()
+\end_layout
+
+\end_inset
+
+ tries to commit the current transaction.
+ 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_read()
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_write()
+\end_layout
+
+\end_inset
+
+ perform a read or a write barrier on an object and 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_allocate()
+\end_layout
+
+\end_inset
+
+ allocates a new object with the specified size (must be a multiple of 16).
+ 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+STM_PUSH_ROOT()
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+STM_POP_ROOT()
+\end_layout
+
+\end_inset
+
+ push and pop objects on the shadow stack
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+A stack for pointers to GC objects that allows for precise garbage collection.
+ All objects on that stack are never seen as garbage and are thus always
+ kept alive.
+\end_layout
+
+\end_inset
+
+.
+ Objects have to be saved using this stack around calls that may cause a
+ GC cycle to happen, and also while there is no transaction running.
+ In this simplified API, only 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_allocate()
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_commit_transaction()
+\end_layout
+
+\end_inset
+
+ require saving object references.
+\end_layout
+
+\begin_layout Standard
+The type 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+object_t
+\end_layout
+
+\end_inset
+
+ is special as it causes the compiler
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Clang 3.5 with some patches to this address-space 256 feature
+\end_layout
+
+\end_inset
+
+ to make all accesses through it relative to the 
+\begin_inset Formula $\%gs$
+\end_inset
+
+ register.
+ With exceptions, nearly all accesses to objects managed by the TM system
+ should use this type so that the CPU will translate the reference to the
+ right version of the object.
+\end_layout
+
+\begin_layout Subsubsection
+Setup
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Setup"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+On startup, we reserve a big range of virtual memory with a call to 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+mmap()
+\end_layout
+
+\end_inset
+
+ and partition this space into 
+\begin_inset Formula $N+1$
+\end_inset
+
+ segments.
+ We want to run 
+\begin_inset Formula $N$
+\end_inset
+
+ threads in parallel while segment 0 is designated as the 
+\emph on
+sharing-segment 
+\emph default
+that is never assigned to a thread.
+\end_layout
+
+\begin_layout Standard
+The next step involves using 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+remap_file_pages()
+\end_layout
+
+\end_inset
+
+, a Linux system call, to establish the fully-shared configuration.
+ All pages of segments 
+\begin_inset Formula $>0$
+\end_inset
+
+ map to the pages of the sharing-segment.
+\end_layout
+
+\begin_layout Standard
+However, the layout of a segment is not uniform and we actually privatize
+ a few areas again right away.
+ These areas are illustrated in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Segment-Layout"
+
+\end_inset
+
+ and explained here:
+\end_layout
+
+\begin_layout Description-Compact
+NULL
+\begin_inset space ~
+\end_inset
+
+page: This page is unmapped and will produce a segmentation violation when
+ accessed.
+ We use this to detect erroneous dereferencing of 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+NULL
+\end_layout
+
+\end_inset
+
+ references.
+ All 
+\begin_inset Formula $\%gs{::}SO$
+\end_inset
+
+ translated to linear addresses will point to NULL pages if SO is set to
+ 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+NULL
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Description-Compact
+Segment-local
+\begin_inset space ~
+\end_inset
+
+data: Some area private to the segment that contains segment-local information.
+\end_layout
+
+\begin_layout Description-Compact
+Read
+\begin_inset space ~
+\end_inset
+
+markers: These are pages that store information about which objects were
+ read in the current transaction running in this segment.
+\end_layout
+
+\begin_layout Description-Compact
+Nursery: This area contains all the freshly allocated objects (
+\emph on
+young objects
+\emph default
+) of the current transaction.
+ The GC uses pointer-bump allocation in this area to allocate objects in
+ the first generation.
+\end_layout
+
+\begin_layout Description-Compact
+Old
+\begin_inset space ~
+\end_inset
+
+object
+\begin_inset space ~
+\end_inset
+
+space: These pages are the ones that are really shared between segments.
+ They mostly contain old objects but also some young ones that were too
+ big to allocate in the nursery.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename segment layout.pdf
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segment Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Segment-Layout"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize-Compact
+We allocate N+1 segments for N threads
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize-Compact
+segment 0 is the 
+\emph on
+SHARED 
+\emph default
+segment
+\end_layout
+
+\begin_layout Itemize-Compact
+using 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+remap_file_pages()
+\end_layout
+
+\end_inset
+
+ we make all segments share the pages of the SHARED segment
+\end_layout
+
+\end_deeper
+\begin_layout Itemize-Compact
+Memory layout of one segment (see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Segment-Layout"
+
+\end_inset
+
+).
+ Depends on demand-paging by kernel.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize-Compact
+R/W protected: NULL page (catches NULL dereferences)
+\end_layout
+
+\begin_layout Itemize-Compact
+PRIVATE: segment-local page (keeps track of several data structures)
+\end_layout
+
+\begin_layout Itemize-Compact
+PRIVATE: read marker pages (hopefully sparse)
+\end_layout
+
+\begin_layout Itemize-Compact
+PRIVATE: nursery pages: young objects (e.g.
+ 4MB of contiguous 
+\begin_inset Quotes eld
+\end_inset
+
+bump
+\begin_inset Quotes erd
+\end_inset
+
+ allocation)
+\end_layout
+
+\begin_layout Itemize-Compact
+SHARED: object pages: old objects (managed heap)
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Assigning Segments
+\end_layout
+
+\begin_layout Standard
+From the above setup it is clear that the number of segments is statically
+ set to some 
+\begin_inset Formula $N$
+\end_inset
+
+.
+ That means that at any point in time, a maximum of 
+\begin_inset Formula $N$
+\end_inset
+
+ threads and their transactions can be running in parallel.
+ To support an unlimited number of threads in applications that use this
+ TM system, we assign segments dynamically to threads.
+\end_layout
+
+\begin_layout Standard
+At the start of a transaction, the thread it is running in acquires a segment.
+ It may have to wait until another thread finishes its transaction and releases
+ a segment.
+ Fairness is not guaranteed yet, as we simply assume a fair scheduling policy
+ in the operating system when waiting on a condition variable.
+\end_layout
+
+\begin_layout Standard
+Therefore, a thread may be assigned to different segments each time it starts
+ a transaction.
+ Although, we try to assign it the same segment again if possible.
+ And a maximum of 
+\begin_inset Formula $N$
+\end_inset
+
+ transactions may run in parallel.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+acquire / release segment between transactions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Garbage Collection
+\end_layout
+
+\begin_layout Standard
+Garbage collection plays a big role in our TM system.
+ The GC is generational and has two generations.
+ 
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+first generation
+\series default
+, where objects are considered to be 
+\emph on
+young 
+\emph default
+and reside in the 
+\emph on
+Nursery
+\emph default
+, is collected by 
+\emph on
+minor collections
+\emph default
+.
+ These collections move the surviving objects out of the nursery into the
+ old object space, which can be done without stopping other threads.
+ This is done either if the nursery has no space left anymore or if we are
+ committing the current transaction.
+ Consequently, all objects are old and the nursery empty after a transaction
+ commits.
+ Furthermore, all objects in the nursery were always created in the current
+ transaction.
+ This fact is useful since we do not need to call any barrier on this kind
+ of objects.
+\end_layout
+
+\begin_layout Standard
+To improve this situation even more, we introduce the concept of 
+\emph on
+overflow objects
+\emph default
+.
+ If a minor collection needs to occur during a transaction, we empty the
+ nursery and mark each surviving object in the old object space with an
+ 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+overflow_number
+\end_layout
+
+\end_inset
+
+ globally unique to the current transaction.
+ That way we can still detect in a medium-fast path inside barriers that
+ the object still belongs to the current transaction.
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+second generation
+\series default
+, where objects are considered to be 
+\emph on
+old 
+\emph default
+and never move again, is collected by 
+\emph on
+major collections
+\emph default
+.
+ These collections are implemented in a stop-the-world kind of way and first
+ force minor collections in all threads.
+ The major goal is to free objects in the old objects space.
+ Furthermore, we optimistically re-share pages that do not need to be private
+ anymore.
+\end_layout
+
+\begin_layout Standard
+As seen in the API (section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Application-Programming-Interfac"
+
+\end_inset
+
+), we use a 
+\emph on
+shadow stack 
+\emph default
+in order to provide precise garbage collection.
+ Any time we call a function that possibly triggers a collection, we need
+ to save the objects that we need afterwards on the shadow stack using 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+STM_PUSH_ROOT()
+\end_layout
+
+\end_inset
+
+.
+ That way, they will not be freed.
+ And in case they were young, we get their new location in the old object
+ space when getting them back from the stack using 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+STM_POP_ROOT()
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize-Compact
+Generational with 2 generations
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize-Compact
+Nursery = first generation = young objects (movable)
+\end_layout
+
+\begin_layout Itemize-Compact
+Old object space = second generation (non-movable)
+\end_layout
+
+\begin_layout Itemize-Compact
+Shadow stack for keeping objects alive (adding additional roots)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize-Compact
+Minor collections
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize-Compact
+move surviving young objects from nursery to old object space
+\end_layout
+
+\begin_layout Itemize-Compact
+if not during a commit: produces 
+\emph on
+overflow objects, 
+\emph default
+assign 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+overflow_number
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize-Compact
+Major collections
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize-Compact
+free objects in old object space
+\end_layout
+
+\begin_layout Itemize-Compact
+try to re-share pages
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Read Barrier
+\end_layout
+
+\begin_layout Standard
+The point of the read barrier is to add the object to the read set of the
+ transaction.
+ This information is needed to detect conflicts between transactions.
+ Usually, it also resolves an object reference to a private copy, but since
+ the CPU performs our address translation on every object access efficiently,
+ we do not need to do that in our barrier.
+ 
+\end_layout
+
+\begin_layout Standard
+To add the object to the read set, for us it is enough to mark it as read.
+ Since this information needs to be local to the segment, we need to store
+ it in private pages.
+ The area is called 
+\emph on
+read markers 
+\emph default
+and already mentioned in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Setup"
+
+\end_inset
+
+.
+ This area can be seen as a continuous array of bytes that is indexed from
+ the start of the segment by an object's reference (
+\begin_inset Formula $SO$
+\end_inset
+
+) divided by 16 (this requires objects of at least 16 bytes in size).
+ Instead of just setting the byte to 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+true
+\end_layout
+
+\end_inset
+
+ if the corresponding object was read, we set it to a 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+read_version
+\end_layout
+
+\end_inset
+
+ belonging to the transaction, which will be incremented on each commit.
+ Thereby, we can avoid resetting the bytes to 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+false
+\end_layout
+
+\end_inset
+
+ on commit and only need to do this every 255 transactions.
+ The whole code for the barrier is easily optimizable for compilers as well
+ as perfectly predictable for CPUs:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize\ttfamily},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+void stm_read(SO):
+\end_layout
+
+\begin_layout Plain Layout
+
+    *(SO >> 4) = read_version
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize-Compact
+writes a read version to the read marker pages
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize-Compact
+get read marker byte by dividing the segment offset by 16
+\end_layout
+
+\begin_layout Itemize-Compact
+--> minimum object size is 16 bytes
+\end_layout
+
+\end_deeper
+\begin_layout Itemize-Compact
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+*(obj >> 4) = read_version
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize-Compact
+read_version increased on commit --> no need to reset them to zero all the
+ time
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Write Barrier
+\end_layout
+
+\begin_layout Standard
+The job of the write barrier is twofold: first, it serves as a write barrier
+ for the garbage collector and second, it supports copy-on-write and adds
+ objects to the write set of the transaction.
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+fast path
+\series default
+ of the write barrier is very simple.
+ We only need to check for the flag 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+WRITE_BARRIER
+\end_layout
+
+\end_inset
+
+ in the object's header and call the slow path if it is set.
+ This flag is set either if the object is old and comes from an earlier
+ transaction, or if there was a minor collection which will add the flag
+ again on all objects.
+ It is never set on freshly allocated objects that still reside in the nursery.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize\ttfamily},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+void stm_write(SO):
+\end_layout
+
+\begin_layout Plain Layout
+
+	if SO->flags & WRITE_BARRIER:
+\end_layout
+
+\begin_layout Plain Layout
+
+		write_slowpath(SO)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+slow path
+\series default
+ is shown here:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize\ttfamily},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+void write_slowpath(SO):
+\end_layout
+
+\begin_layout Plain Layout
+
+	// GC part:
+\end_layout
+
+\begin_layout Plain Layout
+
+	list_append(to_trace, SO)
+\end_layout
+
+\begin_layout Plain Layout
+
+	if is_overflow_obj(SO):
+\end_layout
+
+\begin_layout Plain Layout
+
+		SO->flags &= ~WRITE_BARRIER
+\end_layout
+
+\begin_layout Plain Layout
+
+		return
+\end_layout
+
+\begin_layout Plain Layout
+
+	// STM part
+\end_layout
+
+\begin_layout Plain Layout
+
+	stm_read(SO)
+\end_layout
+
+\begin_layout Plain Layout
+
+	lock_idx = SO >> 4
+\end_layout
+
+\begin_layout Plain Layout
+
+  retry:
+\end_layout
+
+\begin_layout Plain Layout
+
+	if write_locks[lock_idx] == our_num:
+\end_layout
+
+\begin_layout Plain Layout
+
+		// we already own it
+\end_layout
+
+\begin_layout Plain Layout
+
+	else if write_locks[lock_idx] == 0:
+\end_layout
+
+\begin_layout Plain Layout
+
+		if cmp_and_swap(&write_locks[lock_idx],
+\end_layout
+
+\begin_layout Plain Layout
+
+					    0, our_num):
+\end_layout
+
+\begin_layout Plain Layout
+
+			list_append(modified_old_objects, SO)
+\end_layout
+
+\begin_layout Plain Layout
+
+			privatize_pages(SO)
+\end_layout
+
+\begin_layout Plain Layout
+
+		else:
+\end_layout
+
+\begin_layout Plain Layout
+
+			goto retry
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		w_w_contention_management()
+\end_layout
+
+\begin_layout Plain Layout
+
+		goto retry
+\end_layout
+
+\begin_layout Plain Layout
+
+	SO->flags &= ~WRITE_BARRIER
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First comes the 
+\emph on
+GC part
+\emph default
+: In any case, the object will be added to the list of objects that need
+ tracing in the next minor collection (
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+to_trace
+\end_layout
+
+\end_inset
+
+).
+ This is necessary in case we write a reference to it that points to a young
+ object.
+ We then need to trace it during the next minor collection in order to mark
+ the young object alive and to update its reference to the new location
+ it gets moved to.
+ The check for 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+is_overflow_obj()
+\end_layout
+
+\end_inset
+
+ tells us if the object was actually created in this transaction.
+ In that case, we do not need to execute the following 
+\emph on
+TM part
+\emph default
+.
+ We especially do not need to privatize the page since no other transaction
+ knows about these 
+\begin_inset Quotes eld
+\end_inset
+
+old
+\begin_inset Quotes erd
+\end_inset
+
+ objects.
+\end_layout
+
+\begin_layout Standard
+For TM, we first perform a read barrier on the object.
+ We then try to acquire its write lock.
+ 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+write_locks
+\end_layout
+
+\end_inset
+
+ again is a simple global array of bytes that is indexed with the SO of
+ the object divided by 16.
+ If we already own the lock, we are done.
+ If someone else owns the lock, we will do a write-write contention management
+ that will abort either us or the current owner of the object.
+ If we succeed in acquiring the lock using an atomic 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+cmp_and_swap
+\end_layout
+
+\end_inset
+
+, we need to add the object to the write set (a simple list called 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+) and privatize all pages belonging to it (copy-on-write).
+\end_layout
+
+\begin_layout Standard
+In all cases, we remove the 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+WRITE_BARRIER
+\end_layout
+
+\end_inset
+
+ flag from the object before we return.
+ Thus, we never trigger the slow path again before we do the next minor
+ collection (also part of a commit) or we start the next transaction.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Fastpath checks for WRITE_BARRIER flag in object header (only set on old
+ objects, added by minor collections, removed after write barrier)
+\end_layout
+
+\begin_layout Itemize
+For the GC:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+add to list of objects to trace in the next minor collection to make sure
+ we trace the old object for pointers to young objects
+\end_layout
+
+\begin_layout Itemize
+minor collections add the flag again, so this part is done on the first
+ write in the transaction and after every minor collection
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+For STM (only once per transaction and object, checked with 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+overflow_number
+\end_layout
+
+\end_inset
+
+):
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+perform 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_read(obj)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+get the write lock: a byte in a global array with the index 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+(obj >> 4)
+\end_layout
+
+\end_inset
+
+ (like read marker)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+if we already own it: good
+\end_layout
+
+\begin_layout Itemize
+try to acquire it with an atomic cmp_and_swap
+\end_layout
+
+\begin_layout Itemize
+if not acquired: do write-write contention management and possibly retry
+\end_layout
+
+\begin_layout Itemize
+else: add to the write set: 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+ list; and privatize all pages of obj
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Abort
+\end_layout
+
+\begin_layout Standard
+Aborting a transaction is rather easy.
+ The first step is to reset the nursery and all associated data structures.
+ The second step is to go over all objects in the write set (
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+) and reset any modifications in our private pages by copying from the sharing-s
+egment.
+ What is left is to use 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+longjmp()
+\end_layout
+
+\end_inset
+
+ to jump back to the location initialized by a 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+setjmp()
+\end_layout
+
+\end_inset
+
+ in 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_start_transaction()
+\end_layout
+
+\end_inset
+
+.
+ Increasing the 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+read_version
+\end_layout
+
+\end_inset
+
+ is also done there.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+clear nursery and all lists
+\end_layout
+
+\begin_layout Itemize
+reset all objects in 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+ from SHARED segment 0
+\end_layout
+
+\begin_layout Itemize-Compact
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+longjmp()
+\end_layout
+
+\end_inset
+
+; 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+setjmp()
+\end_layout
+
+\end_inset
+
+ called by 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_start_transaction()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize-Compact
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+read_version
+\end_layout
+
+\end_inset
+
+ increased in 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_start_transaction()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Commit
+\end_layout
+
+\begin_layout Standard
+Committing a transaction needs a bit more work.
+ First, we synchronize all threads so that the committing one is the only
+ one running and all the others are waiting in a safe point.
+ We then go through the write set (
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+) and check the corresponding 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+read_markers
+\end_layout
+
+\end_inset
+
+ in other threads/segments.
+ If we detect a read-write conflict, we do contention management to either
+ abort us or the other transaction, or to simply wait a bit.
+\end_layout
+
+\begin_layout Standard
+After verifying that there are no conflicts anymore, we copy all our changes
+ done to the objects in the write set to all other segments, including the
+ sharing-segment.
+ This is safe since we synchronized all threads.
+ We also need to push overflow objects generated by minor collections to
+ other segments, since they may reside partially in private pages.
+ At that point we also get a new 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+overflow_number
+\end_layout
+
+\end_inset
+
+ by increasing a global one, so that it stays globally unique for each transacti
+on.
+ Increasing the 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+read_version
+\end_layout
+
+\end_inset
+
+ is then done at the start of a new transaction.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+synchronize all threads (safe point)
+\end_layout
+
+\begin_layout Itemize
+detect read-write conflicts by traversing our 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+ and checking in other segments if they were read (check read marker, all
+ threads synchronized).
+ If conflict, do contention management.
+\end_layout
+
+\begin_layout Itemize
+push all 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+modified_old_objects
+\end_layout
+
+\end_inset
+
+ to other segments
+\end_layout
+
+\begin_layout Itemize
+push overflow objects to other segments; increase 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+overflow_number
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize-Compact
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+read_version
+\end_layout
+
+\end_inset
+
+ increased in 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_start_transaction()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Thread Synchronization
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+which funcs can have safe points?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A requirement for performing a commit is to synchronize all threads so that
+ we can safely update objects in other segments.
+ To make this synchronization fast and cheap, we do not want to insert an
+ additional check regularly in order to see if synchronization is requested.
+ We use a trick relying on the fact that dynamic languages are usually very
+ high-level and thus allocate a lot of objects very regularly.
+ This is done through the function 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+stm_allocate
+\end_layout
+
+\end_inset
+
+ shown below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize\ttfamily},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+object_t *stm_allocate(ssize_t size_rounded):
+\end_layout
+
+\begin_layout Plain Layout
+
+    result = nursery_current
+\end_layout
+
+\begin_layout Plain Layout
+
+	nursery_current += size_rounded
+\end_layout
+
+\begin_layout Plain Layout
+
+	if nursery_current > nursery_end:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return allocate_slowpath(size_rounded)
+\end_layout
+
+\begin_layout Plain Layout
+
+	return result
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This code does simple pointer-bump allocation in the nursery.
+ If there is still space left in the nursery, we return 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+nursery_current
+\end_layout
+
+\end_inset
+
+ and bump it up by 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+size_rounded
+\end_layout
+
+\end_inset
+
+.
+ The interesting part is the check 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+nursery_current > nursery_end
+\end_layout
+
+\end_inset
+
+ which will trigger the slow path of the function to possibly perform a
+ minor collection in order to free up space in the nursery.
+ 
+\end_layout
+
+\begin_layout Standard
+If we want to synchronize all threads, we can rely on this check being performed
+ regularly.
+ So what we do is to set the 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+nursery_end
+\end_layout
+
+\end_inset
+
+ to 
+\begin_inset Formula $0$
+\end_inset
+
+ in all segments that we want to synchronize.
+ The mentioned check will then fail in those segments and call the slow
+ path.
+ In 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+allocate_slowpath
+\end_layout
+
+\end_inset
+
+ they can simply check for this condition and enter a safe point.
+ 
+\end_layout
+
+\begin_layout Standard
+For other synchronization requirements, for example:
+\end_layout
+
+\begin_layout Itemize-Compact
+waiting for a segment to be released,
+\end_layout
+
+\begin_layout Itemize-Compact
+waiting for a transaction to abort or commit,
+\end_layout
+
+\begin_layout Itemize-Compact
+waiting for all threads to reach their safe points,
+\end_layout
+
+\begin_layout Standard
+we use a set of condition variables to wait or signal other threads.
+\end_layout
+
+\begin_layout Subsubsection
+Contention Management
+\end_layout
+
+\begin_layout Standard
+On encountering conflicts, we employ contention management to solve the
+ problem as well as we can.
+ The general rules are:
+\end_layout
+
+\begin_layout Itemize-Compact
+prefer transactions that started earlier to younger transactions
+\end_layout
+
+\begin_layout Itemize-Compact
+to support 
+\emph on
+inevitable
+\emph default
+ transactions, we always prefer them to others since they cannot abort
+\end_layout
+
+\begin_layout Standard
+We can either simply abort a transaction to let the other one succeed, or
+ we can also wait until the other transaction committed.
+ The latter is an interesting option if we are trying to commit a write
+ and another transaction already read the object.
+ We can then signal the other transaction to commit as soon as possible
+ and wait.
+ After waiting, there is now no conflict between our write and the already
+ committed read anymore.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+older transactions preferred, also inevitable transactions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\series bold
+Conceptual:
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+problem of overhead --> solve by copying objs w/o changing reference
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+2-step address translation
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+conflict detection: COW on pages, conflict detection on objects
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+read barrier
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+write barrier
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Implementation:
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+memory layout / the different segment areas
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+data structures used (write set, read set, modified objects, ...)
+\end_layout
+
+\begin_layout Plain Layout
+
+\series medium
+thread synchronization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Experimental Results
+\end_layout
+
+\begin_layout Standard
+compare some programs between
+\end_layout
+
+\begin_layout Itemize-Compact
+pypy
+\end_layout
+
+\begin_layout Itemize-Compact
+pypy-jit
+\end_layout
+
+\begin_layout Itemize-Compact
+pypy-stm
+\end_layout
+
+\begin_layout Itemize-Compact
+pypy-stm-jit
+\end_layout
+
+\begin_layout Itemize-Compact
+cpython
+\end_layout
+
+\begin_layout Itemize-Compact
+jython
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Here you evaluate your work using experiments.
+ You start again with a very short summary of the section.
+ The typical structure follows.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Experimental setup
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Specify the platform (processor, frequency, maybe OS, maybe cache sizes)
+ as well as the compiler, version, and flags used.
+ If your work is about performance, I strongly recommend that you play with
+ optimization flags and consider also icc for additional potential speedup.
+\end_layout
+
+\begin_layout Plain Layout
+Then explain what kind of benchmarks you ran.
+ The idea is to give enough information so the experiments are reproducible
+ by somebody else on his or her code.
+ For sorting you would talk about the input sizes.
+ For a tool that performs NUMA optimization, you would specify the programs
+ you ran.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Results
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Next divide the experiments into classes, one paragraph for each.
+ In each class of experiments you typically pursue one questions that then
+ is answered by a suitable plot or plots.
+ For example, first you may want to investigate the performance behavior
+ with changing input size, then how your code compares to external benchmarks.
+\end_layout
+
+\begin_layout Plain Layout
+For some tips on benchmarking including how to create a decent viewgraph
+ see pages 22--27 in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Pueschel:10"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Comments:
+\series default
+ 
+\end_layout
+
+\begin_layout Itemize
+Create very readable, attractive plots (do 1 column, not 2 column plots
+ for this report) with readable font size.
+ However, the font size should also not be too large; typically it is smaller
+ than the text font size.
+ An example is in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fftperf"
+
+\end_inset
+
+ (of course you can have a different style).
+ 
+\end_layout
+
+\begin_layout Itemize
+Every plot answers a question.
+ You state this question and extract the answer from the plot in its discussion.
+ 
+\end_layout
+
+\begin_layout Itemize
+Every plot should be referenced and discussed.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename dft-performance.eps
+	scale 33
+
+\end_inset
+
+ 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Performance of four single precision implementations of the discrete Fourier
+ transform.
+ The operations count is roughly the same.
+ The labels in this plot are maybe a little bit too small.
+\begin_inset CommandInset label
+LatexCommand label
+name "fftperf"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Related Work
+\end_layout
+
+\begin_layout Section
+Conclusions
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Here you need to summarize what you did and why this is important.
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Do not take the abstract
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and put it in the past tense.
+ Remember, now the reader has (hopefully) read the report, so it is a very
+ different situation from the abstract.
+ Try to highlight important results and say the things you really want to
+ get across such as high-level statements (e.g., we believe that ....
+ is the right approach to ....
+ Even though we only considered x, the ....
+ technique should be applicable ....) You can also formulate next steps if you
+ want.
+ Be brief.
+ After the conclusions there are only the references.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Further comments
+\end_layout
+
+\begin_layout Standard
+Some citation: 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Higham:98"
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Here we provide some further tips.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Further general guidelines
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+For short papers, to save space, I use paragraph titles instead of subsections,
+ as shown in the introduction.
+\end_layout
+
+\begin_layout Itemize
+It is generally a good idea to break sections into such smaller units for
+ readability and since it helps you to (visually) structure the story.
+\end_layout
+
+\begin_layout Itemize
+The above section titles should be adapted to more precisely reflect what
+ you do.
+\end_layout
+
+\begin_layout Itemize
+Each section should be started with a very short summary of what the reader
+ can expect in this section.
+ Nothing more awkward as when the story starts and one does not know what
+ the direction is or the goal.
+\end_layout
+
+\begin_layout Itemize
+Make sure you define every acronym you use, no matter how convinced you
+ are the reader knows it.
+\end_layout
+
+\begin_layout Itemize
+Always spell-check before you submit (to us in this case).
+\end_layout
+
+\begin_layout Itemize
+Be picky.
+ When writing a paper you should always strive for very high quality.
+ Many people may read it and the quality makes a big difference.
+ In this class, the quality is part of the grade.
+\end_layout
+
+\begin_layout Itemize
+Books helping you to write better: 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Higham:98"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Strunk:00"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Conversion to pdf (latex users only):
+\end_layout
+
+\begin_deeper
+\begin_layout Plain Layout
+dvips -o conference.ps -t letter -Ppdf -G0 conference.dvi
+\end_layout
+
+\begin_layout Plain Layout
+and then
+\end_layout
+
+\begin_layout Plain Layout
+ps2pdf conference.ps 
+\end_layout
+
+\end_deeper
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+mypar{
+\end_layout
+
+\end_inset
+
+Graphics
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ For plots that are not images 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ never
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ generate the bitmap formats jpeg, gif, bmp, tif.
+ Use eps, which means encapsulate postscript.
+ It is scalable since it is a vector graphic description of your graph.
+ E.g., from Matlab, you can export to eps.
+\end_layout
+
+\begin_layout Plain Layout
+The format pdf is also fine for plots (you need pdflatex then), but only
+ if the plot was never before in the format jpeg, gif, bmp, tif.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "bibl_conf"
+options "IEEEbib"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

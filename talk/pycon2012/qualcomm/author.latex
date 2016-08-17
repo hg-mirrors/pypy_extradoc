@@ -1,0 +1,7 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy]{Writing VMs using PyPy}
+\author[fijal]{Maciej Fijałkowski, Alex Gaynor, Armin Rigo}
+
+\institute{Qualcomm 2012}
+\date{8 March 2012}

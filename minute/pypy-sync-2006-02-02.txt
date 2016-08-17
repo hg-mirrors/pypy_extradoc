@@ -1,0 +1,266 @@
+=============================================
+pypy-sync developer meeting 2nd February 2006
+=============================================
+
+Time & location: 1pm (30 minutes), GMT+1 at #pypy-sync
+
+Attendees::
+
+         Adrien di Mascio
+         Anders Chrigstrom
+         Anders Lehmann
+         Aurelien Campeas
+	 Holger Krekel
+         Jan Balster
+         Eric van Riet Paap
+         Carl Friedrich Bolz
+	 Samuele Pedroni
+         Michael Hudson
+         Armin Rigo (moderation & minutes)
+
+Regular Topics 
+====================
+
+- activity reports (3 prepared lines of info).
+  All Attendees submitted activity reports (see `IRC-Log`_
+  and 'LAST/NEXT/BLOCKERS' entries in particular)
+
+- resolve conflicts/blockers: No blockers
+
+Topics of the week
+===================
+
+PyCon sprint announcement
+------------------------------
+
+Discussed and finalized the topics (in no particular order):
+
+* py lib subtrack, with a focus on issues relevant to PyPy
+* write GCs (we might start translating our own GCs by then)
+* rctypes (newcomer-friendly: writing 'socket' or some other module in ctypes)
+* logic programming: constraints; adding dataflow variables to PyPy
+* general JIT stuff (maybe)
+* general experiments with app-level code using PyPy features (thunk, ...)
+
+py.test
+------------------------------
+
+What could be better in py.test from the point of view of testing PyPy?
+
+* produces far too much output in general
+* improve the test selection mecanisms, e.g. -k should allow us to select
+  based on class name, or select one test of a generative test, etc.
+* test coverage
+* doctests (important from a community point of view)
+
+
+.. _`IRC-Log`:
+
+Complete IRC log
+=================
+
+complete log::
+
+  <adim> Hi everyone
+  <arigo> hi
+  <aleale> Hi
+  <hpk> hi
+  <cfbolz> hi all!
+  <arre> Hi!
+  <ericvrp> hi!
+  <auc> ih
+  <pedronis> hi
+  --> mwh (n=mwh@82-32-1-143.cable.ubr01.azte.blueyonder.co.uk) has joined #pypy-sync
+  <arigo> hi all
+  <arigo> let's start, please post your three-liners...
+  <ericvrp> LAST: raisingop2direct_call transformation, NEXT: finish transformation, BLOCKERS: -
+  <hpk> LAST: codespeak migration, wp14, non-pypy  NEXT: Ireland workshops  BLOCKERS: no
+  <hpk> ne
+  <auc> last : almost "finished" our prototype oz-like computation space
+  <auc> next : add merge op, implement basic search strategies with it
+  <auc> block : nil
+  <adim> LAST: helped Nicolas to prepare the "SolutionsLinux" exhibition / talked about PyPy to everyone passing around the Logilab's stand
+  <adim> NEXT: restart aspect / WP10 stuff
+  <adim> BLOCKERS: none
+  <mwh> LAST: sprint, being ill,
+  <aleale> PREV: Sprint on Logic, trying pyontology on an inhouse ontology
+  <aleale> NEXT: Pyontology, documentation, a little logic
+  <aleale> BLOCKERS : -
+  <cfbolz> LAST: mallorca sprint, some small pickling experiments
+  <cfbolz> NEXT: finish mailwitness sprint, relax a bit, continue gc work, py-lib release
+  <cfbolz> BLOCKERS: too much to do, as usual
+  <mwh> NEXT: finish genc refactoring
+  <mwh> BLOCKERS: -
+  <arre> PREV: Recuperating after Mallorca sprint.
+  <arre> NEXT: Working on the JIT with Samuele.
+  <arre> BLOCKERS: None
+  <pedronis> LAST: sprint, hint annotation
+  <pedronis> NEXT: more jit
+  <pedronis> BLOCKERS: -
+  <arigo> LAST: sprint, no much;  NEXT: some JIT work;  BLOCKERS: still recovering from sprint
+  <arigo> thanks
+  <arigo> PyCon sprint announcement
+  <arigo> ==============================
+  <arigo> during the Mallorca sprint, we wrote a file "what to do next"
+  <arigo> this contains several topics that make sense to include in the PyCon sprint announcement
+  <arigo> extradoc/sprintinfo/mallorca/post-mallorca-planning.txt
+  <arigo> I think that these topics could all be mentioned in the announcement,
+  <arigo> but it would be nice to have a few more
+  <hpk> we should hint at the pypy talks during the pycon talks in the announcement
+  <cfbolz> definitively
+  <hpk> and also (i mentioned this to arigo already) i'd like to do a bit of py lib sprinting as a sub-track
+  <hpk> related to improvements visible for pypy development
+  <mwh> we should try hard to make the sprint announcements non-intimidating
+  <arigo> mwh: yes
+  * hpk thinks that the py lib topics can help there :) 
+  <pedronis> :)
+  <arigo> I expect the sprint to be pretty much a "what are you interested in?" kind of sprint, with not too many pypy corers there
+  <cfbolz> how many days are there actually?
+  <mwh> four
+  <cfbolz> so it's not _that_ big anywya
+  <mwh> but for one reason and another a lot of people will only be there for 3.5 or so days
+  <hpk> the sprint directly starts after the conf, btw (no break day)
+  <pedronis> which means tired people
+  <hpk> a bit, yes
+  <hpk> does it make sense to offer experimentation stuff?
+  <hpk> like extending the thunk space, playing on top of it, refining it?
+  * hpk thinks that we will need an internal core sprint between now and may because both japan and pycon are likely not allowing us to tackle the tough stuff
+  <arigo> we could propose this kind of things
+  <mwh> i think the gc stuff should be mentioned
+  <arigo> also with other spaces, not just thunk
+  <mwh> particularly if you can translate the gc framework by then...
+  <hpk> mwh: definitely
+  <cfbolz> mwh: which is unclear, but indeed the goal :-)
+  <hpk> being able to write GCs would be cool - but i am a bit skeptical (without really being able to judge)
+  <mwh> cfbolz: :)
+  <arigo> hpk: I'm more optimistic
+  <hpk> good :)
+  <arigo> anyway, it's a good topic, yes
+  <mwh> hpk: can an additional sprint be another topic ?
+  <arigo> and definitely rctypes
+  <hpk> are the rctypes people from mallorca going to be at pycon?
+  <hpk> i mean gromit and stephan?
+  <arigo> I guess not
+  <mwh> no
+  <arigo> that shouldn't stop us, though
+  <cfbolz> mwh: indeed :-)
+  <hpk> arigo: ok
+  <arigo> writing an ext module in ctypes is a good way to contribute to PyPy
+  <mwh> arigo: yes
+  <arigo> because learning internals for 4 days isn't quite enough
+  <aleale> I hope to come so we could add a topic about implementing logic
+  <arigo> aleale: anything more precise in mind?
+  <hpk> is socket still a topic or only after we know that we will build on the (r)ctypes approach?
+  <arigo> I believe we can make socket-on-ctypes a topic, but it also seems to be a very demanded topic
+  <aleale> well it is hard to say since I dontknow how far we will be when Pycon comes around
+  * hpk wonders how many people in the US are into logic programming (that will come to pycon)
+  <arigo> I know that both Holger and Christian are considering hiring people and giving socket as work :-)
+  <aleale> but auc and I could try make it mmore concrete
+  <hpk> arigo: well, that is quite vague still
+  <hpk> arigo: shouldn't stop us from tackling it at the pycon sprint in any case :)
+  <arigo> aleale: ok -- otherwise just mention logic and Oz in a short line
+  <arigo> hpk: ok
+  <auc> arigo: the answer depends on the state of integration of computation spaces into pypy
+  <auc> we don't know that in advance
+  * hpk could try to write a draft announcement until saturday morning, cannot promise to do it earlier
+  <auc> and I have no clue, currently, abouut how to do it
+  <arigo> ok, then to summarize the topics:
+  <mwh> i think at this point we want to nominate one or two people to write the announcement, not try to write it now?
+  <arigo> * py lib
+  <arigo> * gc
+  <arigo> * rctypes
+  <arigo> * logic
+  <arigo> * (probably a note about jit)
+  <auc> arigo: can you say "constraints" instead of "logic" ?
+  <arigo> sure
+  <hpk> * experimenting with pypy possibilities
+  <auc> 'cause constraints will be there before logic ...
+  <arigo> hpk: ok
+  <hpk> especially co-routines, thunk+X spaces etc.
+  <mwh> "experimenting with pypy possibilities" seems almost limitlessly vague
+  <hpk> mwh: we are on IRC here, aren'T we? :)
+  <mwh> heh
+  <arigo> hpk: I guess you mean in general playing with mostly app-level code that uses the new pypy features
+  <hpk> yes
+  <auc> a more focused idea could be : putting dataflow variables into pypy
+  <hpk> but also refining/extending the thunk space
+  <auc> making dataflow vars. work with microthreads
+  <arigo> hpk: you can already do a lot with the thunk space, I'm not sure what non-app-level extensions you have in mind
+  <auc> that's a building block for comp. spaces
+  <arigo> auc: that's more a design topic so far, isn't it?
+  <auc> arigo: uh ... what exactly ? (is more a design topic) ?
+  <auc> df vars ?
+  <arigo> yes, particularly how to fit them in the Python language, and how to hook them on microthreads
+  <arigo> unless you have more precise ideas already, of course
+  <cfbolz> (which we would then like to know :-)
+  <hpk> arigo: am mostly thinking about distribution of objects including their functions (so that not only object state is transparently moving between servers but also the code ...)
+  <auc> arigo: ok
+  <hpk> arigo: maybe that's possible already - i am not sure
+  <cfbolz> could we maybe try to also discuss the next topic a bit too? jan is mostly here for that
+  <arigo> hpk: that's also a design topic :-)  I don't see clearly if and how to fit this in the thunk space in particular
+  <arigo> cfbolz: sure
+  <arigo> py.test
+  <arigo> =======================
+  <hpk> mwh: do we still assign to the task of finalizing the announcement?  Or do you do a draft with armin or Samuele or what?
+  <mwh> hpk: dunno! :)
+  <mwh> i should be around this afternoon to work on a draft
+  <hpk> arigo: if you write a draft i am going to review/amend it
+  <arigo> let's talk about it on #pypy
+  <arigo> (hpk: I have some more to say to you)
+  * hpk will be out after the sync meeting  but ok 
+  <hpk> arigo: ok, then
+  <arigo> anything you want to complain about py.test?
+  <hpk> so any complaints about py.test?
+  <hpk> none?  fine then we can close the meeting :)
+  <cfbolz> I want some features :-)
+  <aleale> I have had the need to be able to filter in generative test. I havent found a way to name the generative tests so that -k  works.
+  <mwh> my pypy feature resuest: i'd like a --tb=foo thing that just listed the failing tests
+  <aleale> s/test/tests
+  <hpk> aleale: indeed, that's not possible currently i think
+  <cfbolz> I think  -k needs to be refined in general
+  <hpk> mwh: no tracebacks at all then?
+  <mwh> in general, as arigo said we produce far too much output
+  <mwh> hpk: yes
+  <hpk> cfbolz: yes
+  <cfbolz> because you also cannot match the class names
+  <mwh> hpk: maybe the failing exception name or something
+  <hpk> and the file/line number i guess
+  <mwh> hpk: this is usually so i can work out what -k to pass :)
+  <hpk> makes sense i think
+  <mwh> yes, that might be good to work out if all the failures are like to be the same
+  <cfbolz> I also really want some sort of test coverage
+  <mwh> like -> likely
+  <hpk> nobody wants doctests? :)
+  <mwh> the "too much output" thing is partially our fault i guess
+  <cfbolz> and some way to add (dynamic?) tags to tests
+  <ericvrp> When I had some RPython code that would not annotate I would have liked a feature that simulates manual --pdb option and then looking for a translator object so t.view() can be done to see the offending block
+  <cfbolz> and select tests in different ways
+  <mwh> some kind of py.log magic might help
+  * hpk sidenotes that py.log is going to be refined soon - but we will ensure that pypy's usage will be fixed accordingly 
+  <arigo> so we have mostly
+  <arigo> * too much output
+  <arigo> * better test selection
+  <cfbolz> * test coverage
+  <hpk> * doctests (i really think it makes sense also for pypy)
+  <mwh> hpk: i'm glad i never worked out how to use py.log then :)
+  <arigo> I don't feel the need for the last two items at all but I'm not against them either :-)
+  <cfbolz> arigo: thank you :-)
+  <arigo> can we close this meeting for now?
+  <hpk> ;)
+  <arigo> time...
+  <hpk> from my side: yes and thanks!
+  <pedronis> I thin doctests are important form a community POV, lots of people seems into them
+  <cfbolz> pedronis: indeed
+  <mwh> yes, all from me
+  * arigo closes the meeting -- thanks
+  <hpk> * being able to run compliance/other tests with pypy-c and py.test :)
+  <cfbolz> bye all!
+  <aleale> bye
+  <adim> see you
+  <-- adim (n=adim@logilab.net2.nerim.net) has left #pypy-sync
+  <hpk> bye
+  <arre> Bye!
+  <pedronis> bye
+  <janb> bye
+  <ericvrp> bye
+  <auc> bye

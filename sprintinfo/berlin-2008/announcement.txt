@@ -1,0 +1,69 @@
+=====================================================================
+         PyPy Berlin Sprint (17-22nd May 2008)
+=====================================================================
+
+The next PyPy sprint will be in the crashed `c-base space station`_,
+Berlin, Germany, Earth, Solar System.  This is a fully public sprint:
+newcomers (from all planets) and topics other than those proposed below
+are welcome.
+
+.. _`c-base space station`: http://www.c-base.org/
+
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+  - work on PyPy's JIT generator: we are refactoring parts of the
+    compiling logic, in ways that may also allow generating better
+    machine code for loops (people or aliens with knowledge on
+    compilers and SSA, welcome)
+
+  - work on the SPy VM, PyPy's Squeak implementation, particularly the
+    graphics capabilities
+
+  - work on PyPy's GameBoy emulator, which also needs graphics support
+
+  - trying some large pure-Python applications or libraries on PyPy and
+    fixing the resulting bugs. Possibilities are Zope 3, Django and
+    others.
+
+* We are open to all sorts of other tasks during the sprint, just
+  propose something.
+
+-----------------------
+Location & Accomodation
+-----------------------
+
+The sprint will take place in the c-base in Berlin. The address is::
+
+    c-base e.V.
+    Rungestrasse 20
+    10179 Berlin
+
+To get there, take the U-Bahn or S-Bahn to the station
+"Jannowitzbrücke". See here_ for a map to get to c-base from there.
+
+.. _here: http://maps.google.com/maps?f=q&hl=en&geocode=&q=c-base+berlin&ie=UTF8&ll=52.515464,13.408985&spn=0.020449,0.057335&z=15&iwloc=A
+
+If you want to come, please register via by svn:
+
+  http://codespeak.net/svn/pypy/extradoc/sprintinfo/berlin-2008/people.txt
+
+or write a mail to the pypy-sprint mailing list if you do not yet have
+check-in rights:
+
+  http://codespeak.net/mailman/listinfo/pypy-sprint
+
+Of course, especially given the location, it's ok to show up even if you
+didn't register.  (The c-base has probably got the plans of Guido's
+famous time machine anyway, so you can register last week.)
+
+
+-----------
+Exact times
+-----------
+
+The sprint will be from 17th to 22nd of May 2008. We will start
+sprinting every day at 10. An introduction will be given on the first
+day, if there is interest.

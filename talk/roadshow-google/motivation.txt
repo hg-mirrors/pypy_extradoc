@@ -1,0 +1,223 @@
+.. include:: <s5defs.txt>
+
+========================================================================
+                                  PyPy
+========================================================================
+
+Automatic generation of VMs for dynamic languages - JIT included
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. raw:: html
+
+   <br>
+   <center>
+   <table border=0>
+   <tr><td>Samuele Pedroni</td><td>&nbsp;&nbsp;&nbsp;</td>
+       <td>Laura Creighton</td></tr>
+   <tr><td>Armin Rigo</td><td></td>
+       <td>Jacob Hallén</td></tr>
+   </table>
+   <a href="http://codespeak.net/pypy/">http://codespeak.net/pypy/</a>
+   </center>
+
+
+PyPy
+==================
+
+.. raw:: html
+
+   <br>
+   <br>
+   <center>
+
+**PyPy is a tool-chain for constructing dynamic languages.**
+
+.. raw:: html
+
+   </center>
+
+Interpreters
+==================
+
+...are good to implement dynamic languages:
+
+* Easy to write
+
+* Portable
+
+* Flexible and easy to evolve, if written in high-level language
+  (without low-level details)
+
+The PyPy Project
+==================
+
+We built enough infrastructure such that:
+
+* speed is regained
+
+* features requiring low-level manipulations are (re-)added as *aspects*
+
+* interpreters are kept simple and uncluttered
+
+Targets as different as C and the industry OO VMs (JVM, CLR) are supported.
+
+PyPy as a project
+===================
+
+We operate both as an open source with production usage aspirations and
+research project.
+
+We focus on the whole system.
+
+We want the tool-chain itself to be as simple as possible
+(but not simpler).
+
+Some of what we do is relatively straight-forward, some is challenging
+(generating dynamic compilers!).
+
+The Origin of PyPy
+=====================
+
+PyPy is a reaction to the frustrations, resource problems and
+duplicated efforts of how mainstream open-source languages (like
+Python) are implemented now.
+
+
+Folk Wisdom
+====================================================
+
+...about interpreters for Dynamic Languages:
+
+* There are unavoidable tradeoffs between flexibility, maintainability,
+  and speed
+
+* Fast, Maintainable, Flexible -- pick one
+
+What this means in Practice
+===========================
+
+Current popular open source dynamic language implementations:
+
+* are relatively slow
+
+* are not very flexible
+
+* are harder to maintain than we would like them to be
+
+Not very flexible
+=================
+
+- Low-level decisions permeate the entire code base.
+- Not ideal to experiment - cannot simply plug-in a new garbage collector,
+  memory model, or threading model
+- Early decisions come back to haunt you.
+
+Hard to maintain
+================
+
+because they are traditionally written in low-level languages:
+
+- the community generates experts in the dynamic language but
+  requires experts in C or C++ for its own maintenance
+- every time a new VM is needed, the language's community forks
+  (CPython - Jython - IronPython)
+
+
+PyPy Approach
+=============================
+
+.. raw:: html
+
+   <br>
+
+.. image:: overview1.png
+   :align: center
+
+Translation
+==============================================
+
+.. raw:: html
+
+   <br>
+
+Going from interpreters to VMs
+------------------------------
+
+In PyPy interpreters are written in RPython:
+
+* A subset of Python amenable to static analysis
+
+* Still fully garbage collected
+
+* Rich built-in types
+
+RPython is still close to Python.
+
+A special aspect
+==================================
+
+.. raw:: html
+
+   <br>
+   <br>
+   <center>
+
+**Generating JIT compilers**
+
+.. raw:: html
+
+   </center>
+
+JIT motivation
+==================================
+
+Flexibility vs. Performance:
+
+* Interpreters are easy to write and evolve
+
+* For high performance, dynamic compilation is required
+
+Traditional JIT compilers
+===============================
+
+* Huge resource investment
+* The richer the semantics, the harder to write
+* Poor encoding of language semantics
+* Hard to evolve
+
+Need for novel approaches!
+
+PyPy Approach: Goal
+=============================
+
+.. raw:: html
+
+   <br>
+
+.. image:: overview2.png
+   :align: center
+
+Language-agnostic
+====================
+
+* The dynamic generation process and primitives are language-agnostic.
+
+* The language implementations should be able to evolve up to
+  maintaining the hints.
+
+* By construction all interpreter/language features are supported
+
+pypy-c-jit
+======================
+
+.. where to put this? 
+
+PyPy 1.0 contains both the dynamic compiler generator and the start of
+its application to PyPy's Python intepreter.
+
+* included are backends for IA32 and PPC
+* integer arithmetic operations are optimized
+* for these, we are in the speed range of ``gcc -O0``
+* demo (63x faster than CPython)
+
+.. demo f1

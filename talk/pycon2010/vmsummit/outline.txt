@@ -1,0 +1,8 @@
+* briefly what is PyPy
+* generating tracing jit
+* find allocation that can be avoided, data flow around the loop
+* virtualizables (?)
+* trace example
+* results
+* challenges
+

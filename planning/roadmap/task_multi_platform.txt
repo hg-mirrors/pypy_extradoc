@@ -1,0 +1,40 @@
+Multi-platform support
+======================
+
+status:
+
+ - We currently have PyPy with Posix support running on the following
+   platforms:
+
+   - Linux ia32
+   - Mac OS/X ia32
+   - Mac OS/X powerpc
+   - Windows ia32 (only limited, a few known issues, needs a maintainer)
+
+todo:
+
+ - In order to be a viable alternative to CPython, PyPy needs to be
+   tested and run cleanly on more platforms than it currently does.
+   Amd64 with Linux is probably the most urgent one, but there are
+   probably others that have some problems.
+
+It probably makes sense to put this item off until we are closer to
+having a production ready system for the i386. We also have a possible
+volunteer effort under way. It remains to be seen if it takes off.
+
+expected outcome:
+
+ - PyPy passes the suite of tests to the same level on Linux/amd64
+   as on Linux/ia32.
+
+dependencies:
+
+ - None
+
+ - However, it probably makes sense to put this item off until we are
+   closer to having a production ready system for the ia32.
+
+ - Somebody showed up o the PyPy IRC channel with an interest in
+   putting together a group of people doing the port to amd64.
+   It remains to be seen if this group takes off. If so, we may have
+   a port earlier than expected.

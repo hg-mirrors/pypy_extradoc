@@ -1,0 +1,15 @@
+PyPy status talk
+================
+
+In this talk I would like to give an update on the status of
+the PyPy project. Most of the talk will focus on PyPy's JIT,
+a new feature that allows to run (some, so far) programs really
+fast. I'll also present in detail how to exploit the JIT's
+possiblities and future directions.
+
+Bio:
+
+I'm a core developer of the PyPy project, involved in it for the
+last couple of years. In recent years I spent a lot of time improving
+the dynamic compilation features of PyPy as well as improving the
+general PyPy compatibility.
