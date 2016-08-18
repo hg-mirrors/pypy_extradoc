@@ -51,7 +51,7 @@ planned:
 * Generators have a new gi_yieldfrom attribute
 
 * A new RecursionError exception is now raised when maximum recursion
-  depth is reached.
+  depth is reached. (DONE)
 
 * The new os.scandir() function
 
