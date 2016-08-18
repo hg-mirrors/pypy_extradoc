@@ -5,6 +5,11 @@ Planned
 -------
 
 * Implement changes to memory view. e.g. hex(): https://bugs.python.org/issue9951 (plan_rich)
+  Seems to work, but test suite hangs to verify the CPython tests.
+* tuple indexing for memory view (plan_rich)
+  Comments: Stronly tied to numpy. Hard to implement, because most of the basics are missing (dimensions/strides)
+  We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
+  Matti's opinion on that would be great!
 
 
 Finished
