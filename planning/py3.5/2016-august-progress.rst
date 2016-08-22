@@ -11,8 +11,6 @@ Planned
   We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
   Matti's opinion on that would be great!
 
-* os.scandir() (arigo)
-
 
 Finished
 --------
@@ -55,7 +53,7 @@ planned:
 * A new RecursionError exception is now raised when maximum recursion
   depth is reached. (DONE)
 
-* The new os.scandir() function
+* The new os.scandir() function (POSIX-DONE, missing Win32)
 
 * Newly created file descriptors are non-inheritable (PEP 446)
 
