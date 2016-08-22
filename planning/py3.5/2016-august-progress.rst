@@ -26,6 +26,12 @@ Not in any milestone
   ``dict``.  The main pain point is ``move_to_end(last=False)``.  See
   https://mail.python.org/pipermail/python-dev/2016-August/145837.html
 
+* interpreter/generator.py: move the common functionality from
+  GeneratorIterator and Coroutine to the base class.  Review all
+  calls to _PyGen_yf() in genobject.c.  This is needed before
+  adding gi_yieldfrom/cr_await to generator/coroutines.  (Waiting
+  because some work might be going on with raffael_t.)
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
@@ -47,8 +53,6 @@ planned:
 * New bytes.hex(), bytearray.hex() and memoryview.hex() methods.
 
 * memoryview now supports tuple indexing
-
-* Generators have a new gi_yieldfrom attribute
 
 * A new RecursionError exception is now raised when maximum recursion
   depth is reached. (DONE)
