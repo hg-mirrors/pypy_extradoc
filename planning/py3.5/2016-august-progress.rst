@@ -34,6 +34,8 @@ Not in any milestone
   adding gi_yieldfrom/cr_await to generator/coroutines.  (Waiting
   because some work might be going on with raffael_t.)
 
+* compare ``dir(posix)`` on py3.5 and cpython 3.5.
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
