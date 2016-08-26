@@ -22,3 +22,9 @@ and undocumented results, or leak memory, etc.
 * os.scandir() direntry objects should not have stat() called from two
   threads concurrently.  It will make two stat objects and leak one of
   them.
+
+* (not a crasher) on modern Linux: if the first call in the process to
+  socketpair() ends in a EINVAL, then cpython will (possibly wrongly)
+  assume it was caused by SOCK_CLOEXEC and not use SOCK_CLOEXEC at all
+  in the future
+
