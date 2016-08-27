@@ -11,8 +11,6 @@ Planned
   We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
   Matti's opinion on that would be great!
 
-* arigo: Newly created file descriptors are non-inheritable (PEP 446)
-
 * arigo: New marshal format
 
 
@@ -70,7 +68,8 @@ planned:
 
 * The new os.scandir() function (POSIX-DONE, missing Win32)
 
-* Newly created file descriptors are non-inheritable (PEP 446) (TESTING)
+* Newly created file descriptors are non-inheritable (PEP 446) 
+  (POSIX-DONE, missing Win32)
 
 * The marshal format has been made more compact and efficient
 
