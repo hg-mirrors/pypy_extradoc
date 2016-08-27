@@ -23,8 +23,17 @@ and undocumented results, or leak memory, etc.
   threads concurrently.  It will make two stat objects and leak one of
   them.
 
-* (not a crasher) on modern Linux: if the first call in the process to
+
+Other bugs
+----------
+
+* on modern Linux: if the first call in the process to
   socketpair() ends in a EINVAL, then cpython will (possibly wrongly)
   assume it was caused by SOCK_CLOEXEC and not use SOCK_CLOEXEC at all
   in the future
 
+* fcntl.ioctl(x, y, buf, mutate_flag): mutate_flag is there for the case
+  of buf being a read-write buffer, which is then mutated in-place.
+  But if we call with a read-only buffer, mutate_flag is ignored (instead
+  of rejecting a True value)---ioctl(x, y, "foo", True) will not actually
+  mutate the string "foo", but the True is completely ignored.

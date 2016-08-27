@@ -38,6 +38,11 @@ Not in any milestone
 
 * compare ``dir(posix)`` on py3.5 and cpython 3.5.
 
+* review all unwrap_spec() that are meant to pass booleans (now
+  with '=int').  Argument clinic turns these to PyObject_IsTrue(), i.e.
+  accepting any object whatsoever(?!), which is supposedly a feature
+  (see http://bugs.python.org/issue14705).
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
