@@ -13,6 +13,8 @@ Planned
 
 * arigo: Newly created file descriptors are non-inheritable (PEP 446)
 
+* arigo: New marshal format
+
 
 Finished
 --------
@@ -63,11 +65,7 @@ planned:
 
 * The new os.scandir() function (POSIX-DONE, missing Win32)
 
-* Newly created file descriptors are non-inheritable (PEP 446)
-
-  - added rposix.{set,get}_inheritable(), used it as a quick hack
-    inside interp_posix.pipe(), needed otherwise subprocess.Popen()
-    deadlocks
+* Newly created file descriptors are non-inheritable (PEP 446) (TESTING)
 
 * The marshal format has been made more compact and efficient
 
