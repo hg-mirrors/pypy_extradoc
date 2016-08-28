@@ -11,8 +11,6 @@ Planned
   We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
   Matti's opinion on that would be great!
 
-* arigo: New marshal format
-
 
 Finished
 --------
@@ -72,6 +70,8 @@ planned:
   (POSIX-DONE, missing Win32)
 
 * The marshal format has been made more compact and efficient
+  (DONE, maybe a small optimization left---TYPE_*ASCII*---that
+  depends on compact unicode representation)
 
 * enum: Support for enumeration types (PEP 435).
 
