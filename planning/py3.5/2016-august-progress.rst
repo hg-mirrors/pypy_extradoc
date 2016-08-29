@@ -11,7 +11,8 @@ Planned
   We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
   Matti's opinion on that would be great!
 
-* arigo: pathlib: Object-oriented filesystem paths (PEP 428)
+* arigo: look at test failures relaced to os.scandir() or the pathlib
+  module, or the enum module
 
 
 Finished
@@ -75,8 +76,6 @@ planned:
   (DONE, maybe a small optimization left---TYPE_*ASCII*---that
   depends on compact unicode representation)
 
-* enum: Support for enumeration types (PEP 435).
-  (PURELY-APPLEVEL, nothing to do, except look at test failures showing
-  other things not implemented like always)
+* enum: Support for enumeration types (PEP 435). (PURELY-APPLEVEL)
 
-* pathlib: Object-oriented filesystem paths (PEP 428).
+* pathlib: Object-oriented filesystem paths (PEP 428). (PURELY-APPLEVEL)
