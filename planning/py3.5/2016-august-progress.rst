@@ -74,5 +74,7 @@ planned:
   depends on compact unicode representation)
 
 * enum: Support for enumeration types (PEP 435).
+  (PURELY-APPLEVEL, nothing to do, except look at test failures showing
+  other things not implemented like always)
 
 * pathlib: Object-oriented filesystem paths (PEP 428).
