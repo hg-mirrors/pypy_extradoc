@@ -37,3 +37,6 @@ Other bugs
   But if we call with a read-only buffer, mutate_flag is ignored (instead
   of rejecting a True value)---ioctl(x, y, "foo", True) will not actually
   mutate the string "foo", but the True is completely ignored.
+
+* re.sub(b'y', bytearray(b'a'), bytearray(b'xyz')) -> b'xaz'
+  re.sub(b'y', bytearray(b'\\n'), bytearray(b'xyz')) -> internal TypeError
