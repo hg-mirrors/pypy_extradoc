@@ -6,10 +6,11 @@ Planned
 
 * Implement changes to memory view. e.g. hex(): https://bugs.python.org/issue9951 (plan_rich)
   Seems to work, but test suite hangs to verify the CPython tests.
-* tuple indexing for memory view (plan_rich)
+* tuple indexing for memory view, !will be merged soon! (plan_rich)
   Comments: Stronly tied to numpy. Hard to implement, because most of the basics are missing (dimensions/strides)
   We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
   Matti's opinion on that would be great!
+* plan_rich: extended slicing for memory view
 
 * arigo: look at test failures relaced to os.scandir() or the pathlib
   module, or the enum module
