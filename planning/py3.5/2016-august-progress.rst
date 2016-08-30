@@ -15,8 +15,6 @@ Planned
 * arigo: look at test failures relaced to os.scandir() or the pathlib
   module, or the enum module
 
-* arigo: look at and fix the .hex() methods
-
 
 Finished
 --------
