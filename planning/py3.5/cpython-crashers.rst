@@ -40,3 +40,9 @@ Other bugs
 
 * re.sub(b'y', bytearray(b'a'), bytearray(b'xyz')) -> b'xaz'
   re.sub(b'y', bytearray(b'\\n'), bytearray(b'xyz')) -> internal TypeError
+ 
+* not a bug: argument clinic turns the "bool" specifier into
+  PyObject_IsTrue(), accepting any argument whatsoever.  This can easily
+  get very confusing for the user, e.g. after messing up the number of
+  arguments.  For example: os.symlink("/path1", "/path2", "/path3")
+  doesn't fail, it just considers the 3rd argument as some true value.
