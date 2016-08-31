@@ -1,8 +1,9 @@
-August 2016
-===========
+What would be cool to finish before the end of Milestone 1
+==========================================================
 
-Planned
--------
+
+In-progress ("Lock" section)
+----------------------------
 
 * richard: Implement changes to memory view. e.g. hex(): https://bugs.python.org/issue9951
   Seems to work, but test suite hangs to verify the CPython tests.
@@ -17,12 +18,9 @@ Planned
   module, or the enum module
 
 
-Finished
---------
 
-
-Not in any milestone
---------------------
+Misc stuff not formally in any milestone
+----------------------------------------
 
 * At some point, review lib-python/conftest.py to remove the skips
   due to deadlocks (search for "XXX:")
@@ -43,6 +41,8 @@ Not in any milestone
   with '=int').  Argument clinic turns these to PyObject_IsTrue(), i.e.
   accepting any object whatsoever(?!), which is supposedly a feature
   (see http://bugs.python.org/issue14705).
+
+* ``math.isclose()``
 
 
 Milestone 1 (Aug-Sep-Oct 2016)
