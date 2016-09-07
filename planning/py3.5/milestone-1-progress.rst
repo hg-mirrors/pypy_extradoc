@@ -48,6 +48,12 @@ Misc stuff not formally in any milestone
   _get_module_lock.<locals>.cb at 0x00007f118e2c0020> ignored``
   we're getting them now on start-up, investigate
 
+* ``print 5`` should give
+  ``SyntaxError: Missing parentheses in call to 'print'``
+
+* ``_utf8`` in W_UnicodeObject used to be quasi-immutable,
+  document why it doesn't work and do a proper fix
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
