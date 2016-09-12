@@ -52,7 +52,7 @@ Misc stuff not formally in any milestone
   ``SyntaxError: Missing parentheses in call to 'print'``
 
 * ``_utf8`` in W_UnicodeObject used to be quasi-immutable,
-  document why it doesn't work and do a proper fix
+  document why it doesn't work and do a proper fix.  DONE
 
 
 Milestone 1 (Aug-Sep-Oct 2016)
