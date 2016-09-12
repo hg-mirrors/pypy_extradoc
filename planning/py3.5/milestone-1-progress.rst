@@ -40,7 +40,7 @@ Misc stuff not formally in any milestone
 * review all unwrap_spec() that are meant to pass booleans (now
   with '=int').  Argument clinic turns these to PyObject_IsTrue(), i.e.
   accepting any object whatsoever(?!), which is supposedly a feature
-  (see http://bugs.python.org/issue14705).
+  (see http://bugs.python.org/issue14705).  DONE
 
 * ``math.isclose()``
 
