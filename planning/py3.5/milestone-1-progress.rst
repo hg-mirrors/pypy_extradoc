@@ -42,8 +42,6 @@ Misc stuff not formally in any milestone
   accepting any object whatsoever(?!), which is supposedly a feature
   (see http://bugs.python.org/issue14705).  DONE
 
-* ``math.isclose()``
-
 * ``KeyError('pip.exceptions',) in weakref callback <function
   _get_module_lock.<locals>.cb at 0x00007f118e2c0020> ignored``
   we're getting them now on start-up, investigate
