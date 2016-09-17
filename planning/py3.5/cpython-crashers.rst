@@ -46,3 +46,14 @@ Other bugs
   get very confusing for the user, e.g. after messing up the number of
   arguments.  For example: os.symlink("/path1", "/path2", "/path3")
   doesn't fail, it just considers the 3rd argument as some true value.
+
+* if you have a stack of generators where each is in 'yield from' from
+  the next one, and you call '.next()' on the outermost, then it enters
+  and leaves all intermediate frames.  This is costly but may be
+  required to get the sys.settrace()/setprofile() hooks called.
+  However, if you call '.throw()' or '.close()' instead, then it uses a
+  much more efficient way to go from the outermost to the innermost
+  frame---as a result, the enter/leave of the intermediate frames is not
+  invoked.  This can confuse coverage tools and profilers.  For example,
+  in a stack ``f1()->f2()->f3()``, vmprof would show f3() as usually
+  called via f2() from f1() but occasionally called directly from f1().
