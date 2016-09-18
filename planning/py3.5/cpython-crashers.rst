@@ -24,13 +24,17 @@ and undocumented results, or leak memory, etc.
   them.
 
 * _PyGen_yf() checks the opcode at [f_lasti + 1], which is the next
-  opcode that will run when we resume the generator: either YIELD or
-  YIELD_FROM.  But that is only true if the generator is not currently
-  running.  If it is (which probably doesn't occur in reasonable Python
-  code but can be constructed manually), then this checks for example
-  the byte/word that describes the argument of the currently running
-  opcode.  If we're very unlucky this byte has the value 72, which is
-  YIELD_FROM.  Total nonsense and crashes follow.
+  opcode that will run when we resume the generator: either it is the
+  opcode following the YIELD, or it is exactly YIELD_FROM.  It is not
+  possible at the moment to write Python code that compiles to a YIELD
+  immediately followed by YIELD_FROM, so by chance the two cases are
+  correctly distinguished.  *However,* the discussion so far assumes
+  that the generator is not currently running.  If it is (which probably
+  doesn't occur in reasonable Python code but can be constructed
+  manually), then this checks for example the byte/word that describes
+  the argument of the currently running opcode.  If we're very unlucky
+  this byte has the value 72, which is YIELD_FROM.  Total nonsense and
+  crashes follow.
 
 
 Other bugs
