@@ -23,6 +23,15 @@ and undocumented results, or leak memory, etc.
   threads concurrently.  It will make two stat objects and leak one of
   them.
 
+* _PyGen_yf() checks the opcode at [f_lasti + 1], which is the next
+  opcode that will run when we resume the generator: either YIELD or
+  YIELD_FROM.  But that is only true if the generator is not currently
+  running.  If it is (which probably doesn't occur in reasonable Python
+  code but can be constructed manually), then this checks for example
+  the byte/word that describes the argument of the currently running
+  opcode.  If we're very unlucky this byte has the value 72, which is
+  YIELD_FROM.  Total nonsense and crashes follow.
+
 
 Other bugs
 ----------
@@ -57,3 +66,7 @@ Other bugs
   invoked.  This can confuse coverage tools and profilers.  For example,
   in a stack ``f1()->f2()->f3()``, vmprof would show f3() as usually
   called via f2() from f1() but occasionally called directly from f1().
+
+* ceval.c: GET_AITER: calls _PyCoro_GetAwaitableIter(), which might
+  get an exception from calling the user-defined __await__() or checking
+  what it returns; such an exception is completely eaten.
