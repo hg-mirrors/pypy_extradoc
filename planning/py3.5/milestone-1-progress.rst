@@ -17,7 +17,7 @@ In-progress ("Lock" section)
 * arigo: look at test failures relaced to os.scandir() or the pathlib
   module, or the enum module
 
-* arigo: review coroutines, add missing types like coroutine_wrapper
+* arigo: (py3k issue #2278) add full precision for st_mtime_ns
 
 
 
