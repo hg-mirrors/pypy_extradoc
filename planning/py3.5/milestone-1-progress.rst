@@ -14,11 +14,6 @@ In-progress ("Lock" section)
 * richard: extended slicing for memory view
 * richard: bytes % args, bytearray % args: PEP 461
 
-* arigo: look at test failures relaced to os.scandir() or the pathlib
-  module, or the enum module
-
-* arigo: (py3k issue #2278) add full precision for st_mtime_ns
-
 
 
 Misc stuff not formally in any milestone
@@ -31,18 +26,7 @@ Misc stuff not formally in any milestone
   ``dict``.  The main pain point is ``move_to_end(last=False)``.  See
   https://mail.python.org/pipermail/python-dev/2016-August/145837.html
 
-* interpreter/generator.py: move the common functionality from
-  GeneratorIterator and Coroutine to the base class.  Review all
-  calls to _PyGen_yf() in genobject.c.  This is needed before
-  adding gi_yieldfrom/cr_await to generator/coroutines.  (Waiting
-  because some work might be going on with raffael_t.)
-
 * compare ``dir(posix)`` on py3.5 and cpython 3.5.
-
-* review all unwrap_spec() that are meant to pass booleans (now
-  with '=int').  Argument clinic turns these to PyObject_IsTrue(), i.e.
-  accepting any object whatsoever(?!), which is supposedly a feature
-  (see http://bugs.python.org/issue14705).  DONE
 
 * ``KeyError('pip.exceptions',) in weakref callback <function
   _get_module_lock.<locals>.cb at 0x00007f118e2c0020> ignored``
@@ -51,8 +35,7 @@ Misc stuff not formally in any milestone
 * ``print 5`` should give
   ``SyntaxError: Missing parentheses in call to 'print'``
 
-* ``_utf8`` in W_UnicodeObject used to be quasi-immutable,
-  document why it doesn't work and do a proper fix.  DONE
+* Windows: issue 2310: kill WindowsError
 
 
 Milestone 1 (Aug-Sep-Oct 2016)
