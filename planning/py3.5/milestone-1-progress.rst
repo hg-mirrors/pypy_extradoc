@@ -37,6 +37,8 @@ Misc stuff not formally in any milestone
 
 * Windows: issue 2310: kill WindowsError
 
+* bytearray: 'del x[:10]' is now amortized constant-time
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
@@ -47,7 +49,7 @@ properly implementing it requires significantly more efforts than
 planned:
 
 * PEP 492, coroutines with async and await syntax.  (The complete PEP
-  is included.)
+  is included.)  DONE
 
 * PEP 465, a new matrix multiplication operator: a @ b.
 
