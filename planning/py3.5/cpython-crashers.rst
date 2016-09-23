@@ -74,3 +74,10 @@ Other bugs
 * ceval.c: GET_AITER: calls _PyCoro_GetAwaitableIter(), which might
   get an exception from calling the user-defined __await__() or checking
   what it returns; such an exception is completely eaten.
+
+* while I'm at it, this is an old issue that was forgotten twice on the
+  issue tracker: ``class C: __new__=int.__new__`` and ``class C(int):
+  __new__=object.__new__`` can each be instantiated, even though they
+  shouldn't.  This is because ``__new__`` is completely ignored if it is
+  set to a built-in function that uses ``tp_new_wrapper`` as its C code.
+  This is true for most or all the built-in types' ``__new__``.

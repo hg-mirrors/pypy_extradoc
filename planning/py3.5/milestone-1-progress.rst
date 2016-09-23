@@ -14,6 +14,8 @@ In-progress ("Lock" section)
 * richard: extended slicing for memory view
 * richard: bytes % args, bytearray % args: PEP 461
 
+* arigo: faulthandler module
+
 
 
 Misc stuff not formally in any milestone
