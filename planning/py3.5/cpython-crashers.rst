@@ -81,3 +81,5 @@ Other bugs
   shouldn't.  This is because ``__new__`` is completely ignored if it is
   set to a built-in function that uses ``tp_new_wrapper`` as its C code.
   This is true for most or all the built-in types' ``__new__``.
+  http://bugs.python.org/issue1694663#msg75957
+  http://bugs.python.org/issue5322#msg84112
