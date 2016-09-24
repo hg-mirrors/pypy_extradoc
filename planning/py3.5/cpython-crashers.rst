@@ -75,11 +75,15 @@ Other bugs
   get an exception from calling the user-defined __await__() or checking
   what it returns; such an exception is completely eaten.
 
-* while I'm at it, this is an old issue that was forgotten twice on the
+* this is an old issue that was forgotten twice on the
   issue tracker: ``class C: __new__=int.__new__`` and ``class C(int):
   __new__=object.__new__`` can each be instantiated, even though they
   shouldn't.  This is because ``__new__`` is completely ignored if it is
   set to a built-in function that uses ``tp_new_wrapper`` as its C code.
   This is true for most or all the built-in types' ``__new__``.
-  http://bugs.python.org/issue1694663#msg75957
-  http://bugs.python.org/issue5322#msg84112
+  http://bugs.python.org/issue1694663#msg75957,
+  http://bugs.python.org/issue5322#msg84112.  In (at least) CPython 3.5,
+  a few classes work only thanks to abuse of this bug: for example,
+  ``io.UnsupportedOperation.__new__(io.UnsupportedOperation)`` doesn't
+  work, but that was not noticed because ``io.UnsupportedOperation()``
+  mistakenly works.
