@@ -41,6 +41,11 @@ Misc stuff not formally in any milestone
 
 * bytearray: 'del x[:10]' is now amortized constant-time
 
+* check that 'import array', say, finds and loads a file array.py,
+  whereas 'import gc' does not ('gc' is a built-in module in CPython but
+  'array' is typically an extension module; at least that's the case on
+  Linux with default compilation settings).
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
