@@ -5,14 +5,7 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-* richard: Implement changes to memory view. e.g. hex(): https://bugs.python.org/issue9951
-  Seems to work, but test suite hangs to verify the CPython tests.
-* richard: tuple indexing for memory view,
-  Comments: Stronly tied to numpy. Hard to implement, because most of the basics are missing (dimensions/strides)
-  We should make a plan to impl. that on default with cpyext support and merge it back to py3.5.
-  Matti's opinion on that would be great!
-* richard: extended slicing for memory view
-* richard: bytes % args, bytearray % args: PEP 461
+* richard: bz2, lzma, ... changes (cpython issue 15955)
 
 * arigo: faulthandler module
 
@@ -45,7 +38,6 @@ Misc stuff not formally in any milestone
   whereas 'import gc' does not ('gc' is a built-in module in CPython but
   'array' is typically an extension module; at least that's the case on
   Linux with default compilation settings).
-
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
