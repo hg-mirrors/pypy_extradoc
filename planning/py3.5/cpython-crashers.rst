@@ -54,11 +54,12 @@ Other bugs
   of buf being a read-write buffer, which is then mutated in-place.
   But if we call with a read-only buffer, mutate_flag is ignored (instead
   of rejecting a True value)---ioctl(x, y, "foo", True) will not actually
-  mutate the string "foo", but the True is completely ignored.
+  mutate the string "foo", but the True is completely ignored.  (I think
+  this is a bug introduced during the Argument Clinic refactoring.)
 
 * re.sub(b'y', bytearray(b'a'), bytearray(b'xyz')) -> b'xaz'
   re.sub(b'y', bytearray(b'\\n'), bytearray(b'xyz')) -> internal TypeError
- 
+
 * not a bug: argument clinic turns the "bool" specifier into
   PyObject_IsTrue(), accepting any argument whatsoever.  This can easily
   get very confusing for the user, e.g. after messing up the number of
@@ -84,8 +85,8 @@ Other bugs
   issue tracker: ``class C: __new__=int.__new__`` and ``class C(int):
   __new__=object.__new__`` can each be instantiated, even though they
   shouldn't.  This is because ``__new__`` is completely ignored if it is
-  set to a built-in function that uses ``tp_new_wrapper`` as its C code.
-  This is true for most or all the built-in types' ``__new__``.
+  set to any built-in function that uses ``tp_new_wrapper`` as its C code
+  (many of the built-in types' ``__new__`` are like that).
   http://bugs.python.org/issue1694663#msg75957,
   http://bugs.python.org/issue5322#msg84112.  In (at least) CPython 3.5,
   a few classes work only thanks to abuse of this bug: for example,
