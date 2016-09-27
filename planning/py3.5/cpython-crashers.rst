@@ -36,6 +36,11 @@ and undocumented results, or leak memory, etc.
   this byte has the value 72, which is YIELD_FROM.  Total nonsense and
   crashes follow.
 
+* faulthandler: register(): the signal handler, faulthandler_user(),
+  changes errno in faulthandler_dump_traceback() but fails to restore it
+  if chain=False.  This can rarely cause random nonsense in the main
+  program.
+
 
 Other bugs
 ----------
