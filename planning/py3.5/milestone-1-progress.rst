@@ -39,6 +39,9 @@ Misc stuff not formally in any milestone
   'array' is typically an extension module; at least that's the case on
   Linux with default compilation settings).
 
+* 'import stackless' fails
+
+
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
 
