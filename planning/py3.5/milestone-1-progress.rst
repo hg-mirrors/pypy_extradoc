@@ -5,7 +5,6 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-* richard: threads do not seem to join (e.g. lib-python/3/test/test_bz2.py)
 
 * arigo: faulthandler module
 
@@ -15,7 +14,8 @@ Misc stuff not formally in any milestone
 ----------------------------------------
 
 * At some point, review lib-python/conftest.py to remove the skips
-  due to deadlocks (search for "XXX:")
+  due to deadlocks (search for "XXX:").
+  update 1: some have been reenabled already! (richard 30.sept)
 
 * collections.py: ``OrderedDict`` should again be a thin wrapper over
   ``dict``.  The main pain point is ``move_to_end(last=False)``.  See
@@ -84,3 +84,4 @@ Done not formally in the Milestone
 ----------------------------------
 
 * richard: bz2, lzma, ... changes (cpython issue 15955) (DONE)
+* richard: threads do not seem to join (e.g. lib-python/3/test/test_bz2.py) (DONE)
