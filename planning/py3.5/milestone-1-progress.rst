@@ -5,7 +5,8 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-* richard: bz2, lzma, ... changes (cpython issue 15955)
+* richard: bz2, lzma, ... changes (cpython issue 15955) (DONE)
+* richard: threads do not seem to join (e.g. lib-python/3/test/test_bz2.py)
 
 * arigo: faulthandler module
 
@@ -59,9 +60,9 @@ planned:
 
 * bytes % args, bytearray % args: PEP 461
 
-* New bytes.hex(), bytearray.hex() and memoryview.hex() methods.
+* New bytes.hex(), bytearray.hex() and memoryview.hex() methods. (DONE)
 
-* memoryview now supports tuple indexing
+* memoryview now supports tuple indexing (DONE)
 
 * A new RecursionError exception is now raised when maximum recursion
   depth is reached. (DONE)
