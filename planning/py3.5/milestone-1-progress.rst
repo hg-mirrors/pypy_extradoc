@@ -5,7 +5,6 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-* richard: bz2, lzma, ... changes (cpython issue 15955) (DONE)
 * richard: threads do not seem to join (e.g. lib-python/3/test/test_bz2.py)
 
 * arigo: faulthandler module
@@ -41,6 +40,7 @@ Misc stuff not formally in any milestone
   Linux with default compilation settings).
 
 * 'import stackless' fails
+
 
 
 Milestone 1 (Aug-Sep-Oct 2016)
@@ -79,3 +79,8 @@ planned:
 * enum: Support for enumeration types (PEP 435). (PURELY-APPLEVEL)
 
 * pathlib: Object-oriented filesystem paths (PEP 428). (PURELY-APPLEVEL)
+
+Done not formally in the Milestone
+----------------------------------
+
+* richard: bz2, lzma, ... changes (cpython issue 15955) (DONE)
