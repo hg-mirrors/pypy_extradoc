@@ -5,9 +5,7 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-
-* arigo: faulthandler module
-
+nothing
 
 
 Misc stuff not formally in any milestone
@@ -26,9 +24,6 @@ Misc stuff not formally in any milestone
 * ``KeyError('pip.exceptions',) in weakref callback <function
   _get_module_lock.<locals>.cb at 0x00007f118e2c0020> ignored``
   we're getting them now on start-up, investigate
-
-* ``print 5`` should give
-  ``SyntaxError: Missing parentheses in call to 'print'``
 
 * Windows: issue 2310: kill WindowsError
 
