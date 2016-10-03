@@ -125,6 +125,9 @@ How does it work?  (slide 1/2)
 
     * each raw memory read
 
+* More recording: weakrefs, __del__ calls, thread switches, callbacks
+  from C...
+
 * (Done by tweaking RPython, the language in which PyPy is itself written)
 
 
