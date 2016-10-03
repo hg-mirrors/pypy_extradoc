@@ -82,6 +82,8 @@ Why not well-known?
 * Performance issues: unlike gdb and pdb, they slow down normal
   execution (with some of them, massively)
 
+* (RevDB has the same issues)
+
 
 Why not well-known?
 ===================
@@ -92,6 +94,8 @@ Why not well-known?
   the debugger is telling you lies
 
 * Often proprietary software with restrictive licenses
+
+* (RevDB hopefully does not have the same issues)
 
 
 Sometimes you need the cannon
@@ -108,3 +112,32 @@ Q & A
 =====
 
 https://bitbucket.org/pypy/revdb/
+
+
+How does it work?  (slide 1/2)
+==============================
+
+* In PyPy, memory is naturally divided into "GC memory" and "raw memory"
+
+* Recording: write in the log the *result* of:
+
+    * each C library call
+
+    * each raw memory read
+
+* (Done by tweaking RPython, the language in which PyPy is itself written)
+
+
+How does it work?  (slide 2/2)
+==============================
+
+* Replaying: read from the log the *result* of the same operations
+
+* Everything else should be deterministic
+
+* Illusion of going backward:
+
+    * fork is the key
+
+    * to go back, throw away the current fork, restart from an
+      earlier fork, go forward again
