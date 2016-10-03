@@ -1,0 +1,41 @@
+
+Ahead
+=====
+
+term-huge
+REVDB=log pypy-revdb demo1.py
+revdb.py --color=light log
+(c, bs, bs, bs, list)
+
+
+Demo1
+=====
+
+p x.value
+p x
+bnext
+bnext
+next
+p x.value
+p $1
+p $1.value
+watch $1.value
+bcontinue
+
+bcontinue
+
+p lst
+watch $2.count($1)
+bcontinue
+
+
+How is it possible??
+====================
+
+vi demo1.py
+python demo1.py
+pypy demo1.py
+REVDB=log ./pypy-revdb demo1.py
+./revdb.py --color=light log
+(c, bs, bs, bs)
+(./revdb.py again)
