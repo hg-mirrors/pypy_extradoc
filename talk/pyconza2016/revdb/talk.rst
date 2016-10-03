@@ -3,18 +3,36 @@ RevDB, a reverse debugger
 =========================
 
 
-Demo
+Introduction
 ===========================
 
-.. raw:: latex
+* I am Armin Rigo, part of the PyPy project since 13 years
 
-    \ 
+  * PyPy is another implementation of Python
+
+  * != CPython, but mostly compatible
+
+* RevDB is a modified PyPy
+
+
+What is a reverse debugger?
+===========================
+
+* Demo
 
 
 How is that possible??
 ======================
 
+* See later
+
+
+Note
+====
+
 * I did not cheat
+
+* It really works
 
 * It really works for large programs
 
@@ -25,9 +43,19 @@ Main features
 * Travel in time: next/bnext, step/bstep, continue/bcontinue,
   finish/bfinish
 
-* p expression-or-statement
+* p *expression-or-statement*
 
-* watch expression, break function/file:line, delete
+* watch *expression*
+
+  * using ``$0``, ``$1``, ...
+
+* break *function-or-file:line*
+
+
+Recording & Replaying
+=====================
+
+* Demo
 
 
 On bigger programs
@@ -42,25 +70,31 @@ On bigger programs
 Completeness
 ============
 
-* Run any Python code that PyPy can also run: OK
+What works:
 
-* Multithread apps: OK
+* Run any Python code that PyPy can also run
 
-* CPython C extension modules: OK
+* Multithreaded apps
+
+* CPython C extension modules
+
+  * Might get "Attempted to do I/O or access raw memory" in the debugger
 
 
 Completeness
 ============
 
-* Long-running programs: NO
+What doesn't works (so far?):
 
-* Stackless/greenlet/gevent: NO
+* Long-running programs
 
-* Track multiple processes: NO
+* Stackless/greenlet/gevent
 
-* Windows: NO
+* Track multiple processes
 
-* Python 3: NO (soon?)
+* Windows (for $?)
+
+* Python 3 (soon?)
 
 
 Comparison
@@ -82,7 +116,7 @@ Why not well-known?
 * Performance issues: unlike gdb and pdb, they slow down normal
   execution (with some of them, massively)
 
-* (RevDB has the same issues)
+(RevDB has the same issues)
 
 
 Why not well-known?
@@ -95,17 +129,19 @@ Why not well-known?
 
 * Often proprietary software with restrictive licenses
 
-* (RevDB hopefully does not have the same issues)
+(RevDB hopefully does not have these issues)
 
 
 Sometimes you need the cannon
 =============================
 
-* In a very complex piece of code, you will one day (or had to) hunt for
-  a week for *one* bug
+* In a very complex piece of code, likely you *will* hunt for a week for
+  *one* bug
 
 * I made RevDB in two months instead of spending one week tracking down a
   bug ``:-)``
+
+  * Found the bug in one hour
 
 
 Q & A
@@ -121,9 +157,9 @@ How does it work?  (slide 1/2)
 
 * Recording: write in the log the *result* of:
 
-    * each C library call
+  * each C library call
 
-    * each raw memory read
+  * each raw memory read
 
 * More recording: weakrefs, __del__ calls, thread switches, callbacks
   from C...
@@ -140,7 +176,7 @@ How does it work?  (slide 2/2)
 
 * Illusion of going backward:
 
-    * fork is the key
+  * fork is the key
 
-    * to go back, throw away the current fork, restart from an
-      earlier fork, go forward again
+  * to go back, throw away the current fork, restart from an
+    earlier fork, go forward again
