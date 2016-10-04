@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-        <title>Compiler Workshop Austin Texas</title>
+        <title></title>
 
         <link rel="stylesheet" href="css/reveal.css">
         <link rel="stylesheet" href="css/theme/white.css">
@@ -32,13 +32,220 @@
                 </section>
                 <section>
                     <section>
-                        <h1>About me</h1>
-			TODO
+                        <h1>PyPy is ..</h1>
+                    </section>
+                    <section>
+			<p>... a software project ... </p>
+                    </section>
+                    <section>
+			<p>... assembling a <strong>fast virtual machine for Python</strong> ... </p>
+                    </section>
+                    <section>
+			<p>developed by many researchers, freelancers and many contributors.</p>
                     </section>
                 </section>
                 <section>
+                    <section>
+                        <h1>PyPy is not just that</h1>
+                    </section>
+                    <section>
+                        <p>Experiment with new ideas</p>
+                    </section>
+                    <section>
+                        <ul>
+                            <li>Python written in Python</li>
+                            <li>RPython</li>
+                            <li>JIT compiler</li>
+                            <li>VMProf</li>
+                            <li>PyPy STM</li>
+                            <li>...</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>About me</h1>
+			<p>Working on PyPy (+1,5y)</p>
+			<p>Master degree - Sticked with PyPy</p>
+			<p>living and working in Austria</p>
+                    </section>
+                </section>
+                <section>
+                    <section>
+			<h1>Speedy Python programs?</h1>
+                        <p>When is your Python program fast enough?</p>
+                    </section>
+                    <section>
+                        <p>When it gets a speeding ticket because it is too fast?</p>
+                    </section>
+                    <section>
+                        <p>or when PyPy's benchmark suite reaches 10x faster on average?</p>
+                    </section>
+                    <section>
+                        <p><strong>Neither</strong></p>
+                    </section>
+                    <section>
+                        <p>Run you program an measure your criteria</p>
+                    </section>
+                    <section>
+                        <h1>Criteria examples?</h1>
+			<ul>
+				<li>CPU time</li>
+				<li>Peak Heap Memory</li>
+				<li>Requests per second</li>
+				<li>...</li>
+			</ul>
+			<p>Dissatisfaction with one attribute of your program!</p>
+                    </section>
+                </section>
+		<section>
+                	<section>
+			    <h1>Some theory ... </h1>
+			</section>
+                	<section>
+			    <h1>Hot spots</h1>
+			    <p>Loops!</p>
+			    <p>What kind program can you build without loops?</p>
+			</section>
+                	<section>
+			    <h1>Complexity</h1>
+			    <p>Big-O-Notation - Express how many steps a program to complete at most</p>
+			</section>
+                	<section>
+				<ul>
+			    		<li><code>a = 3</code> # runs in O(1)</li>
+			    		<li><code>[x+1 for x in range(n)]</code> # runs in O(n)</li>
+                                        <li><code>[[x+y for x in range(n)] for y in range(m)]</code> # O(n*m)</li>
+				</ul>
+			</section>
+                	<section>
+				<h1>Complexity</h1>
+				<p>Yields the most gain, independent from the language</p>
+                                <p>E.g. prefer O(n) over O(n**2)</p>
+			</section>
+			<section>
+				<h1>Only optimize a routine if ... </h1>
+				<p>you know that the complexity cannot be stripped down</p>
+			</section>
+                </section>
+                <section>
+                	<section>
+			    <h1>Let's start from the beginning</h1>
+			    <p>with a small example</p>
+			</section>
+
+			<section>
+			    <h1>Reading log files!</h1>
+			    <p>JITLOG (facility to observe PyPy's JIT internals)</p>
+			</section>
+
+			<section>
+				<ul>
+					<li>Written in Python</li>
+					<li>Moved to vmprof.com</li>
+					<li>Log files can easily take up to 40MB uncompressed</li>
+					<li>Takes ~14 seconds to parse with CPython</li>
+					<li>Complexity is linear to input size of the log file</li>
+				</ul>
+			</section>
+			<section>
+				<p class="advantage">+ Little development time</p>
+				<p class="advantage">+ Easy to test</p>
+				<p><h3>Thanks to Python</h3></p>
+			</section>
+			<section>
+				<p class="disadvantage">- Takes too long to parse</p>
+				<p>Our criteria: CPU time to long</p>
+			</section>
+			<section>
+				<p class="">Several possible ways</p>
+				<p>Caching</p>
+				<p>Reduce CPU time</p>
+				<p>Let's have both</p>
+			</section>
+			<section>
+				<p>Caching - Easily done with django caching frame work</p>
+				<p>Reduce CPU time - Look at vmprof</p>
+			</section>
+			<section>
+				<h1>VMProf</h1>
+				<p><code>$ pip install vmprof</code></p>
+				<p><code>$ python -m vmprof --web parse.py</code></p>
+				<p><a href="http://vmprof.com/#/709eeba4d6bb3b52c19d8753fd65af7b">&rarr; link</a></p>
+			</section>
+			<section data-background="img/vmprof-screen.png">
+			</section>
+			<section data-background="img/vmprof-screen-pypy.png">
+			</section>
+			<section>
+				<h1>~4 times faster on PyPy</h1>
+			</section>
+                </section>
+		<section>
+			<section>
+				<h1>Introducing PyPy's JIT</h1>
+			</section>
+			<section>
+				<h1>A simplified view</h1>
+				<ol>
+                                	<li>Start interpretation</li>
+					<li>Loops trigger recording</li>
+					<li>Optimization stage</li>
+					<li>Machine code generation</li>
+				</ol>
+				<p>Cannot represent control flow as a graph (other than loop jumps)</p>
+				<p>Guards ensure correctness</p>
+			</section>
+			<section>
+				<h1>Beyond the scope of loops</h1>
+				<p>Frequent guard failure trigger recording</p>
+			</section>
+			<section data-background-image="img/jitlog.png">
+				<a href="http://vmprof.com/#/7930e1f54f9eee75084738aafa6cb612/traces">&rarr; link</a>
+			</section>
+			<section>
+				<h1>JitViewer</h1>
+				<p>Tool to inspect PyPy internals</p>
+				<p>Helps you to learn and understand PyPy</p>
+				<p>Provided at vmprof.com</p>
+			</section>
+                </section>
+		<section>
+			<section>
+				<h1>Another real world example</h1>
+				<p></p>
+
+			</section>
+			<section>
+				<h1>Magnetic</h1>
+				<p>marketing tech company</p>
+				<p>switched to PyPy 3 years ago</p>
+			</section>
+			<section>
+				<h1>Q: what does your service do?</h1>
+				<p>A: ... allow generally large companies to send targeted marketing (e.g. serve ads) to people based on data we have learned </p>
+			</section>
+			<section>
+				<h1>Q: PyPy, where was it most helpful?</h1>
+				<p>A: ... ~30% speedups immediately from switching to PyPy ... </p>
+			</section>
+			<section>
+				<h1>Q: PyPy issues?</h1>
+				<p>A: ... we had to solve for rolling deploys ... but that's ok, that's fairly easy ... </p>
+			</section>
+			<section>
+				<h1>Q: Value to your company?</h1>
+				<p>A: Latency speedup was somewhere aroudn 10% ...</p>
+				<p>But that number is deceiving</p>
+				<p>It's very valuable for us obviously</p>
+				<p>But it's only 10%, because even this app that I'm talking about, which is fairly high volume (500,000 QPS), is a WSGI app</p>
+				<p>So it spends lots of time blocking</p>
+			</section>
+                </section>
+                <section>
                     <h4>Questions?</h4>
-                    <a href="morepypy.blogspot.com">morepypy.blogspot.com</a>
+                    <a href="morepypy.blogspot.com">morepypy.blogspot.com</a><br>
+		    Join on IRC <a href="">#pypy</a>
                 </section>
             </div>
         </div>
