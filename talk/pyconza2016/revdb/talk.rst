@@ -37,6 +37,12 @@ Note
 * It really works for large programs
 
 
+Recording & Replaying
+=====================
+
+* Demo
+
+
 Main features
 =============
 
@@ -49,17 +55,11 @@ Main features
 
   * using ``$0``, ``$1``, ...
 
-* break *function-or-file:line*
+* break *function*, break *file:line*
 
 
-Recording & Replaying
-=====================
-
-* Demo
-
-
-On bigger programs
-==================
+On more involved problems
+=========================
 
 * Write down what occurs at which time, because you're going
   to go back and forth until you are lost

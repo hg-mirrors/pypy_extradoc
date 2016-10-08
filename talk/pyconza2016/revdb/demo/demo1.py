@@ -8,7 +8,6 @@ def make_list():
     lst.append(lst[50])
     return lst
 
-
 lst = make_list()
 
 for x in lst:
