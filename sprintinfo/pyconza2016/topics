@@ -1,0 +1,16 @@
+
+
+* py3.5: csv, etc. looking at the standard library tests
+
+* run Mercurial benchmarks on pypy, find out why they're slow
+
+* consider the jit opimizeopt's speed-ups
+
+* integrate the memory profiler into vmprof
+
+* vmprof: what is missing, what needs to change, etc. about
+  jitlog
+
+
+
+* discussion about what to do in the next 2-3 weeks
