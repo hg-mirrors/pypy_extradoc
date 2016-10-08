@@ -71,7 +71,8 @@ planned:
   (DONE, maybe a small optimization left---TYPE_*ASCII*---that
   depends on compact unicode representation)
 
-* enum: Support for enumeration types (PEP 435). (PURELY-APPLEVEL)
+* enum: Support for enumeration types (PEP 435).
+  the is a pypi package called enum34 that implements it (pure python maybe?)
 
 * pathlib: Object-oriented filesystem paths (PEP 428). (PURELY-APPLEVEL)
 

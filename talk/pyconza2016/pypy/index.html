@@ -32,16 +32,27 @@
                 </section>
                 <section>
                     <section>
-                        <h1>PyPy is ..</h1>
+                        <h1>More "general" PyPy talk</h1>
+			<p>Goals:</p>
+			<ul>
+				<li>An approach to optimize Python programs</li>
+				<li>Examples</li>
+				<li>How not to start optimizing</li>
+				<li>What is PyPy up to now?</li>
+			</ul>
                     </section>
+                </section>
+                <section>
                     <section>
-			<p>... a software project ... </p>
+                        <h1>PyPy is a ...</h1>
+			<p class="fragment">... <strong>fast virtual machine for Python</strong> </p>
+			<p class="fragment">developed by researchers, freelancers and many contributors.</p>
                     </section>
+                </section>
+                <section>
                     <section>
-			<p>... assembling a <strong>fast virtual machine for Python</strong> ... </p>
-                    </section>
-                    <section>
-			<p>developed by many researchers, freelancers and many contributors.</p>
+                        <p><code>$ python yourprogram.py</code></p>
+                        <p><code>$ pypy yourprogram.py</code></p>
                     </section>
                 </section>
                 <section>
@@ -66,7 +77,7 @@
                     <section>
                         <h1>About me</h1>
 			<p>Working on PyPy (+1,5y)</p>
-			<p>Master degree - Sticked with PyPy</p>
+			<p>Master thesis &rarr; GSoC 2015 &rarr; PyPy</p>
 			<p>living and working in Austria</p>
                     </section>
                 </section>
@@ -85,17 +96,18 @@
                         <p><strong>Neither</strong></p>
                     </section>
                     <section>
-                        <p>Run you program an measure your criteria</p>
+                        <p>Run your program an measure your <strong>criteria</strong></p>
                     </section>
                     <section>
-                        <h1>Criteria examples?</h1>
+                        <h1>For example?</h1>
 			<ul>
 				<li>CPU time</li>
 				<li>Peak Heap Memory</li>
 				<li>Requests per second</li>
+				<li>Latency</li>
 				<li>...</li>
 			</ul>
-			<p>Dissatisfaction with one attribute of your program!</p>
+			<p>Dissatisfaction with one criteria of your program!</p>
                     </section>
                 </section>
 		<section>
@@ -103,20 +115,21 @@
 			    <h1>Some theory ... </h1>
 			</section>
                 	<section>
-			    <h1>Hot spots</h1>
-			    <p>Loops!</p>
-			    <p>What kind program can you build without loops?</p>
-			</section>
-                	<section>
 			    <h1>Complexity</h1>
-			    <p>Big-O-Notation - Express how many steps a program to complete at most</p>
+			    <p>Big-O-Notation</p>
+			    <p>Classify e.g. a function and it's processing time</p>
+			    <p>Increase input size to the function</p>
 			</section>
                 	<section>
 				<ul>
-			    		<li><code>a = 3</code> # runs in O(1)</li>
-			    		<li><code>[x+1 for x in range(n)]</code> # runs in O(n)</li>
-                                        <li><code>[[x+y for x in range(n)] for y in range(m)]</code> # O(n*m)</li>
+			    		<li><code>a = 3</code> # O(1)</li>
+			    		<li><code>[x+1 for x in range(n)]</code> # O(n)</li>
+                                        <li><code>[[x+y for x in range(n)] \ <br> for y in range(m)]</code> # O(n*m) == O(n) if n &gt; m</li>
 				</ul>
+			</section>
+                	<section>
+				Bubble sort vs Quick Sort
+				<p>O(n**2) vs O(n log n)</p>
 			</section>
                 	<section>
 				<h1>Complexity</h1>
@@ -144,28 +157,43 @@
 					<li>Written in Python</li>
 					<li>Moved to vmprof.com</li>
 					<li>Log files can easily take up to 40MB uncompressed</li>
-					<li>Takes ~14 seconds to parse with CPython</li>
+					<li>Takes ~10 seconds to parse with CPython</li>
 					<li>Complexity is linear to input size of the log file</li>
 				</ul>
 			</section>
 			<section>
+				<p><h3>Thanks to Python</h3></p>
 				<p class="advantage">+ Little development time</p>
 				<p class="advantage">+ Easy to test</p>
-				<p><h3>Thanks to Python</h3></p>
 			</section>
 			<section>
 				<p class="disadvantage">- Takes too long to parse</p>
-				<p>Our criteria: CPU time to long</p>
+				<p class="disadvantage">- Parsing is done each request</p>
+				<p>Our criteria: CPU time to long + requests per second</p>
+				<p>(Many objects are allocated)</p>
 			</section>
 			<section>
-				<p class="">Several possible ways</p>
+				<h1>Suggestion</h1>
 				<p>Caching</p>
 				<p>Reduce CPU time</p>
 				<p>Let's have both</p>
 			</section>
 			<section>
-				<p>Caching - Easily done with django caching frame work</p>
-				<p>Reduce CPU time - Look at vmprof</p>
+				<p>Caching - Easily done with your favourite caching framework</p>
+				<p>Reduce CPU time - PyPy seems to be good at that?</p>
+			</section>
+			<section>
+				<h1>Let's run it...</h1>
+				<p><code>$ cpython2.7 parse.py 40mb.log<br>~ 10 seconds</code></p>
+				<p><code>$ pypy2 parse.py 40mb.log<br>~ 2 seconds</code></p>
+			</section>
+			<section>
+				<h1>Caching</h1>
+				<p>Requests really feel instant after the log has been loaded once</p>
+				<p>Precache</p>
+			</section>
+			<section>
+				<h1>The lazy approach of optimizing Python</h1>
 			</section>
 			<section>
 				<h1>VMProf</h1>
@@ -177,13 +205,15 @@
 			</section>
 			<section data-background="img/vmprof-screen-pypy.png">
 			</section>
-			<section>
-				<h1>~4 times faster on PyPy</h1>
-			</section>
                 </section>
 		<section>
 			<section>
 				<h1>Introducing PyPy's JIT</h1>
+			</section>
+                	<section>
+			    <h1>Hot spots</h1>
+			    <p>Loops / Repeat construct!</p>
+			    <p>What kind program can you build without loops?</p>
 			</section>
 			<section>
 				<h1>A simplified view</h1>
@@ -193,12 +223,17 @@
 					<li>Optimization stage</li>
 					<li>Machine code generation</li>
 				</ol>
-				<p>Cannot represent control flow as a graph (other than loop jumps)</p>
-				<p>Guards ensure correctness</p>
+				
 			</section>
 			<section>
 				<h1>Beyond the scope of loops</h1>
-				<p>Frequent guard failure trigger recording</p>
+				<p>Guards ensure correctness</p>
+				<p>Frequent guard failure triggers recording</p>
+			</section>
+			<section>
+				<h1>Perception</h1>
+				<img src="img/how-jit.png">
+				<small>http://abstrusegoose.com/secretarchives/under-the-hood - CC BY-NC 3.0 US</small>
 			</section>
 			<section data-background-image="img/jitlog.png">
 				<a href="http://vmprof.com/#/7930e1f54f9eee75084738aafa6cb612/traces">&rarr; link</a>
@@ -209,6 +244,17 @@
 				<p>Helps you to learn and understand PyPy</p>
 				<p>Provided at vmprof.com</p>
 			</section>
+			<section>
+				<h1>Properties & Tricks</h1>
+				<ul>
+					<li>Type specialization</li>
+					<li>Object unboxing</li>
+					<li>GC scheme</li>
+					<li>Dicts</li>
+					<li>Dynamic class creation (Instance maps)</li>
+					<li>Function calls (+ Inlining)</li>
+				</ul>
+			</section>
                 </section>
 		<section>
 			<section>
@@ -218,11 +264,11 @@
 			</section>
 			<section>
 				<h1>Magnetic</h1>
-				<p>marketing tech company</p>
-				<p>switched to PyPy 3 years ago</p>
+				<p>Marketing tech company</p>
+				<p>Switched to PyPy 3 years ago</p>
 			</section>
 			<section>
-				<h1>Q: what does your service do?</h1>
+				<h1>Q: What does your service do?</h1>
 				<p>A: ... allow generally large companies to send targeted marketing (e.g. serve ads) to people based on data we have learned </p>
 			</section>
 			<section>
@@ -242,9 +288,36 @@
 				<p>So it spends lots of time blocking</p>
 			</section>
                 </section>
+		<section>
+			<section>
+				<h1>timeit</h1>
+				<p>why not use perf?</p>
+				<p class="fragment">Try timeit on PyPy</p>
+			</section>
+			<section>
+				<h1>Python 3.5</h1>
+				<p>Progressed quite a bit</p>
+				<p class="fragment">async io</p>
+				<p class="fragment">Many more small details (sprint?)</p>
+			</section>
+			<section>
+				<h1>C-Extentions</h1>
+				<p>NumPy on top of the emulated layer</p>
+				<p>Boils down to managing PyPy &amp; CPython objects</p>
+			</section>
+                </section>
+		<section>
+			<section>
+				<h1>Closing example</h1>
+				<p>how to move from cpu limited to network limited</p>
+				<a href="https://www.reddit.com/r/Python/comments/kt8bx/ask_rpython_whats_your_experience_with_pypy_and/">link</a>
+			</section>
+
+		</section>
                 <section>
                     <h4>Questions?</h4>
                     <a href="morepypy.blogspot.com">morepypy.blogspot.com</a><br>
+		    <a href="">software@vimloc.systems</a><br>
 		    Join on IRC <a href="">#pypy</a>
                 </section>
             </div>
