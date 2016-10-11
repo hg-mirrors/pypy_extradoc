@@ -36,6 +36,8 @@ Misc stuff not formally in any milestone
 
 * 'import stackless' fails
 
+* "except pyopcode.Return:" in pyframe can't be there, because that's
+  outside the JIT and it gives terrible performance
 
 
 Milestone 1 (Aug-Sep-Oct 2016)

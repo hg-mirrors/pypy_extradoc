@@ -4,7 +4,7 @@
 
 * run Mercurial benchmarks on pypy, find out why they're slow
 
-* consider the jit opimizeopt's speed-ups
+* consider the jit optimizeopt's speed-ups
 
 * integrate the memory profiler into vmprof
 
@@ -14,3 +14,8 @@
 
 
 * discussion about what to do in the next 2-3 weeks
+
+* spend a day trying to plug cffi instead of lltype+ll2ctypes
+
+* try out type-specialized bytecodes as a first optimization step after
+  pure interpretation?
