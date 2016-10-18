@@ -93,3 +93,7 @@ Other bugs
   ``io.UnsupportedOperation.__new__(io.UnsupportedOperation)`` doesn't
   work, but that was not noticed because ``io.UnsupportedOperation()``
   mistakenly works.
+ 
+* hash({}.values()) works (but hash({}.keys()) correctly gives
+  TypeError).  That's a bit confusing and, as far as I can tell, always
+  pointless.
