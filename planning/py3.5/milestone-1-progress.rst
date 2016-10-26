@@ -38,6 +38,8 @@ Misc stuff not formally in any milestone
 
 * "except pyopcode.Return:" in pyframe can't be there, because that's
   outside the JIT and it gives terrible performance
+  
+* PEP 475: Retry system calls failing with EINTR
 
 
 Milestone 1 (Aug-Sep-Oct 2016)
