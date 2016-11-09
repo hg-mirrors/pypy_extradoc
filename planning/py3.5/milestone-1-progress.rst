@@ -5,7 +5,7 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-* bytes % args, bytearray % args (arigo)
+(empty)
 
 
 Misc stuff not formally in any milestone
@@ -57,7 +57,7 @@ planned:
 
 * PEP 448, additional unpacking generalizations.
 
-* bytes % args, bytearray % args: PEP 461
+* bytes % args, bytearray % args: PEP 461 (DONE)
 
 * New bytes.hex(), bytearray.hex() and memoryview.hex() methods. (DONE)
 
