@@ -5,7 +5,7 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-nothing
+* bytes % args, bytearray % args (arigo)
 
 
 Misc stuff not formally in any milestone
@@ -69,7 +69,7 @@ planned:
 * The new os.scandir() function (POSIX-DONE, missing Win32)
 
 * Newly created file descriptors are non-inheritable (PEP 446) 
-  (POSIX-DONE, missing Win32)
+  (DONE)
 
 * The marshal format has been made more compact and efficient
   (DONE, maybe a small optimization left---TYPE_*ASCII*---that

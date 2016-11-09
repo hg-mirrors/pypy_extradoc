@@ -96,4 +96,5 @@ Other bugs
  
 * hash({}.values()) works (but hash({}.keys()) correctly gives
   TypeError).  That's a bit confusing and, as far as I can tell, always
-  pointless.
+  pointless.  Also, related: d.keys()==d.keys() but
+  d.values()!=d.values().
