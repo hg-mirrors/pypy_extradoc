@@ -41,6 +41,9 @@ Misc stuff not formally in any milestone
   
 * PEP 475: Retry system calls failing with EINTR
 
+* ast compiler: clean up POP_EXCEPT: either remove them, or use it to clean up
+  the "finally: name = None; del name" nonsense at the end of any except block
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
