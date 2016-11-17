@@ -41,6 +41,29 @@ and undocumented results, or leak memory, etc.
   if chain=False.  This can rarely cause random nonsense in the main
   program.
 
+* setting f_lineno didn't evolve when the rest of the bytecodes evolved,
+  which means it is not safe any more::
+
+    import sys
+
+    def f():
+        try:
+            raise ValueError    # line 5
+        except ValueError:
+            print(42)           # line 7
+
+    def my_trace(*args):
+        print(args)
+        if args[1] == 'line':
+            f = args[0]
+            if f.f_lineno == 5:
+                f.f_lineno = 7
+        return my_trace
+
+    sys.settrace(my_trace)
+    f()
+    sys.settrace(None)
+
 
 Other bugs
 ----------
