@@ -121,3 +121,26 @@ Other bugs
   TypeError).  That's a bit confusing and, as far as I can tell, always
   pointless.  Also, related: d.keys()==d.keys() but
   d.values()!=d.values().
+
+* this program fails the check for no sys.exc_info(), even though at
+  the point this assert runs (called from the <== line) we are not in
+  any except/finally block.  This is a generalization of
+  test_exceptions:test_generator_doesnt_retain_old_exc::
+
+    import sys
+
+    def g():
+        try:
+            raise ValueError
+        except ValueError:
+            yield 1
+        assert sys.exc_info() == (None, None, None)
+        yield 2
+
+    gen = g()
+
+    try:
+        raise IndexError
+    except IndexError:
+        assert next(gen) is 1
+    assert next(gen) is 2    # <==
