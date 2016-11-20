@@ -144,3 +144,38 @@ Other bugs
     except IndexError:
         assert next(gen) is 1
     assert next(gen) is 2    # <==
+
+* frame.clear() does not clear f_locals, unlike what a test says
+  (Lib/test/test_frame.py)::
+
+    def test_locals_clear_locals(self):
+        # Test f_locals before and after clear() (to exercise caching)
+        f, outer, inner = self.make_frames()
+        outer.f_locals
+        inner.f_locals
+        outer.clear()
+        inner.clear()
+        self.assertEqual(outer.f_locals, {})
+        self.assertEqual(inner.f_locals, {})
+
+  This test passes, but the C-level PyFrameObject has got a strong
+  reference to f_locals, which is only updated (to be empty) if the
+  Python code tries to read this attribute.  In the normal case,
+  code that calls clear() but doesn't read f_locals afterwards will
+  still leak everything contained in the C-level f_locals field.  This
+  can be shown by this failing test::
+
+    import sys
+
+    def g():
+        x = 42
+        return sys._getframe()
+
+    frame = g()
+    d = frame.f_locals
+    frame.clear()
+    print(d)
+    assert d == {}   # fails!  but 'assert d is frame.f_locals' passes,
+                     # which shows that this dict is kept alive by
+                     # 'frame'; and we've seen that it is non-empty
+                     # as long as we don't read frame.f_locals.
