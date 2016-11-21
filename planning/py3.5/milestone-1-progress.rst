@@ -5,7 +5,7 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-(empty)
+* (richard) multiprocessing module changes
 
 
 Misc stuff not formally in any milestone
@@ -88,3 +88,4 @@ Done not formally in the Milestone
 
 * richard: bz2, lzma, ... changes (cpython issue 15955) (DONE)
 * richard: threads do not seem to join (e.g. lib-python/3/test/test_bz2.py) (DONE)
+* richard: cffi ssl (DONE, awaits review + merge)
