@@ -65,8 +65,8 @@ and undocumented results, or leak memory, etc.
     sys.settrace(None)
 
 
-Other bugs
-----------
+Non-segfaulting bugs
+--------------------
 
 * on modern Linux: if the first call in the process to
   socketpair() ends in a EINVAL, then cpython will (possibly wrongly)
@@ -82,12 +82,6 @@ Other bugs
 
 * re.sub(b'y', bytearray(b'a'), bytearray(b'xyz')) -> b'xaz'
   re.sub(b'y', bytearray(b'\\n'), bytearray(b'xyz')) -> internal TypeError
-
-* not a bug: argument clinic turns the "bool" specifier into
-  PyObject_IsTrue(), accepting any argument whatsoever.  This can easily
-  get very confusing for the user, e.g. after messing up the number of
-  arguments.  For example: os.symlink("/path1", "/path2", "/path3")
-  doesn't fail, it just considers the 3rd argument as some true value.
 
 * if you have a stack of generators where each is in 'yield from' from
   the next one, and you call '.next()' on the outermost, then it enters
@@ -116,11 +110,6 @@ Other bugs
   ``io.UnsupportedOperation.__new__(io.UnsupportedOperation)`` doesn't
   work, but that was not noticed because ``io.UnsupportedOperation()``
   mistakenly works.
- 
-* hash({}.values()) works (but hash({}.keys()) correctly gives
-  TypeError).  That's a bit confusing and, as far as I can tell, always
-  pointless.  Also, related: d.keys()==d.keys() but
-  d.values()!=d.values().
 
 * this program fails the check for no sys.exc_info(), even though at
   the point this assert runs (called from the <== line) we are not in
@@ -179,3 +168,25 @@ Other bugs
                      # which shows that this dict is kept alive by
                      # 'frame'; and we've seen that it is non-empty
                      # as long as we don't read frame.f_locals.
+
+* _collectionsmodule.c: deque_repr uses "[...]" as repr if recursion is
+  detected.  I'd suggest that "deque(...)" is clearer---it's not a list.
+
+
+Other issues of "dubious IMHO" status
+-------------------------------------
+
+* argument clinic turns the "bool" specifier into
+  PyObject_IsTrue(), accepting any argument whatsoever.  This can easily
+  get very confusing for the user, e.g. after messing up the number of
+  arguments.  For example: os.symlink("/path1", "/path2", "/path3")
+  doesn't fail, it just considers the 3rd argument as some true value.
+
+* hash({}.values()) works (but hash({}.keys()) correctly gives
+  TypeError).  That's a bit confusing and, as far as I can tell, always
+  pointless.  Also, related: d.keys()==d.keys() but
+  d.values()!=d.values().
+
+* if you write ``from .a import b`` inside the Python prompt, or in
+  a module not in any package, then you get a SystemError(!) with an
+  error message that is unlikely to help newcomers.
