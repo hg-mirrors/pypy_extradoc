@@ -44,6 +44,9 @@ Misc stuff not formally in any milestone
 * ast compiler: clean up POP_EXCEPT: either remove them, or use it to clean up
   the "finally: name = None; del name" nonsense at the end of any except block
 
+* bonus: use all the features of _pypyjson from the json module again
+  (eg c_encode_basestring_ascii)
+
 
 Milestone 1 (Aug-Sep-Oct 2016)
 ------------------------------
