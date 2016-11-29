@@ -5,8 +5,6 @@ What would be cool to finish before the end of Milestone 1
 In-progress ("Lock" section)
 ----------------------------
 
-* (richard) multiprocessing module changes
-
 
 Misc stuff not formally in any milestone
 ----------------------------------------
@@ -46,6 +44,12 @@ Misc stuff not formally in any milestone
 
 * bonus: use all the features of _pypyjson from the json module again
   (eg c_encode_basestring_ascii)
+
+* socket get lots of new methods (e.g. recvmsg, ...), all test stdlib tests
+  are now skipping them
+
+* _hashlib pbkdf2_hmac has a new 'fast' implemention in cpython,
+  unsure if we are eager to implement that right now
 
 
 Milestone 1 (Aug-Sep-Oct 2016)
