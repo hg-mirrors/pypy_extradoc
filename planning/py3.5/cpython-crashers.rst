@@ -172,6 +172,38 @@ Non-segfaulting bugs
 * _collectionsmodule.c: deque_repr uses "[...]" as repr if recursion is
   detected.  I'd suggest that "deque(...)" is clearer---it's not a list.
 
+* weak dicts (both kinds) and weak sets have an implementation of
+  __len__ which doesn't give the "expected" result on PyPy, and in some
+  cases on CPython too.  I'm not sure what is expected and what is not.
+  Here is an example on CPython 3.5.2+ (using a thread to run the weakref
+  callbacks only, not to explicitly inspect or modify 'd')::
+
+    import weakref, _thread
+    from queue import Queue
+
+    queue = Queue()
+    def subthread(queue):
+        while True:
+            queue.get()
+    _thread.start_new_thread(subthread, (queue,))
+
+    class X:
+        pass
+    d = weakref.WeakValueDictionary()
+    while True:
+        x = X()
+        d[52] = x
+        queue.put(x)
+        del x
+        while list(d) != []:
+            pass
+        assert len(d) == 0  # we've checked that list(d)==[], but this may fail
+
+  On CPython I've seen the assert fail only after editing the function
+  WeakValueDictionary.__init__.remove() to add ``time.sleep(0.01)`` as
+  the first line.  Otherwise I guess the timings happen to make that test
+  pass.
+
 
 Other issues of "dubious IMHO" status
 -------------------------------------
