@@ -204,6 +204,18 @@ Non-segfaulting bugs
   the first line.  Otherwise I guess the timings happen to make that test
   pass.
 
+* CPython 3.5.2: this ``nonlocal`` seems not to have a reasonable
+  effect (note that if we use a different name instead of ``__class__``,
+  this example correctly complain that there is no binding in the outer
+  scope of ``Y``)::
+
+    class Y:
+        class X:
+            nonlocal __class__
+            __class__ = 42
+        print(locals()['__class__'])     # 42
+        print(__class__)                 # but this is a NameError
+
 
 Other issues of "dubious IMHO" status
 -------------------------------------
