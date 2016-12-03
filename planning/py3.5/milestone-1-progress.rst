@@ -25,7 +25,7 @@ Misc stuff not formally in any milestone
 
 * Windows: issue 2310: kill WindowsError
 
-* bytearray: 'del x[:10]' is now amortized constant-time
+* bytearray: 'del x[:10]' is now amortized constant-time (DONE)
 
 * check that 'import array', say, finds and loads a file array.py,
   whereas 'import gc' does not ('gc' is a built-in module in CPython but
