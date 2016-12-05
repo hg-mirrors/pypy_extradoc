@@ -37,7 +37,7 @@ Misc stuff not formally in any milestone
 * "except pyopcode.Return:" in pyframe can't be there, because that's
   outside the JIT and it gives terrible performance
   
-* PEP 475: Retry system calls failing with EINTR
+* PEP 475: Retry system calls failing with EINTR (DONE)
 
 * ast compiler: clean up POP_EXCEPT: either remove them, or use it to clean up
   the "finally: name = None; del name" nonsense at the end of any except block

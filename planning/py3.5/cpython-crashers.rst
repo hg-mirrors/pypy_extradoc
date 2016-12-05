@@ -234,3 +234,8 @@ Other issues of "dubious IMHO" status
 * if you write ``from .a import b`` inside the Python prompt, or in
   a module not in any package, then you get a SystemError(!) with an
   error message that is unlikely to help newcomers.
+
+* pep 475: unclear why 'os.fchmod(fd)' retries automatically when
+  it gets EINTR but the otherwise-equivalent 'os.chmod(fd)' does not.
+  (The documentation says they are fully equivalent, so someone is
+  wrong.)
