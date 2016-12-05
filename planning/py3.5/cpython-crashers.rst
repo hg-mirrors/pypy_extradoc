@@ -64,6 +64,21 @@ and undocumented results, or leak memory, etc.
     f()
     sys.settrace(None)
 
+* I didn't try, but it seems that typeobject.c:mro_internal() is prone
+  to a refcount crash.  It does this::
+
+     old_mro = type->tp_mro;
+     ...mro_invoke()...  /* might cause reentrance */
+     type->tp_mro = new_mro;
+     ...
+     Py_XDECREF(old_mro);
+
+  This last XDECREF drops the reference held by the previous value of
+  ``type->tp_mro`` after we changed it.  But ``type->tp_mro`` might have
+  changed because of mro_invoke(), which calls pure Python code.  If it
+  did change, then old_mro is no longer the old value of
+  ``type->tp_mro``.  The wrong object gets decrefed.
+
 
 Non-segfaulting bugs
 --------------------
