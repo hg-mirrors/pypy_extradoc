@@ -184,9 +184,6 @@ Non-segfaulting bugs
                      # 'frame'; and we've seen that it is non-empty
                      # as long as we don't read frame.f_locals.
 
-* _collectionsmodule.c: deque_repr uses "[...]" as repr if recursion is
-  detected.  I'd suggest that "deque(...)" is clearer---it's not a list.
-
 * weak dicts (both kinds) and weak sets have an implementation of
   __len__ which doesn't give the "expected" result on PyPy, and in some
   cases on CPython too.  I'm not sure what is expected and what is not.
