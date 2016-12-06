@@ -231,6 +231,12 @@ Non-segfaulting bugs
         print(locals()['__class__'])     # 42
         print(__class__)                 # but this is a NameError
 
+* Follow-up on issue #25388: running ``python x.py`` if x.py contains
+  the following bytes...
+
+  * ``b"#\xfd\n"`` => we get a SyntaxError: Non-UTF-8 code
+  * ``b"# coding: utf-8\n#\xfd\n"`` => we get no error!
+
 
 Other issues of "dubious IMHO" status
 -------------------------------------
