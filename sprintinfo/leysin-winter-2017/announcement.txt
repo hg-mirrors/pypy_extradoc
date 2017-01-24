@@ -1,5 +1,5 @@
 =====================================================================
-      PyPy Leysin Winter Sprint (25/26th Feb. - 4th March 2016)
+      PyPy Leysin Winter Sprint (25/26th Feb. - 4th March 2017)
 =====================================================================
 
 The next PyPy sprint will be in Leysin, Switzerland, for the twelveth time.
