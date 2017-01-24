@@ -64,7 +64,7 @@ what choices you have.  There are also a choice of hotels in Leysin.
 Please register by Mercurial::
 
   https://bitbucket.org/pypy/extradoc/
-  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/leysin-winter-2017
+  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/leysin-winter-2017/
 
 or on the pypy-dev mailing list if you do not yet have check-in rights:
 
