@@ -1,0 +1,25 @@
+
+People coming to the Leysin sprint Winter 2016
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Armin Rigo                          private
+==================== ============== =======================
+
+**NOTE:** lodging is by default in Ermina.  There are two ~4 people
+rooms as well as smaller rooms on demand.  (Individual rooms should be
+available if needed, but ask Armin Rigo.)
+
+Of course you're free to book a different hotel yourself if you prefer.
+
+The standard booking is for the nights from Saturday to Saturday, but it
+is possible to extend that.  If it is possible for you to arrive Sunday
+not too late, then you should get a booking from Sunday only.  We'll
+work from Sunday noon-ish to the next Saturday (with a break day in the
+middle of the week).
