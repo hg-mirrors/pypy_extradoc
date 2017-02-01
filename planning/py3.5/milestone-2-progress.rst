@@ -75,6 +75,7 @@ Additionaly we resolve several security related issues found in CPython 3.4/3.5:
 * Enhancements to multiprocessing modules.
 
 * HTTP cookie parsing is now stricter (issue 22796).
+  [PURELY APP-LEVEL]
 
 The measure of when this milestone is reached is based on the
 following criteria: we can take a number of C extension modules that
