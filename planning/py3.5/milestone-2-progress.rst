@@ -70,6 +70,7 @@ Additionaly we resolve several security related issues found in CPython 3.4/3.5:
   [DONE, rpython-hash branch]
 
 * New command line option for isolated mode.
+  [I think it is already DONE]
 
 * Enhancements to multiprocessing modules.
 
