@@ -35,7 +35,7 @@ Misc stuff not formally in any milestone
 * 'import stackless' fails
 
 * "except pyopcode.Return:" in pyframe can't be there, because that's
-  outside the JIT and it gives terrible performance
+  outside the JIT and it gives terrible performance (DONE)
   
 * PEP 475: Retry system calls failing with EINTR (DONE)
 
