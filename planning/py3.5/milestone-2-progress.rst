@@ -12,6 +12,7 @@ Misc stuff not formally in any milestone
 * At some point, review lib-python/conftest.py to remove the skips
   due to deadlocks (search for "XXX:").
   update 1: some have been reenabled already! (richard 30.sept)
+  update 2: most are gone (arigo 4 feb)
 
 * collections.py: ``OrderedDict`` should again be a thin wrapper over
   ``dict``.  The main pain point is ``move_to_end(last=False)``.  See
