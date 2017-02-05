@@ -17,6 +17,7 @@ Misc stuff not formally in any milestone
 * collections.py: ``OrderedDict`` should again be a thin wrapper over
   ``dict``.  The main pain point is ``move_to_end(last=False)``.  See
   https://mail.python.org/pipermail/python-dev/2016-August/145837.html
+  [DONE]
 
 * compare ``dir(posix)`` on py3.5 and cpython 3.5.
 
