@@ -21,6 +21,13 @@ What is a reverse debugger?
 * Demo
 
 
+What is a reverse debugger?
+===========================
+
+.. image:: demo/_demo1.png
+   :scale: 25%
+
+
 How is that possible??
 ======================
 
