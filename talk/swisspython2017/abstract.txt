@@ -2,7 +2,7 @@ Abstract
 --------
 
 RevDB is an experimental "reverse debugger" for Python, similar to
-UndoDB-GDB or LL for C. You run your program once, in "record" mode,
+UndoDB-GDB or RR for C. You run your program once, in "record" mode,
 producing a log file; once you get buggy behavior, you start the
 reverse-debugger on the log file. It gives an (improved) pdb-like
 experience, but it is replaying your program exactly as it ran---all

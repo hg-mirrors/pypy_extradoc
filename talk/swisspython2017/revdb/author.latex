@@ -1,0 +1,10 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[RevDB, a reverse debugger]{RevDB, a \colorbox{darkred}{\color{white}Reverse} Debugger}
+\author[Armin Rigo]
+{Armin Rigo\\
+\ \ \ \ \ \ \ \ \ \includegraphics[scale=0.05]{pypylogo.png}}
+
+
+\institute{Swiss Python Summit 2017}
+\date{February 2017}
