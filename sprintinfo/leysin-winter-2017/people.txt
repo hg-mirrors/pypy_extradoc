@@ -10,8 +10,8 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo                          private
-Richard Plangger     26.02/04.02    Ermina
-Remi Meier           (?)27.02/04.02 Ermina
+Richard Plangger     26.02/04.03    Ermina
+Remi Meier           (?)27.02/04.03 Ermina
 ==================== ============== =======================
 
 **NOTE:** lodging is by default in Ermina.  There are two ~4 people
