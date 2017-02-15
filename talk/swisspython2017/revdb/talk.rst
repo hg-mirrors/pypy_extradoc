@@ -156,6 +156,19 @@ Q & A
 
 https://bitbucket.org/pypy/revdb/
 
+.. raw:: latex
+
+    \bigskip
+    \bigskip
+    \bigskip
+
+.. image:: chalet1_004.jpg
+   :scale: 20%
+   :align: center
+
+*Feb. 26th - March 4th: general PyPy sprint in Leysin, Vaud, Switzerland
+(everybody welcome)*
+
 
 How does it work?  (slide 1/2)
 ==============================
