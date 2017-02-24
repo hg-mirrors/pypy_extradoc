@@ -13,7 +13,7 @@ Armin Rigo                          private
 Richard Plangger     26.02/04.03    Ermina
 Remi Meier           27.02/04.03    Ermina
 Manuel Jacob         25.02/04.03    Ermina
-Robert Zaremba       26?.02/01.03   Ermina
+Robert Zaremba       26.02/01.03    Ermina
 Ronan Lamy           25.02/04.03    Ermina
 Antonio Cuni         27.02/03.03    Ermina
 Maciej Fijalkowski   26.02/01.03    Ermina
