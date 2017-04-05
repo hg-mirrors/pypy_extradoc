@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy Status Update]{PyPy Status Update}
+\author[antocuni]
+{Antonio Cuni}
+
+\institute{PyCon Otto}
+\date{April 07 2017}
