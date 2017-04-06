@@ -223,6 +223,17 @@ PyPy 3.5 asyncio
 - Between 2.87 and 8.08 times faster
 
 
+Usual questions
+----------------
+
+- Is it stable/mature? Can I use it in production? |ok|
+
+- Does package X work? |ok|
+
+- What about Python 3? |ok|
+
+- **Bonus topic: vmprof**
+  
 ..
    Topics
    -----
