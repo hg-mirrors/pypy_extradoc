@@ -61,8 +61,8 @@ PyPy in the real world (1)
    :align: left
 
 
-- High frequency trading of sport bets
-
+- High frequency trading platform for sports bets
+  
   * low latency is a must
 
 - PyPy used in production since 2012
@@ -145,6 +145,11 @@ cpyext
 
 - Use CFFI if possible
 
+demo
+----
+
+live demo time :)
+  
 numpy
 -----
 
@@ -233,6 +238,41 @@ Usual questions
 - What about Python 3? |ok|
 
 - **Bonus topic: vmprof**
+
+VMProf
+------
+
+- Statistical profiler
+
+- Low overhead (~5%)
+
+- For CPython and PyPy
+
+- Distinguish between:
+
+  - Interpreter
+
+  - Native code
+
+  - JIT (PyPy only)
+
+  - GC (PyPy only)
+
+    
+VMProf example
+--------------
+
+::
+
+   $ python -m vmprof --web foobar.py
+
+   $ pypy -m vmprof --web foobar.py
+
+
+..
+    CPython: http://vmprof.com/#/f7c45f78-fcb0-4c31-8fb5-d53546b94c09
+
+    PyPy: http://vmprof.com/#/7d25c9ab-aeb8-495f-9e69-54bd2e242745
   
 ..
    Topics
