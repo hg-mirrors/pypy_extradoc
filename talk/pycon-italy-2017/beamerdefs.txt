@@ -93,6 +93,9 @@
            :scale: 15%
            
 
+.. |ok| image:: ok.png
+           :scale: 25%
+
 
 .. nested blocks
 .. ===========================
