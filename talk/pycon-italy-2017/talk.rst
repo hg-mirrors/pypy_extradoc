@@ -268,6 +268,7 @@ VMProf example
 
    $ pypy -m vmprof --web foobar.py
 
+   $ pypy -m vmprof --web --jitlog foobar.py
 
 ..
     CPython: http://vmprof.com/#/f7c45f78-fcb0-4c31-8fb5-d53546b94c09
