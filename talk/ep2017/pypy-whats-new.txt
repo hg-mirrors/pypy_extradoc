@@ -36,5 +36,5 @@ for a subset of the Python community.
   to progress in "cpyext" emulating the CPython C API, as well as fixes
   to the packages in collaboration with the upstream developers.
 
-This talk is about what's new in PyPy in the last couple of years,
-including these two topics.
+- We will also mention some more "what's new in PyPy" topics from the
+  last couple of years.
