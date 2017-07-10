@@ -32,6 +32,11 @@
 
    \sout{
 
+.. |br| raw:: latex
+
+   \vspace{0.3cm}
+
+
 .. closed bracket
 .. ===========================
 
