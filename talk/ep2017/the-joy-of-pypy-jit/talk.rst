@@ -126,14 +126,29 @@ Version 0
  
 |end_scriptsize|
 
-Version 0, demo
+Version 0
 ---------------
 
 Demo
 
-|pause|
 
-PyPy is ~23x faster. Cool.
+
+Version 0
+----------
+
+|column1|
+
+.. image:: sobel/CPython-v0.png
+   :scale: 30%
+           
+|column2|
+
+.. image:: sobel/PyPy-v0.png
+   :scale: 30%
+           
+|end_columns|
+
+* PyPy is ~59x faster
 
 
 Version 1
@@ -169,6 +184,22 @@ Version 1
 
 |end_scriptsize|
 
+Version 1
+----------
+
+|column1|
+
+.. image:: sobel/CPython-v1.png
+   :scale: 30%
+           
+|column2|
+
+.. image:: sobel/PyPy-v1.png
+   :scale: 30%
+           
+|end_columns|
+
+* PyPy is ~97x faster
 
 Version 2
 ---------
@@ -197,6 +228,22 @@ Version 2
 
 |end_scriptsize|
 
+Version 2
+----------
+
+|column1|
+
+.. image:: sobel/CPython-v2.png
+   :scale: 30%
+           
+|column2|
+
+.. image:: sobel/PyPy-v2.png
+   :scale: 30%
+           
+|end_columns|
+
+* PyPy is ~170x faster
 
 Version 3
 -------------
@@ -257,3 +304,21 @@ Version 3
             out[p] = value
 
 |end_scriptsize|
+
+Version 3
+----------
+
+|column1|
+
+.. image:: sobel/CPython-v3.png
+   :scale: 30%
+           
+|column2|
+
+.. image:: sobel/PyPy-v3.png
+   :scale: 30%
+           
+|end_columns|
+
+* PyPy is ~400x faster
+
