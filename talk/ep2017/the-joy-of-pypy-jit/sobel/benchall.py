@@ -1,16 +1,23 @@
+import sys
 import time
 import pypytools
 from mplayer import mplayer
 import v0, v1, v2, v3
 
 def bench():
+    if len(sys.argv) == 2:
+        v = sys.argv[1]
+        versions = [globals()[v]]
+    else:
+        versions = [v0, v1, v2, v3]
+        
     if pypytools.IS_PYPY:
         max_frames = 200
     else:
         max_frames = 10
 
     fn = 'test.avi -benchmark'
-    for v in (v0, v1, v2, v3):
+    for v in versions:
         start = time.time()
         for i, img in enumerate(mplayer(fn)):
             out = v.sobel(img)

@@ -16,10 +16,10 @@ def main(argv):
 
     start = start0 = time()
     for fcnt, img in enumerate(mplayer(fn)):
-        #out = v0.sobel(img)
+        out = v0.sobel(img)
         #out = v1.sobel(img)
         #out = v2.sobel(img)
-        out = v3.sobel(img)
+        #out = v3.sobel(img)
 
         try:
             view(out)
