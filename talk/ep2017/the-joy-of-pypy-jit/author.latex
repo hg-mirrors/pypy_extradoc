@@ -1,0 +1,8 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[PyPy: abstractions for free]{PyPy: Abstractions for free}
+\author[antocuni]
+{Antonio Cuni}
+
+\institute{EuroPython 2017}
+\date{July 12 2017}
