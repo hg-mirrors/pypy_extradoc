@@ -67,8 +67,10 @@ Abstractions
 - etc.
 
 - PRO: readability
-  
-- CON: speed?
+
+|pause|
+
+- CON: **cost of abstraction?**
 
   
 Example: Sobel filter
@@ -86,11 +88,11 @@ Image
 
 - greyscale
 
-- `w`, `h`
+- ``w, h, data``
 
-- `array.array('B')` of `w * h` bytes
+- ``data = array.array('B')`` of ``w * h`` bytes
 
-- pixel `(x, y)` at index `x + w*y`
+- pixel ``(x, y)`` at index ``x + w*y``
 
 
 Version 0
@@ -321,4 +323,288 @@ Version 3
 |end_columns|
 
 * PyPy is ~400x faster
+
+
+The cost of abstraction
+------------------------
+
+* CPython
+
+  - each version ~2-3x slower than the previous one
+
+  - v3 is ~8.5x slower than v0
+
+* PyPy
+
+  - abstractions (almost) for free
+
+  - v3 is ~20% slower than v0, v1, v2
+
+
+PyPy JIT 101
+-------------
+
+* What is the JIT doing?
+
+* Which code is optimized away?
+
+  
+Loops and guards
+-----------------
+
+|tiny|
+|column1|
+
+.. sourcecode:: python
+
+    def compute(n):
+        total = 0
+        i = 0
+        while i < n:
+            total += i
+            i += 1
+        return total
+
+|pause|        
+|column2|
+
+.. sourcecode:: python
+
+    cdef loop0(i, n, total):
+        assert isinstance(n, int)
+        while True:
+            assert i < n
+            total = int_add_ovf(total, i)
+            assert not_overflow(total)
+            i = int_add_ovf(i, 1)
+            assert not_overflow(i)
+           
+|end_columns|
+|end_tiny|
+
+Bridges (1)
+-----------------
+
+|tiny|
+|column1|
+
+.. sourcecode:: python
+
+    def compute(n):
+        total = 0
+        i = 0
+        while i < n:
+            if i % 2:
+                total += i
+            else:
+                total += (i-5)
+            i += 1
+        return total
+
+|pause|
+|column2|
+
+.. sourcecode:: python
+
+    cdef loop0(i, n, total):
+        assert isinstance(n, int)
+        while True:
+            assert i < n
+            assert i % 2 != 0
+            total = int_add_ovf(total, i)
+            assert not_overflow(total)
+            i = int_add_ovf(i, 1)
+            assert not_overflow(i)
+                
+|end_columns|
+|end_tiny|
+
+Bridges (2)
+-----------------
+
+|tiny|
+|column1|
+
+.. sourcecode:: python
+
+    def compute(n):
+        total = 0
+        i = 0
+        while i < n:
+            if i % 2:
+                total += i
+            else:
+                total += (i-5)
+            i += 1
+        return total
+
+|column2|
+
+.. sourcecode:: python
+
+    cdef loop0(i, n, total):
+        assert isinstance(n, int)
+        while True:
+            assert i < n
+            if i % 2 != 0:
+                total = int_add_ovf(total, i)
+                assert not_overflow(total)
+                i = int_add_ovf(i, 1)
+                assert not_overflow(i)
+            else:
+                tmp = int_sub_ovf(i, 5)
+                assert not_overflow(tmp)
+                total = int_add_ovf(total, tmp)
+                i = int_add_ovf(i, 1)
+                assert not_overflow(i)
+                
+|end_columns|
+|end_tiny|
+
+
+Inlining
+-----------------
+
+|tiny|
+|column1|
+
+.. sourcecode:: python
+
+    def fn(a, b):
+        return a + b
+                
+    def compute(n):
+        total = 0
+        i = 0
+        while i < n:
+            total = fn(total, i)
+            i += 1
+        return total
+
+|column2|
+
+.. sourcecode:: python
+
+    assert version(globals()) == 42
+    assert id(fn.__code__) == 0x1234
+    #
+    assert isinstance(n, int)
+    while True:
+        assert i < n
+        total = int_add_ovf(total, i)  # inlined!
+        assert not_overflow(total)
+        i = int_add_ovf(i, 1)
+        assert not_overflow(i)
+           
+|end_columns|
+|end_tiny|
+
+
+Classes
+-----------------
+
+|tiny|
+|column1|
+
+.. sourcecode:: python
+
+    import math
+    class Point(object):
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+        def distance(self):
+            return math.hypot(self.x, self.y)
+            
+    def compute(points):
+        total = 0
+        for p in points:
+            total += p.distance()
+        return total
+
+|column2|
+
+.. sourcecode:: python
+
+    cdef loop0(total, list_iter):
+        assert version(globals()) == 42
+        assert version(math.__dict__) == 23
+        assert version(Point.__dict__) == 56
+        assert id(Point.distance.__globals__) == 0x1234
+        assert version(Point.distance.__globals__) == 78
+        assert id(Point.distance.__code__) == 0x5678
+
+        while True:
+            p = next(list_iter)
+            assert isinstance(p, Point)
+            # <inlined Point.distance>
+            assert isinstance(p.x, float)
+            assert isinstance(p.y, float)
+            p_x = p.x
+            p_y = p.y
+            tmp = c_call(math.hypot, p_x, p_y)
+            # </inlined>
+            total = float_add(total, tmp)
+           
+|end_columns|
+|end_tiny|
+
+
+Virtuals
+-----------------
+
+|tiny|
+|column1|
+
+.. sourcecode:: python
+            
+    def compute(n):
+        total = 0.0
+        i = 0.0
+        while i < n:
+            p = Point(i, i+1)
+            total += p.distance()
+            i += 1
+        return total
+
+|pause|
+|column2|
+
+.. sourcecode:: python
+
+    assert ...
+    assert isinstance(n, int)
+    assert isinstance(i, float)
+    while True:
+        assert i < n
+        # Point() is "virtualized" into p_x and p_y
+        p_x = i
+        p_y = float_add(i, 1.0)
+        #
+        # inlined call to Point.hypot
+        tmp = c_call(math.hypot, p_x, p_y)
+        total = float_add(total, tmp)
+           
+|end_columns|
+|end_tiny|
+
+
+
+More PyPy at EuroPython
+------------------------
+
+* PyPy Help Desk
+
+  - Tomorrow, 10:30-12:00 and 14:00-15:30
+
+  - Come and ask us questions!
+
+* "PyPy meets Python 3 and numpy"
+
+   - Armin Rigo
+
+   - Friday, 14:00
+
+* Or, just talk to us :)
 
