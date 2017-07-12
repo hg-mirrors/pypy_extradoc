@@ -6,7 +6,7 @@ from time import time
 from mplayer import mplayer, view
 from math import sqrt
 import array
-import v0, v1, v2, v3
+import v0, v1, v2, v3, v4, v5
 
 def main(argv):
     if len(argv) > 1:
@@ -20,6 +20,8 @@ def main(argv):
         #out = v1.sobel(img)
         #out = v2.sobel(img)
         #out = v3.sobel(img)
+        #out = v4.sobel(img)
+        #out = v5.sobel(img)
 
         try:
             view(out)

@@ -2,14 +2,14 @@ import sys
 import time
 import pypytools
 from mplayer import mplayer
-import v0, v1, v2, v3
+import v0, v1, v2, v3, v4, v5
 
 def bench():
     if len(sys.argv) == 2:
         v = sys.argv[1]
         versions = [globals()[v]]
     else:
-        versions = [v0, v1, v2, v3]
+        versions = [v0, v1, v2, v3, v4, v5]
         
     if pypytools.IS_PYPY:
         max_frames = 200
