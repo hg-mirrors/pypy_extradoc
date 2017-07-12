@@ -15,6 +15,9 @@ About me
 
 - http://antocuni.eu
 
+- Source code of this demo:
+
+  - https://bitbucket.org/pypy/extradoc/src/extradoc/talk/ep2017/the-joy-of-pypy-jit/
 
 General question
 ----------------
