@@ -322,8 +322,77 @@ Version 3
            
 |end_columns|
 
-* PyPy is ~400x faster
+* PyPy is ~435x faster
 
+
+Version 4
+----------
+
+|tiny|
+
+.. sourcecode:: python
+
+    class Kernel(object):
+
+        def __init__(self, matrix):
+            self.height = len(matrix)
+            self.width = len(matrix[0])
+            self.matrix = matrix
+
+        def __call__(self, img, p):
+            value = 0.0
+            for j, row in enumerate(self.matrix, -(self.height/2)):
+                for i, k in enumerate(row, -(self.width/2)):
+                    value += img[p + (i, j)] * k
+            return value
+
+
+    Gx = Kernel([[-1.0, 0.0, +1.0],
+                 [-2.0, 0.0, +2.0],
+                 [-1.0, 0.0, +1.0]])
+
+    Gy = Kernel([[-1.0, -2.0, -1.0],
+                 [0.0,  0.0,  0.0],
+                 [+1.0, +2.0, +1.0]])
+                
+
+    def sobel(img):
+        ...
+        dx = Gx(img, p)
+        dy = Gy(img, p)
+        ...
+
+|end_tiny|
+
+Version 4
+----------
+
+|column1|
+
+.. image:: sobel/CPython-v4.png
+   :scale: 30%
+           
+|column2|
+
+.. image:: sobel/PyPy-v4.png
+   :scale: 30%
+           
+|end_columns|
+
+* PyPy massively slower :(
+
+  - (still 76x faster than CPython)
+
+* I'm a liar
+
+* PyPy sucks
+
+Wait
+-----------------------
+
+.. image:: bazinga.jpg
+   :scale: 30%
+   :align: center
 
 The cost of abstraction
 ------------------------
@@ -338,7 +407,7 @@ The cost of abstraction
 
   - abstractions (almost) for free
 
-  - v3 is ~20% slower than v0, v1, v2
+  - v5 is ~20% slower than v0, v1, v2
 
 
 PyPy JIT 101
@@ -602,9 +671,9 @@ More PyPy at EuroPython
 
 * "PyPy meets Python 3 and numpy"
 
-   - Armin Rigo
+  - Armin Rigo
 
-   - Friday, 14:00
+  - Friday, 14:00
 
 * Or, just talk to us :)
 

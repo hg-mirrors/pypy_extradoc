@@ -1,9 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-N = 5
-CPYTHON = (4.99, 2.85, 1.62, 0.59)
-PYPY = (288.67, 278.25, 276.81, 235.91)
+CPYTHON = (4.99, 2.85, 1.62, 0.59, 0.33, 0.57)
+PYPY = (288.67, 278.25, 276.81, 256.79, 25.31, 244.36)
 
 def draw(title, values, allvalues, color):
     filename = '%s-v%d.png' % (title, len(values)-1)
@@ -30,6 +29,5 @@ for i in range(1, len(CPYTHON)+1):
     draw('PyPy', PYPY[:i], PYPY, color='r')
     draw('CPython', CPYTHON[:i], CPYTHON, color='b')
 
-
-## for i, (cpy, pypy) in enumerate(zip(CPYTHON, PYPY)):
-##     print i, pypy/cpy
+for i, (cpy, pypy) in enumerate(zip(CPYTHON, PYPY)):
+    print i, pypy/cpy
