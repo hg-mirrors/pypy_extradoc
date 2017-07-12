@@ -394,6 +394,74 @@ Wait
    :scale: 30%
    :align: center
 
+
+Version 5
+----------
+
+|scriptsize|
+
+.. sourcecode:: python
+
+    from pypytools.codegen import Code
+
+    def Kernel(matrix):
+        height = len(matrix)
+        width = len(matrix[0])
+        code = Code()
+        with code.block('def apply(img, p):'):
+            code.w('value = 0.0')
+            for j, row in enumerate(matrix, -(height/2)):
+                for i, k in enumerate(row, -(width/2)):
+                    if k == 0:
+                        continue
+                    code.w('value += img[p+{delta}] * {k}',
+                           delta=(i, j), k=k)
+            code.w('return value')
+
+        code.compile()
+        return code['apply']
+
+|end_scriptsize|
+
+Version 5
+----------
+
+|scriptsize|
+
+.. sourcecode:: python
+
+    # GENERATED CODE
+
+    def apply(img, p):
+        value = 0.0
+        value += img[p+(-1, -1)] * -1.0
+        value += img[p+(1, -1)] * 1.0
+        value += img[p+(-1, 0)] * -2.0
+        value += img[p+(1, 0)] * 2.0
+        value += img[p+(-1, 1)] * -1.0
+        value += img[p+(1, 1)] * 1.0
+        return value
+
+|end_scriptsize|
+
+Version 5
+----------
+
+|column1|
+
+.. image:: sobel/CPython-v5.png
+   :scale: 30%
+           
+|column2|
+
+.. image:: sobel/PyPy-v5.png
+   :scale: 30%
+           
+|end_columns|
+
+* PyPy ~428x faster again
+
+
 The cost of abstraction
 ------------------------
 
@@ -407,7 +475,7 @@ The cost of abstraction
 
   - abstractions (almost) for free
 
-  - v5 is ~20% slower than v0, v1, v2
+  - v5 is ~18% slower than v0, v1, v2
 
 
 PyPy JIT 101
@@ -417,7 +485,15 @@ PyPy JIT 101
 
 * Which code is optimized away?
 
+* Very rough explanation
+
+* For a deeper view:
   
+  - http://speakerdeck.com/u/antocuni/p/pypy-jit-under-the-hood
+
+  - http://www.youtube.com/watch?v=cMtBUvORCfU
+
+
 Loops and guards
 -----------------
 
@@ -677,3 +753,4 @@ More PyPy at EuroPython
 
 * Or, just talk to us :)
 
+* @pypyproject, @antocuni
