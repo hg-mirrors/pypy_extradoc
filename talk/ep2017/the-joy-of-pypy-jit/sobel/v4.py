@@ -1,6 +1,6 @@
 import array
 from math import sqrt
-from v2 import Image
+from v3 import Image
 
 class Kernel(object):
 
@@ -9,11 +9,11 @@ class Kernel(object):
         self.width = len(matrix[0])
         self.matrix = matrix
 
-    def __call__(self, img, x, y):
+    def __call__(self, img, p):
         value = 0.0
         for j, row in enumerate(self.matrix, -(self.height/2)):
             for i, k in enumerate(row, -(self.width/2)):
-                value += img[x+i, y+j] * k
+                value += img[p + (i, j)] * k
         return value
 
 
@@ -31,10 +31,9 @@ def sobel(img):
     """
     img = Image(*img)
     out = Image(img.width, img.height)
-    for y in xrange(1, img.height-1):
-        for x in xrange(1, img.width-1):
-            dx = Gx(img, x, y)
-            dy = Gy(img, x, y)
-            value = min(int(sqrt(dx*dx + dy*dy) / 2.0), 255)
-            out[x, y] = value
+    for p in img.noborder():
+        dx = Gx(img, p)
+        dy = Gy(img, p)
+        value = min(int(sqrt(dx*dx + dy*dy) / 2.0), 255)
+        out[p] = value
     return out
