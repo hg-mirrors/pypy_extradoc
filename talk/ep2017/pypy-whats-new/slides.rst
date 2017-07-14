@@ -135,6 +135,8 @@ Performance?
 
 * We have plans to improve
 
+* Funding help welcome
+
 * For now: try it out on your own code and see
 
 
@@ -177,6 +179,8 @@ PyPy-nogil?
 ===========
 
 * Thinking instead about a GIL-free but non-STM PyPy
+
+* See lightning talk later
 
 
 
