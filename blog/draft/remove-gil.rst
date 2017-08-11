@@ -17,16 +17,14 @@ remaining 90% (and another 90%) of work is with putting locks in strategic
 places so PyPy does not segfault when you try to do a concurrent access to a
 data structure.
 
-.. antocuni: I'd simply remove the following paragraph. It's redundant, IMHO
-..
-   Since such work would complicate the code base and our day to day work,
-   we would like to judge the interest on the community and the commercial
-   PyPy users.
-
-We are looking for commercial partners to make it happen (individual donations
+Since such work would complicate the code base and our day to day work,
+we would like to judge the interest on the community and the commercial
+ partners to make it happen (individual donations
 did not work very well for us in the past). We estimate a total cost of $50k,
-out of which we already have backing for about 1/3. If we can get a $100k
-contract, we would make it our priority to deliver before the end of the year.
+out of which we already have backing for about 1/3. This would give us a good
+shot at delivering a good proof of concept of working PyPy no-GIL. If we can get a $100k
+contract, we will deliver fully working PyPy interpreter with no GIL as a release,
+possibly separate from the default PyPy release.
 
 People asked several questions, so I'll try to answer the technical parts
 here.
@@ -54,9 +52,20 @@ which means that it's very easy to make your programs slower.
 Python is a very mutable language - there is tons of mutable state and
 basic objects that are compile time in other languages, like classes and functions
 are mutable at runtime. That means that sharing things between subinterpreters would
-be restricted to basic immutable data structures, which defeats the point compared
-to multi-processing approach. We don't believe it's a viable approach without
+be restricted to basic immutable data structures, which defeats the point,
+because it has the same problems as the approach of having multiple processes and
+no additional benefits.
+We don't believe it's a viable approach without
 seriously impacting the semantics of the language.
+
+* Why is it easier to do in PyPy than CPython?
+
+Removing the GIL in CPython has two problems - how do we guard access to mutable
+data structures with locks and what do we do with reference counting that needs
+to be guarded. PyPy only has the former problem, with latter being non-existance
+due to a different garbage collector approach. We believe that fixing reference
+counting would be quite a bit bigger undertaking than "just" providing locks around
+mutable data structures.
 
 Best regards,
 Maciej Fijalkowski
