@@ -6,12 +6,12 @@ Hello everyone.
 Discussions about the infamous Global Interpreter Lock have been around for a while
 in the Python community. There has been various attempts at removing it:
 some were successful, like e.g. in Jython or IronPython with the help of the platform, and some yet to bear fruit, like `gilectomy`_. Since our `February sprint`_ in Leysin,
-we've been on-and-off tackling the topic of GIL removal in the PyPy project.
+we've been on-and-off tackling directly the topic of GIL removal in the PyPy project.
 
 .. _`February sprint`: https://morepypy.blogspot.it/2017/03/leysin-winter-sprint-summary.html
 
 As we announced at EuroPython, what we have got so far is a GIL-less PyPy
-which can to run **very simple** multi-threaded programs which are nicely
+which can run **very simple** multi-threaded programs which are nicely
 parallelized.  At the moment, non-simple programs most likely segfaults: the
 remaining 90% (and another 90%) of work is with putting locks in strategic
 places so PyPy does not segfault when you try to do a concurrent access to a
@@ -62,10 +62,9 @@ seriously impacting the semantics of the language.
 
 Removing the GIL in CPython has two problems - how do we guard access to mutable
 data structures with locks and what do we do with reference counting that needs
-to be guarded. PyPy only has the former problem, with latter being non-existance
-due to a different garbage collector approach. We believe that fixing reference
-counting would be quite a bit bigger undertaking than "just" providing locks around
-mutable data structures.
+to be guarded. PyPy only has the former problem; the latter doesn't exist,
+due to a different garbage collector approach.  Of course the first problem
+is a mess too, but at least we are already half-way there.
 
 Best regards,
 Maciej Fijalkowski
