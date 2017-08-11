@@ -7,6 +7,10 @@ Discussions about the infamous Global Interpreter Lock have been around for a wh
 in the Python community. There has been various attempts at removing it:
 some were successful, like e.g. in Jython or IronPython with the help of the platform, and some yet to bear fruit, like `gilectomy`_. Since our `February sprint`_ in Leysin,
 we've been on-and-off tackling directly the topic of GIL removal in the PyPy project.
+We believe that the work done in IronPython or Jython can be reproduced with
+only a bit more effort. Compared to that, removing the GIL in CPython is a much
+harder topic, since it requires tackling the problem of multi-threaded reference
+counting. See the section below for further discussions.
 
 .. _`February sprint`: https://morepypy.blogspot.it/2017/03/leysin-winter-sprint-summary.html
 
@@ -64,7 +68,11 @@ Removing the GIL in CPython has two problems - how do we guard access to mutable
 data structures with locks and what do we do with reference counting that needs
 to be guarded. PyPy only has the former problem; the latter doesn't exist,
 due to a different garbage collector approach.  Of course the first problem
-is a mess too, but at least we are already half-way there.
+is a mess too, but at least we are already half-way there. Compare to Jython
+or IronPython, PyPy lacks some data structures that are provided by JVM or .NET,
+which we would need to implement, hence the problem is a little harder
+than on an existing multithreaded platform. However, there is good research
+and we know how the problem can be solved.
 
 Best regards,
 Maciej Fijalkowski
