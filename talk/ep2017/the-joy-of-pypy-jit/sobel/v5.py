@@ -19,13 +19,6 @@ def Kernel(matrix):
     code.compile()
     return code['apply']
 
-Gx = Kernel([[-1.0, 0.0, +1.0],
-             [-2.0, 0.0, +2.0],
-             [-1.0, 0.0, +1.0]])
-
-Gy = Kernel([[-1.0, -2.0, -1.0],
-             [0.0,  0.0,  0.0],
-             [+1.0, +2.0, +1.0]])
 
 def sobel(img):
     """
@@ -34,6 +27,14 @@ def sobel(img):
     img = Image(*img)
     out = Image(img.width, img.height)
     for p in img.noborder():
+        Gx = Kernel([[-1.0, 0.0, +1.0],
+                     [-2.0, 0.0, +2.0],
+                     [-1.0, 0.0, +1.0]])
+
+        Gy = Kernel([[-1.0, -2.0, -1.0],
+                     [0.0,  0.0,  0.0],
+                     [+1.0, +2.0, +1.0]])
+
         dx = Gx(img, p)
         dy = Gy(img, p)
         value = min(int(sqrt(dx*dx + dy*dy) / 2.0), 255)
