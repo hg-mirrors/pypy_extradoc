@@ -180,9 +180,9 @@ PyPy-nogil?
 
 * Another possibility: a GIL-free but non-STM PyPy
 
-* Large amount of work, not looking forward to do it
+* Large amount of work, large maintenance burden
 
-* Would require serious funding first
+* Lots of hype, but we would need serious commercial funding and backing
 
 
 
