@@ -1,0 +1,7 @@
+\definecolor{rrblitbackground}{rgb}{0.4, 0.0, 0.0}
+
+\title[What's New in PyPy]{PyPy meets Python 3 and Numpy (and other What's New topics)}
+\author[Armin Rigo]{Armin Rigo}
+
+\institute{PyConZA 2017}
+\date{October 2017}
