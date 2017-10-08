@@ -1,0 +1,10 @@
+
+
+- BaseCpyTypedescr.allocate() calls
+  lltype.malloc(add_memory_pressure=True).  We should reduce the memory
+  pressure in case a DECREF() frees the object before it becomes
+  attached to a W_Root object.
+
+
+- make_typedescr() for the type object (typeobject.py) should pass
+  basestruct=PyHeapTypeObject??
