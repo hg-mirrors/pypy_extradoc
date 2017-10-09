@@ -8,3 +8,12 @@
 
 - make_typedescr() for the type object (typeobject.py) should pass
   basestruct=PyHeapTypeObject??
+
+- right now the conversion from space.w_None to Py_None always does a dict
+  lookup (inside as_pyobj); investigate whether it is worth to add a special
+  case for it. A possible more general solution is to add a special field to
+  some selected W_* classes (for example W_TypeObject, W_NoneObject and an
+  hypotetical W_CPyObject) which contains a PyObject* field, so that doing the
+  w_* -> py_* lookup is just a getfield (there is alreadt support for this in
+  rawrefcount.create_link_pyobj)
+  
