@@ -4,7 +4,7 @@
 Hello from the other side of the world (for most of you)!
 
 With the excuse of coming to PyCon ZA[1], during the last two weeks Armin,
-Ronan, Antonio and Maciek had a very nice and productive sprint in Cape Town,
+Ronan, Antonio and sometimes Maciek had a very nice and productive sprint in Cape Town,
 as pictures show :).
 
 XXX insert pic
