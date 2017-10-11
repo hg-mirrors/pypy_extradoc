@@ -15,6 +15,7 @@ harder topic, since it also requires tackling the problem of multi-threaded refe
 counting. See the section below for further details.
 
 .. _`February sprint`: https://morepypy.blogspot.it/2017/03/leysin-winter-sprint-summary.html
+.. _`gilectomy`: https://github.com/larryhastings/gilectomy
 
 As we announced at EuroPython, what we have so far is a GIL-less PyPy
 which can run **very simple** multi-threaded, nicely parallelized, programs.
