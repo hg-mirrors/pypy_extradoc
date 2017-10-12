@@ -16,4 +16,11 @@
   hypotetical W_CPyObject) which contains a PyObject* field, so that doing the
   w_* -> py_* lookup is just a getfield (there is alreadt support for this in
   rawrefcount.create_link_pyobj)
-  
+
+- make sure that we run all tests with -A, too
+
+- make PyTypeObject be a pointer, like all other PyXxxObject
+
+- as_pyobj() should be a context manager which calls
+  keepalive_until_here()
+
