@@ -24,3 +24,8 @@
 - as_pyobj() should be a context manager which calls
   keepalive_until_here()
 
+- tupleobject.c: PyErr_BadInternalCall() and PyErr_NoMemory()
+  cannot be called from PyTuple_New() right now, think again
+
+- methodobject.py: be ready for make_ref() to fail, and free the
+  partially-contructed tuple (same logic as tuple_attach)
