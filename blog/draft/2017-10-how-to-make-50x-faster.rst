@@ -2,7 +2,7 @@ How to make your code 80 times faster
 ======================================
 
 I often hear people who are happy because PyPy makes their code 2 times faster
-or so. Here is a short personal story which shows that PyPy can go well beyond
+or so. Here is a short personal story which shows PyPy can go well beyond
 that.
 
 **DISCLAIMER**: this is not a silver bullet or a general recipe: it worked in
@@ -25,7 +25,7 @@ random variations.
 
 However, for the scope of this post, the actual task at hand is not so
 important, so let's jump straight to the code. To drive the quadcopter, a
-``Creature`` has a ``run_step`` method which runs at each delta-t (`full
+``Creature`` has a ``run_step`` method which runs at each ``delta - t`` (`full
 code`_)::
 
     class Creature(object):
@@ -50,16 +50,16 @@ code`_)::
   start easy, all the 4 motors are constrained to have the same thrust, so
   that the quadcopter only travels up and down the Z axis;
 
-- ``self.state`` contains an arbitrary amount of values which are passed from
+- ``self.state`` contains arbitrary values of unknown size which are passed from
   one step to the next;
 
-- ``self.matrix`` and ``self.constant`` contains the actual logic: by putting
+- ``self.matrix`` and ``self.constant`` contains the actual logic. By putting
   the "right" values there, in theory we could get a perfectly tuned PID
   controller. These are randomly mutated between generations.
 
 .. _`full code`: https://github.com/antocuni/evolvingcopter/blob/master/ev/creature.py
 
-``run_step`` is run at 100Hz (in the virtual time of the simulation). At each
+``run_step`` is run at 100Hz (in the virtual time frame of the simulation). At each
 generation, we test 500 creatures for a total of 12 virtual seconds each. So,
 we have a total of 600,000 executions of ``run_step`` at each generation.
 
@@ -101,7 +101,7 @@ speed improves::
 
 So, ~2.7 seconds on average: this is 12x faster than PyPy+numpy, and more than
 2x faster than the original CPython. At this point, most people would be happy
-and go tweeting how good is PyPy.
+and go tweeting how PyPy is great.
 
 .. _`we are working on that`: https://morepypy.blogspot.it/2017/10/cape-of-good-hope-for-pypy-hello-from.html
 .. _hack: https://github.com/antocuni/evolvingcopter/blob/master/ev/pypycompat.py
@@ -118,14 +118,14 @@ implementations).
 
 So, let's try to do better. As usual, the first thing to do is to profile and
 see where we spend most of the time. Here is the `vmprof profile`_. We spend a
-lot of time inside the internals of numpypy, and to allocate tons of temporary
+lot of time inside the internals of numpypy, and allocating tons of temporary
 arrays to store the results of the various operations.
 
 Also, let's look at the `jit traces`_ and search for the function ``run``:
-this is loop in which we spend most of the time, and it is composed by a total
+this is loop in which we spend most of the time, and it is composed 
 of 1796 operations.  The operations emitted for the line ``np.dot(...) +
 self.constant`` are listed between lines 1217 and 1456; 239 low level
-operations are a lot: if we look at them, we can see for example that there is
+operations are a lot. If we look at them, we can see for example that there is
 a call to the RPython function `descr_dot`_, at line 1232. But there are also
 calls to ``raw_malloc``, at line 1295, which allocates the space to store the
 result of ``... + self.constant``.
@@ -136,7 +136,7 @@ result of ``... + self.constant``.
 
 All of this is very suboptimal: in this particular case, we know that the
 shape of ``self.matrix`` is always ``(3, 2)``: so, we are doing an incredible
-amount of work and ``malloc()``ing a temporary array just to call an RPython
+amount of work. We also use ``malloc()`` to create a temporary array just to call an RPython
 function which ultimately does a total of 6 multiplications and 8 additions.
 
 One possible solution to this nonsense is a well known compiler optimization:
@@ -177,8 +177,8 @@ shape. So, let's unroll the loop manually::
 In the `actual code`_ there is also a sanity check which asserts that the
 computed output is the very same as the one returned by ``Creature.run_step``.
 
-Note that is code is particularly PyPy-friendly, because ``self.data`` is a
-simple list of floats: thanks to list strategies, it is internally represented
+Note that is code is particularly PyPy-friendly. Thanks to PyPy's `list strategies`_
+optimizations, ``self.data`` as a simple list of floats is internally represented
 as a flat array of C doubles, i.e. very fast and compact.
 
 .. _`actual code`: https://github.com/antocuni/evolvingcopter/blob/master/ev/creature.py#L100
@@ -219,7 +219,7 @@ than the original CPython+numpy implementation, and around 35-40x faster than
 the naive PyPy+numpypy one.
 
 Let's look at the trace_ again: it no longer contains expensive calls, and
-certainly no more temporary ``malloc()``s: the core of the logic is between
+certainly no more temporary ``malloc()`` s. The core of the logic is between
 lines XX-YY, where we can see that it does fast C-level multiplications and
 additions.
 
@@ -235,4 +235,15 @@ it's a real world example, albeit small.
 Numpy vs numpypy
 -----------------
 
-bla bla
+Way back in 2011, the PyPy team `started to reimplement`_ NumPy in PyPy.
+It has two pieces: the micronumpy RPython module that roughly covers the
+multiarray numpy module, and a fork of the python-code called numpypy.
+Over the years the project slowly matured, eventually it was able to call
+out to the LAPACK and BLAS libraries to speed matrix calculations just like
+NumPy, and reached around an 80% parity with the upstream project. But 80%
+is far from 100%, and once the cpyext layer of PyPy matured to the point it
+could pass 99.9% of the NumPy test suite, we no longer recommend using numpypy.
+
+XXX more needed?
+
+.. _`started to reimplement`: https://morepypy.blogspot.co.il/2011/05/numpy-in-pypy-status-and-roadmap.html
