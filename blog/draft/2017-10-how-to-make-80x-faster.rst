@@ -25,7 +25,7 @@ random variations.
 
 However, for the scope of this post, the actual task at hand is not so
 important, so let's jump straight to the code. To drive the quadcopter, a
-``Creature`` has a ``run_step`` method which runs at each ``delta - t`` (`full
+``Creature`` has a ``run_step`` method which runs at each ``delta_t`` (`full
 code`_)::
 
     class Creature(object):
@@ -220,8 +220,9 @@ the naive PyPy+numpypy one.
 
 Let's look at the trace_ again: it no longer contains expensive calls, and
 certainly no more temporary ``malloc()`` s. The core of the logic is between
-lines XX-YY, where we can see that it does fast C-level multiplications and
-additions.
+lines 386-416, where we can see that it does fast C-level multiplications and
+additions: ``float_mul`` and ``float_add`` are translated straight into
+``mulsd`` and ``addsd`` x86 instructions.
 
 .. _trace: http://vmprof.com/#/402af746-2966-4403-a61d-93015abac033/traces
 
@@ -231,6 +232,15 @@ speedup, unfortunately. However, it clearly shows the potential of PyPy when
 it comes to high-speed computing. And most importantly, it's not a toy
 benchmark which was designed specifically to have good performance on PyPy:
 it's a real world example, albeit small.
+
+You might be also interested in the talk I gave at last EuroPython, in which I
+talk about a similar topic: "The Joy of PyPy JIT: abstractions for free"
+(abstract_, slides_ and video_).
+
+.. _abstract: https://ep2017.europython.eu/conference/talks/the-joy-of-pypy-jit-abstractions-for-free
+.. _slides: https://speakerdeck.com/antocuni/the-joy-of-pypy-jit-abstractions-for-free
+.. _video: https://www.youtube.com/watch?v=NQfpHQII2cU
+
 
 Numpy vs numpypy
 -----------------
