@@ -240,3 +240,15 @@ talk about a similar topic: "The Joy of PyPy JIT: abstractions for free"
 .. _abstract: https://ep2017.europython.eu/conference/talks/the-joy-of-pypy-jit-abstractions-for-free
 .. _slides: https://speakerdeck.com/antocuni/the-joy-of-pypy-jit-abstractions-for-free
 .. _video: https://www.youtube.com/watch?v=NQfpHQII2cU
+
+
+How to reproduce the results
+-----------------------------
+
+::
+
+   $ git clone https://github.com/antocuni/evolvingcopter
+   $ cd evolvingcopter
+   $ {python,pypy} -m ev.main --no-specialized --no-numpypy
+   $ {python,pypy} -m ev.main --no-specialized
+   $ {python,pypy} -m ev.main
