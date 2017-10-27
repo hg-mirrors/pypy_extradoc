@@ -86,10 +86,9 @@ Then I tried with PyPy 5.9::
 Ouch! We are ~5.5x slower than CPython. This was kind of expected: numpy is
 based on cpyext, which is infamously slow (although `we are working on that`_).
 
-So, let's try to avoid cpyext. The first obvious step is to use numpypy
-instead of numpy; for more info about numpypy, see the next section. In the
-meantime, here is a link to the hack_ which enables for PyPy. Let's see if the
-speed improves::
+So, let's try to avoid cpyext. The first obvious step is to use numpypy_
+instead of numpy (actually, there a hack_ to use just the micronumpy
+part). Let's see if the speed improves::
 
     $ pypy -m ev.main   # using numpypy
     Generation   1: ... [population = 500]  [5.60 secs]
@@ -104,6 +103,7 @@ So, ~2.7 seconds on average: this is 12x faster than PyPy+numpy, and more than
 and go tweeting how PyPy is great.
 
 .. _`we are working on that`: https://morepypy.blogspot.it/2017/10/cape-of-good-hope-for-pypy-hello-from.html
+.. _numpypy: http://doc.pypy.org/en/latest/faq.html#what-about-numpy-numpypy-micronumpy
 .. _hack: https://github.com/antocuni/evolvingcopter/blob/master/ev/pypycompat.py
 
 In general, when talking of CPython vs PyPy, I am rarely satified of a 2x
@@ -240,20 +240,3 @@ talk about a similar topic: "The Joy of PyPy JIT: abstractions for free"
 .. _abstract: https://ep2017.europython.eu/conference/talks/the-joy-of-pypy-jit-abstractions-for-free
 .. _slides: https://speakerdeck.com/antocuni/the-joy-of-pypy-jit-abstractions-for-free
 .. _video: https://www.youtube.com/watch?v=NQfpHQII2cU
-
-
-Numpy vs numpypy
------------------
-
-Way back in 2011, the PyPy team `started to reimplement`_ NumPy in PyPy.
-It has two pieces: the micronumpy RPython module that roughly covers the
-multiarray numpy module, and a fork of the python-code called numpypy.
-Over the years the project slowly matured, eventually it was able to call
-out to the LAPACK and BLAS libraries to speed matrix calculations just like
-NumPy, and reached around an 80% parity with the upstream project. But 80%
-is far from 100%, and once the cpyext layer of PyPy matured to the point it
-could pass 99.9% of the NumPy test suite, we no longer recommend using numpypy.
-
-XXX more needed?
-
-.. _`started to reimplement`: https://morepypy.blogspot.co.il/2011/05/numpy-in-pypy-status-and-roadmap.html
