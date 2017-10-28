@@ -84,7 +84,9 @@ Then I tried with PyPy 5.9::
     Generation   4: ... [population = 500]  [33.75 secs]
 
 Ouch! We are ~5.5x slower than CPython. This was kind of expected: numpy is
-based on cpyext, which is infamously slow (although `we are working on that`_).
+based on cpyext, which is infamously slow.  (Actually, `we are working on
+that`_ and on the ``cpyext-avoid-roundtrip`` branch we are already faster than
+CPython, but this will be the subject of another blog post.)
 
 So, let's try to avoid cpyext. The first obvious step is to use numpypy_
 instead of numpy (actually, there a hack_ to use just the micronumpy
