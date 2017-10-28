@@ -122,13 +122,29 @@ lot of time inside the internals of numpypy, and allocating tons of temporary
 arrays to store the results of the various operations.
 
 Also, let's look at the `jit traces`_ and search for the function ``run``:
-this is loop in which we spend most of the time, and it is composed 
-of 1796 operations.  The operations emitted for the line ``np.dot(...) +
-self.constant`` are listed between lines 1217 and 1456; 239 low level
-operations are a lot. If we look at them, we can see for example that there is
-a call to the RPython function `descr_dot`_, at line 1232. But there are also
-calls to ``raw_malloc``, at line 1295, which allocates the space to store the
-result of ``... + self.constant``.
+this is loop in which we spend most of the time, and it is composed of 1796
+operations.  The operations emitted for the line ``np.dot(...) +
+self.constant`` are listed between lines 1217 and 1456. Here is the excerpt
+which calls ``np.dot(...)``; most of the ops are cheap, but at line 1232 we
+see a call to the RPython function `descr_dot`_; by looking at the
+implementation we see that it creates a new ``W_NDimArray`` to store the
+result, which means it has to do a ``malloc()``:
+
+.. image:: 2017-10-trace1.png
+
+The implementation of the ``+ self.constant`` part is also interesting:
+contrary the former, the call to ``W_NDimArray.descr_add`` has been inlined by
+the JIT, so we have a better picture of what's happening; in particular, we
+can see the call to ``__0_alloc_with_del____`` which allocates the
+``W_NDimArray`` for the result, and the ``raw_malloc`` which allocates the
+actual array. Then we have a long list of 149 simple operations which set the
+fields of the resulting array, construct an iterator, and finally do a
+``call_assembler``: this is the actual logic to do the addition, which was
+JITtted indipendently; ``call_assembler`` is one of the operations to do
+JIT-to-JIT calls:
+
+.. image:: 2017-10-trace1.png  
+
 
 .. _`vmprof profile`: http://vmprof.com/#/449ca8ee-3ab2-49d4-b6f0-9099987e9000
 .. _`jit traces`: http://vmprof.com/#/28fd6e8f-f103-4bf4-a76a-4b65dbd637f4/traces
@@ -136,8 +152,10 @@ result of ``... + self.constant``.
 
 All of this is very suboptimal: in this particular case, we know that the
 shape of ``self.matrix`` is always ``(3, 2)``: so, we are doing an incredible
-amount of work. We also use ``malloc()`` to create a temporary array just to call an RPython
-function which ultimately does a total of 6 multiplications and 8 additions.
+amount of work. We also use ``malloc()`` to create a temporary array just to
+call an RPython function which ultimately does a total of 6 multiplications
+and 8 additions.  Note also that this is not a fault of the JIT: CPython+numpy
+has to do the same amount of work, just hidden inside C calls.
 
 One possible solution to this nonsense is a well known compiler optimization:
 loop unrolling.  From the compiler point of view, unrolling the loop is always
