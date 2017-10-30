@@ -182,8 +182,7 @@ shape. So, let's unroll the loop manually:
 
         def __init__(self, *args, **kwargs):
             Creature.__init__(self, *args, **kwargs)
-            # store the data in a plain Python list, which pypy is able to
-            # optimize as a float array
+            # store the data in a plain Python list
             self.data = list(self.matrix.ravel()) + list(self.constant)
             self.data_state = [0.0]
             assert self.matrix.shape == (2, 3)
@@ -207,12 +206,7 @@ shape. So, let's unroll the loop manually:
 In the `actual code`_ there is also a sanity check which asserts that the
 computed output is the very same as the one returned by ``Creature.run_step``.
 
-Note that is code is particularly PyPy-friendly. Thanks to PyPy's `list strategies`_
-optimizations, ``self.data`` as a simple list of floats is internally represented
-as a flat array of C doubles, i.e. very fast and compact.
-
 .. _`actual code`: https://github.com/antocuni/evolvingcopter/blob/master/ev/creature.py#L100
-.. _`list strategies`: https://morepypy.blogspot.it/2011/10/more-compact-lists-with-list-strategies.html
 
 So, let's try to see how it performs. First, with CPython:
 
