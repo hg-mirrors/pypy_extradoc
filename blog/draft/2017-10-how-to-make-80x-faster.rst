@@ -26,7 +26,9 @@ random variations.
 However, for the scope of this post, the actual task at hand is not so
 important, so let's jump straight to the code. To drive the quadcopter, a
 ``Creature`` has a ``run_step`` method which runs at each ``delta_t`` (`full
-code`_)::
+code`_):
+
+.. sourcecode:: python
 
     class Creature(object):
         INPUTS = 2  # z_setpoint, current z position
@@ -59,11 +61,13 @@ code`_)::
 
 .. _`full code`: https://github.com/antocuni/evolvingcopter/blob/master/ev/creature.py
 
-``run_step`` is run at 100Hz (in the virtual time frame of the simulation). At each
+``run_step`` is called at 100Hz (in the virtual time frame of the simulation). At each
 generation, we test 500 creatures for a total of 12 virtual seconds each. So,
 we have a total of 600,000 executions of ``run_step`` at each generation.
 
-At first, I simply tried to run this code on CPython; here is the result::
+At first, I simply tried to run this code on CPython; here is the result:
+
+.. sourcecode::
 
     $ python -m ev.main
     Generation   1: ... [population = 500]  [12.06 secs]
@@ -75,7 +79,9 @@ At first, I simply tried to run this code on CPython; here is the result::
 
 Which means ~6.15 seconds/generation, excluding the first.
 
-Then I tried with PyPy 5.9::
+Then I tried with PyPy 5.9:
+
+.. sourcecode::
 
     $ pypy -m ev.main
     Generation   1: ... [population = 500]  [63.90 secs]
@@ -90,7 +96,9 @@ CPython, but this will be the subject of another blog post.)
 
 So, let's try to avoid cpyext. The first obvious step is to use numpypy_
 instead of numpy (actually, there a hack_ to use just the micronumpy
-part). Let's see if the speed improves::
+part). Let's see if the speed improves:
+
+.. sourcecode::
 
     $ pypy -m ev.main   # using numpypy
     Generation   1: ... [population = 500]  [5.60 secs]
@@ -154,8 +162,8 @@ JIT-to-JIT calls:
 
 All of this is very suboptimal: in this particular case, we know that the
 shape of ``self.matrix`` is always ``(3, 2)``: so, we are doing an incredible
-amount of work. We also use ``malloc()`` to create a temporary array just to
-call an RPython function which ultimately does a total of 6 multiplications
+amount of work. We also ``malloc()`` two temporary arrays just to
+call two functions which ultimately do a total of 6 multiplications
 and 8 additions.  Note also that this is not a fault of the JIT: CPython+numpy
 has to do the same amount of work, just hidden inside C calls.
 
@@ -166,7 +174,9 @@ of code, possibly uselss if the shape of the matrices change frequently: this
 is the main reason why the PyPy JIT does not even try to do it in this case.
 
 However, we **know** that the matrix is small, and always of the same
-shape. So, let's unroll the loop manually::
+shape. So, let's unroll the loop manually:
+
+.. sourcecode:: python
 
     class SpecializedCreature(Creature):
 
@@ -204,7 +214,9 @@ as a flat array of C doubles, i.e. very fast and compact.
 .. _`actual code`: https://github.com/antocuni/evolvingcopter/blob/master/ev/creature.py#L100
 .. _`list strategies`: https://morepypy.blogspot.it/2011/10/more-compact-lists-with-list-strategies.html
 
-So, let's try to see how it performs. First, with CPython::
+So, let's try to see how it performs. First, with CPython:
+
+.. sourcecode::
 
     $ python -m ev.main
     Generation   1: ... [population = 500]  [7.61 secs]
@@ -215,7 +227,9 @@ So, let's try to see how it performs. First, with CPython::
     Generation   6: ... [population = 500]  [3.69 secs]
 
 This looks good: 60% faster than the original CPython+numpy
-implementation. Let's try on PyPy::
+implementation. Let's try on PyPy:
+
+.. sourcecode::
 
     Generation   1: ... [population = 500]  [0.39 secs]
     Generation   2: ... [population = 500]  [0.10 secs]
@@ -265,7 +279,7 @@ talk about a similar topic: "The Joy of PyPy JIT: abstractions for free"
 How to reproduce the results
 -----------------------------
 
-::
+.. sourcecode::
 
    $ git clone https://github.com/antocuni/evolvingcopter
    $ cd evolvingcopter
