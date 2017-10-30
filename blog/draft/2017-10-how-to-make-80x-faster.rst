@@ -256,7 +256,7 @@ additions: ``float_mul`` and ``float_add`` are translated straight into
 
 As I said before, this is a very particular example, and the techniques
 described here do not always apply: it is not realistic to expect an 80x
-speedup, unfortunately. However, it clearly shows the potential of PyPy when
+speedup on arbitrary code, unfortunately. However, it clearly shows the potential of PyPy when
 it comes to high-speed computing. And most importantly, it's not a toy
 benchmark which was designed specifically to have good performance on PyPy:
 it's a real world example, albeit small.
