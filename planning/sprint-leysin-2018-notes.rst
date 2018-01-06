@@ -10,4 +10,5 @@ Tasks
 - cpyext performance improvements
 - General 3.5 and 3.6 improvements
 - JIT topics: guard-compatible, and the subsequent research project to save and reuse traces across processes
-- finish unicode-uint8
+- finish unicode-utf8
+- update www.pypy.org, speed.pypy.org (web devs needed)
