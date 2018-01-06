@@ -10,6 +10,7 @@ available yet from them.
     Name              Arrive/Depart     Accomodation 
 ==================== ============== =======================
 Armin Rigo                          private
+Matti Picus          17.3/22.3      Ermina
 ==================== ============== =======================
 
 **NOTE:** lodging is by default in Ermina.  Based on past years, there
