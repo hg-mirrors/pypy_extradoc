@@ -1,0 +1,80 @@
+=====================================================================
+      PyPy Leysin Winter Sprint (17th - 24th March 2018)
+=====================================================================
+
+The next PyPy sprint will be in Leysin, Switzerland, for the thirteenth
+time.  This is a fully public sprint: newcomers and topics other than
+those proposed below are welcome.
+
+(Note: this sprint is independent from the suggested April-May sprint in
+Poland.)
+
+
+------------------------------
+Goals and topics of the sprint
+------------------------------
+
+The list of topics is open, but here is our current list:
+
+- cffi tutorial/overview rewrite
+- py3 test runners are too complicated
+- make win32 builds green
+- make packaging more like cpython/portable builds
+- get CI builders for PyPy into mainstream projects (Numpy, Scipy, lxml, uwsgi)
+- get more of scientific stack working (tensorflow?)
+- cpyext performance improvements
+- General 3.5 and 3.6 improvements
+- JIT topics: guard-compatible, and the subsequent research project to save and reuse traces across processes
+- finish unicode-utf8
+- update www.pypy.org, speed.pypy.org (web devs needed)
+
+As usual, the main side goal is to have fun in winter sports :-)
+We can take a day off (for ski or anything else).
+
+-----------
+Exact times
+-----------
+
+Work days: starting March 18th (~noon), ending March 24th (~noon).
+
+I have pre-booked the week from Saturday March 17th to Saturday March
+24th.  If it is possible for you to arrive Sunday before mid-afternoon,
+then you can get a booking from Sunday only.  The break day should be
+around Wednesday.
+
+It is fine to stay a few more days on either side, or conversely to book
+for a part of that time only.
+
+-----------------------
+Location & Accomodation
+-----------------------
+
+Leysin, Switzerland, "same place as before".  Let me refresh your
+memory: both the sprint venue and the lodging will be in a pair of
+chalets built specifically for bed & breakfast: http://www.ermina.ch/.
+You can also arrange your own lodging elsewhere (as long as you are in
+Leysin, you cannot be more than a 15 minutes walk away from the sprint
+venue).
+
+Please *confirm* that you are coming so that we can adjust the
+reservations as appropriate.
+
+The options of rooms are a bit more limited than on previous years
+because the place for bed-and-breakfast is shrinking; but we should
+still have enough room for us.  The price is around 60 CHF, breakfast
+included, in shared rooms (3 or 4 people).  If there are people that
+would prefer a double or single room, please contact me and we'll see
+what choices you have.  There is a choice of hotels in Leysin, starting
+at 65 CHF the room.
+
+Please register by Mercurial::
+
+  https://bitbucket.org/pypy/extradoc/
+  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/leysin-winter-2018/
+
+or on the pypy-dev mailing list if you do not yet have check-in rights:
+
+  http://mail.python.org/mailman/listinfo/pypy-dev
+
+You need a Swiss-to-(insert country here) power adapter.  There will be
+some Swiss-to-EU adapters around, and at least one EU-format power strip.
