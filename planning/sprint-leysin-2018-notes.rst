@@ -12,3 +12,4 @@ Tasks
 - JIT topics: guard-compatible, and the subsequent research project to save and reuse traces across processes
 - finish unicode-utf8
 - update www.pypy.org, speed.pypy.org (web devs needed)
+- go over projects at https://bitbucket.org/pypy, delete or document dead projects
