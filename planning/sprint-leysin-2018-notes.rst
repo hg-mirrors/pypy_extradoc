@@ -13,3 +13,4 @@ Tasks
 - finish unicode-utf8
 - update www.pypy.org, speed.pypy.org (web devs needed)
 - go over projects at https://bitbucket.org/pypy, delete or document dead projects
+- document the different rpython decorators like enforceargs, signature, and then interp-level unwrap_spec
