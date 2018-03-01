@@ -20,7 +20,7 @@ Floris Bruynooghe    17.3/21.3      Ermina
 Antonio Cuni         18.3/23.3      Ermina, exact dates to be confirmed
 Alexander Schremmer  18.3/20.3      Ermina
 Ronan Lamy           17.3/23.3      Ermina
-René Dudfield        18.3/24.3      Ermina
+RenÃ© Dudfield        18.3/24.3      Ermina
 ==================== ============== =======================
 
 **NOTE:** lodging is by default in Ermina.  Based on past years, there
