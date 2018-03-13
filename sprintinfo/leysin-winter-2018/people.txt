@@ -13,7 +13,7 @@ Armin Rigo                          private
 Matti Picus          17.3/22.3      Ermina
 Manuel Jacob         17.3/24.3      Ermina
 Remi Meier           18.3/24.3      Ermina
-Joannah Nanjekye     17.3/25.3      separate room Ermina
+Joannah Nanjekye     17.3/25.3      CANCELLED
 Jean-Daniel          17.3/21.3      own booking Ermina
 Arianna              17.3/21.3      own booking Ermina
 Floris Bruynooghe    17.3/21.3      Ermina
