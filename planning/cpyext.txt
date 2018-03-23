@@ -22,3 +22,46 @@
 - add JIT support to virtualize the pypy side placeholders of PyObject*: this
   way, if a PyObject* is converted to W_Root only for the lifetime of the
   loop, we can avoid the cost entirely
+
+
+Improving the performance of PyObject* -> W_Root conversion
+------------------------------------------------------------
+
+Currently, if you are in a loop, create lots of PyObject* in C and pass them
+to pypy (by calling from_ref), it is very slow.  For example, look at
+allocate_int and allocate_tuple in antocuni/cpyext-benchmarks.
+
+This happens because:
+
+1. we have to keep track of the W_Root->PyObject link inside the minor
+collection; this is currently done by putting them in a temporary dict, which
+is then "merged" with the big one when a PyObject survives
+
+2. we have to walk over all the allocated PyObject* which died young, to call tp_dealloc
+
+The following is a rough proposal to improve both points:
+
+1. we implement a way to have "extra fields" on objects which are in the
+   nursery (see later for details)
+
+2. for each W_Root which has a corresponding PyObject, we add two fields:
+
+   w_obj.pyobj:  this maintain the link between W_Root and PyObject while we
+                 are in the nursery; later, when we the object survives, the
+                 link is maintained "as usual" by putting w_obj in a special
+                 dict
+
+   w_obj.w_next: this is used to implement a chained list of "w_obj which have
+                 a pyobj": this way it is very fast to iterate over all of
+                 them during the minor collection
+
+Alternative: use an AddressStack to maintain the list of PyObject*, instead of
+using the chained list using w_next
+
+How to implement extra fields?
+
+The simplest way is to have a "parallel nursery": if w_obj is at offset X from
+the start of the nursery, its extra fields will start at the same offset in
+the parallel nursery. The only requirement is that each W_Root in the nursery
+is at least two words, and we need to think about how to guarantee it.
+
