@@ -65,3 +65,13 @@ the start of the nursery, its extra fields will start at the same offset in
 the parallel nursery. The only requirement is that each W_Root in the nursery
 is at least two words, and we need to think about how to guarantee it.
 
+
+To think about:
+~~~~~~~~~~~~~~~
+
+Maybe we can tweak the nursery collection by adding a GCFLAG_WITH_PYOBJ flag
+and when we trace such an object, we know it has got a pyobj and we set a
+flag "survived!" into the pyobj.  Then the walking of all pyobjs-with-young-
+associated-pypy-obj can be faster.  It is faster in particular because then
+we don't need to bring into the cache anything about the pypy objects
+corresponding to pyobjs, if they die.
