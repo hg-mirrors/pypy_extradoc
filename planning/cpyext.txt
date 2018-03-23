@@ -18,3 +18,7 @@
 
 - methodobject.py: be ready for make_ref() to fail, and free the
   partially-contructed tuple (same logic as tuple_attach)
+
+- add JIT support to virtualize the pypy side placeholders of PyObject*: this
+  way, if a PyObject* is converted to W_Root only for the lifetime of the
+  loop, we can avoid the cost entirely
