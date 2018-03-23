@@ -6,9 +6,6 @@
   attached to a W_Root object.
 
 
-- make_typedescr() for the type object (typeobject.py) should pass
-  basestruct=PyHeapTypeObject??
-
 - make sure that we run all tests with -A, too
 
 - make PyTypeObject be a pointer, like all other PyXxxObject
