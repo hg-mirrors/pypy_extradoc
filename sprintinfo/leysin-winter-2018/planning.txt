@@ -1,0 +1,100 @@
+What we were working on - Sunday
+======================
+
+- finish unicode-utf8 - need to finish merge to default
+- document the different rpython decorators like enforceargs, signature, and then interp-level unwrap_spec - arianna
+- move more things to extra-tests, especially lib_pypy tests
+- py3 test runners are too complicated - flub
+- see what's missing to get PyGTK running (see also PyGObject and https://github.com/pygobject/pycairo/issues/90 ) - mjacob PAUSED
+- revdb: bring it up to date, improve usability, other improvements (xoraxax)
+- more cffi tutorial/overview rewrite - jdb
+
+
+Plans for Monday
+=============
+
+- cffi tutorial/overview rewrite - jdb
+ - document the different rpython decorators like signature, and then interp-level unwrap_spec - arianna DROPPED
+- JIT topics: guard-compatible, and the subsequent research project to save and reuse traces across processes (remi)
+   -> https://docs.google.com/spreadsheets/d/1bIx8NwHOo5DYTOwnenOncN0YKsV2nknvzaHWJazqPnY/edit?usp=sharing
+
+- revdb: bring it up to date, improve usability, other improvements (xoraxax, armin around, mjacob)
+- finish unicode-utf8 - merge of default. Gave up with merge of py3.5 into a new branch off py3.5 ``unicode-utf8-py3.5``
+- cpyext performance (anto, jdb shadowing)
+- cpyext cycle detection discussion (Stefan, Armin, anto)
+- py3 test runners are too complicated - (flub, ronan)
+
+Tues
+====
+
+- clif and cppyy https://gist.github.com/mattip/76be19a4cffab6991ee957059814d95a NOBODY KNOWS
+- sqlite3 failure in pypy3.6 branch: http://buildbot.pypy.org/summary/longrepr?testname=unmodified&builder=pypy-c-jit-linux-x86-64&build=5319&mod=lib-python.3.test.test_sqlite - arianna w/manuel SOME PROGRESS, waiting for PR
+- continue revdb merge - hunting ll_assert bug (xoraxax, armin around, mjacob around)
+- looking for cpyext improvements (anton, mattip) SPED UP TYPECHECKS, more to do
+
+- JIT topics: understand the performance characteristics of guard-compatible (remi)
+   - found cases where guard_compatible produces more bridges than it should
+   - attempted to use vtune, perf, valgrind to look at assembly, but that seems impossible
+- presentation about how cffi works (arigo, jdb, flub, etc.) DONE
+- cpyext cycle detection implementation (stefan)
+- py3 test runners refactoring (ronan, flub) PROGRESS
+- support for positional-only arguments? (mjacob) NO OPINION
+- fix py3.6 lib-python tests - start with test_asyncgen (mjacob) IN-PROGRESS
+- pygame windows binary wheel, appveyor pypy (Ren?) PROGRESS
+
+Wed - rest day
+===========
+
+- skiing (arigo, flub, antonio)
+- hiking (remi)
+- guard_compatible: found that our fix from yesterday was incomplete (remi)
+- being sick, laying around (Ren?).
+- cpyext: manage to call tp_traverse from the GC, find alternative approaches to collect cycles (stefan)
+     - use boehm for cpyext
+     - trace heaps individually: might need several cycles to collect everything (like now), trace at once: only need one cycle
+- make new tests less slow
+
+Thursday
+========
+
+- guard_compatible (remi) - VTune integration working; new microbenchmarks; found a segfault
+- pygame windows binary wheel, appveyor pypy, report differences to cpython in issues.(Ren?) almost done. - error reported, nightly compiled different to release compiled (release user, can not use nightly generated wheel)
+- try gc.collect(1) near display.flip(), benchmark to test dropped frames. jit.incremental? import pypyjit... turn on/off (Ren?) - lots of graphs, found GC deallocating all at once, maybe fixed?
+- test runner refactoring (ronan) IN PROGRESS
+- cpyext: optimize tp_as_mapping slots (anto, ronan around, armin around even if he doesn't want to) MOSTLY DONE, optimized all the slots; more optimizations possible
+- cpyext cycle detection: clean up code, continue with implementation (stefan)
+- fix test_async DEBUGGING
+
+Friday
+======
+
+- guard_compatible debugging (remi)
+- vtune support: finish and merge the branch, missing would be giving some better name to the loops than "rpy_loop1"
+- Make minimal 'pygame.examples.framedrop' benchmark. check rect benchmark later on.(Ren?)
+- finish windows pygame wheel (Ren?)
+- cpyext cycle detection: remove generic_cpy_call and directly call tp_traverse, do further cleanup (stefan)
+- try to finish and possibly merge the cpyext branch about slots (anto)
+- investigate rawrefcount-free-early (anto, armin)
+- test runner refactoring (ronan)
+
+All tasks
+=======
+
+- make win32 builds green
+- make packaging more like cpython/portable builds
+- get CI builders for PyPy into mainstream projects (Numpy, Scipy, lxml, uwsgi)
+- get more of scientific stack working (tensorflow?)
+- cpyext performance improvements
+- General 3.5 and 3.6 improvements
+- update www.pypy.org, speed.pypy.org (web devs needed)
+- go over projects at https://bitbucket.org/pypy, delete or document dead projects
+- look at google's clif https://github.com/google/clif and try to make a backend for PyPy, how is it different from cppyy
+- have a look at https://github.com/aguinet/dragonffi as well
+- use cffi instead of ctypes in rpython
+- pygame test failures
+- what about vmprof ?
+- separate cffi versioning from cpyext versioning?
+
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
