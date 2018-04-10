@@ -14,7 +14,8 @@ indentation, and a simple LR(1) parser. Both of these components obviously
 produce errors for invalid syntax, but the messages are not very helpful. Often,
 the message is just "invalid syntax", without any hint of what exactly is wrong.
 In the last couple of weeks I have invested a little bit of effort to make them a
-tiny bit better. Here are some examples.
+tiny bit better. They will be part of the upcoming PyPy 6.0 release. Here are
+some examples of what changed.
 
 Missing Characters
 ++++++++++++++++++
