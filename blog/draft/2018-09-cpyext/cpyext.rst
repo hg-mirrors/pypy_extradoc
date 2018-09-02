@@ -3,7 +3,7 @@ Inside cpyext: why emulating CPython C API is so hard
 
 cpyext is PyPy's subsistem which is responsible to provide a compatibility
 layer to compile and run CPython C extensions inside PyPy.  Often people asks
-why it this particular extension doesn't work or it is very slow on PyPy, but
+why a particular extension doesn't work or it is very slow on PyPy, but
 usually it is hard to answer without going into technical details: the goal of
 this blog post is to explain some of these technical details, so that we can
 simply link here instead of explaing again and again :).
