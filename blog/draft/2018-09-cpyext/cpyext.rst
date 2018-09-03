@@ -134,3 +134,51 @@ that this is a problem for ``cpyext``: on one hand, we have PyPy objects which
 can potentially move and change their underlying memory address; on the other
 hand, we need a way to represent them as fixed-address ``PyObject *`` when we
 pass them to C extensions.  We surely need a way to handle that.
+
+
+`PyObject *` in PyPy
+---------------------
+
+Another challenge is that sometimes, ``PyObject *`` structs are not completely
+opaque: there are parts of the public API which expose to the user specific
+fields of some concrete C struct, for example the definition of PyTypeObject_:
+since the low-level layout of PyPy ``W_Root`` objects is completely different
+than the one used by CPython, we cannot simply pass RPython objects to C; we
+need a way to handle the difference.
+
+.. _PyTypeObject: https://docs.python.org/2/c-api/typeobj.html
+
+So, we have two issues so far: objects which can move, and incompatible
+low-level layouts. ``cpyext`` solves both by decoupling the RPython and the C
+representations: we have two "views" of the same entity, depending on whether
+we are in the PyPy world (the moving ``W_Root`` subclass) or in the C world
+(the non-movable ``PyObject *``).
+
+``PyObject *`` are created lazily, only when they are actually needed: the
+vast majority of PyPy objects are never passed to any C extension, so we don't
+pay any penalty in that case; however, the first time we pass a ``W_Root`` to
+C, we allocate and initialize its ``PyObject *`` counterpart.
+
+The same idea applies also to objects which are created in C, e.g. by calling
+_`PyObject_New`: at first, only the ``PyObject *`` exists and it is
+exclusively managed by reference counting: as soon as we pass it to the PyPy
+world (e.g. as a return value of a function call), we create its ``W_Root``
+counterpart, which is managed by the GC as usual.
+
+.. _`PyObject_New`: https://docs.python.org/2/c-api/allocation.html#c.PyObject_New
+
+Here we start to see why calling cpyext modules is more costly in PyPy than in
+CPython: we need to pay some penalty for all the conversions between
+``W_Root`` and ``PyObject *``.
+
+Moreover, the first time we pass a ``W_Root`` to C we also need to allocate
+the memory for the ``PyObject *`` using a slowish "CPython-style" memory
+allocator: in practice, for all the objects which are passed to C we pay more
+or less the same costs as CPython, thus effectively "undoing" the speedup
+guaranteed by PyPy's Generational GC under normal circumstances.
+
+
+Maintaining the link between ``W_Root`` and ``PyObject *``
+-----------------------------------------------------------
+
+WRITE ME
