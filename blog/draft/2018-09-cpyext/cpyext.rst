@@ -3,7 +3,7 @@ Inside cpyext: why emulating CPython C API is so hard
 
 cpyext is PyPy's subsistem which is responsible to provide a compatibility
 layer to compile and run CPython C extensions inside PyPy.  Often people asks
-why a particular extension doesn't work or it is very slow on PyPy, but
+why it this particular extension doesn't work or it is very slow on PyPy, but
 usually it is hard to answer without going into technical details: the goal of
 this blog post is to explain some of these technical details, so that we can
 simply link here instead of explaing again and again :).
@@ -27,11 +27,11 @@ is likely to be slower on PyPy than on CPython.
 C API Overview
 ---------------
 
-At the C level, Python objects are represented as ``PyObject *``,
+In CPython, at the C level, Python objects are represented as ``PyObject *``,
 i.e. (mostly) opaque pointers to some common "base struct".
 
 CPython uses a very simple memory management scheme: when you create an
-object, you allocate a block of memory of the appropriate size on the heap:
+object, you allocate a block of memory of the appropriate size on the heap;
 depending on the details you might end up calling different allocators, but
 for the sake of simplicity, you can think that this ends up being a call to
 ``malloc()``. The resulting block of memory is initialized and casted to to
@@ -50,9 +50,9 @@ destroyed. Again, we can simplify and say that this results in a call to
 .. _decrement: https://docs.python.org/2/c-api/refcounting.html#c.Py_DECREF
 
 Generally speaking, the only way to operate on ``PyObject *`` is to call the
-appropriate API functions. For example, to convert a given object as a C
-integer, you can use _`PyInt_AsLong()`; to add to objects together, you can
-call _`PyNumber_Add()`
+appropriate API functions. For example, to convert a given ``PyObject *`` to a C
+integer, you can use _`PyInt_AsLong()`; to add two objects together, you can
+call _`PyNumber_Add()`.
 
 .. _`PyInt_AsLong()`: https://docs.python.org/2/c-api/int.html?highlight=pyint_check#c.PyInt_AsLong
 .. _`PyNumber_Add()`: https://docs.python.org/2/c-api/number.html#c.PyNumber_Add
@@ -76,7 +76,7 @@ At first, it looks very easy to write a compatibility layer: just make
 
 
 Actually, the code above is not too far from the actual
-implementation. However, there are tons of gory details which makes it much
+implementation. However, there are tons of gory details which make it much
 harder than what it looks, and much slower unless you pay a lot of attention
 to performance.
 
