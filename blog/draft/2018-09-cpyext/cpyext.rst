@@ -15,30 +15,29 @@ extensions which are generated from other compilers/preprocessors
 (e.g. ``Cython``).
 
 At the time of writing, the current status is that most C extensions "just
-work": generally speaking, you can simply ``pip install`` all of them, provided
-they use the public, `official C API`_ instead of poking at private
-implementation details.
+work": generally speaking, you can simply ``pip install`` all of them,
+provided they use the public, `official C API`_ instead of poking at private
+implementation details.  However, the performance of cpyext are generally
+poor, meaning that a Python program which makes heavy use of cpyext extensions
+is likely to be slower on PyPy than on CPython.
 
 .. _`official C API`: https://docs.python.org/2/c-api/index.html
 
-Prologue: the PyPy GC
-----------------------
 
-To understand some of cpyext challenges, you need to have at least a rough
-idea of how the PyPy GC works.
+C API Overview
+---------------
 
-Contrarily to the popular belief, the "Garbage Collector" is not only about
-collecting garbage: instead, it is generally responsible of all memory
-management, including allocation and deallocation.
+At the C level, Python objects are represented as ``PyObject *``,
+i.e. (mostly) opaque pointers to some common "base struct".
 
 CPython uses a very simple memory management scheme: when you create an
 object, you allocate a block of memory of the appropriate size on the heap:
 depending on the details you might end up calling different allocators, but
 for the sake of simplicity, you can think that this ends up being a call to
-``malloc()``. Handles to objects have the C type ``PyObject *``, which point to
-the memory just allocated: this address never changes during the object
-lifetime, and the C code can freely pass it around, store it inside
-containers, retrieve it later, etc.
+``malloc()``. The resulting block of memory is initialized and casted to to
+``PyObject *``: this address never changes during the object lifetime, and the
+C code can freely pass it around, store it inside containers, retrieve it
+later, etc.
 
 Memory is managed using reference counting: when you create a new reference to
 an object, or you discard a reference you own, you have to increment_ or
@@ -50,8 +49,55 @@ destroyed. Again, we can simplify and say that this results in a call to
 .. _increment: https://docs.python.org/2/c-api/refcounting.html#c.Py_INCREF
 .. _decrement: https://docs.python.org/2/c-api/refcounting.html#c.Py_DECREF
 
-The PyPy GC is completely different: it is designed assuming that a dynamic
-language like Python behaves the following way:
+Generally speaking, the only way to operate on ``PyObject *`` is to call the
+appropriate API functions. For example, to convert a given object as a C
+integer, you can use _`PyInt_AsLong()`; to add to objects together, you can
+call _`PyNumber_Add()`
+
+.. _`PyInt_AsLong()`: https://docs.python.org/2/c-api/int.html?highlight=pyint_check#c.PyInt_AsLong
+.. _`PyNumber_Add()`: https://docs.python.org/2/c-api/number.html#c.PyNumber_Add
+
+Internally, PyPy uses a similar approach: all Python objects are subclasses of
+the RPython ``W_Root`` class, and they are operated by calling methods on the
+``space`` singleton, which represents the interpreter.
+
+At first, it looks very easy to write a compatibility layer: just make
+``PyObject *`` an alias for ``W_Root``, and write simple RPython functions
+(which will be translated to C by the RPython compiler) which call the
+``space`` accordingly:
+
+.. sourcecode:: python
+
+   def PyInt_AsLong(space, o):
+       return space.int_w(o)
+
+   def PyNumber_Add(space, o1, o2):
+       return space.add(o1, o2)
+
+
+Actually, the code above is not too far from the actual
+implementation. However, there are tons of gory details which makes it much
+harder than what it looks, and much slower unless you pay a lot of attention
+to performance.
+
+
+The PyPy GC
+-------------
+
+To understand some of cpyext challenges, you need to have at least a rough
+idea of how the PyPy GC works.
+
+XXX: maybe the following section is too detailed and not really necessary to
+understand cpyext? We could simplify it by saying "PyPy uses a generational
+GC, objects can move".
+
+Contrarily to the popular belief, the "Garbage Collector" is not only about
+collecting garbage: instead, it is generally responsible of all memory
+management, including allocation and deallocation.
+
+Whereas CPython uses a combination of malloc/free/refcounting to manage
+memory, the PyPy GC uses a completely different approach. It is designed
+assuming that a dynamic language like Python behaves the following way:
 
   - you create, either directly or indirectly, lots of objects;
 
