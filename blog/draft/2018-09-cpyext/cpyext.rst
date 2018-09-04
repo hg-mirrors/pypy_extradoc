@@ -181,4 +181,43 @@ guaranteed by PyPy's Generational GC under normal circumstances.
 Maintaining the link between ``W_Root`` and ``PyObject *``
 -----------------------------------------------------------
 
-WRITE ME
+So, we need a way to convert between ``W_Root`` and ``PyObject *`` and
+vice-versa; also, we need to to ensure that the lifetime of the two entities
+are in sync. In particular:
+
+  1. as long as the ``W_Root`` is kept alive by the GC, we want the
+     ``PyObject *`` to live even if its refcount drops to 0;
+
+  2. as long as the ``PyObject *`` has a refcount greater than 0, we want to
+     make sure that the GC does not collect the ``W_Root``.
+
+The ``PyObject *`` ==> ``W_Root`` link is maintained by the special field
+_`ob_pypy_link` which is added to all ``PyObject *``: on a 64 bit machine this
+means that all ``PyObject *`` have 8 bytes of overhead, but then the
+conversion is very quick, just reading the field.
+
+For the other direction, we generally don't want to do the same: the
+assumption is that the vast majority of ``W_Root`` objects will never be
+passed to C, and adding an overhead of 8 bytes to all of them is a
+waste. Instead, in the general case the link is maintained by using a
+dictionary, where ``W_Root`` are the keys and ``PyObject *`` the values.
+
+However, for a _`few selected` ``W_Root`` subclasses we **do** maintain a
+direct link using the special ``_cpy_ref`` field to improve performance. In
+particular, we use it for ``W_TypeObject`` (which is big anyway, so a 8 bytes
+overhead is negligible) and ``W_NoneObject``: ``None`` is passed around very
+often, so we want to ensure that the conversion to ``PyObject *`` is very
+fast. Moreover it's a singleton, so the 8 bytes overhead is negligible as
+well.
+
+This means that in theory, passing an arbitrary Python object to C is
+potentially costly, because it involves doing a dictionary lookup.  I assume
+that this cost will eventually show up in the profiler: however, at the time
+of writing there are other parts of cpyext which are even more costly (as we
+will show later), so the cost of the dict lookup is never evident in the
+profiler.
+
+
+.. _`ob_pypy_link`: https://bitbucket.org/pypy/pypy/src/942ad6c1866e30d8094d1dae56a9b8f492554201/pypy/module/cpyext/parse/cpyext_object.h#lines-5
+
+.. _`few selected`: https://bitbucket.org/pypy/pypy/src/942ad6c1866e30d8094d1dae56a9b8f492554201/pypy/module/cpyext/pyobject.py#lines-66
