@@ -221,3 +221,93 @@ profiler.
 .. _`ob_pypy_link`: https://bitbucket.org/pypy/pypy/src/942ad6c1866e30d8094d1dae56a9b8f492554201/pypy/module/cpyext/parse/cpyext_object.h#lines-5
 
 .. _`few selected`: https://bitbucket.org/pypy/pypy/src/942ad6c1866e30d8094d1dae56a9b8f492554201/pypy/module/cpyext/pyobject.py#lines-66
+
+
+Crossing the border between RPython and C
+------------------------------------------
+
+There are two other things we need to care about whenever we cross the border
+between RPython and C, and vice-versa: exception handling and the GIL.
+
+In the C API, exceptions are raised by calling `PyErr_SetString()`_ (or one of
+`many other functions`_ which have a similar effect), which basically works by
+creating an exception value and storing it in some global variable; then, the
+function signals that an exception has occurred by returning an error value,
+usually ``NULL``.
+
+On the other hand, in the PyPy interpreter they are propagated by raising the
+RPython-level OperationError_ exception, which wraps the actual app-level
+exception values: to harmonize the two worlds, whenever we return from C to
+RPython, we need to check whether a C API exception was raised and turn it
+into an ``OperationError`` if needed.
+
+About the GIL, we won't dig into details of `how it is handled in cpyext`_:
+for the purpose of this post, it is enough to know that whenever we enter the
+C land, we store the current theead id into a global variable which is
+accessible also from C; conversely, whenever we go back from RPython to C, we
+restore this value to 0.
+
+Similarly, we need to the inverse operation whenever you need to cross the
+border between C and RPython, e.g. by calling a Python callback from C code.
+
+All this complexity is automatically handled by the RPython function
+`generic_cpy_call`_: if you look at the code you see that it takes care of 4
+things:
+
+  1. handling the GIL as explained above
+
+  2. handling exceptions, if they are raised
+
+  3. converting arguments from ``W_Root`` to ``PyObject *``
+
+  4. converting the return value from ``PyObject *`` to ``W_Root``
+
+
+So, we can see that calling C from RPython introduce some overhead: how much
+is it?
+
+Assuming that the conversion between ``W_Root`` and ``PyObject *`` has a
+reasonable cost (as explained by the previous section), the overhead
+introduced by a single border-cross is still accettable, especially if the
+callee is doing some non-negligible amount of work.
+
+However this is not always the case; there are basically three problems that
+make (or used to make) cpyext super slow:
+
+  1. paying the border-crossing cost for trivial operations which are called
+     very often, such as ``Py_INCREF``
+
+  2. crossing the border back and forth many times, even if it's not strictly
+     needed
+
+  3. paying an excessive cost for argument and return value conversions
+
+
+The next sections are going to explain in more detail each of these problems.
+
+.. _`PyErr_SetString()`: https://docs.python.org/2/c-api/exceptions.html#c.PyErr_SetString
+.. _`many other functions`: https://docs.python.org/2/c-api/exceptions.html#exception-handling
+.. _OperationError: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/interpreter/error.py#lines-20
+.. _`how it is handled in cpyext`: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/api.py#lines-205
+.. _`generic_cpy_call`: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/api.py#lines-1757
+
+
+Avoiding unnecessary roundtrips
+--------------------------------
+
+XXX basically, this section explains what we did in the cpyext-avoid-roundtrips branch, and what we still need to do
+
+
+Conversion costs
+-----------------
+
+XXX this is one of the biggest unsolved problems so far; explain or link to
+this:
+
+https://bitbucket.org/pypy/extradoc/src/cd51a2e3fc4dac278074997c7dc198caee819769/planning/cpyext.txt#lines-27
+
+
+Borrowed references
+--------------------
+
+XXX explain why borrowed references are a problem for us; possibly link to: https://pythoncapi.readthedocs.io/bad_api.html#borrowed-references
