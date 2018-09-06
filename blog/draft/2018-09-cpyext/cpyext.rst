@@ -247,7 +247,7 @@ C land, we store the current theead id into a global variable which is
 accessible also from C; conversely, whenever we go back from RPython to C, we
 restore this value to 0.
 
-Similarly, we need to the inverse operation whenever you need to cross the
+Similarly, we need to do the inverse operations whenever you need to cross the
 border between C and RPython, e.g. by calling a Python callback from C code.
 
 All this complexity is automatically handled by the RPython function
