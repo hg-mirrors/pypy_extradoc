@@ -27,7 +27,7 @@ is likely to be slower on PyPy than on CPython.
 C API Overview
 ---------------
 
-In CPython, at the C level, Python objects are represented as ``PyObject *``,
+In CPython, at the C level, Python objects are represented as ``PyObject*``,
 i.e. (mostly) opaque pointers to some common "base struct".
 
 CPython uses a very simple memory management scheme: when you create an
@@ -35,7 +35,7 @@ object, you allocate a block of memory of the appropriate size on the heap;
 depending on the details you might end up calling different allocators, but
 for the sake of simplicity, you can think that this ends up being a call to
 ``malloc()``. The resulting block of memory is initialized and casted to to
-``PyObject *``: this address never changes during the object lifetime, and the
+``PyObject*``: this address never changes during the object lifetime, and the
 C code can freely pass it around, store it inside containers, retrieve it
 later, etc.
 
@@ -49,8 +49,8 @@ destroyed. Again, we can simplify and say that this results in a call to
 .. _increment: https://docs.python.org/2/c-api/refcounting.html#c.Py_INCREF
 .. _decrement: https://docs.python.org/2/c-api/refcounting.html#c.Py_DECREF
 
-Generally speaking, the only way to operate on ``PyObject *`` is to call the
-appropriate API functions. For example, to convert a given ``PyObject *`` to a C
+Generally speaking, the only way to operate on ``PyObject*`` is to call the
+appropriate API functions. For example, to convert a given ``PyObject*`` to a C
 integer, you can use _`PyInt_AsLong()`; to add two objects together, you can
 call _`PyNumber_Add()`.
 
@@ -62,7 +62,7 @@ the RPython ``W_Root`` class, and they are operated by calling methods on the
 ``space`` singleton, which represents the interpreter.
 
 At first, it looks very easy to write a compatibility layer: just make
-``PyObject *`` an alias for ``W_Root``, and write simple RPython functions
+``PyObject*`` an alias for ``W_Root``, and write simple RPython functions
 (which will be translated to C by the RPython compiler) which call the
 ``space`` accordingly:
 
@@ -132,14 +132,14 @@ In practice, this scheme works very well and it is one of the reasons why PyPy
 is much faster than CPython.  However, careful readers have surely noticed
 that this is a problem for ``cpyext``: on one hand, we have PyPy objects which
 can potentially move and change their underlying memory address; on the other
-hand, we need a way to represent them as fixed-address ``PyObject *`` when we
+hand, we need a way to represent them as fixed-address ``PyObject*`` when we
 pass them to C extensions.  We surely need a way to handle that.
 
 
-`PyObject *` in PyPy
+`PyObject*` in PyPy
 ---------------------
 
-Another challenge is that sometimes, ``PyObject *`` structs are not completely
+Another challenge is that sometimes, ``PyObject*`` structs are not completely
 opaque: there are parts of the public API which expose to the user specific
 fields of some concrete C struct, for example the definition of PyTypeObject_:
 since the low-level layout of PyPy ``W_Root`` objects is completely different
@@ -152,15 +152,15 @@ So, we have two issues so far: objects which can move, and incompatible
 low-level layouts. ``cpyext`` solves both by decoupling the RPython and the C
 representations: we have two "views" of the same entity, depending on whether
 we are in the PyPy world (the moving ``W_Root`` subclass) or in the C world
-(the non-movable ``PyObject *``).
+(the non-movable ``PyObject*``).
 
-``PyObject *`` are created lazily, only when they are actually needed: the
+``PyObject*`` are created lazily, only when they are actually needed: the
 vast majority of PyPy objects are never passed to any C extension, so we don't
 pay any penalty in that case; however, the first time we pass a ``W_Root`` to
-C, we allocate and initialize its ``PyObject *`` counterpart.
+C, we allocate and initialize its ``PyObject*`` counterpart.
 
 The same idea applies also to objects which are created in C, e.g. by calling
-_`PyObject_New`: at first, only the ``PyObject *`` exists and it is
+_`PyObject_New`: at first, only the ``PyObject*`` exists and it is
 exclusively managed by reference counting: as soon as we pass it to the PyPy
 world (e.g. as a return value of a function call), we create its ``W_Root``
 counterpart, which is managed by the GC as usual.
@@ -169,44 +169,44 @@ counterpart, which is managed by the GC as usual.
 
 Here we start to see why calling cpyext modules is more costly in PyPy than in
 CPython: we need to pay some penalty for all the conversions between
-``W_Root`` and ``PyObject *``.
+``W_Root`` and ``PyObject*``.
 
 Moreover, the first time we pass a ``W_Root`` to C we also need to allocate
-the memory for the ``PyObject *`` using a slowish "CPython-style" memory
+the memory for the ``PyObject*`` using a slowish "CPython-style" memory
 allocator: in practice, for all the objects which are passed to C we pay more
 or less the same costs as CPython, thus effectively "undoing" the speedup
 guaranteed by PyPy's Generational GC under normal circumstances.
 
 
-Maintaining the link between ``W_Root`` and ``PyObject *``
+Maintaining the link between ``W_Root`` and ``PyObject*``
 -----------------------------------------------------------
 
-So, we need a way to convert between ``W_Root`` and ``PyObject *`` and
+So, we need a way to convert between ``W_Root`` and ``PyObject*`` and
 vice-versa; also, we need to to ensure that the lifetime of the two entities
 are in sync. In particular:
 
   1. as long as the ``W_Root`` is kept alive by the GC, we want the
-     ``PyObject *`` to live even if its refcount drops to 0;
+     ``PyObject*`` to live even if its refcount drops to 0;
 
-  2. as long as the ``PyObject *`` has a refcount greater than 0, we want to
+  2. as long as the ``PyObject*`` has a refcount greater than 0, we want to
      make sure that the GC does not collect the ``W_Root``.
 
-The ``PyObject *`` ==> ``W_Root`` link is maintained by the special field
-_`ob_pypy_link` which is added to all ``PyObject *``: on a 64 bit machine this
-means that all ``PyObject *`` have 8 bytes of overhead, but then the
+The ``PyObject*`` ==> ``W_Root`` link is maintained by the special field
+_`ob_pypy_link` which is added to all ``PyObject*``: on a 64 bit machine this
+means that all ``PyObject*`` have 8 bytes of overhead, but then the
 conversion is very quick, just reading the field.
 
 For the other direction, we generally don't want to do the same: the
 assumption is that the vast majority of ``W_Root`` objects will never be
 passed to C, and adding an overhead of 8 bytes to all of them is a
 waste. Instead, in the general case the link is maintained by using a
-dictionary, where ``W_Root`` are the keys and ``PyObject *`` the values.
+dictionary, where ``W_Root`` are the keys and ``PyObject*`` the values.
 
 However, for a _`few selected` ``W_Root`` subclasses we **do** maintain a
 direct link using the special ``_cpy_ref`` field to improve performance. In
 particular, we use it for ``W_TypeObject`` (which is big anyway, so a 8 bytes
 overhead is negligible) and ``W_NoneObject``: ``None`` is passed around very
-often, so we want to ensure that the conversion to ``PyObject *`` is very
+often, so we want to ensure that the conversion to ``PyObject*`` is very
 fast. Moreover it's a singleton, so the 8 bytes overhead is negligible as
 well.
 
@@ -258,15 +258,15 @@ things:
 
   2. handling exceptions, if they are raised
 
-  3. converting arguments from ``W_Root`` to ``PyObject *``
+  3. converting arguments from ``W_Root`` to ``PyObject*``
 
-  4. converting the return value from ``PyObject *`` to ``W_Root``
+  4. converting the return value from ``PyObject*`` to ``W_Root``
 
 
 So, we can see that calling C from RPython introduce some overhead: how much
 is it?
 
-Assuming that the conversion between ``W_Root`` and ``PyObject *`` has a
+Assuming that the conversion between ``W_Root`` and ``PyObject*`` has a
 reasonable cost (as explained by the previous section), the overhead
 introduced by a single border-cross is still accettable, especially if the
 callee is doing some non-negligible amount of work.
