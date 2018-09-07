@@ -379,9 +379,12 @@ discovered that a large subset of the C API can benefit from this.
 
 Moreover, the C API is **huge**: the biggest achievement of the branch was to
 discover and invent this new way of writing cpyext code, but we still need to
-convert many of the functions.  The results we got from this optimization are
-impressive, as we will detail later.
+convert many of the functions.  Also, sometimes the rewrite is not automatic
+or straighforward: cpyext is a delicate piece of software, so it happens often
+that you end up debugging a segfault in gdb.
 
+However, the most important remark is that the performance improvement we got
+from this optimization are impressive, as we will detail later.
 
 .. _`2017 Cape Town Sprint`: https://morepypy.blogspot.com/2017/10/cape-of-good-hope-for-pypy-hello-from.html
 .. _`cpyext microbenchmarks`: https://github.com/antocuni/cpyext-benchmarks
