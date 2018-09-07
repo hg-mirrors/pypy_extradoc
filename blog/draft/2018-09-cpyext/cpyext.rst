@@ -295,7 +295,101 @@ The next sections are going to explain in more detail each of these problems.
 Avoiding unnecessary roundtrips
 --------------------------------
 
-XXX basically, this section explains what we did in the cpyext-avoid-roundtrips branch, and what we still need to do
+Prior to the `2017 Cape Town Sprint`_, cpyext was horribly slow, and we were
+well aware of it: the main reason was that we never really paid too much
+attention to performances: as explained by this blog post, emulating all the
+CPython quirks is basically a nightmare, so better to concentrate on
+correctness first.
+
+However, we didn't really know **why** it was so slow: we had theories and
+assumptions, usually pointing at the cost of conversions between ``W_Root``
+and ``PyObject*``, but we never actually measured it.
+
+So, I decided to write a set of `cpyext microbenchmarks`_ to measure the
+performance of various operation.  The result was somewhat surprising: the
+theory suggests that when you do a cpyext C call, you should pay the
+border-crossing costs only once, but what the profiler told us was that we
+were paying the cost of ``generic_cpy_call`` several times what we expected.
+
+After a bit of investigation, we discovered this was ultimately caused by our
+"correctness-first" approach.  For simplicity of development and testing, when
+we started cpyext we wrote everything in RPython: thus, every single API call
+made from C (like the omnipresent `PyArg_ParseTuple`_, `PyInt_AsLong`_, etc.)
+had to cross back the C-to-RPython border: this was especially daunting for
+very simple and frequent operations like ``Py_INCREF`` and ``Py_DECREF``,
+which CPython implements as a single assembly instruction!
+
+Another source of slowness was the implementation of ``PyTypeObject`` slots:
+at the C level, these are function pointers which the interpreter calls to do
+certain operations, e.g. `tp_new`_ to allocate a new instance of that type.
+
+As usual, we have some magic to implement slots in RPython; in particular,
+`_make_wrapper`_ does the opposite of ``generic_cpy_call``: it takes an
+RPython function and wraps it into a C function which can be safely called
+from C, handling the GIL, exceptions and argument conversions automatically.
+
+This was very handy during the development of cpyext, but it might result in
+some bad nonsense; consider what happens when you call the following C
+function:
+
+.. sourcecode:: C
+
+    static PyObject* foo(PyObject* self, PyObject* args)
+    {
+        PyObject* result = PyInt_FromLong(1234);
+        return result;
+    }
+
+  1. you are in RPython and do a cpyext call: **RPython-to-C**;
+
+  2. ``foo`` calls ``PyInt_FromLong(1234)``, which is implemented in RPython:
+     **C-to-RPython**;
+
+  3. the implementation of ``PyInt_FromLong`` indirectly calls
+     ``PyIntType.tp_new``, which is a C function pointer: **RPython-to-C**;
+
+  4. however, ``tp_new`` is just a wrapper around an RPython function, created
+     by ``_make_wrapper``: **C-to-RPython**;
+
+  5. finally, we create our RPython ``W_IntObject(1234)``; at some point
+     during the **RPython-to-C** crossing, its ``PyObject*`` equivalent is
+     created;
+
+  6. after many layers of wrappers, we are again in ``foo``: after we do
+     ``return result``, during the **C-to-RPython** step we convert it from
+     ``PyObject*`` to ``W_IntObject(1234)``.
+
+Phew! After we realized this, it was not so surprising that cpyext was very
+slow :). And this was a simplified example, since we are not passing and
+``PyObject*`` to the API call: if we did, we would need to convert it back and
+forth at every step.  Actually, I am not even sure that what I described was
+the exact sequence of steps which used to happen, but you get the general
+idea.
+
+The solution is simple: rewrite as much as we can in C instead of RPython, so
+to avoid unnecessary roundtrips: this was the topic of most of the Cape Town
+sprint and resulted in the ``cpyext-avoid-roundtrip``, which was eventually
+merged_.
+
+Of course, it is not possible to move **everything** to C: there are still
+operations which need to be implemented in RPython. For example, think of
+``PyList_Append``: the logic to append an item to a list is complex and
+involves list strategies, so we cannot replicate it in C.  However, we
+discovered that a large subset of the C API can benefit from this.
+
+Moreover, the C API is **huge**: the biggest achievement of the branch was to
+discover and invent this new way of writing cpyext code, but we still need to
+convert many of the functions.  The results we got from this optimization are
+impressive, as we will detail later.
+
+
+.. _`2017 Cape Town Sprint`: https://morepypy.blogspot.com/2017/10/cape-of-good-hope-for-pypy-hello-from.html
+.. _`cpyext microbenchmarks`: https://github.com/antocuni/cpyext-benchmarks
+.. _`PyArg_ParseTuple`: https://docs.python.org/2/c-api/arg.html#c.PyArg_ParseTuple
+.. _`PyInt_AsLong`: https://docs.python.org/2/c-api/int.html#c.PyInt_AsLong
+.. _`tp_new`: https://docs.python.org/2/c-api/typeobj.html#c.PyTypeObject.tp_new
+.. `_make_wrapper`: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/api.py#lines-362
+.. _merged: https://bitbucket.org/pypy/pypy/commits/7b550e9b3cee   
 
 
 Conversion costs
@@ -307,7 +401,9 @@ this:
 https://bitbucket.org/pypy/extradoc/src/cd51a2e3fc4dac278074997c7dc198caee819769/planning/cpyext.txt#lines-27
 
 
-Borrowed references
+C API quirks
 --------------------
 
 XXX explain why borrowed references are a problem for us; possibly link to: https://pythoncapi.readthedocs.io/bad_api.html#borrowed-references
+
+the calling convention is inefficient: why do I have to allocate a PyTuple* of PyObect*, just to unwrap them immediately?
