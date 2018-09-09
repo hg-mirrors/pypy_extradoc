@@ -340,7 +340,7 @@ function:
         return result;
     }
 
-  1. you are in RPython and do a cpyext call: **RPython-to-C**;
+  1. you are in RPython and do a cpyext call to ``foo``: **RPython-to-C**;
 
   2. ``foo`` calls ``PyInt_FromLong(1234)``, which is implemented in RPython:
      **C-to-RPython**;
@@ -398,10 +398,74 @@ from this optimization are impressive, as we will detail later.
 Conversion costs
 -----------------
 
-XXX this is one of the biggest unsolved problems so far; explain or link to
-this:
+The other potential big source of slowdown is the conversion of arguments
+between ``W_Root`` and ``PyObject*``.
 
-https://bitbucket.org/pypy/extradoc/src/cd51a2e3fc4dac278074997c7dc198caee819769/planning/cpyext.txt#lines-27
+As explained earlier, the first time you pass a ``W_Root`` to C, you need to
+allocate it's ``PyObject*`` counterpart. Suppose to have a ``foo`` function
+defined in C, which takes a single int argument:
+
+.. sourcecode:: python
+
+   for i in range(N):
+       foo(i)
+
+To run this code, you need to create a different ``PyObject*`` for each value
+of ``i``: if implemented naively, it means calling ``N`` times ``malloc()``
+and ``free()``, which kills performance.
+
+CPython has the very same problem, which is solved by using a `free list`_ to
+`allocate ints`_. So, what we did was to simply `steal the code`_ from CPython
+and do the exact same thing: this was also done in the
+``cpyext-avoid-roundtrip`` branch, and the benchmarks show that it worked
+perfectly.
+
+Every type which is converted often to ``PyObject*`` must have a very fast
+allocator: at the moment of writing, PyPy uses free lists only for ints and
+tuples_: one of the next steps on our TODO list is certainly to use this
+technique with more types, like ``float``.
+
+Conversely, we also need to optimize the converstion from ``PyObject*`` to
+``W_Root``: this happens when an object is originally allocated in C and
+returned to Python. Consider for example the following code:
+
+.. sourcecode:: python
+
+   import numpy as np
+   myarray = np.random.random(N)
+   for i in range(len(arr)):
+       myarray[i]
+
+At every iteration, we get an item out of the array: the return type is a an
+instance of ``numpy.float64`` (a numpy scalar), i.e. a ``PyObject'*``: this is
+something which is implemented by numpy entirely in C, so completely
+transparent to cpyext: we don't have any control on how it is allocated,
+managed, etc., and we can assume that allocation costs are the same than on
+CPython.
+
+However, as soon as we return these ``PyObject*`` Python, we need to allocate
+its ``W_Root`` equivalent: if you do it in a small loop like in the example
+above, you end up allocating all these ``W_Root`` inside the nursery, which is
+a good thing since allocation is super fast (see the section above about the
+PyPy GC).
+
+However, we also need to keep track of the ``W_Root`` to ``PyObject*`` link:
+currently, we do this by putting all of them in a dictionary, but it is very
+inefficient, especially because most of these objects dies young and thus it
+is wasted work to do that for them.  Currently, this is one of the biggest
+unresolved problem in cpyext, and it is what casuses the two microbenchmarks
+``allocate_int`` and ``allocate_tuple`` to be very slow.
+
+We are well aware of the problem, and we have a plan for how to fix it; the
+explanation is too technical for the scope of this blog post as it requires a
+deep knowledge of the GC internals to be understood, but the details are
+here_.
+
+.. _`free list`: https://en.wikipedia.org/wiki/Free_list
+.. _`allocate ints`: https://github.com/python/cpython/blob/2.7/Objects/intobject.c#L16
+.. _`steal the code`: https://bitbucket.org/pypy/pypy/commits/e5c7b7f85187
+.. _tuples: https://bitbucket.org/pypy/pypy/commits/ccf12107e805
+.. _here: https://bitbucket.org/pypy/extradoc/src/cd51a2e3fc4dac278074997c7dc198caee819769/planning/cpyext.txt#lines-27
 
 
 C API quirks
