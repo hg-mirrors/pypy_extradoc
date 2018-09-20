@@ -21,6 +21,10 @@ implementation details.  However, the performance of cpyext are generally
 poor, meaning that a Python program which makes heavy use of cpyext extensions
 is likely to be slower on PyPy than on CPython.
 
+Note: in this blog post we are talking about Python 2.7 because it is still
+the default version of PyPy: however most of the implementation of cpyext is
+shared with PyPy3, so everything applies to that as well.
+
 .. _`official C API`: https://docs.python.org/2/c-api/index.html
 
 
@@ -207,7 +211,7 @@ fast. Moreover it's a singleton, so the 8 bytes overhead is negligible as
 well.
 
 This means that in theory, passing an arbitrary Python object to C is
-potentially costly, because it involves doing a dictionary lookup.  I assume
+potentially costly, because it involves doing a dictionary lookup.  We assume
 that this cost will eventually show up in the profiler: however, at the time
 of writing there are other parts of cpyext which are even more costly (as we
 will show later), so the cost of the dict lookup is never evident in the
@@ -301,7 +305,7 @@ However, we didn't really know **why** it was so slow: we had theories and
 assumptions, usually pointing at the cost of conversions between ``W_Root``
 and ``PyObject*``, but we never actually measured it.
 
-So, I decided to write a set of `cpyext microbenchmarks`_ to measure the
+So, we decided to write a set of `cpyext microbenchmarks`_ to measure the
 performance of various operation.  The result was somewhat surprising: the
 theory suggests that when you do a cpyext C call, you should pay the
 border-crossing costs only once, but what the profiler told us was that we
@@ -520,3 +524,87 @@ extensions could choose to use it (possibly hidden inside some macro and
 .. _`list strategies`: https://morepypy.blogspot.com/2011/10/more-compact-lists-with-list-strategies.html
 .. _convert: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/listobject.py#lines-28
 .. _`design a better C API`: https://pythoncapi.readthedocs.io/
+
+
+Current performance
+--------------------
+
+During the whole blog post we kept talking about the slowness of cpyext: how
+much it is, exactly?
+
+We decided to concentrate on microbenchmarks_ for now: as it should be evident
+by now there are simply too many issues which can slow down a cpyext
+benchmark, and microbenchmarks help us to concentrate on one (or few) at a
+time.
+
+The microbenchmarks measure very simple stuff, like calling function and
+methods with the various calling conventions (no arguments, one arguments,
+multiple arguments), passing various types as arguments (to measure conversion
+costs), allocating objects from C, and so on.
+
+This was the performance of PyPy 5.8 relative and normalized to CPython 2.7,
+the lower the better:
+
+.. image:: pypy58.png
+
+PyPy was horribly slow everywhere, ranging from 2.5x to 10x slower. It is
+particularly interesting to compare ``simple.noargs``, which measure the cost
+of calling an empty function with no arguments, and ``simple.onearg(i)``,
+which measure the cost calling an empty function passing an integer argument:
+the latter is ~2x slower than the former, indicating that the conversion cost
+of integers is huge.
+
+PyPy 5.8 was the last release before we famouse Cape Town sprint, when we
+started to look at cpyext performance seriously. These are the performance for
+PyPy 6.0, the latest release at the time of writing:
+
+.. image:: pypy60.png
+
+The results are amazing! PyPy is now massively faster than before, and for
+most benchmarks it is even faster than CPython: yes, you read it correctly:
+PyPy is faster than CPython at doing CPython's job, even considering all the
+extra work it has to do to emulate the C API.  This happens thanks to the JIT,
+which produce speedups high enough to counterbalance the slowdown caused by
+cpyext.
+
+There are two microbenchmarks which are still slower though: ``allocate_int``
+and ``allocate_tuple``, for the reasons explained in the section about
+`Conversion costs`_.
+
+.. _microbenchmarks: https://github.com/antocuni/cpyext-benchmarks
+
+
+Next steps
+-----------
+
+Despite the spectacular results we got so far, cpyext is still slow enough to
+kill performance in most real-world code which uses C extensions extensively
+(e.g., the omnipresent numpy).
+
+Our current approach is something along these lines:
+
+    1. run a real-world small benchmark which exercises cpyext
+
+    2. measure and find the bottleneck
+
+    3. write a corresponding microbenchmark
+
+    4. optimize it
+
+    5. repeat
+
+On one hand, this is a daunting task because the C API is huge and we need to
+tackle functions one by one.  On the other hand, not all the functions are
+equally important, and is is enough to optimize a relatively small subset to
+improve lots of different use cases.
+
+The biggest result is that now we have a clear picture of what are the
+problems, and we developed some technical solutions to fix them. It is "only"
+a matter of tackling them, one by one.  Moreoever, keep in mind that most of
+the work was done during two sprints, for a total 2-3 man-months.
+
+XXX: find a conclusion
+
+
+
+
