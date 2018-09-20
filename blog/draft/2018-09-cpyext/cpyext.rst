@@ -603,8 +603,13 @@ problems, and we developed some technical solutions to fix them. It is "only"
 a matter of tackling them, one by one.  Moreoever, keep in mind that most of
 the work was done during two sprints, for a total 2-3 man-months.
 
-XXX: find a conclusion
-
-
-
+We think this work is important for the Python ecosystem. PyPy has established
+a baseline for performance in pure python code, providing an answer for the
+"Python is slow" detractors. The techniques used to make ``cpyext`` performant
+will let PyPy become an alternative for people who mix C extensions with python,
+which, it turns out, is just about everyone. Today, many developers are forced
+to seek performance by converting code from python to a lower language. We
+feel there is no reason to do this, but in order to prove it we must be able
+to run both their python and their c-extensions performantly, then we can begin
+to educate them how to write JIT-freindly code in the first place.
 
