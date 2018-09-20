@@ -611,10 +611,14 @@ done during two sprints, for a total 2-3 person-months of work.
 We think this work is important for the Python ecosystem. PyPy has established
 a baseline for performance in pure python code, providing an answer for the
 "Python is slow" detractors. The techniques used to make ``cpyext`` performant
-will let PyPy become an alternative for people who mix C extensions with python,
-which, it turns out, is just about everyone. Today, many developers are forced
-to seek performance by converting code from python to a lower language. We
-feel there is no reason to do this, but in order to prove it we must be able
-to run both their python and their c-extensions performantly, then we can begin
-to educate them how to write JIT-freindly code in the first place.
+will let PyPy become an alternative for people who mix C extensions with
+python, which, it turns out, is just about everyone, in particular those using
+the various scientific libraries. Today, many developers are forced to seek
+performance by converting code from python to a lower language. We feel there
+is no reason to do this, but in order to prove it we must be able to run both
+their python and their C extensions performantly, then we can begin to educate
+them how to write JIT-friendly code in the first place.
 
+We envision a future in which you can run arbitrary Python programs on PyPy,
+with the JIT speeding up the pure Python parts and the C parts running as fast
+as today: the best of both worlds!
