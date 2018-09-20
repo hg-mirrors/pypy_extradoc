@@ -87,10 +87,6 @@ The PyPy GC
 To understand some of cpyext challenges, you need to have at least a rough
 idea of how the PyPy GC works.
 
-XXX: maybe the following section is too detailed and not really necessary to
-understand cpyext? We could simplify it by saying "PyPy uses a generational
-GC, objects can move".
-
 Contrarily to the popular belief, the "Garbage Collector" is not only about
 collecting garbage: instead, it is generally responsible of all memory
 management, including allocation and deallocation.
@@ -136,7 +132,7 @@ hand, we need a way to represent them as fixed-address ``PyObject*`` when we
 pass them to C extensions.  We surely need a way to handle that.
 
 
-`PyObject*` in PyPy
+``PyObject*`` in PyPy
 ---------------------
 
 Another challenge is that sometimes, ``PyObject*`` structs are not completely
@@ -151,7 +147,7 @@ need a way to handle the difference.
 So, we have two issues so far: objects which can move, and incompatible
 low-level layouts. ``cpyext`` solves both by decoupling the RPython and the C
 representations: we have two "views" of the same entity, depending on whether
-we are in the PyPy world (the moving ``W_Root`` subclass) or in the C world
+we are in the PyPy world (the movable ``W_Root`` subclass) or in the C world
 (the non-movable ``PyObject*``).
 
 ``PyObject*`` are created lazily, only when they are actually needed: the
@@ -243,7 +239,7 @@ into an ``OperationError`` if needed.
 
 About the GIL, we won't dig into details of `how it is handled in cpyext`_:
 for the purpose of this post, it is enough to know that whenever we enter the
-C land, we store the current theead id into a global variable which is
+C land, we store the current thread id into a global variable which is
 accessible also from C; conversely, whenever we go back from RPython to C, we
 restore this value to 0.
 
@@ -368,8 +364,8 @@ idea.
 
 The solution is simple: rewrite as much as we can in C instead of RPython, so
 to avoid unnecessary roundtrips: this was the topic of most of the Cape Town
-sprint and resulted in the ``cpyext-avoid-roundtrip``, which was eventually
-merged_.
+sprint and resulted in the ``cpyext-avoid-roundtrip`` branch, which was
+eventually merged_.
 
 Of course, it is not possible to move **everything** to C: there are still
 operations which need to be implemented in RPython. For example, think of
@@ -443,8 +439,8 @@ transparent to cpyext: we don't have any control on how it is allocated,
 managed, etc., and we can assume that allocation costs are the same than on
 CPython.
 
-However, as soon as we return these ``PyObject*`` Python, we need to allocate
-its ``W_Root`` equivalent: if you do it in a small loop like in the example
+As soon as we return these ``PyObject*`` to Python, we need to allocate
+theirs ``W_Root`` equivalent: if you do it in a small loop like in the example
 above, you end up allocating all these ``W_Root`` inside the nursery, which is
 a good thing since allocation is super fast (see the section above about the
 PyPy GC).
@@ -471,6 +467,56 @@ here_.
 C API quirks
 --------------------
 
-XXX explain why borrowed references are a problem for us; possibly link to: https://pythoncapi.readthedocs.io/bad_api.html#borrowed-references
+Finally, there is another source of slowdown which is beyond our control: some
+parts of the CPython C API are badly designed and expose some of the
+implementation details of CPython.
 
-the calling convention is inefficient: why do I have to allocate a PyTuple* of PyObect*, just to unwrap them immediately?
+The major example is reference counting: the ``Py_INCREF`` / ``Py_DECREF`` API
+is designed in such a way which forces other implementation to emulate
+refcounting even in presence of other GC management schemes, as explained
+above.
+
+Another example is borrowed references: there are API functions which **do
+not** incref an object before returning it, e.g. `PyList_GetItem`_.  This is
+done for performance reasons because we can avoid a whole incref/decref pair,
+if the caller needs to handle the returned item only temporarily: the item is
+kept alive because it is in the list anyway.
+
+For PyPy this is a challenge: thanks to `list strategies`_, often lists are
+represented in a compact way: e.g. a list containing only integers is stored
+as a C array of ``long``.  How to implement ``PyList_GetItem``? We cannot
+simply create a ``PyObject*`` on the fly, because the caller will never decref
+it and it will result in a memory leak.
+
+The current solution is very inefficient: basically, the first time we do a
+``PyList_GetItem``, we convert_ the **whole** list to a list of
+``PyObject*``. This is bad in two ways: the first is that we potentially pay a
+lot of unneeded conversion cost in case we will never access the other items
+of the list; the second is that by doing that we lose all the performance
+benefit granted by the original list strategy, making it slower even for the
+rest of pure-python code which will manipulate the list later.
+
+``PyList_GetItem`` is an example of a bad API because it assumes that the list
+is implemented as an array of ``PyObject*``: after all, in order to return a
+borrowed reference, we need a reference to borrow, don't we?
+
+Fortunately, (some) CPython developers are aware of these problems, and there
+is an ongoing project to `design a better C API`_ which aims to fix exactly
+this kind of problems.
+
+Nonetheless, in the meantime we still need to implement the current
+half-broken APIs: there is no easy solutions for that, and it is likely that
+we will always need to pay some performance penalty in order to implement them
+correctly.
+
+However, what we could potentially do is to provide alternative functions
+which do the same job but are more PyPy friendly: for example, we could think
+of implementing ``PyList_GetItemNonBorrowed`` or something like that: then, C
+extensions could choose to use it (possibly hidden inside some macro and
+``#ifdef``) if they want to be fast on PyPy.
+
+
+.. _`PyList_GetItem`: https://docs.python.org/2/c-api/list.html#c.PyList_GetItem
+.. _`list strategies`: https://morepypy.blogspot.com/2011/10/more-compact-lists-with-list-strategies.html
+.. _convert: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/listobject.py#lines-28
+.. _`design a better C API`: https://pythoncapi.readthedocs.io/
