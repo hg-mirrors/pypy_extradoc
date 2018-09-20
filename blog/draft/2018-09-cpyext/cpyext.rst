@@ -143,7 +143,7 @@ pass them to C extensions.  We surely need a way to handle that.
 Another challenge is that sometimes, ``PyObject*`` structs are not completely
 opaque: there are parts of the public API which expose to the user specific
 fields of some concrete C struct. For example the definition of PyTypeObject_
-which exposes many of the ``tp_*`` slots to Cython (OK - ???)
+which exposes many of the ``tp_*`` slots to the user.
 Since the low-level layout of PyPy ``W_Root`` objects is completely different
 than the one used by CPython, we cannot simply pass RPython objects to C; we
 need a way to handle the difference.
@@ -239,7 +239,7 @@ usually ``NULL``.
 
 On the other hand, in the PyPy interpreter, exceptions are propagated by raising the
 RPython-level OperationError_ exception, which wraps the actual app-level
-exception values: to harmonize the two worlds. Whenever we return from C to
+exception values. To harmonize the two worlds, whenever we return from C to
 RPython, we need to check whether a C API exception was raised and if so turn it
 into an ``OperationError``.
 
@@ -490,10 +490,10 @@ if the caller needs to handle the returned item only temporarily: the item is
 kept alive because it is in the list anyway.
 
 For PyPy this is a challenge: thanks to `list strategies`_, often lists are
-represented in a compact way. A list containing only integers is stored
-as a C array of ``long``.  How to implement ``PyList_GetItem``? We cannot
-simply create a ``PyObject*`` on the fly, because the caller will never decref
-it and it will result in a memory leak.
+represented in a compact way. For example, a list containing only integers is
+stored as a C array of ``long``.  How to implement ``PyList_GetItem``? We
+cannot simply create a ``PyObject*`` on the fly, because the caller will never
+decref it and it will result in a memory leak.
 
 The current solution is very inefficient. The first time we do a
 ``PyList_GetItem``, we convert_ the **whole** list to a list of
@@ -537,7 +537,7 @@ slow it is, exactly?
 
 We decided to concentrate on microbenchmarks_ for now. It should be evident
 by now there are simply too many issues which can slow down a ``cpyext``
-benchmark, and microbenchmarks help us to concentrate on one (or few) at a
+program, and microbenchmarks help us to concentrate on one (or few) at a
 time.
 
 The microbenchmarks measure very simple thins, like calling functions and
@@ -545,8 +545,8 @@ methods with the various calling conventions (no arguments, one arguments,
 multiple arguments); passing various types as arguments (to measure conversion
 costs); allocating objects from C, and so on.
 
-Here are the results from PyPy 5.8 relative and normalized to CPython 2.7,
-the lower the better:
+Here are the results from the old PyPy 5.8 relative and normalized to CPython
+2.7, the lower the better:
 
 .. image:: pypy58.png
 
@@ -601,11 +601,12 @@ tackle functions one by one.  On the other hand, not all the functions are
 equally important, and is is enough to optimize a relatively small subset to
 improve many different use cases.
 
-Where a year ago we announced we have a working answer to run c-extension in PyPy,
-we now have a clear picture of what are the
-performance bottlenecks, and we have developed some technical solutions to fix them. It is "only"
-a matter of tackling them, one by one.  Most of
-the work was done during two sprints, for a total 2-3 person-months of work.
+Where a year ago we announced we have a working answer to run c-extension in
+PyPy, we now have a clear picture of what are the performance bottlenecks, and
+we have developed some technical solutions to fix them. It is "only" a matter
+of tackling them, one by one.  It is worth noting that most of the work was
+done during two sprints, for a total 2-3 person-months of work.
+
 
 XXX: find a conclusion
 
