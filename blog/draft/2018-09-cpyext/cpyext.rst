@@ -193,7 +193,7 @@ are in sync. In particular:
   2. as long as the ``PyObject*`` has a refcount greater than 0, we want to
      make sure that the GC does not collect the ``W_Root``.
 
-The ``PyObject*`` ==> ``W_Root`` link is maintained by the special field
+The ``PyObject*`` ⇨ ``W_Root`` link is maintained by the special field
 `ob_pypy_link`_ which is added to all ``PyObject*``. On a 64 bit machine this
 means that all ``PyObject*`` have 8 bytes of overhead, but then the
 conversion is very quick, just reading the field.
@@ -342,24 +342,24 @@ function:
         return result;
     }
 
-  1. you are in RPython and do a cpyext call to ``foo``: **RPython-to-C**;
+1. you are in RPython and do a cpyext call to ``foo``: **RPython-to-C**;
 
-  2. ``foo`` calls ``PyInt_FromLong(1234)``, which is implemented in RPython:
-     **C-to-RPython**;
+2. ``foo`` calls ``PyInt_FromLong(1234)``, which is implemented in RPython:
+   **C-to-RPython**;
 
-  3. the implementation of ``PyInt_FromLong`` indirectly calls
-     ``PyIntType.tp_new``, which is a C function pointer: **RPython-to-C**;
+3. the implementation of ``PyInt_FromLong`` indirectly calls
+   ``PyIntType.tp_new``, which is a C function pointer: **RPython-to-C**;
 
-  4. however, ``tp_new`` is just a wrapper around an RPython function, created
-     by ``_make_wrapper``: **C-to-RPython**;
+4. however, ``tp_new`` is just a wrapper around an RPython function, created
+   by ``_make_wrapper``: **C-to-RPython**;
 
-  5. finally, we create our RPython ``W_IntObject(1234)``; at some point
-     during the **RPython-to-C** crossing, its ``PyObject*`` equivalent is
-     created;
+5. finally, we create our RPython ``W_IntObject(1234)``; at some point
+   during the **RPython-to-C** crossing, its ``PyObject*`` equivalent is
+   created;
 
-  6. after many layers of wrappers, we are again in ``foo``: after we do
-     ``return result``, during the **C-to-RPython** step we convert it from
-     ``PyObject*`` to ``W_IntObject(1234)``.
+6. after many layers of wrappers, we are again in ``foo``: after we do
+   ``return result``, during the **C-to-RPython** step we convert it from
+   ``PyObject*`` to ``W_IntObject(1234)``.
 
 Phew! After we realized this, it was not so surprising that ``cpyext`` was very
 slow :). And this was a simplified example, since we are not passing a
