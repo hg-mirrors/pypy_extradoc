@@ -55,10 +55,10 @@ destroyed. Again, we can simplify and say that this results in a call to
 
 Generally speaking, the only way to operate on a ``PyObject*`` is to call the
 appropriate API functions. For example, to convert a given ``PyObject*`` to a C
-integer, you can use _`PyInt_AsLong()`; to add two objects together, you can
-call _`PyNumber_Add()`.
+integer, you can use `PyInt_AsLong()`_; to add two objects together, you can
+call `PyNumber_Add()`_.
 
-.. _`PyInt_AsLong()`: https://docs.python.org/2/c-api/int.html?highlight=pyint_check#c.PyInt_AsLong
+.. _`PyInt_AsLong()`: https://docs.python.org/2/c-api/int.html#c.PyInt_AsLong
 .. _`PyNumber_Add()`: https://docs.python.org/2/c-api/number.html#c.PyNumber_Add
 
 Internally, PyPy uses a similar approach. All Python objects are subclasses of
@@ -162,12 +162,12 @@ pay any penalty in that case. However, the first time we pass a ``W_Root`` to
 C, we allocate and initialize its ``PyObject*`` counterpart.
 
 The same idea applies also to objects which are created in C, e.g. by calling
-_`PyObject_New`. At first, only the ``PyObject*`` exists and it is
+`PyObject_New()`_. At first, only the ``PyObject*`` exists and it is
 exclusively managed by reference counting. As soon as we pass it to the PyPy
 world (e.g. as a return value of a function call), we create its ``W_Root``
 counterpart, which is managed by the GC as usual.
 
-.. _`PyObject_New`: https://docs.python.org/2/c-api/allocation.html#c.PyObject_New
+.. _`PyObject_New()`: https://docs.python.org/2/c-api/allocation.html#c.PyObject_New
 
 Here we start to see why calling cpyext modules is more costly in PyPy than in
 CPython. We need to pay some penalty for all the conversions between
@@ -194,7 +194,7 @@ are in sync. In particular:
      make sure that the GC does not collect the ``W_Root``.
 
 The ``PyObject*`` ==> ``W_Root`` link is maintained by the special field
-_`ob_pypy_link` which is added to all ``PyObject*``. On a 64 bit machine this
+`ob_pypy_link`_ which is added to all ``PyObject*``. On a 64 bit machine this
 means that all ``PyObject*`` have 8 bytes of overhead, but then the
 conversion is very quick, just reading the field.
 
@@ -204,7 +204,7 @@ passed to C, and adding an overhead of 8 bytes to all of them is a
 waste. Instead, in the general case the link is maintained by using a
 dictionary, where ``W_Root`` are the keys and ``PyObject*`` the values.
 
-However, for a _`few selected` ``W_Root`` subclasses we **do** maintain a
+However, for a `few selected`_ ``W_Root`` subclasses we **do** maintain a
 direct link using the special ``_cpy_ref`` field to improve performance. In
 particular, we use it for ``W_TypeObject`` (which is big anyway, so a 8 bytes
 overhead is negligible) and ``W_NoneObject``. ``None`` is passed around very
@@ -316,7 +316,7 @@ were paying the cost of ``generic_cpy_call`` several times more than what we exp
 After a bit of investigation, we discovered this was ultimately caused by our
 "correctness-first" approach. For simplicity of development and testing, when
 we started ``cpyext`` we wrote everything in RPython: thus, every single API call
-made from C (like the omnipresent `PyArg_ParseTuple`_, `PyInt_AsLong`_, etc.)
+made from C (like the omnipresent `PyArg_ParseTuple()`_, `PyInt_AsLong()`_, etc.)
 had to cross back the C-to-RPython border. This was especially daunting for
 very simple and frequent operations like ``Py_INCREF`` and ``Py_DECREF``,
 which CPython implements as a single assembly instruction!
@@ -391,10 +391,9 @@ from this optimization are impressive, as we will detail later.
 
 .. _`2017 Cape Town Sprint`: https://morepypy.blogspot.com/2017/10/cape-of-good-hope-for-pypy-hello-from.html
 .. _`cpyext microbenchmarks`: https://github.com/antocuni/cpyext-benchmarks
-.. _`PyArg_ParseTuple`: https://docs.python.org/2/c-api/arg.html#c.PyArg_ParseTuple
-.. _`PyInt_AsLong`: https://docs.python.org/2/c-api/int.html#c.PyInt_AsLong
+.. _`PyArg_ParseTuple()`: https://docs.python.org/2/c-api/arg.html#c.PyArg_ParseTuple
 .. _`tp_new`: https://docs.python.org/2/c-api/typeobj.html#c.PyTypeObject.tp_new
-.. `_make_wrapper`: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/api.py#lines-362
+.. _`_make_wrapper`: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/api.py#lines-362
 .. _merged: https://bitbucket.org/pypy/pypy/commits/7b550e9b3cee   
 
 
@@ -484,7 +483,7 @@ refcounting even in presence of other GC management schemes, as explained
 above.
 
 Another example is borrowed references. There are API functions which **do
-not** incref an object before returning it, e.g. `PyList_GetItem`_.  This is
+not** incref an object before returning it, e.g. `PyList_GetItem()`_.  This is
 done for performance reasons because we can avoid a whole incref/decref pair,
 if the caller needs to handle the returned item only temporarily: the item is
 kept alive because it is in the list anyway.
@@ -523,7 +522,7 @@ extensions could choose to use it (possibly hidden inside some macro and
 ``#ifdef``) if they want to be fast on PyPy.
 
 
-.. _`PyList_GetItem`: https://docs.python.org/2/c-api/list.html#c.PyList_GetItem
+.. _`PyList_GetItem()`: https://docs.python.org/2/c-api/list.html#c.PyList_GetItem
 .. _`list strategies`: https://morepypy.blogspot.com/2011/10/more-compact-lists-with-list-strategies.html
 .. _convert: https://bitbucket.org/pypy/pypy/src/b9bbd6c0933349cbdbfe2b884a68a16ad16c3a8a/pypy/module/cpyext/listobject.py#lines-28
 .. _`design a better C API`: https://pythoncapi.readthedocs.io/
