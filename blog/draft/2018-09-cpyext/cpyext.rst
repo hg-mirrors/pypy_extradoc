@@ -6,7 +6,7 @@ layer to compile and run CPython C extensions inside PyPy.  Often people ask
 why a particular C extension doesn't work or is very slow on PyPy.
 Usually it is hard to answer without going into technical details. The goal of
 this blog post is to explain some of these technical details, so that we can
-simply link here instead of explaing again and again :).
+simply link here instead of explaining again and again :).
 
 From a 10.000 foot view, ``cpyext`` is PyPy's version of ``"Python.h"``. Every time
 you compile an extension which uses that header file, you are using ``cpyext``.
@@ -81,7 +81,7 @@ At first, it looks very easy to write a compatibility layer: just make
 
 Actually, the code above is not too far from the actual
 implementation. However, there are tons of gory details which make it much
-harder than what it looks, and much slower unless you pay a lot of attention
+harder than it looks, and much slower unless you pay a lot of attention
 to performance.
 
 
@@ -270,7 +270,7 @@ Can we measure it?
 
 Assuming that the conversion between ``W_Root`` and ``PyObject*`` has a
 reasonable cost (as explained by the previous section), the overhead
-introduced by a single border-cross is still accettable, especially if the
+introduced by a single border-cross is still acceptable, especially if the
 callee is doing some non-negligible amount of work.
 
 However this is not always the case. There are basically three problems that
@@ -442,7 +442,7 @@ returned to Python. Consider for example the following code:
 At every iteration, we get an item out of the array: the return type is a an
 instance of ``numpy.float64`` (a numpy scalar), i.e. a ``PyObject'*``: this is
 something which is implemented by numpy entirely in C, so completely
-transparent to ``cpyext``. We don't have any control on how it is allocated,
+opaque to ``cpyext``. We don't have any control on how it is allocated,
 managed, etc., and we can assume that allocation costs are the same than on
 CPython.
 
@@ -454,9 +454,9 @@ PyPy GC).
 
 However, we also need to keep track of the ``W_Root`` to ``PyObject*`` link.
 Currently, we do this by putting all of them in a dictionary, but it is very
-inefficient, especially because most of these objects dies young and thus it
+inefficient, especially because most of these objects die young and thus it
 is wasted work to do that for them.  Currently, this is one of the biggest
-unresolved problem in ``cpyext``, and it is what casuses the two microbenchmarks
+unresolved problem in ``cpyext``, and it is what causes the two microbenchmarks
 ``allocate_int`` and ``allocate_tuple`` to be very slow.
 
 We are well aware of the problem, and we have a plan for how to fix it. The
@@ -489,7 +489,7 @@ done for performance reasons because we can avoid a whole incref/decref pair,
 if the caller needs to handle the returned item only temporarily: the item is
 kept alive because it is in the list anyway.
 
-For PyPy this is a challenge: thanks to `list strategies`_, often lists are
+For PyPy, this is a challenge: thanks to `list strategies`_, lists are often
 represented in a compact way. For example, a list containing only integers is
 stored as a C array of ``long``.  How to implement ``PyList_GetItem``? We
 cannot simply create a ``PyObject*`` on the fly, because the caller will never
@@ -540,7 +540,7 @@ by now there are simply too many issues which can slow down a ``cpyext``
 program, and microbenchmarks help us to concentrate on one (or few) at a
 time.
 
-The microbenchmarks measure very simple thins, like calling functions and
+The microbenchmarks measure very simple things, like calling functions and
 methods with the various calling conventions (no arguments, one arguments,
 multiple arguments); passing various types as arguments (to measure conversion
 costs); allocating objects from C, and so on.
@@ -551,14 +551,14 @@ Here are the results from the old PyPy 5.8 relative and normalized to CPython
 .. image:: pypy58.png
 
 PyPy was horribly slow everywhere, ranging from 2.5x to 10x slower. It is
-particularly interesting to compare ``simple.noargs``, which measure the cost
+particularly interesting to compare ``simple.noargs``, which measures the cost
 of calling an empty function with no arguments, and ``simple.onearg(i)``,
-which measure the cost calling an empty function passing an integer argument:
+which measures the cost calling an empty function passing an integer argument:
 the latter is ~2x slower than the former, indicating that the conversion cost
 of integers is huge.
 
-PyPy 5.8 was the last release before we famouse Cape Town sprint, when we
-started to look at cpyext performance seriously. Here are the performance for
+PyPy 5.8 was the last release before the famous Cape Town sprint, when we
+started to look at cpyext performance seriously. Here are the performance data for
 PyPy 6.0, the latest release at the time of writing:
 
 .. image:: pypy60.png
@@ -567,7 +567,7 @@ The results are amazing! PyPy is now massively faster than before, and for
 most benchmarks it is even faster than CPython: yes, you read it correctly:
 PyPy is faster than CPython at doing CPython's job, even considering all the
 extra work it has to do to emulate the C API.  This happens thanks to the JIT,
-which produce speedups high enough to counterbalance the slowdown caused by
+which produces speedups high enough to counterbalance the slowdown caused by
 cpyext.
 
 There are two microbenchmarks which are still slower though: ``allocate_int``
@@ -612,9 +612,9 @@ We think this work is important for the Python ecosystem. PyPy has established
 a baseline for performance in pure python code, providing an answer for the
 "Python is slow" detractors. The techniques used to make ``cpyext`` performant
 will let PyPy become an alternative for people who mix C extensions with
-python, which, it turns out, is just about everyone, in particular those using
+Python, which, it turns out, is just about everyone, in particular those using
 the various scientific libraries. Today, many developers are forced to seek
-performance by converting code from python to a lower language. We feel there
+performance by converting code from Python to a lower language. We feel there
 is no reason to do this, but in order to prove it we must be able to run both
 their python and their C extensions performantly, then we can begin to educate
 them how to write JIT-friendly code in the first place.
