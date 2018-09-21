@@ -588,7 +588,7 @@ Our current approach is something along these lines:
 
     1. run a real-world small benchmark which exercises cpyext
 
-    2. measure and find the bottleneck
+    2. measure and find the major bottleneck
 
     3. write a corresponding microbenchmark
 
