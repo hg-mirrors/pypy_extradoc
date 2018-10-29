@@ -1,0 +1,42 @@
+Düsseldorf PyPy sprint February 4th-9th 2019
+=====================================================
+
+The next PyPy sprint will be held in the Computer Science department of
+Heinrich-Heine Universität Düsseldorf from the 4th to the 9st of
+February 2019. This is a fully public sprint, everyone is welcome to
+join us.
+
+Topics and goals
+----------------
+
+To be defined
+
+Location
+--------
+
+The sprint will take place in a seminar room of the computer science
+department.  It is in the building 25.12 of the university campus. For
+travel instructions see
+
+    https://www.uni-duesseldorf.de/home/universitaet/weiterfuehrend/lageplan-und-anfahrt.html
+
+
+Exact times
+-----------
+
+Work days: starting February 4th (~morning), ending February 9th (~afternoon).
+The break day will probably be Thursday.
+
+
+Registration
+------------
+
+Please register by Mercurial::
+
+  https://bitbucket.org/pypy/extradoc/
+  https://bitbucket.org/pypy/extradoc/raw/extradoc/sprintinfo/ddorf-2019/people.txt
+
+or on the pypy-dev mailing list if you do not yet have check-in rights:
+
+  http://mail.python.org/mailman/listinfo/pypy-dev
+
