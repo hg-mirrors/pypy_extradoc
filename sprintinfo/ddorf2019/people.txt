@@ -1,5 +1,5 @@
-People coming to the Duesseldorf sprint October 2010
-====================================================
+People coming to the Duesseldorf sprint Feb 4-9 2019
+=====================================================
 
 People who have a ``?`` in their arrive/depart or accomodation
 column are known to be coming but there are no details 
@@ -9,6 +9,7 @@ available yet from them.
     Name                     Arrive/Depart  Accomodation 
 ============================ ============== =====================
 Carl Friedrich Bolz-Tereick  always there   private
+Matti Picus                  Feb 4? - 9?    any suggestions??
 ============================ ============== =====================
 
 
