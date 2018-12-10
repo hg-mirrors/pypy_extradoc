@@ -12,6 +12,14 @@ Topics and goals
 - improve Python 3.6 support
 - discuss benchmarking situation
 - progress on utf-8 branches
+- cpyext
+- packaging: are we ready to upload to PyPI?
+  - [issue 2617](https://bitbucket.org/pypy/pypy/issues/2617) - we expose too many functions from lib-pypy.so
+  - mutlilinux2010
+  - formulate an ABI name and upgrade policy
+- memoryview(ctypes.Structure)
+
+
 
 Location
 --------
