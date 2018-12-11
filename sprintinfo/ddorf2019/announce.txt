@@ -28,7 +28,7 @@ The sprint will take place in a seminar room of the computer science
 department.  It is in the building 25.12 of the university campus. For
 travel instructions see
 
-    https://www.uni-duesseldorf.de/home/universitaet/weiterfuehrend/lageplan-und-anfahrt.html
+    https://www.cs.hhu.de/lehrstuehle-und-arbeitsgruppen/softwaretechnik-und-programmiersprachen/kontaktservice/kontakt/lage-und-anreise.html
 
 
 Exact times
