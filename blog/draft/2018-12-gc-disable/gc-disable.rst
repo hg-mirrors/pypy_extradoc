@@ -46,7 +46,7 @@ suspect it is related to the deallocation of raw objects.
 
 These multi-millesecond pauses are a problem for systems where it is important
 to respond to certain events with a latency which is both low and consistent.
-The GC kicks in at the wrong time, it might causes unacceptable pauses during
+If the GC kicks in at the wrong time, it might causes unacceptable pauses during
 the collection cycle.
 
 Let's look again at our real-world example. This is a system which
