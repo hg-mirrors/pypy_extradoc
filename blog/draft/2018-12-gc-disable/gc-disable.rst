@@ -30,7 +30,7 @@ program to progress between each step.
 
 The following chart shows the behavior of a real-world, long-running process:
 
-.. image:: 2018-12-gc-timing.png
+.. image:: gc-timing.png
 
 The orange line shows the amount of memory used by the program, which
 increases linearly while the program progresses. Every ~5 minutes, the GC
@@ -53,7 +53,7 @@ continuously monitors an external stream; when a certain event occurs, we want
 to take an action. The following chart shows the maximum time it takes to
 complete one of such actions, aggregated every minute:
 
-.. image:: 2018-12-normal-max.png
+.. image:: normal-max.png
 
 You can clearly see that the baseline response time is around ~20-30
 ms. However, we can also see periodic spikes around ~50-100 ms, with peaks up
@@ -80,7 +80,7 @@ allowed to run.
 The following chart compares the behavior of the default PyPy GC and the new
 custom GC, after a careful placing of ``nogc()`` sections:
 
-.. image:: 2018-12-nogc.png
+.. image:: nogc-max.png
 
 The yellow line is the same as before, while the purple line shows the new
 system: almost all spikes have gone, and the baseline performance is about 10%
