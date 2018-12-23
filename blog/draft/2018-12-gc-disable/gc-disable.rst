@@ -75,7 +75,7 @@ introducing `two new features`_ to the ``gc`` module:
 Combining these two functions, it is possible to take control of the GC to
 make sure it runs only when it is acceptable to do so.  For an example of
 usage, you can look at the implementation of a `custom GC`_ inside pypytools_.
-The peculiarity is that is also defines a ``with nogc():`` context manager
+The peculiarity is that it also defines a ``with nogc():`` context manager
 which you can use to mark performance-critical sections where the GC is not
 allowed to run.
 
