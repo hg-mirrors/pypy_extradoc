@@ -4,8 +4,8 @@ PyPy for low-latency systems
 Recently I have merged the gc-disable branch, introducing a couple of features
 which are useful when you need to respond to certain events with the lowest
 possible latency.  This work has been kindly sponsored by `Gambit Research`_
-(which, by the way, is a very cool and geeky place where to work, in case you
-are interested_).
+(which, by the way, is a very cool and geeky place where to work_, in case you
+are interested).
 
 The PyPy VM manages the memory using a generational, moving Garbage Collector:
 periodically, the GC scans the whole heap to find unreachable objects and
@@ -63,7 +63,7 @@ not all) of the spikes were caused by the GC kicking in at the wrong time.
 The work I did in the ``gc-disable`` branch aims to fix this problem by
 introducing `two new features`_ to the ``gc`` module:
 
-  - ``gc.disable()``, which used to simply inhibits the execution of
+  - ``gc.disable()``, which used to simply inhibit the execution of
     finalizers, now disables the GC major collections for real. After a call
     to it, you will see the memory usage to grow indefinitely.
 
@@ -93,7 +93,7 @@ release: take this as a Christmas present :)
 
 
 .. _`Gambit Research`: https://www.gambitresearch.com/
-.. _interested: https://www.gambitresearch.com/jobs.html
+.. _work: https://www.gambitresearch.com/jobs.html
 .. _here: https://pypy.readthedocs.io/en/latest/gc_info.html#incminimark
 .. _`incremental strategy since 2013`: https://morepypy.blogspot.com/2013/10/incremental-garbage-collector-in-pypy.html
 .. _PYPY_GC_MAJOR_COLLECT: https://pypy.readthedocs.io/en/latest/gc_info.html#environment-variables
