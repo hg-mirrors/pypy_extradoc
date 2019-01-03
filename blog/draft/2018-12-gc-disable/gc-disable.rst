@@ -72,6 +72,13 @@ introducing `two new features`_ to the ``gc`` module:
   - ``gc.collect_step()`` is a new function which you can use to manually
     execute a single incremental GC collection step.
 
+It is worth to specify that ``gc.disable()`` disables **only** the major
+collections, while minor collections still runs.  Moreover, thanks to the
+JIT's virtuals, many objects with a short and predictable lifetime are not
+allocated at all. The end result is that most objects with short lifetime are
+still collected as usual, so the impact of ``gc.disable()`` on memory growth
+is not as bad as it could sound.
+
 Combining these two functions, it is possible to take control of the GC to
 make sure it runs only when it is acceptable to do so.  For an example of
 usage, you can look at the implementation of a `custom GC`_ inside pypytools_.
