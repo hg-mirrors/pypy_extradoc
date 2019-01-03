@@ -5,7 +5,9 @@ Recently I have merged the gc-disable branch, introducing a couple of features
 which are useful when you need to respond to certain events with the lowest
 possible latency.  This work has been kindly sponsored by `Gambit Research`_
 (which, by the way, is a very cool and geeky place where to work_, in case you
-are interested).
+are interested).  Note also that this is a very specialized use case, so these
+features might not be useful for the average PyPy user, unless you have the
+same problems as described here.
 
 The PyPy VM manages memory using a generational, moving Garbage Collector.
 Periodically, the GC scans the whole heap to find unreachable objects and
@@ -96,9 +98,15 @@ system: almost all spikes have gone, and the baseline performance is about 10%
 better. There is still one spike towards the end, but after some investigation
 we concluded that it was **not** caused by the GC.
 
+Note that this does **not** mean that the whole program became magically
+faster: we simply moved the GC pauses in some other place which is **not**
+shown in the graph: in this specific use case this technique was useful
+because it allowed us to shift the GC work in places where pauses are more
+acceptable.
+
 All in all, a pretty big success, I think.  These functionalities are already
 available in the nightly builds of PyPy, and will be included in the next
-release: take this as a Christmas present :)
+release: take this as a New Year present :)
 
 Antonio Cuni and the PyPy team
 
