@@ -18,6 +18,9 @@ Tim Felgentreff              Feb 4 - 9      ?
 Maciej Fijałkowski           Feb 3 - 9      airbnb
 Łukasz Langa                 Feb 3 - 9      airbnb
 Armin Rigo                   Feb 3 - 9      airbnb
+John Witulski                ?              lives there
+Semih Demir                  ?              lives there
+Stefan Troost                ?              lives there
 ============================ ============== ===========================
 
 
