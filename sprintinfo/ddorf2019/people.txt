@@ -21,6 +21,7 @@ Armin Rigo                   Feb 3 - 9      airbnb
 John Witulski                ?              lives there
 Semih Demir                  ?              lives there
 Stefan Troost                ?              lives there
+Ronan Lamy                   Feb 3 - 8      Hotel Diana
 ============================ ============== ===========================
 
 
