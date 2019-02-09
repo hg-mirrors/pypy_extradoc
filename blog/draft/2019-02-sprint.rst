@@ -3,14 +3,15 @@ Düsseldorf sprint report
 Hello everyone!
 
 We are happy to report a successful and well attended sprint that is wrapping up
-in Düsseldorf, Germany. In the last week we had eighteen people sprinting at the
-Heinrich-Heine-Universität Düsseldorf on various topics. Big chunk of the sprint
-was dedicated to various discussions, since we did not manage to gather
-core developers in one room in quite a while. Discussion topics included:
+in Düsseldorf, Germany. In the last week we had eighteen people sprinting
+at the Heinrich-Heine-Universität Düsseldorf on various topics. A big
+chunk of the sprint was dedicated to various discussions, since we did not
+manage to gather the core developers in one room in quite a while.
+Discussion topics included:
 
 * Funding and general sustainability of open source.
 
-* Catching up with CPython 3.7/3.8 - we are planning to release 3.6 some time
+* Catching up with CPython 3.7/3.8 – we are planning to release 3.6 some time
   in the next few months and we will continue working on 3.7/3.8.
 
 * What to do with VMprof
@@ -18,13 +19,13 @@ core developers in one room in quite a while. Discussion topics included:
 * How can we support Cython inside PyPy in a way that will be understood
   by the JIT, hence fast.
 
-* The future of supporting the numeric stack on pypy - we have made significant
-  progress in the past few years and most of numeric stack works out of the box,
+* The future of supporting the numeric stack on pypy – we have made significant
+  progress in the past few years and most of the numeric stack works out of the box,
   but deployment and performance remain problems. Improving on those problems
-  remain a very important focus for pypy as a project.
+  remains a very important focus for PyPy as a project.
 
-* Using the presence of CPython developer (Łukasz Langa) and Graal python developer
-  (Tim Felgentreff) we discussed ways to collaborate in order to improve python
+* Using the presence of a CPython developer (Łukasz Langa) and a Graal Python developer
+  (Tim Felgentreff) we discussed ways to collaborate in order to improve Python
   ecosystem across implementations.
 
 * Pierre-Yves David and Georges Racinet from octobus gave us an exciting demo
@@ -36,29 +37,31 @@ Some highlights of the coding tasks worked on:
   test! Tobias Oberstein from Crossbar GmbH and Rodolph Perfetta from ARM joined the
   sprint to help kickstart the project.
 
-* Long running math-improvements branch that was started by Stian Andreassen got merged
+* The long running math-improvements branch that was started by Stian Andreassen got merged
   after bugfixes done by Alexander Schremmer. It should improve operations on large integers.
 
-* Arcane art of necromancy was used to revive long dormant regalloc branch started
+* The arcane art of necromancy was used to revive long dormant regalloc branch started
   and nearly finished by Carl Friedrich Bolz-Tereick. The branch got merged and gives
   some modest speedups across the board.
 
 * Andrew Lawrence worked on MSI installer for PyPy on windows.
 
-* Łukasz worked on improving failing tests on PyPy 3.6 branch. He knows very obscure
-  details of CPython, hence we managed to progress very quickly on the 3.6 branch.
+* Łukasz worked on improving failing tests on the PyPy 3.6 branch. He knows very obscure
+  details of CPython (e.g. how pickling works), hence we managed to progress very quickly.
 
-* Matti Picus set up new benchmarking server for PyPy 3 branches.
+* Matti Picus set up a new benchmarking server for PyPy 3 branches.
 
-* Utf8 branch, which changes the internal representation of unicode might be finally
-  merged at some point very soon. That gives significant speedups in a lot of cases
-  handling strings.
+* The Utf8 branch, which changes the internal representation of unicode might be finally
+  merged at some point very soon. We discussed and improved upon the last few
+  blockers. It gives significant speedups in a lot of cases handling strings.
 
 * Zlib was missing couple methods, which were added by Ronan Lamy and Julian Berman.
 
 * Manuel Jacob fixed RevDB failures.
 
 * Antonio Cuni and Matti Picus worked on 7.0 release which should happen in a few days.
+
+Now we are all quite exhausted, and are looking forward to catching up on sleep.
 
 Best regards,
 Maciej Fijałkowski, Carl Friedrich Bolz-Tereick and the whole PyPy team.
