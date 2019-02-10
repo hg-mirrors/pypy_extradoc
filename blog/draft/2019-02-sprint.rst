@@ -2,14 +2,14 @@ Düsseldorf sprint report
 
 Hello everyone!
 
-We are happy to report a successful and well attended sprint that is wrapping up
-in Düsseldorf, Germany. In the last week we had eighteen people sprinting
+We are happy to report a successful and well attended PyPy sprint 
+in Düsseldorf, Germany. From Feb 4 to Feb 13 we had eighteen people sprinting
 at the Heinrich-Heine-Universität Düsseldorf on various topics. A big
-chunk of the sprint was dedicated to various discussions, since we did not
-manage to gather the core developers in one room in quite a while.
+chunk of the sprint was dedicated to various discussions, since we have not
+managed to gather the core developers in one room for quite a while.
 Discussion topics included:
 
-* Funding and general sustainability of open source.
+* Funding and general sustainability of open source, and PyPy in particular.
 
 * Catching up with CPython 3.7/3.8 – we are planning to release 3.6 some time
   in the next few months and we will continue working on 3.7/3.8.
@@ -34,7 +34,7 @@ Discussion topics included:
 Some highlights of the coding tasks worked on:
 
 * Aarch64 (ARM64) JIT backend work has been started, we are able to run the first
-  test! Tobias Oberstein from Crossbar GmbH and Rodolph Perfetta from ARM joined the
+  test! Tobias Oberstein from `Crossbar GmbH`_ and Rodolph Perfetta from ARM joined the
   sprint to help kickstart the project.
 
 * The long running math-improvements branch that was started by Stian Andreassen got merged
@@ -44,7 +44,7 @@ Some highlights of the coding tasks worked on:
   and nearly finished by Carl Friedrich Bolz-Tereick. The branch got merged and gives
   some modest speedups across the board.
 
-* Andrew Lawrence worked on MSI installer for PyPy on windows.
+* Andrew Lawrence worked on a MSI installer for PyPy on windows.
 
 * Łukasz worked on improving failing tests on the PyPy 3.6 branch. He knows very obscure
   details of CPython (e.g. how pickling works), hence we managed to progress very quickly.
@@ -53,9 +53,9 @@ Some highlights of the coding tasks worked on:
 
 * The Utf8 branch, which changes the internal representation of unicode might be finally
   merged at some point very soon. We discussed and improved upon the last few
-  blockers. It gives significant speedups in a lot of cases handling strings.
+  blockers. It gives significant speedups in many cases of string handling.
 
-* Zlib was missing couple methods, which were added by Ronan Lamy and Julian Berman.
+* Zlib was missing a couple of methods, which were added by Ronan Lamy and Julian Berman.
 
 * Manuel Jacob fixed RevDB failures.
 
@@ -67,3 +67,4 @@ Best regards,
 Maciej Fijałkowski, Carl Friedrich Bolz-Tereick and the whole PyPy team.
 
 .. _`heptapod`: https://heptapod.net
+.. _`Crossbar GmbH`: https://crossbar.io/
