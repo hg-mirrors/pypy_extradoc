@@ -1,0 +1,262 @@
+# PyPy sprint
+
+https://piratenpad.de/p/IkjitZdh
+https://hackmd.io/1eT6t4_lReigSw0-4pEyQw
+
+## People
+
+Tim
+Stefan
+Andy
+Ronan
+Manuel
+Alexander
+Julian
+Carl Friedrich
+John
+Maciej
+Armin
+Łukasz
+Matti
+Anto
+Mercurial devs (Wednesday)
+some external people
+
+## Tasks - Mon
+
+- intro talk (CF, John, Julian, Andy, Stefan)
+
+
+
+## Tasks - Tues
+- Start the ARM64 backend (Armin, fijal) STARTED+DISCUSSIONS
+- Merging regalloc branch (CF, fijal, Armin)
+- Set up benchmarking machine (fijal, Matti)
+- Triage 3.6 failures and progress on them (Łukasz, Ronan)       https://bitbucket.org/pypy/pypy/wiki/Status%20of%20PyPy3%20support%20for%203.6
+  - re and csv failures are done
+  - removed duplicate code
+  - next: fspath
+
+- zlib missing methods pypy2/3 (Julian, Anto) RZLIB DONE
+  - new failing tests: http://buildbot.pypy.org/summary?category=linux64&branch=%3Ctrunk%3E&recentrev=95849:c5c3ad13d149
+    - app-level test: when run on top of compiled PyPy, can't call function defined on interp-level
+    - lib-python test: .flush() sets .stream to nullptr, .copy() calls deflateCopy() with nullptr, it segfaults in RZlibError.fromstream()
+      - subtle difference: on CPython, z_stream is part of structure and can't become nullptr
+      - possible fixes: either handle .stream == nullptr in pypy module, or make RZlibError.fromstream() robust agains nullptr
+  - TESTS fixed? py3 problems
+- Fix RevDB (Manuel, Armin around) DONE
+
+- investigate struct.unpack weirdness (Antocuni, Julian)
+
+- Look into Windows failures on 3.5 (Manuel, Andy, Ronan around) - NANs are not consistent DONE
+
+- Windows installer (Andy, Matti) WORKS, needs adding to package.py
+
+
+
+## Tasks
+- Release 7.0 (Anto) reports version 7.1 :(
+- utf-8 progress/merging (Matti looking, Ronan will help)
+  NEEDS REVIEW. Benchmarks are [here](https://gist.github.com/mattip/05951f44e41224e36f00b62ebb4e2444) and [here](https://gist.github.com/mattip/d25536cd88ffe0361feca7760745a524). `logging.warn`, which is slow on py3.5 has gotten even worse SATURDAY
+
+- still one failing test in zlib branch untranslated (Ronan)
+
+- cpyext performance (Tim, Ronan around) Carl will ask Tim what is going on and file an issue
+
+- math-improvements branch (Alex to start) (REVIEW DONE, needs to be merged into default after the release, more bugs, benchmark on Py3?) (CF to merge into default/py3.5)
+
+- memoryview/ctypes bug https://bitbucket.org/pypy/pypy/issues/2930 (Matti, Armin around)
+
+- pypeg (lpeg reimplementation in RPython) (Stefan, Tim around, +?)
+
+- Tracker gardening
+
+- CFFI OS X bug (Maciej, Armin around)
+
+- finish fspath stuff (Łukasz, CF around)
+
+- look at test_compile.py (Łukasz, CF around)
+
+- asynio on Windows (Andy)
+
+- ARM32 build server (David, Matti, Maciek, Armin)
+
+- Answer Stefan Beyer email on pypy-dev
+
+
+## Tasks Saturday
+
+* let's look at spectral_norm after regalloc merge
+* utf-8 (Armin, CF, Matti, Maciek around)
+* progress on ARM64 (Maciek, David, Rodolph)
+
+
+## Discussions Done 
+
+- Think about Windows support - conclusion is to keep muddling along:
+
+  - There is money from SFC - who will do the work?
+  - Maybe the Microsoft people??????
+  - Andy has a first-attempt at a MSI packager 
+  - Try to have green buildbots and not much more?
+
+- Funding
+  - SFC - $69,000, $300 in OpenCollective
+  - Karen (SFC) Seem to be ready for us to part ways.
+  - We should spend the money. There are no marked funds.
+  - PLC needs to approve expenses.
+  - Python3.6/3.7/3.8: Ronan, Carl, Lucasz $30,000, incl. travel, salary
+  - Next sprint: summer?
+  - Cpyext: Antonio, Ronan $30,000, incl. travel, salary
+  - Buildbots: machines and website update $10,000
+  - pypy.org $2,000
+- Catching up with 3.6/3.7/3.8 - stop with py3.5
+
+- Intro talk (DONE)
+- Web Assembly (DONE)
+- Collaboration possibilities GraalPython around numpy stack TODAY
+- Scientific Stack
+- VMProf AFTER LUNCH
+- Unstuck Benchmarking - do it!! (decision made)
+- Packaging (wheels and conda) situation
+
+## Discussions
+- Infrastructure, testing: Travis, Azure Pipelines (1800 minutes per month) FRI MORNING
+- State and Future of PyPy 
+- apptest-file branch merge (Ronan)
+- focused sprint: when, where
+
+### Webassembly and PyPy
+
+### pyodide
+
+Python as an ecosystem is bad suited?
+
+PyPy should wait for GC support and DOM support.
+
+
+## Cython and GraalPython
+
+* Problem for GraalPython and PyPy (and numba) is that numpy is a black box
+* Other problem: handling expressions as a unit to not need to compute intermediate values
+* Numpy discussions around PyIR
+* Use (subset of) Cython or Cython-like to make [PyIR](https://docs.google.com/document/d/1jGksgI96LdYQODa9Fca7EttFEGQfNODphVmbCX0DD1k/edit#) real
+    * Cython is used by numeric people already, they are used to it
+    * as much Cython as possible
+    * compilable to something sensible
+* Cython is a tiny bit messy, it's a one-pass compiler
+* can we make Cython better designed?
+* potentially ask Oracle for funding
+
+## PyPy and the Numeric Stack
+
+* Important to support well, it's what many people use Python for
+* Problems:
+    * they don't use PyPy yet!
+    * numpy code tends to not be fast on PyPy
+    * the big libraries are hard to install
+    * we don't support wheels
+    * we don't support conda
+* Performance problems:
+    * cpyext speedups
+    * long term plans around cython or similar
+* maybe building wheels is going to be easier with manylinux2010?
+* let's try to build pypy on the right manylinux2010
+* conda doesn't care about us
+* they want us to do work?
+* but we would need changes in conda and deep understanding on their side
+    * Open issue with design proposal: https://github.com/conda/conda/issues/6950
+* contrete tasks:
+    * try to build manylinux2010 pypy
+    * talk to conda people?
+
+
+## ``VMProf``
+
+* Problems with vmprof:
+    * frontend: graphs are hard to understand
+        * kills buildbot host
+        * we need to maintain it
+        * huge RAM usage
+    * backend:
+        * rpython functions not profiled correctly
+    * what's the scope of vmprof?
+    * no "customers"/motivation
+
+* Scope:
+    * ???
+* Frontend:
+    * Can we make our life easier by using somebody else's frontend?
+        * Chrome devtools
+        * PyCharm
+        * https://github.com/KDAB/hotspot
+
+* Backend:
+    * profiling in production
+        * make it cheap enough
+        * make it easy to turn on and off
+        * make it possible to deal with data in-process
+    * the vmprof pure python modules is badly implemented
+    * boring parts: rpython functions
+
+ * steps:
+     * improve the vmprof module to not suck
+     * make ``_vmprof`` should always provide reliable data
+     * make local deployment very simple
+
+* we should be able to connect source code and traces
+* unique identifiers for loops from the JIT
+  * what happens if the loop is formed before `_vmprof` is on
+      * just have it always on ;-)
+  * how to connect pieces of traces to source code? Offets, pieces of loops, code in memory do not always map back to source file
+  * exposes bugs that probably already exist but we don't care
+    * blackhole, generated code, tracing, ...
+  * debug_merge_point is not necesssarily always correct
+* when you have correct input you see correct output, but when you do not have correct input do not show garbage
+
+##### Summary
+
+* Can we make an improved JitViewer with statistical profiling info? Will it be helpful?
+  * what about tracing? blackhole? Function repitition? Fix it in `_vmprof` !
+
+* Possible architecture:
+  * _vmprof feeds data to a socket
+  * separate program reads the data and distills it into a known format
+  * that is presented in a known frontend
+
+* Better packaging and API 
+  * callback hook function what to do with the info: socket, file, 
+  * on/off per block, 
+  * on/off generally which would not necessarily add overhead but would allow later on/off on a lower level.
+  * allow self-reporting of global/per-thread/per-green thread state of the app
+
+## Discussion: State and Future of PyPy
+* Let's try to have team-internal "office hours" Monday 10.00-13.00 to deal with the reduced availability of people
+* How can we constructively interact with CPython-dev?
+    * maybe a PEP?
+    * what are concrete things that would be good to have in there?
+    * something about C-API?
+    * having cpython implementation details marked as such in the regression tests
+    * have people from other implementations be invited to lang summit
+* when PyPy 3.6 is out, we should get other projects to run their tests on PyPy
+* How do we grow the community?
+    * Advertise sprints more widely
+    * steal some cpython devs?
+    * move away from bitbucket.org?
+    * beginner mentoring program
+    * blog posts, videos
+        * "PyPy internals for CPython devs"
+    * twitch streams?
+    * docs are a mess
+    * success stories on the web page
+* What can we stop doing (brainstorming)
+    * dropping platforms?
+    * maintain own fork of pytest
+    * using less custom infrastructure
+
+## disjointed benchmarking notes
+* ask whether we can use speed.python.org
+* run benchmarks weekly
+* 
+
+## dummy
