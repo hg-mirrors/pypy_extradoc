@@ -1,27 +1,28 @@
-Hello everyone
+Hello everyone.
 
 We are pleased to announce that we have successfully ported PyPy
-to Aarch64 (also known as a 64bit ARM) platform, thanks to funding
+to the AArch64 platform (also known as 64-bit ARM), thanks to funding
 provided by ARM Holdings Ltd. and Crossbar.io.
 
 We are presenting here the benchmark run done on a Graviton A1 machine
-from AWS. There is a very serious word of warning: Graviton A1 are
+from AWS. There is a very serious word of warning: Graviton A1's are
 virtual machines and as such, are not suitable for benchmarking. If someone
 has access to a beefy enough (16G) ARM64 server and is willing to give
 us access to it, we are happy to redo the benchmarks on a real machine.
-My main concern here is that while a vCPU is 1-1 with a real CPU, it's not
-clear to me how caches are shared and how they cross CPU boundaries.
+Our main concern here is that while a vCPU is 1-to-1 with a real CPU, it's
+not clear to us how caches are shared, and how they cross CPU boundaries.
 
-We are not interested in comparing machines, so what we are showing is
-a relative speedup to CPython (2.7.15), compared to PyPy (hg id 2417f925ce94).
-This is the "Aarch64" column.  In the "x86_64" column we do the same on
-a Linux laptop running x86_64, comparing CPython 2.7.16 with the most
-recent release, PyPy 7.1.1.
+We are not here interested in comparing machines, so what we are showing is
+the relative speedup of PyPy (hg id 2417f925ce94) compared to CPython
+(2.7.15). This is the "AArch64" column. In the "x86_64" column we do the
+same on a Linux laptop running x86_64, comparing CPython 2.7.16 with the
+most recent release, PyPy 7.1.1.
 
-In the last column is a comparison - how much do we speedup on arm64, vs
-how much do we speed up on x86_64. One important thing to note is that
-by no means this is a representative enough benchmark set that we can average
-anything. Read numbers per-benchmark.
+In the last column is a relative comparison between the ARM
+architectures: how much the speedup is on arm64 vs. the same benchmark
+on x86_64. One important thing to note is that by no means is this
+suite a representative enough benchmark set for us to average together
+results. Read the numbers individually per-benchmark.
 
 +------------------------------+----------+----------+----------+
 |*Benchmark name*              |x86_64    |Aarch64   |relative  |
@@ -117,24 +118,25 @@ anything. Read numbers per-benchmark.
 |twisted_tcp                   |3.03      |2.08      |0.68      |
 +------------------------------+----------+----------+----------+
 
-Note that we see a wide variance. There are generally three groups of
+Note also that we see a wide variance. There are generally three groups of
 benchmarks - those that run at more or less the same speed, those that
 run at 2x the speedup and those that run at 0.5x the speedup of x86_64.
 
-This can be related to a variety of issues, mostly related to differences
-in architecture. What *is* however interesting is that compared to older
-ARM boards, the branch predictor got a lot better, which means the speedups
-will be smaller: "sophisticated" branchy code like CPython itself
-just runs a lot faster.
+The variance and disparity are likely related to a variety of issues,
+mostly due to differences in architecture. What *is* however
+interesting is that compared to older ARM boards, the branch predictor
+has gotten a lot better, which means the speedups will be smaller:
+"sophisticated" branchy code like CPython itself just runs a lot faster.
 
-One takeaway here is that there is a lot of improvement to be done in PyPy.
-This is true for both of the above platforms, but probably more so for Aarch64
-which comes with really a lot of registers. The PyPy backend has been written with
-x86 (the 32bit variant) in mind, which is very register poor. We think we can
-improve somewhat in the area of emitting more modern code and it will probably
-make somewhat more difference on Aarch64 than on x86_64.  (There are also still
-a few missing features in the Aarch64 backend, which are implemented as calls
-instead of inlined instructions.)
+One takeaway here is that there is a lot of improvement left to be done
+in PyPy. This is true for both of the above platforms, but probably more
+so for AArch64, which comes with a large number of registers. The PyPy
+backend was written with x86 (the 32-bit variant) in mind, which is very
+register poor. We think we can improve somewhat in the area of emitting
+more modern machine code, which should be more impactful for AArch64
+than x86_64. There are also still a few missing features in the AArch64
+backend, which are implemented as calls instead of inlined instructions,
+which we hope to improve.
 
 Best,
 Maciej Fijalkowski, Armin Rigo and the PyPy team
