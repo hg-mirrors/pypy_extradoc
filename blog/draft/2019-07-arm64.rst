@@ -1,142 +1,60 @@
 Hello everyone.
 
-We are pleased to announce that we have successfully ported PyPy
-to the AArch64 platform (also known as 64-bit ARM), thanks to funding
-provided by ARM Holdings Ltd. and Crossbar.io.
+We are pleased to announce the availability of the new PyPy for AArch64. This
+port brings PyPy's high-performance just-in-time compiler to the AArch64
+platform, also known as 64-bit ARM. This work was funded by ARM Holdings Ltd.
+and Crossbar.io.
 
-We are presenting here the benchmark run done on a Graviton A1 machine
-from AWS. There is a very serious word of warning: Graviton A1's are
+To show how well the new PyPy port performs, we compare the performance of PyPy
+against CPython on a set of benchmarks. As a point of comparison, we include the
+results of PyPy on x86_64. Note, however, that the results presented here were
+measured on a Graviton A1 machine from AWS, which comes with a very serious
+word of warning: Graviton A1's are
 virtual machines and as such, are not suitable for benchmarking. If someone
 has access to a beefy enough (16G) ARM64 server and is willing to give
 us access to it, we are happy to redo the benchmarks on a real machine.
-Our main concern here is that while a vCPU is 1-to-1 with a real CPU, it's
+Our main concern here is that while a virtual CPU is 1-to-1 with a real CPU, it's
 not clear to us how caches are shared, and how they cross CPU boundaries.
 
-We are not here interested in comparing machines, so what we are showing is
-the relative speedup of PyPy (hg id 2417f925ce94) compared to CPython
-(2.7.15). This is the "AArch64" column. In the "x86_64" column we do the
-same on a Linux laptop running x86_64, comparing CPython 2.7.16 with the
-most recent release, PyPy 7.1.1.
+The following graph shows the speedup of PyPy (hg id 2417f925ce94) compared to
+CPython (2.7.15) on AArch64, as well as the speedups on a x86_64 Linux laptop,
+comparing the most recent release, PyPy 7.1.1, to CPython 2.7.16.
 
-In the last column is a relative comparison between the ARM
-architectures: how much the speedup is on arm64 vs. the same benchmark
-on x86_64. One important thing to note is that by no means is this
-suite a representative enough benchmark set for us to average together
-results. Read the numbers individually per-benchmark.
+.. image:: 2019-07-arm64-speedups.png
 
-+------------------------------+----------+----------+----------+
-|*Benchmark name*              |x86_64    |Aarch64   |relative  |
-+------------------------------+----------+----------+----------+
-|ai                            |5.66      |5.34      |0.94      |
-+------------------------------+----------+----------+----------+
-|bm_chameleon                  |2.85      |6.57      |2.30      |
-+------------------------------+----------+----------+----------+
-|bm_dulwich_log                |1.98      |1.34      |0.68      |
-+------------------------------+----------+----------+----------+
-|bm_krakatau                   |1.20      |0.69      |0.58      |
-+------------------------------+----------+----------+----------+
-|bm_mako                       |4.88      |6.38      |1.31      |
-+------------------------------+----------+----------+----------+
-|bm_mdp                        |0.82      |0.74      |0.90      |
-+------------------------------+----------+----------+----------+
-|chaos                         |25.40     |25.52     |1.00      |
-+------------------------------+----------+----------+----------+
-|crypto_pyaes                  |32.35     |31.92     |0.99      |
-+------------------------------+----------+----------+----------+
-|deltablue                     |1.60      |1.48      |0.93      |
-+------------------------------+----------+----------+----------+
-|django                        |14.15     |13.71     |0.97      |
-+------------------------------+----------+----------+----------+
-|eparse                        |1.43      |1.12      |0.78      |
-+------------------------------+----------+----------+----------+
-|fannkuch                      |4.83      |6.53      |1.35      |
-+------------------------------+----------+----------+----------+
-|float                         |8.43      |8.16      |0.97      |
-+------------------------------+----------+----------+----------+
-|genshi_text                   |3.70      |3.61      |0.98      |
-+------------------------------+----------+----------+----------+
-|genshi_xml                    |2.97      |1.64      |0.55      |
-+------------------------------+----------+----------+----------+
-|go                            |2.77      |2.47      |0.89      |
-+------------------------------+----------+----------+----------+
-|hexiom2                       |9.35      |8.03      |0.86      |
-+------------------------------+----------+----------+----------+
-|html5lib                      |2.88      |1.93      |0.67      |
-+------------------------------+----------+----------+----------+
-|json_bench                    |2.85      |2.81      |0.99      |
-+------------------------------+----------+----------+----------+
-|meteor-contest                |2.21      |2.27      |1.03      |
-+------------------------------+----------+----------+----------+
-|nbody_modified                |9.86      |8.59      |0.87      |
-+------------------------------+----------+----------+----------+
-|nqueens                       |1.12      |1.02      |0.91      |
-+------------------------------+----------+----------+----------+
-|pidigits                      |0.99      |0.62      |0.63      |
-+------------------------------+----------+----------+----------+
-|pyflate-fast                  |3.86      |4.62      |1.20      |
-+------------------------------+----------+----------+----------+
-|pypy_interp                   |2.12      |2.03      |0.95      |
-+------------------------------+----------+----------+----------+
-|pyxl_bench                    |1.72      |1.37      |0.80      |
-+------------------------------+----------+----------+----------+
-|raytrace-simple               |58.86     |44.21     |0.75      |
-+------------------------------+----------+----------+----------+
-|richards                      |52.68     |44.90     |0.85      |
-+------------------------------+----------+----------+----------+
-|rietveld                      |1.52      |1.28      |0.84      |
-+------------------------------+----------+----------+----------+
-|spambayes                     |1.87      |1.58      |0.85      |
-+------------------------------+----------+----------+----------+
-|spectral-norm                 |21.38     |20.28     |0.95      |
-+------------------------------+----------+----------+----------+
-|spitfire                      |1.28      |2.77      |2.17      |
-+------------------------------+----------+----------+----------+
-|spitfire_cstringio            |7.84      |7.42      |0.95      |
-+------------------------------+----------+----------+----------+
-|sqlalchemy_declarative        |1.76      |1.05      |0.60      |
-+------------------------------+----------+----------+----------+
-|sqlalchemy_imperative         |0.63      |0.60      |0.95      |
-+------------------------------+----------+----------+----------+
-|sqlitesynth                   |1.17      |1.00      |0.86      |
-+------------------------------+----------+----------+----------+
-|sympy_expand                  |1.32      |1.25      |0.95      |
-+------------------------------+----------+----------+----------+
-|sympy_integrate               |1.10      |1.01      |0.91      |
-+------------------------------+----------+----------+----------+
-|sympy_str                     |0.65      |0.62      |0.95      |
-+------------------------------+----------+----------+----------+
-|sympy_sum                     |1.87      |1.79      |0.96      |
-+------------------------------+----------+----------+----------+
-|telco                         |30.38     |19.09     |0.63      |
-+------------------------------+----------+----------+----------+
-|twisted_iteration             |13.24     |8.95      |0.68      |
-+------------------------------+----------+----------+----------+
-|twisted_names                 |5.27      |3.31      |0.63      |
-+------------------------------+----------+----------+----------+
-|twisted_pb                    |5.85      |2.90      |0.50      |
-+------------------------------+----------+----------+----------+
-|twisted_tcp                   |3.03      |2.08      |0.68      |
-+------------------------------+----------+----------+----------+
+In the majority of benchmarks, the speedups achieved on AArch64 match those
+achieved on the x86_64 laptop. Over CPython, PyPy on AArch64 achieves speedups
+between 0.6x to 44.9x. These speedups are comparable to x86_64, where they are
+between 0.6x and 58.9x.
+
+The next graph compares between the speedups achieved on AArch64 to the speedups
+achieved on x86_64, i.e., how much the speedup is on AArch64 vs. the same
+benchmark on x86_64. Note that by no means is this benchmark suite
+representative enough to average the results. Read the numbers individually per
+benchmark.
+
+.. image:: 2019-07-arm64-relative.png
 
 Note also that we see a wide variance. There are generally three groups of
 benchmarks - those that run at more or less the same speed, those that
-run at 2x the speedup and those that run at 0.5x the speedup of x86_64.
+run at 2x the speed and those that run at 0.5x the speed of x86_64.
 
-The variance and disparity are likely related to a variety of issues,
-mostly due to differences in architecture. What *is* however
-interesting is that compared to older ARM boards, the branch predictor
-has gotten a lot better, which means the speedups will be smaller:
-"sophisticated" branchy code like CPython itself just runs a lot faster.
+The variance and disparity are likely related to a variety of issues, mostly due
+to differences in architecture. What *is* however interesting is that compared
+to measurements performed on older ARM boards, the branch predictor on the
+Graviton A1 machine appears to have improved. As a result, the speedups achieved
+by PyPy over CPython are smaller: "sophisticated" branchy code, like CPython
+itself, simply runs a lot faster.
 
 One takeaway here is that there is a lot of improvement left to be done
 in PyPy. This is true for both of the above platforms, but probably more
 so for AArch64, which comes with a large number of registers. The PyPy
 backend was written with x86 (the 32-bit variant) in mind, which is very
 register poor. We think we can improve somewhat in the area of emitting
-more modern machine code, which should be more impactful for AArch64
-than x86_64. There are also still a few missing features in the AArch64
-backend, which are implemented as calls instead of inlined instructions,
-which we hope to improve.
+more modern machine code, which should have more impact for AArch64
+than for x86_64. There are also still a few missing features in the AArch64
+backend, which are implemented as calls instead of inlined instructions;
+something we hope to improve.
 
 Best,
 Maciej Fijalkowski, Armin Rigo and the PyPy team
