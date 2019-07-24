@@ -14,6 +14,9 @@ clear to me how caches are shared and how they cross CPU boundaries.
 
 We are not interested in comparing machines, so what we are showing is
 a relative speedup to CPython (2.7.15), compared to PyPy (hg id 2417f925ce94).
+This is the "Aarch64" column.  In the "x86_64" column we do the same on
+a Linux laptop running x86_64, comparing CPython 2.7.16 with the most
+recent release, PyPy 7.1.1.
 
 In the last column is a comparison - how much do we speedup on arm64, vs
 how much do we speed up on x86_64. One important thing to note is that
@@ -121,16 +124,17 @@ run at 2x the speedup and those that run at 0.5x the speedup of x86_64.
 This can be related to a variety of issues, mostly related to differences
 in architecture. What *is* however interesting is that compared to older
 ARM boards, the branch predictor got a lot better, which means the speedups
-will be smaller, since "sophisticated" branchy code, like source code of
-CPython just runs a lot faster.
+will be smaller: "sophisticated" branchy code like CPython itself
+just runs a lot faster.
 
 One takeaway here is that there is a lot of improvement to be done in PyPy.
 This is true for both of the above platforms, but probably more so for Aarch64
-which comes with really a lot of registers. PyPy backend has been written with
+which comes with really a lot of registers. The PyPy backend has been written with
 x86 (the 32bit variant) in mind, which is very register poor. We think we can
 improve somewhat in the area of emitting more modern code and it will probably
-make somewhat more difference on Aarch64 than on x86_64, where running old
-crappy code efficiently has been a massive focus.
+make somewhat more difference on Aarch64 than on x86_64.  (There are also still
+a few missing features in the Aarch64 backend, which are implemented as calls
+instead of inlined instructions.)
 
 Best,
 Maciej Fijalkowski, Armin Rigo and the PyPy team
