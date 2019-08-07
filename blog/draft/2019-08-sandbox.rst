@@ -4,9 +4,9 @@ Anvil_ is a UK-based company sponsoring one month of work to revive PyPy's
 "sandbox" mode and upgrade it to PyPy3.  Thanks to them, sandboxing will be
 given a second life!
 
-Sandbox_ is a special version of PyPy that runs
-in a fully-isolated mode.  It gives a safe way to execute arbitrary Python
-scripts (*whole* scripts, not small bits of code inside your larger Python
+The `sandboxed PyPy`_ is a special version of PyPy that runs
+fully isolated.  It gives a safe way to execute arbitrary Python
+programs (*whole* programs, not small bits of code inside your larger Python
 program).  Such scripts can be fully untrusted, and they can try to do
 anything---there are no syntax-based restrictions, for example---but whatever
 they do, any communication with the external world is not actually done but
@@ -37,5 +37,5 @@ works as planned, sandboxing may be given a second life.
 Armin Rigo
 
 .. _Anvil: https://anvil.works
-.. _sandbox: http://doc.pypy.org/en/latest/sandbox.html
+.. _`sandboxed PyPy`: http://doc.pypy.org/en/latest/sandbox.html
 .. _`any other interpreter`: https://rpython.readthedocs.io/en/latest/examples.html
