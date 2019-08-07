@@ -30,7 +30,7 @@ future developments and easier to maintain; at most, in the future some tweaks w
 controller process but hopefully not deep inside the guts of the sandboxed
 PyPy.  Among the advantages, such a more robust solution should mean that we
 can actually get a working sandboxed PyPy or sandboxed PyPy3 or sandboxed
-version of any other interpreter written in RPython---with just an extra
+version of `any other interpreter`_ written in RPython---with just an extra
 argument when calling ``rpython`` to translate this interpreter.  If everything
 works as planned, sandboxing may be given a second life.
 
@@ -38,3 +38,4 @@ Armin Rigo
 
 .. _Anvil: https://anvil.works
 .. _sandbox: http://doc.pypy.org/en/latest/sandbox.html
+.. _`any other interpreter`: https://rpython.readthedocs.io/en/latest/examples.html
