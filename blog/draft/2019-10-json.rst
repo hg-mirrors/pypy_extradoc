@@ -1,0 +1,226 @@
+Introduction
+============
+
+In the last year or two I have worked on and off on making PyPy's
+`JSON <https://www.json.org/>`__ faster, particularly when parsing large
+JSON files. In this post I am going to document those techniques and
+measure their performance impact. Note that I am quite a lot more
+constrained in what optimizations I can apply here, compared to some of
+the much more advanced approaches like
+`Mison <https://www.microsoft.com/en-us/research/publication/mison-fast-json-parser-data-analytics/>`__,
+`Sparser <https://dawn.cs.stanford.edu/2018/08/07/sparser/>`__ or
+`SimdJSON <https://arxiv.org/abs/1902.08318>`__ because I don't want to
+change the ``json.loads`` API that Python programs expect, and because I
+don't want to only support CPUs with wide SIMD extensions. With a more
+expressive API, more optimizations would be possible.
+
+There are a number of problems of working with huge JSON files:
+deserialization takes a long time on the one hand, and the resulting
+data structures often take a lot of memory (usually they can be many
+times bigger than the size of the file they originated from). Of course
+these problems are related, because allocating and initializing a big
+data structure takes longer than a smaller data structure. Therefore I
+always tried to attack both of these problems at the same time.
+
+One common theme of the techniques I am describing is that of optimizing
+the parser for how JSON files are typically used, not how they could
+theoretically be used. This is a similar approach to the way dynamic
+languages are optimized more generally: most JITs will optimize for
+typical patterns of usage, at the cost of less common usage patterns,
+which might even become slower as a result of the optimizations.
+
+Maps
+====
+
+The first technique I investigated is to use maps in the JSON parser.
+Maps, also called hidden classes or shapes, are a fairly common way to
+(generally, not just in the context of JSON parsing) `optimize instances
+of
+classes <https://morepypy.blogspot.com/2010/11/efficiently-implementing-python-objects.html>`__
+in dynamic language VMs. Maps exploit the fact that while it is in
+theory possible to add arbitrary fields to an instance, in practice most
+instances of a class are going to have the same set of fields (or one of
+a small number of different sets). Since JSON dictionaries or objects
+often come from serialized instances of some kind, this property often
+holds in JSON files as well: dictionaries often have the same fields in
+the same order, within a JSON file.
+
+This property can be exploited in two ways: on the one hand, it can be
+used to again store the deserialized dictionaries in a more memory
+efficient way by not using a hashmap in most cases, but instead
+splitting the dictionary into a shared description of the set of keys
+(the map) and an array of storage with the values. This makes the
+deserialized dictionaries smaller if the same set of keys is repeated a
+lot. This is completely transparent to the Python programmer, the
+dictionary will look completely normal to the Python program but its
+internal representation is different.
+
+One downside of using maps is that sometimes files will contain many
+dictionaries that have unique key sets. Since maps themselves are quite
+large data structures and since dictionaries that use maps contain an
+extra level of indirection we want to fall back to using normal hashmaps
+to represent the dictionaries where that is the case. To prevent this we
+perform some statistics at runtime, how often every map (i.e. set of
+keys) is used in the file. For uncommonly used maps, the map is
+discarded and the dictionaries that used the map converted into using a
+regular hashmap.
+
+Using Maps to Speed up Parsing
+------------------------------
+
+Another benefit of using maps to store deserialized dictionaries is that
+we can use them to speed up the parsing process itself. To see how this
+works, we need to understand maps a bit better. All the maps produced as
+a side-effect of parsing JSON form a tree. The tree root is a map that
+describes the object without any attributes. From every tree node we
+have a number of edges going to other nodes, each edge for a specific
+new attribute added:
+
+$$ image
+
+This map tree is the result of parsing a file that has dictionaries with
+the keys a, b, c many times, the keys a, b, f less often, and also some
+objects with the keys x, y.
+
+When parsing a dictionary we traverse this tree from the root, according
+to the keys that we see in the input file. While doing this, we
+potentially add new nodes, if we get key combinations that we have never
+seen before. The set of keys of a dictionary parsed so far are
+represented by the current tree node, while we can store the values into
+an array. We can use the tree of nodes to speed up parsing. A lot of the
+nodes only have one child, because after reading the first few keys of
+an object, the remaining ones are often uniquely determined in a given
+file. If we have only one child map node, we can speculatively parse the
+next key by doing a ``memcmp`` between the key that the map tree says is
+likely to come next and the characters that follow the ',' that started
+the next entry in the dictionary. If the ``memcmp`` returns true this
+means that the speculation paid off, and we can transition to the new map
+that the edge points to, and parse the corresponding value. If not, we
+fall back to general code that parses the string, handles escaping rules
+etc. This trick was explained to me by some V8 engineers, the same trick
+is used `as part of the V8 JSON parser
+<https://github.com/v8/v8/blob/master/src/json/json-parser.cc>`__.
+
+This scheme doesn't immediately work for map tree nodes that have more
+than one child. However, since we keep statistics anyway about how often
+each map is used as the map of a parsed dictionary, we can speculate
+that the most common map transition is taken more often than the others
+in the future, and use that as the speculated next node.
+
+So for the example transition tree shown in the figure above the key
+speculation would succeed for objects with keys ``a, b, c``. For objects
+with keys ``a, b, f`` the speculation would succeed for the first two
+keys, but not for the third key ``f``. For objects with the keys
+``x, y`` the speculation would fail for the first key ``x`` but succeed
+for the second key ``y``.
+
+For real-world datasets these transition trees can become a lot more
+complicated, for example here is a visualization of a part of the
+transition tree generated for parsing a New York Times dataset:
+
+$$ image
+
+Caching Strings
+===============
+
+A rather obvious observation we can use to improve performance of the
+parser is the fact that string values repeat a lot in most JSON files.
+For strings that are used as dictionary keys this is pretty obvious.
+However it happens also for strings that are used as values in
+dictionaries (or are stored in lists). We can use this fact to
+intern/memoize strings and save memory. This is an approach that many
+JSON parsers use, including
+`CPython's <https://github.com/python/cpython/blob/3.7/Modules/_json.c#L749>`__.
+To do this, I keep a dictionary of strings that we have seen so far
+during parsing and look up new strings that are deserialized. If we have
+seen the string before, we can re-use the deserialized previous string.
+Right now I only consider ASCII strings for caching that do not contain
+any escapes (whether stuff like ``\", \n`` or escaped unicode chars).
+
+This simple approach works extremely well for dictionary keys, but needs
+a number of improvements to be a win in general. The first observation
+is that computing the hash to look up the string in the dictionary of
+strings we've seen so far is basically free. We can compute the hash
+while scanning the input for the end of the string we are currently
+deserializing. Computing the hash while scanning doesn't increase the
+time spent scanning much. This is not a new idea, I am sure many other
+parsers do the same thing (but CPython doesn't seem to).
+
+Another improvement follows from the observation that inserting every
+single deserialized non-key string into a hashmap is too expensive.
+Instead, we insert strings into the cache more conservatively, by
+keeping a small ring buffer of hashes of recently deserialized strings.
+The hash is looked for in the ring buffer, and only if the hash is
+present we insert the string into the memoization hashmap. This has the
+effect of only inserting strings into the memoization hashmap that
+re-occur a second time not too far into the file. This seems to give a
+good trade-off between still re-using a lot of strings but keeping the
+time spent updating and the size of the memoization hashmap low.
+
+Another twist is that in a lot of situations caching strings is not
+useful at all, because it will almost never succeed. Examples of this
+are UUIDs (which are unique), or the content of a tweet in a JSON file
+with many tweets (which is usually unique). However, in the same file it
+might be useful to cache e.g. the user name of the Twitter user, because
+many tweets from the same person could be in such a file. Therefore the
+usefulness of the string cache depends on which fields of objects we are
+deserializing the value off. Therefore we keep statistics per map field
+and disable string memoization per individual field if the cache hit
+rate falls below a certain threshold. This gives the best of both
+worlds: in the cases where string values repeat a lot in certain fields
+we use the cache to save time and memory. But for those fields that
+mostly contain unique strings we don't waste time looking up and adding
+strings in the memoization table. Strings outside of dictionaries are
+quite rare anyway, so we just always try to use the cache for them.
+
+The following pseudocode sketches the code to deserialize a string in
+the input at a given position. The function also takes a map, which is
+the point in the map tree that we are currently deserializing a field
+off (if we are deserializing a string in another context, some kind of
+dummy map can be used there).
+
+.. code:: python
+
+    def deserialize_string(pos, input, map):
+        # input is the input string, pos is the position of the starting " of
+        # the string
+
+        # find end of string, check whether it contains escape codes, compute hash,
+        # all at the same time
+        end, escapes, hash = find_end_of_string(pos + 1, input)
+        if end == -1:
+            raise ParseError
+        if escapes:
+            # need to be much more careful with escaping
+            return deserialize_string_escapes(pos, input)
+        
+        # should we cache at all?
+        if map.cache_disabled():
+            return input[pos + 1:end]
+
+        # if string is in cache, return it
+        if hash in cache:
+            map.cache_hit += 1
+            return cache[hash]
+
+        result = input[pos + 1:end]
+        map.cache_miss += 1
+
+        # if hash is in the ring buffer of recently seen hashes, add the string to
+        # the cache
+        if hash in ring_buffer:
+            cache[hash] = result
+        else:
+            ring_buffer.write(hash)
+        return result
+
+Evaluation
+==========
+
+To find out how much the various techniques help, I implemented a number
+of JSON parsers in PyPy with different combinations of the techniques
+enabled. I compared the numbers with the JSON parser of CPython
+(simplejson), with ujson, with the JSON parser of Node/V8 and with
+RapidJSON (in DOM mode).
+
+$$$
