@@ -223,4 +223,119 @@ enabled. I compared the numbers with the JSON parser of CPython
 (simplejson), with ujson, with the JSON parser of Node/V8 and with
 RapidJSON (in DOM mode).
 
-$$$
+
+I collected a number of medium-to-large JSON files to try the JSON
+parsers on:
+
+-  `Censys <https://censys.io/data>`__: A subset of the Censys port and
+   protocol scan data for websites in the Alexa top million domains
+-  `Gharchive <https://www.gharchive.org>`__: Github activity from
+   January 15-23, 2015 from Github Archive
+-  `Reddit <https://files.pushshift.io/reddit/comments/>`__: Reddit
+   comments from May 2009
+-  Rosie: The nested matches produced using the `Rosie pattern
+   language <https://rosie-lang.org/>`__ ``all.things`` pattern on a log
+   file
+-  Nytimes: Metadata of a collection of New York Times articles
+-  Tpch: The TPC-H database benchmark's deals table as a JSON file
+-  Twitter: A JSON export of the @pypyproject Twitter account data
+-  Wikidata: A file storing a subset of the Wikidata fact dump from Nov
+   11, 2014
+-  `Yelp <https://www.yelp.com/dataset/download>`__: A file of yelp
+   businesses
+
+Here are the file sizes of the benchmarks:
+
+.. raw:: html
+
+   <table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th>Benchmark</th>\n      <th>File Size [MiB]</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Censys</td>\n      <td>898.45</td>\n    </tr>\n    <tr>\n      <td>Gharchive</td>\n      <td>276.34</td>\n    </tr>\n    <tr>\n      <td>NYTimes</td>\n      <td>12.98</td>\n    </tr>\n    <tr>\n      <td>Reddit</td>\n      <td>931.65</td>\n    </tr>\n    <tr>\n      <td>Rosie</td>\n      <td>388.88</td>\n    </tr>\n    <tr>\n      <td>TPCH</td>\n      <td>173.86</td>\n    </tr>\n    <tr>\n      <td>Wikidata</td>\n      <td>119.75</td>\n    </tr>\n    <tr>\n      <td>Yelp</td>\n      <td>167.61</td>\n    </tr>\n  </tbody>\n</table>
+
+
+I measured the times of each benchmark with a number of variations
+of the improved PyPy algorithms:
+
+-  PyPyBaseline: The PyPy JSON parser as it was before my work with JSON
+   parsing started (PyPy version 5.8)
+-  PyPyKeyStringCaching: Memoizing the key strings of dictionaries, but
+   not the other strings in a json file, and not using maps to represent
+   dictionaries (this is the JSON parser that PyPy has been shipping since
+   version 5.9, in the benchmarks I used 7.1).
+-  PyPyMapNoCache: Like PyPyKeyStringCaching, but using maps to
+   represent dictionaries. This includes speculatively parsing the next
+   key using memcmp, but does not use string caching of non-key strings.
+-  PyPyFull: Like PyPyMapNoCache but uses a string cache for all
+   strings, not just keys. This is equivalent to what is in PyPy 7.2
+
+In addition to wall clock time of parsing, I also measured the increase
+in memory use of each implementation after the input string has been
+deserialized, i.e. the size of the in-memory representation of every
+JSON file.
+
+
+Contributions of Individual Optimizations
+---------------------------------------------
+
+Let's first look at the contributions of the individual optimizations to the
+overall performance and memory usage.
+
+$$ two graphs
+
+All the benchmarks were run 30 times in new processes, all the numbers are
+normalized to PyPyFull.
+
+The biggest individual improvement to both parsing time and memory used comes
+from caching just the keys in parsed dictionaries. This is the optimization in
+PyPy's JSON parser that has been implemented for a while already. To understand
+why this optimization is so useful, let's look at some numbers about each
+benchmark, namely the number of total keys across all dictionaries in each
+file, as well as the number of unique keys. As we can see, for all benchmarks
+the number of unique keys is significantly smaller than the number of keys in
+total.
+
+.. raw:: html
+
+   <table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th>Benchmark</th>\n      <th>Number of keys</th>\n      <th>Number of unique keys</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Censys</td>\n      <td>14\u2009404\u2009234</td>\n      <td>163</td>\n    </tr>\n    <tr>\n      <td>Gharchive</td>\n      <td>6\u2009637\u2009881</td>\n      <td>169</td>\n    </tr>\n    <tr>\n      <td>NYTimes</td>\n      <td>417\u2009337</td>\n      <td>60</td>\n    </tr>\n    <tr>\n      <td>Reddit</td>\n      <td>25\u2009226\u2009397</td>\n      <td>21</td>\n    </tr>\n    <tr>\n      <td>Rosie</td>\n      <td>28\u2009500\u2009101</td>\n      <td>5</td>\n    </tr>\n    <tr>\n      <td>TPCH</td>\n      <td>6\u2009700\u2009000</td>\n      <td>45</td>\n    </tr>\n    <tr>\n      <td>Wikidata</td>\n      <td>6\u2009235\u2009088</td>\n      <td>1\u2009602</td>\n    </tr>\n    <tr>\n      <td>Yelp</td>\n      <td>5\u2009133\u2009914</td>\n      <td>61</td>\n    </tr>\n  </tbody>\n</table>
+
+
+The next big jump in deserialization time and memory comes from introducing
+maps to represent deserialized dictionaries. With PyPyMapNoCache
+deserialization time goes down because it's much cheaper to walk the tree
+of maps and store all deserialized objects into an array of values than to
+build hashmaps with the same keys again and again. Memory use goes down
+for the same reason: it takes a lot less memory to store the shared
+structure of each set of keys in the map, as opposed to repeating it again
+and again in every hashmap.
+
+We can look at some numbers about every benchmark again. The table shows how
+many map-based dictionaries are deserialized for every benchmark, and how many
+hashmap-backed dictionaries. We see that the number of hashmap-backed
+dictionaries is often zero, or at most a small percentage of all dictionaries
+in each benchmark. Yelp has the biggest number of hashmap-backed dictionaries.
+The reason for this is that the input file contains hashmaps that store
+combinations of various features of Yelp businesses, and a lot of these
+combinations are totally unique to a business. Therefore the heuristics
+determine that it's better to store these using hashmaps.
+
+.. raw:: html
+
+   <table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th>Benchmark</th>\n      <th>Map Dicts</th>\n      <th>Regular Dicts</th>\n      <th>% Regular Dicts</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Censys</td>\n      <td>4\u2009049\u2009235</td>\n      <td>1\u2009042</td>\n      <td>0.03</td>\n    </tr>\n    <tr>\n      <td>Gharchive</td>\n      <td>955\u2009301</td>\n      <td>0</td>\n      <td>0.00</td>\n    </tr>\n    <tr>\n      <td>NYTimes</td>\n      <td>80\u2009393</td>\n      <td>0</td>\n      <td>0.00</td>\n    </tr>\n    <tr>\n      <td>Reddit</td>\n      <td>1\u2009201\u2009257</td>\n      <td>0</td>\n      <td>0.00</td>\n    </tr>\n    <tr>\n      <td>Rosie</td>\n      <td>6\u2009248\u2009966</td>\n      <td>0</td>\n      <td>0.00</td>\n    </tr>\n    <tr>\n      <td>TPCH</td>\n      <td>1\u2009000\u2009000</td>\n      <td>0</td>\n      <td>0.00</td>\n    </tr>\n    <tr>\n      <td>Wikidata</td>\n      <td>1\u2009923\u2009460</td>\n      <td>46\u2009905</td>\n      <td>2.38</td>\n    </tr>\n    <tr>\n      <td>Yelp</td>\n      <td>443\u2009140</td>\n      <td>52\u2009051</td>\n      <td>10.51</td>\n    </tr>\n  </tbody>\n</table>
+
+
+We can also look at numbers about how often the memcmp-based speculative
+parsing of the next key of a given map succeeds. Looking at statistics
+about each benchmark, we can see that the speculation of what key we
+expect next pays off in a significant percentage of cases, between 63% for
+Wikidata where the dictionary structures are quite irregular, and 99% for
+Reddit, where all the dictionaries have the same set of keys.
+
+.. raw:: html
+
+   <table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th>Benchmark</th>\n      <th>Number of Keys</th>\n      <th>Map Transitions</th>\n      <th>% Successful Speculation</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Censys</td>\n      <td>14\u2009404\u2009234</td>\n      <td>14\u2009403\u2009243</td>\n      <td>65.79</td>\n    </tr>\n    <tr>\n      <td>Gharchive</td>\n      <td>6\u2009637\u2009881</td>\n      <td>6\u2009637\u2009881</td>\n      <td>86.71</td>\n    </tr>\n    <tr>\n      <td>NYTimes</td>\n      <td>417\u2009337</td>\n      <td>417\u2009337</td>\n      <td>79.85</td>\n    </tr>\n    <tr>\n      <td>Reddit</td>\n      <td>25\u2009226\u2009397</td>\n      <td>25\u2009226\u2009397</td>\n      <td>100.00</td>\n    </tr>\n    <tr>\n      <td>Rosie</td>\n      <td>28\u2009500\u2009101</td>\n      <td>28\u2009500\u2009101</td>\n      <td>90.37</td>\n    </tr>\n    <tr>\n      <td>TPCH</td>\n      <td>6\u2009700\u2009000</td>\n      <td>6\u2009700\u2009000</td>\n      <td>86.57</td>\n    </tr>\n    <tr>\n      <td>Wikidata</td>\n      <td>6\u2009235\u2009088</td>\n      <td>5\u2009267\u2009744</td>\n      <td>63.68</td>\n    </tr>\n    <tr>\n      <td>Yelp</td>\n      <td>5\u2009133\u2009914</td>\n      <td>4\u2009593\u2009980</td>\n      <td>90.43</td>\n    </tr>\n    <tr>\n      <td>geomean</td>\n      <td></td>\n      <td></td>\n      <td>82.04</td>\n    </tr>\n  </tbody>\n</table>
+
+General string caching is the most unclear optimization. On the one hand its
+impact on memory usage is quite substantial, leading to a 20% reduction for
+Gharchive and Reddit, up to a 2× improvement for Yelp. On the other hand, the
+effect on performance is less clear, since it even leads to a slowdown in
+Gharchive and Reddit, and generally only a small improvement. Choosing the
+right heuristic for when to disable the cache also has somewhat unclear effects
+and is definitely a topic worthy of further investigation.
