@@ -339,3 +339,64 @@ effect on performance is less clear, since it even leads to a slowdown in
 Gharchive and Reddit, and generally only a small improvement. Choosing the
 right heuristic for when to disable the cache also has somewhat unclear effects
 and is definitely a topic worthy of further investigation.
+
+
+Comparison against other JSON Decoders
+----------------------------------------
+
+To get a more general feeling of the performance and memory usage of the
+improved PyPy parser, we compare it against CPython's built-in json
+parser, ujson for CPython, Node's (V8) JSON parser and RapidJSON. For
+better context for the memory usage I also show the file size of the input
+files.
+
+These benchmarks are not really an apples-to-apple comparison. All of the
+implementations use different in-memory representations of strings in
+the deserialized data-structure (Node uses two bytes per character in
+a string, [in CPython it
+depends](https://www.python.org/dev/peps/pep-0393/) but 4 bytes on my
+machine, PyPyBaseline uses four bytes,PyPy and RapidJSON use utf-8). But
+it's still interesting to get some ballpark numbers. The results are as
+follows:
+
+$$ 
+
+As we can see, PyPyFull handily beats CPython and ujson, with a geometric
+mean of the improvement of about 2.5×. The memory improvement can be even
+more extreme, with an improvement of over 4× against CPython/ujson in some
+cases (CPython gives better memory sizes, because its parser caches the
+keys of dictionaries as well). Node is often more than 50% slower, whereas
+RapidJSON beats us easily, by a factor of 2× on average.
+
+
+Conclusions
+============
+
+While the speedup I managed to achieve over the course of this project is
+nice and I am certainly happy to beat both CPython and Node, I am
+ultimately still annoyed that RapidJSON manages to maintain such a clear
+lead over PyPyFull, and would like to get closer to it. One problem that
+PyPy suffers compared to RapidJSON is the overhead of garbage collection.
+Deserializing large JSON files is pretty much the worst case for the
+generational GC that PyPy uses, since none of the deserialized objects die
+young (and the GC expects that most objects do). That means that a lot of
+the deserialization time of PyPy is wasted allocating the resulting
+objects in the nursery, and then copying them into the old generation.
+Somehow, this should be done in better ways, but all my attempts to not
+have to do the copy did not seem to help much. So maybe more improvements
+are possible, if I can come up with more ideas.
+
+On the memory side of things, Node/V8 is beating PyPy clearly which might
+indicate more general problems in how we represent Python objects in
+memory. On the other hand, I think it's cool that we are competitive with
+RapidJSON in terms of memory and often within 2× of the file size.
+
+An effect that I didn't consider at all in this blog post is the fact that
+accessing the deserialized objects with constants strings is *also* faster
+than with regular dictionaries, due to them being represented with maps.
+More benchmarking work to do in the future!
+
+If you have your own programs that run on PyPy and use the json parser
+a lot, please measure them on the new code and let me know whether you see
+any difference!
+
