@@ -3,7 +3,7 @@ HPy kick-off sprint report
 
 Recently Antonio, Armin and Ronan had a small internal sprint in the beautiful
 city of Gdańsk to kick-off the development of HPy. Here is a brief report of
-what it has been accomplished during the sprint.
+what was accomplished during the sprint.
 
 What is HPy?
 ------------
@@ -14,12 +14,12 @@ The idea of HPy was born during EuroPython 2019 in Basel, where there was an
 informal meeting which included core developers of PyPy, CPython (Victor
 Stinner and Mark Shannon) and Cython (Stefan Behnel).
 
-All of us agreeded that the current design of the CPython C API is problematic
+All of us agreed that the current design of the CPython C API is problematic
 for various reasons and, in particular, because it is too tied to the current
 internal design of CPython.  The end result is that:
 
   - alternative implementations of Python (such as PyPy, but not only) have a
-    `hard time` to load and execute existing C extensions;
+    `hard time`_ loading and executing existing C extensions;
 
   - CPython itself is unable to change some of its internal implementation
     details without breaking the world. For example, as of today it would be
@@ -30,16 +30,16 @@ internal design of CPython.  The end result is that:
 HPy tries to address these issues by following two major design guidelines:
 
   1. objects are referenced and passed around using opaque handles, which are
-     similar to e.g. file descriptors in spirit. Multiple, different handles
+     similar to e.g., file descriptors in spirit. Multiple, different handles
      can point to the same underlying object, handles can be duplicated and
-     each handle must be closed independently.
+     each handle must be released independently of any other duplicate.
 
   2. The internal data structures and C-level layout of objects are not
      visible nor accessible using the API, so each implementation if free to
      use what fits best.
 
 The other major design goal of HPy is to allow an incremental
-transition/porting, so existing module can migrate their codebase one method
+transition/porting, so existing modules can migrate their codebase one method
 at a time.  Moreover, Cython eventually will generate HPy code, so extension
 module written in Cython will be able to benefit from HPy automatically.
 
@@ -53,10 +53,10 @@ More details can be found in the README of the official `HPy repository`_.
 CPython and universal target ABI
 ---------------------------------
 
-When compiling an HPy extension you can choose two different target ABI:
+When compiling an HPy extension you can choose two different target ABIs:
 
   - **CPython ABI**: in this case, ``hpy.h`` contains a set of macros and
-    static inline functions which translates at compilation time the HPy API
+    static inline functions which at compilation time translates the HPy API
     into the standard C-API: the compiled module will have no performance
     penalty and it will have an filename like
     ``foo.cpython-37m-x86_64-linux-gnu.so``.
@@ -64,14 +64,15 @@ When compiling an HPy extension you can choose two different target ABI:
   - **Universal HPy ABI**: as the name implies, extension modules compiled
     this way are "universal" and can be loaded unmodified by multiple Python
     interpreters and version.  Moreover, it will be possible to dynamically
-    enable a special debug mode which will make it easy to find e.g. unclosed
+    enable a special debug mode which will make it easy to find e.g., open
     handles or memory leaks, **without having to recompile the extension**.
 
 
 Universal modules can be loaded **also** on CPython, thanks to the
-``hpy_universal`` module which is under development: because of an extra layer
-of indirection, extensions compiled with the universal ABI will face a small
-performance penalty compared to the ones using the CPython ABI.
+``hpy_universal`` module which is under development. An extra layer of
+indirection enables loading extensions compiled with the universal ABI. Users
+of ``hpy_universal`` will face a small performance penalty compared to the ones
+using the CPython ABI mode.
 
 This setup gives several benefits:
 
@@ -82,15 +83,15 @@ This setup gives several benefits:
     extension for each relevant version of CPython, as they are doing now
 
   - projects for which runtime speed is less important will have the choice of
-    distributing a single binary which will work on any version of Python
-
+    distributing a single binary which will work on any version and
+    implementation of Python
 
 
 A simple example
 -----------------
 
 The HPy repo contains a `proof of concept`_ module. Here is a simplified
-version which illustrates how an HPy module looks like:
+version which illustrates what a HPy module looks like:
 
 .. sourcecode:: C
 
