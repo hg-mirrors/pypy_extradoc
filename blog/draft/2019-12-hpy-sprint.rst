@@ -50,12 +50,12 @@ More details can be found in the README of the official `HPy repository`_.
 .. _`HPy repository`: https://github.com/pyhandle/hpy
 
 
-CPython and universal target ABI
----------------------------------
+Target ABI
+-----------
 
 When compiling an HPy extension you can choose two different target ABI:
 
-  - **CPython ABI**: in this case, ``hpy.h`` contains a set of macros and
+  - **HPy/CPython ABI**: in this case, ``hpy.h`` contains a set of macros and
     static inline functions which translates at compilation time the HPy API
     into the standard C-API: the compiled module will have no performance
     penalty and it will have an filename like
@@ -71,7 +71,7 @@ When compiling an HPy extension you can choose two different target ABI:
 Universal modules can be loaded **also** on CPython, thanks to the
 ``hpy_universal`` module which is under development: because of an extra layer
 of indirection, extensions compiled with the universal ABI will face a small
-performance penalty compared to the ones using the CPython ABI.
+performance penalty compared to the ones using the HPy/CPython ABI.
 
 This setup gives several benefits:
 
@@ -149,7 +149,7 @@ similarities. The biggest differences are:
     similar to the new `METH_FASTCALL` which was introduced in CPython.
 
   - HPy relies a lot on C macros, which most of the time are needed to support
-    the CPython ABI compilation mode. For example, ``HPy_DEF_METH_VARARGS``
+    the HPy/CPython ABI compilation mode. For example, ``HPy_DEF_METH_VARARGS``
     expands into a trampoline which has the correct C signature that CPython
     expects (i.e., ``PyObject (*)(PyObject *self, *PyObject *args)``) and
     which calls ``add_ints_impl``.
@@ -162,4 +162,157 @@ similarities. The biggest differences are:
 Sprint report and current status
 ---------------------------------
 
-XXX finish me
+After this long preamble, here is a rough list of what we accomplished during
+the week-long sprint and the days immediatly after.
+
+On the HPy side, We kicked-off the code in the repo: at the moment of writing
+the layout of the directories is a bit messy because we moved things around
+several times, but identified several main sections:
+
+  1. A specification of the API which serves both as documentation and as an
+     input for parts of the projects which are automatically
+     generated. Currently, this lives `public_api.h`_.
+
+  2. A set of header files which can be used to compile extension module:
+     depending on whether the flag ``-DHPY_UNIVERSAL_ABI`` is passed to the
+     compiler, the extension can target the `HPy/CPython ABI`_ or the `HPy
+     Universal ABI`_
+
+  3. A `CPython extension module`_ called ``hpy_universal`` which makes it
+     possible to import universal modules on CPython
+
+  4. A set of tests_ which are independent of the implementation and are meant
+     to be an "executable specification" of the semantics.  Currently, these
+     tests are run against three different implementations of the HPy API:
+
+       - the headers which implements the "HPy/CPython ABI"
+
+       - the ``hpy_universal`` module for CPython
+
+       - the ``hpy_universal`` module for PyPy (these tests are run in the PyPy repo)
+
+Moreover, we started a `PyPy branch`_ in which to implement the
+``hpy_univeral`` module: at the moment of writing PyPy can pass all the HPy
+tests apart the ones which allows to convert to and from ``PyObject *``.
+Among the other things, this means that it is already possible to load the
+very same binary module in both CPython and PyPy, which is impressive on its
+own :).
+
+Finally, we wanted a real-life use case to show how to port a module to HPy
+and to do benchmarks.  After some searching, we choose ultrajson_, for the
+following reasons:
+
+  - it is a real-world extension module which was written with performance in
+    mind
+
+  - when parsing a JSON file it does a lot of calls to the Python API to
+    construct the various parts of the result message
+
+  - it uses only a small subset of the Python API
+
+This repo contains the `HPy port of ultrajson`. This commit_ shows an example
+of how the porting looks like.
+
+``ujson_hpy`` is also a very good example of incremental migration: so far
+only ``ujson.loads`` is implemented using the HPy API, while ``ujson.dumps``
+is still implemented using the old C-API, and both can coexist nicely in the
+same compiled module.
+
+
+.. _`public_api.h`: https://github.com/pyhandle/hpy/blob/9aa8a2738af3fd2eda69d4773b319d10a9a5373f/tools/public_api.h
+.. _`CPython extension module`: https://github.com/pyhandle/hpy/tree/9aa8a2738af3fd2eda69d4773b319d10a9a5373f/cpython-universal/src
+.. _`HPy/CPython ABI`: https://github.com/pyhandle/hpy/blob/9aa8a2738af3fd2eda69d4773b319d10a9a5373f/hpy-api/hpy_devel/include/cpython/hpy.h
+.. _`HPy Universal ABI`: https://github.com/pyhandle/hpy/blob/9aa8a2738af3fd2eda69d4773b319d10a9a5373f/hpy-api/hpy_devel/include/universal/hpy.h
+.. _tests: https://github.com/pyhandle/hpy/tree/9aa8a2738af3fd2eda69d4773b319d10a9a5373f/test
+
+.. _`PyPy branch`: https://bitbucket.org/pypy/pypy/src/hpy/pypy/module/hpy_universal/
+
+.. _ultrajson: https://github.com/esnme/ultrajson
+.. _`HPy port of ultrajson`: https://github.com/pyhandle/ultrajson-hpy
+.. _commit: https://github.com/pyhandle/ultrajson-hpy/commit/efb35807afa8cf57db5df6a3dfd4b64c289fe907
+
+
+Benchmarks
+-----------
+
+Once we have a fully working ``ujson_hpy`` module, we can finally run
+benchmarks!  We tested several different versions of the module:
+
+  - ``ujson``: this is the vanilla implementation of ultrajson using the
+    C-API. On PyPy this is executed by the infamous ``cpyext`` compatibility
+    layer, so we expect it to be much slower than on CPython
+
+  - ``ujson_hpy``: our HPy port compiled to target the HPy/CPython ABI. We
+    expect it to be as fast as ``ujson``
+
+  - ``ujson_hpy_universal``: same as above but compiled to target the
+    Universal HPy ABI. We expect it to be slightly slower than ``ujson`` on
+    CPython, and much faster on PyPy.
+
+Finally, we also ran the benchmark using the builtin ``json`` module. This is
+not really relevant to HPy, but it might still be an interesting as a
+reference data point.
+
+The benchmark_ is very simple and consists of parsing a `big JSON file`_ 100
+times. Here is the average time per iteration (in milliseconds) using the
+various versions of the module, CPython 3.7 and the latest version of the hpy
+PyPy branch:
+
++---------------------+---------+--------+
+|                     | CPython | PyPy   |
++---------------------+---------+--------+
+| ujson               | 154.32  | 633.97 |
++---------------------+---------+--------+
+| ujson_hpy           | 152.19  |        |
++---------------------+---------+--------+
+| ujson_hpy_universal | 168.78  | 207.68 |
++---------------------+---------+--------+
+| json                | 224.59  | 135.43 |
++---------------------+---------+--------+
+
+As expected, the benchmark proves that when targeting the HPy/CPython ABI, HPy
+doesn't impose any performance penalty on CPython. The universal version is
+~10% slower on CPython, but gives an impressive 3x speedup on PyPy! It it
+worth noting that the PyPy hpy module is not fully optimized yet, and we
+expect to be able to reach the same performance as CPython for this particular
+example (or even more, thanks to our better GC).
+
+All in all, not a bad result for two weeks of intense hacking :)
+
+It is also worth noting than PyPy's builtin ``json`` module does **really**
+well in this benchmark, thanks to the recent optimizations that were described
+in an `earlier blog post`_.
+
+
+.. _benchmark: https://github.com/pyhandle/ultrajson-hpy/blob/hpy/benchmark/main.py
+.. _`big JSON file`: https://github.com/pyhandle/ultrajson-hpy/blob/hpy/benchmark/download_data.sh
+.. _`earlier blog post`: https://morepypy.blogspot.com/2019/10/pypys-new-json-parser.html
+
+
+Conclusion and future directions
+---------------------------------
+
+We think we can be very satisfied about what we have got so far. The
+development of HPy just started but these early results seem to indicate that
+we are on the right track to bring Python extensions into the future.
+
+At the moment, we can anticipate some of the next steps in the development of
+HPy:
+
+  - think about a proper API design: what we have done so far has
+    been a "dumb" translation of the API we needed to run ``ujson``. However,
+    one of the declared goal of HPy is to improve the design of the API. There
+    will be a trade-off between the desire of having a clean, fresh new API
+    and the need to be not too different than the old one, to make porting
+    easier.  Finding the sweet spot will not be easy!
+
+  - implement the "debug" mode, which will help developers to find
+    bugs such as leaking handles or using invalid handles
+
+  - instruct Cython to emit HPy code on request
+
+  - eventually, we will also want to try to port parts of ``numpy`` to HPy to
+    finally solve the long-standing problem of sub-optimal ``numpy``
+    performance in PyPy
+
+Stay tuned!
