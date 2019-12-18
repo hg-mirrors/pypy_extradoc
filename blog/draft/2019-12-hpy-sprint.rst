@@ -12,7 +12,13 @@ The TL;DR answer is "a better way to write C extensions for Python".
 
 The idea of HPy was born during EuroPython 2019 in Basel, where there was an
 informal meeting which included core developers of PyPy, CPython (Victor
-Stinner and Mark Shannon) and Cython (Stefan Behnel).
+Stinner and Mark Shannon) and Cython (Stefan Behnel). The ideas were later also
+discussed with Tim Felgentreff of GraalPython_, to make sure they would also be
+applicable to this very different implementation, Windel Bouwman of RustPython_
+is following the project as well.
+
+.. _GraalPython: https://github.com/graalvm/graalpython
+.. _RustPython: https://github.com/RustPython/RustPython
 
 All of us agreed that the current design of the CPython C API is problematic
 for various reasons and, in particular, because it is too tied to the current
@@ -40,8 +46,8 @@ HPy tries to address these issues by following two major design guidelines:
 
 The other major design goal of HPy is to allow incremental transition and
 porting, so existing modules can migrate their codebase one method at a time.
-Moreover, Cython eventually will generate HPy code, so extension module written
-in Cython will be able to benefit from HPy automatically.
+Moreover, Cython is considering to optionally generate HPy code, so extension
+module written in Cython would be able to benefit from HPy automatically.
 
 More details can be found in the README of the official `HPy repository`_.
 
