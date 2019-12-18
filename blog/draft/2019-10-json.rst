@@ -355,7 +355,7 @@ implementations use different in-memory representations of strings in
 the deserialized data-structure (Node uses two bytes per character in
 a string, [in CPython it
 depends](https://www.python.org/dev/peps/pep-0393/) but 4 bytes on my
-machine, PyPyBaseline uses four bytes,PyPy and RapidJSON use utf-8). But
+machine, PyPyBaseline uses four bytes, PyPy and RapidJSON use utf-8). But
 it's still interesting to get some ballpark numbers. The results are as
 follows:
 
