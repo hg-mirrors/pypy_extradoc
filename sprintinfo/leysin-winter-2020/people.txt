@@ -1,0 +1,14 @@
+
+People coming to the Leysin sprint Winter 2020
+==================================================
+
+People who have a ``?`` in their arrive/depart or accomodation
+column are known to be coming but there are no details 
+available yet from them.
+
+==================== ============== =======================
+    Name              Arrive/Depart     Accomodation 
+==================== ============== =======================
+Armin Rigo                          private
+==================== ============== =======================
+
