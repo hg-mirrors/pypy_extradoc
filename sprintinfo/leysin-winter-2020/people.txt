@@ -11,4 +11,5 @@ available yet from them.
 ==================== ============== =======================
 Armin Rigo                          private
 Antonio Cuni          flexbible     Les Airelles, preferably single room
+Omer Katz
 ==================== ============== =======================
