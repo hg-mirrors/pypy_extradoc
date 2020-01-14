@@ -153,7 +153,7 @@ similarities. The biggest differences are:
     and its length, instead of a fully constructed tuple: passing a tuple
     makes sense on CPython where you have it anyway, but it might be an
     unnecessary burden for alternate implementations.  Note that this is
-    similar to the new `METH_FASTCALL` which was introduced in CPython.
+    similar to the new `METH_FASTCALL`_ which was introduced in CPython.
 
   - HPy relies a lot on C macros, which most of the time are needed to support
     the HPy/CPython ABI compilation mode. For example, ``HPy_DEF_METH_VARARGS``
@@ -217,7 +217,7 @@ following reasons:
 
   - it uses only a small subset of the Python API
 
-This repo contains the `HPy port of ultrajson`. This commit_ shows an example
+This repo contains the `HPy port of ultrajson`_. This commit_ shows an example
 of what the porting looks like.
 
 ``ujson_hpy`` is also a very good example of incremental migration: so far
