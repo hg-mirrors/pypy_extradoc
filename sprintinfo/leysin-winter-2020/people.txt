@@ -12,4 +12,5 @@ available yet from them.
 Armin Rigo                          private
 Antonio Cuni         flexible       Les Airelles, preferably single room
 Omer Katz
+Manuel Jacob         Mar 1–8+       Les Airelles
 ==================== ============== =======================
