@@ -10,6 +10,6 @@ available yet from them.
     Name              Arrive/Depart     Accomodation
 ==================== ============== =======================
 Armin Rigo                          private
-Antonio Cuni          flexbible     Les Airelles, preferably single room
+Antonio Cuni         flexible       Les Airelles, preferably single room
 Omer Katz
 ==================== ============== =======================
