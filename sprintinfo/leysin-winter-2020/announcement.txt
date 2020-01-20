@@ -1,0 +1,37 @@
+=====================================================================
+Leysin Winter sprint 2020: Feb 28 - March 7th
+=====================================================================
+
+The next PyPy sprint will be in Leysin, Switzerland, for the fourteenth time.
+This is a fully public sprint: newcomers and topics other than those proposed
+below are welcome.
+
+
+Goals and topics of the sprint
+------------------------------
+
+The list of topics is open.  For reference, we would like to work at least
+partially on the following topics:
+
+* HPy
+* Python 3.7 support
+
+As usual, the main side goal is to have fun in winter sports :-) We can take a
+day off (for ski or anything else).
+
+
+Times and accomodation
+----------------------
+
+The sprint will occur for one week starting on Friday, the 28th of February, to
+Friday or Saturday, the 6th or 7th of March 2020.  It will occur in Les
+Airelles, a different bed-and-breakfast place from the traditional one in
+Leysin.  It is a nice old house at the top of the village.
+
+We have a 4- or 5-people room as well as up to three double-rooms.  Please
+register early!  These rooms are not booked for the sprint in advance, and
+might be already taken if you end up announcing yourself late.  (But it is of
+course always possible to book at a different place in Leysin.)
+
+You can register by adding your name in people.txt here.  For more information,
+write to me directly at armin.rigo@gmail.com.
