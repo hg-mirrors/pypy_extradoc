@@ -11,12 +11,12 @@ Hosting
 The biggest news is that we have moved the center of our development
 off bitbucket and to the new https://foss.heptapod.net/pypy. This is an
 instance of `heptapod`_ running on Gitlab and hosted by `Clever Cloud`_. When
-Atlassian decided to close down mercurial hosting on bitbucket.org, PyPy
+Atlassian decided to close down Mercurial hosting on bitbucket.org, PyPy
 debated what to do. Our development model is based on long-lived branches, and
 we want to keep the ability to immediately see which branch each commit came
-from. Mercurial has this, git does not (see `our FAQ`_). Also mercurial is
+from. Mercurial has this, git does not (see `our FAQ`_). Also Mercurial is
 written in Python, and there is something to be said about preserving another
-way of doing things. Octobus_, whose business is Mercurial, developed an way to
+way of doing things. Octobus_, whose business is Mercurial, developed a way to
 use Mercurial with Gitlab called heptapod. The product is still `under
 development`_, but quite usable (i.e., it doesn't get in the way). In order to
 help the FOSS world stay on Mercurial, Octobus partnered with Clever Cloud
@@ -26,7 +26,7 @@ https://foss.heptapod.net/pypy. We were very happy with how smooth it was to
 import the repos to heptapod/GitLab, and are learning the small differences
 between bitbucket and gitlab. All the pull requests, issues, and commits kept
 the same ids, but work is still being done to attribute the issues, pull
-requests, and comments to the correct users. So from now onwhen you want to
+requests, and comments to the correct users. So from now on, when you want to
 contribute to PyPy, you do so at the new home. 
 
 CFFI, which previously was also hosted on bitbucket, has joined the PyPy group
@@ -55,11 +55,11 @@ although "does it speed up scipy" still has the wrong answer. For that we are
 working on HPy_, and will be `sprinting soon`_. 
 
 The latest versions of pip, wheel, and setuptools, together with the
-manylinxu2010 standard for linux wheels and tools such as `cibuildwheels`_ and
+manylinux2010 standard for linux wheels and tools such as `cibuildwheels`_ and
 `multibuild` make it easier for library developers to build binary wheels for
 PyPy. If you are having problems getting going with this, please reach out.
 
-For dessert: better warmup time
+For dessert: faster warmup time
 ===============================
 
 Just because we are working on making PyPy easier to use doesn't mean we have
@@ -70,7 +70,7 @@ Give it a try
 =============
 
 Thanks to all the folks who provide the infrastructure PyPy depends on. We hope
-the new look will encourage more involvement and engagement, help prove us
+the new look will encourage more involvement and engagement. Help prove us
 right!
 
 The PyPy Team
