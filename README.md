@@ -1,0 +1,1 @@
+Development has moved to foss.heptapod.net/pypy/extradoc
