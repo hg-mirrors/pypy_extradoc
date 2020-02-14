@@ -6,16 +6,17 @@ People who have a ``?`` in their arrive/depart or accomodation
 column are known to be coming but there are no details
 available yet from them.
 
-==================== ============== =======================
-    Name              Arrive/Depart     Accomodation
-==================== ============== =======================
-Armin Rigo                          private
-Antonio Cuni         Feb 28-Mar 5   Les Airelles
-Omer Katz                           Les Airelles, big room
-Manuel Jacob         Feb 29–Mar 8   Les Airelles
-Simon Cross          Feb 27-Mar 6   Les Airelles, bringing partner
-Ronan Lamy           Feb 29-Mar 8   Les Airelles
-==================== ============== =======================
+================================ ============== =======================
+    Name                         Arrive/Depart     Accomodation
+================================ ============== =======================
+Armin Rigo                                      private
+Antonio Cuni                     Feb 28-Mar 5   Les Airelles
+Omer Katz                                       Les Airelles, big room
+Manuel Jacob                     Feb 29–Mar 8   Les Airelles
+Simon Cross                      Feb 27-Mar 6   Les Airelles, bringing partner
+Ronan Lamy                       Feb 29-Mar 8   Les Airelles
+Florian Angerer (GraalPython)    Mar 1-Mar 6    Les Airelles (single room)
+================================ ============== =======================
 
 The big room is for up to 7 people, probably with some subdivisions.
 It is booked for the Feb 29 - March 8 period.
