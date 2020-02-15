@@ -21,7 +21,7 @@ use Mercurial with Gitlab called heptapod. The product is still `under
 development`_, but quite usable (i.e., it doesn't get in the way). In order to
 help the FOSS world stay on Mercurial, Octobus partnered with Clever Cloud
 hosting to offer community FOSS projects hosted on bitbucket a new home. PyPy
-took them up on the offer this week, and migrated its repos to
+took them up on the offer, and migrated its repos to
 https://foss.heptapod.net/pypy. We were very happy with how smooth it was to
 import the repos to heptapod/GitLab, and are learning the small differences
 between bitbucket and gitlab. All the pull requests, issues, and commits kept
@@ -55,7 +55,7 @@ although "does it speed up scipy" still has the wrong answer. For that we are
 working on HPy_, and will be `sprinting soon`_. 
 
 The latest versions of pip, wheel, and setuptools, together with the
-manylinux2010 standard for linux wheels and tools such as `multibuild` or
+manylinux2010 standard for linux wheels and tools such as `multibuild`_ or
 `cibuildwheels`_ (well, from the next version) make it easier for library
 developers to build binary wheels for PyPy. If you are having problems getting
 going with this, please reach out.
@@ -77,13 +77,15 @@ right!
 The PyPy Team
 
 
-.. _heptapod:: https://heptapod.net
-.. _`Clever Cloud`:: https://www.clever-cloud.com/en/heptapod
-.. _`our FAQ`:: http://doc.pypy.org/en/latest/faq.html#why-doesn-t-pypy-use-git-and-move-to-github
-.. _`Octobus`:: https://octobus.net/
-.. _`under development`:: https://heptapod.net/pages/getting-involved.html
-.. _`portable builds`:: https://github.com/squeaky-pl/portable-pypy
-.. _`HPy`:: https://morepypy.blogspot.com/2019/12/hpy-kick-off-sprint-report.html
-.. _`sprinting soon`:: https://morepypy.blogspot.com/2020/01/leysin-winter-sprint-2020-feb-28-march.html
-.. _`cibuildwheels`:: https://github.com/joerick/cibuildwheel
-.. _`multibuild`:: https://github.com/matthew-brett/multibuild/
+.. _`heptapod`: https://heptapod.net
+.. _`Clever Cloud`: https://www.clever-cloud.com/en/heptapod
+.. _`our FAQ`: http://doc.pypy.org/en/latest/faq.html#why-doesn-t-pypy-use-git-and-move-to-github
+.. _`Octobus`: https://octobus.net/
+.. _`under development`: https://heptapod.net/pages/getting-involved.html
+.. _`portable builds`: https://github.com/squeaky-pl/portable-pypy
+.. _`HPy`: https://morepypy.blogspot.com/2019/12/hpy-kick-off-sprint-report.html
+.. _`sprinting soon`: https://morepypy.blogspot.com/2020/01/leysin-winter-sprint-2020-feb-28-march.html
+.. _`cibuildwheels`: https://github.com/joerick/cibuildwheel
+.. _`multibuild`: https://github.com/matthew-brett/multibuild/
+.. _`nightly downloads`: https://buildbot.pypy.org/nightly
+.. _`release downloads`: https://bitbucket.org/pypy/pypy/downloads
