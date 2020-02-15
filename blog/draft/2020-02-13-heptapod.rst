@@ -55,9 +55,10 @@ although "does it speed up scipy" still has the wrong answer. For that we are
 working on HPy_, and will be `sprinting soon`_. 
 
 The latest versions of pip, wheel, and setuptools, together with the
-manylinux2010 standard for linux wheels and tools such as `cibuildwheels`_ and
-`multibuild` make it easier for library developers to build binary wheels for
-PyPy. If you are having problems getting going with this, please reach out.
+manylinux2010 standard for linux wheels and tools such as `multibuild` or
+`cibuildwheels`_ (well, from the next version) make it easier for library
+developers to build binary wheels for PyPy. If you are having problems getting
+going with this, please reach out.
 
 For dessert: faster warmup time
 ===============================
