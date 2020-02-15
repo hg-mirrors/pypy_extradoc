@@ -18,8 +18,10 @@ Ronan Lamy           Feb 29-Mar 8   Les Airelles, big room
 Aaron Wise           to confirm     Les Airelles, big room
 Georges Racinet      to confirm     Les Airelles, big room
 Pierre-Yves David    to confirm     Les Airelles, big room
-Florian Angerer (GraalPython)    Mar 1-Mar 6    Les Airelles (single room)
+Florian Angerer(*)   Mar 1-Mar 6    Les Airelles (single room)
 ==================== ============== =======================
+
+(*) GraalPython
 
 The big room is for up to 7 people, probably with some subdivisions.
 It is booked for the Feb 29 - March 8 period.
