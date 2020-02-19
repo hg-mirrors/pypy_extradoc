@@ -11,7 +11,7 @@ available yet from them.
 ==================== ============== =======================
 Armin Rigo                          private
 Antonio Cuni         Feb 28-Mar 5   Les Airelles (own room)
-Omer Katz            Mar 3-Mar 9/10 Les Airelles, big room
+Omer Katz            Mar 3-Mar 8    Les Airelles, big room
 Manuel Jacob         Feb 29–Mar 8   Les Airelles, big room
 Simon Cross          Feb 27-Mar 6   Les Airelles, bringing partner
 Ronan Lamy           Feb 29-Mar 8   Les Airelles, big room
