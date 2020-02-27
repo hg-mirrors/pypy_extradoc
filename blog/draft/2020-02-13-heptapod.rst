@@ -9,14 +9,14 @@ Hosting
 -------
 
 The biggest news is that we have moved the center of our development
-off bitbucket and to the new https://foss.heptapod.net/pypy. This is an
-instance of `heptapod`_ running on Gitlab and hosted by `Clever Cloud`_. When
-Atlassian decided to close down Mercurial hosting on bitbucket.org, PyPy
+off bitbucket and to the new https://foss.heptapod.net/pypy. This is a friendly
+fork of Gitlab called `heptapod`_ that speaks Mercurial. It is hosted by
+`Clever Cloud`_. When Atlassian decided to close down Mercurial hosting on
+bitbucket.org, PyPy
 debated what to do. Our development model is based on long-lived branches, and
 we want to keep the ability to immediately see which branch each commit came
-from. Mercurial has this, git does not (see `our FAQ`_). Also Mercurial is
-written in Python, and there is something to be said about preserving another
-way of doing things. Octobus_, whose business is Mercurial, developed a way to
+from. Mercurial has this, git does not (see `our FAQ`_). Octobus_, whose
+business is Mercurial, developed a way to
 use Mercurial with Gitlab called heptapod. The product is still `under
 development`_, but quite usable (i.e., it doesn't get in the way). In order to
 help the FOSS world stay on Mercurial, Octobus partnered with Clever Cloud
