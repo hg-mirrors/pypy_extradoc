@@ -80,8 +80,8 @@ Keep safe out there everyone.
 
 The HPy & PyPy Team & Friends
 
-In joke for those who attended the sprint: Please don't translate this blog
-post into Swedish (or indeed any other language :).
+*In joke for those who attended the sprint: Please don't translate this blog
+post into Swedish (or indeed any other language :).*
 
 .. _HPy:  https://github.com/pyhandle/hpy/
 .. _PyPy Python 3.7: http://buildbot.pypy.org/summary?branch=py3.7
