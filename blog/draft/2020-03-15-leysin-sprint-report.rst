@@ -92,4 +92,4 @@ with its Swedish translation (or indeed a translation to any other language :).*
 .. _Heptapod: https://foss.heptapod.net/pypy/
 .. _Berneuse: https://en.wikipedia.org/wiki/Berneuse
 .. _GraalPython: https://github.com/graalvm/graalpython
-.. _rust-cpython_: https://github.com/dgrunwald/rust-cpython
+.. _rust-cpython: https://github.com/dgrunwald/rust-cpython
