@@ -14,14 +14,18 @@ obligatory cheese fondue outing.
 
 There were a few of us participating in a PyPy sprint for the first time
 and a few familiar faces who had attended many sprints. Many different
-Python implementations were represented including PyPy, GraalPython_, and
-RustPython_. The atmosphere was relaxed and welcoming, so if you're thinking
-of attending the next one -- please do!
+projects were represented including PyPy, HPy_, GraalPython_,
+Heptapod_, and rust-cpython_. The atmosphere was relaxed and welcoming, so if
+you're thinking of attending the next one -- please do!
 
 Topics worked on:
 
 HPy
 ---
+
+HPy is a new project to design and implement a better API for extending
+Python in C. If you're unfamiliar with it you can read more about it at
+HPy_.
 
 A lot of attention was devoted to the Big HPy Design Discussion which
 took up two full mornings. So much was decided that this will likely
@@ -80,12 +84,12 @@ Keep safe out there everyone.
 
 The HPy & PyPy Team & Friends
 
-*In joke for those who attended the sprint: Please don't translate this blog
-post into Swedish (or indeed any other language :).*
+*In joke for those who attended the sprint: Please don't replace this blog post
+with its Swedish translation (or indeed a translation to any other language :).*
 
 .. _HPy:  https://github.com/pyhandle/hpy/
 .. _PyPy Python 3.7: http://buildbot.pypy.org/summary?branch=py3.7
 .. _Heptapod: https://foss.heptapod.net/pypy/
 .. _Berneuse: https://en.wikipedia.org/wiki/Berneuse
 .. _GraalPython: https://github.com/graalvm/graalpython
-.. _RustPython: https://github.com/RustPython/RustPython
+.. _rust-cpython_: https://github.com/dgrunwald/rust-cpython
