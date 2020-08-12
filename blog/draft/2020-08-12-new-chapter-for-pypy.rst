@@ -15,7 +15,7 @@ successful fundraising drives and facilitated payment and oversight for
 `contractors and code sprints`_.
 
 Conservancy supported PyPy's impressive growth as it expanded support for
-different hardware platforms, greating improved the performance of C extensions,
+different hardware platforms, greatly improved the performance of C extensions,
 and added support for Python 3 as the language itself evolved.
 
 The road ahead
@@ -28,8 +28,8 @@ community, times change and all good things must come to an end.
 
 PyPy will remain a free and open source project, but the community's structure
 and organizational underpinnings will be changing and the PyPy community will be
-exploring options outside of the charitable realm for its next phase of growth:
-("charitable" in the legal sense -- PyPy will remain a community project and more details about the future plans will be given in a subsequent blog post).
+exploring options outside of the charitable realm for its next phase of growth
+("charitable" in the legal sense -- PyPy will remain a community project).
 
 During the last year PyPy and Conservancy have worked together to properly
 utilise the generous donations made by stalwart PyPy enthusiats over the years
