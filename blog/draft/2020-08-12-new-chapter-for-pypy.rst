@@ -26,9 +26,10 @@ freedoms and guardrails that come along with a charitable home advantageous for
 their community goals. While this framework was a great fit for the early PyPy
 community, times change and all good things must come to an end.
 
-PyPy will remain free software, but the community's structure and organizational
-underpinnings will be changing and the PyPy community will be exploring options
-outside of the charitable realm for its next phase of growth.
+PyPy will remain a free and open source project, but the community's structure
+and organizational underpinnings will be changing and the PyPy community will be
+exploring options outside of the charitable realm for its next phase of growth
+("charitable" in the legal sense -- PyPy will remain a community project).
 
 During the last year PyPy and Conservancy have worked together to properly
 utilise the generous donations made by stalwart PyPy enthusiats over the years
