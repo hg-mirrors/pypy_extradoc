@@ -43,9 +43,10 @@ Thank yous
   community well and look forward to seeing it develop and succeed in new ways."
   -- Karen Sandler, Conservancy's Executive Director
 
-PyPy would like to thank Conservancy for their decade long support in building
-the community and wishes Conservancy continued success in their journey
-promoting, improving, developing and defending free and open source sofware.
+  "PyPy would like to thank Conservancy for their decade long support in
+  building the community and wishes Conservancy continued success in their
+  journey promoting, improving, developing and defending free and open source
+  sofware." -- Simon Cross & Carl Friedrich Bolz-Tereick, on behalf of PyPy.
 
 About
 -----
