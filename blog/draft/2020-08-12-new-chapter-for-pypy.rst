@@ -28,8 +28,8 @@ community, times change and all good things must come to an end.
 
 PyPy will remain a free and open source project, but the community's structure
 and organizational underpinnings will be changing and the PyPy community will be
-exploring options outside of the charitable realm for its next phase of growth
-("charitable" in the legal sense -- PyPy will remain a community project).
+exploring options outside of the charitable realm for its next phase of growth:
+("charitable" in the legal sense -- PyPy will remain a community project and more details about the future plans will be given in a subsequent blog post).
 
 During the last year PyPy and Conservancy have worked together to properly
 utilise the generous donations made by stalwart PyPy enthusiats over the years
