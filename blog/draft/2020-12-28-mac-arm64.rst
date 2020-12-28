@@ -4,7 +4,7 @@ Mac meets Arm64
 *Looking for sponsorship*
 
 Apple now ships Macs which are running on an arm64 variant machine with the
-latest version of MacOS, Big Sur.  We are getting many requests for PyPy to
+latest version of MacOS, Big Sur M1.  We are getting many requests for PyPy to
 support this new architecture.  Here is our position on this topic (or at least
 mine, Armin Rigo's), and how you can help.
 
@@ -19,7 +19,7 @@ again because of the calling conventions.
 
 Fixing that would be a reasonable amount of work.  I would do it myself for a
 small amount of money.  However, the story doesn't finish here.  Obviously, the
-*start* of the story would be to get ssh access to a Big Sur machine.  (If at
+*start* of the story would be to get ssh access to a Big Sur M1 machine.  (If at
 this point you're thinking "sure, I can give you ssh access for three months",
 then please read on.)  The *next* part of the story is that we need a machine
 available long term.  It can be either a machine provided and maintained by a
@@ -50,9 +50,12 @@ and so must be translated separately).
 
 So, now all the factors are on the table.  We won't do the minimal "just the
 JIT compiler fixes" if we don't have a plan that goes farther.  Either we get
-sufficient money and maybe support to do it quickly, or PyPy will just remain
-not natively available on Big Sur for the next 3-5 years.  Contact us either on
-pypy-dev@python.org, on our private mailing list pypy-z@python.org.
+sufficient money, and maybe support, and then we can do it quickly; or PyPy
+will just remain not natively available on M1 hardware for the next 3-5 years.
+We are looking forward to supporting M1, and view resources contributed by
+the community as a vote of confidence in assuring the future of PyPy on this
+hardware.  Contact us: pypy-dev@python.org, or our private mailing
+list pypy-z@python.org.
 
 
 Armin Rigo
