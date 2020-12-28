@@ -4,7 +4,7 @@ Mac meets Arm64
 *Looking for sponsorship*
 
 Apple now ships Macs which are running on an arm64 variant machine with the
-latest version of MacOS, Big Sur M1.  We are getting many requests for PyPy to
+latest version of MacOS, Big Sur M1.  We are getting requests for PyPy to
 support this new architecture.  Here is our position on this topic (or at least
 mine, Armin Rigo's), and how you can help.
 
