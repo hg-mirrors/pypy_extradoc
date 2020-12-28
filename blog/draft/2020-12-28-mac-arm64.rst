@@ -38,7 +38,7 @@ If we go with the money-supported solution: it's likely that after 3-5 years
 the whole Mac base will have switched to arm64, we'll drop x86-64 support for
 Mac, and we'll be back to the situation of the past where there was only one
 kind of Mac machine to care about.  In the meantime, we are looking at 3-5
-years of lightweight extra maintenance.  We have someone that has told he would
+years of lightweight extra maintenance.  We have someone that has said he would
 do it, but not for free.
 
 If either of these two solutions occurs, we'll still have, I quote, "probably
